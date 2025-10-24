@@ -83,11 +83,11 @@ export default function HomePage() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="text-6xl leading-tight font-extrabold md:text-7xl lg:text-8xl"
         >
-          <span className="gradient-text-vibrant animate-shimmer bg-gradient-to-r from-purple-400 via-blue-500 via-pink-500 to-cyan-400 bg-[length:200%_100%] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-blue-400 bg-clip-text font-extrabold text-transparent drop-shadow-lg">
             SuperTool
           </span>
           <br />
-          <span className="bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 bg-clip-text text-transparent">
             is Ready
           </span>
         </motion.h1>
@@ -131,7 +131,7 @@ export default function HomePage() {
         className="relative z-10 space-y-8"
       >
         <div className="text-center">
-          <h2 className="mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-4xl font-bold text-transparent">
+          <h2 className="mb-3 bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-4xl font-bold text-transparent drop-shadow-lg">
             Available Tools
           </h2>
           <p className="text-lg text-gray-300">Powerful utilities for everyday development</p>
@@ -156,12 +156,12 @@ export default function HomePage() {
                   className={`block h-full ${isComingSoon ? 'pointer-events-none' : ''}`}
                 >
                   <Card
-                    className={`glass-card group relative h-full overflow-hidden border-2 border-purple-500/30 p-6 transition-all duration-300 hover:border-pink-500/60 hover:shadow-2xl hover:shadow-purple-500/40 ${isComingSoon ? 'opacity-70' : ''}`}
+                    className={`glass-card group relative h-full overflow-hidden border-2 border-purple-500/30 transition-all duration-300 hover:border-pink-500/60 hover:shadow-2xl hover:shadow-purple-500/40 ${isComingSoon ? 'opacity-70' : ''}`}
                   >
                     {/* Animated gradient border on hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                    <CardHeader className="relative z-10 space-y-4">
+                    <CardHeader className="relative z-10 space-y-4 p-6">
                       <div className="flex items-start justify-between">
                         <motion.div
                           className={`rounded-2xl bg-gradient-to-br p-4 ${tool.gradient} shadow-xl`}
@@ -180,21 +180,21 @@ export default function HomePage() {
                           </Badge>
                         )}
                       </div>
-                      <CardTitle className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-2xl font-bold text-transparent">
+                      <CardTitle className="bg-gradient-to-r from-gray-100 via-white to-gray-100 bg-clip-text text-2xl font-bold text-transparent">
                         {tool.title}
                       </CardTitle>
                       <CardDescription className="text-base text-gray-300">
                         {tool.description}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="relative z-10">
+                    <CardContent className="relative z-10 p-6 pt-0">
                       <div className="flex flex-wrap gap-2">
                         {tool.features.map((feature) => (
                           <Badge
                             key={feature}
                             variant="outline"
                             size="sm"
-                            className="border-purple-500/50 bg-purple-500/10 px-3 py-1 text-sm text-purple-300 transition-all hover:border-pink-500/70 hover:bg-pink-500/20 hover:text-pink-300"
+                            className="border-purple-500/50 bg-purple-500/10 px-3 py-1.5 text-sm text-purple-300 transition-all hover:border-pink-500/70 hover:bg-pink-500/20 hover:text-pink-300"
                           >
                             {feature}
                           </Badge>
@@ -224,7 +224,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.15, rotate: 5 }}
             transition={{ type: 'spring', stiffness: 300 }}
           >
-            <div className="mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl">
+            <div className="mb-3 bg-gradient-to-r from-purple-300 via-pink-300 to-purple-400 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-lg md:text-6xl">
               2+
             </div>
             <div className="text-lg font-medium text-gray-300">Active Tools</div>
@@ -233,7 +233,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.15, rotate: -5 }}
             transition={{ type: 'spring', stiffness: 300 }}
           >
-            <div className="mb-3 bg-gradient-to-r from-pink-400 via-orange-400 to-yellow-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl">
+            <div className="mb-3 bg-gradient-to-r from-pink-300 via-orange-300 to-yellow-400 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-lg md:text-6xl">
               100%
             </div>
             <div className="text-lg font-medium text-gray-300">Open Source</div>
@@ -242,7 +242,7 @@ export default function HomePage() {
             whileHover={{ scale: 1.15, rotate: 5 }}
             transition={{ type: 'spring', stiffness: 300 }}
           >
-            <div className="mb-3 bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl">
+            <div className="mb-3 bg-gradient-to-r from-blue-300 via-cyan-300 to-teal-400 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-lg md:text-6xl">
               0ms
             </div>
             <div className="text-lg font-medium text-gray-300">Setup Time</div>

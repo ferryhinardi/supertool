@@ -97,7 +97,7 @@ export default function UploadTool() {
             <FileUp className="h-8 w-8 text-white" />
           </div>
           <div>
-            <h1 className="bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500 bg-clip-text text-4xl font-extrabold text-transparent md:text-5xl">
+            <h1 className="bg-gradient-to-r from-blue-300 via-cyan-400 to-teal-300 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-lg md:text-5xl">
               File Upload
             </h1>
             <p className="text-base text-gray-300 md:text-lg">
@@ -177,7 +177,7 @@ export default function UploadTool() {
               </div>
 
               <div>
-                <h3 className="mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-2xl font-bold text-transparent">
+                <h3 className="mb-2 bg-gradient-to-r from-green-300 to-emerald-300 bg-clip-text text-2xl font-bold text-transparent drop-shadow-lg">
                   Upload Successful!
                 </h3>
                 <p className="text-lg text-gray-300">Your file is now available via a public URL</p>
@@ -253,7 +253,7 @@ export default function UploadTool() {
       {/* Info Card */}
       <Card className="glass-card border-2 border-cyan-500/30 shadow-xl shadow-cyan-500/20">
         <CardHeader>
-          <CardTitle className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-2xl font-bold text-transparent">
+          <CardTitle className="bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-2xl font-bold text-transparent drop-shadow-lg">
             Upload Information
           </CardTitle>
           <CardDescription className="text-base text-gray-300">

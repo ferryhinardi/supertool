@@ -29,10 +29,10 @@ export function Sidebar() {
 
       <div className="relative z-10 flex h-full flex-col">
         {/* Logo */}
-        <Link href="/" className="group mb-10">
+        <Link href="/" className="group mb-10 no-underline">
           <h1 className="flex items-center gap-3 text-2xl font-bold transition-all hover:scale-105">
             <span className="animate-pulse text-4xl">⚡</span>
-            <span className="gradient-text-vibrant bg-gradient-to-r from-purple-400 via-pink-500 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text font-extrabold text-transparent">
               SuperTool
             </span>
           </h1>
@@ -87,10 +87,10 @@ export function Sidebar() {
             href="https://github.com/ferryhinardi/supertool"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 transition-all hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 hover:text-white"
+            className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 no-underline transition-all hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 hover:text-white"
           >
             <Github className="h-5 w-5 transition-transform group-hover:scale-110" />
-            <span className="font-medium group-hover:underline">View on GitHub</span>
+            <span className="font-medium">View on GitHub</span>
           </a>
 
           <p className="text-xs text-gray-400">
@@ -99,7 +99,7 @@ export function Sidebar() {
               href="https://github.com/ferryhinardi"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text font-semibold text-transparent transition-all hover:from-purple-300 hover:to-pink-300"
+              className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text font-semibold text-transparent no-underline transition-all hover:from-purple-300 hover:to-pink-300"
             >
               Ferry
             </a>

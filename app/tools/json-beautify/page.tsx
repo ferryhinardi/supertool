@@ -95,7 +95,7 @@ export default function JSONBeautifyPage() {
               <FileJson className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 bg-clip-text text-4xl font-extrabold text-transparent md:text-5xl">
+              <h1 className="bg-gradient-to-r from-purple-300 via-pink-400 to-blue-300 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-lg md:text-5xl">
                 JSON Beautifier
               </h1>
               <p className="text-base text-gray-300 md:text-lg">

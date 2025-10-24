@@ -120,6 +120,15 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Remove underline from all links */
+  a {
+    text-decoration: none !important;
+  }
+
+  a:hover {
+    text-decoration: none !important;
+  }
 }
 
 @layer components {
