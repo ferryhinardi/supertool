@@ -86,21 +86,21 @@ export default function UploadTool() {
   }
 
   return (
-    <main className="mx-auto max-w-4xl space-y-6 py-6">
+    <main className="mx-auto max-w-5xl space-y-8 px-4 py-8 md:px-6 lg:px-8">
       {/* Header */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-3">
+      <div className="space-y-3">
+        <div className="flex items-center gap-4">
           <div
-            className="animate-pulse rounded-xl bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700 p-3 shadow-lg shadow-blue-500/50"
+            className="animate-pulse rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700 p-4 shadow-2xl shadow-blue-500/60"
             style={{ animationDuration: '2s' }}
           >
-            <FileUp className="h-6 w-6 text-white" />
+            <FileUp className="h-8 w-8 text-white" />
           </div>
           <div>
-            <h1 className="bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500 bg-clip-text text-3xl font-bold text-transparent">
+            <h1 className="bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500 bg-clip-text text-4xl font-extrabold text-transparent md:text-5xl">
               File Upload
             </h1>
-            <p className="text-sm text-gray-400">
+            <p className="text-base text-gray-300 md:text-lg">
               Upload files to cloud storage with instant sharing
             </p>
           </div>
@@ -108,8 +108,8 @@ export default function UploadTool() {
       </div>
 
       {/* Upload Area */}
-      <Card className="glass-card border-gray-800/50">
-        <CardContent className="space-y-4 p-6">
+      <Card className="glass-card border-2 border-blue-500/30 shadow-2xl shadow-blue-500/20">
+        <CardContent className="space-y-6 p-8">
           {!publicUrl ? (
             <>
               <DragDropZone
@@ -119,23 +119,28 @@ export default function UploadTool() {
               />
 
               {file && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {/* File info */}
-                  <div className="glass flex items-center justify-between rounded-lg p-4">
+                  <div className="glass flex items-center justify-between rounded-xl border-2 border-cyan-500/30 p-6 shadow-lg shadow-cyan-500/20">
                     <div>
-                      <p className="font-medium text-white">{file.name}</p>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-lg font-semibold text-white">{file.name}</p>
+                      <p className="text-sm text-gray-300">
                         {formatFileSize(file.size)} • {file.type || 'Unknown type'}
                       </p>
                     </div>
-                    <Badge variant="info">{file.type ? 'Valid' : 'No type'}</Badge>
+                    <Badge
+                      variant="info"
+                      className="bg-gradient-to-r from-blue-500 to-cyan-500 px-4 py-2 text-sm font-semibold shadow-lg"
+                    >
+                      {file.type ? 'Valid' : 'No type'}
+                    </Badge>
                   </div>
 
                   {/* Upload progress */}
                   {uploading && (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <Progress value={uploadProgress} showPercentage gradient />
-                      <p className="text-center text-sm text-gray-400">
+                      <p className="text-center text-base font-medium text-cyan-300">
                         Uploading to cloud storage...
                       </p>
                     </div>
@@ -145,83 +150,99 @@ export default function UploadTool() {
                   <Button
                     onClick={handleUpload}
                     disabled={uploading}
-                    className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 shadow-lg shadow-blue-500/50 transition-all duration-300 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 hover:shadow-xl hover:shadow-blue-500/60"
+                    className="group relative w-full overflow-hidden bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 px-8 py-7 text-lg font-semibold shadow-2xl shadow-blue-500/50 transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 hover:shadow-2xl hover:shadow-cyan-500/60"
                     size="lg"
                   >
                     {uploading ? (
                       <>
-                        <Upload className="mr-2 h-4 w-4 animate-bounce" />
+                        <Upload className="mr-2 h-6 w-6 animate-bounce" />
                         Uploading...
                       </>
                     ) : (
                       <>
-                        <Upload className="mr-2 h-4 w-4" />
+                        <Upload className="mr-2 h-6 w-6" />
                         Upload to Cloud
                       </>
                     )}
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-teal-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </Button>
                 </div>
               )}
             </>
           ) : (
             // Success state
-            <div className="space-y-4 text-center">
-              <div className="mb-4 inline-flex rounded-full bg-green-500/10 p-4">
-                <Check className="h-12 w-12 text-green-500" />
+            <div className="space-y-6 text-center">
+              <div className="mb-6 inline-flex rounded-full bg-gradient-to-r from-green-500/20 to-emerald-500/20 p-6 shadow-2xl shadow-green-500/50">
+                <Check className="h-16 w-16 text-green-400" />
               </div>
 
               <div>
-                <h3 className="mb-1 text-xl font-bold text-white">Upload Successful!</h3>
-                <p className="text-gray-400">Your file is now available via a public URL</p>
+                <h3 className="mb-2 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-2xl font-bold text-transparent">
+                  Upload Successful!
+                </h3>
+                <p className="text-lg text-gray-300">Your file is now available via a public URL</p>
               </div>
 
               {/* File details */}
-              <div className="glass rounded-lg p-4 text-left">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm text-gray-400">File name:</span>
-                  <span className="text-sm font-medium text-white">{file?.name}</span>
+              <div className="glass rounded-xl border-2 border-green-500/30 p-6 text-left shadow-lg shadow-green-500/20">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-300">File name:</span>
+                  <span className="text-sm font-semibold text-white">{file?.name}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400">Size:</span>
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm font-medium text-gray-300">Size:</span>
+                  <span className="text-sm font-semibold text-white">
                     {file && formatFileSize(file.size)}
                   </span>
                 </div>
               </div>
 
               {/* URL display */}
-              <div className="glass space-y-3 rounded-lg p-4">
-                <p className="text-left text-sm text-gray-400">Public URL:</p>
-                <div className="flex items-center gap-2">
+              <div className="glass space-y-4 rounded-xl border-2 border-blue-500/30 p-6 shadow-lg shadow-blue-500/20">
+                <p className="text-left text-base font-semibold text-gray-300">Public URL:</p>
+                <div className="flex items-center gap-3">
                   <input
                     type="text"
                     value={publicUrl}
                     readOnly
-                    className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 font-mono text-sm text-white"
+                    className="flex-1 rounded-xl border-2 border-cyan-500/50 bg-gray-900/80 px-4 py-3 font-mono text-sm text-white shadow-inner"
                   />
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={handleCopy}
-                    className={copied ? 'border-green-500 bg-green-500/20' : ''}
+                    className={`h-12 w-12 transition-all ${
+                      copied
+                        ? 'border-2 border-green-500 bg-green-500/30 shadow-lg shadow-green-500/50'
+                        : 'border-2 border-cyan-500/50 hover:border-cyan-500 hover:bg-cyan-500/20'
+                    }`}
                   >
                     {copied ? (
-                      <Check className="h-4 w-4 text-green-500" />
+                      <Check className="h-5 w-5 text-green-400" />
                     ) : (
-                      <Copy className="h-4 w-4" />
+                      <Copy className="h-5 w-5" />
                     )}
                   </Button>
-                  <Button variant="outline" size="icon" asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    asChild
+                    className="h-12 w-12 border-2 border-blue-500/50 hover:border-blue-500 hover:bg-blue-500/20"
+                  >
                     <a href={publicUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4" />
+                      <ExternalLink className="h-5 w-5" />
                     </a>
                   </Button>
                 </div>
               </div>
 
               {/* Reset button */}
-              <Button onClick={handleReset} variant="outline" className="w-full">
-                <RotateCcw className="mr-2 h-4 w-4" />
+              <Button
+                onClick={handleReset}
+                variant="outline"
+                className="w-full border-2 border-purple-500/50 bg-purple-500/10 py-6 text-base font-semibold hover:border-purple-500 hover:bg-purple-500/20"
+              >
+                <RotateCcw className="mr-2 h-5 w-5" />
                 Upload Another File
               </Button>
             </div>
@@ -230,26 +251,28 @@ export default function UploadTool() {
       </Card>
 
       {/* Info Card */}
-      <Card className="glass-card border-gray-800/50">
+      <Card className="glass-card border-2 border-cyan-500/30 shadow-xl shadow-cyan-500/20">
         <CardHeader>
-          <CardTitle className="text-lg">Upload Information</CardTitle>
-          <CardDescription>
+          <CardTitle className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-2xl font-bold text-transparent">
+            Upload Information
+          </CardTitle>
+          <CardDescription className="text-base text-gray-300">
             Files are stored securely in cloud storage with instant CDN delivery
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
-            <div>
-              <p className="text-gray-400">Max file size</p>
-              <p className="font-medium text-white">10 MB</p>
+          <div className="grid grid-cols-1 gap-6 text-base md:grid-cols-3">
+            <div className="rounded-lg border-2 border-purple-500/30 bg-purple-500/10 p-4">
+              <p className="font-medium text-purple-300">Max file size</p>
+              <p className="text-lg font-bold text-white">10 MB</p>
             </div>
-            <div>
-              <p className="text-gray-400">Storage</p>
-              <p className="font-medium text-white">Supabase Cloud</p>
+            <div className="rounded-lg border-2 border-blue-500/30 bg-blue-500/10 p-4">
+              <p className="font-medium text-blue-300">Storage</p>
+              <p className="text-lg font-bold text-white">Supabase Cloud</p>
             </div>
-            <div>
-              <p className="text-gray-400">URL Type</p>
-              <p className="font-medium text-white">Public CDN</p>
+            <div className="rounded-lg border-2 border-cyan-500/30 bg-cyan-500/10 p-4">
+              <p className="font-medium text-cyan-300">URL Type</p>
+              <p className="text-lg font-bold text-white">Public CDN</p>
             </div>
           </div>
         </CardContent>

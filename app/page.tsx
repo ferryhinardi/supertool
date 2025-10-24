@@ -40,16 +40,20 @@ const tools = [
 
 export default function HomePage() {
   return (
-    <div className="relative mx-auto max-w-6xl space-y-16 py-12">
-      {/* Animated gradient blobs */}
-      <div className="absolute top-0 left-0 h-72 w-72 animate-pulse rounded-full bg-gradient-to-r from-purple-500 to-pink-500 opacity-20 mix-blend-multiply blur-3xl filter" />
+    <div className="relative mx-auto max-w-6xl space-y-20 px-4 py-16 md:px-6 lg:px-8">
+      {/* Enhanced animated gradient blobs */}
+      <div className="absolute top-0 left-0 h-96 w-96 animate-pulse rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 opacity-30 mix-blend-multiply blur-3xl filter" />
       <div
-        className="absolute top-0 right-0 h-72 w-72 animate-pulse rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 opacity-20 mix-blend-multiply blur-3xl filter"
+        className="absolute top-0 right-0 h-96 w-96 animate-pulse rounded-full bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 opacity-30 mix-blend-multiply blur-3xl filter"
         style={{ animationDelay: '1s' }}
       />
       <div
-        className="absolute -bottom-8 left-20 h-72 w-72 animate-pulse rounded-full bg-gradient-to-r from-pink-500 to-orange-500 opacity-20 mix-blend-multiply blur-3xl filter"
+        className="absolute bottom-0 left-1/4 h-96 w-96 animate-pulse rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-orange-500 opacity-30 mix-blend-multiply blur-3xl filter"
         style={{ animationDelay: '2s' }}
+      />
+      <div
+        className="absolute right-1/4 bottom-0 h-96 w-96 animate-pulse rounded-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 opacity-25 mix-blend-multiply blur-3xl filter"
+        style={{ animationDelay: '3s' }}
       />
 
       {/* Hero Section */}
@@ -57,7 +61,7 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 space-y-6 text-center"
+        className="relative z-10 space-y-8 text-center"
       >
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -66,9 +70,9 @@ export default function HomePage() {
         >
           <Badge
             variant="gradient"
-            className="animate-shimmer mb-4 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 bg-[length:200%_100%]"
+            className="animate-shimmer mb-6 bg-gradient-to-r from-purple-500 via-blue-500 via-pink-500 to-cyan-500 bg-[length:200%_100%] px-5 py-2 text-sm font-semibold shadow-lg shadow-purple-500/50"
           >
-            <Sparkles className="mr-1 h-3 w-3" />
+            <Sparkles className="mr-2 h-4 w-4" />
             Modern Developer Toolkit
           </Badge>
         </motion.div>
@@ -77,20 +81,22 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-5xl leading-tight font-bold md:text-6xl lg:text-7xl"
+          className="text-6xl leading-tight font-extrabold md:text-7xl lg:text-8xl"
         >
-          <span className="gradient-text animate-shimmer bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 bg-[length:200%_100%] bg-clip-text text-transparent">
+          <span className="gradient-text-vibrant animate-shimmer bg-gradient-to-r from-purple-400 via-blue-500 via-pink-500 to-cyan-400 bg-[length:200%_100%] bg-clip-text text-transparent">
             SuperTool
           </span>
           <br />
-          <span className="text-gray-300">is Ready</span>
+          <span className="bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
+            is Ready
+          </span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="mx-auto max-w-2xl text-xl leading-relaxed text-gray-400"
+          className="mx-auto max-w-3xl text-xl leading-relaxed text-gray-300 md:text-2xl"
         >
           Beautiful, fast, and powerful developer tools built with modern web technologies. Choose a
           tool from below to get started.
@@ -100,15 +106,18 @@ export default function HomePage() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.7, duration: 0.5 }}
-          className="flex items-center justify-center gap-4 pt-4"
+          className="flex items-center justify-center gap-4 pt-6"
         >
           <Link href="/tools/json-beautify">
             <Button
               size="lg"
-              className="group bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 shadow-lg shadow-purple-500/50 transition-all duration-300 hover:from-purple-700 hover:via-pink-700 hover:to-blue-700 hover:shadow-xl hover:shadow-purple-500/60"
+              className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 px-8 py-6 text-lg font-semibold shadow-2xl shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:from-purple-700 hover:via-pink-700 hover:to-blue-700 hover:shadow-2xl hover:shadow-pink-500/60"
             >
-              Try JSON Beautifier
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span className="relative z-10 flex items-center">
+                Try JSON Beautifier
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </Button>
           </Link>
         </motion.div>
@@ -119,16 +128,16 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9, duration: 0.6 }}
-        className="relative z-10 space-y-6"
+        className="relative z-10 space-y-8"
       >
         <div className="text-center">
-          <h2 className="mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-3xl font-bold text-transparent">
+          <h2 className="mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-4xl font-bold text-transparent">
             Available Tools
           </h2>
-          <p className="text-gray-400">Powerful utilities for everyday development</p>
+          <p className="text-lg text-gray-300">Powerful utilities for everyday development</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {tools.map((tool, index) => {
             const Icon = tool.icon
             const isComingSoon = tool.comingSoon
@@ -139,7 +148,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.1 + index * 0.1, duration: 0.5 }}
-                whileHover={{ scale: 1.05, y: -5 }}
+                whileHover={{ scale: 1.05, y: -8 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Link
@@ -147,30 +156,34 @@ export default function HomePage() {
                   className={`block h-full ${isComingSoon ? 'pointer-events-none' : ''}`}
                 >
                   <Card
-                    className={`glass-card group relative h-full overflow-hidden border-gray-800/50 transition-all duration-300 hover:border-purple-500/50 ${isComingSoon ? 'opacity-60' : ''}`}
+                    className={`glass-card group relative h-full overflow-hidden border-2 border-purple-500/30 p-6 transition-all duration-300 hover:border-pink-500/60 hover:shadow-2xl hover:shadow-purple-500/40 ${isComingSoon ? 'opacity-70' : ''}`}
                   >
                     {/* Animated gradient border on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                    <CardHeader className="relative z-10">
+                    <CardHeader className="relative z-10 space-y-4">
                       <div className="flex items-start justify-between">
                         <motion.div
-                          className={`rounded-xl bg-gradient-to-r p-3 ${tool.gradient} mb-4 shadow-lg`}
-                          whileHover={{ rotate: 360 }}
+                          className={`rounded-2xl bg-gradient-to-br p-4 ${tool.gradient} shadow-xl`}
+                          whileHover={{ rotate: [0, -10, 10, -10, 0], scale: 1.1 }}
                           transition={{ duration: 0.6 }}
                         >
-                          <Icon className="h-6 w-6 text-white" />
+                          <Icon className="h-7 w-7 text-white" />
                         </motion.div>
                         {isComingSoon && (
-                          <Badge variant="warning" size="sm">
+                          <Badge
+                            variant="warning"
+                            size="sm"
+                            className="bg-gradient-to-r from-orange-500 to-yellow-500 px-3 py-1 font-semibold"
+                          >
                             Soon
                           </Badge>
                         )}
                       </div>
-                      <CardTitle className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-xl text-transparent">
+                      <CardTitle className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-2xl font-bold text-transparent">
                         {tool.title}
                       </CardTitle>
-                      <CardDescription className="text-gray-400">
+                      <CardDescription className="text-base text-gray-300">
                         {tool.description}
                       </CardDescription>
                     </CardHeader>
@@ -181,7 +194,7 @@ export default function HomePage() {
                             key={feature}
                             variant="outline"
                             size="sm"
-                            className="border-gray-700 text-xs transition-colors hover:border-purple-500/50"
+                            className="border-purple-500/50 bg-purple-500/10 px-3 py-1 text-sm text-purple-300 transition-all hover:border-pink-500/70 hover:bg-pink-500/20 hover:text-pink-300"
                           >
                             {feature}
                           </Badge>
@@ -201,29 +214,38 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.6 }}
-        className="glass-card group relative overflow-hidden rounded-2xl border-gray-800/50 p-8 text-center"
+        className="glass-card group relative overflow-hidden rounded-3xl border-2 border-purple-500/30 p-10 text-center shadow-2xl shadow-purple-500/20"
       >
         {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-blue-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 via-pink-500/10 to-cyan-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-        <div className="relative z-10 grid grid-cols-1 gap-8 md:grid-cols-3">
-          <motion.div whileHover={{ scale: 1.1 }} transition={{ type: 'spring', stiffness: 300 }}>
-            <div className="mb-2 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-4xl font-bold text-transparent">
+        <div className="relative z-10 grid grid-cols-1 gap-10 md:grid-cols-3">
+          <motion.div
+            whileHover={{ scale: 1.15, rotate: 5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
+            <div className="mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl">
               2+
             </div>
-            <div className="text-gray-400">Active Tools</div>
+            <div className="text-lg font-medium text-gray-300">Active Tools</div>
           </motion.div>
-          <motion.div whileHover={{ scale: 1.1 }} transition={{ type: 'spring', stiffness: 300 }}>
-            <div className="mb-2 bg-gradient-to-r from-pink-400 to-orange-500 bg-clip-text text-4xl font-bold text-transparent">
+          <motion.div
+            whileHover={{ scale: 1.15, rotate: -5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
+            <div className="mb-3 bg-gradient-to-r from-pink-400 via-orange-400 to-yellow-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl">
               100%
             </div>
-            <div className="text-gray-400">Open Source</div>
+            <div className="text-lg font-medium text-gray-300">Open Source</div>
           </motion.div>
-          <motion.div whileHover={{ scale: 1.1 }} transition={{ type: 'spring', stiffness: 300 }}>
-            <div className="mb-2 bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-4xl font-bold text-transparent">
+          <motion.div
+            whileHover={{ scale: 1.15, rotate: 5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
+            <div className="mb-3 bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl">
               0ms
             </div>
-            <div className="text-gray-400">Setup Time</div>
+            <div className="text-lg font-medium text-gray-300">Setup Time</div>
           </motion.div>
         </div>
       </motion.div>
