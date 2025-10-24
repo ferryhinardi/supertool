@@ -84,21 +84,21 @@ export default function JSONBeautifyPage() {
 
   return (
     <TooltipProvider>
-      <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 md:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 md:space-y-8 md:px-6 md:py-8 lg:px-8">
         {/* Header */}
         <div className="space-y-3">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div
-              className="animate-pulse rounded-2xl bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 p-4 shadow-2xl shadow-purple-500/60"
+              className="animate-pulse rounded-xl bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 p-2.5 shadow-2xl shadow-purple-500/60 sm:rounded-2xl sm:p-4"
               style={{ animationDuration: '2s' }}
             >
-              <FileJson className="h-8 w-8 text-white" />
+              <FileJson className="h-6 w-6 text-white sm:h-8 sm:w-8" />
             </div>
             <div>
-              <h1 className="bg-gradient-to-r from-purple-300 via-pink-400 to-blue-300 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-lg md:text-5xl">
+              <h1 className="bg-gradient-to-r from-purple-300 via-pink-400 to-blue-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
                 JSON Beautifier
               </h1>
-              <p className="text-base text-gray-300 md:text-lg">
+              <p className="text-sm text-gray-200 sm:text-base md:text-lg">
                 Format, validate, and manage JSON data
               </p>
             </div>
@@ -106,20 +106,20 @@ export default function JSONBeautifyPage() {
         </div>
 
         {/* Stats Bar */}
-        <div className="glass-card rounded-2xl border-2 border-purple-500/30 p-6 shadow-xl shadow-purple-500/20">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-4">
+        <div className="glass-card rounded-xl border-2 border-purple-500/30 p-3 shadow-xl shadow-purple-500/20 sm:rounded-2xl sm:p-4 md:p-6">
+          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4">
               <Badge
                 variant="outline"
                 size="sm"
-                className="border-purple-500/50 bg-purple-500/10 px-4 py-2 text-sm text-purple-300"
+                className="border-purple-500/50 bg-purple-500/10 px-2.5 py-1.5 text-xs text-purple-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
               >
                 📏 {stats.lines} lines
               </Badge>
               <Badge
                 variant="outline"
                 size="sm"
-                className="border-blue-500/50 bg-blue-500/10 px-4 py-2 text-sm text-blue-300"
+                className="border-blue-500/50 bg-blue-500/10 px-2.5 py-1.5 text-xs text-blue-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
               >
                 📝 {stats.chars.toLocaleString()} chars
               </Badge>
@@ -127,7 +127,7 @@ export default function JSONBeautifyPage() {
                 <Badge
                   variant="outline"
                   size="sm"
-                  className="border-cyan-500/50 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-300"
+                  className="border-cyan-500/50 bg-cyan-500/10 px-2.5 py-1.5 text-xs text-cyan-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
                 >
                   🌲 Depth: {stats.objDepth}
                 </Badge>
@@ -137,10 +137,10 @@ export default function JSONBeautifyPage() {
             <Badge
               variant={stats.isValid ? 'success' : 'destructive'}
               size="sm"
-              className={`animate-pulse px-4 py-2 text-sm font-semibold ${
+              className={`animate-pulse px-2.5 py-1.5 text-xs font-semibold sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2 ${
                 stats.isValid
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg shadow-green-500/50'
-                  : 'bg-gradient-to-r from-red-500 to-rose-600 shadow-lg shadow-red-500/50'
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/50'
+                  : 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg shadow-red-500/50'
               }`}
             >
               {stats.isValid ? '✅ Valid JSON' : '❌ Invalid JSON'}
@@ -149,33 +149,39 @@ export default function JSONBeautifyPage() {
         </div>
 
         {/* Editor */}
-        <div className="glass-card overflow-hidden rounded-2xl border-2 border-purple-500/30 shadow-2xl shadow-purple-500/30">
+        <div className="glass-card overflow-hidden rounded-xl border-2 border-purple-500/30 shadow-2xl shadow-purple-500/30 sm:rounded-2xl">
           <CodeMirror
             value={value}
-            height="550px"
+            height="400px"
             theme="dark"
             extensions={[json()]}
             onChange={(val) => setValue(val)}
-            className="text-base"
+            className="text-sm sm:text-base"
+            basicSetup={{
+              lineNumbers: true,
+              highlightActiveLineGutter: true,
+              highlightActiveLine: true,
+              foldGutter: true,
+            }}
           />
         </div>
 
         {/* Action Buttons */}
-        <div className="glass-card rounded-2xl border-2 border-purple-500/30 p-6 shadow-xl shadow-purple-500/20">
-          <div className="flex flex-wrap gap-4">
+        <div className="glass-card rounded-xl border-2 border-purple-500/30 p-3 shadow-xl shadow-purple-500/20 sm:rounded-2xl sm:p-4 md:p-6">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3 md:gap-4">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   onClick={handleBeautify}
-                  className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 px-6 py-6 text-base font-semibold shadow-2xl shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:from-purple-700 hover:via-pink-700 hover:to-blue-700 hover:shadow-2xl hover:shadow-pink-500/60"
+                  className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-2xl shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:from-purple-700 hover:via-pink-700 hover:to-blue-700 hover:shadow-2xl hover:shadow-pink-500/60 sm:px-4 sm:py-2.5 md:px-6 md:py-3 md:text-base"
                 >
-                  <Sparkles className="mr-2 h-5 w-5" />
+                  <Sparkles className="mr-1.5 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5" />
                   Beautify
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Format JSON with indentation (Ctrl+B)</p>
+                <p className="text-foreground">Format JSON with indentation (Ctrl+B)</p>
               </TooltipContent>
             </Tooltip>
 
@@ -184,14 +190,14 @@ export default function JSONBeautifyPage() {
                 <Button
                   variant="secondary"
                   onClick={handleMinify}
-                  className="border-2 border-blue-500/50 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 px-6 py-6 text-base font-semibold hover:scale-105 hover:border-blue-500/70 hover:from-blue-500/30 hover:to-cyan-500/30"
+                  className="border-2 border-blue-500/50 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 px-3 py-2 text-sm font-semibold text-blue-100 hover:scale-105 hover:border-blue-500/70 hover:from-blue-500/30 hover:to-cyan-500/30 hover:text-white sm:px-4 sm:py-2.5 md:px-6 md:py-3 md:text-base"
                 >
-                  <Minimize2 className="mr-2 h-5 w-5" />
+                  <Minimize2 className="mr-1.5 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5" />
                   Minify
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Compress JSON to single line (Ctrl+M)</p>
+                <p className="text-foreground">Compress JSON to single line (Ctrl+M)</p>
               </TooltipContent>
             </Tooltip>
 
@@ -200,14 +206,14 @@ export default function JSONBeautifyPage() {
                 <Button
                   variant="outline"
                   onClick={handleCopy}
-                  className="border-2 border-purple-500/50 bg-purple-500/10 px-6 py-6 text-base font-semibold hover:scale-105 hover:border-purple-500/70 hover:bg-purple-500/20"
+                  className="border-2 border-purple-500/50 bg-purple-500/10 px-3 py-2 text-sm font-semibold text-purple-100 hover:scale-105 hover:border-purple-500/70 hover:bg-purple-500/20 hover:text-white sm:px-4 sm:py-2.5 md:px-6 md:py-3 md:text-base"
                 >
-                  <Copy className="mr-2 h-5 w-5" />
+                  <Copy className="mr-1.5 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5" />
                   Copy
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Copy to clipboard (Ctrl+C)</p>
+                <p className="text-foreground">Copy to clipboard (Ctrl+C)</p>
               </TooltipContent>
             </Tooltip>
 
@@ -217,14 +223,14 @@ export default function JSONBeautifyPage() {
                   variant="outline"
                   onClick={handleDownload}
                   disabled={!stats.isValid}
-                  className="border-2 border-pink-500/50 bg-pink-500/10 px-6 py-6 text-base font-semibold hover:scale-105 hover:border-pink-500/70 hover:bg-pink-500/20 disabled:opacity-50"
+                  className="border-2 border-pink-500/50 bg-pink-500/10 px-3 py-2 text-sm font-semibold text-pink-100 hover:scale-105 hover:border-pink-500/70 hover:bg-pink-500/20 hover:text-white disabled:opacity-50 sm:px-4 sm:py-2.5 md:px-6 md:py-3 md:text-base"
                 >
-                  <Download className="mr-2 h-5 w-5" />
+                  <Download className="mr-1.5 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5" />
                   Download
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Download as .json file</p>
+                <p className="text-foreground">Download as .json file</p>
               </TooltipContent>
             </Tooltip>
           </div>
