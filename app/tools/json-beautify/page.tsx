@@ -1,17 +1,18 @@
-"use client"
+'use client'
 
-import { useState, useMemo, useEffect } from "react"
-import CodeMirror from "@uiw/react-codemirror"
-import { json } from "@codemirror/lang-json"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { toast } from "sonner"
-import { Sparkles, Minimize2, Copy, Download, FileJson } from "lucide-react"
+import { useState, useMemo } from 'react'
+import CodeMirror from '@uiw/react-codemirror'
+import { json } from '@codemirror/lang-json'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { toast } from 'sonner'
+import { Sparkles, Minimize2, Copy, Download, FileJson } from 'lucide-react'
 
 export default function JSONBeautifyPage() {
-  const [value, setValue] = useState("{\n  \"example\": true,\n  \"message\": \"Welcome to SuperTool!\"\n}")
-  const [isValidJSON, setIsValidJSON] = useState(true)
+  const [value, setValue] = useState(
+    '{\n  "example": true,\n  "message": "Welcome to SuperTool!"\n}'
+  )
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -24,9 +25,11 @@ export default function JSONBeautifyPage() {
       const parsed = JSON.parse(value)
       isValid = true
       // Calculate object depth
-      const getDepth = (obj: any): number => {
+      const getDepth = (obj: unknown): number => {
         if (obj == null || typeof obj !== 'object') return 0
-        return 1 + Math.max(0, ...Object.values(obj).map(v => getDepth(v)))
+        return (
+          1 + Math.max(0, ...Object.values(obj as Record<string, unknown>).map((v) => getDepth(v)))
+        )
       }
       objDepth = getDepth(parsed)
     } catch {
@@ -36,17 +39,13 @@ export default function JSONBeautifyPage() {
     return { lines, chars, isValid, objDepth }
   }, [value])
 
-  useEffect(() => {
-    setIsValidJSON(stats.isValid)
-  }, [stats.isValid])
-
   const handleBeautify = () => {
     try {
       const obj = JSON.parse(value)
       setValue(JSON.stringify(obj, null, 2))
-      toast.success("JSON beautified successfully 🎉")
-    } catch (err) {
-      toast.error("Invalid JSON format ⚠️")
+      toast.success('JSON beautified successfully 🎉')
+    } catch {
+      toast.error('Invalid JSON format ⚠️')
     }
   }
 
@@ -54,20 +53,20 @@ export default function JSONBeautifyPage() {
     try {
       const obj = JSON.parse(value)
       setValue(JSON.stringify(obj))
-      toast.success("JSON minified ✅")
-    } catch (err) {
-      toast.error("Invalid JSON format ⚠️")
+      toast.success('JSON minified ✅')
+    } catch {
+      toast.error('Invalid JSON format ⚠️')
     }
   }
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(value)
-    toast.success("Copied to clipboard 📋")
+    toast.success('Copied to clipboard 📋')
   }
 
   const handleDownload = () => {
-    if (!isValidJSON) {
-      toast.error("Cannot download invalid JSON")
+    if (!stats.isValid) {
+      toast.error('Cannot download invalid JSON')
       return
     }
 
@@ -80,54 +79,59 @@ export default function JSONBeautifyPage() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-    toast.success("JSON file downloaded 📥")
+    toast.success('JSON file downloaded 📥')
   }
 
   return (
     <TooltipProvider>
-      <main className="max-w-6xl mx-auto space-y-6 py-6">
+      <main className="mx-auto max-w-6xl space-y-6 py-6">
         {/* Header */}
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 shadow-lg shadow-purple-500/50 animate-pulse" style={{ animationDuration: '2s' }}>
-              <FileJson className="w-6 h-6 text-white" />
+            <div
+              className="animate-pulse rounded-xl bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 p-3 shadow-lg shadow-purple-500/50"
+              style={{ animationDuration: '2s' }}
+            >
+              <FileJson className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 bg-clip-text text-transparent">JSON Beautifier</h1>
-              <p className="text-gray-400 text-sm">Format, validate, and manage JSON data</p>
+              <h1 className="bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 bg-clip-text text-3xl font-bold text-transparent">
+                JSON Beautifier
+              </h1>
+              <p className="text-sm text-gray-400">Format, validate, and manage JSON data</p>
             </div>
           </div>
         </div>
 
         {/* Stats Bar */}
-        <div className="glass-card border-gray-800/50 p-4 rounded-xl">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3 flex-wrap">
+        <div className="glass-card rounded-xl border-gray-800/50 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-3">
               <Badge variant="outline" size="sm">
                 {stats.lines} lines
               </Badge>
               <Badge variant="outline" size="sm">
                 {stats.chars.toLocaleString()} chars
               </Badge>
-              {isValidJSON && (
+              {stats.isValid && (
                 <Badge variant="outline" size="sm">
                   Depth: {stats.objDepth}
                 </Badge>
               )}
             </div>
-            
-            <Badge 
-              variant={isValidJSON ? "success" : "destructive"}
+
+            <Badge
+              variant={stats.isValid ? 'success' : 'destructive'}
               size="sm"
               className="animate-pulse"
             >
-              {isValidJSON ? "✅ Valid JSON" : "❌ Invalid JSON"}
+              {stats.isValid ? '✅ Valid JSON' : '❌ Invalid JSON'}
             </Badge>
           </div>
         </div>
 
         {/* Editor */}
-        <div className="glass-card border-gray-800/50 rounded-xl overflow-hidden shadow-2xl">
+        <div className="glass-card overflow-hidden rounded-xl border-gray-800/50 shadow-2xl">
           <CodeMirror
             value={value}
             height="500px"
@@ -139,15 +143,15 @@ export default function JSONBeautifyPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="glass-card border-gray-800/50 p-4 rounded-xl">
+        <div className="glass-card rounded-xl border-gray-800/50 p-4">
           <div className="flex flex-wrap gap-3">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
+                <Button
                   onClick={handleBeautify}
-                  className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 hover:from-purple-700 hover:via-pink-700 hover:to-blue-700 shadow-lg shadow-purple-500/50 hover:shadow-xl hover:shadow-purple-500/60 transition-all duration-300"
+                  className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 shadow-lg shadow-purple-500/50 transition-all duration-300 hover:from-purple-700 hover:via-pink-700 hover:to-blue-700 hover:shadow-xl hover:shadow-purple-500/60"
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
+                  <Sparkles className="mr-2 h-4 w-4" />
                   Beautify
                 </Button>
               </TooltipTrigger>
@@ -158,11 +162,8 @@ export default function JSONBeautifyPage() {
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  variant="secondary" 
-                  onClick={handleMinify}
-                >
-                  <Minimize2 className="w-4 h-4 mr-2" />
+                <Button variant="secondary" onClick={handleMinify}>
+                  <Minimize2 className="mr-2 h-4 w-4" />
                   Minify
                 </Button>
               </TooltipTrigger>
@@ -173,11 +174,8 @@ export default function JSONBeautifyPage() {
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  onClick={handleCopy}
-                >
-                  <Copy className="w-4 h-4 mr-2" />
+                <Button variant="outline" onClick={handleCopy}>
+                  <Copy className="mr-2 h-4 w-4" />
                   Copy
                 </Button>
               </TooltipTrigger>
@@ -188,12 +186,8 @@ export default function JSONBeautifyPage() {
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  onClick={handleDownload}
-                  disabled={!isValidJSON}
-                >
-                  <Download className="w-4 h-4 mr-2" />
+                <Button variant="outline" onClick={handleDownload} disabled={!stats.isValid}>
+                  <Download className="mr-2 h-4 w-4" />
                   Download
                 </Button>
               </TooltipTrigger>

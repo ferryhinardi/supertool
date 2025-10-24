@@ -2,9 +2,9 @@
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-10 bg-neutral-900 border-b border-neutral-800 p-4 flex items-center justify-between">
+    <header className="sticky top-0 z-10 flex items-center justify-between border-b border-neutral-800 bg-neutral-900 p-4">
       <h1 className="text-lg font-semibold">Dashboard</h1>
-      <button className="text-neutral-400 hover:text-white transition-colors">
+      <button className="text-neutral-400 transition-colors hover:text-white">
         Theme Toggle (coming soon)
       </button>
     </header>

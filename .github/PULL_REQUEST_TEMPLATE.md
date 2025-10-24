@@ -1,7 +1,9 @@
 ## Description
+
 <!-- Provide a brief description of the changes in this PR -->
 
 ## Type of Change
+
 <!-- Mark the relevant option with an "x" -->
 
 - [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
@@ -14,27 +16,33 @@
 - [ ] 🧪 Test update
 
 ## Problem
+
 <!-- What problem does this PR solve? Link to related issue if applicable -->
 
 Closes #
 
 ## Approach
+
 <!-- How did you solve the problem? What's your implementation strategy? -->
 
 ## Before/After Metrics
+
 <!-- If applicable, add performance metrics, bundle size, etc. -->
 
 **Before:**
+
 - TTI:
 - Bundle size:
 - Network calls:
 
 **After:**
+
 - TTI:
 - Bundle size:
 - Network calls:
 
 ## Risk & Rollback
+
 <!-- What are the risks? How can we rollback if something goes wrong? -->
 
 **Risk Level:** Low / Medium / High
@@ -42,6 +50,7 @@ Closes #
 **Rollback Plan:**
 
 ## Test Plan
+
 <!-- How did you test these changes? -->
 
 - [ ] Tested locally
@@ -52,9 +61,11 @@ Closes #
 - [ ] Tested on different browsers
 
 ## Screenshots
+
 <!-- If applicable, add screenshots or screen recordings -->
 
 ## Checklist
+
 <!-- Ensure all items are completed before requesting review -->
 
 - [ ] My code follows the project's code style

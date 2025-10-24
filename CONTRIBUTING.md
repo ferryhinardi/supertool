@@ -19,27 +19,32 @@ Be respectful, inclusive, and constructive in all interactions.
 ## Getting Started
 
 1. **Fork the repository**
+
    ```bash
    # Click the "Fork" button on GitHub
    ```
 
 2. **Clone your fork**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/supertool.git
    cd supertool
    ```
 
 3. **Add upstream remote**
+
    ```bash
    git remote add upstream https://github.com/ferryhinardi/supertool.git
    ```
 
 4. **Install dependencies**
+
    ```bash
    yarn install
    ```
 
 5. **Set up environment variables**
+
    ```bash
    cp .env.local.example .env.local
    # Edit .env.local with your Supabase credentials
@@ -55,6 +60,7 @@ Be respectful, inclusive, and constructive in all interactions.
 ### Create a feature branch
 
 Follow the branch naming convention:
+
 - `feat/<scope>` - New features (e.g., `feat/markdown-editor`)
 - `fix/<scope>` - Bug fixes (e.g., `fix/json-parse-error`)
 - `chore/<scope>` - Maintenance tasks (e.g., `chore/update-deps`)
@@ -74,21 +80,23 @@ git rebase upstream/main
 ## Adding a New Tool
 
 1. **Create the tool page**
+
    ```bash
    mkdir -p app/tools/my-tool
    touch app/tools/my-tool/page.tsx
    ```
 
 2. **Implement the tool**
+
    ```tsx
    // app/tools/my-tool/page.tsx
    'use client'
-   
+
    import { Button } from '@/components/ui/button'
-   
+
    export default function MyToolPage() {
      return (
-       <main className="max-w-5xl mx-auto space-y-4">
+       <main className="mx-auto max-w-5xl space-y-4">
          <h1 className="text-2xl font-semibold">My Tool</h1>
          {/* Your tool UI */}
        </main>
@@ -97,6 +105,7 @@ git rebase upstream/main
    ```
 
 3. **Add to sidebar navigation**
+
    ```tsx
    // components/layout/Sidebar.tsx
    // Add your tool to the navItems array
@@ -111,21 +120,25 @@ git rebase upstream/main
 ## Coding Standards
 
 ### TypeScript
+
 - Use TypeScript for all new code
 - Enable strict mode
 - Avoid `any` types - use proper typing
 
 ### React
+
 - Use functional components with hooks
 - Use `'use client'` directive for client components
 - Keep components small and focused
 
 ### Styling
+
 - Use Tailwind CSS utility classes
 - Follow existing color scheme (dark theme)
 - Ensure responsive design (mobile-first)
 
 ### Imports
+
 - Use absolute imports with `@/` prefix
 - Group imports: React → Third-party → Local
 - Example:
@@ -136,6 +149,7 @@ git rebase upstream/main
   ```
 
 ### Performance
+
 - Note expected performance impact (TTI, bundle size, network calls)
 - Prefer streaming, caching, and incremental computation
 - Flag any bundle increase > 20KB gzip and suggest reductions
@@ -153,6 +167,7 @@ Use conventional commits format:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -163,6 +178,7 @@ Use conventional commits format:
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```bash
 feat(json-beautify): add syntax highlighting
 fix(upload): handle large file uploads

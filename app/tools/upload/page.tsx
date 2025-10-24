@@ -34,13 +34,11 @@ export default function UploadTool() {
     setUploadProgress(20)
 
     const filePath = `${Date.now()}-${file.name}`
-    
+
     try {
       setUploadProgress(40)
-      
-      const { error } = await supabase.storage
-        .from('uploads')
-        .upload(filePath, file)
+
+      const { error } = await supabase.storage.from('uploads').upload(filePath, file)
 
       setUploadProgress(70)
 
@@ -48,15 +46,14 @@ export default function UploadTool() {
         throw error
       }
 
-      const { data } = supabase.storage
-        .from('uploads')
-        .getPublicUrl(filePath)
+      const { data } = supabase.storage.from('uploads').getPublicUrl(filePath)
 
       setUploadProgress(100)
       setPublicUrl(data.publicUrl)
       toast.success('File uploaded successfully! 🎉')
-    } catch (error: any) {
-      toast.error(`Upload failed: ${error.message}`)
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      toast.error(`Upload failed: ${errorMessage}`)
       setUploadProgress(0)
     } finally {
       setUploading(false)
@@ -65,11 +62,11 @@ export default function UploadTool() {
 
   const handleCopy = async () => {
     if (!publicUrl) return
-    
+
     await navigator.clipboard.writeText(publicUrl)
     setCopied(true)
     toast.success('URL copied to clipboard! 📋')
-    
+
     setTimeout(() => setCopied(false), 2000)
   }
 
@@ -85,27 +82,34 @@ export default function UploadTool() {
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
   }
 
   return (
-    <main className="max-w-4xl mx-auto space-y-6 py-6">
+    <main className="mx-auto max-w-4xl space-y-6 py-6">
       {/* Header */}
       <div className="space-y-2">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700 shadow-lg shadow-blue-500/50 animate-pulse" style={{ animationDuration: '2s' }}>
-            <FileUp className="w-6 h-6 text-white" />
+          <div
+            className="animate-pulse rounded-xl bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700 p-3 shadow-lg shadow-blue-500/50"
+            style={{ animationDuration: '2s' }}
+          >
+            <FileUp className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500 bg-clip-text text-transparent">File Upload</h1>
-            <p className="text-gray-400 text-sm">Upload files to cloud storage with instant sharing</p>
+            <h1 className="bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500 bg-clip-text text-3xl font-bold text-transparent">
+              File Upload
+            </h1>
+            <p className="text-sm text-gray-400">
+              Upload files to cloud storage with instant sharing
+            </p>
           </div>
         </div>
       </div>
 
       {/* Upload Area */}
       <Card className="glass-card border-gray-800/50">
-        <CardContent className="p-6 space-y-4">
+        <CardContent className="space-y-4 p-6">
           {!publicUrl ? (
             <>
               <DragDropZone
@@ -117,7 +121,7 @@ export default function UploadTool() {
               {file && (
                 <div className="space-y-4">
                   {/* File info */}
-                  <div className="glass p-4 rounded-lg flex items-center justify-between">
+                  <div className="glass flex items-center justify-between rounded-lg p-4">
                     <div>
                       <p className="font-medium text-white">{file.name}</p>
                       <p className="text-sm text-gray-400">
@@ -131,7 +135,7 @@ export default function UploadTool() {
                   {uploading && (
                     <div className="space-y-2">
                       <Progress value={uploadProgress} showPercentage gradient />
-                      <p className="text-sm text-gray-400 text-center">
+                      <p className="text-center text-sm text-gray-400">
                         Uploading to cloud storage...
                       </p>
                     </div>
@@ -141,17 +145,17 @@ export default function UploadTool() {
                   <Button
                     onClick={handleUpload}
                     disabled={uploading}
-                    className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 shadow-lg shadow-blue-500/50 hover:shadow-xl hover:shadow-blue-500/60 transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 shadow-lg shadow-blue-500/50 transition-all duration-300 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 hover:shadow-xl hover:shadow-blue-500/60"
                     size="lg"
                   >
                     {uploading ? (
                       <>
-                        <Upload className="w-4 h-4 mr-2 animate-bounce" />
+                        <Upload className="mr-2 h-4 w-4 animate-bounce" />
                         Uploading...
                       </>
                     ) : (
                       <>
-                        <Upload className="w-4 h-4 mr-2" />
+                        <Upload className="mr-2 h-4 w-4" />
                         Upload to Cloud
                       </>
                     )}
@@ -162,64 +166,62 @@ export default function UploadTool() {
           ) : (
             // Success state
             <div className="space-y-4 text-center">
-              <div className="inline-flex p-4 rounded-full bg-green-500/10 mb-4">
-                <Check className="w-12 h-12 text-green-500" />
+              <div className="mb-4 inline-flex rounded-full bg-green-500/10 p-4">
+                <Check className="h-12 w-12 text-green-500" />
               </div>
-              
+
               <div>
-                <h3 className="text-xl font-bold text-white mb-1">Upload Successful!</h3>
+                <h3 className="mb-1 text-xl font-bold text-white">Upload Successful!</h3>
                 <p className="text-gray-400">Your file is now available via a public URL</p>
               </div>
 
               {/* File details */}
-              <div className="glass p-4 rounded-lg text-left">
-                <div className="flex items-center justify-between mb-2">
+              <div className="glass rounded-lg p-4 text-left">
+                <div className="mb-2 flex items-center justify-between">
                   <span className="text-sm text-gray-400">File name:</span>
                   <span className="text-sm font-medium text-white">{file?.name}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-400">Size:</span>
-                  <span className="text-sm font-medium text-white">{file && formatFileSize(file.size)}</span>
+                  <span className="text-sm font-medium text-white">
+                    {file && formatFileSize(file.size)}
+                  </span>
                 </div>
               </div>
 
               {/* URL display */}
-              <div className="glass p-4 rounded-lg space-y-3">
-                <p className="text-sm text-gray-400 text-left">Public URL:</p>
+              <div className="glass space-y-3 rounded-lg p-4">
+                <p className="text-left text-sm text-gray-400">Public URL:</p>
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={publicUrl}
                     readOnly
-                    className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white font-mono"
+                    className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 font-mono text-sm text-white"
                   />
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={handleCopy}
-                    className={copied ? 'bg-green-500/20 border-green-500' : ''}
+                    className={copied ? 'border-green-500 bg-green-500/20' : ''}
                   >
-                    {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    {copied ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    asChild
-                  >
+                  <Button variant="outline" size="icon" asChild>
                     <a href={publicUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="w-4 h-4" />
+                      <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
                 </div>
               </div>
 
               {/* Reset button */}
-              <Button
-                onClick={handleReset}
-                variant="outline"
-                className="w-full"
-              >
-                <RotateCcw className="w-4 h-4 mr-2" />
+              <Button onClick={handleReset} variant="outline" className="w-full">
+                <RotateCcw className="mr-2 h-4 w-4" />
                 Upload Another File
               </Button>
             </div>
@@ -236,7 +238,7 @@ export default function UploadTool() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
             <div>
               <p className="text-gray-400">Max file size</p>
               <p className="font-medium text-white">10 MB</p>
