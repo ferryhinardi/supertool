@@ -1,0 +1,6 @@
+
+> supertool@0.1.0 dev /Users/ferryhinardi/Project/supertool
+> next dev
+
+sh: next: command not found
+ ELIFECYCLE  Command failed.
