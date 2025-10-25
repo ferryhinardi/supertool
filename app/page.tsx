@@ -155,7 +155,7 @@ const tools: Tool[] = [
     gradient: 'from-indigo-500 to-purple-500',
     features: ['Text & Files', 'Image Preview', 'Copy & Download', 'URL Safe'],
     category: 'security',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'Color Picker & Palette Generator',
@@ -177,7 +177,7 @@ const tools: Tool[] = [
     gradient: 'from-red-500 to-pink-500',
     features: ['Multiple Algorithms', 'File Hashing', 'Compare & Verify', 'HMAC'],
     category: 'security',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'Cron Expression Builder',

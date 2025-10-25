@@ -39,6 +39,9 @@ type OutputFormat = 'mp4' | 'webm' | 'avi' | 'mov' | 'mkv'
 type VideoCodec = 'h264' | 'h265' | 'vp9' | 'av1'
 type AudioCodec = 'aac' | 'mp3' | 'opus'
 
+const MAX_VIDEOS = 10 // Maximum number of videos that can be processed at once
+const MAX_FILE_SIZE = 500 * 1024 * 1024 // 500MB per video
+
 export default function VideoConverterPage() {
   const [videos, setVideos] = useState<VideoFile[]>([])
   const [outputFormat, setOutputFormat] = useState<OutputFormat>('mp4')
@@ -112,6 +115,21 @@ export default function VideoConverterPage() {
   const handleFilesSelected = async (files: FileList) => {
     const fileArray = Array.from(files)
     const videoFiles = fileArray.filter((file) => file.type.startsWith('video/'))
+
+    // Check if adding these videos would exceed the limit
+    if (videos.length + videoFiles.length > MAX_VIDEOS) {
+      alert(`Maximum ${MAX_VIDEOS} videos allowed. Please remove some videos first.`)
+      return
+    }
+
+    // Check for oversized files
+    const oversizedFiles = videoFiles.filter((file) => file.size > MAX_FILE_SIZE)
+    if (oversizedFiles.length > 0) {
+      alert(
+        `Some files exceed the ${formatBytes(MAX_FILE_SIZE)} limit: ${oversizedFiles.map((f) => f.name).join(', ')}`
+      )
+      return
+    }
 
     trackEvent({
       action: 'files_added',
