@@ -134,7 +134,7 @@ const tools: Tool[] = [
     gradient: 'from-cyan-500 to-blue-500',
     features: ['Custom Aliases', 'Click Analytics', 'QR Codes', 'Link Management'],
     category: 'productivity',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'Text Transformer & Counter',
