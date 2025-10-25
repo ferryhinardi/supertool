@@ -1,0 +1,194 @@
+name: MCP-Enhanced Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  mcp-review:
+    name: MCP Code Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for better analysis
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.15.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate MCP Configuration
+        run: pnpm mcp:validate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run ESLint with Context
+        id: eslint
+        run: |
+          pnpm lint > eslint-report.txt 2>&1 || true
+          cat eslint-report.txt
+        continue-on-error: true
+
+      - name: Run TypeScript Check
+        id: typecheck
+        run: |
+          pnpm exec tsc --noEmit > typecheck-report.txt 2>&1 || true
+          cat typecheck-report.txt
+        continue-on-error: true
+
+      - name: Run Tests
+        id: tests
+        run: |
+          pnpm test run > test-report.txt 2>&1 || true
+          cat test-report.txt
+        continue-on-error: true
+
+      - name: Analyze Code Changes
+        id: analyze
+        run: |
+          echo "## Code Analysis Report" > analysis.md
+          echo "" >> analysis.md
+
+          # Changed files
+          echo "### Changed Files" >> analysis.md
+          git diff --name-only origin/${{ github.base_ref }}...HEAD >> analysis.md
+          echo "" >> analysis.md
+
+          # LOC changes
+          echo "### Lines of Code Changed" >> analysis.md
+          git diff --stat origin/${{ github.base_ref }}...HEAD >> analysis.md
+          echo "" >> analysis.md
+
+          # Complexity analysis (simple)
+          echo "### Complexity Indicators" >> analysis.md
+          echo "- TODO comments: $(git diff origin/${{ github.base_ref }}...HEAD | grep -c 'TODO' || echo 0)" >> analysis.md
+          echo "- FIXME comments: $(git diff origin/${{ github.base_ref }}...HEAD | grep -c 'FIXME' || echo 0)" >> analysis.md
+          echo "- Console logs: $(git diff origin/${{ github.base_ref }}...HEAD | grep -c 'console\.' || echo 0)" >> analysis.md
+          echo "" >> analysis.md
+
+          cat analysis.md
+
+      - name: Generate Summary Report
+        if: always()
+        run: |
+          echo "## MCP-Enhanced Review Summary" > summary.md
+          echo "" >> summary.md
+          echo "### Quality Checks" >> summary.md
+          echo "" >> summary.md
+
+          # ESLint status
+          if [ -f eslint-report.txt ]; then
+            if grep -q "error" eslint-report.txt; then
+              echo "- ❌ ESLint: Errors found" >> summary.md
+            else
+              echo "- ✅ ESLint: Passed" >> summary.md
+            fi
+          fi
+
+          # TypeScript status
+          if [ -f typecheck-report.txt ]; then
+            if grep -q "error" typecheck-report.txt; then
+              echo "- ❌ TypeScript: Type errors found" >> summary.md
+            else
+              echo "- ✅ TypeScript: Type check passed" >> summary.md
+            fi
+          fi
+
+          # Test status
+          if [ -f test-report.txt ]; then
+            if grep -q "failed" test-report.txt; then
+              echo "- ❌ Tests: Some tests failed" >> summary.md
+            else
+              echo "- ✅ Tests: All tests passed" >> summary.md
+            fi
+          fi
+
+          echo "" >> summary.md
+          echo "### Code Analysis" >> summary.md
+          cat analysis.md >> summary.md
+
+          cat summary.md
+
+      - name: Comment PR with Analysis
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            let summary = '## 🤖 MCP-Enhanced Code Review\n\n';
+
+            try {
+              if (fs.existsSync('summary.md')) {
+                summary += fs.readFileSync('summary.md', 'utf8');
+              }
+            } catch (error) {
+              summary += 'Error reading analysis reports.\n';
+            }
+
+            summary += '\n\n---\n';
+            summary += '*This automated review was generated using Model Context Protocol (MCP)*\n';
+            summary += `*Analysis completed at: ${new Date().toISOString()}*`;
+
+            // Find existing bot comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('MCP-Enhanced Code Review')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: summary
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: summary
+              });
+            }
+
+      - name: Upload Analysis Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-analysis-reports
+          path: |
+            eslint-report.txt
+            typecheck-report.txt
+            test-report.txt
+            analysis.md
+            summary.md
+          retention-days: 30
+
+      - name: Set Job Status
+        if: steps.eslint.outcome == 'failure' || steps.typecheck.outcome == 'failure' || steps.tests.outcome == 'failure'
+        run: |
+          echo "Code quality checks failed. Please review the reports."
+          exit 1

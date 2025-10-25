@@ -1,86 +1,92 @@
-# 🚀 SuperTool# 🚀 SuperTool - Modern Developer Toolkit
+# 🚀 SuperTool - Modern Developer Toolkit
 
-Modern Developer Toolkit - Beautiful, fast, and powerful developer tools.Beautiful, fast, and powerful developer tools built with modern web technologies.
+Beautiful, fast, and powerful developer tools built with modern web technologies.
 
-## 📚 Documentation## ✨ Features
+## 📚 Documentation
 
-- **[Full Documentation](./docs/README.md)** - Complete project documentation- 🎨 **JSON Beautifier** - Format, validate, and minify JSON with syntax highlighting
-
-- **[Testing Guide](./docs/TESTING.md)** - Testing setup and guidelines- 📁 **File Upload** - Upload files to cloud storage with drag-and-drop support
-
-- **[Quick Start](./docs/TESTING_QUICKSTART.md)** - Get started quickly- 🎯 **More Coming Soon** - Image optimization, API testing, and more!
-
-- **[Setup Complete](./docs/SETUP_COMPLETE.md)** - Setup completion guide
-
-- **[Code Formatting](./docs/CODE_FORMATTING.md)** - Code style guidelines## 🛠️ Tech Stack
-
+- **[Full Documentation](./docs/README.md)** - Complete project documentation
+- **[Testing Guide](./docs/TESTING.md)** - Testing setup and guidelines
+- **[MCP Setup](./docs/MCP_SETUP.md)** - Model Context Protocol integration
+- **[CI/CD Setup](./docs/CI_CD_SETUP.md)** - Continuous integration guide
+- **[Quick Start](./docs/TESTING_QUICKSTART.md)** - Get started quickly
 - **[Contributing](./CONTRIBUTING.md)** - How to contribute
-
-- **Framework:** Next.js 16 (React 19)
-
-## 🚀 Quick Start- **Styling:** Tailwind CSS v4
-
-- **UI Components:** Radix UI + shadcn/ui
-
-````bash- **Animations:** Framer Motion
-
-# Install dependencies- **Testing:** Vitest with Browser Mode
-
-pnpm install- **Code Quality:** ESLint, Prettier, Husky
-
-- **Package Manager:** pnpm
-
-# Run development server
-
-pnpm dev## 🚀 Getting Started
-
-
-
-# Run tests### Prerequisites
-
-pnpm test
-
-```- Node.js 20+
-
-- pnpm 8+
 
 ## ✨ Features
 
-### Installation
+- 🎨 **JSON Beautifier** - Format, validate, and minify JSON with syntax highlighting
+- 🔄 **Diff Viewer** - Compare text/JSON side-by-side like GitHub PR reviews
+- 📁 **File Upload** - Upload files to cloud storage with drag-and-drop support
+- 🤖 **MCP Integration** - AI-enhanced development with GitHub, Git, and more
+- 🧪 **Fully Tested** - 109 tests with Vitest + Browser Mode
+- 🎯 **More Coming Soon** - Image optimization, API testing, and more!
 
-- 🎨 JSON Beautifier - Format and validate JSON
+## 🛠️ Tech Stack
 
-- 📁 File Upload - Upload files to cloud storage```bash
+- **Framework:** Next.js 16 (React 19)
+- **Styling:** Tailwind CSS v4
+- **UI Components:** Radix UI + shadcn/ui
+- **Animations:** Framer Motion
+- **Testing:** Vitest with Browser Mode
+- **Code Quality:** ESLint, Prettier, Husky
+- **MCP:** Model Context Protocol for AI integration
+- **Package Manager:** pnpm
 
-- 🧪 Fully Tested - Vitest + Browser Mode# Clone the repository
+## � Quick Start
 
+```bash
+# Clone the repository
 git clone https://github.com/ferryhinardi/supertool.git
-
-See [full documentation](./docs/README.md) for more details.cd supertool
-
+cd supertool
 
 # Install dependencies
 pnpm install
 
 # Run development server
 pnpm dev
-````
+
+# Run tests
+pnpm test
+```
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
+## 🤖 MCP Integration
+
+SuperTool includes Model Context Protocol (MCP) integration for enhanced AI-assisted development:
+
+```bash
+# Validate MCP setup
+pnpm mcp:validate
+
+# Set up environment (first time)
+cp .env.example .env
+# Edit .env and add your GITHUB_TOKEN
+```
+
+**MCP Features:**
+
+- 🔗 GitHub integration (issues, PRs, actions)
+- 📁 Filesystem and Git operations
+- 🧠 Memory and context persistence
+- 🤔 Sequential thinking capabilities
+
+See [docs/MCP_SETUP.md](./docs/MCP_SETUP.md) for complete setup instructions.
+
 ## 📝 Available Scripts
 
-| Command             | Description               |
-| ------------------- | ------------------------- |
-| `pnpm dev`          | Start development server  |
-| `pnpm build`        | Build for production      |
-| `pnpm start`        | Start production server   |
-| `pnpm lint`         | Run ESLint                |
-| `pnpm lint:fix`     | Fix ESLint errors         |
-| `pnpm format`       | Format code with Prettier |
-| `pnpm test`         | Run tests in watch mode   |
-| `pnpm test:ui`      | Open Vitest UI            |
-| `pnpm test:browser` | Run browser tests         |
+| Command             | Description                |
+| ------------------- | -------------------------- |
+| `pnpm dev`          | Start development server   |
+| `pnpm build`        | Build for production       |
+| `pnpm start`        | Start production server    |
+| `pnpm lint`         | Run ESLint                 |
+| `pnpm lint:fix`     | Fix ESLint errors          |
+| `pnpm format`       | Format code with Prettier  |
+| `pnpm test`         | Run tests in watch mode    |
+| `pnpm test:ui`      | Open Vitest UI             |
+| `pnpm test:browser` | Run browser tests          |
+| `pnpm mcp:validate` | Validate MCP configuration |
+| `pnpm mcp:setup`    | Set up MCP integration     |
 
 ## 🧪 Testing
 

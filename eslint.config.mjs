@@ -16,6 +16,9 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
     'node_modules/**',
+    // MCP and scripts
+    'scripts/**',
+    '.mcp/**',
   ]),
   {
     plugins: {

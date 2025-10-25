@@ -14,7 +14,9 @@
     "ui:add": "npx shadcn@latest add",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:browser": "vitest --browser"
+    "test:browser": "vitest --browser",
+    "mcp:validate": "node scripts/validate-mcp.js",
+    "mcp:setup": "node scripts/validate-mcp.js"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
@@ -34,6 +36,7 @@
     "lucide-react": "^0.547.0",
     "next": "16.0.0",
     "react": "19.2.0",
+    "react-diff-viewer-continued": "^3.4.0",
     "react-dom": "19.2.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",

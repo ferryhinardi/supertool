@@ -1,0 +1,90 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/ferryhinardi/Project/supertool"
+      ],
+      "disabled": false,
+      "alwaysAllow": [
+        "read_file",
+        "read_multiple_files",
+        "list_directory",
+        "directory_tree",
+        "search_files"
+      ]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "mcp-server-git", "--repository", "/Users/ferryhinardi/Project/supertool"],
+      "disabled": false,
+      "alwaysAllow": ["git_status", "git_diff", "git_log"]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "disabled": false,
+      "alwaysAllow": [
+        "create_entities",
+        "create_relations",
+        "search_nodes",
+        "open_nodes",
+        "read_graph"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "disabled": true,
+      "alwaysAllow": []
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://localhost/supertool"],
+      "disabled": true,
+      "alwaysAllow": []
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "disabled": true,
+      "alwaysAllow": []
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      },
+      "disabled": true,
+      "alwaysAllow": []
+    }
+  }
+}
