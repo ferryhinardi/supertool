@@ -72,6 +72,17 @@ const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'Markdown Editor & Preview',
+    description:
+      'GitHub-flavored markdown editor with live preview. Write README files, PR summaries, and documentation with support for tables, task lists, code highlighting, and more.',
+    icon: FileText,
+    href: '/tools/markdown-editor',
+    gradient: 'from-green-500 to-emerald-500',
+    features: ['Live Preview', 'GFM Support', 'Syntax Highlight', 'Export HTML/MD'],
+    category: 'productivity',
+    new: true,
+  },
+  {
     title: 'Cloud File Upload',
     description:
       'Secure cloud storage uploader with drag-and-drop interface. Upload any file type and get instant shareable public URLs with automatic cloud backup and CDN delivery.',
@@ -87,7 +98,7 @@ const tools: Tool[] = [
       'Professional image compression tool that reduces file size by up to 80% without visible quality loss. Supports JPG, PNG, WebP, AVIF formats with bulk processing and dimension resizing.',
     icon: Image,
     href: '/tools/image-optimizer',
-    gradient: 'from-green-500 to-emerald-500',
+    gradient: 'from-teal-500 to-cyan-500',
     features: ['WebP/AVIF', 'Bulk Processing', 'Quality Control', 'Resize'],
     category: 'media',
     comingSoon: true,
@@ -156,17 +167,6 @@ const tools: Tool[] = [
     gradient: 'from-teal-500 to-green-500',
     features: ['Visual Builder', 'Next 10 Runs', 'Examples', 'Validation'],
     category: 'development',
-    comingSoon: true,
-  },
-  {
-    title: 'Markdown Editor & Preview',
-    description:
-      'Real-time Markdown editor with live preview pane. Supports GitHub Flavored Markdown, tables, task lists, syntax highlighting, and export to HTML or PDF.',
-    icon: FileText,
-    href: '/tools/markdown-editor',
-    gradient: 'from-violet-500 to-purple-500',
-    features: ['Live Preview', 'GitHub Flavored', 'Export HTML/PDF', 'Syntax Highlight'],
-    category: 'productivity',
     comingSoon: true,
   },
   {

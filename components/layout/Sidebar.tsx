@@ -2,12 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Code, Upload, Github } from 'lucide-react'
+import { Home, Code, Upload, FileText, GitCompare, Github } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'JSON Beautifier', href: '/tools/json-beautify', icon: Code },
+  { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
+  { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
 ]
 
