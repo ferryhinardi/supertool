@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { toast } from 'sonner'
 import { Sparkles, Minimize2, Copy, Download, FileJson } from 'lucide-react'
+import { trackToolEvent } from '@/lib/analytics'
 
 export default function JSONBeautifyPage() {
   const [value, setValue] = useState(
@@ -44,8 +45,16 @@ export default function JSONBeautifyPage() {
       const obj = JSON.parse(value)
       setValue(JSON.stringify(obj, null, 2))
       toast.success('JSON beautified successfully 🎉')
+      trackToolEvent('json_beautify', {
+        success: true,
+        input_length: value.length,
+      })
     } catch {
       toast.error('Invalid JSON format ⚠️')
+      trackToolEvent('json_beautify', {
+        success: false,
+        error_type: 'parse_error',
+      })
     }
   }
 
@@ -54,14 +63,24 @@ export default function JSONBeautifyPage() {
       const obj = JSON.parse(value)
       setValue(JSON.stringify(obj))
       toast.success('JSON minified ✅')
+      trackToolEvent('json_minify', {
+        success: true,
+        input_length: value.length,
+      })
     } catch {
       toast.error('Invalid JSON format ⚠️')
+      trackToolEvent('json_minify', {
+        success: false,
+      })
     }
   }
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(value)
     toast.success('Copied to clipboard 📋')
+    trackToolEvent('json_copy', {
+      output_length: value.length,
+    })
   }
 
   const handleDownload = () => {
@@ -80,6 +99,9 @@ export default function JSONBeautifyPage() {
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
     toast.success('JSON file downloaded 📥')
+    trackToolEvent('json_download', {
+      file_size_kb: Math.round(blob.size / 1024),
+    })
   }
 
   return (
