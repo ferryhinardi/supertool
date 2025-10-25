@@ -26,6 +26,7 @@ import {
   FileText,
   Terminal,
   X,
+  Video,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
@@ -49,6 +50,7 @@ interface Tool {
 }
 
 const tools: Tool[] = [
+  // Popular tools first
   {
     title: 'JSON Beautifier & Formatter',
     description:
@@ -60,6 +62,8 @@ const tools: Tool[] = [
     category: 'data',
     popular: true,
   },
+
+  // New tools
   {
     title: 'Code Diff Viewer',
     description:
@@ -83,6 +87,52 @@ const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'URL Shortener & Analytics',
+    description:
+      'Create short, memorable links with custom aliases. Track clicks, geographic data, referrers, and user devices. Generate QR codes for easy mobile sharing.',
+    icon: Globe,
+    href: '/tools/url-shortener',
+    gradient: 'from-cyan-500 to-blue-500',
+    features: ['Custom Aliases', 'Click Analytics', 'QR Codes', 'Link Management'],
+    category: 'productivity',
+    new: true,
+  },
+  {
+    title: 'Text Transformer & Counter',
+    description:
+      'Powerful text manipulation tool with 20+ operations: case conversion, duplicate removal, word/character counting, sorting, trimming, and find-replace with regex support.',
+    icon: Scissors,
+    href: '/tools/text-transformer',
+    gradient: 'from-yellow-500 to-orange-500',
+    features: ['Case Conversion', 'Word Count', 'Remove Duplicates', 'Sort Lines'],
+    category: 'productivity',
+    new: true,
+  },
+  {
+    title: 'Image Optimizer & Converter',
+    description:
+      'Professional image compression tool that reduces file size by up to 80% without visible quality loss. Supports JPG, PNG, WebP formats with bulk processing and dimension resizing.',
+    icon: Image,
+    href: '/tools/image-optimizer',
+    gradient: 'from-teal-500 to-cyan-500',
+    features: ['WebP/AVIF', 'Bulk Processing', 'Quality Control', 'Resize'],
+    category: 'media',
+    new: true,
+  },
+  {
+    title: 'Video Converter & Compressor',
+    description:
+      'Convert videos between formats (MP4, WebM, AVI, MOV) and compress file sizes with modern codecs (H.264, H.265, VP9). All processing happens in your browser using FFmpeg.',
+    icon: Video,
+    href: '/tools/video-converter',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['Multiple Formats', 'Fast Conversion', 'Compression', 'Web Optimized'],
+    category: 'media',
+    new: true,
+  },
+
+  // Active tools (not popular or new)
+  {
     title: 'Cloud File Upload',
     description:
       'Secure cloud storage uploader with drag-and-drop interface. Upload any file type and get instant shareable public URLs with automatic cloud backup and CDN delivery.',
@@ -92,17 +142,8 @@ const tools: Tool[] = [
     features: ['Drag & Drop', 'Cloud Storage', 'Public URLs', 'Instant Sharing'],
     category: 'productivity',
   },
-  {
-    title: 'Image Optimizer & Converter',
-    description:
-      'Professional image compression tool that reduces file size by up to 80% without visible quality loss. Supports JPG, PNG, WebP, AVIF formats with bulk processing and dimension resizing.',
-    icon: Image,
-    href: '/tools/image-optimizer',
-    gradient: 'from-teal-500 to-cyan-500',
-    features: ['WebP/AVIF', 'Bulk Processing', 'Quality Control', 'Resize'],
-    category: 'media',
-    comingSoon: true,
-  },
+
+  // Coming soon tools
   {
     title: 'Base64 Encoder & Decoder',
     description:
@@ -123,28 +164,6 @@ const tools: Tool[] = [
     gradient: 'from-pink-500 to-rose-500',
     features: ['HEX/RGB/HSL', 'Palettes', 'Gradients', 'Accessibility'],
     category: 'media',
-    comingSoon: true,
-  },
-  {
-    title: 'URL Shortener & Analytics',
-    description:
-      'Create short, memorable links with custom aliases. Track clicks, geographic data, referrers, and user devices. Generate QR codes for easy mobile sharing.',
-    icon: Globe,
-    href: '/tools/url-shortener',
-    gradient: 'from-cyan-500 to-blue-500',
-    features: ['Custom Aliases', 'Click Analytics', 'QR Codes', 'Link Management'],
-    category: 'productivity',
-    new: true,
-  },
-  {
-    title: 'Text Transformer & Counter',
-    description:
-      'Powerful text manipulation tool with 20+ operations: case conversion, duplicate removal, word/character counting, sorting, trimming, and find-replace with regex support.',
-    icon: Scissors,
-    href: '/tools/text-transformer',
-    gradient: 'from-yellow-500 to-orange-500',
-    features: ['Case Conversion', 'Word Count', 'Remove Duplicates', 'Sort Lines'],
-    category: 'productivity',
     comingSoon: true,
   },
   {
