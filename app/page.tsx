@@ -34,6 +34,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { motion, useReducedMotion, AnimatePresence } from 'framer-motion'
 import { FeedbackDialog } from '@/components/features/FeedbackDialog'
+import { TreatMeDialog } from '@/components/features/TreatMeDialog'
 
 type ToolCategory = 'all' | 'data' | 'media' | 'development' | 'productivity' | 'security'
 
@@ -569,8 +570,10 @@ export default function HomePage() {
         </div>
       </motion.div>
 
-      {/* Feedback Button - Fixed Position */}
+      {/* Fixed Position Buttons - Feedback & Support */}
       {/* Using arbitrary values [1.5rem] which are always generated in Tailwind v4 */}
+
+      {/* Feedback Button - Bottom Right */}
       <div className="fixed right-[1.5rem] bottom-[1.5rem] z-[9999]">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -578,6 +581,17 @@ export default function HomePage() {
           transition={{ delay: 0.6, duration: 0.4 }}
         >
           <FeedbackDialog />
+        </motion.div>
+      </div>
+
+      {/* Treat Me Button - Bottom Right (above Feedback) */}
+      <div className="fixed right-[1.5rem] z-[9999]" style={{ bottom: '6.5rem' }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.7, duration: 0.4 }}
+        >
+          <TreatMeDialog />
         </motion.div>
       </div>
     </div>
