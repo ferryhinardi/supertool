@@ -68,12 +68,11 @@ export function FeedbackDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
-          size="sm"
-          className="gap-2 border-neutral-700 bg-neutral-800 hover:bg-neutral-700 hover:text-white"
+          size="lg"
+          className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/50 transition-all hover:scale-105 hover:shadow-xl hover:shadow-purple-500/60"
         >
-          <MessageSquare className="h-4 w-4" />
-          Feedback
+          <MessageSquare className="h-5 w-5" />
+          <span className="font-semibold">Feedback</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">

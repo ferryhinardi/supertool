@@ -33,6 +33,7 @@ import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { motion, useReducedMotion, AnimatePresence } from 'framer-motion'
+import { FeedbackDialog } from '@/components/features/FeedbackDialog'
 
 type ToolCategory = 'all' | 'data' | 'media' | 'development' | 'productivity' | 'security'
 
@@ -567,6 +568,18 @@ export default function HomePage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Feedback Button - Fixed Position */}
+      {/* Using arbitrary values [1.5rem] which are always generated in Tailwind v4 */}
+      <div className="fixed right-[1.5rem] bottom-[1.5rem] z-[9999]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.6, duration: 0.4 }}
+        >
+          <FeedbackDialog />
+        </motion.div>
+      </div>
     </div>
   )
 }

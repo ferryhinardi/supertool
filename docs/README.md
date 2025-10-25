@@ -95,7 +95,17 @@ Lint & Type Check ──┬──→ Unit Tests (parallel)
 
 See [CI_CD_SETUP.md](./docs/CI_CD_SETUP.md) for detailed setup instructions.
 
-## �📁 Project Structure
+## 🎨 Tailwind CSS v4
+
+This project uses **Tailwind CSS v4** which has breaking changes from v3. If you encounter styling issues:
+
+- 🚫 **`safelist` is removed** - Use arbitrary values or `@apply` instead
+- ✅ **Arbitrary values always work** - e.g., `right-[1.5rem]` is guaranteed to be generated
+- ⚡ **New JIT engine** - Faster but stricter class detection
+
+See [TAILWIND_V4_TROUBLESHOOTING.md](./docs/TAILWIND_V4_TROUBLESHOOTING.md) for comprehensive troubleshooting guide.
+
+## 📁 Project Structure
 
 ```
 supertool/
