@@ -3,12 +3,10 @@
   "style": "new-york",
   "rsc": true,
   "tsx": true,
-  "tailwind": {
-    "config": "tailwind.config.ts",
-    "css": "app/globals.css",
-    "baseColor": "zinc",
-    "cssVariables": true,
-    "prefix": ""
+  "styling": {
+    "framework": "panda-css",
+    "config": "panda.config.ts",
+    "css": "app/globals.css"
   },
   "iconLibrary": "lucide",
   "aliases": {
@@ -16,6 +14,7 @@
     "utils": "@/lib/utils",
     "ui": "@/components/ui",
     "lib": "@/lib",
-    "hooks": "@/hooks"
+    "hooks": "@/hooks",
+    "styled-system": "@/styled-system"
   }
 }

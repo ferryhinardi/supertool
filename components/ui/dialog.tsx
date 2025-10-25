@@ -1,98 +1,157 @@
 'use client'
 
 import * as React from 'react'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { Dialog as ArkDialog } from '@ark-ui/react'
 import { X } from 'lucide-react'
+import { css } from '@/styled-system/css'
+import { cx } from '@/lib/utils'
 
-import { cn } from '@/lib/utils'
+const Dialog = ArkDialog.Root
+const DialogTrigger = ArkDialog.Trigger
+const DialogClose = ArkDialog.CloseTrigger
 
-const Dialog = DialogPrimitive.Root
+const DialogOverlay = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <ArkDialog.Backdrop
+      ref={ref}
+      className={cx(
+        css({
+          position: 'fixed',
+          inset: '0',
+          zIndex: '50',
+          bg: 'black/80',
+          animation: 'fadeIn 200ms',
+        }),
+        className
+      )}
+      {...props}
+    />
+  )
+)
+DialogOverlay.displayName = 'DialogOverlay'
 
-const DialogTrigger = DialogPrimitive.Trigger
+const DialogContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => (
+    <ArkDialog.Positioner>
+      <DialogOverlay />
+      <ArkDialog.Content
+        ref={ref}
+        className={cx(
+          css({
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            zIndex: '50',
+            display: 'grid',
+            w: 'full',
+            maxW: 'lg',
+            transform: 'translate(-50%, -50%)',
+            gap: '4',
+            border: '1px solid',
+            borderColor: 'border',
+            bg: 'background',
+            p: '6',
+            shadow: 'lg',
+            animation: 'fadeIn 200ms, scaleIn 200ms',
+            sm: { rounded: 'lg' },
+          }),
+          className
+        )}
+        {...props}
+      >
+        {children}
+        <ArkDialog.CloseTrigger
+          className={css({
+            position: 'absolute',
+            top: '4',
+            right: '4',
+            rounded: 'sm',
+            opacity: '0.7',
+            transition: 'opacity 0.2s',
+            _hover: { opacity: '1' },
+            _focus: {
+              outline: 'none',
+              ring: '2px',
+              ringColor: 'ring',
+              ringOffset: '2px',
+            },
+            _disabled: { pointerEvents: 'none' },
+          })}
+        >
+          <X className={css({ h: '4', w: '4' })} />
+          <span className={css({ srOnly: true })}>Close</span>
+        </ArkDialog.CloseTrigger>
+      </ArkDialog.Content>
+    </ArkDialog.Positioner>
+  )
+)
+DialogContent.displayName = 'DialogContent'
 
-const DialogPortal = DialogPrimitive.Portal
-
-const DialogClose = DialogPrimitive.Close
-
-const DialogOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay
-    ref={ref}
-    className={cn(
-      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80',
+const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cx(
+      css({
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.5',
+        textAlign: { base: 'center', sm: 'left' },
+      }),
       className
     )}
     {...props}
   />
-))
-DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
-
-const DialogContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] fixed top-[50%] left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border p-6 shadow-lg duration-200 sm:rounded-lg',
-        className
-      )}
-      {...props}
-    >
-      {children}
-      <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none">
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
-    </DialogPrimitive.Content>
-  </DialogPortal>
-))
-DialogContent.displayName = DialogPrimitive.Content.displayName
-
-const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />
 )
 DialogHeader.displayName = 'DialogHeader'
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    className={cx(
+      css({
+        display: 'flex',
+        flexDirection: { base: 'column-reverse', sm: 'row' },
+        justifyContent: { sm: 'flex-end' },
+        gap: { sm: '2' },
+      }),
+      className
+    )}
     {...props}
   />
 )
 DialogFooter.displayName = 'DialogFooter'
 
-const DialogTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    className={cn('text-lg leading-none font-semibold tracking-tight', className)}
-    {...props}
-  />
-))
-DialogTitle.displayName = DialogPrimitive.Title.displayName
+const DialogTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <ArkDialog.Title
+      ref={ref}
+      className={cx(
+        css({
+          fontSize: 'lg',
+          lineHeight: 'none',
+          fontWeight: 'semibold',
+          letterSpacing: 'tight',
+        }),
+        className
+      )}
+      {...props}
+    />
+  )
+)
+DialogTitle.displayName = 'DialogTitle'
 
 const DialogDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
+  <ArkDialog.Description
     ref={ref}
-    className={cn('text-muted-foreground text-sm', className)}
+    className={cx(css({ color: 'muted-foreground', fontSize: 'sm' }), className)}
     {...props}
   />
 ))
-DialogDescription.displayName = DialogPrimitive.Description.displayName
+DialogDescription.displayName = 'DialogDescription'
 
 export {
   Dialog,
-  DialogPortal,
   DialogOverlay,
   DialogTrigger,
   DialogClose,

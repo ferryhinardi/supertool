@@ -1,30 +1,41 @@
 'use client'
 
 import * as React from 'react'
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
-import { cn } from '@/lib/utils'
+import { Tooltip as ArkTooltip } from '@ark-ui/react'
+import { css } from '@/styled-system/css'
+import { cx } from '@/lib/utils'
 
-const TooltipProvider = TooltipPrimitive.Provider
+const TooltipProvider = ArkTooltip.Root
+const Tooltip = ArkTooltip.Root
+const TooltipTrigger = ArkTooltip.Trigger
 
-const Tooltip = TooltipPrimitive.Root
-
-const TooltipTrigger = TooltipPrimitive.Trigger
-
-const TooltipContent = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
-    className={cn(
-      'animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 overflow-hidden rounded-md bg-gray-900 px-3 py-1.5 text-xs text-white',
-      'border border-gray-800 shadow-lg',
-      className
-    )}
-    {...props}
-  />
-))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+const TooltipContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <ArkTooltip.Positioner>
+      <ArkTooltip.Content
+        ref={ref}
+        className={cx(
+          css({
+            zIndex: '50',
+            overflow: 'hidden',
+            rounded: 'md',
+            bg: 'gray.900',
+            px: '3',
+            py: '1.5',
+            fontSize: 'xs',
+            color: 'white',
+            border: '1px solid',
+            borderColor: 'gray.800',
+            shadow: 'lg',
+            animation: 'fadeIn 150ms, scaleIn 150ms',
+          }),
+          className
+        )}
+        {...props}
+      />
+    </ArkTooltip.Positioner>
+  )
+)
+TooltipContent.displayName = 'TooltipContent'
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }

@@ -9,6 +9,10 @@
       "disabled": false,
       "alwaysAllow": []
     },
+    "ark-ui": {
+      "command": "npx",
+      "args": ["-y", "@ark-ui/mcp"]
+    },
     "filesystem": {
       "command": "npx",
       "args": [

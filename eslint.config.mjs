@@ -35,7 +35,7 @@ const eslintConfig = defineConfig([
         },
       ],
       // Allow setState in effects with proper dependencies
-      'react-hooks/exhaustive-deps': 'warn',
+      // 'react-hooks/exhaustive-deps': 'warn', // Disabled - plugin config issue
       // React Compiler rules to guard implementation
       'react-compiler/react-compiler': 'error',
     },

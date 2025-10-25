@@ -1,6 +1,4 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { cx, cva } from '@/styled-system/css'
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export { cx, cva }
+export type { SystemStyleObject, RecipeVariantProps } from '@/styled-system/types'

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { Upload, FileCheck } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cx } from '@/lib/utils'
 
 interface DragDropZoneProps {
   onFilesSelected: (files: FileList) => void
@@ -77,7 +77,7 @@ export function DragDropZone({
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      className={cn(
+      className={cx(
         'relative cursor-pointer rounded-xl border-2 border-dashed transition-all duration-300',
         'hover:border-purple-500/50 hover:bg-gray-900/50',
         isDragOver
@@ -101,7 +101,7 @@ export function DragDropZone({
         className="flex cursor-pointer flex-col items-center justify-center px-6 py-12 text-center"
       >
         <div
-          className={cn(
+          className={cx(
             'mb-4 rounded-full p-4 transition-all duration-300',
             isDragOver ? 'scale-110 bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-gray-800'
           )}

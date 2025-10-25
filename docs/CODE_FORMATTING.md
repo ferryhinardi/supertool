@@ -51,8 +51,7 @@ Located in `.prettierrc`:
   "tabWidth": 2,
   "useTabs": false,
   "arrowParens": "always",
-  "endOfLine": "lf",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "endOfLine": "lf"
 }
 ```
 
@@ -62,7 +61,6 @@ Located in `.prettierrc`:
 - ✅ **Single quotes** - Consistent string formatting
 - ✅ **100 character line width** - Readable on most screens
 - ✅ **2 spaces indentation** - Standard for JS/TS
-- ✅ **Tailwind class sorting** - Automatic class organization
 
 ---
 
@@ -87,7 +85,6 @@ Install recommended extensions:
 ```bash
 code --install-extension esbenp.prettier-vscode
 code --install-extension dbaeumer.vscode-eslint
-code --install-extension bradlc.vscode-tailwindcss
 ```
 
 Or open VS Code and install from the extensions panel (recommended extensions will show up).
@@ -99,7 +96,6 @@ The project includes `.vscode/settings.json` with:
 - ✅ **Format on save** enabled
 - ✅ **ESLint auto-fix** on save
 - ✅ **Prettier as default formatter**
-- ✅ **Tailwind IntelliSense** configured
 
 ---
 
@@ -173,7 +169,7 @@ pnpm prettier --write "app/**/*.tsx"
 
 - [Prettier Documentation](https://prettier.io/docs/en/)
 - [ESLint Documentation](https://eslint.org/docs/latest/)
-- [Tailwind Prettier Plugin](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)
+- [Panda CSS Documentation](https://panda-css.com)
 
 ---
 

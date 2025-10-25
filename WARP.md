@@ -54,8 +54,8 @@
 | **Framework**       | Next.js                | 16.0.0      | [Docs](https://nextjs.org/docs)             |
 | **React**           | React                  | 19.2.0      | [Docs](https://react.dev)                   |
 | **Language**        | TypeScript             | ^5          | [Docs](https://www.typescriptlang.org/docs) |
-| **Styling**         | Tailwind CSS           | v4          | [Docs](https://tailwindcss.com/docs)        |
-| **UI Components**   | Radix UI + shadcn/ui   | Latest      | [Docs](https://ui.shadcn.com)               |
+| **Styling**         | Panda CSS              | ^1.4.3      | [Docs](https://panda-css.com)               |
+| **UI Components**   | Ark UI + Radix UI      | Latest      | [Docs](https://ark-ui.com)                  |
 | **Animation**       | Framer Motion          | ^12.23.24   | [Docs](https://www.framer.com/motion)       |
 | **Testing**         | Vitest + Playwright    | ^2.1.8      | [Docs](https://vitest.dev)                  |
 | **Code Quality**    | ESLint + Prettier      | ^9 / ^3.6.2 | -                                           |
@@ -69,7 +69,8 @@
 
 - **React 19** with React Compiler enabled (automatic optimizations)
 - **Next.js 16** with App Router (server components by default)
-- **Tailwind CSS v4** with custom dark theme and glassmorphism
+- **Panda CSS** with zero-runtime CSS-in-JS and type-safe styling
+- **Ark UI** for accessible, headless UI components
 - **Vitest Browser Mode** for real browser testing with Playwright
 - **CodeMirror** for advanced code editing with syntax highlighting
 - **Supabase** for database, authentication, and file storage
@@ -415,7 +416,7 @@ supertool/
 │
 ├── vitest.config.ts           # Vitest configuration
 ├── next.config.ts             # Next.js configuration
-├── tailwind.config.ts         # Tailwind configuration
+├── panda.config.ts            # Panda CSS configuration
 ├── eslint.config.mjs          # ESLint configuration
 ├── prettier.config.js         # Prettier configuration
 ├── tsconfig.json              # TypeScript configuration
@@ -506,18 +507,24 @@ function useLocalStorage(key: string) {
 }
 ```
 
-### Styling with Tailwind CSS
+### Styling with Panda CSS
 
 ```tsx
-import { cn } from '@/lib/utils'
+import { css, cx } from '@/styled-system/css'
+import { styled } from '@/styled-system/jsx'
 
-// ✅ DO: Use Tailwind utility classes
+// ✅ DO: Use Panda CSS styled system
 export function Card({ children, className }) {
   return (
-    <div className={cn(
-      'rounded-lg border bg-card p-6 shadow-sm',
-      'backdrop-blur-xl bg-gradient-to-br',
-      'from-purple-500/10 via-pink-500/10 to-blue-500/10',
+    <div className={cx(
+      css({
+        borderRadius: 'lg',
+        border: '1px solid',
+        bg: 'card',
+        p: 6,
+        shadow: 'sm',
+        backdropFilter: 'blur(16px)',
+      }),
       className
     )}>
       {children}
@@ -525,25 +532,25 @@ export function Card({ children, className }) {
   )
 }
 
-// ✅ DO: Mobile-first responsive design
-export function Hero() {
-  return (
-    <div className="text-lg md:text-xl lg:text-2xl">
-      Responsive text
-    </div>
-  )
-}
+// ✅ DO: Use styled components for reusable patterns
+const Hero = styled('div', {
+  base: {
+    fontSize: 'lg',
+    md: { fontSize: 'xl' },
+    lg: { fontSize: '2xl' },
+  }
+})
 
-// ✅ DO: Use consistent spacing scale
-<div className="space-y-4 p-6">  {/* 16px, 24px */}
-  <h1 className="mb-8">Title</h1>  {/* 32px */}
+// ✅ DO: Use consistent spacing tokens
+<div className={css({ spaceY: 4, p: 6 })}>
+  <h1 className={css({ mb: 8 })}>Title</h1>
 </div>
 
 // ❌ DON'T: Use arbitrary values unless necessary
-<div className="p-[13px]">  {/* Avoid */}
+<div className={css({ p: '13px' })}>  {/* Avoid - use tokens */}
 
-// ❌ DON'T: Use inline styles (except for dynamic values)
-<div style={{ padding: '16px' }}>  {/* Use Tailwind instead */}
+// ✅ DO: Use Panda CSS for dynamic styles
+const dynamicStyle = css({ p: isPadded ? 4 : 0 })
 ```
 
 ### Import Organization
@@ -569,7 +576,7 @@ import { Card } from '@/components/ui/card'
 import { DragDropZone } from '@/components/features/DragDropZone'
 
 // 5. Utilities and libs
-import { cn } from '@/lib/utils'
+import { cx, css } from '@/styled-system/css'
 import { supabase } from '@/lib/supabaseClient'
 
 // 6. Types
@@ -591,7 +598,7 @@ The project uses Prettier with these settings:
 }
 ```
 
-**Tailwind classes are automatically sorted** by `prettier-plugin-tailwindcss`.
+**Panda CSS** provides type-safe styling with zero runtime overhead.
 
 ---
 
@@ -1123,7 +1130,6 @@ const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), {
 ```tsx
 // ✅ DO: Use next/image for optimized images
 import Image from 'next/image'
-
 ;<Image
   src="/hero.png"
   alt="Hero"
@@ -1185,17 +1191,17 @@ When adding new features:
 // - Build output settings
 ```
 
-### Tailwind Configuration
+### Panda CSS Configuration
 
-**File:** `tailwind.config.ts`
+**File:** `panda.config.ts`
 
 ```typescript
 // Key configurations:
-// - Custom color palette
-// - Dark theme
-// - Typography
-// - Animation utilities
-// - CSS @import support
+// - Design tokens (colors, spacing, etc.)
+// - Utilities and patterns
+// - Theme configuration
+// - Global styles
+// - JSX framework integration
 ```
 
 ### Vitest Configuration
@@ -1383,8 +1389,8 @@ pnpm install --frozen-lockfile
 | **Next.js**       | [nextjs.org/docs](https://nextjs.org/docs)                     |
 | **React**         | [react.dev](https://react.dev)                                 |
 | **TypeScript**    | [typescriptlang.org/docs](https://www.typescriptlang.org/docs) |
-| **Tailwind CSS**  | [tailwindcss.com/docs](https://tailwindcss.com/docs)           |
-| **shadcn/ui**     | [ui.shadcn.com](https://ui.shadcn.com)                         |
+| **Panda CSS**     | [panda-css.com](https://panda-css.com)                         |
+| **Ark UI**        | [ark-ui.com](https://ark-ui.com)                               |
 | **Radix UI**      | [radix-ui.com](https://www.radix-ui.com)                       |
 | **Framer Motion** | [framer.com/motion](https://www.framer.com/motion)             |
 | **Vitest**        | [vitest.dev](https://vitest.dev)                               |
@@ -1427,8 +1433,8 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🙏 Acknowledgments
 
 - [Next.js](https://nextjs.org/) - React framework
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
-- [shadcn/ui](https://ui.shadcn.com/) - Beautiful UI components
+- [Panda CSS](https://panda-css.com/) - Modern CSS-in-JS
+- [Ark UI](https://ark-ui.com/) - Headless UI components
 - [Radix UI](https://www.radix-ui.com/) - Unstyled, accessible components
 - [Framer Motion](https://www.framer.com/motion/) - Animation library
 - [Vitest](https://vitest.dev/) - Next-gen testing framework

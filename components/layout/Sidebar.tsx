@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Code, Upload, FileText, GitCompare, Github } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cx } from '@/lib/utils'
 
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
@@ -53,7 +53,7 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={cn(
+                className={cx(
                   'group relative flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-300',
                   'hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-500/30',
                   isActive
@@ -67,7 +67,7 @@ export function Sidebar() {
                 )}
 
                 <Icon
-                  className={cn(
+                  className={cx(
                     'h-5 w-5 transition-all',
                     isActive
                       ? 'text-purple-300'

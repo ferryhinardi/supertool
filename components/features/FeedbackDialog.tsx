@@ -65,7 +65,7 @@ export function FeedbackDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(details) => setOpen(details.open)}>
       <DialogTrigger asChild>
         <Button
           size="lg"

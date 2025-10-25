@@ -1,27 +1,28 @@
 import * as React from 'react'
+import { css } from '@/styled-system/css'
+import { card } from '@/styled-system/recipes'
+import { cx } from '@/lib/utils'
 
-import { cn } from '@/lib/utils'
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  glass?: boolean
+}
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        'bg-card text-card-foreground rounded-xl border shadow sm:rounded-2xl',
-        className
-      )}
-      {...props}
-    />
-  )
-)
+const Card = React.forwardRef<HTMLDivElement, CardProps>(({ className, glass, ...props }, ref) => (
+  <div ref={ref} className={cx(card({ glass }), className)} {...props} />
+))
 Card.displayName = 'Card'
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        'flex flex-col space-y-4 p-6 sm:space-y-5 sm:p-7 md:space-y-6 md:p-8 lg:p-10',
+      className={cx(
+        css({
+          display: 'flex',
+          flexDirection: 'column',
+          gap: { base: '4', sm: '5', md: '6' },
+          p: { base: '6', sm: '7', md: '8', lg: '10' },
+        }),
         className
       )}
       {...props}
@@ -34,7 +35,14 @@ const CardTitle = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivE
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('leading-none font-semibold tracking-tight', className)}
+      className={cx(
+        css({
+          lineHeight: 'none',
+          fontWeight: 'semibold',
+          letterSpacing: 'tight',
+        }),
+        className
+      )}
       {...props}
     />
   )
@@ -43,7 +51,11 @@ CardTitle.displayName = 'CardTitle'
 
 const CardDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('text-muted-foreground text-sm', className)} {...props} />
+    <div
+      ref={ref}
+      className={cx(css({ color: 'muted-foreground', fontSize: 'sm' }), className)}
+      {...props}
+    />
   )
 )
 CardDescription.displayName = 'CardDescription'
@@ -52,7 +64,14 @@ const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('px-6 pt-0 pb-6 sm:px-7 sm:pb-7 md:px-8 md:pb-8 lg:px-10 lg:pb-10', className)}
+      className={cx(
+        css({
+          px: { base: '6', sm: '7', md: '8', lg: '10' },
+          pt: '0',
+          pb: { base: '6', sm: '7', md: '8', lg: '10' },
+        }),
+        className
+      )}
       {...props}
     />
   )
@@ -63,7 +82,15 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('flex items-center p-4 pt-0 sm:p-5 sm:pt-0 md:p-6 md:pt-0', className)}
+      className={cx(
+        css({
+          display: 'flex',
+          alignItems: 'center',
+          p: { base: '4', sm: '5', md: '6' },
+          pt: '0',
+        }),
+        className
+      )}
       {...props}
     />
   )

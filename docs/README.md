@@ -95,15 +95,20 @@ Lint & Type Check ──┬──→ Unit Tests (parallel)
 
 See [CI_CD_SETUP.md](./docs/CI_CD_SETUP.md) for detailed setup instructions.
 
-## 🎨 Tailwind CSS v4
+## 🎨 Styling with Panda CSS
 
-This project uses **Tailwind CSS v4** which has breaking changes from v3. If you encounter styling issues:
+This project uses **Panda CSS** for styling with **Ark UI** components:
 
-- 🚫 **`safelist` is removed** - Use arbitrary values or `@apply` instead
-- ✅ **Arbitrary values always work** - e.g., `right-[1.5rem]` is guaranteed to be generated
-- ⚡ **New JIT engine** - Faster but stricter class detection
+- ✅ **Zero-runtime** - CSS-in-JS with zero runtime overhead
+- 🎯 **Type-safe** - Full TypeScript support with autocomplete
+- 📦 **Optimized** - Only generates CSS for styles you use
+- ♿ **Accessible** - Built on Ark UI's accessible components
 
-See [TAILWIND_V4_TROUBLESHOOTING.md](./docs/TAILWIND_V4_TROUBLESHOOTING.md) for comprehensive troubleshooting guide.
+For styling guidelines and best practices, see:
+
+- [PANDA_CSS_GUIDE.md](./docs/PANDA_CSS_GUIDE.md) - Complete Panda CSS guide
+- [Panda CSS Documentation](https://panda-css.com)
+- [Ark UI Documentation](https://ark-ui.com)
 
 ## 📁 Project Structure
 
@@ -118,20 +123,11 @@ supertool/
 ├── components/            # React components
 │   ├── layout/           # Layout components
 │   ├── features/         # Feature components
-│   └── ui/               # UI components (shadcn/ui)
+│   └── ui/               # UI components (Ark UI)
 ├── lib/                  # Utilities and helpers
+├── styled-system/        # Panda CSS generated files
 ├── docs/                 # Documentation
 └── public/              # Static assets
-```
-
-## 🎨 UI Components
-
-This project uses [shadcn/ui](https://ui.shadcn.com/) components. To add new components:
-
-```bash
-pnpm ui:add button
-pnpm ui:add dialog
-# etc.
 ```
 
 ## 🤝 Contributing
@@ -151,8 +147,8 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🙏 Acknowledgments
 
 - [Next.js](https://nextjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
+- [Panda CSS](https://panda-css.com/)
+- [Ark UI](https://ark-ui.com/)
 - [Radix UI](https://www.radix-ui.com/)
 - [Framer Motion](https://www.framer.com/motion/)
 - [Vitest](https://vitest.dev/)

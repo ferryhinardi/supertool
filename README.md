@@ -23,8 +23,8 @@ Beautiful, fast, and powerful developer tools built with modern web technologies
 ## 🛠️ Tech Stack
 
 - **Framework:** Next.js 16 (React 19)
-- **Styling:** Tailwind CSS v4
-- **UI Components:** Radix UI + shadcn/ui
+- **Styling:** Panda CSS
+- **UI Components:** Ark UI + Radix UI
 - **Animations:** Framer Motion
 - **Testing:** Vitest with Browser Mode
 - **Code Quality:** ESLint, Prettier, Husky
@@ -123,21 +123,21 @@ supertool/
 ├── components/            # React components
 │   ├── layout/           # Layout components
 │   ├── features/         # Feature components
-│   └── ui/               # UI components (shadcn/ui)
+│   └── ui/               # UI components (Ark UI)
 ├── lib/                  # Utilities and helpers
+├── styled-system/        # Panda CSS generated files
 ├── docs/                 # Documentation
 └── public/              # Static assets
 ```
 
-## 🎨 UI Components
+## 🎨 Styling & UI
 
-This project uses [shadcn/ui](https://ui.shadcn.com/) components. To add new components:
+This project uses **Panda CSS** for styling with **Ark UI** components:
 
-```bash
-pnpm ui:add button
-pnpm ui:add dialog
-# etc.
-```
+- **[Panda CSS](https://panda-css.com/)** - Modern CSS-in-JS with zero runtime
+- **[Ark UI](https://ark-ui.com/)** - Headless UI components with accessibility
+
+For styling guidelines, see [docs/PANDA_CSS_GUIDE.md](./docs/PANDA_CSS_GUIDE.md)
 
 ## 🤝 Contributing
 
@@ -156,8 +156,8 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🙏 Acknowledgments
 
 - [Next.js](https://nextjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
+- [Panda CSS](https://panda-css.com/)
+- [Ark UI](https://ark-ui.com/)
 - [Radix UI](https://www.radix-ui.com/)
 - [Framer Motion](https://www.framer.com/motion/)
 - [Vitest](https://vitest.dev/)
