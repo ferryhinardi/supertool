@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Code, Upload, FileText, GitCompare, Github } from 'lucide-react'
-import { cx } from '@/lib/utils'
+import { css } from '@/styled-system/css'
+import { cva } from '@/styled-system/css'
 
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
@@ -13,38 +14,176 @@ const navigation = [
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
 ]
 
+// Navigation link variants using cva
+const navLinkStyles = cva({
+  base: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '3',
+    rounded: 'xl',
+    px: '4',
+    py: '3.5',
+    transition: 'all 0.3s',
+    _hover: {
+      transform: 'scale(1.03)',
+      shadow: 'xl',
+      boxShadow: '0 10px 20px rgba(139, 92, 246, 0.3)',
+    },
+  },
+  variants: {
+    active: {
+      true: {
+        border: '2px solid rgba(139, 92, 246, 0.4)',
+        bg: 'linear-gradient(to right, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.3), rgba(59, 130, 246, 0.4))',
+        color: 'white',
+        shadow: 'xl',
+        boxShadow: '0 10px 20px rgba(139, 92, 246, 0.4)',
+      },
+      false: {
+        border: '1px solid transparent',
+        color: 'gray.400',
+        _hover: {
+          borderColor: 'rgba(139, 92, 246, 0.3)',
+          bg: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))',
+          color: 'white',
+        },
+      },
+    },
+  },
+})
+
 export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="glass relative hidden w-64 flex-shrink-0 flex-col overflow-x-hidden overflow-y-auto border-r-2 border-purple-500/30 p-4 shadow-2xl shadow-purple-500/20 md:flex md:p-6">
-      {/* Enhanced animated gradient background */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/15 via-pink-600/15 to-cyan-600/20" />
+    <aside
+      className={css({
+        position: 'relative',
+        display: { base: 'none', md: 'flex' },
+        width: '16rem',
+        flexShrink: 0,
+        flexDirection: 'column',
+        overflow: 'hidden',
+        overflowY: 'auto',
+        borderRight: '2px solid rgba(139, 92, 246, 0.3)',
+        p: { base: '4', md: '6' },
+        shadow: '2xl',
+        boxShadow: '0 25px 50px rgba(139, 92, 246, 0.2)',
+        // Glass morphism effect
+        bg: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(236, 72, 153, 0.06), rgba(59, 130, 246, 0.06))',
+        backdropFilter: 'blur(16px)',
+      })}
+      style={{ WebkitBackdropFilter: 'blur(16px)' }}
+    >
+      {/* Animated gradient backgrounds */}
       <div
-        className="pointer-events-none absolute inset-0 animate-pulse bg-gradient-to-tr from-blue-500/15 via-purple-500/10 to-pink-500/15"
-        style={{ animationDuration: '3s' }}
+        className={css({
+          position: 'absolute',
+          inset: '0',
+          pointerEvents: 'none',
+          bgGradient: 'to-br',
+          gradientFrom: 'rgba(139, 92, 246, 0.2)',
+          gradientVia: 'rgba(59, 130, 246, 0.15)',
+          gradientTo: 'rgba(6, 182, 212, 0.2)',
+        })}
       />
       <div
-        className="pointer-events-none absolute inset-0 animate-pulse bg-gradient-to-bl from-cyan-500/10 via-transparent to-purple-500/10"
-        style={{ animationDuration: '4s', animationDelay: '1s' }}
+        className={css({
+          position: 'absolute',
+          inset: '0',
+          pointerEvents: 'none',
+          animation: 'pulse 3s infinite',
+          bgGradient: 'to-tr',
+          gradientFrom: 'rgba(59, 130, 246, 0.15)',
+          gradientVia: 'rgba(139, 92, 246, 0.10)',
+          gradientTo: 'rgba(236, 72, 153, 0.15)',
+        })}
+      />
+      <div
+        className={css({
+          position: 'absolute',
+          inset: '0',
+          pointerEvents: 'none',
+          animation: 'pulse 4s 1s infinite',
+          bgGradient: 'to-bl',
+          gradientFrom: 'rgba(6, 182, 212, 0.10)',
+          gradientVia: 'transparent',
+          gradientTo: 'rgba(139, 92, 246, 0.10)',
+        })}
       />
 
-      <div className="relative z-10 flex h-full flex-col">
+      <div
+        className={css({
+          position: 'relative',
+          zIndex: '10',
+          display: 'flex',
+          h: 'full',
+          flexDirection: 'column',
+        })}
+      >
         {/* Logo */}
-        <Link href="/" className="group mb-8 no-underline md:mb-10">
-          <h1 className="flex items-center gap-2 text-xl font-bold transition-all hover:scale-105 md:gap-3 md:text-2xl">
-            <span className="animate-pulse text-3xl md:text-4xl">⚡</span>
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text font-extrabold text-transparent">
+        <Link
+          href="/"
+          className={css({
+            mb: { base: '8', md: '10' },
+            textDecoration: 'none !important',
+            _hover: {
+              transform: 'scale(1.05)',
+              transition: 'all 0.3s',
+            },
+          })}
+        >
+          <h1
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: { base: '2', md: '3' },
+              fontSize: { base: 'xl', md: '2xl' },
+              fontWeight: 'bold',
+            })}
+          >
+            <span
+              className={css({
+                animation: 'pulse 2s infinite',
+                fontSize: { base: '3xl', md: '4xl' },
+              })}
+            >
+              ⚡
+            </span>
+            <span
+              className={css({
+                bgGradient: 'to-r',
+                gradientFrom: 'purple.400',
+                gradientVia: 'pink.400',
+                gradientTo: 'blue.400',
+                bgClip: 'text',
+                fontWeight: 'extrabold',
+                color: 'transparent',
+              })}
+              style={{
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               SuperTool
             </span>
           </h1>
-          <p className="mt-2 ml-10 text-xs font-medium text-purple-300 md:ml-12 md:text-sm">
+          <p
+            className={css({
+              mt: '2',
+              ml: { base: '10', md: '12' },
+              fontSize: { base: 'xs', md: 'sm' },
+              fontWeight: 'medium',
+              color: 'purple.300',
+            })}
+          >
             Developer Toolkit
           </p>
         </Link>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-3">
+        <nav className={css({ flex: '1', spaceY: '3' })}>
           {navigation.map((item) => {
             const isActive = pathname === item.href
             const Icon = item.icon
@@ -53,32 +192,60 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={cx(
-                  'group relative flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-300',
-                  'hover:scale-[1.03] hover:shadow-xl hover:shadow-purple-500/30',
-                  isActive
-                    ? 'border-2 border-purple-500/40 bg-gradient-to-r from-purple-600/40 via-pink-600/30 to-blue-600/40 text-white shadow-xl shadow-purple-500/40'
-                    : 'border border-transparent text-gray-400 hover:border-purple-500/30 hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 hover:text-white'
-                )}
+                className={navLinkStyles({ active: isActive })}
               >
-                {/* Active indicator with gradient */}
+                {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute top-1/2 left-0 h-10 w-1.5 -translate-y-1/2 animate-pulse rounded-r-full bg-gradient-to-b from-purple-400 via-pink-500 to-blue-500 shadow-lg shadow-purple-500/70" />
+                  <div
+                    className={css({
+                      position: 'absolute',
+                      top: '50%',
+                      left: '0',
+                      h: '10',
+                      w: '1.5',
+                      transform: 'translateY(-50%)',
+                      animation: 'pulse 2s infinite',
+                      roundedRight: 'full',
+                      bgGradient: 'to-b',
+                      gradientFrom: 'purple.400',
+                      gradientVia: 'pink.500',
+                      gradientTo: 'blue.500',
+                      shadow: 'lg',
+                      boxShadow: '0 4px 14px rgba(139, 92, 246, 0.7)',
+                    })}
+                  />
                 )}
 
                 <Icon
-                  className={cx(
-                    'h-5 w-5 transition-all',
-                    isActive
-                      ? 'text-purple-300'
-                      : 'text-gray-500 group-hover:scale-110 group-hover:text-purple-400'
-                  )}
+                  className={css({
+                    h: '5',
+                    w: '5',
+                    transition: 'all 0.2s',
+                    color: isActive ? 'purple.300' : 'gray.500',
+                    _groupHover: {
+                      transform: 'scale(1.1)',
+                      color: isActive ? 'purple.300' : 'purple.400',
+                    },
+                  })}
                 />
-                <span className="font-semibold">{item.name}</span>
+                <span className={css({ fontWeight: 'semibold' })}>{item.name}</span>
 
-                {/* Enhanced hover glow */}
+                {/* Hover glow effect */}
                 {!isActive && (
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 via-pink-500/10 to-blue-500/0 opacity-0 transition-opacity group-hover:opacity-100" />
+                  <div
+                    className={css({
+                      position: 'absolute',
+                      inset: '0',
+                      rounded: 'xl',
+                      bgGradient: 'to-r',
+                      gradientFrom: 'rgba(139, 92, 246, 0)',
+                      gradientVia: 'rgba(236, 72, 153, 0.1)',
+                      gradientTo: 'rgba(59, 130, 246, 0)',
+                      opacity: '0',
+                      transition: 'opacity 0.3s',
+                      _groupHover: { opacity: '1' },
+                    })}
+                  />
                 )}
               </Link>
             )
@@ -86,24 +253,71 @@ export function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="mt-auto space-y-4 border-t-2 border-purple-500/20 pt-6">
+        <div
+          className={css({
+            mt: 'auto',
+            spaceY: '4',
+            borderTop: '2px solid rgba(139, 92, 246, 0.2)',
+            pt: '6',
+          })}
+        >
           <a
             href="https://github.com/ferryhinardi/supertool"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 no-underline transition-all hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 hover:text-white"
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3',
+              rounded: 'lg',
+              px: '3',
+              py: '2',
+              fontSize: 'sm',
+              color: 'gray.400',
+              textDecoration: 'none !important',
+              transition: 'all 0.3s',
+              _hover: {
+                bg: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))',
+                color: 'white',
+              },
+            })}
           >
-            <Github className="h-5 w-5 transition-transform group-hover:scale-110" />
-            <span className="font-medium">View on GitHub</span>
+            <Github
+              className={css({
+                h: '5',
+                w: '5',
+                transition: 'transform 0.3s',
+                _groupHover: { transform: 'scale(1.1)' },
+              })}
+            />
+            <span className={css({ fontWeight: 'medium' })}>View on GitHub</span>
           </a>
 
-          <p className="text-xs text-gray-400">
-            Built with <span className="animate-pulse text-red-500">❤️</span> by{' '}
+          <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+            Built with{' '}
+            <span className={css({ animation: 'pulse 2s infinite', color: 'red.500' })}>❤️</span> by{' '}
             <a
               href="https://github.com/ferryhinardi"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text font-semibold text-transparent no-underline transition-all hover:from-purple-300 hover:to-pink-300"
+              className={css({
+                bgGradient: 'to-r',
+                gradientFrom: 'purple.400',
+                gradientTo: 'pink.400',
+                bgClip: 'text',
+                fontWeight: 'semibold',
+                color: 'transparent',
+                textDecoration: 'none !important',
+                transition: 'all 0.3s',
+                _hover: {
+                  gradientFrom: 'purple.300',
+                  gradientTo: 'pink.300',
+                },
+              })}
+              style={{
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
             >
               Ferry
             </a>

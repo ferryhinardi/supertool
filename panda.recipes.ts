@@ -1,4 +1,4 @@
-import { defineRecipe } from '@pandacss/dev'
+import { defineRecipe, definePattern } from '@pandacss/dev'
 
 export const buttonRecipe = defineRecipe({
   className: 'button',
@@ -292,6 +292,125 @@ export const progressRecipe = defineRecipe({
     opacity: '0.2',
   },
 })
+
+// Define Patterns for common UI patterns
+export const glassCardPattern = definePattern({
+  description: 'Glass morphism card with backdrop blur',
+  properties: {
+    intensity: { type: 'enum', value: ['light', 'medium', 'strong'] },
+  },
+  transform: (props) => {
+    const intensityMap = {
+      light: {
+        bg: 'linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(236, 72, 153, 0.04) 50%, rgba(59, 130, 246, 0.04) 100%)',
+        border: '1px solid rgba(139, 92, 246, 0.15)',
+        shadow: 'glass-sm',
+      },
+      medium: {
+        bg: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(236, 72, 153, 0.06) 50%, rgba(59, 130, 246, 0.06) 100%)',
+        border: '1px solid rgba(139, 92, 246, 0.2)',
+        shadow: 'glass-md',
+      },
+      strong: {
+        bg: 'linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(236, 72, 153, 0.10) 50%, rgba(59, 130, 246, 0.10) 100%)',
+        border: '1px solid rgba(139, 92, 246, 0.3)',
+        shadow: 'glass-lg',
+      },
+    }
+    const intensity = props.intensity || 'medium'
+    return {
+      ...intensityMap[intensity as keyof typeof intensityMap],
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      rounded: 'xl',
+      overflow: 'hidden',
+    }
+  },
+})
+
+export const gradientTextPattern = definePattern({
+  description: 'Gradient text with background-clip',
+  properties: {
+    gradient: { type: 'enum', value: ['purple-pink', 'blue-cyan', 'orange-red', 'rainbow'] },
+  },
+  transform: (props) => {
+    const gradientMap = {
+      'purple-pink': {
+        bgGradient: 'to-r',
+        gradientFrom: 'purple.400',
+        gradientVia: 'pink.400',
+        gradientTo: 'blue.400',
+      },
+      'blue-cyan': {
+        bgGradient: 'to-r',
+        gradientFrom: 'blue.400',
+        gradientTo: 'cyan.400',
+      },
+      'orange-red': {
+        bgGradient: 'to-r',
+        gradientFrom: 'orange.500',
+        gradientTo: 'red.500',
+      },
+      rainbow: {
+        bgGradient: 'to-r',
+        gradientFrom: 'purple.500',
+        gradientVia: 'pink.500',
+        gradientTo: 'orange.500',
+      },
+    }
+    const gradient = props.gradient || 'purple-pink'
+    return {
+      ...gradientMap[gradient as keyof typeof gradientMap],
+      bgClip: 'text',
+      color: 'transparent',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+    }
+  },
+})
+
+export const hoverGlowPattern = definePattern({
+  description: 'Hover state with glow effect',
+  properties: {
+    color: { type: 'enum', value: ['purple', 'blue', 'pink', 'cyan'] },
+  },
+  transform: (props) => {
+    const color = props.color || 'purple'
+    const colorMap = {
+      purple: 'rgba(139, 92, 246, 0.3)',
+      blue: 'rgba(59, 130, 246, 0.3)',
+      pink: 'rgba(236, 72, 153, 0.3)',
+      cyan: 'rgba(6, 182, 212, 0.3)',
+    }
+    return {
+      transition: 'all 0.3s ease',
+      _hover: {
+        transform: 'translateY(-2px)',
+        boxShadow: `0 20px 40px ${colorMap[color as keyof typeof colorMap]}`,
+      },
+    }
+  },
+})
+
+export const focusRingPattern = definePattern({
+  description: 'Accessible focus ring',
+  transform: () => ({
+    _focusVisible: {
+      outline: 'none',
+      ring: '2px',
+      ringColor: 'ring',
+      ringOffset: '2px',
+    },
+  }),
+})
+
+// Export all patterns as an object
+export const patterns = {
+  glassCard: glassCardPattern,
+  gradientText: gradientTextPattern,
+  hoverGlow: hoverGlowPattern,
+  focusRing: focusRingPattern,
+}
 
 // Export all recipes as an object
 export const recipes = {

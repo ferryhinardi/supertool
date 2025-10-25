@@ -755,9 +755,7 @@ export default function HomePage() {
                   strokeWidth={1.5}
                 />
               </div>
-              <h3
-                className={css({ mb: '3', fontSize: '2xl', fontWeight: 'bold', color: 'gray.300' })}
-              >
+              <h3 className={css({ mb: '3', fontSize: '2xl', fontWeight: 'bold', color: 'gray.300' })}>
                 No tools found
               </h3>
               <p
@@ -848,9 +846,7 @@ export default function HomePage() {
           })}
         >
           <div className={css({ textAlign: 'center' })}>
-            <div
-              className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'purple.400' })}
-            >
+            <div className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'purple.400' })}>
               {stats.active}
             </div>
             <div
@@ -869,9 +865,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className={css({ textAlign: 'center' })}>
-            <div
-              className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'pink.400' })}
-            >
+            <div className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'pink.400' })}>
               {stats.total}
             </div>
             <div
@@ -890,9 +884,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className={css({ textAlign: 'center' })}>
-            <div
-              className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'blue.400' })}
-            >
+            <div className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'blue.400' })}>
               {stats.popular}
             </div>
             <div
@@ -911,9 +903,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className={css({ textAlign: 'center' })}>
-            <div
-              className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'cyan.400' })}
-            >
+            <div className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'cyan.400' })}>
               {stats.new}
             </div>
             <div
@@ -1040,18 +1030,8 @@ function ToolCard({
               </motion.div>
 
               <div className={css({ minW: 0, flex: 1 })}>
-                <div
-                  className={css({
-                    mb: '2',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    gap: '2',
-                  })}
-                >
-                  <CardTitle
-                    className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'gray.100' })}
-                  >
+                <div className={css({ mb: '2', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2' })}>
+                  <CardTitle className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'gray.100' })}>
                     {tool.title}
                   </CardTitle>
 
@@ -1242,13 +1222,7 @@ function ToolCard({
                   <Badge
                     variant="warning"
                     size="sm"
-                    className={css({
-                      bg: 'yellow.500/20',
-                      px: '2',
-                      py: '1',
-                      fontSize: 'xs',
-                      color: 'yellow.300',
-                    })}
+                    className={css({ bg: 'yellow.500/20', px: '2', py: '1', fontSize: 'xs', color: 'yellow.300' })}
                   >
                     Soon
                   </Badge>

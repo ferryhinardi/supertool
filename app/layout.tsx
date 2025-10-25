@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Toaster } from 'sonner'
 import { Sidebar } from '@/components/layout/Sidebar'
+import { css } from '@/styled-system/css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,28 +18,105 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" className={inter.className}>
-      <body className="flex min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white">
+      <body
+        className={css({
+          display: 'flex',
+          minH: '100vh',
+          bgGradient: 'to-br',
+          gradientFrom: 'gray.950',
+          gradientVia: 'gray.900',
+          gradientTo: 'gray.950',
+          color: 'white',
+        })}
+      >
         {/* Sidebar */}
         <Sidebar />
 
         {/* Main content */}
-        <main className="relative min-h-screen w-full flex-1 overflow-x-hidden overflow-y-auto p-4 pt-[max(1rem,env(safe-area-inset-top))] sm:p-6 sm:pt-[max(1.5rem,env(safe-area-inset-top))] md:p-8 md:pt-[max(2rem,env(safe-area-inset-top))] md:pl-8 lg:p-10 lg:pt-[max(2.5rem,env(safe-area-inset-top))] lg:pl-12 xl:p-12 xl:pl-16">
+        <main
+          className={css({
+            position: 'relative',
+            minH: '100vh',
+            w: 'full',
+            flex: '1',
+            overflowX: 'hidden',
+            overflowY: 'auto',
+            p: { base: '4', sm: '6', md: '8', lg: '10', xl: '12' },
+            pt: {
+              base: 'max(1rem, env(safe-area-inset-top))',
+              sm: 'max(1.5rem, env(safe-area-inset-top))',
+              md: 'max(2rem, env(safe-area-inset-top))',
+              lg: 'max(2.5rem, env(safe-area-inset-top))',
+            },
+            pl: { md: '8', lg: '12', xl: '16' },
+          })}
+        >
           {/* Enhanced background gradient orbs */}
           <div
-            className="pointer-events-none fixed top-0 right-0 h-[700px] w-[700px] animate-pulse rounded-full bg-gradient-to-br from-purple-500/25 via-pink-500/20 to-purple-600/25 blur-3xl"
-            style={{ animationDuration: '4s' }}
+            className={css({
+              pointerEvents: 'none',
+              position: 'fixed',
+              top: '0',
+              right: '0',
+              h: '700px',
+              w: '700px',
+              animation: 'pulse 4s infinite',
+              rounded: 'full',
+              bgGradient: 'to-br',
+              gradientFrom: 'rgba(168, 85, 247, 0.25)',
+              gradientVia: 'rgba(236, 72, 153, 0.20)',
+              gradientTo: 'rgba(147, 51, 234, 0.25)',
+              filter: 'blur(96px)',
+            })}
           />
           <div
-            className="pointer-events-none fixed bottom-0 left-0 h-[700px] w-[700px] animate-pulse rounded-full bg-gradient-to-tr from-blue-500/25 via-cyan-500/20 to-teal-500/25 blur-3xl"
-            style={{ animationDuration: '5s', animationDelay: '1s' }}
+            className={css({
+              pointerEvents: 'none',
+              position: 'fixed',
+              bottom: '0',
+              left: '0',
+              h: '700px',
+              w: '700px',
+              animation: 'pulse 5s 1s infinite',
+              rounded: 'full',
+              bgGradient: 'to-tr',
+              gradientFrom: 'rgba(59, 130, 246, 0.25)',
+              gradientVia: 'rgba(6, 182, 212, 0.20)',
+              gradientTo: 'rgba(20, 184, 166, 0.25)',
+              filter: 'blur(96px)',
+            })}
           />
           <div
-            className="pointer-events-none fixed top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-gradient-to-r from-pink-500/15 via-purple-500/10 to-blue-500/15 blur-3xl"
-            style={{ animationDuration: '6s', animationDelay: '2s' }}
+            className={css({
+              pointerEvents: 'none',
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              h: '500px',
+              w: '500px',
+              transform: 'translate(-50%, -50%)',
+              animation: 'pulse 6s 2s infinite',
+              rounded: 'full',
+              bgGradient: 'to-r',
+              gradientFrom: 'rgba(236, 72, 153, 0.15)',
+              gradientVia: 'rgba(168, 85, 247, 0.10)',
+              gradientTo: 'rgba(59, 130, 246, 0.15)',
+              filter: 'blur(96px)',
+            })}
           />
 
           {/* Content wrapper */}
-          <div className="relative z-10 mx-auto w-full max-w-[1600px]">{children}</div>
+          <div
+            className={css({
+              position: 'relative',
+              zIndex: '10',
+              mx: 'auto',
+              w: 'full',
+              maxW: '1600px',
+            })}
+          >
+            {children}
+          </div>
         </main>
 
         {/* Toast notifications */}
