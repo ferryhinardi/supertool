@@ -13,12 +13,12 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.className}>
-      <body className="flex min-h-screen overflow-x-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white">
+      <body className="flex min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white">
         {/* Sidebar */}
         <Sidebar />
 
         {/* Main content */}
-        <main className="relative flex-1 overflow-hidden p-6 md:p-8 lg:p-12">
+        <main className="relative min-h-screen w-full flex-1 overflow-x-hidden overflow-y-auto p-4 pt-[max(1rem,env(safe-area-inset-top))] sm:p-6 sm:pt-[max(1.5rem,env(safe-area-inset-top))] md:p-8 md:pt-[max(2rem,env(safe-area-inset-top))] md:pl-8 lg:p-10 lg:pt-[max(2.5rem,env(safe-area-inset-top))] lg:pl-12 xl:p-12 xl:pl-16">
           {/* Enhanced background gradient orbs */}
           <div
             className="pointer-events-none fixed top-0 right-0 h-[700px] w-[700px] animate-pulse rounded-full bg-gradient-to-br from-purple-500/25 via-pink-500/20 to-purple-600/25 blur-3xl"
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
 
           {/* Content wrapper */}
-          <div className="relative z-10">{children}</div>
+          <div className="relative z-10 mx-auto w-full max-w-[1600px]">{children}</div>
         </main>
 
         {/* Toast notifications */}

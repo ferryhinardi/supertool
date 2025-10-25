@@ -1,70 +1,43 @@
-# 🚀 SuperTool# 🚀 SuperTool - Modern Developer Toolkit
+# 🚀 SuperTool - Modern Developer Toolkit
 
-Modern Developer Toolkit - Beautiful, fast, and powerful developer tools.Beautiful, fast, and powerful developer tools built with modern web technologies.
-
-## 📚 Documentation## ✨ Features
-
-- **[Full Documentation](./docs/README.md)** - Complete project documentation- 🎨 **JSON Beautifier** - Format, validate, and minify JSON with syntax highlighting
-
-- **[Testing Guide](./docs/TESTING.md)** - Testing setup and guidelines- 📁 **File Upload** - Upload files to cloud storage with drag-and-drop support
-
-- **[Quick Start](./docs/TESTING_QUICKSTART.md)** - Get started quickly- 🎯 **More Coming Soon** - Image optimization, API testing, and more!
-
-- **[Setup Complete](./docs/SETUP_COMPLETE.md)** - Setup completion guide
-
-- **[Code Formatting](./docs/CODE_FORMATTING.md)** - Code style guidelines## 🛠️ Tech Stack
-
-- **[Contributing](./CONTRIBUTING.md)** - How to contribute
-
-- **Framework:** Next.js 16 (React 19)
-
-## 🚀 Quick Start- **Styling:** Tailwind CSS v4
-
-- **UI Components:** Radix UI + shadcn/ui
-
-````bash- **Animations:** Framer Motion
-
-# Install dependencies- **Testing:** Vitest with Browser Mode
-
-pnpm install- **Code Quality:** ESLint, Prettier, Husky
-
-- **Package Manager:** pnpm
-
-# Run development server
-
-pnpm dev## 🚀 Getting Started
-
-
-
-# Run tests### Prerequisites
-
-pnpm test
-
-```- Node.js 20+
-
-- pnpm 8+
+Beautiful, fast, and powerful developer tools built with modern web technologies.
 
 ## ✨ Features
 
+- 🎨 **JSON Beautifier** - Format, validate, and minify JSON with syntax highlighting
+- 📁 **File Upload** - Upload files to cloud storage with drag-and-drop support
+- 🎯 **More Coming Soon** - Image optimization, API testing, and more!
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 16 (React 19)
+- **Styling:** Tailwind CSS v4
+- **UI Components:** Radix UI + shadcn/ui
+- **Animations:** Framer Motion
+- **Testing:** Vitest with Browser Mode
+- **Code Quality:** ESLint, Prettier, Husky
+- **Package Manager:** pnpm
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- pnpm 8+
+
 ### Installation
 
-- 🎨 JSON Beautifier - Format and validate JSON
-
-- 📁 File Upload - Upload files to cloud storage```bash
-
-- 🧪 Fully Tested - Vitest + Browser Mode# Clone the repository
-
+```bash
+# Clone the repository
 git clone https://github.com/ferryhinardi/supertool.git
-
-See [full documentation](./docs/README.md) for more details.cd supertool
-
+cd supertool
 
 # Install dependencies
 pnpm install
 
 # Run development server
 pnpm dev
-````
+```
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
@@ -104,7 +77,25 @@ pnpm test:ui
 
 See [TESTING_QUICKSTART.md](./docs/TESTING_QUICKSTART.md) for more details.
 
-## 📁 Project Structure
+## � CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- ✅ **Automated Testing** - Runs all 83 tests on every push
+- 🔍 **Code Quality** - ESLint and TypeScript checks
+- 📦 **Build Verification** - Ensures production builds succeed
+- 📊 **Coverage Reports** - Automatic coverage tracking
+
+### CI Workflow
+
+```
+Lint & Type Check ──┬──→ Unit Tests (parallel)
+                    └──→ Build (parallel)
+```
+
+See [CI_CD_SETUP.md](./docs/CI_CD_SETUP.md) for detailed setup instructions.
+
+## �📁 Project Structure
 
 ```
 supertool/

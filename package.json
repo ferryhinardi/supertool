@@ -10,7 +10,11 @@
     "lint:fix": "eslint --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "ui:add": "npx shadcn@latest add",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:browser": "vitest --browser"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md}": [
@@ -37,9 +41,15 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/browser": "^2.1.8",
+    "@vitest/ui": "^2.1.8",
     "autoprefixer": "^10.4.21",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9",
@@ -48,11 +58,16 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "husky": "^9.1.7",
+    "jsdom": "^25.0.1",
     "lint-staged": "^16.2.6",
+    "playwright": "^1.49.1",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "tailwindcss": "^4.1.16",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8",
+    "webdriverio": "^9.4.2"
   }
 }

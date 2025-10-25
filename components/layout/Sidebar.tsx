@@ -15,7 +15,7 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="glass relative flex w-64 flex-col overflow-hidden border-r-2 border-purple-500/30 p-6 shadow-2xl shadow-purple-500/20">
+    <aside className="glass relative hidden w-64 flex-shrink-0 flex-col overflow-x-hidden overflow-y-auto border-r-2 border-purple-500/30 p-4 shadow-2xl shadow-purple-500/20 md:flex md:p-6">
       {/* Enhanced animated gradient background */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/15 via-pink-600/15 to-cyan-600/20" />
       <div
@@ -29,14 +29,16 @@ export function Sidebar() {
 
       <div className="relative z-10 flex h-full flex-col">
         {/* Logo */}
-        <Link href="/" className="group mb-10 no-underline">
-          <h1 className="flex items-center gap-3 text-2xl font-bold transition-all hover:scale-105">
-            <span className="animate-pulse text-4xl">⚡</span>
+        <Link href="/" className="group mb-8 no-underline md:mb-10">
+          <h1 className="flex items-center gap-2 text-xl font-bold transition-all hover:scale-105 md:gap-3 md:text-2xl">
+            <span className="animate-pulse text-3xl md:text-4xl">⚡</span>
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text font-extrabold text-transparent">
               SuperTool
             </span>
           </h1>
-          <p className="mt-2 ml-12 text-sm font-medium text-purple-300">Developer Toolkit</p>
+          <p className="mt-2 ml-10 text-xs font-medium text-purple-300 md:ml-12 md:text-sm">
+            Developer Toolkit
+          </p>
         </Link>
 
         {/* Navigation */}

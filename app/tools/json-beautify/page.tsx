@@ -149,21 +149,23 @@ export default function JSONBeautifyPage() {
         </div>
 
         {/* Editor */}
-        <div className="glass-card overflow-hidden rounded-xl border-2 border-purple-500/30 shadow-2xl shadow-purple-500/30 sm:rounded-2xl">
-          <CodeMirror
-            value={value}
-            height="400px"
-            theme="dark"
-            extensions={[json()]}
-            onChange={(val) => setValue(val)}
-            className="text-sm sm:text-base"
-            basicSetup={{
-              lineNumbers: true,
-              highlightActiveLineGutter: true,
-              highlightActiveLine: true,
-              foldGutter: true,
-            }}
-          />
+        <div className="glass-card overflow-hidden rounded-xl border-2 border-purple-500/30 p-2 shadow-2xl shadow-purple-500/30 sm:rounded-2xl sm:p-3 md:p-4">
+          <div className="overflow-x-auto">
+            <CodeMirror
+              value={value}
+              height="400px"
+              theme="dark"
+              extensions={[json()]}
+              onChange={(val) => setValue(val)}
+              className="text-sm sm:text-base"
+              basicSetup={{
+                lineNumbers: true,
+                highlightActiveLineGutter: true,
+                highlightActiveLine: true,
+                foldGutter: true,
+              }}
+            />
+          </div>
         </div>
 
         {/* Action Buttons */}
