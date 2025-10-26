@@ -57,6 +57,8 @@ export function TreatMeDialog() {
           paddingRight: '1.5rem',
           paddingTop: '0.625rem',
           paddingBottom: '0.625rem',
+          touchAction: 'manipulation',
+          WebkitTapHighlightColor: 'transparent',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.05)'
@@ -75,12 +77,17 @@ export function TreatMeDialog() {
         open &&
         createPortal(
           <div
-            className="fixed z-[10000] flex items-center justify-center p-[1rem]"
             style={{
+              position: 'fixed',
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
+              zIndex: 10000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem',
               backgroundColor: 'rgba(0, 0, 0, 0.92)',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
@@ -88,10 +95,14 @@ export function TreatMeDialog() {
             onClick={handleClose}
           >
             <div
-              className="relative w-full max-w-[28rem] rounded-[1rem] border-[2px] p-[1.5rem] shadow-2xl"
               style={{
+                position: 'relative',
+                width: '100%',
+                maxWidth: '28rem',
+                borderRadius: '1rem',
+                border: '2px solid rgba(251, 191, 36, 0.3)',
+                padding: '1.5rem',
                 backgroundColor: '#0a0a0a',
-                borderColor: 'rgba(251, 191, 36, 0.3)',
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
                 maxHeight: '90vh',
                 overflowY: 'auto',
@@ -101,11 +112,32 @@ export function TreatMeDialog() {
               {/* Close button */}
               <button
                 onClick={handleClose}
-                className="absolute top-[1rem] right-[1rem] rounded-lg p-[0.5rem] text-gray-400 transition-colors hover:bg-gray-800 hover:text-gray-200"
+                style={{
+                  position: 'absolute',
+                  top: '1rem',
+                  right: '1rem',
+                  borderRadius: '0.5rem',
+                  padding: '0.5rem',
+                  color: 'rgb(156, 163, 175)',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  touchAction: 'manipulation',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgb(31, 41, 55)'
+                  e.currentTarget.style.color = 'rgb(229, 231, 235)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.color = 'rgb(156, 163, 175)'
+                }}
                 aria-label="Close"
                 type="button"
               >
-                <X className="h-5 w-5" />
+                <X style={{ height: '1.25rem', width: '1.25rem' }} />
               </button>
 
               {step === 'select' ? (
