@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Hash, Copy, Upload, CheckCircle, XCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
+import { css } from '@/styled-system/css'
 
 type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
 
@@ -156,14 +157,15 @@ export default function HashGeneratorPage() {
   }
 
   return (
-    <div
-      className="space-y-8"
-      style={{
-        margin: '0 auto',
-        maxWidth: '1400px',
-        width: '100%',
-        padding: '2rem 1rem',
-      }}
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '1400px',
+        w: 'full',
+        px: '4',
+        py: '8',
+        spaceY: '8',
+      })}
     >
       {/* Header */}
       <motion.div
@@ -340,6 +342,6 @@ export default function HashGeneratorPage() {
           </Card>
         ))}
       </motion.div>
-    </div>
+    </main>
   )
 }
