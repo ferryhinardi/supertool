@@ -42,7 +42,9 @@ export default function UnitConverterPage() {
   const [toUnit, setToUnit] = useState('foot')
   const [fromValue, setFromValue] = useState('1')
   const [favorites, setFavorites] = useState<Favorite[]>(() => {
-    // Load favorites from localStorage on mount
+    // Lazy initialization - only runs once on mount (client-side safe)
+    if (typeof window === 'undefined') return []
+
     const stored = localStorage.getItem('unitConverterFavorites')
     if (stored) {
       try {
@@ -55,9 +57,9 @@ export default function UnitConverterPage() {
     return []
   })
 
-  // Save favorites to localStorage
+  // Save favorites to localStorage (client-side only)
   useEffect(() => {
-    if (favorites.length > 0) {
+    if (typeof window !== 'undefined' && favorites.length > 0) {
       localStorage.setItem('unitConverterFavorites', JSON.stringify(favorites))
     }
   }, [favorites])

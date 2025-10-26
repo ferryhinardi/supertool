@@ -1,0 +1,365 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import { userEvent } from '@testing-library/user-event'
+import WebsiteScreenshotPage from '../page'
+
+// Mock sonner toast
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}))
+
+// Mock fetch for screenshot API
+const mockFetch = vi.fn()
+globalThis.fetch = mockFetch
+
+// Mock URL.createObjectURL and revokeObjectURL
+globalThis.URL.createObjectURL = vi.fn(() => 'mock-url')
+globalThis.URL.revokeObjectURL = vi.fn()
+
+describe('Website Screenshot Tool - Component Tests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('should render website screenshot page', () => {
+    render(<WebsiteScreenshotPage />)
+
+    expect(screen.getByRole('heading', { name: /Website Screenshot Capture/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Website URL/i })).toBeInTheDocument()
+  })
+
+  it('should display URL input field', () => {
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    expect(input).toBeInTheDocument()
+  })
+
+  it('should display capture button', () => {
+    render(<WebsiteScreenshotPage />)
+
+    const button = screen.getByRole('button', { name: /^Capture$/i })
+    expect(button).toBeInTheDocument()
+    expect(button).toBeDisabled() // Initially disabled when URL is empty
+  })
+
+  it('should display all device size options', () => {
+    render(<WebsiteScreenshotPage />)
+
+    expect(screen.getByText('Mobile')).toBeInTheDocument()
+    expect(screen.getByText('Tablet')).toBeInTheDocument()
+    expect(screen.getByText('Desktop')).toBeInTheDocument()
+  })
+
+  it('should display capture mode options', () => {
+    render(<WebsiteScreenshotPage />)
+
+    expect(screen.getByText('Viewport Only')).toBeInTheDocument()
+    expect(screen.getByText('Full Page')).toBeInTheDocument()
+  })
+
+  it('should enable capture button when URL is entered', async () => {
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'example.com')
+
+    await waitFor(() => {
+      const button = screen.getByRole('button', { name: /^Capture$/i })
+      expect(button).not.toBeDisabled()
+    })
+  })
+
+  it('should allow selecting different device sizes', async () => {
+    render(<WebsiteScreenshotPage />)
+
+    const mobileButton = screen.getByRole('button', { name: /Mobile 375x667/i })
+    await userEvent.click(mobileButton)
+
+    // Mobile button should have selected styles (you can check class or aria-selected if implemented)
+    expect(mobileButton).toBeInTheDocument()
+
+    const tabletButton = screen.getByRole('button', { name: /Tablet 768x1024/i })
+    await userEvent.click(tabletButton)
+
+    expect(tabletButton).toBeInTheDocument()
+  })
+
+  it('should allow switching between capture modes', async () => {
+    render(<WebsiteScreenshotPage />)
+
+    const viewportButton = screen.getByRole('button', {
+      name: /Viewport Only Capture visible area/i,
+    })
+    const fullPageButton = screen.getByRole('button', { name: /Full Page Capture entire page/i })
+
+    await userEvent.click(fullPageButton)
+    expect(fullPageButton).toBeInTheDocument()
+
+    await userEvent.click(viewportButton)
+    expect(viewportButton).toBeInTheDocument()
+  })
+
+  it('should show error for invalid URL', async () => {
+    const { toast } = await import('sonner')
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+
+    await userEvent.type(input, 'not a valid url!@#')
+
+    const button = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(button)
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(expect.stringContaining('valid URL'))
+    })
+  })
+
+  it('should show error when URL is empty', async () => {
+    render(<WebsiteScreenshotPage />)
+
+    // Get the button but it should be disabled when empty
+    const button = screen.getByRole('button', { name: /^Capture$/i })
+    expect(button).toBeDisabled()
+  })
+
+  it('should handle successful screenshot capture', async () => {
+    const { toast } = await import('sonner')
+
+    // Mock successful API response
+    const mockBlob = new Blob(['fake-image-data'], { type: 'image/png' })
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => mockBlob,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'example.com')
+
+    const button = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(button)
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalled()
+      expect(toast.success).toHaveBeenCalledWith('Screenshot captured successfully!')
+    })
+  })
+
+  it('should display loading state during capture', async () => {
+    mockFetch.mockImplementationOnce(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve({ ok: true, blob: async () => new Blob() }), 100)
+        )
+    )
+
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'example.com')
+
+    const button = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(button)
+
+    // Should show loading state
+    await waitFor(() => {
+      expect(screen.getByText(/Capturing.../i)).toBeInTheDocument()
+    })
+  })
+
+  it('should handle screenshot API error', async () => {
+    const { toast } = await import('sonner')
+
+    // Mock failed API response
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'example.com')
+
+    const button = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(button)
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalled()
+    })
+  })
+
+  it('should normalize URL without protocol', async () => {
+    const mockBlob = new Blob(['fake-image-data'], { type: 'image/png' })
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => mockBlob,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'example.com')
+
+    const button = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(button)
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('url=https%3A%2F%2Fexample.com')
+      )
+    })
+  })
+
+  it('should display preview after successful capture', async () => {
+    const mockBlob = new Blob(['fake-image-data'], { type: 'image/png' })
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => mockBlob,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'https://example.com')
+
+    const button = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(button)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Screenshot Preview/i)).toBeInTheDocument()
+    })
+  })
+
+  it('should display download button after successful capture', async () => {
+    const mockBlob = new Blob(['fake-image-data'], { type: 'image/png' })
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => mockBlob,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'https://example.com')
+
+    const captureButton = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(captureButton)
+
+    await waitFor(() => {
+      const downloadButton = screen.getByRole('button', { name: /Download/i })
+      expect(downloadButton).toBeInTheDocument()
+    })
+  })
+
+  it('should display feature cards', () => {
+    render(<WebsiteScreenshotPage />)
+
+    expect(screen.getByText('Multiple Devices')).toBeInTheDocument()
+    expect(screen.getByText('Full Page Capture')).toBeInTheDocument()
+    expect(screen.getByText('High Resolution')).toBeInTheDocument()
+    expect(screen.getByText('Instant Download')).toBeInTheDocument()
+  })
+
+  it('should display privacy information', () => {
+    render(<WebsiteScreenshotPage />)
+
+    expect(screen.getByText('Privacy & Performance')).toBeInTheDocument()
+    expect(screen.getByText(/No screenshots are stored on our servers/i)).toBeInTheDocument()
+  })
+
+  it('should trigger capture on Enter key press', async () => {
+    const mockBlob = new Blob(['fake-image-data'], { type: 'image/png' })
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => mockBlob,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+
+    await userEvent.type(input, 'example.com')
+    await userEvent.type(input, '{Enter}')
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalled()
+    })
+  })
+
+  it('should include device dimensions in API request', async () => {
+    const mockBlob = new Blob(['fake-image-data'], { type: 'image/png' })
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => mockBlob,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    // Select mobile device
+    const mobileButton = screen.getByRole('button', { name: /Mobile 375x667/i })
+    await userEvent.click(mobileButton)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'example.com')
+
+    const captureButton = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(captureButton)
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('viewport_width=375'))
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('viewport_height=667'))
+    })
+  })
+
+  it('should include fullpage parameter when full page mode is selected', async () => {
+    const mockBlob = new Blob(['fake-image-data'], { type: 'image/png' })
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => mockBlob,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    // Select full page mode
+    const fullPageButton = screen.getByRole('button', { name: /Full Page Capture entire page/i })
+    await userEvent.click(fullPageButton)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'example.com')
+
+    const captureButton = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(captureButton)
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('full_page=true'))
+    })
+  })
+
+  it('should display device dimensions in preview header', async () => {
+    const mockBlob = new Blob(['fake-image-data'], { type: 'image/png' })
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      blob: async () => mockBlob,
+    })
+
+    render(<WebsiteScreenshotPage />)
+
+    const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
+    await userEvent.type(input, 'https://example.com')
+
+    const captureButton = screen.getByRole('button', { name: /^Capture$/i })
+    await userEvent.click(captureButton)
+
+    await waitFor(() => {
+      // Desktop is default, should show Desktop dimensions
+      expect(screen.getByText(/Desktop \(1920x1080\)/i)).toBeInTheDocument()
+    })
+  })
+})

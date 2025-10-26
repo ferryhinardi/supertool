@@ -456,7 +456,7 @@ const tools: Tool[] = [
     gradient: 'from-purple-500 to-pink-500',
     features: ['Full Page', 'Device Sizes', 'High Resolution', 'Download'],
     category: 'development',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'Hash Generator & Verifier',

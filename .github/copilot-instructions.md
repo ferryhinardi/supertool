@@ -170,6 +170,8 @@ Every user action must call `trackToolEvent()` from `@/lib/analytics`. Never tra
 
 ### Adding New Tools Checklist
 
+**IMPORTANT**: Always read this checklist before creating a plan for adding new tools.
+
 1. Create `app/tools/[tool-name]/page.tsx` with default export
 2. Add route to `navigation` array in `components/layout/Sidebar.tsx` with Lucide icon
 3. Add tool card to `tools` array in `app/page.tsx` with category, tags, gradient, and features
@@ -183,6 +185,11 @@ Every user action must call `trackToolEvent()` from `@/lib/analytics`. Never tra
    - Add analytics events, UI/UX details, and future enhancements
    - Make each documentation unique with different structure and focus areas
 8. **Update tool documentation** whenever implementation changes to keep docs current
+9. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
+   - `pnpm lint` - ESLint validation
+   - `pnpm exec tsc --noEmit` - Type checking
+   - `pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
+   - `pnpm build` - Production build verification
 
 ### Tool Categories System
 
