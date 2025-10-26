@@ -12,7 +12,11 @@ export const metadata = {
   title: 'SuperTool - Modern Developer Toolkit',
   description: 'Beautiful developer tools for JSON formatting, file uploads, and more',
   icons: {
-    icon: '/favicon.png',
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.png', type: 'image/png' },
+      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
+    ],
   },
 }
 
