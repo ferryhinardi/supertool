@@ -821,6 +821,20 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
+              className={css({
+                display: viewMode === 'grid' ? 'grid' : 'flex',
+                flexDirection: viewMode === 'list' ? 'column' : undefined,
+                gridTemplateColumns:
+                  viewMode === 'grid'
+                    ? {
+                        base: '1',
+                        sm: 'repeat(2, 1fr)',
+                        lg: 'repeat(3, 1fr)',
+                        xl: 'repeat(4, 1fr)',
+                      }
+                    : undefined,
+                gap: viewMode === 'grid' ? '6' : '4',
+              })}
             >
               {filteredTools.map((tool, index) => (
                 <ToolCard
