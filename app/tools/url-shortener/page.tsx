@@ -29,12 +29,10 @@ interface ShortenedUrl {
   originalUrl: string
   shortUrl: string
   createdAt: string
-  clicks: number
-  analytics?: {
-    totalClicks: number
-    uniqueVisitors: number
-    lastClicked?: string
-  }
+  isActive: boolean
+  totalClicks: number
+  uniqueVisitors: number
+  lastClicked?: string
 }
 
 export default function URLShortenerPage() {
@@ -45,24 +43,32 @@ export default function URLShortenerPage() {
   const [selectedUrl, setSelectedUrl] = useState<ShortenedUrl | null>(null)
   const [showQR, setShowQR] = useState<string | null>(null)
 
-  // Load shortened URLs from localStorage on mount
+  // Load shortened URLs from Supabase on mount
   useEffect(() => {
-    const stored = localStorage.getItem('shortenedUrls')
-    if (stored) {
+    const fetchUrls = async () => {
       try {
-        setShortenedUrls(JSON.parse(stored))
+        const response = await fetch('/api/urls')
+        if (response.ok) {
+          const data = await response.json()
+          const urls = data.urls.map((url: any) => ({
+            id: url.shortCode, // Use shortCode as id for consistency
+            shortCode: url.shortCode,
+            originalUrl: url.originalUrl,
+            shortUrl: `${window.location.protocol}//${window.location.host}/s/${url.shortCode}`,
+            createdAt: url.createdAt,
+            isActive: url.isActive,
+            totalClicks: url.totalClicks || 0,
+            uniqueVisitors: url.uniqueVisitors || 0,
+            lastClicked: url.lastClicked,
+          }))
+          setShortenedUrls(urls)
+        }
       } catch (error) {
         console.error('Failed to load shortened URLs:', error)
       }
     }
+    fetchUrls()
   }, [])
-
-  // Save to localStorage whenever shortenedUrls changes
-  useEffect(() => {
-    if (shortenedUrls.length > 0) {
-      localStorage.setItem('shortenedUrls', JSON.stringify(shortenedUrls))
-    }
-  }, [shortenedUrls])
 
   // Validate URL
   const isValidUrl = useMemo(() => {
@@ -105,7 +111,9 @@ export default function URLShortenerPage() {
         originalUrl: url,
         shortUrl: data.shortUrl,
         createdAt: new Date().toISOString(),
-        clicks: 0,
+        isActive: true,
+        totalClicks: 0,
+        uniqueVisitors: 0,
       }
 
       setShortenedUrls((prev) => [newUrl, ...prev])
@@ -152,17 +160,21 @@ export default function URLShortenerPage() {
     img.src = 'data:image/svg+xml;base64,' + btoa(svgData)
   }
 
-  const handleDelete = (id: string) => {
-    setShortenedUrls((prev) => prev.filter((u) => u.id !== id))
-    if (selectedUrl?.id === id) {
+  const handleDelete = async (shortCode: string) => {
+    // Remove from local state immediately for better UX
+    setShortenedUrls((prev) => prev.filter((u) => u.shortCode !== shortCode))
+    if (selectedUrl?.shortCode === shortCode) {
       setSelectedUrl(null)
     }
-    toast.success('URL deleted successfully')
+    toast.success('URL removed from list')
+
+    // Note: In production, you might want to add a DELETE endpoint
+    // to actually remove or deactivate URLs from the database
   }
 
   const stats = useMemo(() => {
     const total = shortenedUrls.length
-    const totalClicks = shortenedUrls.reduce((sum, url) => sum + url.clicks, 0)
+    const totalClicks = shortenedUrls.reduce((sum, url) => sum + (url.totalClicks || 0), 0)
     const avgClicks = total > 0 ? (totalClicks / total).toFixed(1) : '0'
     return { total, totalClicks, avgClicks }
   }, [shortenedUrls])
@@ -724,7 +736,7 @@ export default function URLShortenerPage() {
                       </span>
                       <span className={css({ display: 'flex', alignItems: 'center', gap: '1' })}>
                         <TrendingUp className={css({ h: '3', w: '3' })} />
-                        {item.clicks} clicks
+                        {item.totalClicks} clicks
                       </span>
                     </div>
                   </div>
@@ -749,7 +761,7 @@ export default function URLShortenerPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleDelete(item.id)}
+                      onClick={() => handleDelete(item.shortCode)}
                       className={css({
                         gap: '2',
                         border: '1px solid',
@@ -775,21 +787,21 @@ export default function URLShortenerPage() {
       <Card
         className={css({
           border: '1px solid',
-          borderColor: 'blue.500/20',
-          bg: 'blue.900/10',
+          borderColor: 'green.500/20',
+          bg: 'green.900/10',
           p: { base: '4', sm: '4' },
         })}
       >
         <div className={css({ display: 'flex', gap: '3' })}>
-          <AlertCircle className={css({ h: '5', w: '5', flexShrink: '0', color: 'blue.400' })} />
+          <CheckCircle2 className={css({ h: '5', w: '5', flexShrink: '0', color: 'green.400' })} />
           <div className={css({ spaceY: '1' })}>
-            <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'blue.300' })}>
-              Note about URL storage
+            <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'green.300' })}>
+              Cloud Storage Enabled
             </p>
             <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
-              URLs are stored locally in your browser. To enable cloud storage, analytics tracking,
-              and persistent links, please set up Supabase by following the instructions in the
-              database setup documentation.
+              Your URLs are stored in Supabase with real-time analytics tracking. All shortened
+              links are persistent and accessible across devices. Click tracking is enabled
+              automatically.
             </p>
           </div>
         </div>

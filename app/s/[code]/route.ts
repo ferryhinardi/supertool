@@ -1,36 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabaseClient'
 
-// This would be replaced with actual database in production
-// For now, we'll try to fetch from the API
 export async function GET(request: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   try {
     const { code } = await params
 
-    // In a real implementation, query database here
-    // For demo, we'll redirect to a not found page since we're using in-memory storage
-    // that doesn't persist across API routes
+    // Query Supabase for the short URL
+    const { data, error } = await supabase
+      .from('shortened_urls')
+      .select('original_url, is_active')
+      .eq('short_code', code)
+      .single()
 
-    // Try to fetch from the shorten API
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const host = request.headers.get('host') || 'localhost:3000'
-    const apiUrl = `${protocol}://${host}/api/shorten?code=${code}`
-
-    const response = await fetch(apiUrl)
-
-    if (response.ok) {
-      const data = await response.json()
-
-      // Track analytics (in production, this would update database)
-      // For now, just redirect
-      return NextResponse.redirect(data.originalUrl, 302)
+    if (error || !data || !data.is_active) {
+      // If not found or inactive, redirect to URL shortener page with error
+      const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
+      const host = request.headers.get('host') || 'localhost:3000'
+      return NextResponse.redirect(`${protocol}://${host}/tools/url-shortener?error=notfound`, 302)
     }
 
-    // If not found, redirect to homepage with error
-    return NextResponse.redirect(`${protocol}://${host}/tools/url-shortener?error=notfound`, 302)
+    // Track analytics (fire and forget - don't wait for it to complete)
+    const userAgent = request.headers.get('user-agent') || ''
+    const referer = request.headers.get('referer') || ''
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || ''
+
+    // Insert analytics data
+    supabase
+      .from('url_analytics')
+      .insert({
+        short_code: code,
+        user_agent: userAgent,
+        referrer: referer,
+        ip_address: ip.split(',')[0].trim(),
+      })
+      .then(() => {
+        // Analytics tracked successfully
+      })
+      .catch((analyticsError) => {
+        // Log error but don't fail the redirect
+        console.error('Error tracking analytics:', analyticsError)
+      })
+
+    // Redirect to the original URL
+    return NextResponse.redirect(data.original_url, 302)
   } catch (error) {
     console.error('Error redirecting short URL:', error)
 
-    // Redirect to homepage on error
+    // Redirect to URL shortener page on error
     const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
     const host = request.headers.get('host') || 'localhost:3000'
     return NextResponse.redirect(`${protocol}://${host}/tools/url-shortener?error=server`, 302)

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { nanoid } from 'nanoid'
-
-// Simple in-memory storage for demo (replace with Supabase in production)
-const urlStore = new Map<string, { originalUrl: string; createdAt: string; clicks: number }>()
+import { supabase } from '@/lib/supabaseClient'
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,6 +23,7 @@ export async function POST(request: NextRequest) {
 
     // Generate or use custom short code
     let shortCode: string
+    let customAliasUsed = false
 
     if (customAlias) {
       // Validate custom alias
@@ -42,8 +41,14 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Check if custom alias already exists
-      if (urlStore.has(customAlias)) {
+      // Check if custom alias already exists in Supabase
+      const { data: existing } = await supabase
+        .from('shortened_urls')
+        .select('short_code')
+        .eq('short_code', customAlias)
+        .single()
+
+      if (existing) {
         return NextResponse.json(
           { error: 'This custom alias is already taken. Please choose another.' },
           { status: 409 }
@@ -51,22 +56,45 @@ export async function POST(request: NextRequest) {
       }
 
       shortCode = customAlias
+      customAliasUsed = true
     } else {
       // Generate random short code (6 characters by default)
       shortCode = nanoid(6)
 
       // Ensure uniqueness (very unlikely collision with nanoid, but safety check)
-      while (urlStore.has(shortCode)) {
-        shortCode = nanoid(6)
+      let exists = true
+      let attempts = 0
+      while (exists && attempts < 5) {
+        const { data } = await supabase
+          .from('shortened_urls')
+          .select('short_code')
+          .eq('short_code', shortCode)
+          .single()
+
+        if (!data) {
+          exists = false
+        } else {
+          shortCode = nanoid(6)
+          attempts++
+        }
       }
     }
 
-    // Store the URL mapping
-    urlStore.set(shortCode, {
-      originalUrl: url,
-      createdAt: new Date().toISOString(),
-      clicks: 0,
-    })
+    // Insert into Supabase
+    const { data, error } = await supabase
+      .from('shortened_urls')
+      .insert({
+        short_code: shortCode,
+        original_url: url,
+        custom_alias: customAliasUsed,
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Supabase insert error:', error)
+      return NextResponse.json({ error: 'Failed to create short URL' }, { status: 500 })
+    }
 
     // Build the short URL
     const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
@@ -74,8 +102,8 @@ export async function POST(request: NextRequest) {
     const shortUrl = `${protocol}://${host}/s/${shortCode}`
 
     return NextResponse.json({
-      id: shortCode,
-      shortCode,
+      id: data.id,
+      shortCode: data.short_code,
       shortUrl,
       originalUrl: url,
       success: true,
@@ -96,15 +124,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Short code is required' }, { status: 400 })
     }
 
-    const urlData = urlStore.get(shortCode)
+    const { data, error } = await supabase
+      .from('shortened_urls')
+      .select('*')
+      .eq('short_code', shortCode)
+      .single()
 
-    if (!urlData) {
+    if (error || !data) {
       return NextResponse.json({ error: 'Short URL not found' }, { status: 404 })
     }
 
     return NextResponse.json({
-      shortCode,
-      ...urlData,
+      shortCode: data.short_code,
+      originalUrl: data.original_url,
+      createdAt: data.created_at,
+      isActive: data.is_active,
     })
   } catch (error) {
     console.error('Error fetching URL:', error)
