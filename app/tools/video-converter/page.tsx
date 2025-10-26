@@ -21,6 +21,7 @@ import {
 import { motion } from 'framer-motion'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { trackEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
 
 interface VideoFile {
   id: string
@@ -377,44 +378,88 @@ export default function VideoConverterPage() {
     totalOriginalSize > 0 ? calculateSavings(totalOriginalSize, totalConvertedSize) : 0
 
   return (
-    <div
-      className="space-y-8"
-      style={{
-        margin: '0 auto',
-        maxWidth: '1400px',
-        width: '100%',
-        padding: '2rem 1rem',
-      }}
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '1400px',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8' },
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      })}
     >
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-4 text-center"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem',
+          textAlign: 'center',
+        }}
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 backdrop-blur-sm">
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'indigo.500/20',
+            bg: 'indigo.500/10',
+            px: '4',
+            py: '2',
+            backdropFilter: 'blur(4px)',
+          })}
+        >
           <Video className="h-5 w-5 text-indigo-400" />
           <span className="text-sm font-semibold text-indigo-300">
             Professional Video Conversion
           </span>
         </div>
 
-        <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl">
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'bold',
+          })}
+        >
           <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Video Converter & Compressor
           </span>
         </h1>
 
-        <p className="mx-auto max-w-2xl text-lg text-gray-400">
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '2xl',
+            fontSize: 'lg',
+            color: 'gray.400',
+          })}
+        >
           Convert videos between formats (MP4, WebM, AVI, MOV), compress file sizes, and optimize
           for web. All processing happens in your browser using FFmpeg.
         </p>
 
         {!ffmpegLoaded && (
-          <div className="mx-auto max-w-md">
+          <div className={css({ mx: 'auto', maxW: 'md' })}>
             {loadingFFmpeg ? (
-              <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '2',
+                  fontSize: 'sm',
+                  color: 'gray.400',
+                })}
+              >
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
                 Loading FFmpeg engine...
               </div>
@@ -434,185 +479,227 @@ export default function VideoConverterPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="grid grid-cols-2 gap-4 sm:grid-cols-4"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '1rem',
+            width: '100%',
+            maxWidth: '1400px',
+          }}
+          className="sm:grid-cols-4"
         >
           <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-            <CardContent className="p-4 text-center">
-              <div className="mb-2 text-2xl font-bold text-indigo-400">{videos.length}</div>
-              <div className="text-xs text-gray-400">Total Videos</div>
-            </CardContent>
-          </Card>
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-            <CardContent className="p-4 text-center">
-              <div className="mb-2 text-2xl font-bold text-blue-400">
-                {formatBytes(totalOriginalSize)}
+            <CardContent>
+              <div className={css({ p: '4', textAlign: 'center' })}>
+                <div className="mb-2 text-2xl font-bold text-indigo-400">{videos.length}</div>
+                <div className="text-xs text-gray-400">Total Videos</div>
               </div>
-              <div className="text-xs text-gray-400">Original Size</div>
             </CardContent>
           </Card>
           <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-            <CardContent className="p-4 text-center">
-              <div className="mb-2 text-2xl font-bold text-green-400">
-                {formatBytes(totalConvertedSize)}
+            <CardContent>
+              <div className={css({ p: '4', textAlign: 'center' })}>
+                <div className="mb-2 text-2xl font-bold text-blue-400">
+                  {formatBytes(totalOriginalSize)}
+                </div>
+                <div className="text-xs text-gray-400">Original Size</div>
               </div>
-              <div className="text-xs text-gray-400">Converted Size</div>
             </CardContent>
           </Card>
           <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-            <CardContent className="p-4 text-center">
-              <div className="mb-2 text-2xl font-bold text-purple-400">{totalSavings}%</div>
-              <div className="text-xs text-gray-400">Space Saved</div>
+            <CardContent>
+              <div className={css({ p: '4', textAlign: 'center' })}>
+                <div className="mb-2 text-2xl font-bold text-green-400">
+                  {formatBytes(totalConvertedSize)}
+                </div>
+                <div className="text-xs text-gray-400">Converted Size</div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <CardContent>
+              <div className={css({ p: '4', textAlign: 'center' })}>
+                <div className="mb-2 text-2xl font-bold text-purple-400">{totalSavings}%</div>
+                <div className="text-xs text-gray-400">Space Saved</div>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div
+        className={css({
+          display: 'grid',
+          gap: '6',
+          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          w: 'full',
+          maxW: '1400px',
+        })}
+      >
         {/* Settings Panel */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
+          style={{ width: '100%' }}
+          className="lg:col-span-1"
         >
           <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5 text-indigo-400" />
-                Conversion Settings
-              </CardTitle>
-              <CardDescription>Configure output format and quality</CardDescription>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5 text-indigo-400" />
+                  Conversion Settings
+                </CardTitle>
+                <CardDescription>Configure output format and quality</CardDescription>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Output Format */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-300">Output Format</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {(['mp4', 'webm', 'mkv'] as OutputFormat[]).map((format) => (
-                    <Button
-                      key={format}
-                      variant={outputFormat === format ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setOutputFormat(format)}
-                      className={`${
-                        outputFormat === format
-                          ? 'border-indigo-500/50 bg-indigo-500/20 text-indigo-200'
-                          : 'border-gray-700'
-                      }`}
-                    >
-                      {format.toUpperCase()}
-                    </Button>
-                  ))}
+            <CardContent>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
+                {/* Output Format */}
+                <div className={css({ spaceY: '2' })}>
+                  <label className="text-sm font-medium text-gray-300">Output Format</label>
+                  <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
+                    {(['mp4', 'webm', 'mkv'] as OutputFormat[]).map((format) => (
+                      <Button
+                        key={format}
+                        variant={outputFormat === format ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setOutputFormat(format)}
+                        className={`${
+                          outputFormat === format
+                            ? 'border-indigo-500/50 bg-indigo-500/20 text-indigo-200'
+                            : 'border-gray-700'
+                        }`}
+                      >
+                        {format.toUpperCase()}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Video Codec */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-300">Video Codec</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {(['h264', 'h265'] as VideoCodec[]).map((codec) => (
-                    <Button
-                      key={codec}
-                      variant={videoCodec === codec ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setVideoCodec(codec)}
-                      className={`${
-                        videoCodec === codec
-                          ? 'border-indigo-500/50 bg-indigo-500/20 text-indigo-200'
-                          : 'border-gray-700'
-                      }`}
-                    >
-                      {codec.toUpperCase()}
-                    </Button>
-                  ))}
+                {/* Video Codec */}
+                <div className={css({ spaceY: '2' })}>
+                  <label className="text-sm font-medium text-gray-300">Video Codec</label>
+                  <div className={css({ display: 'grid', gridTemplateColumns: '2', gap: '2' })}>
+                    {(['h264', 'h265'] as VideoCodec[]).map((codec) => (
+                      <Button
+                        key={codec}
+                        variant={videoCodec === codec ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setVideoCodec(codec)}
+                        className={`${
+                          videoCodec === codec
+                            ? 'border-indigo-500/50 bg-indigo-500/20 text-indigo-200'
+                            : 'border-gray-700'
+                        }`}
+                      >
+                        {codec.toUpperCase()}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Audio Codec */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-300">Audio Codec</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {(['aac', 'mp3', 'opus'] as AudioCodec[]).map((codec) => (
-                    <Button
-                      key={codec}
-                      variant={audioCodec === codec ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setAudioCodec(codec)}
-                      className={`${
-                        audioCodec === codec
-                          ? 'border-indigo-500/50 bg-indigo-500/20 text-indigo-200'
-                          : 'border-gray-700'
-                      }`}
-                    >
-                      {codec.toUpperCase()}
-                    </Button>
-                  ))}
+                {/* Audio Codec */}
+                <div className={css({ spaceY: '2' })}>
+                  <label className="text-sm font-medium text-gray-300">Audio Codec</label>
+                  <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
+                    {(['aac', 'mp3', 'opus'] as AudioCodec[]).map((codec) => (
+                      <Button
+                        key={codec}
+                        variant={audioCodec === codec ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setAudioCodec(codec)}
+                        className={`${
+                          audioCodec === codec
+                            ? 'border-indigo-500/50 bg-indigo-500/20 text-indigo-200'
+                            : 'border-gray-700'
+                        }`}
+                      >
+                        {codec.toUpperCase()}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Quality Slider */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-300">Quality (CRF)</label>
-                  <span className="text-sm font-bold text-indigo-400">{quality}</span>
+                {/* Quality Slider */}
+                <div className={css({ spaceY: '3' })}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    })}
+                  >
+                    <label className="text-sm font-medium text-gray-300">Quality (CRF)</label>
+                    <span className="text-sm font-bold text-indigo-400">{quality}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="51"
+                    value={quality}
+                    onChange={(e) => setQuality(Number(e.target.value))}
+                    className="w-full accent-indigo-500"
+                  />
+                  <div
+                    className={css({
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: 'xs',
+                      color: 'gray.500',
+                    })}
+                  >
+                    <span>Best Quality</span>
+                    <span>Smaller Size</span>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="51"
-                  value={quality}
-                  onChange={(e) => setQuality(Number(e.target.value))}
-                  className="w-full accent-indigo-500"
-                />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Best Quality</span>
-                  <span>Smaller Size</span>
+
+                {/* Resolution */}
+                <div className={css({ spaceY: '2' })}>
+                  <label className="text-sm font-medium text-gray-300">Resolution</label>
+                  <select
+                    value={resolution}
+                    onChange={(e) => setResolution(e.target.value)}
+                    className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-indigo-500 focus:outline-none"
+                  >
+                    <option value="original">Original</option>
+                    <option value="1920:-1">1080p (1920x1080)</option>
+                    <option value="1280:-1">720p (1280x720)</option>
+                    <option value="854:-1">480p (854x480)</option>
+                    <option value="640:-1">360p (640x360)</option>
+                  </select>
                 </div>
-              </div>
 
-              {/* Resolution */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-300">Resolution</label>
-                <select
-                  value={resolution}
-                  onChange={(e) => setResolution(e.target.value)}
-                  className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-indigo-500 focus:outline-none"
-                >
-                  <option value="original">Original</option>
-                  <option value="1920:-1">1080p (1920x1080)</option>
-                  <option value="1280:-1">720p (1280x720)</option>
-                  <option value="854:-1">480p (854x480)</option>
-                  <option value="640:-1">360p (640x360)</option>
-                </select>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2 pt-4">
-                <Button
-                  onClick={handleConvertAll}
-                  disabled={videos.length === 0 || isProcessing || !ffmpegLoaded}
-                  className="w-full gap-2 bg-indigo-600 hover:bg-indigo-700"
-                >
-                  <Zap className="h-4 w-4" />
-                  Convert All Videos
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleDownloadAll}
-                  disabled={!videos.some((v) => v.status === 'completed')}
-                  className="w-full gap-2"
-                >
-                  <Download className="h-4 w-4" />
-                  Download All
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleClearAll}
-                  disabled={videos.length === 0}
-                  className="w-full gap-2 border-red-500/30 text-red-400 hover:bg-red-500/10"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Clear All
-                </Button>
+                {/* Action Buttons */}
+                <div className={css({ spaceY: '2', pt: '4' })}>
+                  <Button
+                    onClick={handleConvertAll}
+                    disabled={videos.length === 0 || isProcessing || !ffmpegLoaded}
+                    className="w-full gap-2 bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    <Zap className="h-4 w-4" />
+                    Convert All Videos
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleDownloadAll}
+                    disabled={!videos.some((v) => v.status === 'completed')}
+                    className="w-full gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Download All
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleClearAll}
+                    disabled={videos.length === 0}
+                    className="w-full gap-2 border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Clear All
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -623,134 +710,193 @@ export default function VideoConverterPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
+          style={{ width: '100%' }}
           className="lg:col-span-2"
         >
           <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileVideo className="h-5 w-5 text-indigo-400" />
-                Videos ({videos.length})
-              </CardTitle>
-              <CardDescription>
-                Drag & drop videos or click to browse. Supports MP4, WebM, AVI, MOV, MKV.
-              </CardDescription>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                <CardTitle className="flex items-center gap-2">
+                  <FileVideo className="h-5 w-5 text-indigo-400" />
+                  Videos ({videos.length})
+                </CardTitle>
+                <CardDescription>
+                  Drag & drop videos or click to browse. Supports MP4, WebM, AVI, MOV, MKV.
+                </CardDescription>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Drag & Drop Zone */}
-              {videos.length === 0 ? (
-                <DragDropZone
-                  onFilesSelected={handleFilesSelected}
-                  accept="video/*"
-                  maxSize={500 * 1024 * 1024}
-                  multiple
-                  disabled={!ffmpegLoaded}
-                />
-              ) : (
-                <>
+            <CardContent>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+                {/* Drag & Drop Zone */}
+                {videos.length === 0 ? (
                   <DragDropZone
                     onFilesSelected={handleFilesSelected}
                     accept="video/*"
                     maxSize={500 * 1024 * 1024}
                     multiple
                     disabled={!ffmpegLoaded}
-                    className="!py-8"
                   />
+                ) : (
+                  <>
+                    <DragDropZone
+                      onFilesSelected={handleFilesSelected}
+                      accept="video/*"
+                      maxSize={500 * 1024 * 1024}
+                      multiple
+                      disabled={!ffmpegLoaded}
+                      className="!py-8"
+                    />
 
-                  <div className="max-h-[600px] space-y-3 overflow-y-auto pr-2">
-                    {videos.map((video) => (
-                      <div
-                        key={video.id}
-                        className="rounded-lg border border-gray-800 bg-gray-900/80 p-4"
-                      >
-                        <div className="flex items-start gap-4">
-                          {/* Video Preview */}
-                          <div className="relative h-20 w-32 flex-shrink-0 overflow-hidden rounded-lg bg-gray-800">
-                            <video
-                              src={video.preview}
-                              className="h-full w-full object-cover"
-                              muted
-                            />
-                            {video.status === 'completed' && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-indigo-500/20">
-                                <Play className="h-6 w-6 text-indigo-400" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Video Info */}
-                          <div className="min-w-0 flex-1">
-                            <div className="mb-2 flex items-start justify-between gap-2">
-                              <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium text-gray-200">
-                                  {video.file.name}
-                                </p>
-                                <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
-                                  <span>{formatBytes(video.originalSize)}</span>
-                                  {video.duration && <span>{formatDuration(video.duration)}</span>}
-                                  {video.convertedSize && (
-                                    <>
-                                      <span>→</span>
-                                      <span className="text-indigo-400">
-                                        {formatBytes(video.convertedSize)}
-                                      </span>
-                                      <span className="rounded bg-indigo-500/20 px-2 py-0.5 text-indigo-300">
-                                        {calculateSavings(video.originalSize, video.convertedSize)}%
-                                        saved
-                                      </span>
-                                    </>
-                                  )}
+                    <div
+                      className={css({
+                        maxH: '[600px]',
+                        spaceY: '3',
+                        overflowY: 'auto',
+                        pr: '2',
+                      })}
+                    >
+                      {videos.map((video) => (
+                        <div
+                          key={video.id}
+                          className={css({
+                            rounded: 'lg',
+                            border: '1px solid',
+                            borderColor: 'gray.800',
+                            bg: 'gray.900/80',
+                            p: '4',
+                          })}
+                        >
+                          <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+                            {/* Video Preview */}
+                            <div
+                              className={css({
+                                position: 'relative',
+                                h: '20',
+                                w: '32',
+                                flexShrink: '0',
+                                overflow: 'hidden',
+                                rounded: 'lg',
+                                bg: 'gray.800',
+                              })}
+                            >
+                              <video
+                                src={video.preview}
+                                className="h-full w-full object-cover"
+                                muted
+                              />
+                              {video.status === 'completed' && (
+                                <div
+                                  className={css({
+                                    position: 'absolute',
+                                    inset: '0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    bg: 'indigo.500/20',
+                                  })}
+                                >
+                                  <Play className="h-6 w-6 text-indigo-400" />
                                 </div>
-                              </div>
+                              )}
+                            </div>
 
-                              {/* Action Buttons */}
-                              <div className="flex gap-1">
-                                {video.status === 'completed' && (
+                            {/* Video Info */}
+                            <div className={css({ minW: '0', flex: '1' })}>
+                              <div
+                                className={css({
+                                  mb: '2',
+                                  display: 'flex',
+                                  alignItems: 'start',
+                                  justifyContent: 'space-between',
+                                  gap: '2',
+                                })}
+                              >
+                                <div className={css({ minW: '0', flex: '1' })}>
+                                  <p className="truncate text-sm font-medium text-gray-200">
+                                    {video.file.name}
+                                  </p>
+                                  <div
+                                    className={css({
+                                      mt: '1',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '3',
+                                      fontSize: 'xs',
+                                      color: 'gray.500',
+                                    })}
+                                  >
+                                    <span>{formatBytes(video.originalSize)}</span>
+                                    {video.duration && (
+                                      <span>{formatDuration(video.duration)}</span>
+                                    )}
+                                    {video.convertedSize && (
+                                      <>
+                                        <span>→</span>
+                                        <span className="text-indigo-400">
+                                          {formatBytes(video.convertedSize)}
+                                        </span>
+                                        <span className="rounded bg-indigo-500/20 px-2 py-0.5 text-indigo-300">
+                                          {calculateSavings(
+                                            video.originalSize,
+                                            video.convertedSize
+                                          )}
+                                          % saved
+                                        </span>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className={css({ display: 'flex', gap: '1' })}>
+                                  {video.status === 'completed' && (
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleDownload(video)}
+                                      className="h-8 w-8 p-0 text-indigo-400 hover:bg-indigo-500/20"
+                                    >
+                                      <Download className="h-4 w-4" />
+                                    </Button>
+                                  )}
                                   <Button
                                     size="sm"
                                     variant="ghost"
-                                    onClick={() => handleDownload(video)}
-                                    className="h-8 w-8 p-0 text-indigo-400 hover:bg-indigo-500/20"
+                                    onClick={() => handleRemove(video.id)}
+                                    className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
                                   >
-                                    <Download className="h-4 w-4" />
+                                    <Trash2 className="h-4 w-4" />
                                   </Button>
-                                )}
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => handleRemove(video.id)}
-                                  className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                                </div>
                               </div>
+
+                              {/* Progress Bar */}
+                              {video.status === 'processing' && (
+                                <div className={css({ spaceY: '1' })}>
+                                  <Progress value={video.progress} className="h-2" />
+                                  <p className="text-xs text-gray-500">
+                                    Converting... {video.progress}%
+                                  </p>
+                                </div>
+                              )}
+
+                              {/* Error Message */}
+                              {video.status === 'error' && (
+                                <p className="text-xs text-red-400">{video.error}</p>
+                              )}
+
+                              {/* Status */}
+                              {video.status === 'pending' && (
+                                <p className="text-xs text-gray-500">Ready to convert</p>
+                              )}
                             </div>
-
-                            {/* Progress Bar */}
-                            {video.status === 'processing' && (
-                              <div className="space-y-1">
-                                <Progress value={video.progress} className="h-2" />
-                                <p className="text-xs text-gray-500">
-                                  Converting... {video.progress}%
-                                </p>
-                              </div>
-                            )}
-
-                            {/* Error Message */}
-                            {video.status === 'error' && (
-                              <p className="text-xs text-red-400">{video.error}</p>
-                            )}
-
-                            {/* Status */}
-                            {video.status === 'pending' && (
-                              <p className="text-xs text-gray-500">Ready to convert</p>
-                            )}
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -761,7 +907,14 @@ export default function VideoConverterPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        style={{
+          display: 'grid',
+          gap: '1rem',
+          gridTemplateColumns: '1fr',
+          width: '100%',
+          maxWidth: '1400px',
+        }}
+        className="sm:grid-cols-2 lg:grid-cols-4"
       >
         {[
           {
@@ -789,14 +942,16 @@ export default function VideoConverterPage() {
             key={index}
             className="border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm"
           >
-            <CardContent className="p-6">
-              <feature.icon className="mb-3 h-8 w-8 text-indigo-400" />
-              <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
-              <p className="text-sm text-gray-500">{feature.description}</p>
+            <CardContent>
+              <div className={css({ p: '6' })}>
+                <feature.icon className="mb-3 h-8 w-8 text-indigo-400" />
+                <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
+                <p className="text-sm text-gray-500">{feature.description}</p>
+              </div>
             </CardContent>
           </Card>
         ))}
       </motion.div>
-    </div>
+    </main>
   )
 }

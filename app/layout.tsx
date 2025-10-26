@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Toaster } from 'sonner'
 import { Sidebar } from '@/components/layout/Sidebar'
-import { css } from '@/styled-system/css'
+import { css } from '@/styled-system/css/css.mjs'
 
 const inter = Inter({ subsets: ['latin'] })
 

@@ -26,6 +26,7 @@ import {
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { trackEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
 
 type TransformOperation =
   | 'uppercase'
@@ -408,34 +409,60 @@ export default function TextTransformerPage() {
       : transformButtons.filter((btn) => btn.category === selectedCategory)
 
   return (
-    <div
-      className="space-y-8"
-      style={{
-        margin: '0 auto',
-        maxWidth: '1400px',
-        width: '100%',
-        padding: '2rem 1rem',
-      }}
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '1400px',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8' },
+      })}
     >
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-4 text-center"
+        className={css({ spaceY: '4', textAlign: 'center' })}
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 backdrop-blur-sm">
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'yellow.500/20',
+            bg: 'yellow.500/10',
+            px: '4',
+            py: '2',
+            backdropFilter: 'blur(4px)',
+          })}
+        >
           <Type className="h-5 w-5 text-yellow-400" />
           <span className="text-sm font-semibold text-yellow-300">20+ Text Transformations</span>
         </div>
 
-        <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl">
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'bold',
+          })}
+        >
           <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
             Text Transformer & Counter
           </span>
         </h1>
 
-        <p className="mx-auto max-w-2xl text-lg text-gray-400">
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '2xl',
+            fontSize: 'lg',
+            color: 'gray.400',
+          })}
+        >
           Powerful text manipulation tool with case conversion, duplicate removal, word/character
           counting, sorting, trimming, and find-replace with regex support
         </p>
@@ -446,7 +473,11 @@ export default function TextTransformerPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6"
+        style={{
+          display: 'grid',
+          gap: '16px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+        }}
       >
         {[
           { label: 'Characters', value: stats.chars, gradient: 'from-purple-500 to-pink-500' },
@@ -471,148 +502,197 @@ export default function TextTransformerPage() {
             transition={{ delay: 0.1 + index * 0.05 }}
           >
             <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-              <CardContent className="p-4 text-center">
+              <CardContent>
                 <div
-                  className={`mb-2 bg-gradient-to-r ${stat.gradient} bg-clip-text text-3xl font-bold text-transparent`}
+                  className={css({
+                    p: '4',
+                    textAlign: 'center',
+                  })}
                 >
-                  {stat.value.toLocaleString()}
+                  <div
+                    className={`mb-2 bg-gradient-to-r ${stat.gradient} bg-clip-text text-3xl font-bold text-transparent`}
+                  >
+                    {stat.value.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-gray-400">{stat.label}</div>
                 </div>
-                <div className="text-xs text-gray-400">{stat.label}</div>
               </CardContent>
             </Card>
           </motion.div>
         ))}
       </motion.div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div
+        className={css({
+          display: 'grid',
+          gap: '6',
+          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+        })}
+      >
         {/* Main Text Area */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="lg:col-span-2"
+          className={css({ gridColumn: { lg: 'span 2' } })}
         >
           <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Type className="h-5 w-5 text-yellow-400" />
-                    Text Input
-                  </CardTitle>
-                  <CardDescription>Enter or paste your text below</CardDescription>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleCopy}
-                    disabled={!inputText}
-                    className="gap-2"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="h-4 w-4" />
-                        Copied
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-4 w-4" />
-                        Copy
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDownload}
-                    disabled={!inputText}
-                    className="gap-2"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleReset}
-                    disabled={!inputText}
-                    className="gap-2"
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                    Clear
-                  </Button>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '4',
+                  })}
+                >
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Type className="h-5 w-5 text-yellow-400" />
+                      Text Input
+                    </CardTitle>
+                    <CardDescription>Enter or paste your text below</CardDescription>
+                  </div>
+                  <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCopy}
+                      disabled={!inputText}
+                      className="gap-2"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="h-4 w-4" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDownload}
+                      disabled={!inputText}
+                      className="gap-2"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleReset}
+                      disabled={!inputText}
+                      className="gap-2"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      Clear
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <Textarea
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="Start typing or paste your text here..."
-                className="min-h-[400px] font-mono text-base"
-              />
+              <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                <Textarea
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="Start typing or paste your text here..."
+                  className="min-h-[400px] font-mono text-base"
+                />
+              </div>
             </CardContent>
           </Card>
 
           {/* Find & Replace */}
-          <Card className="mt-6 border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              mt: '6',
+              border: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="h-5 w-5 text-blue-400" />
-                Find & Replace
-              </CardTitle>
-              <CardDescription>Search and replace text with regex support</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-300">Find</label>
-                  <Input
-                    value={findText}
-                    onChange={(e) => setFindText(e.target.value)}
-                    placeholder="Search text or regex pattern"
-                    className="font-mono"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-300">Replace with</label>
-                  <Input
-                    value={replaceText}
-                    onChange={(e) => setReplaceText(e.target.value)}
-                    placeholder="Replacement text"
-                    className="font-mono"
-                  />
-                </div>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="h-5 w-5 text-blue-400" />
+                  Find & Replace
+                </CardTitle>
+                <CardDescription>Search and replace text with regex support</CardDescription>
               </div>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <label className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={useRegex}
-                    onChange={(e) => setUseRegex(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
-                  />
-                  <span className="text-sm text-gray-300">Use Regex</span>
-                </label>
-                <label className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={caseSensitive}
-                    onChange={(e) => setCaseSensitive(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
-                  />
-                  <span className="text-sm text-gray-300">Case Sensitive</span>
-                </label>
-                <Button
-                  onClick={handleFindReplace}
-                  disabled={!findText || !inputText}
-                  className="gap-2 bg-blue-600 hover:bg-blue-700"
+            </CardHeader>
+            <CardContent>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gap: '4',
+                    gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+                  })}
                 >
-                  <Replace className="h-4 w-4" />
-                  Replace All
-                </Button>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-300">Find</label>
+                    <Input
+                      value={findText}
+                      onChange={(e) => setFindText(e.target.value)}
+                      placeholder="Search text or regex pattern"
+                      className="font-mono"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-300">Replace with</label>
+                    <Input
+                      value={replaceText}
+                      onChange={(e) => setReplaceText(e.target.value)}
+                      placeholder="Replacement text"
+                      className="font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    gap: '4',
+                  })}
+                >
+                  <label className="flex cursor-pointer items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={useRegex}
+                      onChange={(e) => setUseRegex(e.target.checked)}
+                      className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+                    />
+                    <span className="text-sm text-gray-300">Use Regex</span>
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={caseSensitive}
+                      onChange={(e) => setCaseSensitive(e.target.checked)}
+                      className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+                    />
+                    <span className="text-sm text-gray-300">Case Sensitive</span>
+                  </label>
+                  <Button
+                    onClick={handleFindReplace}
+                    disabled={!findText || !inputText}
+                    className="gap-2 bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Replace className="h-4 w-4" />
+                    Replace All
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -626,60 +706,64 @@ export default function TextTransformerPage() {
         >
           <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-yellow-400" />
-                Transformations
-              </CardTitle>
-              <CardDescription>Apply text transformations instantly</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Category Filter */}
-              <div className="flex flex-wrap gap-2">
-                {categories.map((cat) => {
-                  const Icon = cat.icon
-                  return (
-                    <Button
-                      key={cat.id}
-                      variant={selectedCategory === cat.id ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setSelectedCategory(cat.id)}
-                      className={`gap-1.5 ${
-                        selectedCategory === cat.id
-                          ? 'border-yellow-500/50 bg-yellow-500/20 text-yellow-200'
-                          : 'border-gray-700'
-                      }`}
-                    >
-                      <Icon className="h-3.5 w-3.5" />
-                      {cat.label}
-                    </Button>
-                  )
-                })}
+              <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-yellow-400" />
+                  Transformations
+                </CardTitle>
+                <CardDescription>Apply text transformations instantly</CardDescription>
               </div>
+            </CardHeader>
+            <CardContent>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+                {/* Category Filter */}
+                <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+                  {categories.map((cat) => {
+                    const Icon = cat.icon
+                    return (
+                      <Button
+                        key={cat.id}
+                        variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setSelectedCategory(cat.id)}
+                        className={`gap-1.5 ${
+                          selectedCategory === cat.id
+                            ? 'border-yellow-500/50 bg-yellow-500/20 text-yellow-200'
+                            : 'border-gray-700'
+                        }`}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        {cat.label}
+                      </Button>
+                    )
+                  })}
+                </div>
 
-              {/* Transform Buttons */}
-              <div className="space-y-2">
-                {filteredButtons.map((btn) => {
-                  const Icon = btn.icon
-                  return (
-                    <Button
-                      key={btn.id}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleTransform(btn.id)}
-                      disabled={!inputText}
-                      className="w-full justify-start gap-2 border-gray-700 hover:border-yellow-500/50 hover:bg-yellow-500/10"
-                      title={btn.description}
-                    >
-                      <Icon className="h-4 w-4 text-gray-400" />
-                      <span className="flex-1 text-left">{btn.label}</span>
-                    </Button>
-                  )
-                })}
+                {/* Transform Buttons */}
+                <div className={css({ spaceY: '2' })}>
+                  {filteredButtons.map((btn) => {
+                    const Icon = btn.icon
+                    return (
+                      <Button
+                        key={btn.id}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleTransform(btn.id)}
+                        disabled={!inputText}
+                        className="w-full justify-start gap-2 border-gray-700 hover:border-yellow-500/50 hover:bg-yellow-500/10"
+                        title={btn.description}
+                      >
+                        <Icon className="h-4 w-4 text-gray-400" />
+                        <span className="flex-1 text-left">{btn.label}</span>
+                      </Button>
+                    )
+                  })}
+                </div>
               </div>
             </CardContent>
           </Card>
         </motion.div>
       </div>
-    </div>
+    </main>
   )
 }

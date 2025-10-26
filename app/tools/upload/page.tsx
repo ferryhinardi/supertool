@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { toast } from 'sonner'
 import { Upload, Check, Copy, ExternalLink, RotateCcw, FileUp } from 'lucide-react'
+import { css } from '@/styled-system/css'
 
 export default function UploadTool() {
   const [file, setFile] = useState<File | null>(null)
@@ -87,204 +88,708 @@ export default function UploadTool() {
 
   return (
     <main
-      className="space-y-8"
-      style={{
-        margin: '0 auto',
-        maxWidth: '1200px',
-        width: '100%',
-        padding: '2rem 1rem',
-      }}
+      className={css({
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+      })}
     >
-      {/* Header */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-4">
+      <div
+        className={css({
+          w: 'full',
+          maxW: '1200px',
+          spaceY: { base: '6', sm: '8' },
+        })}
+      >
+        {/* Header */}
+        <div
+          className={css({
+            spaceY: { base: '3', sm: '4' },
+          })}
+        >
           <div
-            className="animate-pulse rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700 p-4 shadow-2xl shadow-blue-500/60"
-            style={{ animationDuration: '2s' }}
+            className={css({
+              display: 'flex',
+              flexDirection: { base: 'column', sm: 'row' },
+              alignItems: { base: 'start', sm: 'center' },
+              gap: { base: '3', sm: '4' },
+            })}
           >
-            <FileUp className="h-8 w-8 text-white" />
-          </div>
-          <div>
-            <h1 className="bg-gradient-to-r from-blue-300 via-cyan-400 to-teal-300 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-lg md:text-5xl">
-              File Upload
-            </h1>
-            <p className="text-base text-gray-300 md:text-lg">
-              Upload files to cloud storage with instant sharing
-            </p>
+            <div
+              className={css({
+                animation: 'pulse 2s infinite',
+                rounded: '2xl',
+                bg: 'linear-gradient(to bottom right, #2563eb, #0891b2, #1d4ed8)',
+                p: { base: '3', sm: '4' },
+                shadow: '2xl',
+                boxShadow: '0 25px 50px -12px rgba(37, 99, 235, 0.6)',
+              })}
+            >
+              <FileUp
+                className={css({
+                  h: { base: '7', sm: '8' },
+                  w: { base: '7', sm: '8' },
+                  color: 'white',
+                })}
+              />
+            </div>
+            <div className={css({ spaceY: { base: '1', sm: '2' } })}>
+              <h1
+                className={css({
+                  bgGradient: 'to-r',
+                  gradientFrom: 'blue.300',
+                  gradientVia: 'cyan.400',
+                  gradientTo: 'teal.300',
+                  bgClip: 'text',
+                  fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
+                  fontWeight: 'extrabold',
+                  lineHeight: 'tight',
+                  color: 'transparent',
+                  textShadow: '0 10px 15px rgba(0, 0, 0, 0.3)',
+                })}
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                File Upload
+              </h1>
+              <p
+                className={css({
+                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
+                  color: 'gray.300',
+                  lineHeight: 'relaxed',
+                })}
+              >
+                Upload files to cloud storage with instant sharing
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Upload Area */}
-      <Card className="glass-card border-2 border-blue-500/30 shadow-2xl shadow-blue-500/20">
-        <CardContent className="space-y-6 p-8">
-          {!publicUrl ? (
-            <>
-              <DragDropZone
-                onFilesSelected={handleFilesSelected}
-                disabled={uploading}
-                maxSize={10 * 1024 * 1024} // 10MB
-              />
+        {/* Upload Area */}
+        <Card className="glass-card border-2 border-blue-500/30 shadow-2xl shadow-blue-500/20">
+          <CardContent>
+            <div
+              className={css({
+                spaceY: { base: '5', sm: '6' },
+                p: { base: '5', sm: '6', md: '8' },
+              })}
+            >
+              {!publicUrl ? (
+                <>
+                  <DragDropZone
+                    onFilesSelected={handleFilesSelected}
+                    disabled={uploading}
+                    maxSize={10 * 1024 * 1024} // 10MB
+                  />
 
-              {file && (
-                <div className="space-y-6">
-                  {/* File info */}
-                  <div className="glass flex items-center justify-between rounded-xl border-2 border-cyan-500/30 p-6 shadow-lg shadow-cyan-500/20">
-                    <div>
-                      <p className="text-lg font-semibold text-white">{file.name}</p>
-                      <p className="text-sm text-gray-300">
-                        {formatFileSize(file.size)} • {file.type || 'Unknown type'}
-                      </p>
-                    </div>
-                    <Badge
-                      variant="info"
-                      className="bg-gradient-to-r from-blue-500 to-cyan-500 px-4 py-2 text-sm font-semibold shadow-lg"
+                  {file && (
+                    <div
+                      className={css({
+                        spaceY: { base: '5', sm: '6' },
+                      })}
                     >
-                      {file.type ? 'Valid' : 'No type'}
-                    </Badge>
-                  </div>
+                      {/* File info */}
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexDirection: { base: 'column', sm: 'row' },
+                          alignItems: { base: 'start', sm: 'center' },
+                          justifyContent: 'space-between',
+                          gap: { base: '4', sm: '0' },
+                          rounded: 'xl',
+                          border: '2px solid',
+                          borderColor: 'cyan.500/30',
+                          bg: 'rgba(6, 182, 212, 0.05)',
+                          p: { base: '5', sm: '6' },
+                          shadow: 'lg',
+                          boxShadow: '0 10px 15px rgba(6, 182, 212, 0.2)',
+                          backdropFilter: 'blur(16px)',
+                        })}
+                      >
+                        <div className={css({ spaceY: '2', minW: 0, flex: 1 })}>
+                          <p
+                            className={css({
+                              fontSize: { base: 'base', sm: 'lg' },
+                              fontWeight: 'semibold',
+                              color: 'white',
+                              wordBreak: 'break-word',
+                            })}
+                          >
+                            {file.name}
+                          </p>
+                          <p
+                            className={css({
+                              fontSize: { base: 'xs', sm: 'sm' },
+                              color: 'gray.300',
+                            })}
+                          >
+                            {formatFileSize(file.size)} • {file.type || 'Unknown type'}
+                          </p>
+                        </div>
+                        <Badge
+                          variant="info"
+                          className={css({
+                            flexShrink: 0,
+                            bgGradient: 'to-r',
+                            gradientFrom: 'blue.500',
+                            gradientTo: 'cyan.500',
+                            px: { base: '3', sm: '4' },
+                            py: { base: '1.5', sm: '2' },
+                            fontSize: { base: 'xs', sm: 'sm' },
+                            fontWeight: 'semibold',
+                            shadow: 'lg',
+                          })}
+                        >
+                          {file.type ? 'Valid' : 'No type'}
+                        </Badge>
+                      </div>
 
-                  {/* Upload progress */}
-                  {uploading && (
-                    <div className="space-y-3">
-                      <Progress value={uploadProgress} showPercentage gradient />
-                      <p className="text-center text-base font-medium text-cyan-300">
-                        Uploading to cloud storage...
-                      </p>
+                      {/* Upload progress */}
+                      {uploading && (
+                        <div
+                          className={css({
+                            spaceY: { base: '2', sm: '3' },
+                          })}
+                        >
+                          <Progress value={uploadProgress} showPercentage gradient />
+                          <p
+                            className={css({
+                              textAlign: 'center',
+                              fontSize: { base: 'sm', sm: 'base' },
+                              fontWeight: 'medium',
+                              color: 'cyan.300',
+                            })}
+                          >
+                            Uploading to cloud storage...
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Upload button */}
+                      <Button
+                        onClick={handleUpload}
+                        disabled={uploading}
+                        className={css({
+                          position: 'relative',
+                          w: 'full',
+                          overflow: 'hidden',
+                          bgGradient: 'to-r',
+                          gradientFrom: 'blue.600',
+                          gradientVia: 'cyan.600',
+                          gradientTo: 'teal.600',
+                          px: { base: '6', sm: '8' },
+                          py: { base: '6', sm: '7' },
+                          fontSize: { base: 'base', sm: 'lg' },
+                          fontWeight: 'semibold',
+                          shadow: '2xl',
+                          boxShadow: '0 25px 50px -12px rgba(37, 99, 235, 0.5)',
+                          transition: 'all 0.3s',
+                          _hover: {
+                            transform: 'scale(1.02)',
+                            bgGradient: 'to-r',
+                            gradientFrom: 'blue.700',
+                            gradientVia: 'cyan.700',
+                            gradientTo: 'teal.700',
+                            boxShadow: '0 25px 50px -12px rgba(6, 182, 212, 0.6)',
+                          },
+                          _active: {
+                            transform: 'scale(0.98)',
+                          },
+                        })}
+                        size="lg"
+                      >
+                        {uploading ? (
+                          <>
+                            <Upload
+                              className={css({
+                                mr: '2',
+                                h: { base: '5', sm: '6' },
+                                w: { base: '5', sm: '6' },
+                                animation: 'bounce 1s infinite',
+                              })}
+                            />
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <Upload
+                              className={css({
+                                mr: '2',
+                                h: { base: '5', sm: '6' },
+                                w: { base: '5', sm: '6' },
+                              })}
+                            />
+                            Upload to Cloud
+                          </>
+                        )}
+                      </Button>
                     </div>
                   )}
-
-                  {/* Upload button */}
-                  <Button
-                    onClick={handleUpload}
-                    disabled={uploading}
-                    className="group relative w-full overflow-hidden bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 px-8 py-7 text-lg font-semibold shadow-2xl shadow-blue-500/50 transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 hover:shadow-2xl hover:shadow-cyan-500/60"
-                    size="lg"
+                </>
+              ) : (
+                // Success state
+                <div
+                  className={css({
+                    spaceY: { base: '5', sm: '6' },
+                    textAlign: 'center',
+                  })}
+                >
+                  <div
+                    className={css({
+                      mb: { base: '5', sm: '6' },
+                      display: 'inline-flex',
+                      rounded: 'full',
+                      bgGradient: 'to-r',
+                      gradientFrom: 'green.500/20',
+                      gradientTo: 'emerald.500/20',
+                      p: { base: '5', sm: '6' },
+                      shadow: '2xl',
+                      boxShadow: '0 25px 50px -12px rgba(34, 197, 94, 0.5)',
+                    })}
                   >
-                    {uploading ? (
-                      <>
-                        <Upload className="mr-2 h-6 w-6 animate-bounce" />
-                        Uploading...
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="mr-2 h-6 w-6" />
-                        Upload to Cloud
-                      </>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-teal-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <Check
+                      className={css({
+                        h: { base: '14', sm: '16' },
+                        w: { base: '14', sm: '16' },
+                        color: 'green.400',
+                      })}
+                    />
+                  </div>
+
+                  <div className={css({ spaceY: { base: '2', sm: '3' } })}>
+                    <h3
+                      className={css({
+                        bgGradient: 'to-r',
+                        gradientFrom: 'green.300',
+                        gradientTo: 'emerald.300',
+                        bgClip: 'text',
+                        fontSize: { base: 'xl', sm: '2xl' },
+                        fontWeight: 'bold',
+                        color: 'transparent',
+                        textShadow: '0 10px 15px rgba(0, 0, 0, 0.3)',
+                      })}
+                      style={{
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      }}
+                    >
+                      Upload Successful!
+                    </h3>
+                    <p
+                      className={css({
+                        fontSize: { base: 'base', sm: 'lg' },
+                        color: 'gray.300',
+                      })}
+                    >
+                      Your file is now available via a public URL
+                    </p>
+                  </div>
+
+                  {/* File details */}
+                  <div
+                    className={css({
+                      rounded: 'xl',
+                      border: '2px solid',
+                      borderColor: 'green.500/30',
+                      bg: 'rgba(34, 197, 94, 0.05)',
+                      p: { base: '5', sm: '6' },
+                      textAlign: 'left',
+                      shadow: 'lg',
+                      boxShadow: '0 10px 15px rgba(34, 197, 94, 0.2)',
+                      backdropFilter: 'blur(16px)',
+                      spaceY: { base: '3', sm: '4' },
+                    })}
+                  >
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: { base: 'start', sm: 'center' },
+                        flexDirection: { base: 'column', sm: 'row' },
+                        justifyContent: 'space-between',
+                        gap: { base: '1', sm: '0' },
+                      })}
+                    >
+                      <span
+                        className={css({
+                          fontSize: { base: 'xs', sm: 'sm' },
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        File name:
+                      </span>
+                      <span
+                        className={css({
+                          fontSize: { base: 'xs', sm: 'sm' },
+                          fontWeight: 'semibold',
+                          color: 'white',
+                          wordBreak: 'break-word',
+                        })}
+                      >
+                        {file?.name}
+                      </span>
+                    </div>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: { base: 'start', sm: 'center' },
+                        flexDirection: { base: 'column', sm: 'row' },
+                        justifyContent: 'space-between',
+                        gap: { base: '1', sm: '0' },
+                      })}
+                    >
+                      <span
+                        className={css({
+                          fontSize: { base: 'xs', sm: 'sm' },
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Size:
+                      </span>
+                      <span
+                        className={css({
+                          fontSize: { base: 'xs', sm: 'sm' },
+                          fontWeight: 'semibold',
+                          color: 'white',
+                        })}
+                      >
+                        {file && formatFileSize(file.size)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* URL display */}
+                  <div
+                    className={css({
+                      spaceY: { base: '3', sm: '4' },
+                      rounded: 'xl',
+                      border: '2px solid',
+                      borderColor: 'blue.500/30',
+                      bg: 'rgba(37, 99, 235, 0.05)',
+                      p: { base: '5', sm: '6' },
+                      shadow: 'lg',
+                      boxShadow: '0 10px 15px rgba(37, 99, 235, 0.2)',
+                      backdropFilter: 'blur(16px)',
+                    })}
+                  >
+                    <p
+                      className={css({
+                        textAlign: 'left',
+                        fontSize: { base: 'sm', sm: 'base' },
+                        fontWeight: 'semibold',
+                        color: 'gray.300',
+                      })}
+                    >
+                      Public URL:
+                    </p>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        flexDirection: { base: 'column', sm: 'row' },
+                        alignItems: { base: 'stretch', sm: 'center' },
+                        gap: { base: '3', sm: '3' },
+                      })}
+                    >
+                      <input
+                        type="text"
+                        value={publicUrl}
+                        readOnly
+                        className={css({
+                          flex: 1,
+                          rounded: 'xl',
+                          border: '2px solid',
+                          borderColor: 'cyan.500/50',
+                          bg: 'gray.900/80',
+                          px: { base: '3', sm: '4' },
+                          py: { base: '3', sm: '3' },
+                          fontFamily: 'mono',
+                          fontSize: { base: 'xs', sm: 'sm' },
+                          color: 'white',
+                          shadow: 'inner',
+                          minH: { base: '12', sm: 'auto' },
+                          _focus: {
+                            outline: 'none',
+                            borderColor: 'cyan.500',
+                            ring: '2px',
+                            ringColor: 'cyan.500/50',
+                          },
+                        })}
+                      />
+                      <div
+                        className={css({
+                          display: 'flex',
+                          gap: '3',
+                        })}
+                      >
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={handleCopy}
+                          className={css({
+                            h: { base: '12', sm: '12' },
+                            w: { base: '12', sm: '12' },
+                            flexShrink: 0,
+                            transition: 'all 0.2s',
+                            ...(copied
+                              ? {
+                                  border: '2px solid',
+                                  borderColor: 'green.500',
+                                  bg: 'green.500/30',
+                                  shadow: 'lg',
+                                  boxShadow: '0 10px 15px rgba(34, 197, 94, 0.5)',
+                                }
+                              : {
+                                  border: '2px solid',
+                                  borderColor: 'cyan.500/50',
+                                  _hover: {
+                                    borderColor: 'cyan.500',
+                                    bg: 'cyan.500/20',
+                                  },
+                                }),
+                          })}
+                        >
+                          {copied ? (
+                            <Check
+                              className={css({
+                                h: { base: '5', sm: '5' },
+                                w: { base: '5', sm: '5' },
+                                color: 'green.400',
+                              })}
+                            />
+                          ) : (
+                            <Copy
+                              className={css({
+                                h: { base: '5', sm: '5' },
+                                w: { base: '5', sm: '5' },
+                              })}
+                            />
+                          )}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          asChild
+                          className={css({
+                            h: { base: '12', sm: '12' },
+                            w: { base: '12', sm: '12' },
+                            flexShrink: 0,
+                            border: '2px solid',
+                            borderColor: 'blue.500/50',
+                            _hover: {
+                              borderColor: 'blue.500',
+                              bg: 'blue.500/20',
+                            },
+                          })}
+                        >
+                          <a href={publicUrl} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink
+                              className={css({
+                                h: { base: '5', sm: '5' },
+                                w: { base: '5', sm: '5' },
+                              })}
+                            />
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Reset button */}
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    className={css({
+                      w: 'full',
+                      border: '2px solid',
+                      borderColor: 'purple.500/50',
+                      bg: 'purple.500/10',
+                      py: { base: '5', sm: '6' },
+                      fontSize: { base: 'sm', sm: 'base' },
+                      fontWeight: 'semibold',
+                      _hover: {
+                        borderColor: 'purple.500',
+                        bg: 'purple.500/20',
+                      },
+                    })}
+                  >
+                    <RotateCcw
+                      className={css({
+                        mr: '2',
+                        h: { base: '4', sm: '5' },
+                        w: { base: '4', sm: '5' },
+                      })}
+                    />
+                    Upload Another File
                   </Button>
                 </div>
               )}
-            </>
-          ) : (
-            // Success state
-            <div className="space-y-6 text-center">
-              <div className="mb-6 inline-flex rounded-full bg-gradient-to-r from-green-500/20 to-emerald-500/20 p-6 shadow-2xl shadow-green-500/50">
-                <Check className="h-16 w-16 text-green-400" />
-              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-              <div>
-                <h3 className="mb-2 bg-gradient-to-r from-green-300 to-emerald-300 bg-clip-text text-2xl font-bold text-transparent drop-shadow-lg">
-                  Upload Successful!
-                </h3>
-                <p className="text-lg text-gray-300">Your file is now available via a public URL</p>
-              </div>
-
-              {/* File details */}
-              <div className="glass rounded-xl border-2 border-green-500/30 p-6 text-left shadow-lg shadow-green-500/20">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-300">File name:</span>
-                  <span className="text-sm font-semibold text-white">{file?.name}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-300">Size:</span>
-                  <span className="text-sm font-semibold text-white">
-                    {file && formatFileSize(file.size)}
-                  </span>
-                </div>
-              </div>
-
-              {/* URL display */}
-              <div className="glass space-y-4 rounded-xl border-2 border-blue-500/30 p-6 shadow-lg shadow-blue-500/20">
-                <p className="text-left text-base font-semibold text-gray-300">Public URL:</p>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="text"
-                    value={publicUrl}
-                    readOnly
-                    className="flex-1 rounded-xl border-2 border-cyan-500/50 bg-gray-900/80 px-4 py-3 font-mono text-sm text-white shadow-inner"
-                  />
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleCopy}
-                    className={`h-12 w-12 transition-all ${
-                      copied
-                        ? 'border-2 border-green-500 bg-green-500/30 shadow-lg shadow-green-500/50'
-                        : 'border-2 border-cyan-500/50 hover:border-cyan-500 hover:bg-cyan-500/20'
-                    }`}
-                  >
-                    {copied ? (
-                      <Check className="h-5 w-5 text-green-400" />
-                    ) : (
-                      <Copy className="h-5 w-5" />
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    asChild
-                    className="h-12 w-12 border-2 border-blue-500/50 hover:border-blue-500 hover:bg-blue-500/20"
-                  >
-                    <a href={publicUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-5 w-5" />
-                    </a>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Reset button */}
-              <Button
-                onClick={handleReset}
-                variant="outline"
-                className="w-full border-2 border-purple-500/50 bg-purple-500/10 py-6 text-base font-semibold hover:border-purple-500 hover:bg-purple-500/20"
+        {/* Info Card */}
+        <Card className="glass-card border-2 border-cyan-500/30 shadow-xl shadow-cyan-500/20">
+          <CardHeader>
+            <div
+              className={css({
+                spaceY: { base: '2', sm: '3' },
+                p: { base: '5', sm: '6' },
+              })}
+            >
+              <CardTitle
+                className={css({
+                  bgGradient: 'to-r',
+                  gradientFrom: 'cyan.300',
+                  gradientTo: 'blue.300',
+                  bgClip: 'text',
+                  fontSize: { base: 'xl', sm: '2xl' },
+                  fontWeight: 'bold',
+                  color: 'transparent',
+                  textShadow: '0 10px 15px rgba(0, 0, 0, 0.3)',
+                })}
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
               >
-                <RotateCcw className="mr-2 h-5 w-5" />
-                Upload Another File
-              </Button>
+                Upload Information
+              </CardTitle>
+              <CardDescription
+                className={css({
+                  fontSize: { base: 'sm', sm: 'base' },
+                  color: 'gray.300',
+                  lineHeight: 'relaxed',
+                })}
+              >
+                Files are stored securely in cloud storage with instant CDN delivery
+              </CardDescription>
             </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Info Card */}
-      <Card className="glass-card border-2 border-cyan-500/30 shadow-xl shadow-cyan-500/20">
-        <CardHeader>
-          <CardTitle className="bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-2xl font-bold text-transparent drop-shadow-lg">
-            Upload Information
-          </CardTitle>
-          <CardDescription className="text-base text-gray-300">
-            Files are stored securely in cloud storage with instant CDN delivery
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-6 text-base md:grid-cols-3">
-            <div className="rounded-lg border-2 border-purple-500/30 bg-purple-500/10 p-4">
-              <p className="font-medium text-purple-300">Max file size</p>
-              <p className="text-lg font-bold text-white">10 MB</p>
+          </CardHeader>
+          <CardContent>
+            <div
+              className={css({
+                p: { base: '5', sm: '6' },
+                display: 'grid',
+                gridTemplateColumns: { base: '1', sm: 'repeat(3, 1fr)' },
+                gap: { base: '4', sm: '5', md: '6' },
+                fontSize: { base: 'sm', sm: 'base' },
+              })}
+            >
+              <div
+                className={css({
+                  rounded: 'lg',
+                  border: '2px solid',
+                  borderColor: 'purple.500/30',
+                  bg: 'purple.500/10',
+                  p: { base: '4', sm: '5' },
+                  spaceY: { base: '1', sm: '2' },
+                  transition: 'all 0.2s',
+                  _hover: {
+                    borderColor: 'purple.500/50',
+                    bg: 'purple.500/15',
+                    transform: 'translateY(-2px)',
+                  },
+                })}
+              >
+                <p
+                  className={css({
+                    fontWeight: 'medium',
+                    color: 'purple.300',
+                    fontSize: { base: 'xs', sm: 'sm' },
+                  })}
+                >
+                  Max file size
+                </p>
+                <p
+                  className={css({
+                    fontSize: { base: 'lg', sm: 'xl' },
+                    fontWeight: 'bold',
+                    color: 'white',
+                  })}
+                >
+                  10 MB
+                </p>
+              </div>
+              <div
+                className={css({
+                  rounded: 'lg',
+                  border: '2px solid',
+                  borderColor: 'blue.500/30',
+                  bg: 'blue.500/10',
+                  p: { base: '4', sm: '5' },
+                  spaceY: { base: '1', sm: '2' },
+                  transition: 'all 0.2s',
+                  _hover: {
+                    borderColor: 'blue.500/50',
+                    bg: 'blue.500/15',
+                    transform: 'translateY(-2px)',
+                  },
+                })}
+              >
+                <p
+                  className={css({
+                    fontWeight: 'medium',
+                    color: 'blue.300',
+                    fontSize: { base: 'xs', sm: 'sm' },
+                  })}
+                >
+                  Storage
+                </p>
+                <p
+                  className={css({
+                    fontSize: { base: 'lg', sm: 'xl' },
+                    fontWeight: 'bold',
+                    color: 'white',
+                  })}
+                >
+                  Supabase Cloud
+                </p>
+              </div>
+              <div
+                className={css({
+                  rounded: 'lg',
+                  border: '2px solid',
+                  borderColor: 'cyan.500/30',
+                  bg: 'cyan.500/10',
+                  p: { base: '4', sm: '5' },
+                  spaceY: { base: '1', sm: '2' },
+                  transition: 'all 0.2s',
+                  _hover: {
+                    borderColor: 'cyan.500/50',
+                    bg: 'cyan.500/15',
+                    transform: 'translateY(-2px)',
+                  },
+                })}
+              >
+                <p
+                  className={css({
+                    fontWeight: 'medium',
+                    color: 'cyan.300',
+                    fontSize: { base: 'xs', sm: 'sm' },
+                  })}
+                >
+                  URL Type
+                </p>
+                <p
+                  className={css({
+                    fontSize: { base: 'lg', sm: 'xl' },
+                    fontWeight: 'bold',
+                    color: 'white',
+                  })}
+                >
+                  Public CDN
+                </p>
+              </div>
             </div>
-            <div className="rounded-lg border-2 border-blue-500/30 bg-blue-500/10 p-4">
-              <p className="font-medium text-blue-300">Storage</p>
-              <p className="text-lg font-bold text-white">Supabase Cloud</p>
-            </div>
-            <div className="rounded-lg border-2 border-cyan-500/30 bg-cyan-500/10 p-4">
-              <p className="font-medium text-cyan-300">URL Type</p>
-              <p className="text-lg font-bold text-white">Public CDN</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </main>
   )
 }

@@ -22,6 +22,7 @@ import {
   Upload,
   Github,
 } from 'lucide-react'
+import { css } from '@/styled-system/css'
 
 type ViewMode = 'split' | 'editor' | 'preview'
 
@@ -245,30 +246,77 @@ export default function MarkdownEditorPage() {
       />
 
       <div
-        className="relative flex min-h-screen flex-col gap-6"
-        style={{
-          margin: '0 auto',
-          maxWidth: '1400px',
-          width: '100%',
-          padding: '1.5rem 1rem',
-        }}
+        className={css({
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          minH: '100vh',
+          mx: 'auto',
+          maxW: '1400px',
+          w: 'full',
+          px: { base: '4', sm: '6', md: '8' },
+          py: { base: '6', sm: '8', md: '10' },
+          gap: { base: '6', sm: '6', md: '8' },
+        })}
       >
         {/* Header */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-500/30">
-              <FileText className="h-7 w-7 text-white" />
+        <div
+          className={css({
+            display: 'flex',
+            flexDirection: { base: 'column', md: 'row' },
+            alignItems: { base: 'start', md: 'start' },
+            justifyContent: { base: 'start', md: 'space-between' },
+            gap: { base: '4', md: '4' },
+          })}
+        >
+          <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
+            <div
+              className={css({
+                display: 'flex',
+                h: { base: '12', sm: '14' },
+                w: { base: '12', sm: '14' },
+                alignItems: 'center',
+                justifyContent: 'center',
+                rounded: '2xl',
+                bgGradient: 'to-br',
+                gradientFrom: 'green.500',
+                gradientTo: 'emerald.600',
+                shadow: 'lg',
+                boxShadow: '0 10px 15px rgba(34, 197, 94, 0.3)',
+              })}
+            >
+              <FileText
+                className={css({
+                  h: { base: '6', sm: '7' },
+                  w: { base: '6', sm: '7' },
+                  color: 'white',
+                })}
+              />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Markdown Editor & Preview</h1>
-              <p className="mt-1 text-gray-400">
+              <h1
+                className={css({
+                  fontSize: { base: '2xl', sm: '3xl' },
+                  fontWeight: 'bold',
+                  color: 'white',
+                })}
+              >
+                Markdown Editor & Preview
+              </h1>
+              <p
+                className={css({
+                  mt: '1',
+                  fontSize: { base: 'sm', sm: 'base' },
+                  color: 'gray.400',
+                })}
+              >
                 GitHub-flavored markdown with live preview and syntax highlighting
               </p>
             </div>
           </div>
 
           {/* View Mode Controls */}
-          <div className="flex flex-wrap gap-2">
+          <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
             <Button
               variant={viewMode === 'editor' ? 'default' : 'outline'}
               size="sm"
@@ -300,49 +348,66 @@ export default function MarkdownEditorPage() {
         </div>
 
         {/* Stats Bar */}
-        <Card className="border-gray-800 bg-gray-900/50">
-          <CardContent className="flex flex-wrap items-center gap-3 p-4">
-            <Badge variant="outline" className="gap-1.5 border-green-500/30 text-green-400">
-              <CheckCircle2 className="h-3 w-3" />
-              {stats.lines} lines
-            </Badge>
-            <Badge variant="outline" className="gap-1.5 border-blue-500/30 text-blue-400">
-              {stats.words} words
-            </Badge>
-            <Badge variant="outline" className="gap-1.5 border-purple-500/30 text-purple-400">
-              {stats.chars} characters
-            </Badge>
-            {stats.headings > 0 && (
-              <Badge variant="outline" className="gap-1.5 border-orange-500/30 text-orange-400">
-                {stats.headings} headings
-              </Badge>
-            )}
-            {stats.codeBlocks > 0 && (
-              <Badge variant="outline" className="gap-1.5 border-cyan-500/30 text-cyan-400">
-                <Code2 className="h-3 w-3" />
-                {stats.codeBlocks} code blocks
-              </Badge>
-            )}
-            {stats.links > 0 && (
-              <Badge variant="outline" className="gap-1.5 border-pink-500/30 text-pink-400">
-                {stats.links} links
-              </Badge>
-            )}
-            {stats.images > 0 && (
-              <Badge variant="outline" className="gap-1.5 border-yellow-500/30 text-yellow-400">
-                {stats.images} images
-              </Badge>
-            )}
-            {stats.taskLists > 0 && (
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'rgba(17, 24, 39, 0.5)',
+            backdropFilter: 'blur(8px)',
+          })}
+        >
+          <CardContent>
+            <div
+              className={css({
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: '3',
+                p: { base: '4', sm: '5' },
+              })}
+            >
               <Badge variant="outline" className="gap-1.5 border-green-500/30 text-green-400">
-                ✓ {stats.taskLists} tasks
+                <CheckCircle2 className="h-3 w-3" />
+                {stats.lines} lines
               </Badge>
-            )}
+              <Badge variant="outline" className="gap-1.5 border-blue-500/30 text-blue-400">
+                {stats.words} words
+              </Badge>
+              <Badge variant="outline" className="gap-1.5 border-purple-500/30 text-purple-400">
+                {stats.chars} characters
+              </Badge>
+              {stats.headings > 0 && (
+                <Badge variant="outline" className="gap-1.5 border-orange-500/30 text-orange-400">
+                  {stats.headings} headings
+                </Badge>
+              )}
+              {stats.codeBlocks > 0 && (
+                <Badge variant="outline" className="gap-1.5 border-cyan-500/30 text-cyan-400">
+                  <Code2 className="h-3 w-3" />
+                  {stats.codeBlocks} code blocks
+                </Badge>
+              )}
+              {stats.links > 0 && (
+                <Badge variant="outline" className="gap-1.5 border-pink-500/30 text-pink-400">
+                  {stats.links} links
+                </Badge>
+              )}
+              {stats.images > 0 && (
+                <Badge variant="outline" className="gap-1.5 border-yellow-500/30 text-yellow-400">
+                  {stats.images} images
+                </Badge>
+              )}
+              {stats.taskLists > 0 && (
+                <Badge variant="outline" className="gap-1.5 border-green-500/30 text-green-400">
+                  ✓ {stats.taskLists} tasks
+                </Badge>
+              )}
+            </div>
           </CardContent>
         </Card>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap gap-2">
+        <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
           <label htmlFor="file-upload">
             <Button variant="outline" size="sm" className="gap-2" asChild>
               <span>
@@ -381,142 +446,175 @@ export default function MarkdownEditorPage() {
         </div>
 
         {/* Editor and Preview */}
-        <div className="grid flex-1 gap-6 lg:grid-cols-2">
+        <div
+          className={css({
+            display: 'grid',
+            flex: '1',
+            gap: { base: '6', lg: '6' },
+            gridTemplateColumns: { base: '1', lg: 'repeat(2, 1fr)' },
+          })}
+        >
           {/* Editor */}
           {(viewMode === 'editor' || viewMode === 'split') && (
-            <Card className="border-gray-800 bg-gray-900/50">
+            <Card
+              className={css({
+                border: '1px solid',
+                borderColor: 'gray.800',
+                bg: 'rgba(17, 24, 39, 0.5)',
+                backdropFilter: 'blur(8px)',
+              })}
+            >
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Code2 className="h-5 w-5 text-green-500" />
-                  Markdown Editor
-                </CardTitle>
-                <CardDescription>
-                  Write your markdown content using GitHub-flavored syntax
-                </CardDescription>
+                <div className={css({ spaceY: '2', p: { base: '4', sm: '5', md: '6' } })}>
+                  <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <Code2 className={css({ h: '5', w: '5', color: 'green.500' })} />
+                    Markdown Editor
+                  </CardTitle>
+                  <CardDescription>
+                    Write your markdown content using GitHub-flavored syntax
+                  </CardDescription>
+                </div>
               </CardHeader>
               <CardContent>
-                <Textarea
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  placeholder="Start typing markdown here..."
-                  className="min-h-[600px] resize-none border-gray-700 bg-gray-950 font-mono text-gray-100 focus:ring-green-500"
-                />
+                <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                  <Textarea
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    placeholder="Start typing markdown here..."
+                    className="min-h-[600px] resize-none border-gray-700 bg-gray-950 font-mono text-gray-100 focus:ring-green-500"
+                  />
+                </div>
               </CardContent>
             </Card>
           )}
 
           {/* Preview */}
           {(viewMode === 'preview' || viewMode === 'split') && (
-            <Card className="border-gray-800 bg-gray-900/50">
+            <Card
+              className={css({
+                border: '1px solid',
+                borderColor: 'gray.800',
+                bg: 'rgba(17, 24, 39, 0.5)',
+                backdropFilter: 'blur(8px)',
+              })}
+            >
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Eye className="h-5 w-5 text-emerald-500" />
-                  Live Preview
-                </CardTitle>
-                <CardDescription>
-                  See how your markdown will be rendered with GitHub styling
-                </CardDescription>
+                <div className={css({ spaceY: '2', p: { base: '4', sm: '5', md: '6' } })}>
+                  <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <Eye className={css({ h: '5', w: '5', color: 'emerald.500' })} />
+                    Live Preview
+                  </CardTitle>
+                  <CardDescription>
+                    See how your markdown will be rendered with GitHub styling
+                  </CardDescription>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="markdown-preview prose prose-invert min-h-[600px] max-w-none overflow-auto rounded-lg border border-gray-700 bg-gray-950 p-6">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeHighlight, rehypeRaw]}
-                    components={{
-                      // Custom component styling
-                      h1: ({ ...props }) => (
-                        <h1
-                          className="mb-4 border-b border-gray-700 pb-2 text-3xl font-bold"
-                          {...props}
-                        />
-                      ),
-                      h2: ({ ...props }) => (
-                        <h2
-                          className="mt-6 mb-3 border-b border-gray-800 pb-2 text-2xl font-bold"
-                          {...props}
-                        />
-                      ),
-                      h3: ({ ...props }) => (
-                        <h3 className="mt-5 mb-2 text-xl font-bold" {...props} />
-                      ),
-                      a: ({ ...props }) => (
-                        <a
-                          className="text-blue-400 hover:text-blue-300 hover:underline"
-                          {...props}
-                        />
-                      ),
-                      code: ({ className, children, ...props }) => {
-                        const match = /language-(\w+)/.exec(className || '')
-                        return match ? (
-                          <code className={className} {...props}>
-                            {children}
-                          </code>
-                        ) : (
-                          <code
-                            className="rounded bg-gray-800 px-1.5 py-0.5 text-sm text-pink-400"
-                            {...props}
-                          >
-                            {children}
-                          </code>
-                        )
-                      },
-                      pre: ({ ...props }) => (
-                        <pre
-                          className="overflow-x-auto rounded-lg border border-gray-700 bg-gray-900 p-4"
-                          {...props}
-                        />
-                      ),
-                      table: ({ ...props }) => (
-                        <div className="overflow-x-auto">
-                          <table
-                            className="min-w-full border-collapse border border-gray-700"
+                <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                  <div className="markdown-preview prose prose-invert min-h-[600px] w-max max-w-none overflow-auto rounded-lg border border-gray-700 bg-gray-950 p-6">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeHighlight, rehypeRaw]}
+                      components={{
+                        // Custom component styling
+                        h1: ({ ...props }) => (
+                          <h1
+                            className="mb-4 border-b border-gray-700 pb-2 text-3xl font-bold"
                             {...props}
                           />
-                        </div>
-                      ),
-                      th: ({ ...props }) => (
-                        <th
-                          className="border border-gray-700 bg-gray-800 px-4 py-2 text-left font-bold"
-                          {...props}
-                        />
-                      ),
-                      td: ({ ...props }) => (
-                        <td className="border border-gray-700 px-4 py-2" {...props} />
-                      ),
-                      blockquote: ({ ...props }) => (
-                        <blockquote
-                          className="border-l-4 border-gray-600 pl-4 text-gray-400 italic"
-                          {...props}
-                        />
-                      ),
-                      ul: ({ ...props }) => <ul className="list-disc pl-6" {...props} />,
-                      ol: ({ ...props }) => <ol className="list-decimal pl-6" {...props} />,
-                      li: ({ children, ...props }) => {
-                        // Check if this is a task list item
-                        const firstChild = Array.isArray(children) ? children[0] : null
-                        if (firstChild && typeof firstChild === 'object' && 'props' in firstChild) {
-                          const input = firstChild.props?.children?.[0]
-                          if (input?.type === 'input' && input?.props?.type === 'checkbox') {
-                            return (
-                              <li className="flex list-none items-center gap-2" {...props}>
-                                <input
-                                  type="checkbox"
-                                  checked={input.props.checked}
-                                  disabled
-                                  className="h-4 w-4 rounded border-gray-600 bg-gray-800"
-                                />
-                                <span>{firstChild.props.children.slice(1)}</span>
-                              </li>
-                            )
+                        ),
+                        h2: ({ ...props }) => (
+                          <h2
+                            className="mt-6 mb-3 border-b border-gray-800 pb-2 text-2xl font-bold"
+                            {...props}
+                          />
+                        ),
+                        h3: ({ ...props }) => (
+                          <h3 className="mt-5 mb-2 text-xl font-bold" {...props} />
+                        ),
+                        a: ({ ...props }) => (
+                          <a
+                            className="text-blue-400 hover:text-blue-300 hover:underline"
+                            {...props}
+                          />
+                        ),
+                        code: ({ className, children, ...props }) => {
+                          const match = /language-(\w+)/.exec(className || '')
+                          return match ? (
+                            <code className={className} {...props}>
+                              {children}
+                            </code>
+                          ) : (
+                            <code
+                              className="rounded bg-gray-800 px-1.5 py-0.5 text-sm text-pink-400"
+                              {...props}
+                            >
+                              {children}
+                            </code>
+                          )
+                        },
+                        pre: ({ ...props }) => (
+                          <pre
+                            className="overflow-x-auto rounded-lg border border-gray-700 bg-gray-900 p-4"
+                            {...props}
+                          />
+                        ),
+                        table: ({ ...props }) => (
+                          <div className="overflow-x-auto">
+                            <table
+                              className="min-w-full border-collapse border border-gray-700"
+                              {...props}
+                            />
+                          </div>
+                        ),
+                        th: ({ ...props }) => (
+                          <th
+                            className="border border-gray-700 bg-gray-800 px-4 py-2 text-left font-bold"
+                            {...props}
+                          />
+                        ),
+                        td: ({ ...props }) => (
+                          <td className="border border-gray-700 px-4 py-2" {...props} />
+                        ),
+                        blockquote: ({ ...props }) => (
+                          <blockquote
+                            className="border-l-4 border-gray-600 pl-4 text-gray-400 italic"
+                            {...props}
+                          />
+                        ),
+                        ul: ({ ...props }) => <ul className="list-disc pl-6" {...props} />,
+                        ol: ({ ...props }) => <ol className="list-decimal pl-6" {...props} />,
+                        li: ({ children, ...props }) => {
+                          // Check if this is a task list item
+                          const firstChild = Array.isArray(children) ? children[0] : null
+                          if (
+                            firstChild &&
+                            typeof firstChild === 'object' &&
+                            'props' in firstChild
+                          ) {
+                            const input = firstChild.props?.children?.[0]
+                            if (input?.type === 'input' && input?.props?.type === 'checkbox') {
+                              return (
+                                <li className="flex list-none items-center gap-2" {...props}>
+                                  <input
+                                    type="checkbox"
+                                    checked={input.props.checked}
+                                    disabled
+                                    className="h-4 w-4 rounded border-gray-600 bg-gray-800"
+                                  />
+                                  <span>{firstChild.props.children.slice(1)}</span>
+                                </li>
+                              )
+                            }
                           }
-                        }
-                        return <li {...props}>{children}</li>
-                      },
-                      hr: ({ ...props }) => <hr className="my-4 border-gray-700" {...props} />,
-                    }}
-                  >
-                    {value}
-                  </ReactMarkdown>
+                          return <li {...props}>{children}</li>
+                        },
+                        hr: ({ ...props }) => <hr className="my-4 border-gray-700" {...props} />,
+                      }}
+                    >
+                      {value}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -524,16 +622,37 @@ export default function MarkdownEditorPage() {
         </div>
 
         {/* Info Card */}
-        <Card className="border-gray-800 bg-gradient-to-r from-green-500/10 to-emerald-500/10">
-          <CardContent className="flex items-start gap-4 p-6">
-            <Github className="mt-1 h-6 w-6 flex-shrink-0 text-green-400" />
-            <div className="flex-1">
-              <h3 className="mb-2 font-semibold text-white">GitHub-Flavored Markdown Support</h3>
-              <p className="text-sm text-gray-400">
-                This editor supports all GitHub-flavored markdown features including tables, task
-                lists, strikethrough, autolinks, and syntax-highlighted code blocks. Perfect for
-                writing README files, PR summaries, documentation, and more!
-              </p>
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bgGradient: 'to-r',
+            gradientFrom: 'green.500/10',
+            gradientTo: 'emerald.500/10',
+          })}
+        >
+          <CardContent>
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'start',
+                gap: '4',
+                p: { base: '5', sm: '6' },
+              })}
+            >
+              <Github
+                className={css({ mt: '1', h: '6', w: '6', flexShrink: '0', color: 'green.400' })}
+              />
+              <div className={css({ flex: '1' })}>
+                <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'white' })}>
+                  GitHub-Flavored Markdown Support
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  This editor supports all GitHub-flavored markdown features including tables, task
+                  lists, strikethrough, autolinks, and syntax-highlighted code blocks. Perfect for
+                  writing README files, PR summaries, documentation, and more!
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>

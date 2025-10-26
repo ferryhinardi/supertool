@@ -21,6 +21,7 @@ import {
   Calendar,
   Trash2,
 } from 'lucide-react'
+import { css } from '@/styled-system/css'
 
 interface ShortenedUrl {
   id: string
@@ -168,83 +169,206 @@ export default function URLShortenerPage() {
 
   return (
     <div
-      className="space-y-8"
-      style={{
-        margin: '0 auto',
-        maxWidth: '1280px',
-        width: '100%',
-        padding: '2rem 1rem',
-      }}
+      className={css({
+        mx: 'auto',
+        maxW: '1280px',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8' },
+      })}
     >
       {/* Header */}
-      <div className="space-y-4 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 backdrop-blur-sm">
-          <Sparkles className="h-4 w-4 text-cyan-400" />
-          <span className="text-sm font-semibold text-cyan-300">Free URL Shortener</span>
+      <div className={css({ spaceY: { base: '4', sm: '4' }, textAlign: 'center' })}>
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'cyan.500/20',
+            bg: 'cyan.500/10',
+            px: '4',
+            py: '2',
+            backdropFilter: 'blur(4px)',
+          })}
+        >
+          <Sparkles className={css({ h: '4', w: '4', color: 'cyan.400' })} />
+          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'cyan.300' })}>
+            Free URL Shortener
+          </span>
         </div>
-        <h1 className="text-4xl font-extrabold sm:text-5xl">
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <h1
+          className={css({
+            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
+            fontWeight: 'extrabold',
+          })}
+        >
+          <span
+            className={css({
+              bgGradient: 'to-r',
+              gradientFrom: 'cyan.400',
+              gradientVia: 'blue.400',
+              gradientTo: 'purple.400',
+              bgClip: 'text',
+              color: 'transparent',
+            })}
+            style={{
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             URL Shortener & Analytics
           </span>
         </h1>
-        <p className="mx-auto max-w-2xl text-lg text-gray-400">
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '2xl',
+            fontSize: { base: 'base', sm: 'lg' },
+            color: 'gray.400',
+          })}
+        >
           Create short, memorable links with custom aliases. Track clicks and generate QR codes for
           easy sharing.
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="border-cyan-500/20 bg-gradient-to-br from-cyan-900/20 to-blue-900/20 p-6">
-          <div className="flex items-center justify-between">
+      <div
+        className={css({
+          display: 'grid',
+          gridTemplateColumns: { base: '1', sm: 'repeat(3, 1fr)' },
+          gap: { base: '4', sm: '4' },
+        })}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'cyan.500/20',
+            bgGradient: 'to-br',
+            gradientFrom: 'cyan.900/20',
+            gradientTo: 'blue.900/20',
+            p: { base: '5', sm: '6' },
+          })}
+        >
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            })}
+          >
             <div>
-              <p className="text-sm text-gray-400">Total URLs</p>
-              <p className="text-3xl font-bold text-cyan-400">{stats.total}</p>
+              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Total URLs</p>
+              <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'cyan.400' })}>
+                {stats.total}
+              </p>
             </div>
-            <LinkIcon className="h-10 w-10 text-cyan-400/50" />
+            <LinkIcon className={css({ h: '10', w: '10', color: 'cyan.400/50' })} />
           </div>
         </Card>
-        <Card className="border-blue-500/20 bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-6">
-          <div className="flex items-center justify-between">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'blue.500/20',
+            bgGradient: 'to-br',
+            gradientFrom: 'blue.900/20',
+            gradientTo: 'purple.900/20',
+            p: { base: '5', sm: '6' },
+          })}
+        >
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            })}
+          >
             <div>
-              <p className="text-sm text-gray-400">Total Clicks</p>
-              <p className="text-3xl font-bold text-blue-400">{stats.totalClicks}</p>
+              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Clicks</p>
+              <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'blue.400' })}>
+                {stats.totalClicks}
+              </p>
             </div>
-            <TrendingUp className="h-10 w-10 text-blue-400/50" />
+            <TrendingUp className={css({ h: '10', w: '10', color: 'blue.400/50' })} />
           </div>
         </Card>
-        <Card className="border-purple-500/20 bg-gradient-to-br from-purple-900/20 to-pink-900/20 p-6">
-          <div className="flex items-center justify-between">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'purple.500/20',
+            bgGradient: 'to-br',
+            gradientFrom: 'purple.900/20',
+            gradientTo: 'pink.900/20',
+            p: { base: '5', sm: '6' },
+          })}
+        >
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            })}
+          >
             <div>
-              <p className="text-sm text-gray-400">Avg. Clicks</p>
-              <p className="text-3xl font-bold text-purple-400">{stats.avgClicks}</p>
+              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Avg. Clicks</p>
+              <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'purple.400' })}>
+                {stats.avgClicks}
+              </p>
             </div>
-            <BarChart3 className="h-10 w-10 text-purple-400/50" />
+            <BarChart3 className={css({ h: '10', w: '10', color: 'purple.400/50' })} />
           </div>
         </Card>
       </div>
 
       {/* URL Input Section */}
-      <Card className="border-cyan-500/20 bg-gray-900/50 p-6 backdrop-blur-sm">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-200">Enter URL to shorten</label>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
+      <Card
+        className={css({
+          border: '1px solid',
+          borderColor: 'cyan.500/20',
+          bg: 'rgba(17, 24, 39, 0.5)',
+          p: { base: '5', sm: '6' },
+          backdropFilter: 'blur(4px)',
+        })}
+      >
+        <div className={css({ spaceY: { base: '4', sm: '4' } })}>
+          <div className={css({ spaceY: '2' })}>
+            <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}>
+              Enter URL to shorten
+            </label>
+            <div className={css({ display: 'flex', gap: '2' })}>
+              <div className={css({ position: 'relative', flex: '1' })}>
                 <Input
                   type="url"
                   placeholder="https://example.com/very-long-url"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleShorten()}
-                  className="h-12 border-gray-700 bg-gray-800 pr-10"
+                  className={css({
+                    h: { base: '12', sm: '12' },
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    bg: 'gray.800',
+                    pr: '10',
+                  })}
                 />
                 {url && (
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <div
+                    className={css({
+                      position: 'absolute',
+                      insetY: '0',
+                      right: '0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      pr: '3',
+                    })}
+                  >
                     {isValidUrl ? (
-                      <CheckCircle2 className="h-5 w-5 text-green-400" />
+                      <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
                     ) : (
-                      <AlertCircle className="h-5 w-5 text-red-400" />
+                      <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
                     )}
                   </div>
                 )}
@@ -252,7 +376,19 @@ export default function URLShortenerPage() {
               <Button
                 onClick={handleShorten}
                 disabled={!isValidUrl || isLoading}
-                className="h-12 gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 px-8 hover:from-cyan-600 hover:to-blue-600"
+                className={css({
+                  h: { base: '12', sm: '12' },
+                  gap: '2',
+                  bgGradient: 'to-r',
+                  gradientFrom: 'cyan.500',
+                  gradientTo: 'blue.500',
+                  px: { base: '6', sm: '8' },
+                  _hover: {
+                    bgGradient: 'to-r',
+                    gradientFrom: 'cyan.600',
+                    gradientTo: 'blue.600',
+                  },
+                })}
               >
                 {isLoading ? (
                   <>
@@ -270,9 +406,9 @@ export default function URLShortenerPage() {
           </div>
 
           {/* Custom Alias (Optional) */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-200">
-              Custom alias <span className="text-gray-500">(optional)</span>
+          <div className={css({ spaceY: '2' })}>
+            <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}>
+              Custom alias <span className={css({ color: 'gray.500' })}>(optional)</span>
             </label>
             <Input
               type="text"
@@ -281,9 +417,14 @@ export default function URLShortenerPage() {
               onChange={(e) =>
                 setCustomAlias(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
               }
-              className="h-12 border-gray-700 bg-gray-800"
+              className={css({
+                h: { base: '12', sm: '12' },
+                border: '1px solid',
+                borderColor: 'gray.700',
+                bg: 'gray.800',
+              })}
             />
-            <p className="text-xs text-gray-500">
+            <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
               Use lowercase letters, numbers, and hyphens only. Leave empty for auto-generated short
               code.
             </p>
@@ -293,22 +434,66 @@ export default function URLShortenerPage() {
 
       {/* Selected URL Details */}
       {selectedUrl && (
-        <Card className="border-cyan-500/30 bg-gradient-to-br from-cyan-900/20 to-blue-900/20 p-6 backdrop-blur-sm">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-cyan-300">Your Shortened URL</h3>
-              <Badge className="bg-green-500/20 text-green-300">Active</Badge>
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'cyan.500/30',
+            bgGradient: 'to-br',
+            gradientFrom: 'cyan.900/20',
+            gradientTo: 'blue.900/20',
+            p: { base: '5', sm: '6' },
+            backdropFilter: 'blur(4px)',
+          })}
+        >
+          <div className={css({ spaceY: '4' })}>
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              })}
+            >
+              <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
+                Your Shortened URL
+              </h3>
+              <Badge className={css({ bg: 'green.500/20', color: 'green.300' })}>Active</Badge>
             </div>
 
-            <div className="space-y-3">
+            <div className={css({ spaceY: '3' })}>
               <div>
-                <label className="text-xs font-medium text-gray-400">Short URL</label>
-                <div className="mt-1 flex items-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-3">
+                <label className={css({ fontSize: 'xs', fontWeight: 'medium', color: 'gray.400' })}>
+                  Short URL
+                </label>
+                <div
+                  className={css({
+                    mt: '1',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: 'cyan.500/30',
+                    bg: 'cyan.500/10',
+                    p: '3',
+                  })}
+                >
                   <a
                     href={selectedUrl.shortUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 truncate font-mono text-lg font-semibold text-cyan-300 hover:text-cyan-200"
+                    className={css({
+                      flex: '1',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      fontFamily: 'mono',
+                      fontSize: 'lg',
+                      fontWeight: 'semibold',
+                      color: 'cyan.300',
+                      _hover: {
+                        color: 'cyan.200',
+                      },
+                    })}
                   >
                     {selectedUrl.shortUrl}
                   </a>
@@ -316,9 +501,13 @@ export default function URLShortenerPage() {
                     size="sm"
                     variant="ghost"
                     onClick={() => handleCopy(selectedUrl.shortUrl, 'Short URL')}
-                    className="hover:bg-cyan-500/20"
+                    className={css({
+                      _hover: {
+                        bg: 'cyan.500/20',
+                      },
+                    })}
                   >
-                    <Copy className="h-4 w-4" />
+                    <Copy className={css({ h: '4', w: '4' })} />
                   </Button>
                   <Button
                     size="sm"
@@ -326,26 +515,58 @@ export default function URLShortenerPage() {
                     onClick={() =>
                       setShowQR(showQR === selectedUrl.shortCode ? null : selectedUrl.shortCode)
                     }
-                    className="hover:bg-cyan-500/20"
+                    className={css({
+                      _hover: {
+                        bg: 'cyan.500/20',
+                      },
+                    })}
                   >
-                    <QrCode className="h-4 w-4" />
+                    <QrCode className={css({ h: '4', w: '4' })} />
                   </Button>
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-medium text-gray-400">Original URL</label>
-                <div className="mt-1 flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800/50 p-3">
-                  <span className="flex-1 truncate text-sm text-gray-300">
+                <label className={css({ fontSize: 'xs', fontWeight: 'medium', color: 'gray.400' })}>
+                  Original URL
+                </label>
+                <div
+                  className={css({
+                    mt: '1',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    bg: 'rgba(31, 41, 55, 0.5)',
+                    p: '3',
+                  })}
+                >
+                  <span
+                    className={css({
+                      flex: '1',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      fontSize: 'sm',
+                      color: 'gray.300',
+                    })}
+                  >
                     {selectedUrl.originalUrl}
                   </span>
                   <a
                     href={selectedUrl.originalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-gray-300"
+                    className={css({
+                      color: 'gray.400',
+                      _hover: {
+                        color: 'gray.300',
+                      },
+                    })}
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <ExternalLink className={css({ h: '4', w: '4' })} />
                   </a>
                 </div>
               </div>
@@ -353,8 +574,20 @@ export default function URLShortenerPage() {
 
             {/* QR Code Display */}
             {showQR === selectedUrl.shortCode && (
-              <div className="flex items-center justify-center space-y-3 rounded-lg border border-cyan-500/30 bg-white p-6">
-                <div className="text-center">
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  spaceY: '3',
+                  rounded: 'lg',
+                  border: '1px solid',
+                  borderColor: 'cyan.500/30',
+                  bg: 'white',
+                  p: '6',
+                })}
+              >
+                <div className={css({ textAlign: 'center' })}>
                   <QRCodeSVG
                     id={`qr-${selectedUrl.shortCode}`}
                     value={selectedUrl.shortUrl}
@@ -364,9 +597,20 @@ export default function URLShortenerPage() {
                   />
                   <Button
                     onClick={() => handleDownloadQR(selectedUrl.shortUrl, selectedUrl.shortCode)}
-                    className="mt-4 gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
+                    className={css({
+                      mt: '4',
+                      gap: '2',
+                      bgGradient: 'to-r',
+                      gradientFrom: 'cyan.500',
+                      gradientTo: 'blue.500',
+                      _hover: {
+                        bgGradient: 'to-r',
+                        gradientFrom: 'cyan.600',
+                        gradientTo: 'blue.600',
+                      },
+                    })}
                   >
-                    <Download className="h-4 w-4" />
+                    <Download className={css({ h: '4', w: '4' })} />
                     Download QR Code
                   </Button>
                 </div>
@@ -378,28 +622,63 @@ export default function URLShortenerPage() {
 
       {/* URLs List */}
       {shortenedUrls.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-200">Your Shortened URLs</h2>
-            <Badge variant="secondary" className="bg-cyan-500/20 text-cyan-300">
+        <div className={css({ spaceY: '4' })}>
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            })}
+          >
+            <h2 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.200' })}>
+              Your Shortened URLs
+            </h2>
+            <Badge variant="secondary" className={css({ bg: 'cyan.500/20', color: 'cyan.300' })}>
               {shortenedUrls.length} {shortenedUrls.length === 1 ? 'URL' : 'URLs'}
             </Badge>
           </div>
 
-          <div className="space-y-3">
+          <div className={css({ spaceY: '3' })}>
             {shortenedUrls.map((item) => (
               <Card
                 key={item.id}
-                className="border-gray-700 bg-gray-900/50 p-4 backdrop-blur-sm transition-all hover:border-cyan-500/30 hover:bg-gray-900/80"
+                className={css({
+                  border: '1px solid',
+                  borderColor: 'gray.700',
+                  bg: 'rgba(17, 24, 39, 0.5)',
+                  p: { base: '4', sm: '4' },
+                  backdropFilter: 'blur(4px)',
+                  transition: 'all 0.3s',
+                  _hover: {
+                    borderColor: 'cyan.500/30',
+                    bg: 'rgba(17, 24, 39, 0.8)',
+                  },
+                })}
               >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexDirection: { base: 'column', sm: 'row' },
+                    alignItems: { base: 'start', sm: 'center' },
+                    justifyContent: { base: 'start', sm: 'space-between' },
+                    gap: { base: '4', sm: '4' },
+                  })}
+                >
+                  <div className={css({ flex: '1', spaceY: '2' })}>
+                    <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                       <a
                         href={item.shortUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-mono text-lg font-semibold text-cyan-400 hover:text-cyan-300"
+                        className={css({
+                          fontFamily: 'mono',
+                          fontSize: 'lg',
+                          fontWeight: 'semibold',
+                          color: 'cyan.400',
+                          _hover: {
+                            color: 'cyan.300',
+                          },
+                        })}
                       >
                         {item.shortUrl}
                       </a>
@@ -407,41 +686,82 @@ export default function URLShortenerPage() {
                         size="sm"
                         variant="ghost"
                         onClick={() => handleCopy(item.shortUrl, 'Short URL')}
-                        className="h-8 w-8 p-0 hover:bg-cyan-500/20"
+                        className={css({
+                          h: '8',
+                          w: '8',
+                          p: '0',
+                          _hover: {
+                            bg: 'cyan.500/20',
+                          },
+                        })}
                       >
-                        <Copy className="h-3.5 w-3.5" />
+                        <Copy className={css({ h: '3.5', w: '3.5' })} />
                       </Button>
                     </div>
-                    <p className="truncate text-sm text-gray-400">{item.originalUrl}</p>
-                    <div className="flex flex-wrap gap-2 text-xs text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
+                    <p
+                      className={css({
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                      })}
+                    >
+                      {item.originalUrl}
+                    </p>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '2',
+                        fontSize: 'xs',
+                        color: 'gray.500',
+                      })}
+                    >
+                      <span className={css({ display: 'flex', alignItems: 'center', gap: '1' })}>
+                        <Calendar className={css({ h: '3', w: '3' })} />
                         {new Date(item.createdAt).toLocaleDateString()}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <TrendingUp className="h-3 w-3" />
+                      <span className={css({ display: 'flex', alignItems: 'center', gap: '1' })}>
+                        <TrendingUp className={css({ h: '3', w: '3' })} />
                         {item.clicks} clicks
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setSelectedUrl(item)}
-                      className="gap-2 border-cyan-500/30 hover:bg-cyan-500/10"
+                      className={css({
+                        gap: '2',
+                        border: '1px solid',
+                        borderColor: 'cyan.500/30',
+                        _hover: {
+                          bg: 'cyan.500/10',
+                        },
+                      })}
                     >
-                      <QrCode className="h-4 w-4" />
+                      <QrCode className={css({ h: '4', w: '4' })} />
                       QR Code
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleDelete(item.id)}
-                      className="gap-2 border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                      className={css({
+                        gap: '2',
+                        border: '1px solid',
+                        borderColor: 'red.500/30',
+                        color: 'red.400',
+                        _hover: {
+                          bg: 'red.500/10',
+                          color: 'red.300',
+                        },
+                      })}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className={css({ h: '4', w: '4' })} />
                     </Button>
                   </div>
                 </div>
@@ -452,12 +772,21 @@ export default function URLShortenerPage() {
       )}
 
       {/* Info Note */}
-      <Card className="border-blue-500/20 bg-blue-900/10 p-4">
-        <div className="flex gap-3">
-          <AlertCircle className="h-5 w-5 flex-shrink-0 text-blue-400" />
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-blue-300">Note about URL storage</p>
-            <p className="text-xs text-gray-400">
+      <Card
+        className={css({
+          border: '1px solid',
+          borderColor: 'blue.500/20',
+          bg: 'blue.900/10',
+          p: { base: '4', sm: '4' },
+        })}
+      >
+        <div className={css({ display: 'flex', gap: '3' })}>
+          <AlertCircle className={css({ h: '5', w: '5', flexShrink: '0', color: 'blue.400' })} />
+          <div className={css({ spaceY: '1' })}>
+            <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'blue.300' })}>
+              Note about URL storage
+            </p>
+            <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
               URLs are stored locally in your browser. To enable cloud storage, analytics tracking,
               and persistent links, please set up Supabase by following the instructions in the
               database setup documentation.

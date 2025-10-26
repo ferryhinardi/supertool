@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { toast } from 'sonner'
 import { Sparkles, Minimize2, Copy, Download, FileJson } from 'lucide-react'
 import { trackToolEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
 
 export default function JSONBeautifyPage() {
   const [value, setValue] = useState(
@@ -107,17 +108,20 @@ export default function JSONBeautifyPage() {
   return (
     <TooltipProvider>
       <main
-        className="space-y-4 sm:space-y-6 md:space-y-8"
-        style={{
-          margin: '0 auto',
-          maxWidth: '1400px',
-          width: '100%',
-          padding: '1.5rem 1rem',
-        }}
+        className={css({
+          mx: 'auto',
+          maxW: '1400px',
+          w: 'full',
+          px: { base: '4', sm: '6', md: '8' },
+          py: { base: '6', sm: '8', md: '10' },
+          spaceY: { base: '4', sm: '6', md: '8' },
+        })}
       >
         {/* Header */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 sm:gap-4">
+        <div className={css({ spaceY: '3' })}>
+          <div
+            className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
+          >
             <div
               className="animate-pulse rounded-xl bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 p-2.5 shadow-2xl shadow-purple-500/60 sm:rounded-2xl sm:p-4"
               style={{ animationDuration: '2s' }}
@@ -137,14 +141,29 @@ export default function JSONBeautifyPage() {
 
         {/* Stats Bar */}
         <div
-          className="glass-card rounded-xl border-2 border-purple-500/30 shadow-xl shadow-purple-500/20 sm:rounded-2xl"
-          style={{ padding: '1rem' }}
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: 'purple.500/30',
+            bg: 'rgba(139, 92, 246, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
+            shadow: 'xl',
+            boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
+            backdropFilter: 'blur(16px)',
+          })}
         >
           <div
-            className="flex flex-col items-start justify-between sm:flex-row sm:items-center"
-            style={{ gap: '0.75rem' }}
+            className={css({
+              display: 'flex',
+              flexDirection: { base: 'column', sm: 'row' },
+              alignItems: { base: 'start', sm: 'center' },
+              justifyContent: 'space-between',
+              gap: { base: '3', sm: '4' },
+            })}
           >
-            <div className="flex flex-wrap items-center" style={{ gap: '0.5rem' }}>
+            <div
+              className={css({ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2' })}
+            >
               <Badge
                 variant="outline"
                 size="sm"
@@ -186,10 +205,19 @@ export default function JSONBeautifyPage() {
 
         {/* Editor */}
         <div
-          className="glass-card overflow-hidden rounded-xl border-2 border-purple-500/30 shadow-2xl shadow-purple-500/30 sm:rounded-2xl"
-          style={{ padding: '0.75rem' }}
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: 'purple.500/30',
+            bg: 'rgba(139, 92, 246, 0.05)',
+            p: { base: '3', sm: '4' },
+            overflow: 'hidden',
+            shadow: '2xl',
+            boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.3)',
+            backdropFilter: 'blur(16px)',
+          })}
         >
-          <div className="overflow-x-auto">
+          <div className={css({ overflowX: 'auto' })}>
             <CodeMirror
               value={value}
               height="400px"
@@ -209,10 +237,25 @@ export default function JSONBeautifyPage() {
 
         {/* Action Buttons */}
         <div
-          className="glass-card rounded-xl border-2 border-purple-500/30 shadow-xl shadow-purple-500/20 sm:rounded-2xl"
-          style={{ padding: '1rem' }}
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: 'purple.500/30',
+            bg: 'rgba(139, 92, 246, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
+            shadow: 'xl',
+            boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
+            backdropFilter: 'blur(16px)',
+          })}
         >
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap" style={{ gap: '0.5rem' }}>
+          <div
+            className={css({
+              display: 'grid',
+              gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'auto' },
+              gap: '2',
+              sm: { display: 'flex', flexWrap: 'wrap' },
+            })}
+          >
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

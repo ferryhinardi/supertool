@@ -263,6 +263,10 @@ export function Sidebar() {
                   onClick={closeMobileMenu}
                   className={navLinkStyles({ active: isActive })}
                   style={{
+                    paddingLeft: '1rem',
+                    paddingRight: '1rem',
+                    paddingTop: '0.475rem',
+                    paddingBottom: '0.475rem',
                     background: isActive
                       ? 'linear-gradient(to right, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.3), rgba(59, 130, 246, 0.4))'
                       : 'transparent',

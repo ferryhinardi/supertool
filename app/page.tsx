@@ -230,6 +230,7 @@ const tools: Tool[] = [
     category: 'finance',
     new: true,
     popular: true,
+    comingSoon: true,
   },
   {
     title: 'QR Code Generator',
@@ -241,6 +242,7 @@ const tools: Tool[] = [
     features: ['Multiple Types', 'Customizable', 'High Resolution', 'Logo Support'],
     category: 'productivity',
     new: true,
+    comingSoon: true,
   },
   {
     title: 'Password Generator',
@@ -253,6 +255,7 @@ const tools: Tool[] = [
     category: 'security',
     new: true,
     popular: true,
+    comingSoon: true,
   },
   {
     title: 'Unit Converter',
@@ -264,6 +267,7 @@ const tools: Tool[] = [
     features: ['30+ Categories', 'Bidirectional', 'Favorites', 'Scientific Units'],
     category: 'productivity',
     new: true,
+    comingSoon: true,
   },
   {
     title: 'Timezone Converter',
@@ -275,6 +279,7 @@ const tools: Tool[] = [
     features: ['Multiple Zones', 'DST Aware', 'Meeting Planner', 'Time Slider'],
     category: 'productivity',
     new: true,
+    comingSoon: true,
   },
   {
     title: 'Tip Calculator',
@@ -286,6 +291,7 @@ const tools: Tool[] = [
     features: ['Quick Presets', 'Split Bill', 'Round Options', 'Total Summary'],
     category: 'finance',
     new: true,
+    comingSoon: true,
   },
   {
     title: 'Currency Converter',
@@ -297,6 +303,7 @@ const tools: Tool[] = [
     features: ['Live Rates', '150+ Currencies', 'Rate History', 'Favorites'],
     category: 'finance',
     new: true,
+    comingSoon: true,
   },
   {
     title: 'Pomodoro Timer',
@@ -308,6 +315,7 @@ const tools: Tool[] = [
     features: ['Custom Intervals', 'Task Lists', 'Statistics', 'Sound Alerts'],
     category: 'productivity',
     new: true,
+    comingSoon: true,
   },
   {
     title: 'Percentage Calculator',
@@ -319,6 +327,7 @@ const tools: Tool[] = [
     features: ['Multiple Modes', 'Discount Calculator', 'Tax Calculator', 'Reverse Calculate'],
     category: 'finance',
     new: true,
+    comingSoon: true,
   },
   {
     title: 'Age Calculator',
@@ -330,6 +339,7 @@ const tools: Tool[] = [
     features: ['Exact Age', 'Next Birthday', 'Multiple Units', 'Life Events'],
     category: 'productivity',
     new: true,
+    comingSoon: true,
   },
   {
     title: 'Color Picker & Palette Generator',
@@ -1060,6 +1070,7 @@ export default function HomePage() {
           margin: '0 auto',
           width: '100%',
           maxWidth: '1400px',
+          padding: '0 1rem',
         }}
       >
         <AnimatePresence mode="wait">
