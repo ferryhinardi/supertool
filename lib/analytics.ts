@@ -39,6 +39,12 @@ type ToolEvent =
   | 'password_bulk_generate'
   | 'password_copy'
   | 'password_download'
+  | 'unit_converter_open'
+  | 'unit_converter_convert'
+  | 'unit_converter_swap'
+  | 'unit_converter_favorite_add'
+  | 'unit_converter_favorite_remove'
+  | 'unit_converter_favorite_load'
   | 'tool_card_click'
   | 'search_query'
   | 'category_filter'
@@ -47,11 +53,12 @@ type ToolEvent =
 // Type-safe gtag wrapper
 declare global {
   interface Window {
-    gtag?: (command: 'config' | 'event', targetId: string, config?: Record<string, any>) => void
+    gtag?: (command: 'config' | 'event', targetId: string, config?: Record<string, unknown>) => void
   }
 }
 
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+const GA_MEASUREMENT_ID =
+  typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID : undefined
 
 // Check if GA is enabled (production + ID exists)
 const isGAEnabled = (): boolean => {
@@ -59,7 +66,12 @@ const isGAEnabled = (): boolean => {
 }
 
 // Log warning in development when GA ID is missing
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development' && !GA_MEASUREMENT_ID) {
+if (
+  typeof window !== 'undefined' &&
+  typeof process !== 'undefined' &&
+  process.env.NODE_ENV === 'development' &&
+  !GA_MEASUREMENT_ID
+) {
   console.warn(
     '[Analytics] GA4 Measurement ID not found. Set NEXT_PUBLIC_GA_MEASUREMENT_ID in .env.local'
   )

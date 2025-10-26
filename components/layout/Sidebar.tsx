@@ -16,6 +16,7 @@ import {
   Users,
   QrCode,
   Key,
+  Repeat,
 } from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { cva } from '@/styled-system/css'
@@ -27,6 +28,7 @@ const navigation = [
   { name: 'Split Bill', href: '/tools/split-bill', icon: Users },
   { name: 'QR Code', href: '/tools/qr-code', icon: QrCode },
   { name: 'Password Generator', href: '/tools/password-generator', icon: Key },
+  { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },

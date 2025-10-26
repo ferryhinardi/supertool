@@ -264,7 +264,6 @@ const tools: Tool[] = [
     features: ['30+ Categories', 'Bidirectional', 'Favorites', 'Scientific Units'],
     category: 'productivity',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Timezone Converter',
