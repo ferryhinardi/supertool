@@ -67,54 +67,111 @@ export function FeedbackDialog() {
   return (
     <Dialog open={open} onOpenChange={(details) => setOpen(details.open)}>
       <DialogTrigger asChild>
-        <Button
-          size="lg"
-          className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/50 transition-all hover:scale-105 hover:shadow-xl hover:shadow-purple-500/60"
+        <button
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            background: 'linear-gradient(to right, rgb(168, 85, 247), rgb(236, 72, 153))',
+            color: 'white',
+            fontWeight: '600',
+            fontSize: '1rem',
+            boxShadow: '0 10px 15px -3px rgba(168, 85, 247, 0.5)',
+            transition: 'all 0.3s',
+            border: 'none',
+            borderRadius: '0.5rem',
+            cursor: 'pointer',
+            paddingLeft: '1.5rem',
+            paddingRight: '1.5rem',
+            paddingTop: '0.625rem',
+            paddingBottom: '0.625rem',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)'
+            e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(168, 85, 247, 0.6)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(168, 85, 247, 0.5)'
+          }}
         >
-          <MessageSquare className="h-5 w-5" />
-          <span className="font-semibold">Feedback</span>
-        </Button>
+          <MessageSquare style={{ width: '1.25rem', height: '1.25rem' }} />
+          <span>Feedback</span>
+        </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent
+        style={{
+          maxWidth: '500px',
+          padding: '1.5rem',
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Send Feedback</DialogTitle>
           <DialogDescription>
             Share your ideas or report issues to help us improve SuperTool.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+        >
           {/* Feedback Type Selection */}
-          <div className="flex gap-2">
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button
               type="button"
               onClick={() => setFeedbackType('idea')}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-lg border p-3 transition-all ${
-                feedbackType === 'idea'
-                  ? 'border-blue-500 bg-blue-500/10 text-blue-500'
-                  : 'border-neutral-700 bg-neutral-800 text-neutral-400 hover:border-neutral-600 hover:text-neutral-300'
-              }`}
+              style={{
+                display: 'flex',
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                borderRadius: '0.5rem',
+                border: '1px solid',
+                borderColor: feedbackType === 'idea' ? 'rgb(59, 130, 246)' : 'rgb(64, 64, 64)',
+                backgroundColor:
+                  feedbackType === 'idea' ? 'rgba(59, 130, 246, 0.1)' : 'rgb(38, 38, 38)',
+                color: feedbackType === 'idea' ? 'rgb(59, 130, 246)' : 'rgb(163, 163, 163)',
+                padding: '0.75rem',
+                transition: 'all 0.3s',
+                cursor: 'pointer',
+              }}
             >
-              <Lightbulb className="h-4 w-4" />
-              <span className="font-medium">Idea</span>
+              <Lightbulb style={{ width: '1rem', height: '1rem' }} />
+              <span style={{ fontWeight: 500 }}>Idea</span>
             </button>
             <button
               type="button"
               onClick={() => setFeedbackType('issue')}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-lg border p-3 transition-all ${
-                feedbackType === 'issue'
-                  ? 'border-red-500 bg-red-500/10 text-red-500'
-                  : 'border-neutral-700 bg-neutral-800 text-neutral-400 hover:border-neutral-600 hover:text-neutral-300'
-              }`}
+              style={{
+                display: 'flex',
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                borderRadius: '0.5rem',
+                border: '1px solid',
+                borderColor: feedbackType === 'issue' ? 'rgb(239, 68, 68)' : 'rgb(64, 64, 64)',
+                backgroundColor:
+                  feedbackType === 'issue' ? 'rgba(239, 68, 68, 0.1)' : 'rgb(38, 38, 38)',
+                color: feedbackType === 'issue' ? 'rgb(239, 68, 68)' : 'rgb(163, 163, 163)',
+                padding: '0.75rem',
+                transition: 'all 0.3s',
+                cursor: 'pointer',
+              }}
             >
-              <AlertCircle className="h-4 w-4" />
-              <span className="font-medium">Issue</span>
+              <AlertCircle style={{ width: '1rem', height: '1rem' }} />
+              <span style={{ fontWeight: 500 }}>Issue</span>
             </button>
           </div>
 
           {/* Email Input (Optional) */}
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-neutral-200">
-              Email <span className="text-neutral-500">(optional)</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label
+              htmlFor="email"
+              style={{ fontSize: '0.875rem', fontWeight: 500, color: 'rgb(229, 229, 229)' }}
+            >
+              Email <span style={{ color: 'rgb(115, 115, 115)' }}>(optional)</span>
             </label>
             <Input
               id="email"
@@ -122,16 +179,22 @@ export function FeedbackDialog() {
               placeholder="your.email@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border-neutral-700 bg-neutral-800"
+              style={{
+                borderColor: 'rgb(64, 64, 64)',
+                backgroundColor: 'rgb(38, 38, 38)',
+              }}
             />
-            <p className="text-xs text-neutral-500">
+            <p style={{ fontSize: '0.75rem', color: 'rgb(115, 115, 115)' }}>
               Provide your email if you&apos;d like us to follow up with you.
             </p>
           </div>
 
           {/* Message Textarea */}
-          <div className="space-y-2">
-            <label htmlFor="message" className="text-sm font-medium text-neutral-200">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label
+              htmlFor="message"
+              style={{ fontSize: '0.875rem', fontWeight: 500, color: 'rgb(229, 229, 229)' }}
+            >
               {feedbackType === 'idea' ? 'Your Idea' : 'Describe the Issue'}
             </label>
             <Textarea
@@ -143,34 +206,65 @@ export function FeedbackDialog() {
               }
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="min-h-[120px] border-neutral-700 bg-neutral-800"
+              style={{
+                minHeight: '120px',
+                borderColor: 'rgb(64, 64, 64)',
+                backgroundColor: 'rgb(38, 38, 38)',
+              }}
               required
             />
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end gap-2">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              className="border-neutral-700 bg-neutral-800 hover:bg-neutral-700"
+              style={{
+                borderColor: 'rgb(64, 64, 64)',
+                backgroundColor: 'rgb(38, 38, 38)',
+                paddingLeft: '0.75rem',
+                paddingRight: '0.75rem',
+                paddingTop: '0.125rem',
+                paddingBottom: '0.125rem',
+              }}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: 'linear-gradient(to right, rgb(59, 130, 246), rgb(168, 85, 247))',
+                color: 'white',
+                border: 'none',
+                paddingLeft: '0.75rem',
+                paddingRight: '0.75rem',
+                paddingTop: '0.125rem',
+                paddingBottom: '0.125rem',
+              }}
             >
               {isSubmitting ? (
                 <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  <span
+                    style={{
+                      width: '1rem',
+                      height: '1rem',
+                      borderRadius: '9999px',
+                      border: '2px solid white',
+                      borderTopColor: 'transparent',
+                      animation: 'spin 1s linear infinite',
+                    }}
+                  />
                   Sending...
                 </>
               ) : (
                 <>
-                  <Send className="h-4 w-4" />
+                  <Send style={{ width: '1rem', height: '1rem' }} />
                   Send Feedback
                 </>
               )}

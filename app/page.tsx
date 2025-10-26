@@ -1059,36 +1059,33 @@ export default function HomePage() {
 
       {/* Fixed Position Buttons - Feedback & Support */}
       <div
-        className={css({
+        style={{
           position: 'fixed',
-          right: 6,
-          bottom: 6,
-          zIndex: 'toast',
-        })}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, duration: 0.4 }}
-        >
-          <FeedbackDialog />
-        </motion.div>
-      </div>
-
-      <div
-        className={css({
-          position: 'fixed',
-          right: 6,
-          bottom: 26,
-          zIndex: 'toast',
-        })}
+          right: '1rem',
+          bottom: '1rem',
+          zIndex: 9999,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.75rem',
+          pointerEvents: 'none',
+        }}
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.7, duration: 0.4 }}
+          style={{ pointerEvents: 'auto' }}
         >
           <TreatMeDialog />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.6, duration: 0.4 }}
+          style={{ pointerEvents: 'auto' }}
+        >
+          <FeedbackDialog />
         </motion.div>
       </div>
     </div>

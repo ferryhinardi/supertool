@@ -38,14 +38,38 @@ export function TreatMeDialog() {
 
   return (
     <>
-      <Button
-        size="lg"
+      <button
         onClick={() => setOpen(true)}
-        className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/50 transition-all hover:scale-105 hover:shadow-xl hover:shadow-amber-500/60"
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          background: 'linear-gradient(to right, rgb(245, 158, 11), rgb(249, 115, 22))',
+          color: 'white',
+          fontWeight: '600',
+          fontSize: '1rem',
+          boxShadow: '0 10px 15px -3px rgba(245, 158, 11, 0.5)',
+          transition: 'all 0.3s',
+          border: 'none',
+          borderRadius: '0.5rem',
+          cursor: 'pointer',
+          paddingLeft: '1.5rem',
+          paddingRight: '1.5rem',
+          paddingTop: '0.625rem',
+          paddingBottom: '0.625rem',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.05)'
+          e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(245, 158, 11, 0.6)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)'
+          e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(245, 158, 11, 0.5)'
+        }}
       >
-        <Coffee className="h-5 w-5" />
-        Treat Me
-      </Button>
+        <Coffee style={{ width: '1.25rem', height: '1.25rem' }} />
+        <span>Treat Me</span>
+      </button>
 
       {mounted &&
         open &&
@@ -110,73 +134,135 @@ function SelectPaymentMethod({
   onSelectMethod: (method: PaymentStep) => void
 }) {
   return (
-    <div className="space-y-[1.5rem]">
-      <div className="text-center">
-        <div className="mb-[0.75rem] flex items-center justify-center gap-[0.5rem]">
-          <Heart className="h-[1.5rem] w-[1.5rem] fill-amber-400 text-amber-400" />
-          <h2 className="text-[1.5rem] font-bold text-white">Support SuperTool</h2>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div
+          style={{
+            marginBottom: '0.75rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+          }}
+        >
+          <Heart
+            style={{
+              width: '1.5rem',
+              height: '1.5rem',
+              fill: 'rgb(251, 191, 36)',
+              color: 'rgb(251, 191, 36)',
+            }}
+          />
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>Support SuperTool</h2>
         </div>
-        <p className="text-[0.875rem] text-white">
+        <p style={{ fontSize: '0.875rem', color: 'white' }}>
           Your support keeps this tool free and ad-free! 💖
         </p>
       </div>
 
-      <div className="space-y-[1rem]">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {/* Info Box */}
         <div
-          className="rounded-lg p-[1rem]"
           style={{
+            borderRadius: '0.5rem',
+            padding: '1rem',
             borderWidth: '1px',
             borderColor: 'rgba(251, 191, 36, 0.2)',
             backgroundColor: 'rgba(251, 191, 36, 0.1)',
           }}
         >
-          <div className="mb-[0.5rem] flex items-center gap-[0.5rem] text-[0.875rem] font-semibold text-amber-300">
-            <Sparkles className="h-[1rem] w-[1rem]" />
+          <div
+            style={{
+              marginBottom: '0.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              color: 'rgb(252, 211, 77)',
+            }}
+          >
+            <Sparkles style={{ width: '1rem', height: '1rem' }} />
             Love using these tools?
           </div>
-          <div className="text-[0.875rem] leading-relaxed text-white">
+          <div style={{ fontSize: '0.875rem', lineHeight: '1.625', color: 'white' }}>
             Treat me to a coffee and help keep SuperTool running! Every contribution matters. ☕
           </div>
         </div>
 
         {/* Payment Method Options */}
-        <div className="space-y-[0.75rem]">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {/* QRIS Payment - Available */}
           <button
             onClick={() => onSelectMethod('qris')}
-            className="group relative w-full overflow-hidden rounded-xl p-[1rem] text-left transition-all hover:scale-[1.02]"
             style={{
+              position: 'relative',
+              width: '100%',
+              overflow: 'hidden',
+              borderRadius: '0.75rem',
+              padding: '1rem',
+              textAlign: 'left',
+              transition: 'all 0.3s',
               borderWidth: '2px',
+              borderStyle: 'solid',
               borderColor: 'rgba(34, 197, 94, 0.4)',
               background:
                 'linear-gradient(to right, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.15))',
+              cursor: 'pointer',
             }}
             type="button"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[0.75rem]">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div
-                  className="flex h-[3rem] w-[3rem] items-center justify-center rounded-lg"
-                  style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}
+                  style={{
+                    display: 'flex',
+                    width: '3rem',
+                    height: '3rem',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '0.5rem',
+                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                  }}
                 >
-                  <QrCode className="h-[1.5rem] w-[1.5rem] text-green-400" />
+                  <QrCode
+                    style={{ width: '1.5rem', height: '1.5rem', color: 'rgb(74, 222, 128)' }}
+                  />
                 </div>
                 <div>
-                  <div className="text-[1rem] font-semibold text-white">QRIS Payment</div>
-                  <div className="text-[0.75rem] text-gray-300">
+                  <div style={{ fontSize: '1rem', fontWeight: 600, color: 'white' }}>
+                    QRIS Payment
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'rgb(209, 213, 219)' }}>
                     GoPay • OVO • Dana • ShopeePay • LinkAja
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-[0.5rem]">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span
-                  className="rounded-full px-[0.75rem] py-[0.25rem] text-[0.75rem] font-bold text-green-300"
-                  style={{ backgroundColor: 'rgba(34, 197, 94, 0.3)' }}
+                  style={{
+                    borderRadius: '9999px',
+                    paddingLeft: '0.75rem',
+                    paddingRight: '0.75rem',
+                    paddingTop: '0.25rem',
+                    paddingBottom: '0.25rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    color: 'rgb(134, 239, 172)',
+                    backgroundColor: 'rgba(34, 197, 94, 0.3)',
+                  }}
                 >
                   Available
                 </span>
-                <ArrowLeft className="h-[1.25rem] w-[1.25rem] rotate-180 text-green-400 transition-transform group-hover:translate-x-[0.25rem]" />
+                <ArrowLeft
+                  style={{
+                    width: '1.25rem',
+                    height: '1.25rem',
+                    transform: 'rotate(180deg)',
+                    color: 'rgb(74, 222, 128)',
+                    transition: 'transform 0.3s',
+                  }}
+                />
               </div>
             </div>
           </button>
@@ -184,30 +270,61 @@ function SelectPaymentMethod({
           {/* International Payment - Coming Soon */}
           <button
             onClick={() => onSelectMethod('international')}
-            className="group relative w-full overflow-hidden rounded-xl p-[1rem] text-left opacity-60 transition-all hover:opacity-80"
             style={{
+              position: 'relative',
+              width: '100%',
+              overflow: 'hidden',
+              borderRadius: '0.75rem',
+              padding: '1rem',
+              textAlign: 'left',
+              opacity: 0.6,
+              transition: 'all 0.3s',
               borderWidth: '2px',
+              borderStyle: 'solid',
               borderColor: '#374151',
               backgroundColor: 'rgba(31, 41, 55, 0.5)',
+              cursor: 'pointer',
             }}
             type="button"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[0.75rem]">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div
-                  className="flex h-[3rem] w-[3rem] items-center justify-center rounded-lg"
-                  style={{ backgroundColor: 'rgba(55, 65, 81, 0.5)' }}
+                  style={{
+                    display: 'flex',
+                    width: '3rem',
+                    height: '3rem',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '0.5rem',
+                    backgroundColor: 'rgba(55, 65, 81, 0.5)',
+                  }}
                 >
-                  <CreditCard className="h-[1.5rem] w-[1.5rem] text-gray-400" />
+                  <CreditCard
+                    style={{ width: '1.5rem', height: '1.5rem', color: 'rgb(156, 163, 175)' }}
+                  />
                 </div>
                 <div>
-                  <div className="text-[1rem] font-semibold text-white">International Payment</div>
-                  <div className="text-[0.75rem] text-gray-300">PayPal • Stripe • Credit Card</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 600, color: 'white' }}>
+                    International Payment
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'rgb(209, 213, 219)' }}>
+                    PayPal • Stripe • Credit Card
+                  </div>
                 </div>
               </div>
               <span
-                className="rounded-full px-[0.75rem] py-[0.25rem] text-[0.75rem] font-bold text-gray-400"
-                style={{ backgroundColor: '#374151' }}
+                style={{
+                  borderRadius: '9999px',
+                  paddingLeft: '0.75rem',
+                  paddingRight: '0.75rem',
+                  paddingTop: '0.25rem',
+                  paddingBottom: '0.25rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: 'rgb(156, 163, 175)',
+                  backgroundColor: '#374151',
+                }}
               >
                 Coming Soon
               </span>
@@ -217,30 +334,61 @@ function SelectPaymentMethod({
           {/* Cryptocurrency - Coming Soon */}
           <button
             onClick={() => onSelectMethod('crypto')}
-            className="group relative w-full overflow-hidden rounded-xl p-[1rem] text-left opacity-60 transition-all hover:opacity-80"
             style={{
+              position: 'relative',
+              width: '100%',
+              overflow: 'hidden',
+              borderRadius: '0.75rem',
+              padding: '1rem',
+              textAlign: 'left',
+              opacity: 0.6,
+              transition: 'all 0.3s',
               borderWidth: '2px',
+              borderStyle: 'solid',
               borderColor: '#374151',
               backgroundColor: 'rgba(31, 41, 55, 0.5)',
+              cursor: 'pointer',
             }}
             type="button"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[0.75rem]">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div
-                  className="flex h-[3rem] w-[3rem] items-center justify-center rounded-lg"
-                  style={{ backgroundColor: 'rgba(55, 65, 81, 0.5)' }}
+                  style={{
+                    display: 'flex',
+                    width: '3rem',
+                    height: '3rem',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '0.5rem',
+                    backgroundColor: 'rgba(55, 65, 81, 0.5)',
+                  }}
                 >
-                  <Coins className="h-[1.5rem] w-[1.5rem] text-gray-400" />
+                  <Coins
+                    style={{ width: '1.5rem', height: '1.5rem', color: 'rgb(156, 163, 175)' }}
+                  />
                 </div>
                 <div>
-                  <div className="text-[1rem] font-semibold text-white">Cryptocurrency</div>
-                  <div className="text-[0.75rem] text-gray-300">Bitcoin • Ethereum • USDT</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 600, color: 'white' }}>
+                    Cryptocurrency
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'rgb(209, 213, 219)' }}>
+                    Bitcoin • Ethereum • USDT
+                  </div>
                 </div>
               </div>
               <span
-                className="rounded-full px-[0.75rem] py-[0.25rem] text-[0.75rem] font-bold text-gray-400"
-                style={{ backgroundColor: '#374151' }}
+                style={{
+                  borderRadius: '9999px',
+                  paddingLeft: '0.75rem',
+                  paddingRight: '0.75rem',
+                  paddingTop: '0.25rem',
+                  paddingBottom: '0.25rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: 'rgb(156, 163, 175)',
+                  backgroundColor: '#374151',
+                }}
               >
                 Coming Soon
               </span>
@@ -250,17 +398,22 @@ function SelectPaymentMethod({
 
         {/* Thank You Message */}
         <div
-          className="rounded-lg p-[1rem] text-center"
           style={{
+            borderRadius: '0.5rem',
+            padding: '1rem',
+            textAlign: 'center',
             borderWidth: '1px',
+            borderStyle: 'solid',
             borderColor: 'rgba(236, 72, 153, 0.2)',
             backgroundColor: 'rgba(236, 72, 153, 0.1)',
           }}
         >
-          <div className="text-[0.875rem] font-medium text-pink-300">
+          <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'rgb(249, 168, 212)' }}>
             💖 Every contribution helps keep SuperTool free!
           </div>
-          <div className="mt-[0.25rem] text-[0.75rem] text-white">Thank you for your support!</div>
+          <div style={{ marginTop: '0.25rem', fontSize: '0.75rem', color: 'white' }}>
+            Thank you for your support!
+          </div>
         </div>
       </div>
     </div>
@@ -270,63 +423,123 @@ function SelectPaymentMethod({
 // QRIS Payment Component
 function QRISPayment({ qrisImageUrl, onBack }: { qrisImageUrl: string; onBack: () => void }) {
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <div className="mb-3 flex items-center justify-center gap-2 text-2xl font-bold text-white">
-          <QrCode className="h-6 w-6 text-green-400" />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div
+          style={{
+            marginBottom: '0.75rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            color: 'white',
+          }}
+        >
+          <QrCode style={{ width: '1.5rem', height: '1.5rem', color: 'rgb(74, 222, 128)' }} />
           <h2>Scan QRIS to Pay</h2>
         </div>
-        <p className="text-sm text-white">Use any Indonesian e-wallet app</p>
+        <p style={{ fontSize: '0.875rem', color: 'white' }}>Use any Indonesian e-wallet app</p>
       </div>
 
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {/* QRIS QR Code */}
-        <div className="relative overflow-hidden rounded-xl border-2 border-green-500/30 bg-white p-4">
-          <div className="relative aspect-square w-full">
+        <div
+          style={{
+            position: 'relative',
+            overflow: 'hidden',
+            borderRadius: '0.75rem',
+            border: '2px solid rgba(34, 197, 94, 0.3)',
+            backgroundColor: 'white',
+            padding: '1rem',
+          }}
+        >
+          <div style={{ position: 'relative', aspectRatio: '1', width: '100%' }}>
             <Image
               src={qrisImageUrl}
               alt="QRIS Payment Code"
               fill
-              className="object-contain"
+              style={{ objectFit: 'contain' }}
               priority
             />
           </div>
         </div>
 
         {/* Instructions */}
-        <div className="space-y-2 rounded-lg border border-green-500/20 bg-green-500/10 p-4">
-          <div className="text-sm font-medium text-green-300">How to Pay:</div>
-          <ol className="space-y-1 text-left text-xs text-white">
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-green-400">1.</span>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+            borderRadius: '0.5rem',
+            border: '1px solid rgba(34, 197, 94, 0.2)',
+            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+            padding: '1rem',
+          }}
+        >
+          <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'rgb(134, 239, 172)' }}>
+            How to Pay:
+          </div>
+          <ol
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.25rem',
+              textAlign: 'left',
+              fontSize: '0.75rem',
+              color: 'white',
+              paddingLeft: 0,
+              margin: 0,
+              listStyle: 'none',
+            }}
+          >
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+              <span style={{ fontWeight: 700, color: 'rgb(74, 222, 128)' }}>1.</span>
               <span>Open any Indonesian e-wallet app (GoPay, OVO, Dana, etc.)</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-green-400">2.</span>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+              <span style={{ fontWeight: 700, color: 'rgb(74, 222, 128)' }}>2.</span>
               <span>Select &quot;Scan QR&quot; or &quot;QRIS&quot;</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-green-400">3.</span>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+              <span style={{ fontWeight: 700, color: 'rgb(74, 222, 128)' }}>3.</span>
               <span>Scan the QR code above</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-green-400">4.</span>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+              <span style={{ fontWeight: 700, color: 'rgb(74, 222, 128)' }}>4.</span>
               <span>Enter your desired amount and confirm</span>
             </li>
           </ol>
         </div>
 
         {/* Thank You */}
-        <div className="rounded-lg border border-pink-500/20 bg-pink-500/10 p-3 text-center">
-          <div className="text-sm font-medium text-pink-300">💖 Thank you for your support!</div>
+        <div
+          style={{
+            borderRadius: '0.5rem',
+            border: '1px solid rgba(236, 72, 153, 0.2)',
+            backgroundColor: 'rgba(236, 72, 153, 0.1)',
+            padding: '0.75rem',
+            textAlign: 'center',
+          }}
+        >
+          <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'rgb(249, 168, 212)' }}>
+            💖 Thank you for your support!
+          </div>
         </div>
 
         <Button
           variant="outline"
           onClick={onBack}
-          className="w-full gap-2 border-gray-700 hover:bg-gray-800"
+          style={{
+            width: '100%',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            borderColor: 'rgb(64, 64, 64)',
+          }}
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft style={{ width: '1rem', height: '1rem' }} />
           Back to Payment Methods
         </Button>
       </div>
@@ -361,49 +574,101 @@ function ComingSoonPayment({
   const Icon = info.icon
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <div className="mb-3 flex items-center justify-center gap-2 text-2xl font-bold text-white">
-          <Icon className="h-6 w-6 text-gray-400" />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div
+          style={{
+            marginBottom: '0.75rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            color: 'white',
+          }}
+        >
+          <Icon style={{ width: '1.5rem', height: '1.5rem', color: 'rgb(156, 163, 175)' }} />
           <h2>{info.title}</h2>
         </div>
-        <p className="text-sm text-white">Feature in development</p>
+        <p style={{ fontSize: '0.875rem', color: 'white' }}>Feature in development</p>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex flex-col items-center justify-center py-8 text-center">
-          <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-800">
-            <Icon className="h-10 w-10 text-gray-600" />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingTop: '2rem',
+            paddingBottom: '2rem',
+            textAlign: 'center',
+          }}
+        >
+          <div
+            style={{
+              marginBottom: '1rem',
+              display: 'flex',
+              width: '5rem',
+              height: '5rem',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '9999px',
+              backgroundColor: 'rgb(31, 41, 55)',
+            }}
+          >
+            <Icon style={{ width: '2.5rem', height: '2.5rem', color: 'rgb(75, 85, 99)' }} />
           </div>
-          <div className="mb-2 text-xl font-bold text-white">Coming Soon!</div>
-          <div className="text-sm text-white">{info.description}</div>
-          <div className="mt-4 text-xs text-gray-300">
+          <div
+            style={{ marginBottom: '0.5rem', fontSize: '1.25rem', fontWeight: 700, color: 'white' }}
+          >
+            Coming Soon!
+          </div>
+          <div style={{ fontSize: '0.875rem', color: 'white' }}>{info.description}</div>
+          <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgb(209, 213, 219)' }}>
             We&apos;re working hard to add more payment options.
             <br />
             Stay tuned for updates!
           </div>
         </div>
 
-        <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-4">
-          <div className="text-center text-sm text-amber-300">
-            <Sparkles className="mx-auto mb-2 h-5 w-5" />
+        <div
+          style={{
+            borderRadius: '0.5rem',
+            border: '1px solid rgba(251, 191, 36, 0.2)',
+            backgroundColor: 'rgba(251, 191, 36, 0.1)',
+            padding: '1rem',
+          }}
+        >
+          <div style={{ textAlign: 'center', fontSize: '0.875rem', color: 'rgb(252, 211, 77)' }}>
+            <Sparkles style={{ width: '1.25rem', height: '1.25rem', margin: '0 auto 0.5rem' }} />
             For now, you can use QRIS to support us!
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
           <Button
             variant="outline"
             onClick={onBack}
-            className="flex-1 gap-2 border-gray-700 hover:bg-gray-800"
+            style={{
+              flex: 1,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              borderColor: 'rgb(64, 64, 64)',
+            }}
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft style={{ width: '1rem', height: '1rem' }} />
             Back
           </Button>
           <Button
             variant="outline"
             onClick={onClose}
-            className="flex-1 border-gray-700 hover:bg-gray-800"
+            style={{
+              flex: 1,
+              borderColor: 'rgb(64, 64, 64)',
+            }}
           >
             Close
           </Button>
