@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
   title: 'SuperTool - Modern Developer Toolkit',
   description: 'Beautiful developer tools for JSON formatting, file uploads, and more',
+  icons: {
+    icon: '/favicon.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
