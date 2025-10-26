@@ -230,7 +230,6 @@ const tools: Tool[] = [
     category: 'finance',
     new: true,
     popular: true,
-    comingSoon: true,
   },
   {
     title: 'QR Code Generator',

@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   FileSpreadsheet,
+  Users,
 } from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { cva } from '@/styled-system/css'
@@ -21,6 +22,7 @@ const navigation = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'JSON Beautifier', href: '/tools/json-beautify', icon: Code },
   { name: 'JSON to CSV', href: '/tools/json-to-csv', icon: FileSpreadsheet },
+  { name: 'Split Bill', href: '/tools/split-bill', icon: Users },
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
