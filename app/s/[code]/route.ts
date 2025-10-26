@@ -24,7 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const referer = request.headers.get('referer') || ''
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || ''
 
-    // Insert analytics data
+    // Insert analytics data (async but don't await to avoid slowing down redirect)
     supabase
       .from('url_analytics')
       .insert({
@@ -33,12 +33,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         referrer: referer,
         ip_address: ip.split(',')[0].trim(),
       })
-      .then(() => {
+      .then((result) => {
         // Analytics tracked successfully
-      })
-      .catch((analyticsError) => {
-        // Log error but don't fail the redirect
-        console.error('Error tracking analytics:', analyticsError)
+        if (result.error) {
+          console.error('Error tracking analytics:', result.error)
+        }
       })
 
     // Redirect to the original URL
