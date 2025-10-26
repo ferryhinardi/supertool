@@ -382,7 +382,13 @@ export default function ImageOptimizerPage() {
                 {/* Output Format */}
                 <div className={css({ spaceY: '2' })}>
                   <label className="text-sm font-medium text-gray-300">Output Format</label>
-                  <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gap: '2',
+                    })}
+                  >
                     {(['jpeg', 'png', 'webp'] as OutputFormat[]).map((format) => (
                       <Button
                         key={format}
@@ -438,7 +444,13 @@ export default function ImageOptimizerPage() {
                 {/* Max Dimensions */}
                 <div className={css({ spaceY: '3' })}>
                   <label className="text-sm font-medium text-gray-300">Max Dimensions</label>
-                  <div className={css({ display: 'grid', gridTemplateColumns: '2', gap: '2' })}>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: '2',
+                    })}
+                  >
                     <div>
                       <label className="mb-1 block text-xs text-gray-400">Width (px)</label>
                       <input

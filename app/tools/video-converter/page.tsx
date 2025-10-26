@@ -559,7 +559,13 @@ export default function VideoConverterPage() {
                 {/* Output Format */}
                 <div className={css({ spaceY: '2' })}>
                   <label className="text-sm font-medium text-gray-300">Output Format</label>
-                  <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gap: '2',
+                    })}
+                  >
                     {(['mp4', 'webm', 'mkv'] as OutputFormat[]).map((format) => (
                       <Button
                         key={format}
@@ -581,7 +587,13 @@ export default function VideoConverterPage() {
                 {/* Video Codec */}
                 <div className={css({ spaceY: '2' })}>
                   <label className="text-sm font-medium text-gray-300">Video Codec</label>
-                  <div className={css({ display: 'grid', gridTemplateColumns: '2', gap: '2' })}>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: '2',
+                    })}
+                  >
                     {(['h264', 'h265'] as VideoCodec[]).map((codec) => (
                       <Button
                         key={codec}
@@ -603,7 +615,13 @@ export default function VideoConverterPage() {
                 {/* Audio Codec */}
                 <div className={css({ spaceY: '2' })}>
                   <label className="text-sm font-medium text-gray-300">Audio Codec</label>
-                  <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gap: '2',
+                    })}
+                  >
                     {(['aac', 'mp3', 'opus'] as AudioCodec[]).map((codec) => (
                       <Button
                         key={codec}

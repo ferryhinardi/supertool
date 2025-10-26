@@ -259,7 +259,7 @@ END:VCARD`
             <div
               className={css({
                 display: 'grid',
-                gridTemplateColumns: { base: '2', sm: '4' },
+                gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
                 gap: '3',
               })}
             >
@@ -346,7 +346,13 @@ END:VCARD`
                 </Field>
                 <Field>
                   <FieldLabel>Security</FieldLabel>
-                  <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gap: '2',
+                    })}
+                  >
                     {(['WPA', 'WEP', 'nopass'] as const).map((enc) => (
                       <Button
                         key={enc}
@@ -376,7 +382,7 @@ END:VCARD`
                 <div
                   className={css({
                     display: 'grid',
-                    gridTemplateColumns: { base: '1', sm: '2' },
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
                     gap: '4',
                   })}
                 >
@@ -472,7 +478,7 @@ END:VCARD`
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1', sm: '2' },
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
                   gap: '4',
                 })}
               >

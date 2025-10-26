@@ -202,20 +202,14 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
       </div>
 
       {!previewUrl && !isProcessing && (
-        <div
-          className={css({
-            display: 'grid',
-            gridTemplateColumns: { base: '1', sm: '2' },
-            gap: '3',
-          })}
-        >
+        <div>
           <input
             ref={cameraInputRef}
             type="file"
             accept="image/*"
             capture="environment"
             onChange={handleCameraCapture}
-            className="hidden"
+            className={css({ display: 'none' })}
           />
           <Button
             onClick={() => cameraInputRef.current?.click()}
@@ -226,6 +220,8 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
               alignItems: 'center',
               gap: '2',
               w: 'full',
+              h: '2/6',
+              color: 'white',
             })}
           >
             <Camera className="h-5 w-5" />
@@ -237,7 +233,7 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
             type="file"
             accept="image/*"
             onChange={handleFileSelect}
-            className="hidden"
+            className={css({ display: 'none' })}
           />
           <Button
             onClick={() => fileInputRef.current?.click()}
