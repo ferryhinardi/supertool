@@ -1,4 +1,1 @@
 @layer reset, base, tokens, recipes, utilities;
-
-/* Import generated Panda CSS utilities */
-@import '../styled-system/styles.css';
