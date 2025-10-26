@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { trackToolEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
 
 type QRCodeType = 'url' | 'text' | 'wifi' | 'vcard'
 
@@ -194,26 +195,74 @@ END:VCARD`
   }
 
   return (
-    <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 md:px-6 lg:px-8">
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-gradient-to-r from-violet-500 to-purple-500 p-2">
-            <QrCode className="h-6 w-6 text-white" />
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '1400px',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        display: 'flex',
+        flexDirection: 'column',
+        gap: { base: '6', sm: '8' },
+      })}
+    >
+      {/* Header */}
+      <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+        <div
+          className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
+        >
+          <div
+            className="animate-pulse rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-600 p-2.5 shadow-2xl shadow-violet-500/60 sm:rounded-2xl sm:p-4"
+            style={{ animationDuration: '2s' }}
+          >
+            <QrCode className="h-6 w-6 text-white sm:h-8 sm:w-8" />
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight">QR Code Generator</h1>
+          <div>
+            <h1 className="bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
+              QR Code Generator
+            </h1>
+            <p className="text-sm text-gray-200 sm:text-base md:text-lg">
+              Create customizable QR codes for URLs, text, WiFi, and contact cards
+            </p>
+          </div>
         </div>
-        <p className="text-lg text-muted-foreground">
-          Create customizable QR codes for URLs, text, WiFi, and contact cards with high-resolution
-          downloads
-        </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div>
         {/* Input Section */}
-        <div className="space-y-6">
-          <div className="glass rounded-lg p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">QR Code Type</h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div
+          className={css({ display: 'flex', flexDirection: 'column', gap: { base: '4', md: '6' } })}
+        >
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <h2
+              className={css({
+                fontSize: { base: 'lg', sm: 'xl' },
+                fontWeight: 'bold',
+                color: 'violet.300',
+              })}
+            >
+              QR Code Type
+            </h2>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '2', sm: '4' },
+                gap: '3',
+              })}
+            >
               {(['url', 'text', 'wifi', 'vcard'] as const).map((t) => (
                 <Button
                   key={t}
@@ -231,8 +280,28 @@ END:VCARD`
             </div>
           </div>
 
-          <div className="glass rounded-lg p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">Content</h2>
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <h2
+              className={css({
+                fontSize: { base: 'lg', sm: 'xl' },
+                fontWeight: 'bold',
+                color: 'violet.300',
+              })}
+            >
+              Content
+            </h2>
             {type === 'url' && (
               <Field>
                 <FieldLabel>URL</FieldLabel>
@@ -257,7 +326,7 @@ END:VCARD`
             )}
 
             {type === 'wifi' && (
-              <div className="space-y-4">
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
                 <Field>
                   <FieldLabel>Network Name (SSID)</FieldLabel>
                   <Input
@@ -277,7 +346,7 @@ END:VCARD`
                 </Field>
                 <Field>
                   <FieldLabel>Security</FieldLabel>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
                     {(['WPA', 'WEP', 'nopass'] as const).map((enc) => (
                       <Button
                         key={enc}
@@ -290,7 +359,7 @@ END:VCARD`
                     ))}
                   </div>
                 </Field>
-                <label className="flex items-center gap-2">
+                <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <input
                     type="checkbox"
                     checked={wifiConfig.hidden}
@@ -303,8 +372,14 @@ END:VCARD`
             )}
 
             {type === 'vcard' && (
-              <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: { base: '1', sm: '2' },
+                    gap: '4',
+                  })}
+                >
                   <Field>
                     <FieldLabel>First Name</FieldLabel>
                     <Input
@@ -371,13 +446,39 @@ END:VCARD`
             )}
           </div>
 
-          <div className="glass rounded-lg p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">Customization</h2>
-            <div className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <h2
+              className={css({
+                fontSize: { base: 'lg', sm: 'xl' },
+                fontWeight: 'bold',
+                color: 'violet.300',
+              })}
+            >
+              Customization
+            </h2>
+            <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1', sm: '2' },
+                  gap: '4',
+                })}
+              >
                 <Field>
                   <FieldLabel>Foreground Color</FieldLabel>
-                  <div className="flex gap-2">
+                  <div className={css({ display: 'flex', gap: '2' })}>
                     <Input
                       type="color"
                       value={fgColor}
@@ -393,7 +494,7 @@ END:VCARD`
                 </Field>
                 <Field>
                   <FieldLabel>Background Color</FieldLabel>
-                  <div className="flex gap-2">
+                  <div className={css({ display: 'flex', gap: '2' })}>
                     <Input
                       type="color"
                       value={bgColor}
@@ -419,12 +520,20 @@ END:VCARD`
                   onChange={(e) => setSize(Number(e.target.value))}
                   className="w-full"
                 />
-                <div className="mt-1 flex justify-between text-xs text-muted-foreground">
+                <div
+                  className={css({
+                    mt: '1',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: 'xs',
+                    color: 'gray.400',
+                  })}
+                >
                   <span>128px</span>
                   <span>512px</span>
                 </div>
               </Field>
-              <label className="flex items-center gap-2">
+              <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <input
                   type="checkbox"
                   checked={includeMargin}
@@ -438,11 +547,42 @@ END:VCARD`
         </div>
 
         {/* Preview Section */}
-        <div className="space-y-6">
-          <div className="glass rounded-lg p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">Preview</h2>
+        <div
+          className={css({ display: 'flex', flexDirection: 'column', gap: { base: '4', md: '6' } })}
+        >
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <h2
+              className={css({
+                fontSize: { base: 'lg', sm: 'xl' },
+                fontWeight: 'bold',
+                color: 'violet.300',
+              })}
+            >
+              Preview
+            </h2>
             <div
-              className="flex min-h-[300px] items-center justify-center rounded-lg border-2 border-dashed border-border p-8"
+              className={css({
+                display: 'flex',
+                minH: '300px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                rounded: 'lg',
+                border: '2px dashed',
+                borderColor: 'violet.500/30',
+                p: '8',
+              })}
               style={{ backgroundColor: bgColor }}
             >
               {hasValidInput ? (
@@ -456,21 +596,51 @@ END:VCARD`
                   includeMargin={includeMargin}
                 />
               ) : (
-                <div className="text-center">
-                  <QrCode className="mx-auto h-16 w-16 text-muted-foreground opacity-50" />
-                  <p className="mt-2 text-muted-foreground">Enter content to generate QR code</p>
+                <div className={css({ textAlign: 'center' })}>
+                  <QrCode
+                    className={css({
+                      mx: 'auto',
+                      h: '16',
+                      w: '16',
+                      color: 'gray.400',
+                      opacity: 0.5,
+                    })}
+                  />
+                  <p className={css({ mt: '2', color: 'gray.400' })}>
+                    Enter content to generate QR code
+                  </p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="glass rounded-lg p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">Actions</h2>
-            <div className="flex flex-wrap gap-3">
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <h2
+              className={css({
+                fontSize: { base: 'lg', sm: 'xl' },
+                fontWeight: 'bold',
+                color: 'violet.300',
+              })}
+            >
+              Actions
+            </h2>
+            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '3' })}>
               <Button
                 onClick={() => downloadQRCode('png')}
                 disabled={!hasValidInput}
-                className="flex-1"
+                className={css({ flex: '1' })}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download PNG
@@ -479,7 +649,7 @@ END:VCARD`
                 onClick={() => downloadQRCode('svg')}
                 disabled={!hasValidInput}
                 variant="outline"
-                className="flex-1"
+                className={css({ flex: '1' })}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download SVG
@@ -488,7 +658,7 @@ END:VCARD`
                 onClick={copyQRCode}
                 disabled={!hasValidInput}
                 variant="outline"
-                className="flex-1"
+                className={css({ flex: '1' })}
               >
                 <Copy className="mr-2 h-4 w-4" />
                 Copy Image
@@ -496,28 +666,52 @@ END:VCARD`
             </div>
           </div>
 
-          <div className="glass rounded-lg p-6 shadow-lg">
-            <h2 className="mb-3 text-lg font-semibold">Features</h2>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '3',
+            })}
+          >
+            <h2
+              className={css({
+                fontSize: { base: 'base', sm: 'lg' },
+                fontWeight: 'bold',
+                color: 'violet.300',
+              })}
+            >
+              Features
+            </h2>
+            <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge>Multiple Types</Badge>
-                <span className="text-sm text-muted-foreground">
+                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
                   URL, Text, WiFi, vCard support
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge>Customizable</Badge>
-                <span className="text-sm text-muted-foreground">Colors, size, and margins</span>
+                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  Colors, size, and margins
+                </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge>High Resolution</Badge>
-                <span className="text-sm text-muted-foreground">
+                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
                   Up to 512px with error correction
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge>Multiple Formats</Badge>
-                <span className="text-sm text-muted-foreground">PNG and SVG exports</span>
+                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  PNG and SVG exports
+                </span>
               </div>
             </div>
           </div>

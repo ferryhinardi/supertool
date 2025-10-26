@@ -20,6 +20,7 @@ type ToolEvent =
   | 'split_bill_share'
   | 'split_bill_copy'
   | 'split_bill_reset'
+  | 'split_bill_currency_change'
   | 'split_bill_scan_receipt'
   | 'split_bill_upload_receipt'
   | 'split_bill_ocr_success'
