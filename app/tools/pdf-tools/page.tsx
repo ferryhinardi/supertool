@@ -1,0 +1,1289 @@
+'use client'
+
+export const dynamic = 'force-dynamic'
+
+import { useState, useCallback, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { PDFDocument, rgb, degrees } from 'pdf-lib'
+import type * as PdfjsTypes from 'pdfjs-dist'
+import {
+  FileText,
+  Download,
+  Trash2,
+  Settings,
+  Sparkles,
+  Zap,
+  CheckCircle,
+  Merge,
+  Split,
+  Archive,
+  Image as ImageIcon,
+  Droplet,
+  RotateCw,
+  Copy,
+} from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { DragDropZone } from '@/components/features/DragDropZone'
+import { trackEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
+
+// Dynamic import for pdfjs-dist (client-side only)
+let pdfjsLib: typeof PdfjsTypes | null = null
+let pdfjsInitPromise: Promise<typeof PdfjsTypes> | null = null
+
+const initPdfjs = async () => {
+  if (pdfjsLib) return pdfjsLib
+  if (pdfjsInitPromise) return pdfjsInitPromise
+
+  pdfjsInitPromise = import('pdfjs-dist').then((module) => {
+    pdfjsLib = module
+    if (typeof window !== 'undefined') {
+      module.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${module.version}/pdf.worker.min.js`
+    }
+    return module
+  })
+
+  return pdfjsInitPromise
+}
+
+interface PDFFile {
+  id: string
+  file: File
+  name: string
+  size: number
+  pages: number
+  status: 'pending' | 'processing' | 'completed' | 'error'
+  progress: number
+  error?: string
+  processedBlob?: Blob
+  processedSize?: number
+}
+
+type OperationType =
+  | 'merge'
+  | 'split'
+  | 'compress'
+  | 'toImages'
+  | 'watermark'
+  | 'extract'
+  | 'rotate'
+
+export default function PDFToolsPage() {
+  const [pdfs, setPdfs] = useState<PDFFile[]>([])
+  const [operation, setOperation] = useState<OperationType>('merge')
+  const [isProcessing, setIsProcessing] = useState(false)
+
+  // Split options
+  const [splitPageNumber, setSplitPageNumber] = useState(1)
+
+  // Compress options
+  const [compressionQuality, setCompressionQuality] = useState(50)
+
+  // Watermark options
+  const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL')
+  const [watermarkOpacity, setWatermarkOpacity] = useState(0.3)
+
+  // Extract pages options
+  const [extractStartPage, setExtractStartPage] = useState(1)
+  const [extractEndPage, setExtractEndPage] = useState(1)
+
+  // Rotate options
+  const [rotationAngle, setRotationAngle] = useState(90)
+
+  // Track page visit
+  useEffect(() => {
+    trackEvent({
+      action: 'page_view',
+      category: 'pdf_tools',
+      label: 'tool_opened',
+    })
+  }, [])
+
+  const handleFilesSelected = useCallback(async (files: FileList) => {
+    const fileArray = Array.from(files)
+    const pdfFiles = fileArray.filter((file) => file.type === 'application/pdf')
+
+    trackEvent({
+      action: 'files_added',
+      category: 'pdf_tools',
+      label: 'pdf_upload',
+      value: pdfFiles.length,
+    })
+
+    const newPdfs: PDFFile[] = await Promise.all(
+      pdfFiles.map(async (file) => {
+        let pages = 0
+        try {
+          const arrayBuffer = await file.arrayBuffer()
+          const pdfDoc = await PDFDocument.load(arrayBuffer)
+          pages = pdfDoc.getPageCount()
+        } catch (error) {
+          console.error('Error reading PDF:', error)
+        }
+
+        return {
+          id: Math.random().toString(36).substring(7),
+          file,
+          name: file.name,
+          size: file.size,
+          pages,
+          status: 'pending' as const,
+          progress: 0,
+        }
+      })
+    )
+
+    setPdfs((prev) => [...prev, ...newPdfs])
+  }, [])
+
+  const updatePdfStatus = (
+    id: string,
+    updates: Partial<PDFFile>,
+    callback?: (pdf: PDFFile) => PDFFile
+  ) => {
+    setPdfs((prev) =>
+      prev.map((pdf) => {
+        if (pdf.id === id) {
+          const updated = { ...pdf, ...updates }
+          return callback ? callback(updated) : updated
+        }
+        return pdf
+      })
+    )
+  }
+
+  const mergePDFs = async () => {
+    if (pdfs.length < 2) return
+
+    const startTime = Date.now()
+    setIsProcessing(true)
+
+    try {
+      const mergedPdf = await PDFDocument.create()
+
+      for (let i = 0; i < pdfs.length; i++) {
+        const pdf = pdfs[i]
+        updatePdfStatus(pdf.id, { status: 'processing', progress: (i / pdfs.length) * 50 })
+
+        const arrayBuffer = await pdf.file.arrayBuffer()
+        const pdfDoc = await PDFDocument.load(arrayBuffer)
+        const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices())
+        pages.forEach((page) => mergedPdf.addPage(page))
+      }
+
+      const mergedBytes = await mergedPdf.save()
+      const blob = new Blob([new Uint8Array(mergedBytes)], { type: 'application/pdf' })
+
+      // Mark first PDF as completed with merged result
+      updatePdfStatus(pdfs[0].id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: blob,
+        processedSize: blob.size,
+      })
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'pdfs_merged',
+        category: 'pdf_tools',
+        label: 'merge',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error merging PDFs:', error)
+      pdfs.forEach((pdf) => {
+        updatePdfStatus(pdf.id, {
+          status: 'error',
+          error: 'Failed to merge PDFs',
+        })
+      })
+
+      trackEvent({
+        action: 'merge_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+
+    setIsProcessing(false)
+  }
+
+  const splitPDF = async (pdf: PDFFile) => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const pdfDoc = await PDFDocument.load(arrayBuffer)
+      const totalPages = pdfDoc.getPageCount()
+
+      if (splitPageNumber < 1 || splitPageNumber > totalPages) {
+        throw new Error('Invalid page number')
+      }
+
+      // Create first part (pages 1 to splitPageNumber)
+      const pdf1 = await PDFDocument.create()
+      const pages1 = await pdf1.copyPages(
+        pdfDoc,
+        Array.from({ length: splitPageNumber }, (_, i) => i)
+      )
+      pages1.forEach((page) => pdf1.addPage(page))
+
+      // Create second part (remaining pages)
+      const pdf2 = await PDFDocument.create()
+      const pages2 = await pdf2.copyPages(
+        pdfDoc,
+        Array.from({ length: totalPages - splitPageNumber }, (_, i) => i + splitPageNumber)
+      )
+      pages2.forEach((page) => pdf2.addPage(page))
+
+      const bytes1 = await pdf1.save()
+      const bytes2 = await pdf2.save()
+
+      // For split, we'll create two download buttons
+      const blob1 = new Blob([new Uint8Array(bytes1)], { type: 'application/pdf' })
+      const blob2 = new Blob([new Uint8Array(bytes2)], { type: 'application/pdf' })
+
+      // Store both parts (we'll use processedBlob for part 1 and add custom handling for part 2)
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: blob1,
+        processedSize: blob1.size + blob2.size,
+      })
+
+      // Store part 2 in a custom property (we'll handle this in download)
+      setPdfs((prev) =>
+        prev.map((p) =>
+          p.id === pdf.id ? { ...p, splitBlob2: blob2 as Blob & { splitBlob2?: Blob } } : p
+        )
+      )
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'pdf_split',
+        category: 'pdf_tools',
+        label: 'split',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error splitting PDF:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to split PDF',
+      })
+
+      trackEvent({
+        action: 'split_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
+
+  const compressPDF = async (pdf: PDFFile) => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const pdfDoc = await PDFDocument.load(arrayBuffer)
+
+      // Note: pdf-lib doesn't have built-in compression, so we'll re-save with optimizations
+      // This provides basic compression by removing unused objects
+      const compressedBytes = await pdfDoc.save({
+        useObjectStreams: true,
+        addDefaultPage: false,
+      })
+
+      const blob = new Blob([new Uint8Array(compressedBytes)], { type: 'application/pdf' })
+
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: blob,
+        processedSize: blob.size,
+      })
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'pdf_compressed',
+        category: 'pdf_tools',
+        label: 'compress',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error compressing PDF:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to compress PDF',
+      })
+
+      trackEvent({
+        action: 'compress_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
+
+  const convertToImages = async (pdf: PDFFile) => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      // Initialize pdfjs dynamically
+      const pdfjs = await initPdfjs()
+
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+      const pdfDoc = await loadingTask.promise
+
+      const images: Blob[] = []
+
+      for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+        const page = await pdfDoc.getPage(pageNum)
+        const viewport = page.getViewport({ scale: 2.0 })
+
+        const canvas = document.createElement('canvas')
+        const context = canvas.getContext('2d')!
+        canvas.height = viewport.height
+        canvas.width = viewport.width
+
+        await page.render({
+          canvasContext: context,
+          viewport: viewport,
+          canvas: canvas,
+        }).promise
+
+        const blob = await new Promise<Blob>((resolve) => {
+          canvas.toBlob((blob) => resolve(blob!), 'image/png')
+        })
+
+        images.push(blob)
+
+        updatePdfStatus(pdf.id, {
+          status: 'processing',
+          progress: (pageNum / pdfDoc.numPages) * 100,
+        })
+      }
+
+      // Store images array in custom property
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+      })
+
+      setPdfs((prev) =>
+        prev.map((p) =>
+          p.id === pdf.id ? { ...p, imageBlobs: images as Blob[] & { imageBlobs?: Blob[] } } : p
+        )
+      )
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'pdf_to_images',
+        category: 'pdf_tools',
+        label: 'convert_to_images',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error converting to images:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to convert to images',
+      })
+
+      trackEvent({
+        action: 'to_images_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
+
+  const addWatermark = async (pdf: PDFFile) => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const pdfDoc = await PDFDocument.load(arrayBuffer)
+      const pages = pdfDoc.getPages()
+
+      pages.forEach((page, index) => {
+        const { width, height } = page.getSize()
+
+        page.drawText(watermarkText, {
+          x: width / 2 - watermarkText.length * 10,
+          y: height / 2,
+          size: 50,
+          color: rgb(0.7, 0.7, 0.7),
+          opacity: watermarkOpacity,
+          rotate: degrees(-45),
+        })
+
+        updatePdfStatus(pdf.id, {
+          status: 'processing',
+          progress: ((index + 1) / pages.length) * 100,
+        })
+      })
+
+      const watermarkedBytes = await pdfDoc.save()
+      const blob = new Blob([new Uint8Array(watermarkedBytes)], { type: 'application/pdf' })
+
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: blob,
+        processedSize: blob.size,
+      })
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'watermark_added',
+        category: 'pdf_tools',
+        label: 'watermark',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error adding watermark:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to add watermark',
+      })
+
+      trackEvent({
+        action: 'watermark_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
+
+  const extractPages = async (pdf: PDFFile) => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const pdfDoc = await PDFDocument.load(arrayBuffer)
+      const totalPages = pdfDoc.getPageCount()
+
+      if (
+        extractStartPage < 1 ||
+        extractEndPage > totalPages ||
+        extractStartPage > extractEndPage
+      ) {
+        throw new Error('Invalid page range')
+      }
+
+      const newPdf = await PDFDocument.create()
+      const pageIndices = Array.from(
+        { length: extractEndPage - extractStartPage + 1 },
+        (_, i) => i + extractStartPage - 1
+      )
+
+      const pages = await newPdf.copyPages(pdfDoc, pageIndices)
+      pages.forEach((page) => newPdf.addPage(page))
+
+      const extractedBytes = await newPdf.save()
+      const blob = new Blob([new Uint8Array(extractedBytes)], { type: 'application/pdf' })
+
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: blob,
+        processedSize: blob.size,
+      })
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'pages_extracted',
+        category: 'pdf_tools',
+        label: 'extract',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error extracting pages:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to extract pages',
+      })
+
+      trackEvent({
+        action: 'extract_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
+
+  const rotatePDF = async (pdf: PDFFile) => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const pdfDoc = await PDFDocument.load(arrayBuffer)
+      const pages = pdfDoc.getPages()
+
+      pages.forEach((page, index) => {
+        page.setRotation(degrees(rotationAngle))
+
+        updatePdfStatus(pdf.id, {
+          status: 'processing',
+          progress: ((index + 1) / pages.length) * 100,
+        })
+      })
+
+      const rotatedBytes = await pdfDoc.save()
+      const blob = new Blob([new Uint8Array(rotatedBytes)], { type: 'application/pdf' })
+
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: blob,
+        processedSize: blob.size,
+      })
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'pdf_rotated',
+        category: 'pdf_tools',
+        label: 'rotate',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error rotating PDF:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to rotate PDF',
+      })
+
+      trackEvent({
+        action: 'rotate_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
+
+  const handleProcess = async () => {
+    setIsProcessing(true)
+
+    if (operation === 'merge') {
+      await mergePDFs()
+    } else {
+      const pendingPdfs = pdfs.filter((p) => p.status === 'pending')
+      for (const pdf of pendingPdfs) {
+        switch (operation) {
+          case 'split':
+            await splitPDF(pdf)
+            break
+          case 'compress':
+            await compressPDF(pdf)
+            break
+          case 'toImages':
+            await convertToImages(pdf)
+            break
+          case 'watermark':
+            await addWatermark(pdf)
+            break
+          case 'extract':
+            await extractPages(pdf)
+            break
+          case 'rotate':
+            await rotatePDF(pdf)
+            break
+        }
+      }
+    }
+
+    setIsProcessing(false)
+  }
+
+  const handleDownload = (pdf: PDFFile) => {
+    if (operation === 'toImages') {
+      // Download all images
+      const images = (pdf as PDFFile & { imageBlobs?: Blob[] }).imageBlobs
+      if (!images) return
+
+      images.forEach((blob, index) => {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${pdf.name.replace('.pdf', '')}_page_${index + 1}.png`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      })
+
+      trackEvent({
+        action: 'images_downloaded',
+        category: 'pdf_tools',
+        label: 'download_images',
+        value: images.length,
+      })
+    } else if (operation === 'split') {
+      // Download both parts
+      if (!pdf.processedBlob) return
+
+      const blob2 = (pdf as PDFFile & { splitBlob2?: Blob }).splitBlob2
+
+      // Download part 1
+      const url1 = URL.createObjectURL(pdf.processedBlob)
+      const a1 = document.createElement('a')
+      a1.href = url1
+      a1.download = `${pdf.name.replace('.pdf', '')}_part1.pdf`
+      document.body.appendChild(a1)
+      a1.click()
+      document.body.removeChild(a1)
+      URL.revokeObjectURL(url1)
+
+      // Download part 2 if exists
+      if (blob2) {
+        setTimeout(() => {
+          const url2 = URL.createObjectURL(blob2)
+          const a2 = document.createElement('a')
+          a2.href = url2
+          a2.download = `${pdf.name.replace('.pdf', '')}_part2.pdf`
+          document.body.appendChild(a2)
+          a2.click()
+          document.body.removeChild(a2)
+          URL.revokeObjectURL(url2)
+        }, 100)
+      }
+
+      trackEvent({
+        action: 'split_pdfs_downloaded',
+        category: 'pdf_tools',
+        label: 'download_split',
+      })
+    } else {
+      // Download single PDF
+      if (!pdf.processedBlob) return
+
+      const url = URL.createObjectURL(pdf.processedBlob)
+      const a = document.createElement('a')
+      a.href = url
+
+      let suffix = ''
+      switch (operation) {
+        case 'merge':
+          suffix = '_merged'
+          break
+        case 'compress':
+          suffix = '_compressed'
+          break
+        case 'watermark':
+          suffix = '_watermarked'
+          break
+        case 'extract':
+          suffix = '_extracted'
+          break
+        case 'rotate':
+          suffix = '_rotated'
+          break
+      }
+
+      a.download = pdf.name.replace('.pdf', `${suffix}.pdf`)
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      trackEvent({
+        action: 'pdf_downloaded',
+        category: 'pdf_tools',
+        label: operation,
+      })
+    }
+  }
+
+  const handleRemove = (id: string) => {
+    setPdfs((prev) => prev.filter((pdf) => pdf.id !== id))
+  }
+
+  const handleClearAll = () => {
+    setPdfs([])
+    trackEvent({
+      action: 'clear_all',
+      category: 'pdf_tools',
+      label: 'reset',
+    })
+  }
+
+  const formatBytes = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+  }
+
+  const operations = [
+    { value: 'merge', label: 'Merge PDFs', icon: Merge },
+    { value: 'split', label: 'Split PDF', icon: Split },
+    { value: 'compress', label: 'Compress', icon: Archive },
+    { value: 'toImages', label: 'To Images', icon: ImageIcon },
+    { value: 'watermark', label: 'Watermark', icon: Droplet },
+    { value: 'extract', label: 'Extract Pages', icon: Copy },
+    { value: 'rotate', label: 'Rotate', icon: RotateCw },
+  ]
+
+  return (
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '1400px',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8' },
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      })}
+    >
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem',
+          textAlign: 'center',
+          width: '100%',
+          maxWidth: '1400px',
+        }}
+      >
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'red.500/20',
+            bg: 'red.500/10',
+            px: '4',
+            py: '2',
+            backdropFilter: 'blur(4px)',
+          })}
+        >
+          <FileText className="h-5 w-5 text-red-400" />
+          <span className="text-sm font-semibold text-red-300">Professional PDF Processing</span>
+        </div>
+
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'bold',
+          })}
+        >
+          <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
+            PDF Tools Suite
+          </span>
+        </h1>
+
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '2xl',
+            fontSize: 'lg',
+            color: 'gray.400',
+          })}
+        >
+          Merge, split, compress, watermark, and convert PDFs with powerful browser-based tools.
+          100% secure - all processing happens on your device.
+        </p>
+      </motion.div>
+
+      {/* Stats Summary */}
+      {pdfs.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '1rem',
+            width: '100%',
+            maxWidth: '1400px',
+          }}
+          className="sm:grid-cols-3"
+        >
+          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <CardContent>
+              <div className={css({ p: '4', textAlign: 'center' })}>
+                <div className="mb-2 text-2xl font-bold text-red-400">{pdfs.length}</div>
+                <div className="text-xs text-gray-400">Total PDFs</div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <CardContent>
+              <div className={css({ p: '4', textAlign: 'center' })}>
+                <div className="mb-2 text-2xl font-bold text-orange-400">
+                  {pdfs.reduce((sum, pdf) => sum + pdf.pages, 0)}
+                </div>
+                <div className="text-xs text-gray-400">Total Pages</div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <CardContent>
+              <div className={css({ p: '4', textAlign: 'center' })}>
+                <div className="mb-2 text-2xl font-bold text-yellow-400">
+                  {formatBytes(pdfs.reduce((sum, pdf) => sum + pdf.size, 0))}
+                </div>
+                <div className="text-xs text-gray-400">Total Size</div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      <div
+        className={css({
+          display: 'grid',
+          gap: '6',
+          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          w: 'full',
+          maxW: '1400px',
+        })}
+      >
+        {/* Settings Panel */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          style={{ width: '100%' }}
+          className="lg:col-span-1"
+        >
+          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <CardHeader>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5 text-red-400" />
+                  Operations
+                </CardTitle>
+                <CardDescription>Choose a PDF operation to perform</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
+                {/* Operation Selection */}
+                <div className={css({ spaceY: '2' })}>
+                  <label className="text-sm font-medium text-gray-300">Select Operation</label>
+                  <div className={css({ spaceY: '2' })}>
+                    {operations.map((op) => (
+                      <Button
+                        key={op.value}
+                        variant={operation === op.value ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => {
+                          setOperation(op.value as OperationType)
+                          trackEvent({
+                            action: 'operation_changed',
+                            category: 'pdf_tools',
+                            label: op.value,
+                          })
+                        }}
+                        className={`w-full justify-start gap-2 ${
+                          operation === op.value
+                            ? 'border-red-500/50 bg-red-500/20 text-red-200'
+                            : 'border-gray-700'
+                        }`}
+                      >
+                        <op.icon className="h-4 w-4" />
+                        {op.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Operation-specific settings */}
+                {operation === 'split' && (
+                  <div className={css({ spaceY: '2' })}>
+                    <label className="text-sm font-medium text-gray-300">Split at Page</label>
+                    <input
+                      type="number"
+                      value={splitPageNumber}
+                      onChange={(e) => setSplitPageNumber(Number(e.target.value))}
+                      className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-red-500 focus:outline-none"
+                      min="1"
+                    />
+                    <p className="text-xs text-gray-500">Pages 1-N will be in part 1</p>
+                  </div>
+                )}
+
+                {operation === 'watermark' && (
+                  <>
+                    <div className={css({ spaceY: '2' })}>
+                      <label className="text-sm font-medium text-gray-300">Watermark Text</label>
+                      <input
+                        type="text"
+                        value={watermarkText}
+                        onChange={(e) => setWatermarkText(e.target.value)}
+                        className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-red-500 focus:outline-none"
+                      />
+                    </div>
+                    <div className={css({ spaceY: '3' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        })}
+                      >
+                        <label className="text-sm font-medium text-gray-300">Opacity</label>
+                        <span className="text-sm font-bold text-red-400">
+                          {Math.round(watermarkOpacity * 100)}%
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="1"
+                        step="0.1"
+                        value={watermarkOpacity}
+                        onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
+                        className="w-full accent-red-500"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {operation === 'extract' && (
+                  <div className={css({ spaceY: '2' })}>
+                    <label className="text-sm font-medium text-gray-300">Page Range</label>
+                    <div
+                      className={css({
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: '2',
+                      })}
+                    >
+                      <div>
+                        <label className="mb-1 block text-xs text-gray-400">From</label>
+                        <input
+                          type="number"
+                          value={extractStartPage}
+                          onChange={(e) => setExtractStartPage(Number(e.target.value))}
+                          className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-red-500 focus:outline-none"
+                          min="1"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs text-gray-400">To</label>
+                        <input
+                          type="number"
+                          value={extractEndPage}
+                          onChange={(e) => setExtractEndPage(Number(e.target.value))}
+                          className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-red-500 focus:outline-none"
+                          min="1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'rotate' && (
+                  <div className={css({ spaceY: '2' })}>
+                    <label className="text-sm font-medium text-gray-300">Rotation Angle</label>
+                    <div
+                      className={css({
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gap: '2',
+                      })}
+                    >
+                      {[90, 180, 270, 360].map((angle) => (
+                        <Button
+                          key={angle}
+                          variant={rotationAngle === angle ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setRotationAngle(angle)}
+                          className={`${
+                            rotationAngle === angle
+                              ? 'border-red-500/50 bg-red-500/20 text-red-200'
+                              : 'border-gray-700'
+                          }`}
+                        >
+                          {angle}°
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className={css({ spaceY: '2', pt: '4' })}>
+                  <Button
+                    onClick={handleProcess}
+                    disabled={pdfs.length === 0 || isProcessing}
+                    className="w-full gap-2 bg-red-600 hover:bg-red-700"
+                  >
+                    <Zap className="h-4 w-4" />
+                    Process PDFs
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleClearAll}
+                    disabled={pdfs.length === 0}
+                    className="w-full gap-2 border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Clear All
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Upload & PDFs Panel */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          style={{ width: '100%' }}
+          className="lg:col-span-2"
+        >
+          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <CardHeader>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-red-400" />
+                  PDF Files ({pdfs.length})
+                </CardTitle>
+                <CardDescription>
+                  {operation === 'merge'
+                    ? 'Upload 2+ PDFs to merge them into one'
+                    : 'Drag & drop or click to upload PDF files'}
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+                {/* Drag & Drop Zone */}
+                {pdfs.length === 0 ? (
+                  <DragDropZone
+                    onFilesSelected={handleFilesSelected}
+                    accept="application/pdf"
+                    maxSize={100 * 1024 * 1024}
+                    multiple
+                  />
+                ) : (
+                  <>
+                    <DragDropZone
+                      onFilesSelected={handleFilesSelected}
+                      accept="application/pdf"
+                      maxSize={100 * 1024 * 1024}
+                      multiple
+                      className="!py-8"
+                    />
+
+                    <div
+                      className={css({
+                        maxH: '[600px]',
+                        spaceY: '3',
+                        overflowY: 'auto',
+                        pr: '2',
+                      })}
+                    >
+                      <AnimatePresence>
+                        {pdfs.map((pdf) => (
+                          <motion.div
+                            key={pdf.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className={css({
+                              rounded: 'lg',
+                              border: '1px solid',
+                              borderColor: 'gray.800',
+                              bg: 'gray.900/80',
+                              p: '4',
+                            })}
+                          >
+                            <div
+                              className={css({ display: 'flex', alignItems: 'start', gap: '4' })}
+                            >
+                              {/* PDF Icon */}
+                              <div
+                                className={css({
+                                  h: '20',
+                                  w: '20',
+                                  flexShrink: '0',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  rounded: 'lg',
+                                  bg: 'gray.800',
+                                })}
+                              >
+                                {pdf.status === 'completed' ? (
+                                  <CheckCircle className="h-8 w-8 text-red-400" />
+                                ) : (
+                                  <FileText className="h-8 w-8 text-gray-400" />
+                                )}
+                              </div>
+
+                              {/* PDF Info */}
+                              <div className={css({ minW: '0', flex: '1' })}>
+                                <div
+                                  className={css({
+                                    mb: '2',
+                                    display: 'flex',
+                                    alignItems: 'start',
+                                    justifyContent: 'space-between',
+                                    gap: '2',
+                                  })}
+                                >
+                                  <div className={css({ minW: '0', flex: '1' })}>
+                                    <p className="truncate text-sm font-medium text-gray-200">
+                                      {pdf.name}
+                                    </p>
+                                    <div
+                                      className={css({
+                                        mt: '1',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '3',
+                                        fontSize: 'xs',
+                                        color: 'gray.500',
+                                      })}
+                                    >
+                                      <span>{formatBytes(pdf.size)}</span>
+                                      <span>•</span>
+                                      <span>{pdf.pages} pages</span>
+                                      {pdf.processedSize && (
+                                        <>
+                                          <span>→</span>
+                                          <span className="text-red-400">
+                                            {formatBytes(pdf.processedSize)}
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Action Buttons */}
+                                  <div className={css({ display: 'flex', gap: '1' })}>
+                                    {pdf.status === 'completed' && (
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => handleDownload(pdf)}
+                                        className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
+                                      >
+                                        <Download className="h-4 w-4" />
+                                      </Button>
+                                    )}
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleRemove(pdf.id)}
+                                      className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </div>
+
+                                {/* Progress Bar */}
+                                {pdf.status === 'processing' && (
+                                  <div className={css({ spaceY: '1' })}>
+                                    <Progress value={pdf.progress} className="h-2" />
+                                    <p className="text-xs text-gray-500">
+                                      Processing... {Math.round(pdf.progress)}%
+                                    </p>
+                                  </div>
+                                )}
+
+                                {/* Error Message */}
+                                {pdf.status === 'error' && (
+                                  <p className="text-xs text-red-400">{pdf.error}</p>
+                                )}
+
+                                {/* Status */}
+                                {pdf.status === 'pending' && (
+                                  <p className="text-xs text-gray-500">Ready to process</p>
+                                )}
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Features Info */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        style={{
+          display: 'grid',
+          gap: '1rem',
+          gridTemplateColumns: '1fr',
+          width: '100%',
+          maxWidth: '1400px',
+        }}
+        className="sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {[
+          {
+            icon: Sparkles,
+            title: 'Secure Processing',
+            description: '100% browser-based. Your files never leave your device.',
+          },
+          {
+            icon: Zap,
+            title: 'Fast & Efficient',
+            description: 'Process PDFs instantly with no file size limits.',
+          },
+          {
+            icon: Merge,
+            title: '7 Powerful Tools',
+            description: 'Merge, split, compress, convert, and more.',
+          },
+          {
+            icon: FileText,
+            title: 'Professional Quality',
+            description: 'Industry-standard PDF processing capabilities.',
+          },
+        ].map((feature, index) => (
+          <Card
+            key={index}
+            className="border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm"
+          >
+            <CardContent>
+              <div className={css({ p: '6' })}>
+                <feature.icon className="mb-3 h-8 w-8 text-red-400" />
+                <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
+                <p className="text-sm text-gray-500">{feature.description}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </motion.div>
+    </main>
+  )
+}

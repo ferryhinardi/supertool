@@ -368,7 +368,6 @@ const tools: Tool[] = [
     gradient: 'from-red-500 to-orange-500',
     features: ['Merge/Split', 'Compress', 'Convert', 'Watermark'],
     category: 'productivity',
-    comingSoon: true,
   },
   {
     title: 'Loan & Mortgage Calculator',

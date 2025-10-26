@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  serverExternalPackages: ['pdfjs-dist'],
 }
 
 export default nextConfig
