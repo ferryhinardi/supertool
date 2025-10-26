@@ -46,7 +46,8 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
-    "sonner": "^2.0.7"
+    "sonner": "^2.0.7",
+    "tesseract.js": "^6.0.1"
   },
   "devDependencies": {
     "@pandacss/dev": "^1.4.3",
