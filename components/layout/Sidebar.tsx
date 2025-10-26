@@ -3,13 +3,24 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Code, Upload, FileText, GitCompare, Github, Menu, X } from 'lucide-react'
+import {
+  Home,
+  Code,
+  Upload,
+  FileText,
+  GitCompare,
+  Github,
+  Menu,
+  X,
+  FileSpreadsheet,
+} from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { cva } from '@/styled-system/css'
 
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'JSON Beautifier', href: '/tools/json-beautify', icon: Code },
+  { name: 'JSON to CSV', href: '/tools/json-to-csv', icon: FileSpreadsheet },
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
@@ -246,7 +257,7 @@ export function Sidebar() {
                 color: 'purple.300',
               })}
             >
-              Developer Toolkit
+              Digital Toolkit
             </p>
           </Link>
 

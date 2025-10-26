@@ -1,0 +1,588 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import CodeMirror from '@uiw/react-codemirror'
+import { json } from '@codemirror/lang-json'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { toast } from 'sonner'
+import { FileSpreadsheet, Download, Copy, RefreshCw, AlertCircle } from 'lucide-react'
+import { trackToolEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
+
+export default function JSONToCSVPage() {
+  const [jsonInput, setJsonInput] = useState(
+    '[\n  {\n    "name": "John Doe",\n    "age": 30,\n    "email": "john@example.com"\n  },\n  {\n    "name": "Jane Smith",\n    "age": 25,\n    "email": "jane@example.com"\n  }\n]'
+  )
+  const [delimiter, setDelimiter] = useState(',')
+  const [flattenNested, setFlattenNested] = useState(true)
+
+  // Calculate stats and preview
+  const { stats, csvOutput, isValid, error } = useMemo(() => {
+    // Flatten nested objects
+    const flattenObject = (obj: Record<string, unknown>, prefix = ''): Record<string, unknown> => {
+      const flattened: Record<string, unknown> = {}
+
+      Object.keys(obj).forEach((key) => {
+        const value = obj[key]
+        const newKey = prefix ? `${prefix}.${key}` : key
+
+        if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+          Object.assign(flattened, flattenObject(value as Record<string, unknown>, newKey))
+        } else if (Array.isArray(value)) {
+          flattened[newKey] = JSON.stringify(value)
+        } else {
+          flattened[newKey] = value
+        }
+      })
+
+      return flattened
+    }
+
+    // Escape CSV field
+    const escapeCSVField = (field: unknown): string => {
+      if (field === null || field === undefined) return ''
+      const str = String(field)
+      if (str.includes(delimiter) || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`
+      }
+      return str
+    }
+
+    // Convert JSON to CSV
+    const convertToCSVInner = (data: Record<string, unknown>[]): string => {
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error('Input must be a non-empty array of objects')
+      }
+
+      // Process data
+      const processedData = flattenNested ? data.map((item) => flattenObject(item)) : data
+
+      // Get all unique headers
+      const headers = Array.from(new Set(processedData.flatMap((obj) => Object.keys(obj)))).sort()
+
+      // Create CSV header row
+      const headerRow = headers.map((h) => escapeCSVField(h)).join(delimiter)
+
+      // Create CSV data rows
+      const dataRows = processedData.map((obj) => {
+        return headers.map((header) => escapeCSVField(obj[header])).join(delimiter)
+      })
+
+      return [headerRow, ...dataRows].join('\n')
+    }
+
+    try {
+      const parsed = JSON.parse(jsonInput)
+
+      if (!Array.isArray(parsed)) {
+        return {
+          stats: null,
+          csvOutput: '',
+          isValid: false,
+          error: 'Input must be an array of objects',
+        }
+      }
+
+      if (parsed.length === 0) {
+        return {
+          stats: null,
+          csvOutput: '',
+          isValid: false,
+          error: 'Array cannot be empty',
+        }
+      }
+
+      const csv = convertToCSVInner(parsed as Record<string, unknown>[])
+      const lines = csv.split('\n')
+      const columns = lines[0].split(delimiter).length
+
+      return {
+        stats: {
+          rows: parsed.length,
+          columns,
+          totalLines: lines.length,
+          chars: csv.length,
+        },
+        csvOutput: csv,
+        isValid: true,
+        error: null,
+      }
+    } catch (err) {
+      return {
+        stats: null,
+        csvOutput: '',
+        isValid: false,
+        error: err instanceof Error ? err.message : 'Invalid JSON format',
+      }
+    }
+  }, [jsonInput, delimiter, flattenNested])
+
+  const handleCopy = async () => {
+    if (!isValid || !csvOutput) {
+      toast.error('No valid CSV to copy')
+      return
+    }
+
+    await navigator.clipboard.writeText(csvOutput)
+    toast.success('CSV copied to clipboard 📋')
+    trackToolEvent('json_copy', {
+      output_length: csvOutput.length,
+    })
+  }
+
+  const handleDownload = () => {
+    if (!isValid || !csvOutput) {
+      toast.error('No valid CSV to download')
+      return
+    }
+
+    const blob = new Blob([csvOutput], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `data-${Date.now()}.csv`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    toast.success('CSV file downloaded 📥')
+    trackToolEvent('json_download', {
+      file_size_kb: Math.round(blob.size / 1024),
+    })
+  }
+
+  const handleReset = () => {
+    setJsonInput(
+      '[\n  {\n    "name": "John Doe",\n    "age": 30,\n    "email": "john@example.com"\n  },\n  {\n    "name": "Jane Smith",\n    "age": 25,\n    "email": "jane@example.com"\n  }\n]'
+    )
+    setDelimiter(',')
+    setFlattenNested(true)
+    toast.success('Reset to default example')
+  }
+
+  return (
+    <TooltipProvider>
+      <main
+        className={css({
+          mx: 'auto',
+          maxW: '1400px',
+          w: 'full',
+          px: { base: '4', sm: '6', md: '8' },
+          py: { base: '6', sm: '8', md: '10' },
+          spaceY: { base: '4', sm: '6', md: '8' },
+        })}
+      >
+        {/* Header */}
+        <div className={css({ spaceY: '3' })}>
+          <div
+            className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
+          >
+            <div
+              className="animate-pulse rounded-xl bg-gradient-to-br from-teal-600 via-green-600 to-emerald-700 p-2.5 shadow-2xl shadow-teal-500/60 sm:rounded-2xl sm:p-4"
+              style={{ animationDuration: '2s' }}
+            >
+              <FileSpreadsheet className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+            </div>
+            <div>
+              <h1 className="bg-gradient-to-r from-teal-300 via-green-400 to-emerald-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
+                JSON to CSV Converter
+              </h1>
+              <p className="text-sm text-gray-200 sm:text-base md:text-lg">
+                Convert JSON data to CSV with nested object support
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Bar */}
+        <div
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: isValid ? 'teal.500/30' : 'red.500/30',
+            bg: isValid ? 'rgba(20, 184, 166, 0.05)' : 'rgba(239, 68, 68, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
+            shadow: 'xl',
+            boxShadow: isValid
+              ? '0 20px 25px rgba(20, 184, 166, 0.2)'
+              : '0 20px 25px rgba(239, 68, 68, 0.2)',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <div
+            className={css({
+              display: 'flex',
+              flexDirection: { base: 'column', sm: 'row' },
+              alignItems: { base: 'start', sm: 'center' },
+              justifyContent: 'space-between',
+              gap: { base: '3', sm: '4' },
+            })}
+          >
+            {isValid && stats ? (
+              <>
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <Badge
+                    variant="outline"
+                    size="sm"
+                    className="border-teal-500/50 bg-teal-500/10 px-2.5 py-1.5 text-xs text-teal-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                  >
+                    📊 {stats.rows} rows
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    size="sm"
+                    className="border-green-500/50 bg-green-500/10 px-2.5 py-1.5 text-xs text-green-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                  >
+                    📋 {stats.columns} columns
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    size="sm"
+                    className="border-emerald-500/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs text-emerald-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                  >
+                    📝 {stats.chars.toLocaleString()} chars
+                  </Badge>
+                </div>
+
+                <Badge
+                  variant="success"
+                  size="sm"
+                  className="animate-pulse bg-gradient-to-r from-green-500 to-emerald-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg shadow-green-500/50 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                >
+                  ✅ Valid
+                </Badge>
+              </>
+            ) : (
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <AlertCircle className="h-5 w-5 text-red-400" />
+                <span className="text-sm text-red-300">{error}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Configuration */}
+        <div
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: 'teal.500/20',
+            bg: 'rgba(17, 24, 39, 0.5)',
+            p: { base: '4', sm: '5', md: '6' },
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <h2
+            className={css({
+              mb: '4',
+              fontSize: { base: 'lg', sm: 'xl' },
+              fontWeight: 'bold',
+              color: 'teal.300',
+            })}
+          >
+            Configuration
+          </h2>
+
+          <div
+            className={css({
+              display: 'grid',
+              gridTemplateColumns: { base: '1', md: '2' },
+              gap: '4',
+            })}
+          >
+            <Field>
+              <FieldLabel className="text-sm font-medium text-gray-300">Delimiter</FieldLabel>
+              <FieldInput
+                type="text"
+                value={delimiter}
+                onChange={(e) => setDelimiter(e.target.value || ',')}
+                maxLength={1}
+                className={css({
+                  rounded: 'lg',
+                  border: '2px solid',
+                  borderColor: 'gray.700',
+                  bg: 'rgba(17, 24, 39, 0.7)',
+                  px: '4',
+                  py: '2',
+                  color: 'white',
+                  _focus: {
+                    borderColor: 'teal.500',
+                    outline: 'none',
+                    ring: '2px',
+                    ringColor: 'rgba(20, 184, 166, 0.3)',
+                  },
+                })}
+              />
+            </Field>
+
+            <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+              <label
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  cursor: 'pointer',
+                })}
+              >
+                <input
+                  type="checkbox"
+                  checked={flattenNested}
+                  onChange={(e) => setFlattenNested(e.target.checked)}
+                  className={css({
+                    h: '5',
+                    w: '5',
+                    rounded: 'md',
+                    cursor: 'pointer',
+                  })}
+                />
+                <span className="text-sm font-medium text-gray-300">Flatten nested objects</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div
+          className={css({
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: { base: '2', sm: '3' },
+          })}
+        >
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={handleCopy}
+                disabled={!isValid}
+                size="lg"
+                variant="outline"
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  fontSize: { base: 'sm', sm: 'base' },
+                  _disabled: {
+                    opacity: 0.5,
+                    cursor: 'not-allowed',
+                  },
+                })}
+              >
+                <Copy className="h-4 w-4 sm:h-5 sm:w-5" />
+                Copy CSV
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Copy CSV output to clipboard</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={handleDownload}
+                disabled={!isValid}
+                size="lg"
+                variant="default"
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  fontSize: { base: 'sm', sm: 'base' },
+                  _disabled: {
+                    opacity: 0.5,
+                    cursor: 'not-allowed',
+                  },
+                })}
+              >
+                <Download className="h-4 w-4 sm:h-5 sm:w-5" />
+                Download CSV
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Download as CSV file</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={handleReset}
+                size="lg"
+                variant="outline"
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  fontSize: { base: 'sm', sm: 'base' },
+                })}
+              >
+                <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5" />
+                Reset
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Reset to default example</TooltipContent>
+          </Tooltip>
+        </div>
+
+        {/* JSON Input Editor */}
+        <div
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: 'teal.500/20',
+            bg: 'rgba(17, 24, 39, 0.5)',
+            overflow: 'hidden',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1px solid',
+              borderColor: 'teal.500/20',
+              bg: 'rgba(20, 184, 166, 0.05)',
+              px: { base: '4', sm: '6' },
+              py: '3',
+            })}
+          >
+            <h3 className="text-sm font-semibold text-teal-300 sm:text-base">JSON Input</h3>
+          </div>
+          <CodeMirror
+            value={jsonInput}
+            height="300px"
+            extensions={[json()]}
+            onChange={setJsonInput}
+            theme="dark"
+            basicSetup={{
+              lineNumbers: true,
+              highlightActiveLineGutter: true,
+              highlightSpecialChars: true,
+              foldGutter: true,
+              drawSelection: true,
+              dropCursor: true,
+              allowMultipleSelections: true,
+              indentOnInput: true,
+              bracketMatching: true,
+              closeBrackets: true,
+              autocompletion: true,
+              rectangularSelection: true,
+              crosshairCursor: true,
+              highlightActiveLine: true,
+              highlightSelectionMatches: true,
+              closeBracketsKeymap: true,
+              searchKeymap: true,
+              foldKeymap: true,
+              completionKeymap: true,
+              lintKeymap: true,
+            }}
+            className="text-sm sm:text-base"
+          />
+        </div>
+
+        {/* CSV Output Preview */}
+        <div
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: 'green.500/20',
+            bg: 'rgba(17, 24, 39, 0.5)',
+            overflow: 'hidden',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1px solid',
+              borderColor: 'green.500/20',
+              bg: 'rgba(34, 197, 94, 0.05)',
+              px: { base: '4', sm: '6' },
+              py: '3',
+            })}
+          >
+            <h3 className="text-sm font-semibold text-green-300 sm:text-base">
+              CSV Output Preview
+            </h3>
+          </div>
+          <div
+            className={css({
+              maxH: '300px',
+              overflow: 'auto',
+              p: { base: '4', sm: '6' },
+            })}
+          >
+            {isValid && csvOutput ? (
+              <pre
+                className={css({
+                  fontFamily: 'mono',
+                  fontSize: { base: 'xs', sm: 'sm' },
+                  color: 'gray.300',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-all',
+                })}
+              >
+                {csvOutput}
+              </pre>
+            ) : (
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  py: '8',
+                  color: 'gray.500',
+                })}
+              >
+                Enter valid JSON array to see CSV output
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Help Section */}
+        <div
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: 'teal.500/20',
+            bg: 'rgba(20, 184, 166, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'teal.300',
+            })}
+          >
+            How to Use
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className="text-sm sm:text-base">Paste your JSON array in the editor above</li>
+            <li className="text-sm sm:text-base">
+              Configure delimiter (default: comma) and flattening options
+            </li>
+            <li className="text-sm sm:text-base">Preview the CSV output in real-time</li>
+            <li className="text-sm sm:text-base">Copy to clipboard or download as a CSV file</li>
+            <li className="text-sm sm:text-base">
+              Nested objects are flattened using dot notation (e.g., &ldquo;address.city&rdquo;)
+            </li>
+          </ul>
+        </div>
+      </main>
+    </TooltipProvider>
+  )
+}

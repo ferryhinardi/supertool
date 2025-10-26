@@ -427,7 +427,7 @@ const tools: Tool[] = [
     gradient: 'from-teal-500 to-green-500',
     features: ['Flatten Nested', 'Custom Delimiter', 'Download', 'Preview'],
     category: 'data',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'Encryption & Decryption Tool',
