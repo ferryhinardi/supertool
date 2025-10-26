@@ -527,7 +527,7 @@ export default function HomePage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [searchQuery])
 
-  // Filter tools based on search and category
+  // Filter & Sort tools based on search and category and sort by popular and new, then alphabetically
   const filteredTools = useMemo(() => {
     let filtered = tools
 
@@ -544,6 +544,15 @@ export default function HomePage() {
           tool.features.some((f) => f.toLowerCase().includes(query))
       )
     }
+
+    // Sort by popular, then new, then alphabetically
+    filtered = filtered.sort((a, b) => {
+      if (a.popular && !b.popular) return -1
+      if (!a.popular && b.popular) return 1
+      if (a.new && !b.new) return -1
+      if (!a.new && b.new) return 1
+      return a.title.localeCompare(b.title)
+    })
 
     return filtered
   }, [searchQuery, selectedCategory])
