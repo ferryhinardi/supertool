@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
+import { css } from '@/styled-system/css'
 
 type DeviceSize = 'mobile' | 'tablet' | 'desktop'
 type CaptureMode = 'viewport' | 'fullpage'
@@ -130,33 +132,67 @@ export default function WebsiteScreenshotPage() {
   }
 
   return (
-    <div
-      className="space-y-8"
-      style={{
-        margin: '0 auto',
-        maxWidth: '1400px',
-        width: '100%',
-        padding: '2rem 1rem',
-      }}
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
+      })}
     >
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="space-y-4 text-center"
+        className={css({ textAlign: 'center', spaceY: '4' })}
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-4 py-2">
-          <Smartphone className="h-5 w-5 text-purple-400" />
-          <span className="text-sm font-semibold text-purple-300">Website Screenshot Tool</span>
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'purple.500/20',
+            bg: 'purple.500/10',
+            px: '4',
+            py: '2',
+          })}
+        >
+          <Smartphone className={css({ h: '5', w: '5', color: 'purple.400' })} />
+          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
+            Website Screenshot Tool
+          </span>
         </div>
 
-        <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl">
-          <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-            Website Screenshot Capture
-          </span>
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'bold',
+            bgGradient: 'to-r',
+            gradientFrom: 'purple.400',
+            gradientVia: 'pink.400',
+            gradientTo: 'blue.400',
+            bgClip: 'text',
+          })}
+          style={{
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Website Screenshot Capture
         </h1>
 
-        <p className="mx-auto max-w-2xl text-lg text-gray-400">
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '2xl',
+            fontSize: { base: 'base', sm: 'lg' },
+            color: 'gray.400',
+          })}
+        >
           Capture high-resolution screenshots of any website. Choose device size, full-page or
           viewport capture, and download instantly.
         </p>
@@ -168,14 +204,20 @@ export default function WebsiteScreenshotPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card className="border-gray-800 bg-gray-900/50">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+          })}
+        >
           <CardHeader>
             <CardTitle>Website URL</CardTitle>
             <CardDescription>Enter the URL of the website you want to capture</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className={css({ spaceY: '6' })}>
             {/* URL Input */}
-            <div className="flex gap-2">
+            <div className={css({ display: 'flex', gap: '2' })}>
               <Input
                 type="text"
                 placeholder="example.com or https://example.com"
@@ -186,22 +228,22 @@ export default function WebsiteScreenshotPage() {
                     captureScreenshot()
                   }
                 }}
-                className="flex-1"
+                className={css({ flex: '1' })}
                 disabled={isLoading}
               />
               <Button
                 onClick={captureScreenshot}
                 disabled={isLoading || !url.trim()}
-                className="gap-2"
+                className={css({ gap: '2' })}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className={css({ h: '4', w: '4', animation: 'spin' })} />
                     Capturing...
                   </>
                 ) : (
                   <>
-                    <ImageIcon className="h-4 w-4" />
+                    <ImageIcon className={css({ h: '4', w: '4' })} />
                     Capture
                   </>
                 )}
@@ -209,9 +251,17 @@ export default function WebsiteScreenshotPage() {
             </div>
 
             {/* Device Size Selection */}
-            <div className="space-y-3">
-              <label className="text-sm font-medium text-gray-300">Device Size</label>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className={css({ spaceY: '3' })}>
+              <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                Device Size
+              </label>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1', sm: 'repeat(3, 1fr)' },
+                  gap: '3',
+                })}
+              >
                 {(Object.keys(DEVICE_SIZES) as DeviceSize[]).map((size) => {
                   const device = DEVICE_SIZES[size]
                   const Icon = device.icon
@@ -222,24 +272,42 @@ export default function WebsiteScreenshotPage() {
                       key={size}
                       onClick={() => setDeviceSize(size)}
                       variant={isSelected ? 'default' : 'outline'}
-                      className={`h-auto flex-col gap-2 p-4 ${
-                        isSelected
-                          ? 'border-purple-500/50 bg-purple-500/20 hover:bg-purple-500/30'
-                          : 'border-gray-700 hover:border-purple-500/30'
-                      }`}
+                      className={css({
+                        h: 'auto',
+                        flexDirection: 'column',
+                        gap: '2',
+                        p: '4',
+                        border: '1px solid',
+                        borderColor: isSelected ? 'purple.500/50' : 'gray.700',
+                        bg: isSelected ? 'purple.500/20' : 'transparent',
+                        _hover: {
+                          borderColor: isSelected ? 'purple.500/50' : 'purple.500/30',
+                        },
+                      })}
                       disabled={isLoading}
                     >
                       <Icon
-                        className={`h-6 w-6 ${isSelected ? 'text-purple-300' : 'text-gray-400'}`}
+                        className={css({
+                          h: '6',
+                          w: '6',
+                          color: isSelected ? 'purple.300' : 'gray.400',
+                        })}
                       />
-                      <div className="text-center">
+                      <div className={css({ textAlign: 'center' })}>
                         <div
-                          className={`text-sm font-semibold ${isSelected ? 'text-purple-200' : 'text-gray-300'}`}
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'semibold',
+                            color: isSelected ? 'purple.200' : 'gray.300',
+                          })}
                         >
                           {size.charAt(0).toUpperCase() + size.slice(1)}
                         </div>
                         <div
-                          className={`text-xs ${isSelected ? 'text-purple-400' : 'text-gray-500'}`}
+                          className={css({
+                            fontSize: 'xs',
+                            color: isSelected ? 'purple.400' : 'gray.500',
+                          })}
                         >
                           {device.width}x{device.height}
                         </div>
@@ -251,30 +319,56 @@ export default function WebsiteScreenshotPage() {
             </div>
 
             {/* Capture Mode Selection */}
-            <div className="space-y-3">
-              <label className="text-sm font-medium text-gray-300">Capture Mode</label>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className={css({ spaceY: '3' })}>
+              <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                Capture Mode
+              </label>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+                  gap: '3',
+                })}
+              >
                 <Button
                   onClick={() => setCaptureMode('viewport')}
                   variant={captureMode === 'viewport' ? 'default' : 'outline'}
-                  className={`h-auto flex-col gap-2 p-4 ${
-                    captureMode === 'viewport'
-                      ? 'border-purple-500/50 bg-purple-500/20 hover:bg-purple-500/30'
-                      : 'border-gray-700 hover:border-purple-500/30'
-                  }`}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    p: '4',
+                    border: '1px solid',
+                    borderColor: captureMode === 'viewport' ? 'purple.500/50' : 'gray.700',
+                    bg: captureMode === 'viewport' ? 'purple.500/20' : 'transparent',
+                    _hover: {
+                      borderColor: captureMode === 'viewport' ? 'purple.500/50' : 'purple.500/30',
+                    },
+                  })}
                   disabled={isLoading}
                 >
                   <Eye
-                    className={`h-6 w-6 ${captureMode === 'viewport' ? 'text-purple-300' : 'text-gray-400'}`}
+                    className={css({
+                      h: '6',
+                      w: '6',
+                      color: captureMode === 'viewport' ? 'purple.300' : 'gray.400',
+                    })}
                   />
-                  <div className="text-center">
+                  <div className={css({ textAlign: 'center' })}>
                     <div
-                      className={`text-sm font-semibold ${captureMode === 'viewport' ? 'text-purple-200' : 'text-gray-300'}`}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'semibold',
+                        color: captureMode === 'viewport' ? 'purple.200' : 'gray.300',
+                      })}
                     >
                       Viewport Only
                     </div>
                     <div
-                      className={`text-xs ${captureMode === 'viewport' ? 'text-purple-400' : 'text-gray-500'}`}
+                      className={css({
+                        fontSize: 'xs',
+                        color: captureMode === 'viewport' ? 'purple.400' : 'gray.500',
+                      })}
                     >
                       Capture visible area
                     </div>
@@ -284,24 +378,42 @@ export default function WebsiteScreenshotPage() {
                 <Button
                   onClick={() => setCaptureMode('fullpage')}
                   variant={captureMode === 'fullpage' ? 'default' : 'outline'}
-                  className={`h-auto flex-col gap-2 p-4 ${
-                    captureMode === 'fullpage'
-                      ? 'border-purple-500/50 bg-purple-500/20 hover:bg-purple-500/30'
-                      : 'border-gray-700 hover:border-purple-500/30'
-                  }`}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    p: '4',
+                    border: '1px solid',
+                    borderColor: captureMode === 'fullpage' ? 'purple.500/50' : 'gray.700',
+                    bg: captureMode === 'fullpage' ? 'purple.500/20' : 'transparent',
+                    _hover: {
+                      borderColor: captureMode === 'fullpage' ? 'purple.500/50' : 'purple.500/30',
+                    },
+                  })}
                   disabled={isLoading}
                 >
                   <Maximize
-                    className={`h-6 w-6 ${captureMode === 'fullpage' ? 'text-purple-300' : 'text-gray-400'}`}
+                    className={css({
+                      h: '6',
+                      w: '6',
+                      color: captureMode === 'fullpage' ? 'purple.300' : 'gray.400',
+                    })}
                   />
-                  <div className="text-center">
+                  <div className={css({ textAlign: 'center' })}>
                     <div
-                      className={`text-sm font-semibold ${captureMode === 'fullpage' ? 'text-purple-200' : 'text-gray-300'}`}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'semibold',
+                        color: captureMode === 'fullpage' ? 'purple.200' : 'gray.300',
+                      })}
                     >
                       Full Page
                     </div>
                     <div
-                      className={`text-xs ${captureMode === 'fullpage' ? 'text-purple-400' : 'text-gray-500'}`}
+                      className={css({
+                        fontSize: 'xs',
+                        color: captureMode === 'fullpage' ? 'purple.400' : 'gray.500',
+                      })}
                     >
                       Capture entire page
                     </div>
@@ -320,10 +432,18 @@ export default function WebsiteScreenshotPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="border-red-500/20 bg-red-500/10">
-            <CardContent className="flex items-center gap-3 p-4">
-              <AlertCircle className="h-5 w-5 text-red-400" />
-              <p className="text-sm text-red-300">{error}</p>
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'red.500/20',
+              bg: 'red.500/10',
+            })}
+          >
+            <CardContent
+              className={css({ display: 'flex', alignItems: 'center', gap: '3', p: '4' })}
+            >
+              <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
+              <p className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -336,8 +456,21 @@ export default function WebsiteScreenshotPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="border-gray-800 bg-gray-900/50">
-            <CardHeader className="flex flex-row items-center justify-between">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+            })}
+          >
+            <CardHeader
+              className={css({
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              })}
+            >
               <div>
                 <CardTitle>Screenshot Preview</CardTitle>
                 <CardDescription>
@@ -345,19 +478,36 @@ export default function WebsiteScreenshotPage() {
                   {captureMode === 'fullpage' ? 'Full Page' : 'Viewport'}
                 </CardDescription>
               </div>
-              <Button onClick={downloadScreenshot} className="gap-2">
-                <Download className="h-4 w-4" />
+              <Button onClick={downloadScreenshot} className={css({ gap: '2' })}>
+                <Download className={css({ h: '4', w: '4' })} />
                 Download
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="overflow-auto rounded-lg border border-gray-700 bg-gray-800 p-4">
-                <img
-                  src={screenshotUrl}
-                  alt="Website screenshot"
-                  className="mx-auto max-w-full rounded shadow-xl"
-                  style={{ maxHeight: '600px' }}
-                />
+              <div
+                className={css({
+                  overflow: 'auto',
+                  rounded: 'lg',
+                  border: '1px solid',
+                  borderColor: 'gray.700',
+                  bg: 'gray.800',
+                  p: '4',
+                })}
+              >
+                <div
+                  className={css({ position: 'relative', mx: 'auto' })}
+                  style={{ maxHeight: '600px', maxWidth: '100%' }}
+                >
+                  <Image
+                    src={screenshotUrl}
+                    alt="Website screenshot"
+                    width={DEVICE_SIZES[deviceSize].width}
+                    height={DEVICE_SIZES[deviceSize].height}
+                    className={css({ mx: 'auto', rounded: 'md', shadow: 'xl' })}
+                    style={{ maxHeight: '600px', width: 'auto', height: 'auto' }}
+                    unoptimized
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -369,7 +519,11 @@ export default function WebsiteScreenshotPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className={css({
+          display: 'grid',
+          gap: '4',
+          gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+        })}
       >
         {[
           {
@@ -393,11 +547,20 @@ export default function WebsiteScreenshotPage() {
             desc: 'Download as PNG immediately',
           },
         ].map((feature, i) => (
-          <Card key={i} className="border-gray-800 bg-gray-900/30">
-            <CardContent className="p-6">
-              <feature.icon className="mb-3 h-8 w-8 text-purple-400" />
-              <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
-              <p className="text-sm text-gray-500">{feature.desc}</p>
+          <Card
+            key={i}
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/30',
+            })}
+          >
+            <CardContent className={css({ p: '6' })}>
+              <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'purple.400' })} />
+              <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'gray.200' })}>
+                {feature.title}
+              </h3>
+              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.desc}</p>
             </CardContent>
           </Card>
         ))}
@@ -409,12 +572,22 @@ export default function WebsiteScreenshotPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
       >
-        <Card className="border-blue-500/20 bg-blue-500/10">
-          <CardContent className="flex items-start gap-3 p-4">
-            <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-400" />
-            <div className="space-y-1 text-sm">
-              <p className="font-semibold text-blue-300">Privacy & Performance</p>
-              <p className="text-blue-400">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'blue.500/20',
+            bg: 'blue.500/10',
+          })}
+        >
+          <CardContent className={css({ display: 'flex', alignItems: 'start', gap: '3', p: '4' })}>
+            <CheckCircle
+              className={css({ mt: '0.5', h: '5', w: '5', flexShrink: '0', color: 'blue.400' })}
+            />
+            <div className={css({ spaceY: '1', fontSize: 'sm' })}>
+              <p className={css({ fontWeight: 'semibold', color: 'blue.300' })}>
+                Privacy & Performance
+              </p>
+              <p className={css({ color: 'blue.400' })}>
                 Screenshots are processed through a third-party API service. No screenshots are
                 stored on our servers. The captured images are temporarily downloaded to your
                 browser and can be saved locally.
@@ -423,6 +596,6 @@ export default function WebsiteScreenshotPage() {
           </CardContent>
         </Card>
       </motion.div>
-    </div>
+    </main>
   )
 }

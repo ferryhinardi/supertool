@@ -104,11 +104,11 @@ import { trackToolEvent } from '@/lib/analytics'
 ### Styling Guidelines (Non-Negotiable)
 
 - **UI Components**: Use Panda CSS recipes from `@/styled-system/recipes` (see `panda.recipes.ts`)
-- **Tool Pages**: Use Tailwind CSS utility classes
+- **Tool Pages**: Use Panda CSS `css()` function from `@/styled-system/css` for all layouts and styling
 - **Glassmorphism**: Use `.glass` class from `globals.css` or `backdrop-blur-*` utilities
-- **Gradients**: Use `from-purple-500 via-pink-500 to-blue-500` pattern for brand consistency
+- **Gradients**: Use `bgGradient: 'to-r', gradientFrom: 'purple.500', gradientVia: 'pink.500', gradientTo: 'blue.500'` pattern for brand consistency
 - **Class merging**: Use `cx()` utility from `@/lib/utils` for conditional classes
-- **No inline styles**: Prefer Panda CSS or Tailwind utilities
+- **No inline styles**: All styling must use Panda CSS - never use inline `style` objects or Tailwind utilities in tool pages
 
 ### Component Patterns
 
@@ -146,6 +146,7 @@ export { Button }
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { trackToolEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
 
 export default function ToolPage() {
   const handleAction = () => {
@@ -154,13 +155,162 @@ export default function ToolPage() {
   }
 
   return (
-    <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 md:px-6 lg:px-8">
-      <h1 className="text-4xl font-extrabold">Tool Name</h1>
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
+      })}
+    >
+      <h1 className={css({ fontSize: '4xl', fontWeight: 'extrabold' })}>Tool Name</h1>
       {/* Tool implementation */}
     </main>
   )
 }
 ```
+
+### Page Layout Pattern (REQUIRED)
+
+**All tool pages MUST follow this standardized layout structure using Panda CSS:**
+
+```tsx
+import { css } from '@/styled-system/css'
+
+export default function ToolPage() {
+  return (
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '7xl', // or '1400px' for wider layouts
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
+      })}
+    >
+      {/* Page content */}
+    </main>
+  )
+}
+```
+
+**Layout Breakdown:**
+
+- `<main>` - Semantic HTML5 main element (required)
+- `mx: 'auto'` - Center content horizontally
+- `maxW: '7xl'` - Maximum width 80rem (1280px) or use `'1400px'` for wider layouts
+- `w: 'full'` - Full width up to max width
+- `px: { base: '4', sm: '6', md: '8' }` - Responsive horizontal padding
+  - base (mobile): 1rem (16px)
+  - sm (640px+): 1.5rem (24px)
+  - md (768px+): 2rem (32px)
+- `py: { base: '6', sm: '8', md: '10' }` - Responsive vertical padding
+  - base: 1.5rem (24px)
+  - sm: 2rem (32px)
+  - md: 2.5rem (40px)
+- `spaceY: { base: '6', sm: '8', md: '10' }` - Vertical spacing between sections
+
+**Section Spacing Guidelines:**
+
+- Between major sections: `spaceY: { base: '6', sm: '8', md: '10' }`
+- Within cards/panels: `spaceY: '4'` or `spaceY: '6'`
+- Card internal padding: `p: '4'` to `p: '6'`
+- Grid gaps: `gap: '4'` to `gap: '6'`
+
+**Do NOT use:**
+
+- ❌ Tailwind utility classes in tool pages (use Panda CSS `css()` instead)
+- ❌ Inline `style` objects for margin/padding
+- ❌ Custom pixel values in `style` attributes
+- ❌ `<div>` as the root wrapper (use `<main>`)
+- ❌ Inconsistent spacing patterns across tools
+
+**Common Layout Patterns:**
+
+**Header Section:**
+
+```tsx
+<div className={css({ textAlign: 'center', spaceY: '4' })}>
+  <div
+    className={css({
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '2',
+      rounded: 'full',
+      border: '1px solid',
+      borderColor: 'purple.500/20',
+      bg: 'purple.500/10',
+      px: '4',
+      py: '2',
+    })}
+  >
+    {/* Badge content */}
+  </div>
+  <h1
+    className={css({
+      fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+      fontWeight: 'bold',
+      bgGradient: 'to-r',
+      gradientFrom: 'purple.400',
+      gradientVia: 'pink.400',
+      gradientTo: 'blue.400',
+      bgClip: 'text',
+    })}
+    style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+  >
+    {/* Gradient title */}
+  </h1>
+  <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'gray.400' })}>
+    {/* Description */}
+  </p>
+</div>
+```
+
+**Card Grid:**
+
+```tsx
+<div
+  className={css({
+    display: 'grid',
+    gap: '4',
+    gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+  })}
+>
+  {items.map((item) => (
+    <Card key={item.id}>{/* Card content */}</Card>
+  ))}
+</div>
+```
+
+**Full-Width Card:**
+
+```tsx
+<Card
+  className={css({
+    border: '1px solid',
+    borderColor: 'gray.800',
+    bg: 'gray.900/50',
+  })}
+>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+  </CardHeader>
+  <CardContent className={css({ spaceY: '6' })}>
+    {/* Card content with consistent vertical spacing */}
+  </CardContent>
+</Card>
+```
+
+**Responsive Breakpoints:**
+
+- **base** (< 640px): Mobile - tighter spacing, single column
+- **sm** (640px+): Small tablet - medium spacing, 2 columns
+- **md** (768px+): Tablet - generous spacing
+- **lg** (1024px+): Desktop - 3-4 columns
 
 ### Analytics Integration
 
@@ -173,23 +323,24 @@ Every user action must call `trackToolEvent()` from `@/lib/analytics`. Never tra
 **IMPORTANT**: Always read this checklist before creating a plan for adding new tools.
 
 1. Create `app/tools/[tool-name]/page.tsx` with default export
-2. Add route to `navigation` array in `components/layout/Sidebar.tsx` with Lucide icon
-3. Add tool card to `tools` array in `app/page.tsx` with category, tags, gradient, and features
-4. Create `__tests__/` directory with logic and component tests
-5. Add analytics events for all user interactions
-6. Update `ToolEvent` type in `lib/analytics.ts` if needed
-7. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
+2. **Follow the Page Layout Pattern** (use `<main>` with standardized Tailwind classes)
+3. Add route to `navigation` array in `components/layout/Sidebar.tsx` with Lucide icon
+4. Add tool card to `tools` array in `app/page.tsx` with category, tags, gradient, and features
+5. Create `__tests__/` directory with logic and component tests
+6. Add analytics events for all user interactions
+7. Update `ToolEvent` type in `lib/analytics.ts` if needed
+8. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
    - Explain how the tool works and its purpose
    - Include creation date and last updated timestamp
    - Document key features, usage instructions, and technical implementation
    - Add analytics events, UI/UX details, and future enhancements
    - Make each documentation unique with different structure and focus areas
-8. **Update tool documentation** whenever implementation changes to keep docs current
-9. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
-   - `pnpm lint` - ESLint validation
-   - `pnpm exec tsc --noEmit` - Type checking
-   - `pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
-   - `pnpm build` - Production build verification
+9. **Update tool documentation** whenever implementation changes to keep docs current
+10. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
+    - `pnpm lint` - ESLint validation
+    - `pnpm exec tsc --noEmit` - Type checking
+    - `pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
+    - `pnpm build` - Production build verification
 
 ### Tool Categories System
 
@@ -303,7 +454,8 @@ export async function GET(request: NextRequest) {
 
 ❌ **Don't** manually memoize with `useMemo`/`useCallback` - React Compiler handles it  
 ❌ **Don't** use `any` types - TypeScript strict mode is enabled  
-❌ **Don't** use inline styles - use Panda CSS or Tailwind utilities  
+❌ **Don't** use inline styles - use Panda CSS `css()` function  
+❌ **Don't** use Tailwind utilities in tool pages - use Panda CSS exclusively  
 ❌ **Don't** forget `'use client'` directive for interactive components  
 ❌ **Don't** skip analytics tracking on user actions  
 ❌ **Don't** use semicolons (Prettier will remove them)
@@ -312,7 +464,8 @@ export async function GET(request: NextRequest) {
 ✅ **Do** test in browser mode for component tests  
 ✅ **Do** use `cx()` for conditional class merging  
 ✅ **Do** follow import order convention  
-✅ **Do** maintain glassmorphic dark theme aesthetic
+✅ **Do** maintain glassmorphic dark theme aesthetic  
+✅ **Do** use Panda CSS `css()` for all tool page layouts and styling
 
 ## Key Files Reference
 
