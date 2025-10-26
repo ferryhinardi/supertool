@@ -827,7 +827,7 @@ export default function HomePage() {
                 gridTemplateColumns:
                   viewMode === 'grid'
                     ? {
-                        base: '1',
+                        base: 'repeat(1, 1fr)',
                         sm: 'repeat(2, 1fr)',
                         lg: 'repeat(3, 1fr)',
                         xl: 'repeat(4, 1fr)',

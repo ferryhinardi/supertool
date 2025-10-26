@@ -21,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={css({
           display: 'flex',
+          flexDirection: { base: 'column', md: 'row' },
           minH: '100vh',
           bgGradient: 'to-br',
           gradientFrom: 'gray.950',
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           gradientTo: 'gray.950',
           color: 'white',
           position: 'relative',
+          overflow: 'hidden',
         })}
       >
         {/* Sidebar */}
@@ -37,9 +39,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main
           className={css({
             position: 'relative',
-            minH: '100vh',
-            w: { base: 'full', md: 'calc(100vw - 16rem)' },
-            flex: { base: '0', md: '1' },
+            zIndex: '1',
+            minH: { base: '100vh', md: '100vh' },
+            w: { base: '100vw', md: 'calc(100vw - 16rem)' },
+            flex: { base: '1', md: '1' },
             overflowX: 'hidden',
             overflowY: 'auto',
             p: { base: '4', sm: '6', md: '8', lg: '10', xl: '12' },
@@ -58,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               position: 'fixed',
               top: '0',
               right: '0',
+              zIndex: '0',
               h: '700px',
               w: '700px',
               animation: 'pulse 4s infinite',
@@ -75,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               position: 'fixed',
               bottom: '0',
               left: '0',
+              zIndex: '0',
               h: '700px',
               w: '700px',
               animation: 'pulse 5s 1s infinite',
@@ -92,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               position: 'fixed',
               top: '50%',
               left: '50%',
+              zIndex: '0',
               h: '500px',
               w: '500px',
               transform: 'translate(-50%, -50%)',
@@ -113,6 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               mx: 'auto',
               w: 'full',
               maxW: '1600px',
+              minH: 'calc(100vh - 160px)',
             })}
           >
             {children}

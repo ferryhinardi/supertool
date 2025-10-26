@@ -68,7 +68,7 @@ export function Sidebar() {
           position: 'fixed',
           top: '4',
           left: '4',
-          zIndex: 'dropdown',
+          zIndex: 'tooltip',
           alignItems: 'center',
           justifyContent: 'center',
           rounded: 'xl',
