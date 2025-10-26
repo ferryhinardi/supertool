@@ -389,7 +389,6 @@ const tools: Tool[] = [
     gradient: 'from-green-500 to-emerald-500',
     features: ['BMI Chart', 'Health Tips', 'Imperial/Metric', 'Ideal Weight Range'],
     category: 'productivity',
-    comingSoon: true,
   },
   {
     title: 'Gradient Generator',

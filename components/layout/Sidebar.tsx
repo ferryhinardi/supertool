@@ -20,6 +20,7 @@ import {
   Hash,
   FileCog,
   Calendar,
+  Activity,
 } from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { cva } from '@/styled-system/css'
@@ -35,6 +36,7 @@ const navigation = [
   { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
   { name: 'PDF Tools', href: '/tools/pdf-tools', icon: FileCog },
   { name: 'Daily Task Summary', href: '/tools/daily-task-summary', icon: Calendar },
+  { name: 'BMI Calculator', href: '/tools/bmi-calculator', icon: Activity },
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
