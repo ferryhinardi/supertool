@@ -253,7 +253,6 @@ const tools: Tool[] = [
     category: 'security',
     new: true,
     popular: true,
-    comingSoon: true,
   },
   {
     title: 'Unit Converter',
