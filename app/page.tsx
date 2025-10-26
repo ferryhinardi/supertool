@@ -241,7 +241,6 @@ const tools: Tool[] = [
     features: ['Multiple Types', 'Customizable', 'High Resolution', 'Logo Support'],
     category: 'productivity',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Password Generator',
