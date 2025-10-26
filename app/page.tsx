@@ -426,8 +426,6 @@ export default function HomePage() {
 
         <p
           className={css({
-            mx: 'auto',
-            maxW: '2xl',
             fontSize: { base: 'lg', sm: 'xl' },
             lineHeight: 'relaxed',
             color: 'gray.400',
