@@ -35,7 +35,6 @@
 
 ```tsx
 import { css } from '@/styled-system/css'
-
 ;<div
   className={css({
     display: 'flex',
@@ -766,7 +765,6 @@ export function ToolHeader({
 ```tsx
 import { FileJson } from 'lucide-react'
 import { ToolHeader } from '@/components/shared/ToolHeader'
-
 ;<ToolHeader
   icon={FileJson}
   title="JSON Beautifier"

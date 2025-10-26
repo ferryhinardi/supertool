@@ -40,6 +40,20 @@ body {
   min-height: 100vh;
 }
 
+/* Remove default link underlines */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove button default styles */
+button {
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
 /* Utility classes for glass morphism */
 .glass {
   background: linear-gradient(

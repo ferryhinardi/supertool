@@ -1,8 +1,9 @@
 import * as React from 'react'
+import { ark } from '@ark-ui/react'
 import { badge } from '@/styled-system/recipes'
 import { cx } from '@/lib/utils'
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?:
     | 'default'
     | 'secondary'
@@ -13,10 +14,22 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
     | 'info'
     | 'gradient'
   size?: 'sm' | 'md' | 'lg'
+  asChild?: boolean
 }
 
-function Badge({ className, variant, size, ...props }: BadgeProps) {
-  return <div className={cx(badge({ variant, size }), className)} {...props} />
-}
+const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? ark.span : 'span'
+    return (
+      <Comp
+        ref={ref}
+        className={cx(badge({ variant, size }), className)}
+        role="status"
+        {...props}
+      />
+    )
+  }
+)
+Badge.displayName = 'Badge'
 
 export { Badge }

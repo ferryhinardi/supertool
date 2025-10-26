@@ -31,7 +31,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+import { Field, FieldInput } from '@/components/ui/field'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { motion, useReducedMotion, AnimatePresence } from 'framer-motion'
 import { FeedbackDialog } from '@/components/features/FeedbackDialog'
 import { TreatMeDialog } from '@/components/features/TreatMeDialog'
@@ -273,10 +274,11 @@ export default function HomePage() {
         position: 'relative',
         mx: 'auto',
         minH: '100vh',
+        w: 'full',
         maxW: '7xl',
-        spaceY: { base: '8', sm: '10', lg: '12' },
-        px: { base: '4', sm: '6', lg: '8' },
-        py: { base: '8', sm: '10', lg: '12' },
+        px: { base: '4', sm: '6', md: '8', lg: '10', xl: '12' },
+        py: { base: '6', sm: '8', md: '10', lg: '12' },
+        spaceY: { base: '10', sm: '12', lg: '14' },
       })}
     >
       {/* Subtle background gradients */}
@@ -324,7 +326,15 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className={css({ position: 'relative', zIndex: '10', spaceY: '6', textAlign: 'center' })}
+        className={css({
+          position: 'relative',
+          zIndex: '10',
+          mx: 'auto',
+          w: 'full',
+          maxW: '4xl',
+          spaceY: '6',
+          textAlign: 'center',
+        })}
       >
         <div
           className={css({
@@ -398,190 +408,241 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className={css({ position: 'relative', zIndex: '10', spaceY: '6' })}
+        className={css({
+          position: 'relative',
+          zIndex: '10',
+          mx: 'auto',
+          w: 'full',
+          maxW: '5xl',
+          spaceY: '6',
+        })}
       >
         {/* Search Input */}
         <div className={css({ mx: 'auto', w: 'full', maxW: 'md' })}>
-          <div className={css({ position: 'relative', w: 'full' })}>
-            {/* Input Field */}
-            <Input
-              ref={searchInputRef}
-              type="search"
-              placeholder="Search tools..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={css({
-                h: '16',
-                w: 'full',
-                rounded: 'xl',
-                border: '2px solid',
-                borderColor: 'gray.800',
-                bg: 'rgba(17, 24, 39, 0.5)',
-                pr: '14',
-                pl: '6',
-                fontSize: { base: 'base', sm: 'lg' },
-                fontWeight: 'medium',
-                color: 'gray.100',
-                shadow: 'lg',
-                boxShadow: '0 10px 15px rgba(0, 0, 0, 0.2)',
-                backdropFilter: 'blur(8px)',
-                transition: 'all 0.2s',
-                _placeholder: { color: 'gray.500' },
-                _hover: {
-                  borderColor: 'gray.700',
-                  bg: 'rgba(17, 24, 39, 0.7)',
-                },
-                _focus: {
-                  borderColor: 'purple.500',
-                  bg: 'rgba(17, 24, 39, 0.8)',
-                  shadow: 'xl',
-                  boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
-                  ring: '4px',
-                  ringColor: 'rgba(139, 92, 246, 0.2)',
-                },
-              })}
-              autoComplete="off"
-              spellCheck="false"
-            />
-
-            {/* Clear Button */}
-            {searchQuery && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                onClick={() => setSearchQuery('')}
+          <Field>
+            <div className={css({ position: 'relative', w: 'full' })}>
+              {/* Search Icon */}
+              <div
                 className={css({
                   position: 'absolute',
-                  insetY: '0',
-                  right: '0',
-                  my: 'auto',
-                  mr: '4',
-                  display: 'flex',
-                  h: '8',
-                  w: '8',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'lg',
-                  bg: 'gray.800',
-                  color: 'gray.400',
+                  left: '4',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  pointerEvents: 'none',
+                  zIndex: '10',
+                })}
+              >
+                <Search className={css({ h: '5', w: '5', color: 'gray.500' })} strokeWidth={2} />
+              </div>
+
+              {/* Input Field */}
+              <FieldInput
+                ref={searchInputRef}
+                type="search"
+                placeholder="Search tools..."
+                value={searchQuery}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchQuery(e.target.value)
+                }
+                className={css({
+                  h: '16',
+                  w: 'full',
+                  rounded: 'xl',
+                  border: '2px solid',
+                  borderColor: 'gray.800',
+                  bg: 'rgba(17, 24, 39, 0.5)',
+                  pr: '14',
+                  pl: '12',
+                  fontSize: { base: 'base', sm: 'lg' },
+                  fontWeight: 'medium',
+                  color: 'gray.100',
+                  shadow: 'lg',
+                  boxShadow: '0 10px 15px rgba(0, 0, 0, 0.2)',
+                  backdropFilter: 'blur(8px)',
                   transition: 'all 0.2s',
-                  _hover: { bg: 'gray.700', color: 'gray.200' },
+                  _placeholder: { color: 'gray.500' },
+                  _hover: {
+                    borderColor: 'gray.700',
+                    bg: 'rgba(17, 24, 39, 0.7)',
+                  },
                   _focus: {
-                    outline: 'none',
-                    ring: '2px',
-                    ringColor: 'rgba(168, 85, 247, 0.5)',
+                    borderColor: 'purple.500',
+                    bg: 'rgba(17, 24, 39, 0.8)',
+                    shadow: 'xl',
+                    boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
+                    ring: '4px',
+                    ringColor: 'rgba(139, 92, 246, 0.2)',
                   },
                 })}
-                aria-label="Clear search"
-                type="button"
-              >
-                <X className={css({ h: '4', w: '4' })} strokeWidth={2.5} />
-              </motion.button>
-            )}
+                autoComplete="off"
+                spellCheck="false"
+                aria-label="Search tools"
+                aria-describedby="search-hint"
+              />
 
-            {/* Search hint */}
-            {!searchQuery && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className={css({
-                  pointerEvents: 'none',
-                  position: 'absolute',
-                  insetY: '0',
-                  right: '0',
-                  display: { base: 'none', sm: 'flex' },
-                  alignItems: 'center',
-                  pr: '5',
-                })}
-              >
-                <kbd
+              {/* Clear Button */}
+              {searchQuery && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  onClick={() => setSearchQuery('')}
                   className={css({
-                    rounded: 'sm',
-                    border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'rgba(31, 41, 55, 0.5)',
-                    px: '2',
-                    py: '1',
-                    fontSize: 'xs',
-                    fontWeight: 'semibold',
-                    color: 'gray.500',
+                    position: 'absolute',
+                    insetY: '0',
+                    right: '0',
+                    my: 'auto',
+                    mr: '4',
+                    display: 'flex',
+                    h: '8',
+                    w: '8',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'lg',
+                    bg: 'gray.800',
+                    color: 'gray.400',
+                    transition: 'all 0.2s',
+                    _hover: { bg: 'gray.700', color: 'gray.200' },
+                    _focus: {
+                      outline: 'none',
+                      ring: '2px',
+                      ringColor: 'rgba(168, 85, 247, 0.5)',
+                    },
+                  })}
+                  aria-label="Clear search"
+                  type="button"
+                >
+                  <X className={css({ h: '4', w: '4' })} strokeWidth={2.5} />
+                </motion.button>
+              )}
+
+              {/* Search hint */}
+              {!searchQuery && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  id="search-hint"
+                  className={css({
+                    pointerEvents: 'none',
+                    position: 'absolute',
+                    insetY: '0',
+                    right: '0',
+                    display: { base: 'none', sm: 'flex' },
+                    alignItems: 'center',
+                    pr: '5',
                   })}
                 >
-                  Ctrl K
-                </kbd>
-              </motion.div>
-            )}
-          </div>
+                  <kbd
+                    className={css({
+                      rounded: 'sm',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      bg: 'rgba(31, 41, 55, 0.5)',
+                      px: '2',
+                      py: '1',
+                      fontSize: 'xs',
+                      fontWeight: 'semibold',
+                      color: 'gray.500',
+                    })}
+                  >
+                    Ctrl K
+                  </kbd>
+                </motion.div>
+              )}
+            </div>
+          </Field>
         </div>
 
         {/* Category Pills and View Toggle */}
         <div
           className={css({
+            mx: 'auto',
+            w: 'full',
+            maxW: '5xl',
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '3',
+            justifyContent: 'center',
+            gap: '4',
           })}
         >
-          <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+          <div
+            className={css({
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '2',
+            })}
+          >
             {categories.map((category) => {
               const Icon = category.icon
               const isActive = selectedCategory === category.value
+              const toolCount = tools.filter((t) =>
+                category.value === 'all' ? true : t.category === category.value
+              ).length
+
               return (
-                <Button
-                  key={category.value}
-                  variant={isActive ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category.value)}
-                  className={css({
-                    h: '11',
-                    gap: '2',
-                    px: '4',
-                    fontSize: 'base',
-                    fontWeight: 'medium',
-                    transition: 'all 0.2s',
-                    ...(isActive
-                      ? {
-                          border: '1px solid rgba(168, 85, 247, 0.5)',
-                          bg: 'rgba(168, 85, 247, 0.2)',
-                          color: 'purple.200',
-                          _hover: { bg: 'rgba(168, 85, 247, 0.3)' },
-                        }
-                      : {
-                          border: '1px solid',
-                          borderColor: 'gray.700',
-                          bg: 'rgba(17, 24, 39, 0.5)',
-                          color: 'gray.300',
-                          _hover: {
-                            borderColor: 'rgba(168, 85, 247, 0.3)',
-                            bg: 'rgba(31, 41, 55, 0.5)',
-                            color: 'purple.300',
-                          },
-                        }),
-                  })}
-                >
-                  <Icon className={css({ h: '4', w: '4' })} />
-                  {category.label}
-                  {category.value === 'all' && (
-                    <Badge
-                      variant="secondary"
+                <Tooltip key={category.value}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={isActive ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setSelectedCategory(category.value)}
+                      aria-label={`Filter by ${category.label}`}
+                      aria-pressed={isActive}
                       className={css({
-                        ml: '1',
-                        h: '5',
-                        rounded: 'full',
-                        bg: 'rgba(168, 85, 247, 0.3)',
-                        px: '2.5',
-                        fontSize: 'xs',
-                        fontWeight: 'bold',
-                        color: 'purple.200',
+                        h: '11',
+                        gap: '2',
+                        px: '4',
+                        fontSize: 'base',
+                        fontWeight: 'medium',
+                        transition: 'all 0.2s',
+                        ...(isActive
+                          ? {
+                              border: '1px solid rgba(168, 85, 247, 0.5)',
+                              bg: 'rgba(168, 85, 247, 0.2)',
+                              color: 'purple.200',
+                              _hover: { bg: 'rgba(168, 85, 247, 0.3)' },
+                            }
+                          : {
+                              border: '1px solid',
+                              borderColor: 'gray.700',
+                              bg: 'rgba(17, 24, 39, 0.5)',
+                              color: 'gray.300',
+                              _hover: {
+                                borderColor: 'rgba(168, 85, 247, 0.3)',
+                                bg: 'rgba(31, 41, 55, 0.5)',
+                                color: 'purple.300',
+                              },
+                            }),
                       })}
                     >
-                      {stats.total}
-                    </Badge>
-                  )}
-                </Button>
+                      <Icon className={css({ h: '4', w: '4' })} />
+                      {category.label}
+                      {category.value === 'all' && (
+                        <Badge
+                          variant="secondary"
+                          className={css({
+                            ml: '1',
+                            h: '5',
+                            rounded: 'full',
+                            bg: 'rgba(168, 85, 247, 0.3)',
+                            px: '2.5',
+                            fontSize: 'xs',
+                            fontWeight: 'bold',
+                            color: 'purple.200',
+                          })}
+                        >
+                          {stats.total}
+                        </Badge>
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {toolCount} {toolCount === 1 ? 'tool' : 'tools'} in {category.label}
+                  </TooltipContent>
+                </Tooltip>
               )
             })}
           </div>
@@ -597,40 +658,55 @@ export default function HomePage() {
               bg: 'rgba(17, 24, 39, 0.5)',
               p: '1',
             })}
+            role="group"
+            aria-label="View mode"
           >
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className={css({
-                h: '9',
-                w: '9',
-                p: '0',
-                ...(viewMode === 'grid'
-                  ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
-                  : { color: 'gray.500', _hover: { color: 'gray.300' } }),
-              })}
-            >
-              <LayoutGrid className={css({ h: '5', w: '5' })} />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setViewMode('list')}
-              className={css({
-                h: '9',
-                w: '9',
-                p: '0',
-                ...(viewMode === 'list'
-                  ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
-                  : { color: 'gray.500', _hover: { color: 'gray.300' } }),
-              })}
-            >
-              <LayoutList className={css({ h: '5', w: '5' })} />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  aria-label="Grid view"
+                  aria-pressed={viewMode === 'grid'}
+                  className={css({
+                    h: '9',
+                    w: '9',
+                    p: '0',
+                    ...(viewMode === 'grid'
+                      ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
+                      : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+                  })}
+                >
+                  <LayoutGrid className={css({ h: '5', w: '5' })} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Grid view</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  aria-label="List view"
+                  aria-pressed={viewMode === 'list'}
+                  className={css({
+                    h: '9',
+                    w: '9',
+                    p: '0',
+                    ...(viewMode === 'list'
+                      ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
+                      : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+                  })}
+                >
+                  <LayoutList className={css({ h: '5', w: '5' })} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>List view</TooltipContent>
+            </Tooltip>
           </div>
         </div>
-
         {/* Results count */}
         {(searchQuery || selectedCategory !== 'all') && (
           <motion.div
@@ -676,8 +752,6 @@ export default function HomePage() {
                 className={css({
                   fontSize: 'sm',
                   color: 'gray.500',
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '2px',
                   transition: 'colors 0.2s',
                   _hover: { color: 'purple.400' },
                 })}
@@ -694,7 +768,7 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className={css({ position: 'relative', zIndex: '10' })}
+        className={css({ position: 'relative', zIndex: '10', mx: 'auto', w: 'full' })}
       >
         <AnimatePresence mode="wait">
           {filteredTools.length > 0 ? (
@@ -709,9 +783,16 @@ export default function HomePage() {
                   ? {
                       display: 'grid',
                       gridTemplateColumns: { base: '1', sm: '2', lg: '3', xl: '4' },
-                      gap: '4',
+                      gap: { base: '4', sm: '5', lg: '6' },
+                      mx: 'auto',
+                      w: 'full',
                     }
-                  : { spaceY: '3' }
+                  : {
+                      spaceY: '4',
+                      mx: 'auto',
+                      w: 'full',
+                      maxW: '4xl',
+                    }
               )}
             >
               {filteredTools.map((tool, index) => (
@@ -829,6 +910,9 @@ export default function HomePage() {
         className={css({
           position: 'relative',
           zIndex: '10',
+          mx: 'auto',
+          w: 'full',
+          maxW: '5xl',
           overflow: 'hidden',
           rounded: '2xl',
           border: '1px solid rgba(168, 85, 247, 0.2)',
@@ -836,7 +920,7 @@ export default function HomePage() {
           gradientFrom: 'rgba(88, 28, 135, 0.2)',
           gradientVia: 'rgba(131, 24, 67, 0.2)',
           gradientTo: 'rgba(30, 58, 138, 0.2)',
-          p: '8',
+          p: { base: '6', sm: '8' },
           backdropFilter: 'blur(8px)',
         })}
       >
