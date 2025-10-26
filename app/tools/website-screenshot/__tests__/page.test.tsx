@@ -3,6 +3,36 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import WebsiteScreenshotPage from '../page'
 
+// Mock framer-motion
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
+      <div {...props}>{children}</div>
+    ),
+  },
+}))
+
+// Mock Next.js Image component
+vi.mock('next/image', () => ({
+  __esModule: true,
+  default: ({
+    src,
+    alt,
+    width,
+    height,
+    className,
+  }: {
+    src: string
+    alt: string
+    width: number
+    height: number
+    className?: string
+  }) => {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src} alt={alt} width={width} height={height} className={className} />
+  },
+}))
+
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {
