@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "panda codegen && next dev",
-    "build": "panda codegen && next build",
+    "build": "panda codegen --clean && next build",
+    "postinstall": "panda codegen",
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
