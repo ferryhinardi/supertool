@@ -176,6 +176,13 @@ Every user action must call `trackToolEvent()` from `@/lib/analytics`. Never tra
 4. Create `__tests__/` directory with logic and component tests
 5. Add analytics events for all user interactions
 6. Update `ToolEvent` type in `lib/analytics.ts` if needed
+7. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
+   - Explain how the tool works and its purpose
+   - Include creation date and last updated timestamp
+   - Document key features, usage instructions, and technical implementation
+   - Add analytics events, UI/UX details, and future enhancements
+   - Make each documentation unique with different structure and focus areas
+8. **Update tool documentation** whenever implementation changes to keep docs current
 
 ### Tool Categories System
 
