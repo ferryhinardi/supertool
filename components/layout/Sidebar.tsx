@@ -19,6 +19,7 @@ import {
   Repeat,
   Hash,
   FileCog,
+  Calendar,
 } from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { cva } from '@/styled-system/css'
@@ -33,6 +34,7 @@ const navigation = [
   { name: 'Hash Generator', href: '/tools/hash-generator', icon: Hash },
   { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
   { name: 'PDF Tools', href: '/tools/pdf-tools', icon: FileCog },
+  { name: 'Daily Task Summary', href: '/tools/daily-task-summary', icon: Calendar },
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },

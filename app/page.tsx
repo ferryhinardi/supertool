@@ -490,6 +490,16 @@ const tools: Tool[] = [
     category: 'development',
     comingSoon: true,
   },
+  {
+    title: 'Daily Task Summary',
+    description:
+      'Summarize your daily tasks and activities. Get insights into your productivity patterns and identify areas for improvement.',
+    icon: Calendar,
+    href: '/tools/daily-task-summary',
+    gradient: 'from-green-500 to-blue-500',
+    features: ['Task Overview', 'Time Tracking', 'Productivity Insights', 'Download'],
+    category: 'productivity',
+  },
 ]
 
 const categories: { value: ToolCategory; label: string; icon: React.ElementType }[] = [
@@ -545,12 +555,26 @@ export default function HomePage() {
       )
     }
 
-    // Sort by popular, then new, then alphabetically
+    // Sort by priority:
+    // 1. popular (not coming soon)
+    // 2. new (not coming soon)
+    // 3. regular tools (not coming soon)
+    // 4. coming soon
+    // 5. alphabetically within each group
     filtered = filtered.sort((a, b) => {
+      // Coming soon tools always go to the end
+      if (a.comingSoon && !b.comingSoon) return 1
+      if (!a.comingSoon && b.comingSoon) return -1
+
+      // Among non-coming-soon tools, sort by popular
       if (a.popular && !b.popular) return -1
       if (!a.popular && b.popular) return 1
+
+      // Then by new
       if (a.new && !b.new) return -1
       if (!a.new && b.new) return 1
+
+      // Finally alphabetically
       return a.title.localeCompare(b.title)
     })
 
