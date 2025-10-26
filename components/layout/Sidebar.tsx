@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Code, Upload, FileText, GitCompare, Github } from 'lucide-react'
+import { Home, Code, Upload, FileText, GitCompare, Github, Menu, X } from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { cva } from '@/styled-system/css'
 
@@ -35,7 +36,6 @@ const navLinkStyles = cva({
     active: {
       true: {
         border: '2px solid rgba(139, 92, 246, 0.4)',
-        bg: 'linear-gradient(to right, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.3), rgba(59, 130, 246, 0.4))',
         color: 'white',
         shadow: 'xl',
         boxShadow: '0 10px 20px rgba(139, 92, 246, 0.4)',
@@ -45,7 +45,6 @@ const navLinkStyles = cva({
         color: 'gray.400',
         _hover: {
           borderColor: 'rgba(139, 92, 246, 0.3)',
-          bg: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))',
           color: 'white',
         },
       },
@@ -55,275 +54,361 @@ const navLinkStyles = cva({
 
 export function Sidebar() {
   const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const closeMobileMenu = () => setMobileMenuOpen(false)
 
   return (
-    <aside
-      className={css({
-        position: 'relative',
-        display: { base: 'none', md: 'flex' },
-        width: '16rem',
-        flexShrink: 0,
-        flexDirection: 'column',
-        overflow: 'hidden',
-        overflowY: 'auto',
-        borderRight: '2px solid rgba(139, 92, 246, 0.3)',
-        p: { base: '4', md: '6' },
-        shadow: '2xl',
-        boxShadow: '0 25px 50px rgba(139, 92, 246, 0.2)',
-        // Glass morphism effect
-        bg: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(236, 72, 153, 0.06), rgba(59, 130, 246, 0.06))',
-        backdropFilter: 'blur(16px)',
-      })}
-      style={{ WebkitBackdropFilter: 'blur(16px)' }}
-    >
-      {/* Animated gradient backgrounds */}
-      <div
+    <>
+      {/* Mobile Menu Button - Fixed top-left */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         className={css({
-          position: 'absolute',
-          inset: '0',
-          pointerEvents: 'none',
-          bgGradient: 'to-br',
-          gradientFrom: 'rgba(139, 92, 246, 0.2)',
-          gradientVia: 'rgba(59, 130, 246, 0.15)',
-          gradientTo: 'rgba(6, 182, 212, 0.2)',
+          display: { base: 'flex', md: 'none' },
+          position: 'fixed',
+          top: '4',
+          left: '4',
+          zIndex: 'dropdown',
+          alignItems: 'center',
+          justifyContent: 'center',
+          rounded: 'xl',
+          border: '2px solid rgba(139, 92, 246, 0.3)',
+          bg: 'rgba(17, 24, 39, 0.8)',
+          p: '3',
+          shadow: 'xl',
+          boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
+          backdropFilter: 'blur(16px)',
+          transition: 'all 0.3s',
+          _hover: {
+            bg: 'rgba(139, 92, 246, 0.2)',
+            transform: 'scale(1.05)',
+          },
+          _active: {
+            transform: 'scale(0.95)',
+          },
         })}
-      />
-      <div
-        className={css({
-          position: 'absolute',
-          inset: '0',
-          pointerEvents: 'none',
-          animation: 'pulse 3s infinite',
-          bgGradient: 'to-tr',
-          gradientFrom: 'rgba(59, 130, 246, 0.15)',
-          gradientVia: 'rgba(139, 92, 246, 0.10)',
-          gradientTo: 'rgba(236, 72, 153, 0.15)',
-        })}
-      />
-      <div
-        className={css({
-          position: 'absolute',
-          inset: '0',
-          pointerEvents: 'none',
-          animation: 'pulse 4s 1s infinite',
-          bgGradient: 'to-bl',
-          gradientFrom: 'rgba(6, 182, 212, 0.10)',
-          gradientVia: 'transparent',
-          gradientTo: 'rgba(139, 92, 246, 0.10)',
-        })}
-      />
-
-      <div
-        className={css({
-          position: 'relative',
-          zIndex: '10',
-          display: 'flex',
-          h: 'full',
-          flexDirection: 'column',
-        })}
+        style={{ WebkitBackdropFilter: 'blur(16px)' }}
+        aria-label="Toggle menu"
       >
-        {/* Logo */}
-        <Link
-          href="/"
-          className={css({
-            mb: { base: '8', md: '10' },
-            textDecoration: 'none !important',
-            _hover: {
-              transform: 'scale(1.05)',
-              transition: 'all 0.3s',
-            },
-          })}
-        >
-          <h1
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: { base: '2', md: '3' },
-              fontSize: { base: 'xl', md: '2xl' },
-              fontWeight: 'bold',
-            })}
-          >
-            <span
-              className={css({
-                animation: 'pulse 2s infinite',
-                fontSize: { base: '3xl', md: '4xl' },
-              })}
-            >
-              ⚡
-            </span>
-            <span
-              className={css({
-                bgGradient: 'to-r',
-                gradientFrom: 'purple.400',
-                gradientVia: 'pink.400',
-                gradientTo: 'blue.400',
-                bgClip: 'text',
-                fontWeight: 'extrabold',
-                color: 'transparent',
-              })}
-              style={{
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              SuperTool
-            </span>
-          </h1>
-          <p
-            className={css({
-              mt: '2',
-              ml: { base: '10', md: '12' },
-              fontSize: { base: 'xs', md: 'sm' },
-              fontWeight: 'medium',
-              color: 'purple.300',
-            })}
-          >
-            Developer Toolkit
-          </p>
-        </Link>
+        {mobileMenuOpen ? (
+          <X className={css({ h: '6', w: '6', color: 'purple.400' })} />
+        ) : (
+          <Menu className={css({ h: '6', w: '6', color: 'purple.400' })} />
+        )}
+      </button>
 
-        {/* Navigation */}
-        <nav className={css({ flex: '1', spaceY: '3' })}>
-          {navigation.map((item) => {
-            const isActive = pathname === item.href
-            const Icon = item.icon
-
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={navLinkStyles({ active: isActive })}
-              >
-                {/* Active indicator */}
-                {isActive && (
-                  <div
-                    className={css({
-                      position: 'absolute',
-                      top: '50%',
-                      left: '0',
-                      h: '10',
-                      w: '1.5',
-                      transform: 'translateY(-50%)',
-                      animation: 'pulse 2s infinite',
-                      roundedRight: 'full',
-                      bgGradient: 'to-b',
-                      gradientFrom: 'purple.400',
-                      gradientVia: 'pink.500',
-                      gradientTo: 'blue.500',
-                      shadow: 'lg',
-                      boxShadow: '0 4px 14px rgba(139, 92, 246, 0.7)',
-                    })}
-                  />
-                )}
-
-                <Icon
-                  className={css({
-                    h: '5',
-                    w: '5',
-                    transition: 'all 0.2s',
-                    color: isActive ? 'purple.300' : 'gray.500',
-                    _groupHover: {
-                      transform: 'scale(1.1)',
-                      color: isActive ? 'purple.300' : 'purple.400',
-                    },
-                  })}
-                />
-                <span className={css({ fontWeight: 'semibold' })}>{item.name}</span>
-
-                {/* Hover glow effect */}
-                {!isActive && (
-                  <div
-                    className={css({
-                      position: 'absolute',
-                      inset: '0',
-                      rounded: 'xl',
-                      bgGradient: 'to-r',
-                      gradientFrom: 'rgba(139, 92, 246, 0)',
-                      gradientVia: 'rgba(236, 72, 153, 0.1)',
-                      gradientTo: 'rgba(59, 130, 246, 0)',
-                      opacity: '0',
-                      transition: 'opacity 0.3s',
-                      _groupHover: { opacity: '1' },
-                    })}
-                  />
-                )}
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* Footer */}
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
         <div
           className={css({
-            mt: 'auto',
-            spaceY: '4',
-            borderTop: '2px solid rgba(139, 92, 246, 0.2)',
-            pt: '6',
+            display: { base: 'block', md: 'none' },
+            position: 'fixed',
+            inset: '0',
+            zIndex: 'overlay',
+            bg: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(4px)',
+          })}
+          style={{ WebkitBackdropFilter: 'blur(4px)' }}
+          onClick={closeMobileMenu}
+        />
+      )}
+
+      {/* Desktop Sidebar */}
+      <aside
+        className={css({
+          position: { base: 'fixed', md: 'sticky' },
+          top: { base: '0', md: '0' },
+          left: { base: mobileMenuOpen ? '0' : '-100%', md: '0' },
+          zIndex: { base: 'modal', md: 'auto' },
+          display: 'flex',
+          height: { base: '100vh', md: '100vh' },
+          minH: '100vh',
+          width: { base: '80vw', sm: '20rem', md: '16rem' },
+          maxW: { base: '20rem', md: '16rem' },
+          flexShrink: 0,
+          flexDirection: 'column',
+          overflow: 'hidden',
+          overflowY: 'auto',
+          p: { base: '4', md: '6' },
+          shadow: '2xl',
+          transition: 'left 0.3s ease-in-out',
+        })}
+        style={{
+          borderRight: '2px solid rgba(139, 92, 246, 0.3)',
+          boxShadow: '0 25px 50px rgba(139, 92, 246, 0.2)',
+          // Glass morphism effect
+          background:
+            'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(236, 72, 153, 0.06), rgba(59, 130, 246, 0.06))',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+        }}
+      >
+        {/* Animated gradient backgrounds */}
+        <div
+          className={css({
+            position: 'absolute',
+            inset: '0',
+            pointerEvents: 'none',
+            bgGradient: 'to-br',
+            gradientFrom: 'rgba(139, 92, 246, 0.2)',
+            gradientVia: 'rgba(59, 130, 246, 0.15)',
+            gradientTo: 'rgba(6, 182, 212, 0.2)',
+          })}
+        />
+        <div
+          className={css({
+            position: 'absolute',
+            inset: '0',
+            pointerEvents: 'none',
+            animation: 'pulse 3s infinite',
+            bgGradient: 'to-tr',
+            gradientFrom: 'rgba(59, 130, 246, 0.15)',
+            gradientVia: 'rgba(139, 92, 246, 0.10)',
+            gradientTo: 'rgba(236, 72, 153, 0.15)',
+          })}
+        />
+        <div
+          className={css({
+            position: 'absolute',
+            inset: '0',
+            pointerEvents: 'none',
+            animation: 'pulse 4s 1s infinite',
+            bgGradient: 'to-bl',
+            gradientFrom: 'rgba(6, 182, 212, 0.10)',
+            gradientVia: 'transparent',
+            gradientTo: 'rgba(139, 92, 246, 0.10)',
+          })}
+        />
+
+        <div
+          className={css({
+            position: 'relative',
+            zIndex: '10',
+            display: 'flex',
+            h: 'full',
+            flexDirection: 'column',
           })}
         >
-          <a
-            href="https://github.com/ferryhinardi/supertool"
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* Logo */}
+          <Link
+            href="/"
+            onClick={closeMobileMenu}
             className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '3',
-              rounded: 'lg',
-              px: '3',
-              py: '2',
-              fontSize: 'sm',
-              color: 'gray.400',
+              mb: { base: '8', md: '10' },
               textDecoration: 'none !important',
-              transition: 'all 0.3s',
               _hover: {
-                bg: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))',
-                color: 'white',
+                transform: 'scale(1.05)',
+                transition: 'all 0.3s',
               },
             })}
           >
-            <Github
+            <h1
               className={css({
-                h: '5',
-                w: '5',
-                transition: 'transform 0.3s',
-                _groupHover: { transform: 'scale(1.1)' },
+                display: 'flex',
+                alignItems: 'center',
+                gap: { base: '2', md: '3' },
+                fontSize: { base: 'xl', md: '2xl' },
+                fontWeight: 'bold',
               })}
-            />
-            <span className={css({ fontWeight: 'medium' })}>View on GitHub</span>
-          </a>
+            >
+              <span
+                className={css({
+                  animation: 'pulse 2s infinite',
+                  fontSize: { base: '3xl', md: '4xl' },
+                })}
+              >
+                ⚡
+              </span>
+              <span
+                className={css({
+                  bgGradient: 'to-r',
+                  gradientFrom: 'purple.400',
+                  gradientVia: 'pink.400',
+                  gradientTo: 'blue.400',
+                  bgClip: 'text',
+                  fontWeight: 'extrabold',
+                  color: 'transparent',
+                })}
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                SuperTool
+              </span>
+            </h1>
+            <p
+              className={css({
+                mt: '2',
+                ml: { base: '10', md: '12' },
+                fontSize: { base: 'xs', md: 'sm' },
+                fontWeight: 'medium',
+                color: 'purple.300',
+              })}
+            >
+              Developer Toolkit
+            </p>
+          </Link>
 
-          <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
-            Built with{' '}
-            <span className={css({ animation: 'pulse 2s infinite', color: 'red.500' })}>❤️</span> by{' '}
+          {/* Navigation */}
+          <nav className={css({ flex: '1', spaceY: '3' })}>
+            {navigation.map((item) => {
+              const isActive = pathname === item.href
+              const Icon = item.icon
+
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={closeMobileMenu}
+                  className={navLinkStyles({ active: isActive })}
+                  style={{
+                    background: isActive
+                      ? 'linear-gradient(to right, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.3), rgba(59, 130, 246, 0.4))'
+                      : 'transparent',
+                  }}
+                >
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div
+                      className={css({
+                        position: 'absolute',
+                        top: '50%',
+                        left: '0',
+                        h: '10',
+                        w: '1.5',
+                        transform: 'translateY(-50%)',
+                        animation: 'pulse 2s infinite',
+                        roundedRight: 'full',
+                        bgGradient: 'to-b',
+                        gradientFrom: 'purple.400',
+                        gradientVia: 'pink.500',
+                        gradientTo: 'blue.500',
+                        shadow: 'lg',
+                        boxShadow: '0 4px 14px rgba(139, 92, 246, 0.7)',
+                      })}
+                    />
+                  )}
+
+                  <Icon
+                    className={css({
+                      h: '5',
+                      w: '5',
+                      transition: 'all 0.2s',
+                      color: isActive ? 'purple.300' : 'gray.500',
+                      _groupHover: {
+                        transform: 'scale(1.1)',
+                        color: isActive ? 'purple.300' : 'purple.400',
+                      },
+                    })}
+                  />
+                  <span className={css({ fontWeight: 'semibold' })}>{item.name}</span>
+
+                  {/* Hover glow effect */}
+                  {!isActive && (
+                    <div
+                      className={css({
+                        position: 'absolute',
+                        inset: '0',
+                        rounded: 'xl',
+                        opacity: '0',
+                        transition: 'opacity 0.3s',
+                        _groupHover: { opacity: '1' },
+                      })}
+                      style={{
+                        background:
+                          'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))',
+                      }}
+                    />
+                  )}
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* Footer */}
+          <div
+            className={css({
+              mt: 'auto',
+              spaceY: '4',
+              borderTop: '2px solid rgba(139, 92, 246, 0.2)',
+              pt: '6',
+            })}
+          >
             <a
-              href="https://github.com/ferryhinardi"
+              href="https://github.com/ferryhinardi/supertool"
               target="_blank"
               rel="noopener noreferrer"
               className={css({
-                bgGradient: 'to-r',
-                gradientFrom: 'purple.400',
-                gradientTo: 'pink.400',
-                bgClip: 'text',
-                fontWeight: 'semibold',
-                color: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3',
+                rounded: 'lg',
+                px: '3',
+                py: '2',
+                fontSize: 'sm',
+                color: 'gray.400',
                 textDecoration: 'none !important',
                 transition: 'all 0.3s',
                 _hover: {
-                  gradientFrom: 'purple.300',
-                  gradientTo: 'pink.300',
+                  color: 'white',
                 },
               })}
               style={{
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
+                background: 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background =
+                  'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
               }}
             >
-              Ferry
+              <Github
+                className={css({
+                  h: '5',
+                  w: '5',
+                  transition: 'transform 0.3s',
+                  _groupHover: { transform: 'scale(1.1)' },
+                })}
+              />
+              <span className={css({ fontWeight: 'medium' })}>View on GitHub</span>
             </a>
-          </p>
+
+            <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+              Built with{' '}
+              <span className={css({ animation: 'pulse 2s infinite', color: 'red.500' })}>❤️</span>{' '}
+              by{' '}
+              <a
+                href="https://github.com/ferryhinardi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={css({
+                  bgGradient: 'to-r',
+                  gradientFrom: 'purple.400',
+                  gradientTo: 'pink.400',
+                  bgClip: 'text',
+                  fontWeight: 'semibold',
+                  color: 'transparent',
+                  textDecoration: 'none !important',
+                  transition: 'all 0.3s',
+                  _hover: {
+                    gradientFrom: 'purple.300',
+                    gradientTo: 'pink.300',
+                  },
+                })}
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Ferry
+              </a>
+            </p>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }

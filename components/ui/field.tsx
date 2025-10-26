@@ -76,38 +76,40 @@ const FieldInput = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ArkField.Input
     ref={ref}
-    className={cx(
-      css({
-        display: 'flex',
-        h: '10',
-        w: 'full',
-        rounded: 'md',
-        border: '1px solid',
-        borderColor: 'border.default',
-        bg: 'bg.surface',
-        px: '3',
-        py: '2',
-        fontSize: 'sm',
-        color: 'fg.default',
-        transition: 'all 0.2s',
-        _placeholder: { color: 'fg.muted' },
-        _focus: {
-          outline: 'none',
-          ring: '2px',
-          ringColor: 'ring',
-          ringOffset: '2px',
-          borderColor: 'border.focused',
-        },
-        _disabled: {
-          cursor: 'not-allowed',
-          opacity: '0.5',
-        },
-        _invalid: {
-          borderColor: 'border.error',
-        },
-      }),
-      className
-    )}
+    className={
+      className ??
+      cx(
+        css({
+          display: 'flex',
+          h: '10',
+          w: 'full',
+          rounded: 'md',
+          border: '1px solid',
+          borderColor: 'border.default',
+          bg: 'bg.surface',
+          px: '3',
+          py: '2',
+          fontSize: 'sm',
+          color: 'fg.default',
+          transition: 'all 0.2s',
+          _placeholder: { color: 'fg.muted' },
+          _focus: {
+            outline: 'none',
+            ring: '2px',
+            ringColor: 'ring',
+            ringOffset: '2px',
+            borderColor: 'border.focused',
+          },
+          _disabled: {
+            cursor: 'not-allowed',
+            opacity: '0.5',
+          },
+          _invalid: {
+            borderColor: 'border.error',
+          },
+        })
+      )
+    }
     {...props}
   />
 ))

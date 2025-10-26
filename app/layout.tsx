@@ -27,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           gradientVia: 'gray.900',
           gradientTo: 'gray.950',
           color: 'white',
+          position: 'relative',
         })}
       >
         {/* Sidebar */}
@@ -37,18 +38,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           className={css({
             position: 'relative',
             minH: '100vh',
-            w: 'full',
-            flex: '1',
+            w: { base: 'full', md: 'calc(100vw - 16rem)' },
+            flex: { base: '0', md: '1' },
             overflowX: 'hidden',
             overflowY: 'auto',
             p: { base: '4', sm: '6', md: '8', lg: '10', xl: '12' },
             pt: {
-              base: 'max(1rem, env(safe-area-inset-top))',
-              sm: 'max(1.5rem, env(safe-area-inset-top))',
-              md: 'max(2rem, env(safe-area-inset-top))',
-              lg: 'max(2.5rem, env(safe-area-inset-top))',
+              base: '20', // Space for mobile menu button
+              sm: '24',
+              md: '8',
+              lg: '10',
             },
-            pl: { md: '8', lg: '12', xl: '16' },
           })}
         >
           {/* Enhanced background gradient orbs */}

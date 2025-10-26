@@ -53,6 +53,40 @@ interface Tool {
   new?: boolean
 }
 
+// Color mapping for gradients
+const colorMap: Record<string, string> = {
+  'purple-500': '#a855f7',
+  'pink-500': '#ec4899',
+  'orange-500': '#f97316',
+  'red-500': '#ef4444',
+  'green-500': '#22c55e',
+  'emerald-500': '#10b981',
+  'cyan-500': '#06b6d4',
+  'blue-500': '#3b82f6',
+  'yellow-500': '#eab308',
+  'teal-500': '#14b8a6',
+  'indigo-500': '#6366f1',
+  'rose-500': '#f43f5e',
+  'fuchsia-500': '#d946ef',
+}
+
+// Convert Tailwind gradient class to CSS gradient string
+const gradientToCss = (gradient: string): string => {
+  const match = gradient.match(/from-(\S+)\s+(?:via-(\S+)\s+)?to-(\S+)/)
+  if (!match) return gradient
+
+  const [, from, via, to] = match
+  const fromColor = colorMap[from] || from
+  const toColor = colorMap[to] || to
+
+  if (via) {
+    const viaColor = colorMap[via] || via
+    return `linear-gradient(135deg, ${fromColor}, ${viaColor}, ${toColor})`
+  }
+
+  return `linear-gradient(135deg, ${fromColor}, ${toColor})`
+}
+
 const tools: Tool[] = [
   // Popular tools first
   {
@@ -275,8 +309,8 @@ export default function HomePage() {
         mx: 'auto',
         minH: '100vh',
         w: 'full',
-        maxW: '7xl',
-        px: { base: '4', sm: '6', md: '8', lg: '10', xl: '12' },
+        maxW: { base: 'full', md: 'none' }, // Remove max-width constraint on desktop
+        px: { base: '4', sm: '6', md: '6', lg: '8', xl: '10' },
         py: { base: '6', sm: '8', md: '10', lg: '12' },
         spaceY: { base: '10', sm: '12', lg: '14' },
       })}
@@ -331,10 +365,11 @@ export default function HomePage() {
           zIndex: '10',
           mx: 'auto',
           w: 'full',
-          maxW: '4xl',
+          maxW: { base: 'full', sm: '3xl', md: '4xl', lg: '5xl' },
           spaceY: '6',
           textAlign: 'center',
         })}
+        style={{ margin: '0 auto' }}
       >
         <div
           className={css({
@@ -413,12 +448,15 @@ export default function HomePage() {
           zIndex: '10',
           mx: 'auto',
           w: 'full',
-          maxW: '5xl',
+          maxW: { base: 'full', md: '100%' },
           spaceY: '6',
         })}
       >
         {/* Search Input */}
-        <div className={css({ mx: 'auto', w: 'full', maxW: 'md' })}>
+        <div
+          className={css({ w: { base: 'full', sm: '85%', md: '75%', lg: '60%' } })}
+          style={{ margin: '0 auto' }}
+        >
           <Field>
             <div className={css({ position: 'relative', w: 'full' })}>
               {/* Search Icon */}
@@ -451,8 +489,6 @@ export default function HomePage() {
                   border: '2px solid',
                   borderColor: 'gray.800',
                   bg: 'rgba(17, 24, 39, 0.5)',
-                  pr: '14',
-                  pl: '12',
                   fontSize: { base: 'base', sm: 'lg' },
                   fontWeight: 'medium',
                   color: 'gray.100',
@@ -474,6 +510,9 @@ export default function HomePage() {
                     ringColor: 'rgba(139, 92, 246, 0.2)',
                   },
                 })}
+                style={{
+                  paddingLeft: 40,
+                }}
                 autoComplete="off"
                 spellCheck="false"
                 aria-label="Search tools"
@@ -526,7 +565,7 @@ export default function HomePage() {
                     pointerEvents: 'none',
                     position: 'absolute',
                     insetY: '0',
-                    right: '0',
+                    right: 8,
                     display: { base: 'none', sm: 'flex' },
                     alignItems: 'center',
                     pr: '5',
@@ -558,7 +597,7 @@ export default function HomePage() {
           className={css({
             mx: 'auto',
             w: 'full',
-            maxW: '5xl',
+            maxW: { base: 'full', md: '100%' },
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
@@ -768,7 +807,13 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className={css({ position: 'relative', zIndex: '10', mx: 'auto', w: 'full' })}
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          margin: '0 auto',
+          width: '100%',
+          maxWidth: '1400px',
+        }}
       >
         <AnimatePresence mode="wait">
           {filteredTools.length > 0 ? (
@@ -778,22 +823,6 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className={css(
-                viewMode === 'grid'
-                  ? {
-                      display: 'grid',
-                      gridTemplateColumns: { base: '1', sm: '2', lg: '3', xl: '4' },
-                      gap: { base: '4', sm: '5', lg: '6' },
-                      mx: 'auto',
-                      w: 'full',
-                    }
-                  : {
-                      spaceY: '4',
-                      mx: 'auto',
-                      w: 'full',
-                      maxW: '4xl',
-                    }
-              )}
             >
               {filteredTools.map((tool, index) => (
                 <ToolCard
@@ -907,27 +936,25 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
-        className={css({
+        style={{
           position: 'relative',
-          zIndex: '10',
-          mx: 'auto',
-          w: 'full',
-          maxW: '5xl',
+          zIndex: 10,
+          margin: '0 auto',
+          width: '100%',
+          maxWidth: '1400px',
           overflow: 'hidden',
-          rounded: '2xl',
+          borderRadius: '1rem',
           border: '1px solid rgba(168, 85, 247, 0.2)',
-          bgGradient: 'to-r',
-          gradientFrom: 'rgba(88, 28, 135, 0.2)',
-          gradientVia: 'rgba(131, 24, 67, 0.2)',
-          gradientTo: 'rgba(30, 58, 138, 0.2)',
-          p: { base: '6', sm: '8' },
+          background:
+            'linear-gradient(to right, rgba(88, 28, 135, 0.2), rgba(131, 24, 67, 0.2), rgba(30, 58, 138, 0.2))',
+          padding: '2rem',
           backdropFilter: 'blur(8px)',
-        })}
+        }}
       >
         <div
           className={css({
             display: 'grid',
-            gridTemplateColumns: { base: '2', sm: '4' },
+            gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
             gap: '8',
           })}
         >
@@ -1022,8 +1049,8 @@ export default function HomePage() {
       <div
         className={css({
           position: 'fixed',
-          right: '6',
-          bottom: '6',
+          right: 6,
+          bottom: 6,
           zIndex: 'toast',
         })}
       >
@@ -1039,8 +1066,8 @@ export default function HomePage() {
       <div
         className={css({
           position: 'fixed',
-          right: '6',
-          bottom: '26',
+          right: 6,
+          bottom: 26,
           zIndex: 'toast',
         })}
       >
@@ -1115,7 +1142,7 @@ function ToolCard({
                   shadow: 'lg',
                 })}
                 style={{
-                  background: tool.gradient,
+                  background: gradientToCss(tool.gradient),
                 }}
                 whileHover={noMotion ? {} : { rotate: [0, -5, 5, 0], scale: 1.05 }}
                 transition={{ duration: 0.3 }}
@@ -1293,7 +1320,7 @@ function ToolCard({
                   shadow: 'lg',
                 })}
                 style={{
-                  background: tool.gradient,
+                  background: gradientToCss(tool.gradient),
                 }}
                 whileHover={noMotion ? {} : { rotate: [0, -10, 10, 0], scale: 1.1 }}
                 transition={{ duration: 0.4 }}

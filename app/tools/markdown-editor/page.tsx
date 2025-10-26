@@ -244,7 +244,15 @@ export default function MarkdownEditorPage() {
         }}
       />
 
-      <div className="relative container mx-auto flex min-h-screen flex-col gap-6 p-6">
+      <div
+        className="relative flex min-h-screen flex-col gap-6"
+        style={{
+          margin: '0 auto',
+          maxWidth: '1400px',
+          width: '100%',
+          padding: '1.5rem 1rem',
+        }}
+      >
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex items-center gap-4">

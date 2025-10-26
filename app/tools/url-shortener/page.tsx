@@ -167,7 +167,15 @@ export default function URLShortenerPage() {
   }, [shortenedUrls])
 
   return (
-    <div className="container mx-auto max-w-6xl space-y-8 px-4 py-8">
+    <div
+      className="space-y-8"
+      style={{
+        margin: '0 auto',
+        maxWidth: '1280px',
+        width: '100%',
+        padding: '2rem 1rem',
+      }}
+    >
       {/* Header */}
       <div className="space-y-4 text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 backdrop-blur-sm">

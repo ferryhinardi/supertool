@@ -106,7 +106,15 @@ export default function JSONBeautifyPage() {
 
   return (
     <TooltipProvider>
-      <main className="mx-auto max-w-7xl space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 md:space-y-8 md:px-6 md:py-8 lg:px-8">
+      <main
+        className="space-y-4 sm:space-y-6 md:space-y-8"
+        style={{
+          margin: '0 auto',
+          maxWidth: '1400px',
+          width: '100%',
+          padding: '1.5rem 1rem',
+        }}
+      >
         {/* Header */}
         <div className="space-y-3">
           <div className="flex items-center gap-3 sm:gap-4">
@@ -128,9 +136,15 @@ export default function JSONBeautifyPage() {
         </div>
 
         {/* Stats Bar */}
-        <div className="glass-card rounded-xl border-2 border-purple-500/30 p-3 shadow-xl shadow-purple-500/20 sm:rounded-2xl sm:p-4 md:p-6">
-          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4">
+        <div
+          className="glass-card rounded-xl border-2 border-purple-500/30 shadow-xl shadow-purple-500/20 sm:rounded-2xl"
+          style={{ padding: '1rem' }}
+        >
+          <div
+            className="flex flex-col items-start justify-between sm:flex-row sm:items-center"
+            style={{ gap: '0.75rem' }}
+          >
+            <div className="flex flex-wrap items-center" style={{ gap: '0.5rem' }}>
               <Badge
                 variant="outline"
                 size="sm"
@@ -171,7 +185,10 @@ export default function JSONBeautifyPage() {
         </div>
 
         {/* Editor */}
-        <div className="glass-card overflow-hidden rounded-xl border-2 border-purple-500/30 p-2 shadow-2xl shadow-purple-500/30 sm:rounded-2xl sm:p-3 md:p-4">
+        <div
+          className="glass-card overflow-hidden rounded-xl border-2 border-purple-500/30 shadow-2xl shadow-purple-500/30 sm:rounded-2xl"
+          style={{ padding: '0.75rem' }}
+        >
           <div className="overflow-x-auto">
             <CodeMirror
               value={value}
@@ -191,8 +208,11 @@ export default function JSONBeautifyPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="glass-card rounded-xl border-2 border-purple-500/30 p-3 shadow-xl shadow-purple-500/20 sm:rounded-2xl sm:p-4 md:p-6">
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3 md:gap-4">
+        <div
+          className="glass-card rounded-xl border-2 border-purple-500/30 shadow-xl shadow-purple-500/20 sm:rounded-2xl"
+          style={{ padding: '1rem' }}
+        >
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap" style={{ gap: '0.5rem' }}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

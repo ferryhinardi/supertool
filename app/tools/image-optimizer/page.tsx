@@ -223,7 +223,15 @@ export default function ImageOptimizerPage() {
     totalOriginalSize > 0 ? calculateSavings(totalOriginalSize, totalCompressedSize) : 0
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-8 p-4 py-8 sm:p-6 md:p-8">
+    <div
+      className="space-y-8"
+      style={{
+        margin: '0 auto',
+        maxWidth: '1400px',
+        width: '100%',
+        padding: '2rem 1rem',
+      }}
+    >
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

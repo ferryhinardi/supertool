@@ -135,7 +135,15 @@ export default function DiffTool() {
   }
 
   return (
-    <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 md:px-6 lg:px-8">
+    <main
+      className="space-y-6 md:space-y-8"
+      style={{
+        margin: '0 auto',
+        maxWidth: '1400px',
+        width: '100%',
+        padding: '2rem 1rem',
+      }}
+    >
       {/* Header */}
       <div className="space-y-3">
         <div className="flex items-center gap-4">
