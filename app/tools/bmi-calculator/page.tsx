@@ -799,10 +799,10 @@ export default function BMICalculator() {
                     marginTop: '1.5rem',
                     padding: '1rem',
                     backgroundColor: 'blue.50',
-                    _dark: { backgroundColor: 'blue.900/20', color: 'gray.300' },
                     borderRadius: '0.5rem',
                     fontSize: '0.875rem',
                     color: 'gray.700',
+                    _dark: { backgroundColor: 'blue.900/20', color: 'gray.300' },
                   })}
                 >
                   <strong>Note:</strong> BMI is a screening tool and does not diagnose health
