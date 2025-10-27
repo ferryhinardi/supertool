@@ -1,23 +1,23 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import imageCompression from 'browser-image-compression'
+import { AnimatePresence, motion } from 'framer-motion'
+import {
+  CheckCircle,
+  Download,
+  FileImage,
+  Image as ImageIcon,
+  Maximize2,
+  Settings,
+  Sparkles,
+  Trash2,
+  Zap,
+} from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import imageCompression from 'browser-image-compression'
-import {
-  Image as ImageIcon,
-  Download,
-  Trash2,
-  Settings,
-  Sparkles,
-  Zap,
-  CheckCircle,
-  FileImage,
-  Maximize2,
-} from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { DragDropZone } from '@/components/features/DragDropZone'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -201,7 +201,9 @@ export default function ImageOptimizerPage() {
   }
 
   const handleClearAll = () => {
-    images.forEach((img) => URL.revokeObjectURL(img.preview))
+    for (const img of images) {
+      URL.revokeObjectURL(img.preview)
+    }
     setImages([])
   }
 
@@ -210,7 +212,7 @@ export default function ImageOptimizerPage() {
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+    return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`
   }
 
   const calculateSavings = (original: number, compressed?: number) => {
@@ -381,8 +383,11 @@ export default function ImageOptimizerPage() {
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
                 {/* Output Format */}
                 <div className={css({ spaceY: '2' })}>
-                  <label className="text-sm font-medium text-gray-300">Output Format</label>
+                  <label htmlFor="output-format" className="text-sm font-medium text-gray-300">
+                    Output Format
+                  </label>
                   <div
+                    id="output-format"
                     className={css({
                       display: 'grid',
                       gridTemplateColumns: 'repeat(3, 1fr)',
@@ -416,10 +421,13 @@ export default function ImageOptimizerPage() {
                       justifyContent: 'space-between',
                     })}
                   >
-                    <label className="text-sm font-medium text-gray-300">Quality</label>
+                    <label htmlFor="quality-slider" className="text-sm font-medium text-gray-300">
+                      Quality
+                    </label>
                     <span className="text-sm font-bold text-teal-400">{quality}%</span>
                   </div>
                   <input
+                    id="quality-slider"
                     type="range"
                     min="10"
                     max="100"
@@ -443,8 +451,11 @@ export default function ImageOptimizerPage() {
 
                 {/* Max Dimensions */}
                 <div className={css({ spaceY: '3' })}>
-                  <label className="text-sm font-medium text-gray-300">Max Dimensions</label>
+                  <label htmlFor="max-dimensions" className="text-sm font-medium text-gray-300">
+                    Max Dimensions
+                  </label>
                   <div
+                    id="max-dimensions"
                     className={css({
                       display: 'grid',
                       gridTemplateColumns: 'repeat(2, 1fr)',
@@ -452,8 +463,11 @@ export default function ImageOptimizerPage() {
                     })}
                   >
                     <div>
-                      <label className="mb-1 block text-xs text-gray-400">Width (px)</label>
+                      <label htmlFor="max-width" className="mb-1 block text-xs text-gray-400">
+                        Width (px)
+                      </label>
                       <input
+                        id="max-width"
                         type="number"
                         value={maxWidth}
                         onChange={(e) => setMaxWidth(Number(e.target.value))}
@@ -463,8 +477,11 @@ export default function ImageOptimizerPage() {
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-xs text-gray-400">Height (px)</label>
+                      <label htmlFor="max-height" className="mb-1 block text-xs text-gray-400">
+                        Height (px)
+                      </label>
                       <input
+                        id="max-height"
                         type="number"
                         value={maxHeight}
                         onChange={(e) => setMaxHeight(Number(e.target.value))}
@@ -754,9 +771,9 @@ export default function ImageOptimizerPage() {
             title: 'Multiple Formats',
             description: 'Support for JPG, PNG, WebP, and more',
           },
-        ].map((feature, index) => (
+        ].map((feature) => (
           <Card
-            key={index}
+            key={feature.title}
             className="border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm"
           >
             <CardContent>

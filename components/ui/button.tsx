@@ -1,8 +1,8 @@
-import * as React from 'react'
 import { ark } from '@ark-ui/react'
 import { Slot } from '@radix-ui/react-slot'
-import { button } from '@/styled-system/recipes'
+import * as React from 'react'
 import { cx } from '@/lib/utils'
+import { button } from '@/styled-system/recipes'
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'

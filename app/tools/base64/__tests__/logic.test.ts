@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 // Base64 encoding function (mirrors btoa behavior)
 export function encodeBase64(input: string): string {

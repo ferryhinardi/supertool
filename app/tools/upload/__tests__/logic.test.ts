@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 // Test the upload utility functions
 describe('Upload Page Logic', () => {
@@ -8,7 +8,7 @@ describe('Upload Page Logic', () => {
       const k = 1024
       const sizes = ['Bytes', 'KB', 'MB', 'GB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
-      return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+      return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`
     }
 
     it('formats zero bytes', () => {

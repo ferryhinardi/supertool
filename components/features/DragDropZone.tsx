@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { Upload, FileCheck } from 'lucide-react'
+import { FileCheck, Upload } from 'lucide-react'
+import { useCallback, useState } from 'react'
 import { cx } from '@/lib/utils'
 
 interface DragDropZoneProps {
@@ -71,12 +71,25 @@ export function DragDropZone({
     [onFilesSelected]
   )
 
+  const handleClick = () => {
+    document.getElementById('file-upload')?.click()
+  }
+
   return (
     <div
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleClick()
+        }
+      }}
+      role="button"
+      tabIndex={0}
       className={cx(
         'relative cursor-pointer rounded-xl border-2 border-dashed transition-all duration-300',
         'hover:border-purple-500/50 hover:bg-gray-900/50',

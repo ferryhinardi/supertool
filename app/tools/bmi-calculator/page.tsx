@@ -1,14 +1,14 @@
 'use client'
 
+import { Activity, Info, Ruler, Scale, TrendingUp } from 'lucide-react'
 import { useState } from 'react'
-import { Activity, Scale, Ruler, TrendingUp, Info } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
-import { css } from '@/styled-system/css'
+import { Input } from '@/components/ui/input'
 import { trackEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
 
 interface BMIResult {
   bmi: number
@@ -780,9 +780,9 @@ export default function BMICalculator() {
                     paddingLeft: '1.5rem',
                   })}
                 >
-                  {result.healthTips.map((tip, index) => (
+                  {result.healthTips.map((tip) => (
                     <li
-                      key={index}
+                      key={tip}
                       className={css({
                         color: 'gray.700',
                         _dark: { color: 'gray.300' },
@@ -838,9 +838,9 @@ export default function BMICalculator() {
                       gap: '0.75rem',
                     })}
                   >
-                    {history.slice(0, 5).map((entry, index) => (
+                    {history.slice(0, 5).map((entry) => (
                       <div
-                        key={index}
+                        key={entry.date}
                         className={css({
                           display: 'flex',
                           justifyContent: 'space-between',

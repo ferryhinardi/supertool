@@ -2,30 +2,30 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useCallback, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import {
+  Archive,
+  CheckCircle,
+  Copy,
+  Download,
+  Droplet,
+  FileText,
+  Image as ImageIcon,
+  Merge,
+  RotateCw,
+  Settings,
+  Sparkles,
+  Split,
+  Trash2,
+  Zap,
+} from 'lucide-react'
+import { degrees, PDFDocument, rgb } from 'pdf-lib'
+import type * as PdfjsTypes from 'pdfjs-dist'
+import { useCallback, useEffect, useState } from 'react'
+import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { PDFDocument, rgb, degrees } from 'pdf-lib'
-import type * as PdfjsTypes from 'pdfjs-dist'
-import {
-  FileText,
-  Download,
-  Trash2,
-  Settings,
-  Sparkles,
-  Zap,
-  CheckCircle,
-  Merge,
-  Split,
-  Archive,
-  Image as ImageIcon,
-  Droplet,
-  RotateCw,
-  Copy,
-} from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { DragDropZone } from '@/components/features/DragDropZone'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -79,7 +79,7 @@ export default function PDFToolsPage() {
   const [splitPageNumber, setSplitPageNumber] = useState(1)
 
   // Compress options
-  const [compressionQuality, setCompressionQuality] = useState(50)
+  const [_compressionQuality, _setCompressionQuality] = useState(50)
 
   // Watermark options
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL')
@@ -170,7 +170,9 @@ export default function PDFToolsPage() {
         const arrayBuffer = await pdf.file.arrayBuffer()
         const pdfDoc = await PDFDocument.load(arrayBuffer)
         const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices())
-        pages.forEach((page) => mergedPdf.addPage(page))
+        for (const page of pages) {
+          mergedPdf.addPage(page)
+        }
       }
 
       const mergedBytes = await mergedPdf.save()
@@ -229,7 +231,9 @@ export default function PDFToolsPage() {
         pdfDoc,
         Array.from({ length: splitPageNumber }, (_, i) => i)
       )
-      pages1.forEach((page) => pdf1.addPage(page))
+      for (const page of pages1) {
+        pdf1.addPage(page)
+      }
 
       // Create second part (remaining pages)
       const pdf2 = await PDFDocument.create()
@@ -237,7 +241,9 @@ export default function PDFToolsPage() {
         pdfDoc,
         Array.from({ length: totalPages - splitPageNumber }, (_, i) => i + splitPageNumber)
       )
-      pages2.forEach((page) => pdf2.addPage(page))
+      for (const page of pages2) {
+        pdf2.addPage(page)
+      }
 
       const bytes1 = await pdf1.save()
       const bytes2 = await pdf2.save()
@@ -348,7 +354,8 @@ export default function PDFToolsPage() {
         const viewport = page.getViewport({ scale: 2.0 })
 
         const canvas = document.createElement('canvas')
-        const context = canvas.getContext('2d')!
+        const context = canvas.getContext('2d')
+        if (!context) throw new Error('Could not get canvas context')
         canvas.height = viewport.height
         canvas.width = viewport.width
 
@@ -358,8 +365,11 @@ export default function PDFToolsPage() {
           canvas: canvas,
         }).promise
 
-        const blob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((blob) => resolve(blob!), 'image/png')
+        const blob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob)
+            else reject(new Error('Failed to create blob'))
+          }, 'image/png')
         })
 
         images.push(blob)
@@ -487,7 +497,9 @@ export default function PDFToolsPage() {
       )
 
       const pages = await newPdf.copyPages(pdfDoc, pageIndices)
-      pages.forEach((page) => newPdf.addPage(page))
+      for (const page of pages) {
+        newPdf.addPage(page)
+      }
 
       const extractedBytes = await newPdf.save()
       const blob = new Blob([new Uint8Array(extractedBytes)], { type: 'application/pdf' })
@@ -722,7 +734,7 @@ export default function PDFToolsPage() {
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+    return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`
   }
 
   const operations = [
@@ -883,8 +895,10 @@ export default function PDFToolsPage() {
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
                 {/* Operation Selection */}
                 <div className={css({ spaceY: '2' })}>
-                  <label className="text-sm font-medium text-gray-300">Select Operation</label>
-                  <div className={css({ spaceY: '2' })}>
+                  <label htmlFor="operation-select" className="text-sm font-medium text-gray-300">
+                    Select Operation
+                  </label>
+                  <div id="operation-select" className={css({ spaceY: '2' })}>
                     {operations.map((op) => (
                       <Button
                         key={op.value}
@@ -914,8 +928,11 @@ export default function PDFToolsPage() {
                 {/* Operation-specific settings */}
                 {operation === 'split' && (
                   <div className={css({ spaceY: '2' })}>
-                    <label className="text-sm font-medium text-gray-300">Split at Page</label>
+                    <label htmlFor="split-page" className="text-sm font-medium text-gray-300">
+                      Split at Page
+                    </label>
                     <input
+                      id="split-page"
                       type="number"
                       value={splitPageNumber}
                       onChange={(e) => setSplitPageNumber(Number(e.target.value))}
@@ -929,8 +946,11 @@ export default function PDFToolsPage() {
                 {operation === 'watermark' && (
                   <>
                     <div className={css({ spaceY: '2' })}>
-                      <label className="text-sm font-medium text-gray-300">Watermark Text</label>
+                      <label htmlFor="watermark-text" className="text-sm font-medium text-gray-300">
+                        Watermark Text
+                      </label>
                       <input
+                        id="watermark-text"
                         type="text"
                         value={watermarkText}
                         onChange={(e) => setWatermarkText(e.target.value)}
@@ -945,12 +965,18 @@ export default function PDFToolsPage() {
                           justifyContent: 'space-between',
                         })}
                       >
-                        <label className="text-sm font-medium text-gray-300">Opacity</label>
+                        <label
+                          htmlFor="watermark-opacity"
+                          className="text-sm font-medium text-gray-300"
+                        >
+                          Opacity
+                        </label>
                         <span className="text-sm font-bold text-red-400">
                           {Math.round(watermarkOpacity * 100)}%
                         </span>
                       </div>
                       <input
+                        id="watermark-opacity"
                         type="range"
                         min="0.1"
                         max="1"
@@ -965,7 +991,7 @@ export default function PDFToolsPage() {
 
                 {operation === 'extract' && (
                   <div className={css({ spaceY: '2' })}>
-                    <label className="text-sm font-medium text-gray-300">Page Range</label>
+                    <div className="text-sm font-medium text-gray-300">Page Range</div>
                     <div
                       className={css({
                         display: 'grid',
@@ -974,8 +1000,11 @@ export default function PDFToolsPage() {
                       })}
                     >
                       <div>
-                        <label className="mb-1 block text-xs text-gray-400">From</label>
+                        <label htmlFor="extract-from" className="mb-1 block text-xs text-gray-400">
+                          From
+                        </label>
                         <input
+                          id="extract-from"
                           type="number"
                           value={extractStartPage}
                           onChange={(e) => setExtractStartPage(Number(e.target.value))}
@@ -984,8 +1013,11 @@ export default function PDFToolsPage() {
                         />
                       </div>
                       <div>
-                        <label className="mb-1 block text-xs text-gray-400">To</label>
+                        <label htmlFor="extract-to" className="mb-1 block text-xs text-gray-400">
+                          To
+                        </label>
                         <input
+                          id="extract-to"
                           type="number"
                           value={extractEndPage}
                           onChange={(e) => setExtractEndPage(Number(e.target.value))}
@@ -999,7 +1031,7 @@ export default function PDFToolsPage() {
 
                 {operation === 'rotate' && (
                   <div className={css({ spaceY: '2' })}>
-                    <label className="text-sm font-medium text-gray-300">Rotation Angle</label>
+                    <div className="text-sm font-medium text-gray-300">Rotation Angle</div>
                     <div
                       className={css({
                         display: 'grid',
@@ -1269,9 +1301,9 @@ export default function PDFToolsPage() {
             title: 'Professional Quality',
             description: 'Industry-standard PDF processing capabilities.',
           },
-        ].map((feature, index) => (
+        ].map((feature) => (
           <Card
-            key={index}
+            key={feature.title}
             className="border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm"
           >
             <CardContent>

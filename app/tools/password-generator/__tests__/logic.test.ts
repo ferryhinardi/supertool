@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { generatePassword, calculateStrength } from '../utils'
+import { describe, expect, it } from 'vitest'
+import { calculateStrength, generatePassword } from '../utils'
 
 describe('Password Generator - Logic Tests', () => {
   describe('generatePassword', () => {

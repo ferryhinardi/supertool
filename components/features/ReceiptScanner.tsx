@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { Camera, FileImage, Loader2, Upload, X } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { createWorker, PSM } from 'tesseract.js'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { toast } from 'sonner'
-import { Camera, Upload, X, Loader2, FileImage } from 'lucide-react'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
-import { createWorker, PSM } from 'tesseract.js'
 
 interface ReceiptData {
   subtotal?: number
@@ -46,9 +46,9 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
     // Extract each field
     for (const [key, pattern] of Object.entries(patterns)) {
       const match = text.match(pattern)
-      if (match && match[1]) {
+      if (match?.[1]) {
         const amount = parseFloat(match[1].replace(',', '.'))
-        if (!isNaN(amount) && amount > 0) {
+        if (!Number.isNaN(amount) && amount > 0) {
           data[key as keyof ReceiptData] = amount
         }
       }
@@ -62,12 +62,14 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
     // Fallback: find all amounts and take the largest as total if not found
     if (!data.total) {
       const amounts: number[] = []
-      let match
-      while ((match = amountPattern.exec(text)) !== null) {
+      let match: RegExpExecArray | null = null
+      match = amountPattern.exec(text)
+      while (match !== null) {
         const amount = parseFloat(match[1].replace(',', '.'))
-        if (!isNaN(amount) && amount > 0) {
+        if (!Number.isNaN(amount) && amount > 0) {
           amounts.push(amount)
         }
+        match = amountPattern.exec(text)
       }
       if (amounts.length > 0) {
         data.total = Math.max(...amounts)
@@ -263,6 +265,7 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
             />
             {!isProcessing && (
               <button
+                type="button"
                 onClick={clearPreview}
                 className={css({
                   position: 'absolute',

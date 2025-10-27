@@ -1,10 +1,10 @@
 'use client'
 
-import * as React from 'react'
 import { Dialog as ArkDialog } from '@ark-ui/react'
 import { X } from 'lucide-react'
-import { css } from '@/styled-system/css'
+import * as React from 'react'
 import { cx } from '@/lib/utils'
+import { css } from '@/styled-system/css'
 
 const Dialog = ArkDialog.Root
 const DialogTrigger = ArkDialog.Trigger

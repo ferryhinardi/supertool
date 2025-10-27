@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 // Convert ArrayBuffer to hex string
 export function arrayBufferToHex(buffer: ArrayBuffer): string {
@@ -313,10 +313,8 @@ describe('Hash Generator Utilities', () => {
 
     it('should reject invalid inputs', () => {
       expect(isValidHashFormat('')).toBe(false)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect(isValidHashFormat(null as any)).toBe(false)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect(isValidHashFormat(undefined as any)).toBe(false)
+      expect(isValidHashFormat(null as unknown as string)).toBe(false)
+      expect(isValidHashFormat(undefined as unknown as string)).toBe(false)
     })
 
     it('should validate MD5 hash length', () => {

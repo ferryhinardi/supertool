@@ -1,31 +1,30 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import {
-  Home,
+  Activity,
+  Calendar,
   Code,
-  Upload,
+  FileCog,
+  FileSpreadsheet,
   FileText,
   GitCompare,
   Github,
-  Menu,
-  X,
-  FileSpreadsheet,
-  Users,
-  QrCode,
-  Key,
-  Repeat,
   Hash,
-  FileCog,
-  Calendar,
-  Activity,
+  Home,
+  Key,
+  Menu,
+  QrCode,
+  Repeat,
   Shield,
+  Upload,
+  Users,
   Wand2,
+  X,
 } from 'lucide-react'
-import { css } from '@/styled-system/css'
-import { cva } from '@/styled-system/css'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+import { css, cva } from '@/styled-system/css'
 
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
@@ -93,6 +92,7 @@ export function Sidebar() {
     <>
       {/* Mobile Menu Button - Fixed top-left */}
       <button
+        type="button"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         className={css({
           display: { base: 'flex', md: 'none' },
@@ -130,7 +130,9 @@ export function Sidebar() {
 
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
-        <div
+        <button
+          type="button"
+          onClick={closeMobileMenu}
           className={css({
             display: { base: 'block', md: 'none' },
             position: 'fixed',
@@ -138,9 +140,12 @@ export function Sidebar() {
             zIndex: 'overlay',
             bg: 'rgba(0, 0, 0, 0.5)',
             backdropFilter: 'blur(4px)',
+            cursor: 'pointer',
+            border: 'none',
+            padding: 0,
           })}
           style={{ WebkitBackdropFilter: 'blur(4px)' }}
-          onClick={closeMobileMenu}
+          aria-label="Close menu"
         />
       )}
 

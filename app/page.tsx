@@ -1,58 +1,58 @@
 'use client'
 
-import { useState, useMemo, useEffect, useRef } from 'react'
-import Link from 'next/link'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
-  Code,
-  Upload,
-  Zap,
+  Activity,
   ArrowRight,
-  Sparkles,
+  Cake,
+  Calculator,
+  Calendar,
+  Clock,
+  Code,
+  DollarSign,
+  FileDown,
+  FileJson,
+  FileSpreadsheet,
+  FileText,
   GitCompare,
-  Search,
+  Globe,
+  Hash,
+  Image,
+  Key,
   LayoutGrid,
   LayoutList,
-  TrendingUp,
-  Clock,
-  Star,
-  Image,
-  FileJson,
-  Globe,
   Lock,
-  Palette,
-  Scissors,
-  Hash,
-  Calendar,
-  FileText,
-  Terminal,
-  X,
-  Video,
-  Calculator,
-  DollarSign,
-  Timer,
-  Users,
-  FileSpreadsheet,
-  Shield,
-  Activity,
-  TrendingDown,
-  Percent,
-  Repeat,
-  QrCode,
-  Key,
-  Cake,
-  FileDown,
-  Wand2,
   Network,
+  Palette,
+  Percent,
+  QrCode,
+  Repeat,
+  Scissors,
+  Search,
+  Shield,
   Smartphone,
+  Sparkles,
+  Star,
+  Terminal,
+  Timer,
+  TrendingDown,
+  TrendingUp,
+  Upload,
+  Users,
+  Video,
+  Wand2,
+  X,
+  Zap,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Field, FieldInput } from '@/components/ui/field'
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
-import { motion, useReducedMotion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FeedbackDialog } from '@/components/features/FeedbackDialog'
 import { TreatMeDialog } from '@/components/features/TreatMeDialog'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card'
+import { Field, FieldInput } from '@/components/ui/field'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { css } from '@/styled-system/css'
 
 type ToolCategory =
@@ -969,7 +969,7 @@ export default function HomePage() {
           </div>
 
           {/* View Mode Toggle */}
-          <div
+          <fieldset
             className={css({
               display: 'flex',
               gap: '1',
@@ -979,7 +979,6 @@ export default function HomePage() {
               bg: 'rgba(17, 24, 39, 0.5)',
               p: '1',
             })}
-            role="group"
             aria-label="View mode"
           >
             <Tooltip>
@@ -1026,7 +1025,7 @@ export default function HomePage() {
               </TooltipTrigger>
               <TooltipContent>List view</TooltipContent>
             </Tooltip>
-          </div>
+          </fieldset>
         </div>
         {/* Results count */}
         {(searchQuery || selectedCategory !== 'all') && (
@@ -1066,6 +1065,7 @@ export default function HomePage() {
             </div>
             {searchQuery && (
               <button
+                type="button"
                 onClick={() => {
                   setSearchQuery('')
                   setSelectedCategory('all')

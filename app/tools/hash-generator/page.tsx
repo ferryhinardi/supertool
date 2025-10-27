@@ -1,13 +1,13 @@
 'use client'
 
+import { motion } from 'framer-motion'
+import { CheckCircle, Copy, Hash, Upload, XCircle } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
-import { Hash, Copy, Upload, CheckCircle, XCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
-import { toast } from 'sonner'
+import { Textarea } from '@/components/ui/textarea'
 import { css } from '@/styled-system/css'
 
 type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
@@ -332,8 +332,8 @@ export default function HashGeneratorPage() {
           { icon: Upload, title: 'File Hashing', desc: 'Hash any file type' },
           { icon: CheckCircle, title: 'Verification', desc: 'Compare and verify hashes' },
           { icon: Copy, title: 'Easy Copy', desc: 'One-click copy to clipboard' },
-        ].map((feature, i) => (
-          <Card key={i} className="border-gray-800 bg-gray-900/30">
+        ].map((feature) => (
+          <Card key={feature.title} className="border-gray-800 bg-gray-900/30">
             <CardContent className="p-6">
               <feature.icon className="mb-3 h-8 w-8 text-red-400" />
               <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>

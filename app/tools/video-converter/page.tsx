@@ -1,25 +1,25 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { FFmpeg } from '@ffmpeg/ffmpeg'
+import { fetchFile, toBlobURL } from '@ffmpeg/util'
+import { motion } from 'framer-motion'
+import {
+  Download,
+  FileVideo,
+  Film,
+  Play,
+  Scissors,
+  Settings,
+  Sparkles,
+  Trash2,
+  Video,
+  Zap,
+} from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { FFmpeg } from '@ffmpeg/ffmpeg'
-import { fetchFile, toBlobURL } from '@ffmpeg/util'
-import {
-  Video,
-  Download,
-  Trash2,
-  Settings,
-  Sparkles,
-  Zap,
-  Play,
-  Film,
-  Scissors,
-  FileVideo,
-} from 'lucide-react'
-import { motion } from 'framer-motion'
-import { DragDropZone } from '@/components/features/DragDropZone'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -189,8 +189,7 @@ export default function VideoConverterPage() {
       })
 
       const ffmpeg = ffmpegRef.current
-      const inputName =
-        'input' + videoFile.file.name.substring(videoFile.file.name.lastIndexOf('.'))
+      const inputName = `input${videoFile.file.name.substring(videoFile.file.name.lastIndexOf('.'))}`
       const outputName = `output.${outputFormat}`
 
       // Write input file
@@ -344,7 +343,9 @@ export default function VideoConverterPage() {
   }
 
   const handleClearAll = () => {
-    videos.forEach((v) => URL.revokeObjectURL(v.preview))
+    for (const v of videos) {
+      URL.revokeObjectURL(v.preview)
+    }
     setVideos([])
 
     trackEvent({
@@ -358,7 +359,7 @@ export default function VideoConverterPage() {
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+    return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`
   }
 
   const formatDuration = (seconds: number) => {
@@ -558,7 +559,7 @@ export default function VideoConverterPage() {
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
                 {/* Output Format */}
                 <div className={css({ spaceY: '2' })}>
-                  <label className="text-sm font-medium text-gray-300">Output Format</label>
+                  <div className="text-sm font-medium text-gray-300">Output Format</div>
                   <div
                     className={css({
                       display: 'grid',
@@ -586,7 +587,7 @@ export default function VideoConverterPage() {
 
                 {/* Video Codec */}
                 <div className={css({ spaceY: '2' })}>
-                  <label className="text-sm font-medium text-gray-300">Video Codec</label>
+                  <div className="text-sm font-medium text-gray-300">Video Codec</div>
                   <div
                     className={css({
                       display: 'grid',
@@ -614,7 +615,7 @@ export default function VideoConverterPage() {
 
                 {/* Audio Codec */}
                 <div className={css({ spaceY: '2' })}>
-                  <label className="text-sm font-medium text-gray-300">Audio Codec</label>
+                  <div className="text-sm font-medium text-gray-300">Audio Codec</div>
                   <div
                     className={css({
                       display: 'grid',
@@ -649,10 +650,13 @@ export default function VideoConverterPage() {
                       justifyContent: 'space-between',
                     })}
                   >
-                    <label className="text-sm font-medium text-gray-300">Quality (CRF)</label>
+                    <label htmlFor="quality-range" className="text-sm font-medium text-gray-300">
+                      Quality (CRF)
+                    </label>
                     <span className="text-sm font-bold text-indigo-400">{quality}</span>
                   </div>
                   <input
+                    id="quality-range"
                     type="range"
                     min="0"
                     max="51"
@@ -675,8 +679,11 @@ export default function VideoConverterPage() {
 
                 {/* Resolution */}
                 <div className={css({ spaceY: '2' })}>
-                  <label className="text-sm font-medium text-gray-300">Resolution</label>
+                  <label htmlFor="resolution-select" className="text-sm font-medium text-gray-300">
+                    Resolution
+                  </label>
                   <select
+                    id="resolution-select"
                     value={resolution}
                     onChange={(e) => setResolution(e.target.value)}
                     className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-indigo-500 focus:outline-none"
@@ -955,9 +962,9 @@ export default function VideoConverterPage() {
             title: 'Web Optimized',
             description: 'Perfect settings for web playback and streaming',
           },
-        ].map((feature, index) => (
+        ].map((feature) => (
           <Card
-            key={index}
+            key={feature.title}
             className="border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm"
           >
             <CardContent>

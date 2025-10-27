@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 // Test the DragDropZone component logic
 describe('DragDropZone Logic', () => {

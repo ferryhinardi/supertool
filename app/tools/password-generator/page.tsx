@@ -1,14 +1,14 @@
 'use client'
 
+import { Copy, Download, Key, RefreshCw, Shield, Zap } from 'lucide-react'
 import { useState } from 'react'
-import { Copy, RefreshCw, Download, Key, Shield, Zap } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
-import { generatePassword, calculateStrength } from './utils'
+import { calculateStrength, generatePassword } from './utils'
 
 interface PasswordOptions {
   length: number
@@ -238,8 +238,8 @@ export default function PasswordGeneratorPage() {
                     <ul
                       className={css({ spaceY: '1', pl: '4', fontSize: 'sm', color: 'gray.400' })}
                     >
-                      {strength.feedback.map((tip, i) => (
-                        <li key={i}>• {tip}</li>
+                      {strength.feedback.map((tip) => (
+                        <li key={tip}>• {tip}</li>
                       ))}
                     </ul>
                   )}
@@ -255,7 +255,7 @@ export default function PasswordGeneratorPage() {
                 min="8"
                 max="64"
                 value={options.length}
-                onChange={(e) => updateOption('length', parseInt(e.target.value))}
+                onChange={(e) => updateOption('length', parseInt(e.target.value, 10))}
                 className={css({
                   w: 'full',
                   h: '2',
@@ -367,7 +367,7 @@ export default function PasswordGeneratorPage() {
                 max="100"
                 value={bulkCount}
                 onChange={(e) =>
-                  setBulkCount(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))
+                  setBulkCount(Math.max(1, Math.min(100, parseInt(e.target.value, 10) || 1)))
                 }
                 className={css({ h: '12' })}
               />
@@ -425,9 +425,9 @@ export default function PasswordGeneratorPage() {
                   })}
                 >
                   <div className={css({ spaceY: '2' })}>
-                    {bulkPasswords.map((pwd, i) => (
+                    {bulkPasswords.map((pwd) => (
                       <div
-                        key={i}
+                        key={pwd}
                         className={css({
                           display: 'flex',
                           alignItems: 'center',

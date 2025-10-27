@@ -1,7 +1,7 @@
-import * as React from 'react'
 import { ark } from '@ark-ui/react'
-import { badge } from '@/styled-system/recipes'
+import * as React from 'react'
 import { cx } from '@/lib/utils'
+import { badge } from '@/styled-system/recipes'
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?:

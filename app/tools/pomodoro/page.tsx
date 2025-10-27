@@ -1,29 +1,29 @@
 'use client'
 'use no memo'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
 import {
-  Timer,
-  Play,
-  Pause,
-  RotateCcw,
-  Plus,
-  Check,
-  Trash2,
-  Settings,
   BarChart3,
   Bell,
   BellOff,
+  Check,
+  Coffee,
+  Pause,
+  Play,
+  Plus,
+  RotateCcw,
+  Settings,
+  Target,
+  Timer,
+  Trash2,
   Volume2,
   VolumeX,
-  Coffee,
-  Target,
 } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { toast } from 'sonner'
+import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -39,7 +39,7 @@ interface Task {
   createdAt: string
 }
 
-interface Settings {
+interface PomodoroSettings {
   workDuration: number
   shortBreakDuration: number
   longBreakDuration: number
@@ -59,7 +59,7 @@ interface Statistics {
   dailyHistory: { date: string; count: number }[]
 }
 
-const DEFAULT_SETTINGS: Settings = {
+const DEFAULT_SETTINGS: PomodoroSettings = {
   workDuration: 25,
   shortBreakDuration: 5,
   longBreakDuration: 15,
@@ -76,7 +76,7 @@ export default function PomodoroTimerPage() {
   const [status, setStatus] = useState<TimerStatus>('idle')
 
   // Lazy initialization for settings from localStorage
-  const [settings, setSettings] = useState<Settings>(() => {
+  const [settings, setSettings] = useState<PomodoroSettings>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('pomodoro_settings')
       if (saved) {
@@ -335,7 +335,7 @@ export default function PomodoroTimerPage() {
       return
     }
 
-    const target = parseInt(newTaskTarget) || 1
+    const target = parseInt(newTaskTarget, 10) || 1
     const task: Task = {
       id: Date.now().toString(),
       name: newTaskName.trim(),
@@ -578,7 +578,14 @@ export default function PomodoroTimerPage() {
             {/* Circular Progress */}
             <div className={css({ display: 'flex', justifyContent: 'center', py: '8' })}>
               <div className={css({ position: 'relative' })}>
-                <svg width="280" height="280" className={css({ transform: 'rotate(-90deg)' })}>
+                <svg
+                  width="280"
+                  height="280"
+                  className={css({ transform: 'rotate(-90deg)' })}
+                  aria-label="Pomodoro timer progress"
+                  role="img"
+                >
+                  <title>Pomodoro Timer Progress</title>
                   {/* Background circle */}
                   <circle
                     cx="140"
@@ -834,7 +841,8 @@ export default function PomodoroTimerPage() {
                 </div>
               ) : (
                 tasks.map((task) => (
-                  <div
+                  <button
+                    type="button"
                     key={task.id}
                     className={css({
                       p: '3',
@@ -846,6 +854,8 @@ export default function PomodoroTimerPage() {
                       transition: 'all 0.2s',
                       opacity: task.completed ? 0.6 : 1,
                       _hover: { borderColor: 'purple.500/30', bg: 'purple.500/5' },
+                      width: '100%',
+                      textAlign: 'left',
                     })}
                     onClick={() => setActiveTaskId(activeTaskId === task.id ? null : task.id)}
                   >
@@ -858,6 +868,7 @@ export default function PomodoroTimerPage() {
                       })}
                     >
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation()
                           toggleTaskComplete(task.id)
@@ -895,6 +906,7 @@ export default function PomodoroTimerPage() {
                       </div>
 
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation()
                           deleteTask(task.id)
@@ -927,7 +939,7 @@ export default function PomodoroTimerPage() {
                         {task.pomodorosCompleted}/{task.pomodorosTarget}
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>
@@ -1068,8 +1080,8 @@ function SettingsPanel({
   settings,
   onUpdate,
 }: {
-  settings: Settings
-  onUpdate: (settings: Settings) => void
+  settings: PomodoroSettings
+  onUpdate: (settings: PomodoroSettings) => void
 }) {
   const [localSettings, setLocalSettings] = useState(settings)
 
@@ -1100,7 +1112,10 @@ function SettingsPanel({
             max="60"
             value={localSettings.workDuration}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setLocalSettings({ ...localSettings, workDuration: parseInt(e.target.value) || 25 })
+              setLocalSettings({
+                ...localSettings,
+                workDuration: parseInt(e.target.value, 10) || 25,
+              })
             }
           />
         </Field>
@@ -1115,7 +1130,7 @@ function SettingsPanel({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setLocalSettings({
                 ...localSettings,
-                shortBreakDuration: parseInt(e.target.value) || 5,
+                shortBreakDuration: parseInt(e.target.value, 10) || 5,
               })
             }
           />
@@ -1131,7 +1146,7 @@ function SettingsPanel({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setLocalSettings({
                 ...localSettings,
-                longBreakDuration: parseInt(e.target.value) || 15,
+                longBreakDuration: parseInt(e.target.value, 10) || 15,
               })
             }
           />
@@ -1147,7 +1162,7 @@ function SettingsPanel({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setLocalSettings({
                 ...localSettings,
-                longBreakInterval: parseInt(e.target.value) || 4,
+                longBreakInterval: parseInt(e.target.value, 10) || 4,
               })
             }
           />

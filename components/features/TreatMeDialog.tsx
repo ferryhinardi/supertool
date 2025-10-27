@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Coffee, Heart, Sparkles, QrCode, CreditCard, Coins, ArrowLeft, X } from 'lucide-react'
+import { ArrowLeft, Coffee, Coins, CreditCard, Heart, QrCode, Sparkles, X } from 'lucide-react'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { Button } from '@/components/ui/button'
 
 type PaymentStep = 'select' | 'qris' | 'crypto' | 'international'
 
@@ -39,6 +39,7 @@ export function TreatMeDialog() {
   return (
     <>
       <button
+        type="button"
         onClick={() => setOpen(true)}
         style={{
           display: 'inline-flex',
@@ -76,7 +77,9 @@ export function TreatMeDialog() {
       {mounted &&
         open &&
         createPortal(
-          <div
+          <button
+            type="button"
+            onClick={handleClose}
             style={{
               position: 'fixed',
               top: 0,
@@ -91,8 +94,9 @@ export function TreatMeDialog() {
               backgroundColor: 'rgba(0, 0, 0, 0.92)',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
+              cursor: 'pointer',
             }}
-            onClick={handleClose}
+            aria-label="Close dialog"
           >
             <div
               style={{
@@ -107,7 +111,6 @@ export function TreatMeDialog() {
                 maxHeight: '90vh',
                 overflowY: 'auto',
               }}
-              onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
               <button
@@ -152,7 +155,7 @@ export function TreatMeDialog() {
                 />
               )}
             </div>
-          </div>,
+          </button>,
           document.body
         )}
     </>

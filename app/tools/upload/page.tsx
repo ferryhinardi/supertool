@@ -1,14 +1,14 @@
 'use client'
 
+import { Check, Copy, ExternalLink, FileUp, RotateCcw, Upload } from 'lucide-react'
 import { useState } from 'react'
-import { supabase } from '@/lib/supabaseClient'
+import { toast } from 'sonner'
+import { DragDropZone } from '@/components/features/DragDropZone'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { DragDropZone } from '@/components/features/DragDropZone'
-import { toast } from 'sonner'
-import { Upload, Check, Copy, ExternalLink, RotateCcw, FileUp } from 'lucide-react'
+import { supabase } from '@/lib/supabaseClient'
 import { css } from '@/styled-system/css'
 
 export default function UploadTool() {
@@ -83,7 +83,7 @@ export default function UploadTool() {
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+    return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`
   }
 
   return (

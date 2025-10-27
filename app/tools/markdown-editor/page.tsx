@@ -1,27 +1,27 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeHighlight from 'rehype-highlight'
-import rehypeRaw from 'rehype-raw'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Textarea } from '@/components/ui/textarea'
-import { toast } from 'sonner'
 import {
-  FileText,
+  CheckCircle2,
+  Code2,
   Copy,
   Download,
-  RotateCcw,
   Eye,
-  SplitSquareHorizontal,
-  Code2,
-  CheckCircle2,
-  Upload,
+  FileText,
   Github,
+  RotateCcw,
+  SplitSquareHorizontal,
+  Upload,
 } from 'lucide-react'
+import { useCallback, useMemo, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
 import { css } from '@/styled-system/css'
 
 type ViewMode = 'split' | 'editor' | 'preview'
@@ -222,6 +222,7 @@ export default function MarkdownEditorPage() {
     <>
       {/* Highlight.js GitHub Dark Theme Styles */}
       <style
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Required for syntax highlighting CSS
         dangerouslySetInnerHTML={{
           __html: `
         pre code.hljs { display: block; overflow-x: auto; padding: 1em; }

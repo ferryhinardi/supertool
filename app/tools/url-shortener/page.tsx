@@ -1,26 +1,26 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import { QRCodeSVG } from 'qrcode.react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { toast } from 'sonner'
 import {
-  Link as LinkIcon,
+  AlertCircle,
+  BarChart3,
+  Calendar,
+  CheckCircle2,
   Copy,
   Download,
-  QrCode,
-  BarChart3,
   ExternalLink,
+  Link as LinkIcon,
+  QrCode,
   Sparkles,
-  CheckCircle2,
-  AlertCircle,
-  TrendingUp,
-  Calendar,
   Trash2,
+  TrendingUp,
 } from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import { css } from '@/styled-system/css'
 
 interface ShortenedUrl {
@@ -50,7 +50,16 @@ export default function URLShortenerPage() {
         const response = await fetch('/api/urls')
         if (response.ok) {
           const data = await response.json()
-          const urls = data.urls.map((url: any) => ({
+          interface UrlResponse {
+            shortCode: string
+            originalUrl: string
+            createdAt: string
+            isActive: boolean
+            totalClicks?: number
+            uniqueVisitors?: number
+            lastClicked?: string
+          }
+          const urls = data.urls.map((url: UrlResponse) => ({
             id: url.shortCode, // Use shortCode as id for consistency
             shortCode: url.shortCode,
             originalUrl: url.originalUrl,
@@ -134,7 +143,7 @@ export default function URLShortenerPage() {
     toast.success(`${label} copied to clipboard! 📋`)
   }
 
-  const handleDownloadQR = (shortUrl: string, shortCode: string) => {
+  const handleDownloadQR = (_shortUrl: string, shortCode: string) => {
     const svg = document.getElementById(`qr-${shortCode}`)
     if (!svg) return
 
@@ -157,7 +166,7 @@ export default function URLShortenerPage() {
       toast.success('QR code downloaded! 📥')
     }
 
-    img.src = 'data:image/svg+xml;base64,' + btoa(svgData)
+    img.src = `data:image/svg+xml;base64,${btoa(svgData)}`
   }
 
   const handleDelete = async (shortCode: string) => {
@@ -347,12 +356,16 @@ export default function URLShortenerPage() {
       >
         <div className={css({ spaceY: { base: '4', sm: '4' } })}>
           <div className={css({ spaceY: '2' })}>
-            <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}>
+            <label
+              htmlFor="url-input"
+              className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}
+            >
               Enter URL to shorten
             </label>
             <div className={css({ display: 'flex', gap: '2' })}>
               <div className={css({ position: 'relative', flex: '1' })}>
                 <Input
+                  id="url-input"
                   type="url"
                   placeholder="https://example.com/very-long-url"
                   value={url}
@@ -419,10 +432,14 @@ export default function URLShortenerPage() {
 
           {/* Custom Alias (Optional) */}
           <div className={css({ spaceY: '2' })}>
-            <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}>
+            <label
+              htmlFor="custom-alias"
+              className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}
+            >
               Custom alias <span className={css({ color: 'gray.500' })}>(optional)</span>
             </label>
             <Input
+              id="custom-alias"
               type="text"
               placeholder="my-custom-link"
               value={customAlias}
@@ -473,9 +490,9 @@ export default function URLShortenerPage() {
 
             <div className={css({ spaceY: '3' })}>
               <div>
-                <label className={css({ fontSize: 'xs', fontWeight: 'medium', color: 'gray.400' })}>
+                <div className={css({ fontSize: 'xs', fontWeight: 'medium', color: 'gray.400' })}>
                   Short URL
-                </label>
+                </div>
                 <div
                   className={css({
                     mt: '1',
@@ -539,9 +556,9 @@ export default function URLShortenerPage() {
               </div>
 
               <div>
-                <label className={css({ fontSize: 'xs', fontWeight: 'medium', color: 'gray.400' })}>
+                <div className={css({ fontSize: 'xs', fontWeight: 'medium', color: 'gray.400' })}>
                   Original URL
-                </label>
+                </div>
                 <div
                   className={css({
                     mt: '1',

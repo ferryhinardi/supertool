@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { textarea } from '@/styled-system/recipes'
 import { cx } from '@/lib/utils'
+import { textarea } from '@/styled-system/recipes'
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<'textarea'>>(
   ({ className, ...props }, ref) => {

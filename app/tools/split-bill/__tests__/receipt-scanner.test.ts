@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 describe('Receipt Scanner Logic', () => {
   // Mock text extraction function (same as in ReceiptScanner.tsx)
@@ -22,9 +22,9 @@ describe('Receipt Scanner Logic', () => {
 
     for (const [key, pattern] of Object.entries(patterns)) {
       const match = text.match(pattern)
-      if (match && match[1]) {
+      if (match?.[1]) {
         const amount = parseFloat(match[1].replace(',', '.'))
-        if (!isNaN(amount) && amount > 0) {
+        if (!Number.isNaN(amount) && amount > 0) {
           data[key as keyof typeof data] = amount
         }
       }
@@ -36,12 +36,14 @@ describe('Receipt Scanner Logic', () => {
 
     if (!data.total) {
       const amounts: number[] = []
-      let match
-      while ((match = amountPattern.exec(text)) !== null) {
+      let match: RegExpExecArray | null = null
+      match = amountPattern.exec(text)
+      while (match !== null) {
         const amount = parseFloat(match[1].replace(',', '.'))
-        if (!isNaN(amount) && amount > 0) {
+        if (!Number.isNaN(amount) && amount > 0) {
           amounts.push(amount)
         }
+        match = amountPattern.exec(text)
       }
       if (amounts.length > 0) {
         data.total = Math.max(...amounts)

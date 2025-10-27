@@ -46,3 +46,6 @@ next-env.d.ts
 ## Panda
 styled-system
 styled-system-studiostyled-system/
+
+# biome
+biome-logs/

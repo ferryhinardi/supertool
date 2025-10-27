@@ -112,7 +112,7 @@ export const trackToolEvent = (
     return
   }
 
-  window.gtag!('event', eventName, {
+  window.gtag?.('event', eventName, {
     ...params,
     timestamp: Date.now(),
   })
@@ -129,7 +129,7 @@ export const trackEvent = ({ action, category, label, value }: GTagEvent): void 
     return
   }
 
-  window.gtag!('event', action, {
+  window.gtag?.('event', action, {
     event_category: category,
     event_label: label,
     value,
@@ -141,8 +141,9 @@ export const trackEvent = ({ action, category, label, value }: GTagEvent): void 
  */
 export const trackPageView = (url: string): void => {
   if (!isGAEnabled()) return
+  if (!GA_MEASUREMENT_ID) return
 
-  window.gtag!('config', GA_MEASUREMENT_ID!, {
+  window.gtag?.('config', GA_MEASUREMENT_ID, {
     page_path: url,
   })
 }
@@ -159,7 +160,7 @@ export const reportWebVitals = (metric: {
 }): void => {
   if (!isGAEnabled()) return
 
-  window.gtag!('event', metric.name, {
+  window.gtag?.('event', metric.name, {
     value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
     event_label: metric.id,
     non_interaction: true,

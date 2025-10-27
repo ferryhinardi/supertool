@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import UnitConverterPage from '../page'
 
@@ -317,7 +317,7 @@ describe('Unit Converter Page', () => {
       await waitFor(() => {
         const stored = localStorage.getItem('unitConverterFavorites')
         expect(stored).toBeTruthy()
-        const favorites = JSON.parse(stored!)
+        const favorites = JSON.parse(stored ?? '[]')
         expect(favorites).toHaveLength(1)
         expect(favorites[0].category).toBe('length')
       })

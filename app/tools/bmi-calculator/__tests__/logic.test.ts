@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 // BMI calculation functions (extracted for testing)
 function calculateBMI(weight: number, height: number, isMetric: boolean): number {
@@ -242,7 +242,7 @@ describe('Precision and Rounding', () => {
     const bmi = calculateBMI(70.5, 175.5, true)
     expect(bmi).toBeDefined()
     expect(typeof bmi).toBe('number')
-    expect(isFinite(bmi)).toBe(true)
+    expect(Number.isFinite(bmi)).toBe(true)
   })
 
   it('should handle decimal weight and height values', () => {
@@ -255,8 +255,8 @@ describe('Precision and Rounding', () => {
     const [minWeight, maxWeight] = getIdealWeightRange(175.5, true)
     expect(minWeight).toBeDefined()
     expect(maxWeight).toBeDefined()
-    expect(isFinite(minWeight)).toBe(true)
-    expect(isFinite(maxWeight)).toBe(true)
+    expect(Number.isFinite(minWeight)).toBe(true)
+    expect(Number.isFinite(maxWeight)).toBe(true)
   })
 })
 

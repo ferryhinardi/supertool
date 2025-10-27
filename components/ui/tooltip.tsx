@@ -1,9 +1,9 @@
 'use client'
 
-import * as React from 'react'
 import { Tooltip as ArkTooltip } from '@ark-ui/react'
-import { css } from '@/styled-system/css'
+import * as React from 'react'
 import { cx } from '@/lib/utils'
+import { css } from '@/styled-system/css'
 
 const TooltipProvider = ArkTooltip.Root
 const Tooltip = ArkTooltip.Root

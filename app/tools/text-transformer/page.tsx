@@ -1,30 +1,30 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
+import { motion } from 'framer-motion'
 import {
-  Type,
-  Copy,
-  RotateCcw,
-  Download,
-  Check,
+  AlignLeft,
+  ArrowUpDown,
+  CaseLower,
   CaseSensitive,
   CaseUpper,
-  CaseLower,
-  RemoveFormatting,
-  ArrowUpDown,
+  Check,
+  Copy,
+  Download,
   Eraser,
-  Search,
-  Replace,
-  Minus,
   Hash,
-  AlignLeft,
+  Minus,
+  RemoveFormatting,
+  Replace,
+  RotateCcw,
+  Search,
   Sparkles,
+  Type,
 } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -639,8 +639,11 @@ export default function TextTransformerPage() {
                   })}
                 >
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Find</label>
+                    <label htmlFor="find-text" className="text-sm font-medium text-gray-300">
+                      Find
+                    </label>
                     <Input
+                      id="find-text"
                       value={findText}
                       onChange={(e) => setFindText(e.target.value)}
                       placeholder="Search text or regex pattern"
@@ -648,8 +651,11 @@ export default function TextTransformerPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Replace with</label>
+                    <label htmlFor="replace-text" className="text-sm font-medium text-gray-300">
+                      Replace with
+                    </label>
                     <Input
+                      id="replace-text"
                       value={replaceText}
                       onChange={(e) => setReplaceText(e.target.value)}
                       placeholder="Replacement text"

@@ -1,7 +1,9 @@
 'use client'
 
+import { AlertCircle, Lightbulb, MessageSquare, Send } from 'lucide-react'
 import { useState } from 'react'
-import { MessageSquare, Lightbulb, AlertCircle, Send } from 'lucide-react'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -10,10 +12,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
-import { toast } from 'sonner'
+import { Textarea } from '@/components/ui/textarea'
 
 type FeedbackType = 'idea' | 'issue'
 
@@ -68,6 +68,7 @@ export function FeedbackDialog() {
     <Dialog open={open} onOpenChange={(details) => setOpen(details.open)}>
       <DialogTrigger asChild>
         <button
+          type="button"
           style={{
             display: 'inline-flex',
             alignItems: 'center',

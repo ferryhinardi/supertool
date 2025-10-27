@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 // JSON to CSV conversion logic
 function flattenObject(obj: Record<string, unknown>, prefix = ''): Record<string, unknown> {

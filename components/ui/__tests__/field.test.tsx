@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
 import '@testing-library/jest-dom/vitest'
-import { Field, FieldLabel, FieldHelperText, FieldErrorText, FieldInput } from '../field'
+import { Field, FieldErrorText, FieldHelperText, FieldInput, FieldLabel } from '../field'
 
 describe('Field Component', () => {
   it('renders field with label', () => {

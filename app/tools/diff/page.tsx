@@ -1,22 +1,22 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import dynamic from 'next/dynamic'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Textarea } from '@/components/ui/textarea'
-import { toast } from 'sonner'
 import {
-  GitCompare,
+  AlignJustify,
+  Code2,
   Copy,
   Download,
-  RotateCcw,
-  Code2,
   FileText,
+  GitCompare,
+  RotateCcw,
   SplitSquareHorizontal,
-  AlignJustify,
 } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import { useMemo, useState } from 'react'
+import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
 import { css } from '@/styled-system/css'
 
 // Dynamically import the diff viewer to avoid SSR issues

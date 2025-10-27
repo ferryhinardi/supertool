@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Calendar, Plus, Trash2, Download, Clock, TrendingUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
+import { Calendar, Clock, Download, Plus, Trash2, TrendingUp } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
-import { css } from '@/styled-system/css'
 import { trackEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
 
 interface Task {
   id: string
@@ -63,7 +63,7 @@ export default function DailyTaskSummary() {
     const newTask: Task = {
       id: Date.now().toString(),
       title: title.trim(),
-      duration: parseInt(duration),
+      duration: parseInt(duration, 10),
       category,
       completed: false,
       createdAt: selectedDate,
@@ -78,7 +78,7 @@ export default function DailyTaskSummary() {
       action: 'daily_task_summary_task_added',
       category: 'productivity',
       label: category,
-      value: parseInt(duration),
+      value: parseInt(duration, 10),
     })
   }
 

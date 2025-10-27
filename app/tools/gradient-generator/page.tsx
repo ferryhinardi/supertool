@@ -1,25 +1,25 @@
 'use client'
 
-import { useState, useRef } from 'react'
 import {
-  Wand2,
+  Check,
   Copy,
   Download,
+  Moon,
   Plus,
-  Trash2,
   RotateCcw,
   Shuffle,
-  Check,
   Sun,
-  Moon,
+  Trash2,
+  Wand2,
 } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
-import { css } from '@/styled-system/css'
-import { toast } from 'sonner'
+import { Input } from '@/components/ui/input'
 import { trackToolEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
 
 interface ColorStop {
   id: string
@@ -515,7 +515,7 @@ export default function GradientGeneratorPage() {
                   min="0"
                   max="360"
                   value={angle}
-                  onChange={(e) => setAngle(parseInt(e.target.value))}
+                  onChange={(e) => setAngle(parseInt(e.target.value, 10))}
                   className={css({ w: 'full' })}
                 />
               </Field>
@@ -540,8 +540,9 @@ export default function GradientGeneratorPage() {
 
               <div className={css({ spaceY: '3' })}>
                 {colorStops.map((stop) => (
-                  <div
+                  <button
                     key={stop.id}
+                    type="button"
                     className={css({
                       display: 'flex',
                       alignItems: 'center',
@@ -551,6 +552,8 @@ export default function GradientGeneratorPage() {
                       bg: selectedStopId === stop.id ? 'purple.500/10' : 'gray.800/50',
                       border: '1px solid',
                       borderColor: selectedStopId === stop.id ? 'purple.500/30' : 'gray.700',
+                      cursor: 'pointer',
+                      width: 'full',
                     })}
                     onClick={() => setSelectedStopId(stop.id)}
                   >
@@ -574,7 +577,9 @@ export default function GradientGeneratorPage() {
                           max="100"
                           value={stop.position}
                           onChange={(e) =>
-                            handleUpdateColorStop(stop.id, { position: parseInt(e.target.value) })
+                            handleUpdateColorStop(stop.id, {
+                              position: parseInt(e.target.value, 10),
+                            })
                           }
                           className={css({ flex: '1' })}
                         />
@@ -602,7 +607,7 @@ export default function GradientGeneratorPage() {
                         <Trash2 className={css({ h: '4', w: '4' })} />
                       </Button>
                     )}
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -624,7 +629,7 @@ export default function GradientGeneratorPage() {
                     overflow: 'auto',
                   })}
                 >
-                  background: {gradientCSS};
+                  background: {gradientCSS}
                 </pre>
               </div>
             </Field>
@@ -674,6 +679,7 @@ export default function GradientGeneratorPage() {
                         {categoryPresets.map((preset) => (
                           <button
                             key={preset.name}
+                            type="button"
                             onClick={() => handleApplyPreset(preset)}
                             className={css({
                               h: '20',

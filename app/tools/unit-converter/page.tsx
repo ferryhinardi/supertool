@@ -1,31 +1,31 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { motion } from 'framer-motion'
+import {
+  ArrowLeftRight,
+  ArrowRight,
+  Info,
+  Repeat,
+  Sparkles,
+  Star,
+  Trash2,
+  TrendingUp,
+} from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { toast } from 'sonner'
-import {
-  Repeat,
-  ArrowRight,
-  ArrowLeftRight,
-  Star,
-  Trash2,
-  Info,
-  TrendingUp,
-  Sparkles,
-} from 'lucide-react'
-import { motion } from 'framer-motion'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import {
-  type UnitCategory,
-  unitDefinitions,
   convertUnit,
   getAllCategories,
-  getUnitsForCategory,
   getUnitInfo,
+  getUnitsForCategory,
+  type UnitCategory,
+  unitDefinitions,
 } from './utils'
 
 interface Favorite {
@@ -71,7 +71,7 @@ export default function UnitConverterPage() {
 
   // Compute conversion result (derived value, not state)
   const toValue = useMemo(() => {
-    if (!fromValue || fromValue === '' || isNaN(Number(fromValue))) {
+    if (!fromValue || fromValue === '' || Number.isNaN(Number(fromValue))) {
       return ''
     }
 
@@ -330,13 +330,17 @@ export default function UnitConverterPage() {
           <CardContent className={css({ spaceY: '6' })}>
             {/* From Unit */}
             <div className={css({ spaceY: '3' })}>
-              <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <label
+                htmlFor="from-value"
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+              >
                 From
               </label>
               <div className={css({ display: 'grid', gridTemplateColumns: '1fr auto', gap: '3' })}>
                 <Input
-                  type="number"
-                  value={fromValue}
+                  id="from-value"
+                  type="text"
+                  inputMode="decimal"
                   onChange={(e) => {
                     setFromValue(e.target.value)
                     trackToolEvent('unit_converter_convert', {
@@ -424,13 +428,16 @@ export default function UnitConverterPage() {
 
             {/* To Unit */}
             <div className={css({ spaceY: '3' })}>
-              <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <label
+                htmlFor="to-value"
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+              >
                 To
               </label>
               <div className={css({ display: 'grid', gridTemplateColumns: '1fr auto', gap: '3' })}>
                 <Input
+                  id="to-value"
                   type="text"
-                  value={toValue}
                   readOnly
                   placeholder="Result"
                   className={css({
@@ -561,7 +568,8 @@ export default function UnitConverterPage() {
                   const toInfo = catDef.units[favorite.toUnit]
 
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={favorite.id}
                       className={css({
                         display: 'flex',
@@ -574,6 +582,8 @@ export default function UnitConverterPage() {
                         p: '4',
                         transition: 'all 0.2s',
                         cursor: 'pointer',
+                        w: 'full',
+                        textAlign: 'left',
                         _hover: { bg: 'gray.800', borderColor: 'blue.500/50' },
                       })}
                       onClick={() => handleLoadFavorite(favorite)}
@@ -612,7 +622,7 @@ export default function UnitConverterPage() {
                       >
                         <Trash2 className={css({ h: '4', w: '4' })} />
                       </Button>
-                    </div>
+                    </button>
                   )
                 })}
               </div>

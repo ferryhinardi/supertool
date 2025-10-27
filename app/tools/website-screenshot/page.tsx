@@ -1,24 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { motion } from 'framer-motion'
+import {
+  AlertCircle,
+  CheckCircle,
+  Download,
+  Eye,
+  Image as ImageIcon,
+  Loader2,
+  Maximize,
+  Monitor,
+  Smartphone,
+  Tablet,
+} from 'lucide-react'
 import Image from 'next/image'
+import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import {
-  Smartphone,
-  Monitor,
-  Tablet,
-  Download,
-  Image as ImageIcon,
-  Loader2,
-  CheckCircle,
-  AlertCircle,
-  Maximize,
-  Eye,
-} from 'lucide-react'
-import { motion } from 'framer-motion'
-import { toast } from 'sonner'
 import { css } from '@/styled-system/css'
 
 type DeviceSize = 'mobile' | 'tablet' | 'desktop'
@@ -252,9 +252,9 @@ export default function WebsiteScreenshotPage() {
 
             {/* Device Size Selection */}
             <div className={css({ spaceY: '3' })}>
-              <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
                 Device Size
-              </label>
+              </div>
               <div
                 className={css({
                   display: 'grid',
@@ -320,9 +320,9 @@ export default function WebsiteScreenshotPage() {
 
             {/* Capture Mode Selection */}
             <div className={css({ spaceY: '3' })}>
-              <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
                 Capture Mode
-              </label>
+              </div>
               <div
                 className={css({
                   display: 'grid',
@@ -546,9 +546,9 @@ export default function WebsiteScreenshotPage() {
             title: 'Instant Download',
             desc: 'Download as PNG immediately',
           },
-        ].map((feature, i) => (
+        ].map((feature) => (
           <Card
-            key={i}
+            key={feature.title}
             className={css({
               border: '1px solid',
               borderColor: 'gray.800',

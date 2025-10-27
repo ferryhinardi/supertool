@@ -1,13 +1,13 @@
 'use client'
 
+import { motion } from 'framer-motion'
+import { Copy, Download, Image as ImageIcon, Lock, Unlock, Upload } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
-import { Lock, Unlock, Copy, Download, Upload, Image as ImageIcon } from 'lucide-react'
-import { motion } from 'framer-motion'
-import { toast } from 'sonner'
+import { Textarea } from '@/components/ui/textarea'
 import { css } from '@/styled-system/css'
 
 type Mode = 'encode' | 'decode'
@@ -289,7 +289,7 @@ export default function Base64Page() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imagePreview}
-                    alt="Decoded base64 image"
+                    alt="Decoded base64"
                     className="max-h-64 rounded-lg object-contain"
                   />
                 </div>
@@ -339,8 +339,8 @@ export default function Base64Page() {
           { icon: Upload, title: 'File Support', desc: 'Encode any file type' },
           { icon: ImageIcon, title: 'Image Preview', desc: 'Preview decoded images' },
           { icon: Download, title: 'Export', desc: 'Copy or download results' },
-        ].map((feature, i) => (
-          <Card key={i} className="border-gray-800 bg-gray-900/30">
+        ].map((feature) => (
+          <Card key={feature.title} className="border-gray-800 bg-gray-900/30">
             <CardContent>
               <div className={css({ p: '6' })}>
                 <feature.icon className="mb-3 h-8 w-8 text-indigo-400" />

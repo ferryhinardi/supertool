@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useMemo } from 'react'
+import { describe, expect, it } from 'vitest'
 
 // Test the JSON validation and stats logic
 describe('JSON Beautifier Logic', () => {

@@ -1,36 +1,36 @@
 'use client'
 
-import { useState, useCallback } from 'react'
 import {
-  Shield,
-  Lock,
-  Unlock,
+  AlertCircle,
   Copy,
   Download,
-  Upload,
-  Link as LinkIcon,
   Eye,
   EyeOff,
-  AlertCircle,
+  Link as LinkIcon,
+  Lock,
+  Shield,
+  Unlock,
+  Upload,
 } from 'lucide-react'
-import { css } from '@/styled-system/css'
+import { useCallback, useState } from 'react'
+import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Field, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
-import { DragDropZone } from '@/components/features/DragDropZone'
+import { Textarea } from '@/components/ui/textarea'
+import { css } from '@/styled-system/css'
 import {
-  encryptText,
-  decryptText,
-  encryptFile,
-  decryptFile,
   calculatePasswordStrength,
   createEncryptedLink,
-  parseEncryptedLink,
-  formatFileSize,
+  decryptFile,
+  decryptText,
   type EncryptionResult,
+  encryptFile,
+  encryptText,
+  formatFileSize,
+  parseEncryptedLink,
 } from './utils'
 
 type Mode = 'text' | 'file' | 'link'
@@ -410,8 +410,11 @@ export default function EncryptionToolPage() {
                     <Progress value={passwordStrength.score * 25} />
                     {passwordStrength.suggestions.length > 0 && (
                       <div className={css({ mt: 2 })}>
-                        {passwordStrength.suggestions.map((suggestion, i) => (
-                          <p key={i} className={css({ fontSize: 'xs', color: 'gray.600' })}>
+                        {passwordStrength.suggestions.map((suggestion) => (
+                          <p
+                            key={suggestion}
+                            className={css({ fontSize: 'xs', color: 'gray.600' })}
+                          >
                             • {suggestion}
                           </p>
                         ))}

@@ -1,4 +1,4 @@
-import { cx, cva } from '@/styled-system/css'
+import { cva, cx } from '@/styled-system/css'
 
 export { cx, cva }
-export type { SystemStyleObject, RecipeVariantProps } from '@/styled-system/types'
+export type { RecipeVariantProps, SystemStyleObject } from '@/styled-system/types'

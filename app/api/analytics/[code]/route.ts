@@ -1,7 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabaseClient'
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ code: string }> }) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ code: string }> }
+) {
   try {
     const { code } = await params
 

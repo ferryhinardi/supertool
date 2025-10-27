@@ -1,9 +1,9 @@
 'use client'
 
-import * as React from 'react'
 import { Progress as ArkProgress } from '@ark-ui/react'
-import { css } from '@/styled-system/css'
+import * as React from 'react'
 import { cx } from '@/lib/utils'
+import { css } from '@/styled-system/css'
 
 interface ProgressProps {
   value?: number

@@ -1,7 +1,7 @@
-import * as React from 'react'
 import { ark } from '@ark-ui/react'
-import { input } from '@/styled-system/recipes'
+import * as React from 'react'
 import { cx } from '@/lib/utils'
+import { input } from '@/styled-system/recipes'
 
 export interface InputProps extends React.ComponentProps<'input'> {
   asChild?: boolean

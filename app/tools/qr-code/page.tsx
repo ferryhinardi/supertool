@@ -1,14 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { Copy, Download, QrCode } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
+import { useState } from 'react'
 import { toast } from 'sonner'
-import { Download, Copy, QrCode } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
