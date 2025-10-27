@@ -45,6 +45,7 @@ import {
   Zap,
 } from 'lucide-react'
 import Link from 'next/link'
+import Script from 'next/script'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FeedbackDialog } from '@/components/features/FeedbackDialog'
 import { TreatMeDialog } from '@/components/features/TreatMeDialog'
@@ -53,6 +54,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput } from '@/components/ui/field'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { generateOrganizationSchema, generateWebApplicationSchema } from '@/lib/structured-data'
 import { css } from '@/styled-system/css'
 
 type ToolCategory =
@@ -1373,6 +1375,30 @@ export default function HomePage() {
           <FeedbackDialog />
         </motion.div>
       </div>
+
+      {/* Structured Data for SEO */}
+      <Script
+        id="structured-data-webapp"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe - JSON.stringify ensures proper escaping of structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            generateWebApplicationSchema(
+              process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.dev'
+            )
+          ),
+        }}
+      />
+      <Script
+        id="structured-data-org"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe - JSON.stringify ensures proper escaping of structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            generateOrganizationSchema(process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.dev')
+          ),
+        }}
+      />
     </div>
   )
 }

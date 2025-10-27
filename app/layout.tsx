@@ -1,5 +1,6 @@
 import './panda.css'
 import './globals.css'
+import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Toaster } from 'sonner'
@@ -8,9 +9,45 @@ import { css } from '@/styled-system/css/css.mjs'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = {
-  title: 'SuperTool - Modern Developer Toolkit',
-  description: 'Beautiful developer tools for JSON formatting, file uploads, and more',
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.dev'
+
+export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: 'SuperTool - Modern Developer Toolkit',
+    template: '%s | SuperTool',
+  },
+  description:
+    'Professional toolkit with 40+ tools for developers and productivity enthusiasts. JSON formatter, image optimizer, video converter, password generator, and more - all free and privacy-focused.',
+  keywords: [
+    'developer tools',
+    'json formatter',
+    'json beautifier',
+    'image optimizer',
+    'video converter',
+    'password generator',
+    'url shortener',
+    'qr code generator',
+    'text transformer',
+    'markdown editor',
+    'code diff viewer',
+    'base64 encoder',
+    'hash generator',
+    'encryption tool',
+    'productivity tools',
+    'web tools',
+    'online tools',
+    'free tools',
+    'developer utilities',
+  ],
+  authors: [{ name: 'Ferry Hinardi', url: 'https://github.com/ferryhinardi' }],
+  creator: 'Ferry Hinardi',
+  publisher: 'SuperTool',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -18,6 +55,46 @@ export const metadata = {
       { url: '/icon.png', type: 'image/png', sizes: '32x32' },
     ],
   },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: baseUrl,
+    title: 'SuperTool - Modern Developer Toolkit',
+    description:
+      'Professional toolkit with 40+ tools for developers and productivity. JSON formatter, image optimizer, video converter, and more - all free and privacy-focused.',
+    siteName: 'SuperTool',
+    images: [
+      {
+        url: `${baseUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'SuperTool - Modern Developer Toolkit',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SuperTool - Modern Developer Toolkit',
+    description:
+      'Professional toolkit with 40+ tools for developers and productivity. All free and privacy-focused.',
+    creator: '@ferryhinardi',
+    images: [`${baseUrl}/og-image.png`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: baseUrl,
+  },
+  category: 'technology',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

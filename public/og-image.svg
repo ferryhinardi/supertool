@@ -1,0 +1,44 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#030712;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="text-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="150" fill="#a855f7" opacity="0.1"/>
+  <circle cx="1100" cy="530" r="180" fill="#ec4899" opacity="0.1"/>
+  
+  <!-- Main Title -->
+  <text x="600" y="240" font-family="Arial, sans-serif" font-size="72" font-weight="bold" 
+        fill="url(#text-gradient)" text-anchor="middle">
+    SuperTool
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="320" font-family="Arial, sans-serif" font-size="36" 
+        fill="#e5e7eb" text-anchor="middle">
+    Modern Developer Toolkit
+  </text>
+  
+  <!-- Description -->
+  <text x="600" y="400" font-family="Arial, sans-serif" font-size="28" 
+        fill="#9ca3af" text-anchor="middle">
+    40+ Professional Tools for Developers
+  </text>
+  
+  <!-- Features -->
+  <text x="600" y="480" font-family="Arial, sans-serif" font-size="24" 
+        fill="#6b7280" text-anchor="middle">
+    Free • Fast • Privacy-Focused
+  </text>
+</svg>
