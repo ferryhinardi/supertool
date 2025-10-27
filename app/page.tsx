@@ -398,7 +398,6 @@ const tools: Tool[] = [
     gradient: 'from-purple-500 via-pink-500 to-orange-500',
     features: ['Multiple Types', 'Color Picker', 'CSS Export', 'Presets'],
     category: 'media',
-    comingSoon: true,
   },
   {
     title: 'Stopwatch & Timer',

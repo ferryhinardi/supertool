@@ -22,6 +22,7 @@ import {
   Calendar,
   Activity,
   Shield,
+  Wand2,
 } from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { cva } from '@/styled-system/css'
@@ -36,6 +37,7 @@ const navigation = [
   { name: 'Encryption Tool', href: '/tools/encryption-tool', icon: Shield },
   { name: 'Hash Generator', href: '/tools/hash-generator', icon: Hash },
   { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
+  { name: 'Gradient Generator', href: '/tools/gradient-generator', icon: Wand2 },
   { name: 'PDF Tools', href: '/tools/pdf-tools', icon: FileCog },
   { name: 'Daily Task Summary', href: '/tools/daily-task-summary', icon: Calendar },
   { name: 'BMI Calculator', href: '/tools/bmi-calculator', icon: Activity },

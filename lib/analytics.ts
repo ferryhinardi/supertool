@@ -60,6 +60,14 @@ type ToolEvent =
   | 'search_query'
   | 'category_filter'
   | 'view_mode_toggle'
+  | 'gradient_generator_view'
+  | 'gradient_generator_add_color_stop'
+  | 'gradient_generator_remove_color_stop'
+  | 'gradient_generator_apply_preset'
+  | 'gradient_generator_copy_css'
+  | 'gradient_generator_download_png'
+  | 'gradient_generator_randomize'
+  | 'gradient_generator_reverse'
 
 // Type-safe gtag wrapper
 declare global {
