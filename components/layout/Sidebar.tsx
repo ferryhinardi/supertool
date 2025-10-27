@@ -21,6 +21,7 @@ import {
   FileCog,
   Calendar,
   Activity,
+  Shield,
 } from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { cva } from '@/styled-system/css'
@@ -32,6 +33,7 @@ const navigation = [
   { name: 'Split Bill', href: '/tools/split-bill', icon: Users },
   { name: 'QR Code', href: '/tools/qr-code', icon: QrCode },
   { name: 'Password Generator', href: '/tools/password-generator', icon: Key },
+  { name: 'Encryption Tool', href: '/tools/encryption-tool', icon: Shield },
   { name: 'Hash Generator', href: '/tools/hash-generator', icon: Hash },
   { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
   { name: 'PDF Tools', href: '/tools/pdf-tools', icon: FileCog },

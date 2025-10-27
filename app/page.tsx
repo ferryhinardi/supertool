@@ -431,7 +431,7 @@ const tools: Tool[] = [
     gradient: 'from-indigo-500 to-purple-500',
     features: ['AES-256', 'Password Protected', 'Secure Sharing', 'No Server Storage'],
     category: 'security',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'IP Address Lookup',
