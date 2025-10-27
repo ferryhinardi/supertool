@@ -30,9 +30,9 @@ The design system is dark-themed with purple/pink/blue gradients (see `app/globa
 ### Testing (Vitest + Browser Mode)
 
 ```bash
-pnpm test              # Watch mode
-pnpm test:ui           # Visual UI
-pnpm test:browser      # Playwright-powered browser tests
+CI=true pnpm test              # Watch mode
+CI=true pnpm test:ui           # Visual UI
+CI=true pnpm test:browser      # Playwright-powered browser tests
 ```
 
 **First Time Setup**: Run `pnpm exec playwright install chromium` to install browser dependencies.
@@ -339,7 +339,7 @@ Every user action must call `trackToolEvent()` from `@/lib/analytics`. Never tra
 10. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
     - `pnpm lint` - ESLint validation
     - `pnpm exec tsc --noEmit` - Type checking
-    - `pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
+    - `CI=true pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
     - `pnpm build` - Production build verification
 
 ### Tool Categories System

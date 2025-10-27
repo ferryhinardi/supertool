@@ -311,7 +311,6 @@ const tools: Tool[] = [
     features: ['Custom Intervals', 'Task Lists', 'Statistics', 'Sound Alerts'],
     category: 'productivity',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Percentage Calculator',
