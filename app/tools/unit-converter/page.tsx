@@ -59,8 +59,12 @@ export default function UnitConverterPage() {
 
   // Save favorites to localStorage (client-side only)
   useEffect(() => {
-    if (typeof window !== 'undefined' && favorites.length > 0) {
-      localStorage.setItem('unitConverterFavorites', JSON.stringify(favorites))
+    if (typeof window !== 'undefined') {
+      if (favorites.length > 0) {
+        localStorage.setItem('unitConverterFavorites', JSON.stringify(favorites))
+      } else {
+        localStorage.removeItem('unitConverterFavorites')
+      }
     }
   }, [favorites])
 
@@ -341,6 +345,7 @@ export default function UnitConverterPage() {
                   id="from-value"
                   type="text"
                   inputMode="decimal"
+                  value={fromValue}
                   onChange={(e) => {
                     setFromValue(e.target.value)
                     trackToolEvent('unit_converter_convert', {
@@ -439,6 +444,7 @@ export default function UnitConverterPage() {
                   id="to-value"
                   type="text"
                   readOnly
+                  value={toValue}
                   placeholder="Result"
                   className={css({
                     h: '14',
@@ -568,8 +574,7 @@ export default function UnitConverterPage() {
                   const toInfo = catDef.units[favorite.toUnit]
 
                   return (
-                    <button
-                      type="button"
+                    <div
                       key={favorite.id}
                       className={css({
                         display: 'flex',
@@ -581,14 +586,25 @@ export default function UnitConverterPage() {
                         bg: 'gray.800/50',
                         p: '4',
                         transition: 'all 0.2s',
-                        cursor: 'pointer',
                         w: 'full',
-                        textAlign: 'left',
                         _hover: { bg: 'gray.800', borderColor: 'blue.500/50' },
                       })}
-                      onClick={() => handleLoadFavorite(favorite)}
                     >
-                      <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                      <button
+                        type="button"
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '3',
+                          flex: '1',
+                          bg: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          p: '0',
+                        })}
+                        onClick={() => handleLoadFavorite(favorite)}
+                      >
                         <Badge
                           className={css({
                             bg: 'blue.500/20',
@@ -606,7 +622,7 @@ export default function UnitConverterPage() {
                         <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
                           {toInfo?.name} ({toInfo?.symbol})
                         </span>
-                      </div>
+                      </button>
                       <Button
                         onClick={(e) => {
                           e.stopPropagation()
@@ -622,7 +638,7 @@ export default function UnitConverterPage() {
                       >
                         <Trash2 className={css({ h: '4', w: '4' })} />
                       </Button>
-                    </button>
+                    </div>
                   )
                 })}
               </div>

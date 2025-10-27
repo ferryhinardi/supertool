@@ -32,9 +32,9 @@ describe('Unit Converter Page', () => {
 
     it('renders default conversion inputs', () => {
       render(<UnitConverterPage />)
-      const inputs = screen.getAllByRole('spinbutton')
-      expect(inputs).toHaveLength(1) // Only the input field, result is readonly text
-      expect(inputs[0]).toHaveValue(1)
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
+      expect(input).toBeInTheDocument()
+      expect(input).toHaveValue('1')
     })
 
     it('renders swap button', () => {
@@ -89,7 +89,7 @@ describe('Unit Converter Page', () => {
     it('performs conversion when input value changes', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
       fireEvent.change(input, { target: { value: '10' } })
 
       await waitFor(() => {
@@ -102,7 +102,7 @@ describe('Unit Converter Page', () => {
     it('converts meters to feet correctly', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
       fireEvent.change(input, { target: { value: '1' } })
 
       await waitFor(() => {
@@ -115,7 +115,7 @@ describe('Unit Converter Page', () => {
     it('handles empty input gracefully', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
       fireEvent.change(input, { target: { value: '' } })
 
       await waitFor(() => {
@@ -127,7 +127,7 @@ describe('Unit Converter Page', () => {
     it('handles zero input correctly', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
       fireEvent.change(input, { target: { value: '0' } })
 
       await waitFor(() => {
@@ -139,7 +139,7 @@ describe('Unit Converter Page', () => {
     it('updates conversion when from unit changes', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
       fireEvent.change(input, { target: { value: '1000' } })
 
       const fromSelect = screen.getAllByRole('combobox')[0] as HTMLSelectElement
@@ -155,7 +155,7 @@ describe('Unit Converter Page', () => {
     it('updates conversion when to unit changes', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
       fireEvent.change(input, { target: { value: '1' } })
 
       const toSelect = screen.getAllByRole('combobox')[1] as HTMLSelectElement
@@ -173,7 +173,7 @@ describe('Unit Converter Page', () => {
     it('swaps units when swap button is clicked', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
       fireEvent.change(input, { target: { value: '10' } })
 
       await waitFor(() => {
@@ -187,7 +187,7 @@ describe('Unit Converter Page', () => {
       fireEvent.click(swapButton)
 
       await waitFor(() => {
-        const inputAfterSwap = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+        const inputAfterSwap = screen.getByPlaceholderText('Enter value') as HTMLInputElement
         expect(inputAfterSwap.value).toBe(resultBeforeSwap)
       })
     })
@@ -333,7 +333,7 @@ describe('Unit Converter Page', () => {
       fireEvent.click(tempButton)
 
       await waitFor(() => {
-        const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+        const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
         fireEvent.change(input, { target: { value: '0' } })
       })
 
@@ -356,7 +356,7 @@ describe('Unit Converter Page', () => {
         fireEvent.change(selects[1], { target: { value: 'celsius' } })
       })
 
-      const input = screen.getAllByRole('spinbutton')[0] as HTMLInputElement
+      const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
       fireEvent.change(input, { target: { value: '32' } })
 
       await waitFor(() => {
@@ -379,7 +379,7 @@ describe('Unit Converter Page', () => {
     it('shows conversion formula when result is available', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0]
+      const input = screen.getByPlaceholderText('Enter value')
       fireEvent.change(input, { target: { value: '1' } })
 
       await waitFor(() => {
@@ -391,7 +391,7 @@ describe('Unit Converter Page', () => {
     it('hides formula when input is empty', async () => {
       render(<UnitConverterPage />)
 
-      const input = screen.getAllByRole('spinbutton')[0]
+      const input = screen.getByPlaceholderText('Enter value')
       fireEvent.change(input, { target: { value: '' } })
 
       await waitFor(() => {
