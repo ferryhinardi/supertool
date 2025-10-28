@@ -36,14 +36,23 @@ const navigation = [
   { name: 'Encryption Tool', href: '/tools/encryption-tool', icon: Shield },
   { name: 'Hash Generator', href: '/tools/hash-generator', icon: Hash },
   { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
-  { name: 'Gradient Generator', href: '/tools/gradient-generator', icon: Wand2 },
+  {
+    name: 'Gradient Generator',
+    href: '/tools/gradient-generator',
+    icon: Wand2,
+  },
   { name: 'PDF Tools', href: '/tools/pdf-tools', icon: FileCog },
-  { name: 'Daily Task Summary', href: '/tools/daily-task-summary', icon: Calendar },
+  {
+    name: 'Daily Task Summary',
+    href: '/tools/daily-task-summary',
+    icon: Calendar,
+  },
   { name: 'BMI Calculator', href: '/tools/bmi-calculator', icon: Activity },
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
 ]
+const showAccessToGithub = false
 
 // Navigation link variants using cva
 const navLinkStyles = cva({
@@ -375,50 +384,59 @@ export function Sidebar() {
               pt: '6',
             })}
           >
-            <a
-              href="https://github.com/ferryhinardi/supertool"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '3',
-                rounded: 'lg',
-                px: '3',
-                py: '2',
-                fontSize: 'sm',
-                color: 'gray.400',
-                textDecoration: 'none !important',
-                transition: 'all 0.3s',
-                _hover: {
-                  color: 'white',
-                },
-              })}
-              style={{
-                background: 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background =
-                  'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-              }}
-            >
-              <Github
+            {showAccessToGithub && (
+              <a
+                href="https://github.com/ferryhinardi/supertool"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={css({
-                  h: '5',
-                  w: '5',
-                  transition: 'transform 0.3s',
-                  _groupHover: { transform: 'scale(1.1)' },
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3',
+                  rounded: 'lg',
+                  px: '3',
+                  py: '2',
+                  fontSize: 'sm',
+                  color: 'gray.400',
+                  textDecoration: 'none !important',
+                  transition: 'all 0.3s',
+                  _hover: {
+                    color: 'white',
+                  },
                 })}
-              />
-              <span className={css({ fontWeight: 'medium' })}>View on GitHub</span>
-            </a>
+                style={{
+                  background: 'transparent',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background =
+                    'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent'
+                }}
+              >
+                <Github
+                  className={css({
+                    h: '5',
+                    w: '5',
+                    transition: 'transform 0.3s',
+                    _groupHover: { transform: 'scale(1.1)' },
+                  })}
+                />
+                <span className={css({ fontWeight: 'medium' })}>View on GitHub</span>
+              </a>
+            )}
 
             <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
               Built with{' '}
-              <span className={css({ animation: 'pulse 2s infinite', color: 'red.500' })}>❤️</span>{' '}
+              <span
+                className={css({
+                  animation: 'pulse 2s infinite',
+                  color: 'red.500',
+                })}
+              >
+                ❤️
+              </span>{' '}
               by{' '}
               <a
                 href="https://github.com/ferryhinardi"
