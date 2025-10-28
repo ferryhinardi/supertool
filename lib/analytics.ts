@@ -99,6 +99,13 @@ type ToolEvent =
   | 'tally_counter_add'
   | 'tally_counter_remove'
   | 'tally_counter_set_step'
+  | 'api_tester_open'
+  | 'api_tester_send_request'
+  | 'api_tester_save_preset'
+  | 'api_tester_load_preset'
+  | 'api_tester_delete_preset'
+  | 'api_tester_copy_response'
+  | 'api_tester_method_change'
 
 // Type-safe gtag wrapper
 declare global {

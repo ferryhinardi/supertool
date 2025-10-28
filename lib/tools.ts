@@ -2,9 +2,12 @@ import {
   Activity,
   Cake,
   Calendar,
+  Camera,
   Clock,
   Code,
+  Diff,
   DollarSign,
+  Eye,
   FileDown,
   FileJson,
   FileSpreadsheet,
@@ -14,6 +17,7 @@ import {
   Hash,
   Image,
   Key,
+  Layers,
   Lock,
   Network,
   Palette,
@@ -42,6 +46,7 @@ export type ToolCategory =
   | 'productivity'
   | 'security'
   | 'finance'
+  | 'design'
 
 export interface Tool {
   title: string
@@ -281,17 +286,6 @@ export const tools: Tool[] = [
     comingSoon: true,
   },
   {
-    title: 'Color Picker & Palette Generator',
-    description:
-      'Advanced color tool for designers and developers. Pick colors, generate harmonious palettes, create gradients, and convert between HEX, RGB, HSL, and HSV formats instantly.',
-    icon: Palette,
-    href: '/tools/color-picker',
-    gradient: 'from-pink-500 to-rose-500',
-    features: ['HEX/RGB/HSL', 'Palettes', 'Gradients', 'Accessibility'],
-    category: 'media',
-    comingSoon: true,
-  },
-  {
     title: 'Invoice Generator',
     description:
       'Create professional invoices with customizable templates. Add line items, taxes, discounts, payment terms, and company branding. Export as PDF or print directly.',
@@ -332,16 +326,6 @@ export const tools: Tool[] = [
     gradient: 'from-green-500 to-emerald-500',
     features: ['BMI Chart', 'Health Tips', 'Imperial/Metric', 'Ideal Weight Range'],
     category: 'productivity',
-  },
-  {
-    title: 'Gradient Generator',
-    description:
-      'Create beautiful CSS gradients visually with an intuitive interface. Support for linear, radial, and conic gradients. Export as CSS, copy code, or save presets.',
-    icon: Wand2,
-    href: '/tools/gradient-generator',
-    gradient: 'from-purple-500 via-pink-500 to-orange-500',
-    features: ['Multiple Types', 'Color Picker', 'CSS Export', 'Presets'],
-    category: 'media',
   },
   {
     title: 'Stopwatch & Timer',
@@ -430,7 +414,6 @@ export const tools: Tool[] = [
     features: ['All HTTP Methods', 'Custom Headers', 'Save Presets', 'Share URLs'],
     category: 'development',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'JWT Decoder & Inspector',
@@ -575,6 +558,84 @@ export const tools: Tool[] = [
       'Downloadable Templates',
     ],
     category: 'development',
+    comingSoon: true,
+  },
+
+  // Design & Visual Tools
+  {
+    title: 'Gradient Generator',
+    description:
+      'Create beautiful CSS gradients visually with an intuitive interface. Support for linear, radial, and conic gradients. Export as CSS, copy code, or save presets.',
+    icon: Wand2,
+    href: '/tools/gradient-generator',
+    gradient: 'from-purple-500 via-pink-500 to-orange-500',
+    features: ['Multiple Types', 'Color Picker', 'CSS Export', 'Presets'],
+    category: 'design',
+  },
+  {
+    title: 'Color Picker & Palette Generator',
+    description:
+      'Advanced color tool for designers and developers. Pick colors, generate harmonious palettes, create gradients, and convert between HEX, RGB, HSL, and HSV formats instantly.',
+    icon: Palette,
+    href: '/tools/color-picker',
+    gradient: 'from-pink-500 to-rose-500',
+    features: ['HEX/RGB/HSL', 'Palettes', 'Gradients', 'Accessibility'],
+    category: 'design',
+    comingSoon: true,
+  },
+  {
+    title: 'Favicon Generator',
+    description:
+      'Convert logos, images, or emojis into favicons for websites. Generate all required sizes (16x16, 32x32, 180x180) and formats (ICO, PNG, SVG) with preview and instant download.',
+    icon: Smartphone,
+    href: '/tools/favicon-generator',
+    gradient: 'from-violet-500 to-purple-500',
+    features: ['Multiple Sizes', 'ICO/PNG/SVG', 'Emoji Support', 'Preview & Download'],
+    category: 'design',
+    comingSoon: true,
+  },
+  {
+    title: 'Screenshot Diff Tool',
+    description:
+      'Compare UI screenshots pixel-by-pixel to detect visual changes. Perfect for QA testing, design reviews, and tracking UI regressions. Highlights differences with customizable sensitivity.',
+    icon: Diff,
+    href: '/tools/screenshot-diff',
+    gradient: 'from-orange-500 to-red-500',
+    features: ['Pixel Comparison', 'Diff Highlight', 'Sensitivity Control', 'Side-by-Side View'],
+    category: 'design',
+    comingSoon: true,
+  },
+  {
+    title: 'SVG Optimizer & Editor',
+    description:
+      'Minify and optimize SVG files with live preview. Remove unnecessary metadata, compress paths, and reduce file size by up to 70%. Edit colors, viewBox, and attributes visually.',
+    icon: Layers,
+    href: '/tools/svg-optimizer',
+    gradient: 'from-green-500 to-emerald-500',
+    features: ['Minify SVG', 'Live Preview', 'Color Editor', 'Size Reduction'],
+    category: 'design',
+    comingSoon: true,
+  },
+  {
+    title: 'Image Metadata Viewer',
+    description:
+      'Extract and view EXIF, GPS, camera settings, and technical metadata from photos. See location, date taken, camera model, exposure settings, and more. Perfect for photographers.',
+    icon: Camera,
+    href: '/tools/image-metadata',
+    gradient: 'from-blue-500 to-cyan-500',
+    features: ['EXIF Data', 'GPS Location', 'Camera Settings', 'Date & Time'],
+    category: 'design',
+    comingSoon: true,
+  },
+  {
+    title: 'Color Contrast Checker',
+    description:
+      'WCAG 2.1 compliant color contrast analyzer for accessibility. Test foreground and background color combinations, get AA/AAA ratings, and ensure your designs are readable for everyone.',
+    icon: Eye,
+    href: '/tools/color-contrast',
+    gradient: 'from-pink-500 to-rose-500',
+    features: ['WCAG 2.1', 'AA/AAA Rating', 'Live Preview', 'Accessibility Score'],
+    category: 'design',
     comingSoon: true,
   },
 ]

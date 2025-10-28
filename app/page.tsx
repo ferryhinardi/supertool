@@ -4,7 +4,10 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
   Calculator,
+  ChevronDown,
+  ChevronUp,
   Clock,
+  Eye,
   FileJson,
   Image,
   LayoutGrid,
@@ -74,22 +77,73 @@ const categories: {
   value: ToolCategory
   label: string
   icon: React.ElementType
+  description: string
 }[] = [
-  { value: 'all', label: 'All Tools', icon: LayoutGrid },
-  { value: 'data', label: 'Data', icon: FileJson },
-  { value: 'development', label: 'Development', icon: Terminal },
-  { value: 'media', label: 'Media', icon: Image },
-  { value: 'productivity', label: 'Productivity', icon: Zap },
-  { value: 'security', label: 'Security', icon: Lock },
-  { value: 'finance', label: 'Finance', icon: Calculator },
+  {
+    value: 'data',
+    label: 'Data Processing',
+    icon: FileJson,
+    description: 'Transform, convert, and format your data',
+  },
+  {
+    value: 'development',
+    label: 'Developer Tools',
+    icon: Terminal,
+    description: 'Essential utilities for developers',
+  },
+  {
+    value: 'media',
+    label: 'Media Tools',
+    icon: Image,
+    description: 'Optimize, convert, and enhance your media files',
+  },
+  {
+    value: 'productivity',
+    label: 'Productivity',
+    icon: Zap,
+    description: 'Boost your daily workflow and efficiency',
+  },
+  {
+    value: 'security',
+    label: 'Security & Encryption',
+    icon: Lock,
+    description: 'Secure your data and generate credentials',
+  },
+  {
+    value: 'finance',
+    label: 'Finance & Calculators',
+    icon: Calculator,
+    description: 'Calculate, convert, and manage your finances',
+  },
+  {
+    value: 'design',
+    label: 'Design & Visual Tools',
+    icon: Eye,
+    description: 'Create, optimize, and analyze visual assets',
+  },
 ]
 
 export default function HomePage() {
   const shouldReduceMotion = useReducedMotion()
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<ToolCategory>('all')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [expandedCategories, setExpandedCategories] = useState<Set<ToolCategory>>(
+    new Set(categories.map((c) => c.value))
+  )
   const searchInputRef = useRef<HTMLInputElement>(null)
+
+  // Toggle category expansion
+  const toggleCategory = (category: ToolCategory) => {
+    setExpandedCategories((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(category)) {
+        newSet.delete(category)
+      } else {
+        newSet.add(category)
+      }
+      return newSet
+    })
+  }
 
   // Keyboard shortcut for search (Ctrl+K or Cmd+K)
   useEffect(() => {
@@ -110,16 +164,23 @@ export default function HomePage() {
   }, [searchQuery])
 
   // Filter & Sort tools based on search and category and sort by popular and new, then alphabetically
-  const filteredTools = useMemo(() => {
-    let filtered = tools
-
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter((tool) => tool.category === selectedCategory)
+  const filteredToolsByCategory = useMemo(() => {
+    const result: Record<ToolCategory, Tool[]> = {
+      data: [],
+      development: [],
+      media: [],
+      productivity: [],
+      security: [],
+      finance: [],
+      design: [],
+      all: [],
     }
+
+    let allTools = tools
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(
+      allTools = allTools.filter(
         (tool) =>
           tool.title.toLowerCase().includes(query) ||
           tool.description.toLowerCase().includes(query) ||
@@ -127,31 +188,41 @@ export default function HomePage() {
       )
     }
 
-    // Sort by priority:
-    // 1. popular (not coming soon)
-    // 2. new (not coming soon)
-    // 3. regular tools (not coming soon)
-    // 4. coming soon
-    // 5. alphabetically within each group
-    filtered = filtered.sort((a, b) => {
-      // Coming soon tools always go to the end
-      if (a.comingSoon && !b.comingSoon) return 1
-      if (!a.comingSoon && b.comingSoon) return -1
+    // Group by category
+    for (const tool of allTools) {
+      if (tool.category !== 'all') {
+        result[tool.category].push(tool)
+      }
+    }
 
-      // Among non-coming-soon tools, sort by popular
-      if (a.popular && !b.popular) return -1
-      if (!a.popular && b.popular) return 1
+    // Sort each category
+    const sortTools = (toolsArray: Tool[]) =>
+      toolsArray.sort((a, b) => {
+        // Coming soon tools always go to the end
+        if (a.comingSoon && !b.comingSoon) return 1
+        if (!a.comingSoon && b.comingSoon) return -1
 
-      // Then by new
-      if (a.new && !b.new) return -1
-      if (!a.new && b.new) return 1
+        // Among non-coming-soon tools, sort by popular
+        if (a.popular && !b.popular) return -1
+        if (!a.popular && b.popular) return 1
 
-      // Finally alphabetically
-      return a.title.localeCompare(b.title)
-    })
+        // Then by new
+        if (a.new && !b.new) return -1
+        if (!a.new && b.new) return 1
 
-    return filtered
-  }, [searchQuery, selectedCategory])
+        // Finally alphabetically
+        return a.title.localeCompare(b.title)
+      })
+
+    // Apply sorting to each category
+    for (const category of Object.keys(result) as ToolCategory[]) {
+      if (category !== 'all') {
+        result[category] = sortTools(result[category])
+      }
+    }
+
+    return result
+  }, [searchQuery])
 
   const stats = useMemo(() => {
     const total = tools.length
@@ -464,100 +535,17 @@ export default function HomePage() {
           </Field>
         </div>
 
-        {/* Category Pills and View Toggle */}
+        {/* View Mode Toggle - Right aligned */}
         <div
           className={css({
             mx: 'auto',
             w: 'full',
             maxW: { base: 'full', md: '100%' },
             display: 'flex',
-            flexWrap: 'wrap',
             alignItems: 'center',
-            justifyContent: 'center',
-            gap: '4',
+            justifyContent: 'flex-end',
           })}
         >
-          <div
-            className={css({
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '2',
-            })}
-          >
-            {categories.map((category) => {
-              const Icon = category.icon
-              const isActive = selectedCategory === category.value
-              const toolCount = tools.filter((t) =>
-                category.value === 'all' ? true : t.category === category.value
-              ).length
-
-              return (
-                <Tooltip key={category.value}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={isActive ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setSelectedCategory(category.value)}
-                      aria-label={`Filter by ${category.label}`}
-                      aria-pressed={isActive}
-                      className={css({
-                        h: '11',
-                        gap: '2',
-                        px: '4',
-                        fontSize: 'base',
-                        fontWeight: 'medium',
-                        transition: 'all 0.2s',
-                        ...(isActive
-                          ? {
-                              border: '1px solid rgba(168, 85, 247, 0.5)',
-                              bg: 'rgba(168, 85, 247, 0.2)',
-                              color: 'purple.200',
-                              _hover: { bg: 'rgba(168, 85, 247, 0.3)' },
-                            }
-                          : {
-                              border: '1px solid',
-                              borderColor: 'gray.700',
-                              bg: 'rgba(17, 24, 39, 0.5)',
-                              color: 'gray.300',
-                              _hover: {
-                                borderColor: 'rgba(168, 85, 247, 0.3)',
-                                bg: 'rgba(31, 41, 55, 0.5)',
-                                color: 'purple.300',
-                              },
-                            }),
-                      })}
-                    >
-                      <Icon className={css({ h: '4', w: '4' })} />
-                      {category.label}
-                      {category.value === 'all' && (
-                        <Badge
-                          variant="secondary"
-                          className={css({
-                            ml: '1',
-                            h: '5',
-                            rounded: 'full',
-                            bg: 'rgba(168, 85, 247, 0.3)',
-                            px: '2.5',
-                            fontSize: 'xs',
-                            fontWeight: 'bold',
-                            color: 'purple.200',
-                          })}
-                        >
-                          {stats.total}
-                        </Badge>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {toolCount} {toolCount === 1 ? 'tool' : 'tools'} in {category.label}
-                  </TooltipContent>
-                </Tooltip>
-              )
-            })}
-          </div>
-
           {/* View Mode Toggle */}
           <fieldset
             className={css({
@@ -617,8 +605,9 @@ export default function HomePage() {
             </Tooltip>
           </fieldset>
         </div>
+
         {/* Results count */}
-        {(searchQuery || selectedCategory !== 'all') && (
+        {searchQuery && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -654,33 +643,26 @@ export default function HomePage() {
                   color: 'purple.300',
                 })}
               >
-                {filteredTools.length} {filteredTools.length === 1 ? 'result' : 'results'}
-                {selectedCategory !== 'all' &&
-                  ` in ${categories.find((c) => c.value === selectedCategory)?.label}`}
+                {Object.values(filteredToolsByCategory).flat().length} results found
               </p>
             </div>
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('')
-                  setSelectedCategory('all')
-                }}
-                className={css({
-                  fontSize: 'sm',
-                  color: 'gray.500',
-                  transition: 'colors 0.2s',
-                  _hover: { color: 'purple.400' },
-                })}
-              >
-                Clear all
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className={css({
+                fontSize: 'sm',
+                color: 'gray.500',
+                transition: 'colors 0.2s',
+                _hover: { color: 'purple.400' },
+              })}
+            >
+              Clear search
+            </button>
           </motion.div>
         )}
       </motion.div>
 
-      {/* Tools Grid/List */}
+      {/* Tools by Category Sections */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -695,37 +677,167 @@ export default function HomePage() {
         }}
       >
         <AnimatePresence mode="wait">
-          {filteredTools.length > 0 ? (
+          {Object.values(filteredToolsByCategory).flat().length > 0 ? (
             <motion.div
-              key={`${viewMode}-${selectedCategory}-${searchQuery}`}
+              key={`${viewMode}-${searchQuery}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className={css({
-                display: viewMode === 'grid' ? 'grid' : 'flex',
-                flexDirection: viewMode === 'list' ? 'column' : undefined,
-                gridTemplateColumns:
-                  viewMode === 'grid'
-                    ? {
-                        base: 'repeat(1, 1fr)',
-                        sm: 'repeat(2, 1fr)',
-                        lg: 'repeat(3, 1fr)',
-                        xl: 'repeat(4, 1fr)',
-                      }
-                    : undefined,
-                gap: viewMode === 'grid' ? '6' : '4',
-              })}
+              className={css({ spaceY: { base: '12', md: '16' } })}
             >
-              {filteredTools.map((tool, index) => (
-                <ToolCard
-                  key={tool.title}
-                  tool={tool}
-                  index={index}
-                  viewMode={viewMode}
-                  shouldReduceMotion={shouldReduceMotion}
-                />
-              ))}
+              {categories.map((category) => {
+                const toolsInCategory = filteredToolsByCategory[category.value]
+                if (toolsInCategory.length === 0) return null
+
+                const Icon = category.icon
+                const isExpanded = expandedCategories.has(category.value)
+
+                return (
+                  <motion.section
+                    key={category.value}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    {/* Category Header */}
+                    <div
+                      className={css({
+                        mb: '6',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        pb: '4',
+                        borderBottom: '2px solid',
+                        borderColor: 'gray.800',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4',
+                        })}
+                      >
+                        <motion.div
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            rounded: 'xl',
+                            bg: 'rgba(168, 85, 247, 0.1)',
+                            p: '3',
+                          })}
+                          whileHover={{ scale: 1.1, rotate: 360 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Icon
+                            className={css({
+                              h: '6',
+                              w: '6',
+                              color: 'purple.400',
+                            })}
+                          />
+                        </motion.div>
+                        <div>
+                          <h2
+                            className={css({
+                              fontSize: { base: '2xl', sm: '3xl' },
+                              fontWeight: 'bold',
+                              color: 'gray.100',
+                            })}
+                          >
+                            {category.label}
+                          </h2>
+                          <p
+                            className={css({
+                              fontSize: 'sm',
+                              color: 'gray.500',
+                            })}
+                          >
+                            {category.description}
+                          </p>
+                        </div>
+                        <Badge
+                          variant="secondary"
+                          className={css({
+                            ml: '2',
+                            h: '7',
+                            rounded: 'full',
+                            bg: 'rgba(168, 85, 247, 0.2)',
+                            px: '3',
+                            fontSize: 'sm',
+                            fontWeight: 'bold',
+                            color: 'purple.300',
+                          })}
+                        >
+                          {toolsInCategory.length}
+                        </Badge>
+                      </div>
+
+                      {/* Collapse/Expand Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleCategory(category.value)}
+                        className={css({
+                          gap: '2',
+                          color: 'gray.400',
+                          _hover: { color: 'purple.400' },
+                        })}
+                      >
+                        {isExpanded ? (
+                          <>
+                            <ChevronUp className={css({ h: '5', w: '5' })} />
+                            Collapse
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className={css({ h: '5', w: '5' })} />
+                            Expand
+                          </>
+                        )}
+                      </Button>
+                    </div>
+
+                    {/* Tools Grid/List */}
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className={css({
+                            display: viewMode === 'grid' ? 'grid' : 'flex',
+                            flexDirection: viewMode === 'list' ? 'column' : undefined,
+                            gridTemplateColumns:
+                              viewMode === 'grid'
+                                ? {
+                                    base: 'repeat(1, 1fr)',
+                                    sm: 'repeat(2, 1fr)',
+                                    lg: 'repeat(3, 1fr)',
+                                    xl: 'repeat(4, 1fr)',
+                                  }
+                                : undefined,
+                            gap: viewMode === 'grid' ? '6' : '4',
+                          })}
+                        >
+                          {toolsInCategory.map((tool, index) => (
+                            <ToolCard
+                              key={tool.title}
+                              tool={tool}
+                              index={index}
+                              viewMode={viewMode}
+                              shouldReduceMotion={shouldReduceMotion}
+                            />
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.section>
+                )
+              })}
             </motion.div>
           ) : (
             <motion.div
@@ -790,7 +902,7 @@ export default function HomePage() {
                     </span>
                   </>
                 ) : (
-                  'No tools match the selected filters'
+                  'No tools available'
                 )}
               </p>
               <p
@@ -801,7 +913,7 @@ export default function HomePage() {
                   color: 'gray.600',
                 })}
               >
-                Try adjusting your search or filters to find what you&apos;re looking for
+                Try adjusting your search to find what you&apos;re looking for
               </p>
               <div className={css({ display: 'flex', gap: '3' })}>
                 {searchQuery && (
@@ -819,22 +931,6 @@ export default function HomePage() {
                     Clear search
                   </Button>
                 )}
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSearchQuery('')
-                    setSelectedCategory('all')
-                  }}
-                  className={css({
-                    border: '1px solid rgba(168, 85, 247, 0.3)',
-                    px: '6',
-                    py: '5',
-                    fontSize: 'base',
-                    _hover: { bg: 'rgba(168, 85, 247, 0.1)' },
-                  })}
-                >
-                  Clear all filters
-                </Button>
               </div>
             </motion.div>
           )}
