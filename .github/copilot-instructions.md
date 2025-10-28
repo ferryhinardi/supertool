@@ -166,6 +166,73 @@ import { trackToolEvent } from "@/lib/analytics";
 - ❌ Using plain `<h2>` tags instead of `<CardTitle>` in Card headers
 - ❌ Wrapping Card content in extra `<div className={css({ spaceY: '6' })}>` when `CardContent` has built-in padding
 
+**CRITICAL Grid Layout Bug - Invalid gridTemplateColumns Syntax:**
+
+This is a **high-severity** bug pattern that breaks responsive layouts. It has affected 10+ tool pages in the codebase.
+
+❌ **WRONG - Invalid base value breaks grid rendering:**
+
+```tsx
+<div
+  className={css({
+    display: "grid",
+    gridTemplateColumns: {
+      base: "1", // ❌ INVALID - This breaks the grid completely
+      sm: "repeat(2, 1fr)",
+      lg: "repeat(3, 1fr)",
+    },
+  })}
+>
+```
+
+**Why this fails**: Panda CSS interprets `"1"` as an invalid grid-template-columns value. The grid collapses and items don't render properly. The correct base value must be a valid CSS grid value like `"1fr"`.
+
+✅ **CORRECT - Valid base value with full width:**
+
+```tsx
+<div
+  className={css({
+    display: "grid",
+    w: "full", // ✅ REQUIRED - Ensures grid takes full container width
+    gap: "4",
+    gridTemplateColumns: {
+      base: "1fr", // ✅ VALID - Single column on mobile
+      sm: "repeat(2, 1fr)", // 2 columns on small screens
+      lg: "repeat(3, 1fr)", // 3 columns on large screens
+    },
+  })}
+>
+```
+
+**Key Rules for Grid Layouts:**
+
+1. **Always use valid CSS grid values** - `"1fr"`, `"repeat(2, 1fr)"`, `"minmax(0, 1fr)"` - NEVER just `"1"`
+2. **Always add `w: 'full'`** to grid containers - Without it, grids may not take full width
+3. **Test responsive breakpoints** - Verify grid renders correctly at base, sm, md, lg breakpoints
+4. **Single column on mobile** - Use `base: "1fr"` for mobile-first single column layouts
+
+**Common Grid Patterns:**
+
+```tsx
+// 1-2-3 column responsive grid (most common)
+gridTemplateColumns: {
+  base: "1fr",           // Mobile: single column
+  sm: "repeat(2, 1fr)",  // Tablet: 2 columns
+  lg: "repeat(3, 1fr)",  // Desktop: 3 columns
+}
+
+// 1-2 column responsive grid
+gridTemplateColumns: {
+  base: "1fr",           // Mobile: single column
+  md: "repeat(2, 1fr)",  // Tablet+: 2 columns
+}
+
+// Auto-fit responsive grid (advanced)
+gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))"
+```
+
+**Historical Context**: This bug was discovered during systematic reviews in October 2025. Fixed across 10 tool pages (commits a1c9631, 7b1c2d3). Pages affected: unit-converter, password-generator, qr-code, json-to-csv, hash-generator, upload, image-optimizer, video-converter, prompt-formatter, pdf-tools.
+
 ### Component Patterns
 
 **UI Components** (in `components/ui/`):
@@ -651,7 +718,8 @@ export async function GET(request: NextRequest) {
 ❌ **Don't** use Tailwind utilities in tool pages - use Panda CSS `css()` exclusively (e.g., `className="flex gap-4"` is WRONG, use `className={css({ display: 'flex', gap: '4' })}`)  
 ❌ **Don't** forget `'use client'` directive for interactive components  
 ❌ **Don't** skip analytics tracking on user actions  
-❌ **Don't** use semicolons (Prettier will remove them)
+❌ **Don't** use semicolons (Prettier will remove them)  
+❌ **Don't** use invalid grid syntax like `gridTemplateColumns: { base: '1' }` - use `'1fr'` instead (see Styling Guidelines section)
 
 ✅ **Do** run `pnpm format` before every commit (Husky enforces this)  
 ✅ **Do** test in browser mode for component tests  
@@ -659,7 +727,8 @@ export async function GET(request: NextRequest) {
 ✅ **Do** follow import order convention  
 ✅ **Do** maintain glassmorphic dark theme aesthetic  
 ✅ **Do** use Panda CSS `css()` for all tool page layouts and styling  
-✅ **Do** reference `app/tools/unit-converter/page.tsx` as the canonical styling example
+✅ **Do** reference `app/tools/unit-converter/page.tsx` as the canonical styling example  
+✅ **Do** add `w: 'full'` to all grid containers and use valid CSS grid values
 
 ## Key Files Reference
 
