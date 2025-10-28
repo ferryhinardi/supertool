@@ -437,13 +437,13 @@ const tools: Tool[] = [
   {
     title: 'IP Address Lookup',
     description:
-      'Discover your public IP address and get detailed geolocation information. View ISP details, detect VPN usage, and support for both IPv4 and IPv6 addresses.',
+      'Discover your public IP address and get detailed geolocation information. View ISP details, timezone, coordinates, and support for both IPv4 and IPv6 addresses.',
     icon: Network,
     href: '/tools/ip-lookup',
     gradient: 'from-blue-500 to-cyan-500',
-    features: ['Geolocation', 'ISP Info', 'VPN Detection', 'IPv4/IPv6'],
+    features: ['Geolocation', 'ISP Info', 'Map View', 'IPv4/IPv6'],
     category: 'development',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'Website Screenshot Tool',
