@@ -44,8 +44,8 @@ describe('Password Generator Page - Component Tests', () => {
     expect(
       screen.getByRole('heading', { name: 'Password Generator', level: 1 })
     ).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Generate Password', level: 2 })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Bulk Generation', level: 2 })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Generate Password', level: 3 })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Bulk Generation', level: 3 })).toBeInTheDocument()
   })
 
   it('should display all character type checkboxes', () => {
@@ -75,7 +75,9 @@ describe('Password Generator Page - Component Tests', () => {
   it('should generate password when Generate Password button is clicked', async () => {
     render(<PasswordGeneratorPage />)
 
-    const generateButton = screen.getByRole('button', { name: /Generate Password/i })
+    const generateButton = screen.getByRole('button', {
+      name: /Generate Password/i,
+    })
     await userEvent.click(generateButton)
 
     // Wait a bit for password to be generated
@@ -134,7 +136,9 @@ describe('Password Generator Page - Component Tests', () => {
       await userEvent.click(checkbox)
     }
 
-    const generateButton = screen.getByRole('button', { name: /Generate Password/i })
+    const generateButton = screen.getByRole('button', {
+      name: /Generate Password/i,
+    })
 
     await waitFor(() => {
       expect(generateButton).toBeDisabled()
@@ -144,7 +148,9 @@ describe('Password Generator Page - Component Tests', () => {
   it('should display password strength meter after generation', async () => {
     render(<PasswordGeneratorPage />)
 
-    const generateButton = screen.getByRole('button', { name: /Generate Password/i })
+    const generateButton = screen.getByRole('button', {
+      name: /Generate Password/i,
+    })
     await userEvent.click(generateButton)
 
     await waitFor(() => {
@@ -155,7 +161,9 @@ describe('Password Generator Page - Component Tests', () => {
   it('should allow bulk password generation', async () => {
     render(<PasswordGeneratorPage />)
 
-    const bulkInput = screen.getByRole('spinbutton', { name: /Number of Passwords/i })
+    const bulkInput = screen.getByRole('spinbutton', {
+      name: /Number of Passwords/i,
+    })
 
     // Type directly without clearing (userEvent.type appends to existing value)
     fireEvent.change(bulkInput, { target: { value: '5' } })
@@ -166,7 +174,9 @@ describe('Password Generator Page - Component Tests', () => {
     })
 
     // Find button - it should now say "Generate 5"
-    const bulkGenerateButton = screen.getByRole('button', { name: /Generate\s+5/i })
+    const bulkGenerateButton = screen.getByRole('button', {
+      name: /Generate\s+5/i,
+    })
     await userEvent.click(bulkGenerateButton)
 
     await waitFor(
@@ -180,7 +190,9 @@ describe('Password Generator Page - Component Tests', () => {
   it('should display bulk count input with default value', () => {
     render(<PasswordGeneratorPage />)
 
-    const bulkInput = screen.getByRole('spinbutton', { name: /Number of Passwords/i })
+    const bulkInput = screen.getByRole('spinbutton', {
+      name: /Number of Passwords/i,
+    })
     expect(bulkInput).toBeInTheDocument()
     expect(bulkInput).toHaveValue(10)
   })
@@ -188,7 +200,9 @@ describe('Password Generator Page - Component Tests', () => {
   it('should show clear button after bulk generation', async () => {
     render(<PasswordGeneratorPage />)
 
-    const bulkGenerateButton = screen.getByRole('button', { name: /Generate 10/i })
+    const bulkGenerateButton = screen.getByRole('button', {
+      name: /Generate 10/i,
+    })
     await userEvent.click(bulkGenerateButton)
 
     await waitFor(() => {
@@ -207,7 +221,9 @@ describe('Password Generator Page - Component Tests', () => {
   it('should show download button after bulk generation', async () => {
     render(<PasswordGeneratorPage />)
 
-    const bulkGenerateButton = screen.getByRole('button', { name: /Generate 10/i })
+    const bulkGenerateButton = screen.getByRole('button', {
+      name: /Generate 10/i,
+    })
     await userEvent.click(bulkGenerateButton)
 
     await waitFor(() => {
@@ -229,7 +245,9 @@ describe('Password Generator Page - Component Tests', () => {
   it('should display copy buttons after password generation', async () => {
     render(<PasswordGeneratorPage />)
 
-    const generateButton = screen.getByRole('button', { name: /Generate Password/i })
+    const generateButton = screen.getByRole('button', {
+      name: /Generate Password/i,
+    })
     await userEvent.click(generateButton)
 
     await waitFor(() => {

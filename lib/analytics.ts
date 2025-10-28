@@ -106,6 +106,14 @@ type ToolEvent =
   | 'api_tester_delete_preset'
   | 'api_tester_copy_response'
   | 'api_tester_method_change'
+  | 'prompt_formatter_open'
+  | 'prompt_formatter_template_apply'
+  | 'prompt_formatter_format'
+  | 'prompt_formatter_copy'
+  | 'prompt_formatter_download'
+  | 'prompt_formatter_optimize'
+  | 'prompt_formatter_clear'
+  | 'prompt_formatter_model_change'
 
 // Type-safe gtag wrapper
 declare global {
