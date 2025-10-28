@@ -92,6 +92,13 @@ type ToolEvent =
   | 'timer_preset_delete'
   | 'mode_change'
   | 'notification_permission_request'
+  | 'tally_counter_open'
+  | 'tally_counter_increment'
+  | 'tally_counter_decrement'
+  | 'tally_counter_reset'
+  | 'tally_counter_add'
+  | 'tally_counter_remove'
+  | 'tally_counter_set_step'
 
 // Type-safe gtag wrapper
 declare global {
