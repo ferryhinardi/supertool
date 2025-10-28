@@ -384,8 +384,9 @@ function PromptFormatterContent() {
             <div
               className={css({
                 display: 'grid',
-                gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
                 gap: '3',
+                w: 'full',
               })}
             >
               {aiModels.map((model) => {
@@ -470,8 +471,9 @@ function PromptFormatterContent() {
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
                   gap: '3',
+                  w: 'full',
                 })}
               >
                 {basicTemplates.map((template) => (
@@ -529,8 +531,9 @@ function PromptFormatterContent() {
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
                   gap: '3',
+                  w: 'full',
                 })}
               >
                 {advancedTemplates.map((template) => (
@@ -588,8 +591,9 @@ function PromptFormatterContent() {
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
                   gap: '3',
+                  w: 'full',
                 })}
               >
                 {specializedTemplates.map((template) => (
@@ -637,8 +641,9 @@ function PromptFormatterContent() {
         transition={{ delay: 0.3, duration: 0.5 }}
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1', lg: 'repeat(2, 1fr)' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
           gap: '6',
+          w: 'full',
         })}
       >
         {/* Input */}

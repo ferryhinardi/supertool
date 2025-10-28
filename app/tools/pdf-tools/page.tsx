@@ -868,7 +868,7 @@ export default function PDFToolsPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
           w: 'full',
           maxW: '1400px',
         })}
@@ -997,6 +997,7 @@ export default function PDFToolsPage() {
                         display: 'grid',
                         gridTemplateColumns: 'repeat(2, 1fr)',
                         gap: '2',
+                        w: 'full',
                       })}
                     >
                       <div>
@@ -1037,6 +1038,7 @@ export default function PDFToolsPage() {
                         display: 'grid',
                         gridTemplateColumns: 'repeat(4, 1fr)',
                         gap: '2',
+                        w: 'full',
                       })}
                     >
                       {[90, 180, 270, 360].map((angle) => (

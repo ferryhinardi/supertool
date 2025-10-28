@@ -356,7 +356,7 @@ export default function ImageOptimizerPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
           w: 'full',
           maxW: '1400px',
         })}
