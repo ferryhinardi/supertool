@@ -204,7 +204,8 @@ export default function TallyCounterPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          w: 'full',
         })}
       >
         {/* Counters Grid - Takes 2 columns on desktop */}
@@ -213,8 +214,9 @@ export default function TallyCounterPage() {
             gridColumn: { base: '1', lg: 'span 2' },
             display: 'grid',
             gap: '6',
-            gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+            gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
             alignContent: 'start',
+            w: 'full',
           })}
         >
           {counters.map((counter) => (

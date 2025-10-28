@@ -529,7 +529,8 @@ function TextTransformerContent() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          w: 'full',
         })}
       >
         {/* Main Text Area */}
@@ -638,7 +639,8 @@ function TextTransformerContent() {
                   className={css({
                     display: 'grid',
                     gap: '4',
-                    gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                    w: 'full',
                   })}
                 >
                   <div className="space-y-2">

@@ -452,7 +452,8 @@ export default function MarkdownEditorPage() {
             display: 'grid',
             flex: '1',
             gap: { base: '6', lg: '6' },
-            gridTemplateColumns: { base: '1', lg: 'repeat(2, 1fr)' },
+            gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
+            w: 'full',
           })}
         >
           {/* Editor */}
@@ -463,6 +464,7 @@ export default function MarkdownEditorPage() {
                 borderColor: 'gray.800',
                 bg: 'rgba(17, 24, 39, 0.5)',
                 backdropFilter: 'blur(8px)',
+                w: 'full',
               })}
             >
               <CardHeader>

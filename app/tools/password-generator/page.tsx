@@ -354,7 +354,8 @@ function PasswordGeneratorContent() {
                 className={css({
                   display: 'grid',
                   gap: '3',
-                  gridTemplateColumns: { base: '1', sm: '2' },
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                  w: 'full',
                 })}
               >
                 {[
@@ -417,6 +418,7 @@ function PasswordGeneratorContent() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
+                          color: 'white',
                         })}
                       >
                         {label}
@@ -450,6 +452,7 @@ function PasswordGeneratorContent() {
                 h: '12',
                 fontSize: 'lg',
                 fontWeight: 'bold',
+                color: 'white',
               })}
               style={{
                 background: 'linear-gradient(135deg, #ef4444, #ec4899)',

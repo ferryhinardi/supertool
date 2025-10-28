@@ -478,7 +478,8 @@ export default function PomodoroTimerPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          w: 'full',
         })}
       >
         {/* Timer Card - Takes full width on mobile, 2 columns on desktop */}
@@ -964,8 +965,9 @@ export default function PomodoroTimerPage() {
           <div
             className={css({
               display: 'grid',
-              gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+              gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
               gap: '4',
+              w: 'full',
             })}
           >
             <div>

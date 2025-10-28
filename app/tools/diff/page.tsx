@@ -303,11 +303,22 @@ export default function DiffTool() {
         className={css({
           display: 'grid',
           gap: '4',
-          gridTemplateColumns: { base: '1', md: 'repeat(2, 1fr)' },
+          gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+          w: 'full',
         })}
       >
         {/* Old/Original */}
-        <Card className="glass-card border-2 border-red-500/30 shadow-xl shadow-red-500/20">
+        <Card
+          className={css({
+            border: '2px solid',
+            borderColor: 'red.500/30',
+            shadow: 'xl',
+            boxShadow: '0 20px 25px -5px rgba(239, 68, 68, 0.2)',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+            w: 'full',
+          })}
+        >
           <CardHeader>
             <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
               <div
@@ -343,7 +354,17 @@ export default function DiffTool() {
         </Card>
 
         {/* New/Modified */}
-        <Card className="glass-card border-2 border-green-500/30 shadow-xl shadow-green-500/20">
+        <Card
+          className={css({
+            border: '2px solid',
+            borderColor: 'green.500/30',
+            shadow: 'xl',
+            boxShadow: '0 20px 25px -5px rgba(34, 197, 94, 0.2)',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+            w: 'full',
+          })}
+        >
           <CardHeader>
             <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
               <div
@@ -381,7 +402,17 @@ export default function DiffTool() {
 
       {/* Stats */}
       {(oldValue || newValue) && (
-        <Card className="glass-card border-2 border-blue-500/30 shadow-xl shadow-blue-500/20">
+        <Card
+          className={css({
+            border: '2px solid',
+            borderColor: 'blue.500/30',
+            shadow: 'xl',
+            boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.2)',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+            w: 'full',
+          })}
+        >
           <CardHeader>
             <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
               <CardTitle className="text-lg text-white">Comparison Stats</CardTitle>
@@ -393,7 +424,8 @@ export default function DiffTool() {
                 className={css({
                   display: 'grid',
                   gap: '3',
-                  gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                  w: 'full',
                 })}
               >
                 <div className={css({ rounded: 'lg', bg: 'gray.800/50', p: '3' })}>
@@ -432,7 +464,17 @@ export default function DiffTool() {
 
       {/* Diff Viewer */}
       {(oldValue || newValue) && (
-        <Card className="glass-card border-2 border-purple-500/30 shadow-2xl shadow-purple-500/20">
+        <Card
+          className={css({
+            border: '2px solid',
+            borderColor: 'purple.500/30',
+            shadow: '2xl',
+            boxShadow: '0 25px 50px -12px rgba(168, 85, 247, 0.2)',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+            w: 'full',
+          })}
+        >
           <CardHeader>
             <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
               <CardTitle className="text-lg text-white">Diff Preview</CardTitle>
