@@ -114,6 +114,8 @@ type ToolEvent =
   | 'prompt_formatter_optimize'
   | 'prompt_formatter_clear'
   | 'prompt_formatter_model_change'
+  | 'json_markdown_copy'
+  | 'json_markdown_download'
 
 // Type-safe gtag wrapper
 declare global {

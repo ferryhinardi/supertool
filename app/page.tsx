@@ -945,7 +945,7 @@ export default function HomePage() {
         style={{
           position: 'relative',
           zIndex: 10,
-          margin: '0 auto',
+          margin: '20px auto',
           width: '100%',
           maxWidth: '1400px',
           overflow: 'hidden',

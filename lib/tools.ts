@@ -1,6 +1,8 @@
 import {
   Activity,
   BarChart3,
+  Braces,
+  Brain,
   Cake,
   Calendar,
   Camera,
@@ -10,6 +12,7 @@ import {
   Diff,
   DollarSign,
   Eye,
+  EyeOff,
   FileCheck,
   FileDown,
   FileJson,
@@ -23,10 +26,12 @@ import {
   Globe,
   Hash,
   Image,
+  ImagePlus,
   Key,
   Layers,
   Lightbulb,
   Lock,
+  MessageSquare,
   Minimize2,
   Network,
   Palette,
@@ -35,7 +40,10 @@ import {
   Repeat,
   Scissors,
   Shield,
+  ShieldAlert,
+  ShieldCheck,
   Smartphone,
+  Sparkles,
   Star,
   Table,
   Terminal,
@@ -412,6 +420,50 @@ export const tools: Tool[] = [
     category: 'security',
     new: true,
   },
+  {
+    title: 'SSL/TLS Certificate Checker',
+    description:
+      'Inspect SSL/TLS certificate details, expiration dates, and security status for any website. Check certificate chain, cipher suites, and get security recommendations with SSL Labs API integration.',
+    icon: ShieldCheck,
+    href: '/tools/ssl-checker',
+    gradient: 'from-teal-500 to-cyan-500',
+    features: ['Certificate Details', 'Expiry Alerts', 'Chain Verification', 'Security Score'],
+    category: 'security',
+    comingSoon: true,
+  },
+  {
+    title: 'Password Strength Analyzer',
+    description:
+      'Measure password entropy and security strength with visual feedback. Detect common patterns, dictionary words, and get actionable recommendations to improve password safety using zxcvbn library.',
+    icon: ShieldAlert,
+    href: '/tools/password-strength',
+    gradient: 'from-yellow-500 to-red-500',
+    features: ['Entropy Score', 'Pattern Detection', 'Dictionary Check', 'Improvement Tips'],
+    category: 'security',
+    comingSoon: true,
+  },
+  {
+    title: 'Text Steganography Tool',
+    description:
+      'Hide secret messages within plain text using zero-width characters. Encode and decode hidden text that is invisible to the naked eye. Perfect for secure communication and digital watermarking.',
+    icon: EyeOff,
+    href: '/tools/steganography',
+    gradient: 'from-gray-500 to-slate-700',
+    features: ['Zero-Width Encoding', 'Invisible Text', 'Decode Messages', 'Copy & Share'],
+    category: 'security',
+    comingSoon: true,
+  },
+  {
+    title: 'File Integrity Verifier',
+    description:
+      'Upload files and verify integrity by comparing MD5, SHA-1, SHA-256 hashes. Detect tampering, corruption, or unauthorized modifications. Uses WebCrypto API for secure client-side hashing.',
+    icon: FileCheck,
+    href: '/tools/file-verifier',
+    gradient: 'from-emerald-500 to-green-500',
+    features: ['Hash Comparison', 'Multiple Algorithms', 'Tamper Detection', 'No Upload to Server'],
+    category: 'security',
+    comingSoon: true,
+  },
 
   // Developer Tools (Advanced)
   {
@@ -702,7 +754,6 @@ export const tools: Tool[] = [
     gradient: 'from-purple-500 to-pink-500',
     features: ['Auto Format', 'Custom Headers', 'Column Alignment', 'Copy & Download'],
     category: 'productivity',
-    comingSoon: true,
   },
 
   // System & Utility Tools
@@ -805,6 +856,73 @@ export const tools: Tool[] = [
     gradient: 'from-indigo-500 to-purple-500',
     features: ['Similarity Score', 'NLP Analysis', 'Batch Compare', 'Highlight Matches'],
     category: 'productivity',
+    comingSoon: true,
+  },
+
+  // AI-Powered Tools
+  {
+    title: 'AI Text Rewriter',
+    description:
+      'Rewrite content with AI-powered tone and style control. Transform text for different audiences, adjust formality, simplify complex writing, or make content more engaging using OpenAI GPT models.',
+    icon: Sparkles,
+    href: '/tools/ai-text-rewriter',
+    gradient: 'from-violet-500 to-fuchsia-500',
+    features: ['Tone Control', 'Style Adjustment', 'Multiple Variants', 'Preserve Meaning'],
+    category: 'productivity',
+    comingSoon: true,
+  },
+  {
+    title: 'AI JSON Analyzer',
+    description:
+      'Understand complex JSON structures with AI-powered analysis. Get natural language summaries, detect patterns, explain data relationships, and debug JSON with GPT function calling.',
+    icon: Brain,
+    href: '/tools/ai-json-analyzer',
+    gradient: 'from-blue-500 to-indigo-500',
+    features: ['Structure Summary', 'Pattern Detection', 'Relationship Mapping', 'Debug Insights'],
+    category: 'development',
+    comingSoon: true,
+  },
+  {
+    title: 'AI Command Explainer',
+    description:
+      'Explain complex CLI commands in plain English with AI assistance. Understand bash, git, docker, kubectl commands with detailed breakdowns. Free for basic explanations, unlimited with Pro.',
+    icon: MessageSquare,
+    href: '/tools/ai-command-explainer',
+    gradient: 'from-green-500 to-teal-500',
+    features: [
+      'Command Breakdown',
+      'Parameter Explanation',
+      'Safety Warnings',
+      'Alternative Suggestions',
+    ],
+    category: 'development',
+    comingSoon: true,
+  },
+  {
+    title: 'AI Image Caption Generator',
+    description:
+      'Generate descriptive alt text and captions for images automatically using Vision API. Improve accessibility, SEO, and content discoverability with AI-powered image descriptions.',
+    icon: ImagePlus,
+    href: '/tools/ai-image-caption',
+    gradient: 'from-pink-500 to-rose-500',
+    features: [
+      'Alt Text Generation',
+      'SEO Optimization',
+      'Accessibility Focus',
+      'Batch Processing',
+    ],
+    category: 'media',
+    comingSoon: true,
+  },
+  {
+    title: 'AI Snippet Generator',
+    description:
+      'Generate code snippets instantly with AI. Create functions, classes, regex patterns, SQL queries, and more. Free tier includes basic snippets, unlimited generation with Pro subscription.',
+    icon: Braces,
+    href: '/tools/ai-snippet-generator',
+    gradient: 'from-orange-500 to-amber-500',
+    features: ['Multi-Language Support', 'Context-Aware', 'Instant Generation', 'Code Explanation'],
+    category: 'development',
     comingSoon: true,
   },
 ]
