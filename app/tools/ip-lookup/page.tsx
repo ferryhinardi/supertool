@@ -153,29 +153,68 @@ export default function IPLookupPage() {
         mx: 'auto',
         maxW: '1400px',
         w: 'full',
-        px: '4',
-        py: '8',
-        spaceY: '8',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="space-y-4 text-center"
+        className={css({ textAlign: 'center', spaceY: '4' })}
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2">
-          <Network className="h-5 w-5 text-blue-400" />
-          <span className="text-sm font-semibold text-blue-300">IP Geolocation</span>
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'blue.500/20',
+            bg: 'blue.500/10',
+            px: '4',
+            py: '2',
+          })}
+        >
+          <Network className={css({ h: '5', w: '5', color: 'blue.400' })} />
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'blue.300',
+            })}
+          >
+            IP Geolocation
+          </span>
         </div>
 
-        <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl">
-          <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
-            IP Address Lookup
-          </span>
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'bold',
+            bgGradient: 'to-r',
+            gradientFrom: 'blue.400',
+            gradientVia: 'cyan.400',
+            gradientTo: 'teal.400',
+            bgClip: 'text',
+          })}
+          style={{
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          IP Address Lookup
         </h1>
 
-        <p className="mx-auto max-w-2xl text-lg text-gray-400">
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '2xl',
+            fontSize: 'lg',
+            color: 'gray.400',
+          })}
+        >
           Discover detailed information about any IP address including location, ISP, timezone, and
           more.
         </p>
@@ -187,14 +226,26 @@ export default function IPLookupPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card className="border-gray-800 bg-gray-900/50">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+          })}
+        >
           <CardHeader>
             <CardTitle>IP Address Lookup</CardTitle>
             <CardDescription>Enter an IP address to get detailed information</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <div className="flex-1">
+          <CardContent className={css({ spaceY: '4' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexDirection: { base: 'column', sm: 'row' },
+                gap: '4',
+              })}
+            >
+              <div className={css({ flex: '1' })}>
                 <Input
                   placeholder="Enter IP address (e.g., 8.8.8.8)"
                   value={ipAddress}
@@ -204,20 +255,25 @@ export default function IPLookupPage() {
                       lookupIP()
                     }
                   }}
-                  className="font-mono"
+                  className={css({ fontFamily: 'mono' })}
                 />
               </div>
-              <div className="flex gap-2">
+              <div className={css({ display: 'flex', gap: '2' })}>
                 <Button
                   onClick={() => lookupIP()}
-                  className="gap-2"
+                  className={css({ gap: '2' })}
                   disabled={loading || !ipAddress}
                 >
-                  <Search className="h-4 w-4" />
+                  <Search className={css({ h: '4', w: '4' })} />
                   {loading ? 'Looking up...' : 'Lookup'}
                 </Button>
-                <Button onClick={fetchMyIP} variant="outline" className="gap-2" disabled={loading}>
-                  <Wifi className="h-4 w-4" />
+                <Button
+                  onClick={fetchMyIP}
+                  variant="outline"
+                  className={css({ gap: '2' })}
+                  disabled={loading}
+                >
+                  <Wifi className={css({ h: '4', w: '4' })} />
                   My IP
                 </Button>
               </div>
@@ -235,12 +291,30 @@ export default function IPLookupPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="border-gray-800 bg-gray-900/50">
+            <Card
+              className={css({
+                border: '1px solid',
+                borderColor: 'gray.800',
+                bg: 'gray.900/50',
+              })}
+            >
               <CardHeader>
-                <div className="flex items-start justify-between">
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'start',
+                    justifyContent: 'space-between',
+                  })}
+                >
                   <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Globe className="h-5 w-5 text-blue-400" />
+                    <CardTitle
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                      })}
+                    >
+                      <Globe className={css({ h: '5', w: '5', color: 'blue.400' })} />
                       IP Address Information
                     </CardTitle>
                     <CardDescription>Complete details for {ipInfo.ip}</CardDescription>
@@ -250,37 +324,92 @@ export default function IPLookupPage() {
                     size="sm"
                     onClick={() => handleCopy(ipInfo.ip, 'IP Address')}
                   >
-                    <Copy className="h-4 w-4" />
+                    <Copy className={css({ h: '4', w: '4' })} />
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className={css({ spaceY: '6' })}>
                 {/* IP & Version */}
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <Network className="h-4 w-4" />
+                <div
+                  className={css({
+                    display: 'grid',
+                    gap: '6',
+                    gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+                  })}
+                >
+                  <div className={css({ spaceY: '2' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                        fontSize: 'sm',
+                        color: 'gray.500',
+                      })}
+                    >
+                      <Network className={css({ h: '4', w: '4' })} />
                       IP Address
                     </div>
-                    <div className="flex items-center justify-between rounded-lg border border-gray-800 bg-gray-900/50 p-3">
-                      <code className="text-lg font-semibold text-blue-400">{ipInfo.ip}</code>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.800',
+                        bg: 'gray.900/50',
+                        p: '3',
+                      })}
+                    >
+                      <code
+                        className={css({
+                          fontSize: 'lg',
+                          fontWeight: 'semibold',
+                          color: 'blue.400',
+                        })}
+                      >
+                        {ipInfo.ip}
+                      </code>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => handleCopy(ipInfo.ip, 'IP Address')}
                       >
-                        <Copy className="h-4 w-4" />
+                        <Copy className={css({ h: '4', w: '4' })} />
                       </Button>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <CheckCircle className="h-4 w-4" />
+                  <div className={css({ spaceY: '2' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                        fontSize: 'sm',
+                        color: 'gray.500',
+                      })}
+                    >
+                      <CheckCircle className={css({ h: '4', w: '4' })} />
                       IP Version
                     </div>
-                    <div className="rounded-lg border border-gray-800 bg-gray-900/50 p-3">
-                      <span className="text-lg font-semibold text-gray-200">
+                    <div
+                      className={css({
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.800',
+                        bg: 'gray.900/50',
+                        p: '3',
+                      })}
+                    >
+                      <span
+                        className={css({
+                          fontSize: 'lg',
+                          fontWeight: 'semibold',
+                          color: 'gray.200',
+                        })}
+                      >
                         IPv{ipInfo.version}
                       </span>
                     </div>
@@ -288,12 +417,31 @@ export default function IPLookupPage() {
                 </div>
 
                 {/* Location Info */}
-                <div className="space-y-3">
-                  <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-200">
-                    <MapPin className="h-5 w-5 text-red-400" />
+                <div className={css({ spaceY: '3' })}>
+                  <h3
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2',
+                      fontSize: 'lg',
+                      fontWeight: 'semibold',
+                      color: 'gray.200',
+                    })}
+                  >
+                    <MapPin className={css({ h: '5', w: '5', color: 'red.400' })} />
                     Location
                   </h3>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gap: '4',
+                      gridTemplateColumns: {
+                        base: '1',
+                        sm: 'repeat(2, 1fr)',
+                        lg: 'repeat(3, 1fr)',
+                      },
+                    })}
+                  >
                     <InfoItem label="Country" value={ipInfo.country} emoji={ipInfo.country_code} />
                     <InfoItem label="Region" value={ipInfo.region} />
                     <InfoItem label="City" value={ipInfo.city} />
@@ -304,31 +452,65 @@ export default function IPLookupPage() {
                     />
                     <InfoItem label="Timezone" value={ipInfo.timezone} />
                   </div>
-                  <Button onClick={openMap} variant="outline" className="w-full gap-2">
-                    <MapPin className="h-4 w-4" />
+                  <Button
+                    onClick={openMap}
+                    variant="outline"
+                    className={css({ w: 'full', gap: '2' })}
+                  >
+                    <MapPin className={css({ h: '4', w: '4' })} />
                     View on Map
                   </Button>
                 </div>
 
                 {/* Network Info */}
-                <div className="space-y-3">
-                  <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-200">
-                    <Server className="h-5 w-5 text-green-400" />
+                <div className={css({ spaceY: '3' })}>
+                  <h3
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2',
+                      fontSize: 'lg',
+                      fontWeight: 'semibold',
+                      color: 'gray.200',
+                    })}
+                  >
+                    <Server className={css({ h: '5', w: '5', color: 'green.400' })} />
                     Network Information
                   </h3>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gap: '4',
+                      gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+                    })}
+                  >
                     <InfoItem label="ISP / Organization" value={ipInfo.isp} />
                     <InfoItem label="AS Number" value={ipInfo.as} />
                   </div>
                 </div>
 
                 {/* Security Info */}
-                <div className="space-y-3">
-                  <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-200">
-                    <Shield className="h-5 w-5 text-purple-400" />
+                <div className={css({ spaceY: '3' })}>
+                  <h3
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2',
+                      fontSize: 'lg',
+                      fontWeight: 'semibold',
+                      color: 'gray.200',
+                    })}
+                  >
+                    <Shield className={css({ h: '5', w: '5', color: 'purple.400' })} />
                     Security Indicators
                   </h3>
-                  <div className="grid gap-4 sm:grid-cols-3">
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gap: '4',
+                      gridTemplateColumns: { base: '1', sm: 'repeat(3, 1fr)' },
+                    })}
+                  >
                     <SecurityBadge label="Mobile" value={ipInfo.mobile} />
                     <SecurityBadge label="Proxy/VPN" value={ipInfo.proxy} />
                     <SecurityBadge label="Hosting" value={ipInfo.hosting} />
@@ -345,7 +527,15 @@ export default function IPLookupPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className={css({
+          display: 'grid',
+          gap: '4',
+          gridTemplateColumns: {
+            base: '1',
+            sm: 'repeat(2, 1fr)',
+            lg: 'repeat(4, 1fr)',
+          },
+        })}
       >
         {[
           {
@@ -369,11 +559,26 @@ export default function IPLookupPage() {
             desc: 'Support for both IP versions',
           },
         ].map((feature) => (
-          <Card key={feature.title} className="border-gray-800 bg-gray-900/30">
-            <CardContent className="p-6">
-              <feature.icon className="mb-3 h-8 w-8 text-blue-400" />
-              <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
-              <p className="text-sm text-gray-500">{feature.desc}</p>
+          <Card
+            key={feature.title}
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/30',
+            })}
+          >
+            <CardContent className={css({ p: '6' })}>
+              <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'blue.400' })} />
+              <h3
+                className={css({
+                  mb: '2',
+                  fontWeight: 'semibold',
+                  color: 'gray.200',
+                })}
+              >
+                {feature.title}
+              </h3>
+              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.desc}</p>
             </CardContent>
           </Card>
         ))}
@@ -385,11 +590,37 @@ export default function IPLookupPage() {
 // Helper Components
 function InfoItem({ label, value, emoji }: { label: string; value: string; emoji?: string }) {
   return (
-    <div className="rounded-lg border border-gray-800 bg-gray-900/30 p-3">
-      <div className="mb-1 text-xs font-medium text-gray-500">{label}</div>
-      <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
+    <div
+      className={css({
+        rounded: 'lg',
+        border: '1px solid',
+        borderColor: 'gray.800',
+        bg: 'gray.900/30',
+        p: '3',
+      })}
+    >
+      <div
+        className={css({
+          mb: '1',
+          fontSize: 'xs',
+          fontWeight: 'medium',
+          color: 'gray.500',
+        })}
+      >
+        {label}
+      </div>
+      <div
+        className={css({
+          display: 'flex',
+          alignItems: 'center',
+          gap: '2',
+          fontSize: 'sm',
+          fontWeight: 'semibold',
+          color: 'gray.200',
+        })}
+      >
         {emoji && (
-          <span className="text-lg">
+          <span className={css({ fontSize: 'lg' })}>
             {String.fromCodePoint(
               ...emoji
                 .toUpperCase()
@@ -407,12 +638,33 @@ function InfoItem({ label, value, emoji }: { label: string; value: string; emoji
 function SecurityBadge({ label, value }: { label: string; value: boolean }) {
   return (
     <div
-      className={`flex items-center justify-between rounded-lg border p-3 ${
-        value ? 'border-yellow-500/20 bg-yellow-500/10' : 'border-green-500/20 bg-green-500/10'
-      }`}
+      className={css({
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        rounded: 'lg',
+        border: '1px solid',
+        borderColor: value ? 'yellow.500/20' : 'green.500/20',
+        bg: value ? 'yellow.500/10' : 'green.500/10',
+        p: '3',
+      })}
     >
-      <span className="text-sm font-medium text-gray-200">{label}</span>
-      <span className={`text-xs font-semibold ${value ? 'text-yellow-400' : 'text-green-400'}`}>
+      <span
+        className={css({
+          fontSize: 'sm',
+          fontWeight: 'medium',
+          color: 'gray.200',
+        })}
+      >
+        {label}
+      </span>
+      <span
+        className={css({
+          fontSize: 'xs',
+          fontWeight: 'semibold',
+          color: value ? 'yellow.400' : 'green.400',
+        })}
+      >
         {value ? 'Yes' : 'No'}
       </span>
     </div>

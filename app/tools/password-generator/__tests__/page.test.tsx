@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
+import { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import PasswordGeneratorPage from '../page'
 
@@ -14,6 +15,26 @@ vi.mock('sonner', () => ({
 // Mock analytics
 vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
+}))
+
+// Mock nuqs
+vi.mock('nuqs', () => ({
+  parseAsBoolean: {
+    withDefault: (defaultValue: boolean) => ({
+      defaultValue,
+      parse: (value: string) => value === 'true',
+    }),
+  },
+  parseAsInteger: {
+    withDefault: (defaultValue: number) => ({
+      defaultValue,
+      parse: (value: string) => Number.parseInt(value, 10),
+    }),
+  },
+  useQueryState: (key: string, parser: { defaultValue: unknown }) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useState(parser.defaultValue)
+  },
 }))
 
 describe('Password Generator Page - Component Tests', () => {

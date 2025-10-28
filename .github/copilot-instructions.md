@@ -82,23 +82,23 @@ pnpm prepare           # Run Panda codegen + Husky setup
 ### Import Order Convention
 
 ```tsx
-'use client'
+"use client";
 
 // 1. React/Next.js
-import { useState } from 'react'
+import { useState } from "react";
 
 // 2. Third-party libraries
-import { toast } from 'sonner'
+import { toast } from "sonner";
 
 // 3. UI components
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 
 // 4. Feature components
-import { DragDropZone } from '@/components/features/DragDropZone'
+import { DragDropZone } from "@/components/features/DragDropZone";
 
 // 5. Utils/libs
-import { cx } from '@/lib/utils'
-import { trackToolEvent } from '@/lib/analytics'
+import { cx } from "@/lib/utils";
+import { trackToolEvent } from "@/lib/analytics";
 ```
 
 ### Styling Guidelines (Non-Negotiable)
@@ -110,65 +110,126 @@ import { trackToolEvent } from '@/lib/analytics'
 - **Class merging**: Use `cx()` utility from `@/lib/utils` for conditional classes
 - **No inline styles**: All styling must use Panda CSS - never use inline `style` objects or Tailwind utilities in tool pages
 
+**CRITICAL: Tool pages MUST use Panda CSS `css()` exclusively, NOT Tailwind utility classes.**
+
+**❌ WRONG - Using Tailwind utilities directly:**
+
+```tsx
+<div className="space-y-4 text-center">
+  <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2">
+    <Network className="h-5 w-5 text-blue-400" />
+    <span className="text-sm font-semibold text-blue-300">Badge Text</span>
+  </div>
+</div>
+```
+
+**✅ CORRECT - Using Panda CSS `css()` function:**
+
+```tsx
+<div className={css({ textAlign: "center", spaceY: "4" })}>
+  <div
+    className={css({
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "2",
+      rounded: "full",
+      border: "1px solid",
+      borderColor: "blue.500/20",
+      bg: "blue.500/10",
+      px: "4",
+      py: "2",
+    })}
+  >
+    <Network className={css({ h: "5", w: "5", color: "blue.400" })} />
+    <span
+      className={css({
+        fontSize: "sm",
+        fontWeight: "semibold",
+        color: "blue.300",
+      })}
+    >
+      Badge Text
+    </span>
+  </div>
+</div>
+```
+
+**Reference**: Always look at `app/tools/unit-converter/page.tsx` as the canonical example of correct Panda CSS usage in tool pages.
+
 ### Component Patterns
 
 **UI Components** (in `components/ui/`):
 
 ```tsx
-import * as React from 'react'
-import { ark } from '@ark-ui/react'
-import { Slot } from '@radix-ui/react-slot'
-import { button } from '@/styled-system/recipes'
-import { cx } from '@/lib/utils'
+import * as React from "react";
+import { ark } from "@ark-ui/react";
+import { Slot } from "@radix-ui/react-slot";
+import { button } from "@/styled-system/recipes";
+import { cx } from "@/lib/utils";
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-  size?: 'default' | 'sm' | 'lg' | 'icon'
-  asChild?: boolean
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
+  size?: "default" | "sm" | "lg" | "icon";
+  asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : ark.button
-    return <Comp className={cx(button({ variant, size }), className)} ref={ref} {...props} />
+    const Comp = asChild ? Slot : ark.button;
+    return (
+      <Comp
+        className={cx(button({ variant, size }), className)}
+        ref={ref}
+        {...props}
+      />
+    );
   }
-)
-Button.displayName = 'Button'
+);
+Button.displayName = "Button";
 
-export { Button }
+export { Button };
 ```
 
 **Tool Pages** (in `app/tools/`):
 
 ```tsx
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { trackToolEvent } from '@/lib/analytics'
-import { css } from '@/styled-system/css'
+import { useState } from "react";
+import { toast } from "sonner";
+import { trackToolEvent } from "@/lib/analytics";
+import { css } from "@/styled-system/css";
 
 export default function ToolPage() {
   const handleAction = () => {
-    trackToolEvent('tool_action', { success: true })
-    toast.success('Action completed 🎉')
-  }
+    trackToolEvent("tool_action", { success: true });
+    toast.success("Action completed 🎉");
+  };
 
   return (
     <main
       className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
+        mx: "auto",
+        maxW: "7xl",
+        w: "full",
+        px: { base: "4", sm: "6", md: "8" },
+        py: { base: "6", sm: "8", md: "10" },
+        spaceY: { base: "6", sm: "8", md: "10" },
       })}
     >
-      <h1 className={css({ fontSize: '4xl', fontWeight: 'extrabold' })}>Tool Name</h1>
+      <h1 className={css({ fontSize: "4xl", fontWeight: "extrabold" })}>
+        Tool Name
+      </h1>
       {/* Tool implementation */}
     </main>
-  )
+  );
 }
 ```
 
@@ -177,23 +238,23 @@ export default function ToolPage() {
 **All tool pages MUST follow this standardized layout structure using Panda CSS:**
 
 ```tsx
-import { css } from '@/styled-system/css'
+import { css } from "@/styled-system/css";
 
 export default function ToolPage() {
   return (
     <main
       className={css({
-        mx: 'auto',
-        maxW: '7xl', // or '1400px' for wider layouts
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
+        mx: "auto",
+        maxW: "7xl", // or '1400px' for wider layouts
+        w: "full",
+        px: { base: "4", sm: "6", md: "8" },
+        py: { base: "6", sm: "8", md: "10" },
+        spaceY: { base: "6", sm: "8", md: "10" },
       })}
     >
       {/* Page content */}
     </main>
-  )
+  );
 }
 ```
 
@@ -233,37 +294,44 @@ export default function ToolPage() {
 **Header Section:**
 
 ```tsx
-<div className={css({ textAlign: 'center', spaceY: '4' })}>
+<div className={css({ textAlign: "center", spaceY: "4" })}>
   <div
     className={css({
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '2',
-      rounded: 'full',
-      border: '1px solid',
-      borderColor: 'purple.500/20',
-      bg: 'purple.500/10',
-      px: '4',
-      py: '2',
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "2",
+      rounded: "full",
+      border: "1px solid",
+      borderColor: "purple.500/20",
+      bg: "purple.500/10",
+      px: "4",
+      py: "2",
     })}
   >
     {/* Badge content */}
   </div>
   <h1
     className={css({
-      fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-      fontWeight: 'bold',
-      bgGradient: 'to-r',
-      gradientFrom: 'purple.400',
-      gradientVia: 'pink.400',
-      gradientTo: 'blue.400',
-      bgClip: 'text',
+      fontSize: { base: "4xl", sm: "5xl", md: "6xl" },
+      fontWeight: "bold",
+      bgGradient: "to-r",
+      gradientFrom: "purple.400",
+      gradientVia: "pink.400",
+      gradientTo: "blue.400",
+      bgClip: "text",
     })}
-    style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+    style={{ WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
   >
     {/* Gradient title */}
   </h1>
-  <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'gray.400' })}>
+  <p
+    className={css({
+      mx: "auto",
+      maxW: "2xl",
+      fontSize: "lg",
+      color: "gray.400",
+    })}
+  >
     {/* Description */}
   </p>
 </div>
@@ -274,9 +342,13 @@ export default function ToolPage() {
 ```tsx
 <div
   className={css({
-    display: 'grid',
-    gap: '4',
-    gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+    display: "grid",
+    gap: "4",
+    gridTemplateColumns: {
+      base: "1",
+      sm: "repeat(2, 1fr)",
+      lg: "repeat(3, 1fr)",
+    },
   })}
 >
   {items.map((item) => (
@@ -290,16 +362,16 @@ export default function ToolPage() {
 ```tsx
 <Card
   className={css({
-    border: '1px solid',
-    borderColor: 'gray.800',
-    bg: 'gray.900/50',
+    border: "1px solid",
+    borderColor: "gray.800",
+    bg: "gray.900/50",
   })}
 >
   <CardHeader>
     <CardTitle>Title</CardTitle>
     <CardDescription>Description</CardDescription>
   </CardHeader>
-  <CardContent className={css({ spaceY: '6' })}>
+  <CardContent className={css({ spaceY: "6" })}>
     {/* Card content with consistent vertical spacing */}
   </CardContent>
 </Card>
@@ -325,31 +397,38 @@ Every user action must call `trackToolEvent()` from `@/lib/analytics`. Never tra
 **Breadcrumbs & FAQs**: Add breadcrumb navigation and FAQ structured data to tool layouts for rich snippets in search results:
 
 ```tsx
-import type { Metadata } from 'next'
-import Script from 'next/script'
-import { generateToolMetadata, generateToolBreadcrumbs } from '@/lib/metadata'
-import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-data'
+import type { Metadata } from "next";
+import Script from "next/script";
+import { generateToolMetadata, generateToolBreadcrumbs } from "@/lib/metadata";
+import {
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+} from "@/lib/structured-data";
 
 export const metadata: Metadata = generateToolMetadata({
-  title: 'Tool Name',
-  description: 'SEO-optimized description',
-  keywords: ['keyword1', 'keyword2'],
-  category: 'development',
-  path: '/tools/tool-name',
-})
+  title: "Tool Name",
+  description: "SEO-optimized description",
+  keywords: ["keyword1", "keyword2"],
+  category: "development",
+  path: "/tools/tool-name",
+});
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
-const breadcrumbs = generateToolBreadcrumbs('Tool Name')
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://supertool.id";
+const breadcrumbs = generateToolBreadcrumbs("Tool Name");
 
 const faqs = [
   {
-    question: 'What is this tool?',
-    answer: 'Comprehensive answer with keywords for SEO.',
+    question: "What is this tool?",
+    answer: "Comprehensive answer with keywords for SEO.",
   },
   // Add 3-4 FAQs per tool
-]
+];
 
-export default function ToolLayout({ children }: { children: React.ReactNode }) {
+export default function ToolLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       {children}
@@ -358,7 +437,9 @@ export default function ToolLayout({ children }: { children: React.ReactNode }) 
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbs, baseUrl)),
+          __html: JSON.stringify(
+            generateBreadcrumbSchema(breadcrumbs, baseUrl)
+          ),
         }}
       />
       <Script
@@ -370,7 +451,7 @@ export default function ToolLayout({ children }: { children: React.ReactNode }) 
         }}
       />
     </>
-  )
+  );
 }
 ```
 
@@ -414,16 +495,16 @@ Tools are organized into 5 categories (defined in `app/page.tsx`):
 
 ```tsx
 interface Tool {
-  title: string // Display name
-  description: string // Detailed description for SEO
-  icon: React.ElementType // Lucide icon component
-  href: string // Route path (e.g., '/tools/json-beautify')
-  gradient: string // Tailwind gradient (e.g., 'from-purple-500 to-pink-500')
-  features: string[] // 4 key features for card display
-  category: ToolCategory // One of the 5 categories
-  comingSoon?: boolean // Gray out and disable link
-  popular?: boolean // Show star badge
-  new?: boolean // Show "NEW" badge
+  title: string; // Display name
+  description: string; // Detailed description for SEO
+  icon: React.ElementType; // Lucide icon component
+  href: string; // Route path (e.g., '/tools/json-beautify')
+  gradient: string; // Tailwind gradient (e.g., 'from-purple-500 to-pink-500')
+  features: string[]; // 4 key features for card display
+  category: ToolCategory; // One of the 5 categories
+  comingSoon?: boolean; // Gray out and disable link
+  popular?: boolean; // Show star badge
+  new?: boolean; // Show "NEW" badge
 }
 ```
 
@@ -440,49 +521,52 @@ interface Tool {
 All API routes follow this dual-mode structure (see `app/api/shorten/route.ts`):
 
 ```tsx
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
 // In-memory storage for demo (replace with Supabase for production)
-const dataStore = new Map<string, DataType>()
+const dataStore = new Map<string, DataType>();
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const body = await request.json();
 
     // Validate input
     if (!body.requiredField) {
-      return NextResponse.json({ error: 'Field is required' }, { status: 400 })
+      return NextResponse.json({ error: "Field is required" }, { status: 400 });
     }
 
     // Check for conflicts
     if (dataStore.has(body.id)) {
-      return NextResponse.json({ error: 'Already exists' }, { status: 409 })
+      return NextResponse.json({ error: "Already exists" }, { status: 409 });
     }
 
     // Store data
-    dataStore.set(body.id, { ...body, createdAt: new Date().toISOString() })
+    dataStore.set(body.id, { ...body, createdAt: new Date().toISOString() });
 
-    return NextResponse.json({ success: true, data: body })
+    return NextResponse.json({ success: true, data: body });
   } catch (error) {
-    console.error('Error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const id = searchParams.get('id')
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
 
   if (!id) {
-    return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    return NextResponse.json({ error: "ID required" }, { status: 400 });
   }
 
-  const data = dataStore.get(id)
+  const data = dataStore.get(id);
   if (!data) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  return NextResponse.json(data)
+  return NextResponse.json(data);
 }
 ```
 
@@ -513,7 +597,7 @@ export async function GET(request: NextRequest) {
 ❌ **Don't** manually memoize with `useMemo`/`useCallback` - React Compiler handles it  
 ❌ **Don't** use `any` types - TypeScript strict mode is enabled  
 ❌ **Don't** use inline styles - use Panda CSS `css()` function  
-❌ **Don't** use Tailwind utilities in tool pages - use Panda CSS exclusively  
+❌ **Don't** use Tailwind utilities in tool pages - use Panda CSS `css()` exclusively (e.g., `className="flex gap-4"` is WRONG, use `className={css({ display: 'flex', gap: '4' })}`)  
 ❌ **Don't** forget `'use client'` directive for interactive components  
 ❌ **Don't** skip analytics tracking on user actions  
 ❌ **Don't** use semicolons (Prettier will remove them)
@@ -523,7 +607,8 @@ export async function GET(request: NextRequest) {
 ✅ **Do** use `cx()` for conditional class merging  
 ✅ **Do** follow import order convention  
 ✅ **Do** maintain glassmorphic dark theme aesthetic  
-✅ **Do** use Panda CSS `css()` for all tool page layouts and styling
+✅ **Do** use Panda CSS `css()` for all tool page layouts and styling  
+✅ **Do** reference `app/tools/unit-converter/page.tsx` as the canonical styling example
 
 ## Key Files Reference
 

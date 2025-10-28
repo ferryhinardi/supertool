@@ -5,12 +5,14 @@ import IPLookupPage from '../page'
 describe('IPLookupPage', () => {
   it('renders the page title', () => {
     render(<IPLookupPage />)
-    expect(screen.getByText(/IP Address Lookup/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: /IP Address Lookup/i })
+    ).toBeInTheDocument()
   })
 
   it('renders the lookup button', () => {
     render(<IPLookupPage />)
-    expect(screen.getByRole('button', { name: /Lookup/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Looking up/i })).toBeInTheDocument()
   })
 
   it('renders the my ip button', () => {

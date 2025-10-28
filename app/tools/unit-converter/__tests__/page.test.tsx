@@ -1,7 +1,28 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { useState } from 'react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import UnitConverterPage from '../page'
+
+// Mock nuqs
+vi.mock('nuqs', () => ({
+  parseAsString: {
+    withDefault: (defaultValue: string) => ({
+      defaultValue,
+      parse: (value: string) => value,
+    }),
+  },
+  parseAsStringEnum: (values: string[]) => ({
+    withDefault: (defaultValue: string) => ({
+      defaultValue,
+      parse: (value: string) => (values.includes(value) ? value : defaultValue),
+    }),
+  }),
+  useQueryState: (key: string, parser: { defaultValue: unknown }) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useState(parser.defaultValue)
+  },
+}))
 
 describe('Unit Converter Page', () => {
   beforeEach(() => {

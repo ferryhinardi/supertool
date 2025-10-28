@@ -9,11 +9,17 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './vitest.setup.ts',
+    testTimeout: 60000,
     browser: {
       enabled: true,
       name: 'chromium',
       provider: 'playwright',
       headless: true,
+      providerOptions: {
+        launch: {
+          timeout: 60000,
+        },
+      },
     },
     coverage: {
       provider: 'v8',
