@@ -403,8 +403,9 @@ export default function HashGeneratorPage() {
         className={css({
           display: 'grid',
           gap: '4',
+          w: 'full',
           gridTemplateColumns: {
-            base: '1',
+            base: '1fr',
             sm: 'repeat(2, 1fr)',
             lg: 'repeat(4, 1fr)',
           },

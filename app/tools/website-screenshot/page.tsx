@@ -258,8 +258,13 @@ export default function WebsiteScreenshotPage() {
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1', sm: 'repeat(3, 1fr)' },
-                  gap: '3',
+                  gap: '4',
+                  w: 'full',
+                  gridTemplateColumns: {
+                    base: '1fr',
+                    sm: 'repeat(2, 1fr)',
+                    md: 'repeat(3, 1fr)',
+                  },
                 })}
               >
                 {(Object.keys(DEVICE_SIZES) as DeviceSize[]).map((size) => {
@@ -326,7 +331,8 @@ export default function WebsiteScreenshotPage() {
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+                  w: 'full',
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
                   gap: '3',
                 })}
               >
@@ -521,8 +527,9 @@ export default function WebsiteScreenshotPage() {
         transition={{ delay: 0.3 }}
         className={css({
           display: 'grid',
+          w: 'full',
           gap: '4',
-          gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+          gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
         })}
       >
         {[
