@@ -305,7 +305,6 @@ const tools: Tool[] = [
     features: ['Live Rates', '150+ Currencies', 'Rate History', 'Favorites'],
     category: 'finance',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Pomodoro Timer',

@@ -69,6 +69,13 @@ type ToolEvent =
   | 'gradient_generator_download_png'
   | 'gradient_generator_randomize'
   | 'gradient_generator_reverse'
+  | 'currency_converter_open'
+  | 'currency_converter_convert'
+  | 'currency_converter_swap'
+  | 'currency_converter_rates_loaded'
+  | 'currency_converter_favorite_add'
+  | 'currency_converter_favorite_remove'
+  | 'currency_converter_favorite_load'
 
 // Type-safe gtag wrapper
 declare global {
