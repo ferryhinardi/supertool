@@ -162,29 +162,68 @@ export default function HashGeneratorPage() {
         mx: 'auto',
         maxW: '1400px',
         w: 'full',
-        px: '4',
-        py: '8',
-        spaceY: '8',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="space-y-4 text-center"
+        className={css({ textAlign: 'center', spaceY: '4' })}
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-2">
-          <Hash className="h-5 w-5 text-red-400" />
-          <span className="text-sm font-semibold text-red-300">Cryptographic Hashing</span>
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'red.500/20',
+            bg: 'red.500/10',
+            px: '4',
+            py: '2',
+          })}
+        >
+          <Hash className={css({ h: '5', w: '5', color: 'red.400' })} />
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'red.300',
+            })}
+          >
+            Cryptographic Hashing
+          </span>
         </div>
 
-        <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl">
-          <span className="bg-gradient-to-r from-red-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-            Hash Generator & Verifier
-          </span>
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'bold',
+            bgGradient: 'to-r',
+            gradientFrom: 'red.400',
+            gradientVia: 'pink.400',
+            gradientTo: 'purple.400',
+            bgClip: 'text',
+          })}
+          style={{
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Hash Generator & Verifier
         </h1>
 
-        <p className="mx-auto max-w-2xl text-lg text-gray-400">
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '2xl',
+            fontSize: 'lg',
+            color: 'gray.400',
+          })}
+        >
           Generate cryptographic hashes using multiple algorithms. Hash text or files, and verify
           integrity.
         </p>
@@ -196,30 +235,47 @@ export default function HashGeneratorPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card className="border-gray-800 bg-gray-900/50">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+          })}
+        >
           <CardHeader>
             <CardTitle>Input</CardTitle>
             <CardDescription>Enter text or upload a file to generate hashes</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className={css({ spaceY: '4' })}>
             <Textarea
               placeholder="Enter text to hash..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[150px] font-mono text-sm"
+              className={css({
+                minH: '[150px]',
+                fontFamily: 'mono',
+                fontSize: 'sm',
+              })}
             />
 
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <div className="flex-1">
+            <div
+              className={css({
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4',
+                sm: { flexDirection: 'row' },
+              })}
+            >
+              <div className={css({ flex: '1' })}>
                 <Input
                   type="file"
                   onChange={handleFileUpload}
-                  className="cursor-pointer"
+                  className={css({ cursor: 'pointer' })}
                   accept="*/*"
                 />
               </div>
-              <Button onClick={generateHashes} className="gap-2" disabled={!input}>
-                <Hash className="h-4 w-4" />
+              <Button onClick={generateHashes} className={css({ gap: '2' })} disabled={!input}>
+                <Hash className={css({ h: '4', w: '4' })} />
                 Generate Hashes
               </Button>
             </div>
@@ -232,20 +288,27 @@ export default function HashGeneratorPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="space-y-4"
+        className={css({ spaceY: '4' })}
       >
         {(Object.keys(hashes) as HashAlgorithm[]).map((algorithm) => (
-          <Card key={algorithm} className="border-gray-800 bg-gray-900/50">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">{algorithm}</CardTitle>
+          <Card
+            key={algorithm}
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+            })}
+          >
+            <CardHeader className={css({ pb: '3' })}>
+              <CardTitle className={css({ fontSize: 'lg' })}>{algorithm}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-2">
+              <div className={css({ display: 'flex', gap: '2' })}>
                 <Input
                   value={hashes[algorithm]}
                   readOnly
                   placeholder={`${algorithm} hash will appear here...`}
-                  className="font-mono text-sm"
+                  className={css({ fontFamily: 'mono', fontSize: 'sm' })}
                 />
                 <Button
                   onClick={() => handleCopy(hashes[algorithm])}
@@ -253,7 +316,7 @@ export default function HashGeneratorPage() {
                   size="icon"
                   disabled={!hashes[algorithm]}
                 >
-                  <Copy className="h-4 w-4" />
+                  <Copy className={css({ h: '4', w: '4' })} />
                 </Button>
               </div>
             </CardContent>
@@ -267,13 +330,19 @@ export default function HashGeneratorPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <Card className="border-gray-800 bg-gray-900/50">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+          })}
+        >
           <CardHeader>
             <CardTitle>Verify Hash</CardTitle>
             <CardDescription>Compare generated hash with expected hash</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-2">
+          <CardContent className={css({ spaceY: '4' })}>
+            <div className={css({ display: 'flex', gap: '2' })}>
               <Input
                 placeholder="Paste hash to compare..."
                 value={compareHash}
@@ -281,7 +350,7 @@ export default function HashGeneratorPage() {
                   setCompareHash(e.target.value)
                   setCompareResult(null)
                 }}
-                className="font-mono text-sm"
+                className={css({ fontFamily: 'mono', fontSize: 'sm' })}
               />
               <Button
                 onClick={handleCompare}
@@ -293,21 +362,31 @@ export default function HashGeneratorPage() {
 
             {compareResult !== null && (
               <div
-                className={`flex items-center gap-2 rounded-lg p-4 ${
-                  compareResult
-                    ? 'border border-green-500/20 bg-green-500/10 text-green-400'
-                    : 'border border-red-500/20 bg-red-500/10 text-red-400'
-                }`}
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  rounded: 'lg',
+                  p: '4',
+                  border: '1px solid',
+                  borderColor: compareResult ? 'green.500/20' : 'red.500/20',
+                  bg: compareResult ? 'green.500/10' : 'red.500/10',
+                  color: compareResult ? 'green.400' : 'red.400',
+                })}
               >
                 {compareResult ? (
                   <>
-                    <CheckCircle className="h-5 w-5" />
-                    <span className="font-semibold">Match! Hashes are identical.</span>
+                    <CheckCircle className={css({ h: '5', w: '5' })} />
+                    <span className={css({ fontWeight: 'semibold' })}>
+                      Match! Hashes are identical.
+                    </span>
                   </>
                 ) : (
                   <>
-                    <XCircle className="h-5 w-5" />
-                    <span className="font-semibold">No match. Hashes are different.</span>
+                    <XCircle className={css({ h: '5', w: '5' })} />
+                    <span className={css({ fontWeight: 'semibold' })}>
+                      No match. Hashes are different.
+                    </span>
                   </>
                 )}
               </div>
@@ -321,7 +400,15 @@ export default function HashGeneratorPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className={css({
+          display: 'grid',
+          gap: '4',
+          gridTemplateColumns: {
+            base: '1',
+            sm: 'repeat(2, 1fr)',
+            lg: 'repeat(4, 1fr)',
+          },
+        })}
       >
         {[
           {
@@ -330,14 +417,37 @@ export default function HashGeneratorPage() {
             desc: 'MD5, SHA-1, SHA-256, SHA-384, SHA-512',
           },
           { icon: Upload, title: 'File Hashing', desc: 'Hash any file type' },
-          { icon: CheckCircle, title: 'Verification', desc: 'Compare and verify hashes' },
-          { icon: Copy, title: 'Easy Copy', desc: 'One-click copy to clipboard' },
+          {
+            icon: CheckCircle,
+            title: 'Verification',
+            desc: 'Compare and verify hashes',
+          },
+          {
+            icon: Copy,
+            title: 'Easy Copy',
+            desc: 'One-click copy to clipboard',
+          },
         ].map((feature) => (
-          <Card key={feature.title} className="border-gray-800 bg-gray-900/30">
-            <CardContent className="p-6">
-              <feature.icon className="mb-3 h-8 w-8 text-red-400" />
-              <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
-              <p className="text-sm text-gray-500">{feature.desc}</p>
+          <Card
+            key={feature.title}
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/30',
+            })}
+          >
+            <CardContent className={css({ p: '6' })}>
+              <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'red.400' })} />
+              <h3
+                className={css({
+                  mb: '2',
+                  fontWeight: 'semibold',
+                  color: 'gray.200',
+                })}
+              >
+                {feature.title}
+              </h3>
+              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.desc}</p>
             </CardContent>
           </Card>
         ))}

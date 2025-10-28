@@ -76,6 +76,22 @@ type ToolEvent =
   | 'currency_converter_favorite_add'
   | 'currency_converter_favorite_remove'
   | 'currency_converter_favorite_load'
+  | 'stopwatch_timer_open'
+  | 'stopwatch_start'
+  | 'stopwatch_pause'
+  | 'stopwatch_reset'
+  | 'stopwatch_lap'
+  | 'timer_add'
+  | 'timer_remove'
+  | 'timer_start'
+  | 'timer_pause'
+  | 'timer_reset'
+  | 'timer_complete'
+  | 'timer_preset_save'
+  | 'timer_preset_load'
+  | 'timer_preset_delete'
+  | 'mode_change'
+  | 'notification_permission_request'
 
 // Type-safe gtag wrapper
 declare global {

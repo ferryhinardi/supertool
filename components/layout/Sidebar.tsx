@@ -3,6 +3,7 @@
 import {
   Activity,
   Calendar,
+  Clock,
   Code,
   DollarSign,
   FileCog,
@@ -50,6 +51,7 @@ const navigation = [
     icon: Calendar,
   },
   { name: 'BMI Calculator', href: '/tools/bmi-calculator', icon: Activity },
+  { name: 'Stopwatch & Timer', href: '/tools/stopwatch-timer', icon: Clock },
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },

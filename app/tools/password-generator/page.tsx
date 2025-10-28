@@ -5,7 +5,7 @@ import { parseAsBoolean, parseAsInteger, useQueryState } from 'nuqs'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
@@ -113,47 +113,66 @@ function PasswordGeneratorContent() {
       className={css({
         mx: 'auto',
         maxW: '7xl',
-        spaceY: '8',
-        px: '4',
-        py: '8',
-        md: { px: '6' },
-        lg: { px: '8' },
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
       {/* Header */}
-      <div className={css({ spaceY: '4', textAlign: 'center' })}>
+      <div className={css({ textAlign: 'center', spaceY: '4' })}>
         <div
           className={css({
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
-            justifyContent: 'center',
             gap: '3',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'red.500/30',
+            bg: 'red.500/10',
+            px: '5',
+            py: '2',
+            backdropFilter: 'blur(8px)',
           })}
         >
-          <div
+          <Key className={css({ h: '5', w: '5', color: 'red.400' })} />
+          <span
             className={css({
-              display: 'flex',
-              h: '16',
-              w: '16',
-              alignItems: 'center',
-              justifyContent: 'center',
-              rounded: 'full',
-              bgGradient: 'to-br',
-              gradientFrom: 'red.500',
-              gradientTo: 'pink.500',
-              shadow: 'lg',
-              boxShadow: '0 10px 15px rgba(239, 68, 68, 0.3)',
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'red.300',
             })}
           >
-            <Key className={css({ h: '8', w: '8', color: 'white' })} />
-          </div>
-          <h1
-            className={css({ fontSize: '4xl', fontWeight: 'extrabold', md: { fontSize: '5xl' } })}
-          >
-            Password Generator
-          </h1>
+            Secure Password Generator
+          </span>
         </div>
-        <p className={css({ fontSize: 'lg', color: 'gray.400', mx: 'auto', maxW: '2xl' })}>
+
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'extrabold',
+            bgGradient: 'to-r',
+            gradientFrom: 'red.400',
+            gradientVia: 'pink.400',
+            gradientTo: 'rose.400',
+            bgClip: 'text',
+          })}
+          style={{
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Password Generator
+        </h1>
+
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '3xl',
+            fontSize: { base: 'lg', sm: 'xl' },
+            color: 'gray.400',
+          })}
+        >
           Generate cryptographically secure passwords with customizable length and character sets.
           Includes password strength meter and bulk generation.
         </p>
@@ -162,18 +181,32 @@ function PasswordGeneratorContent() {
       <div
         className={css({
           display: 'grid',
-          gap: '8',
+          gap: { base: '6', sm: '8' },
           lg: { gridTemplateColumns: '2', gridTemplateRows: 'auto' },
         })}
       >
         {/* Password Generator */}
-        <Card className="glass" style={{ padding: '24px' }}>
-          <div className={css({ spaceY: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'red.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+              })}
+            >
               <Shield className={css({ h: '5', w: '5', color: 'red.400' })} />
-              <h2 className={css({ fontSize: '2xl', fontWeight: 'bold' })}>Generate Password</h2>
+              <CardTitle>Generate Password</CardTitle>
             </div>
-
+          </CardHeader>
+          <CardContent className={css({ spaceY: '6' })}>
             {/* Generated Password Display */}
             {password && (
               <div className={css({ spaceY: '4' })}>
@@ -223,7 +256,11 @@ function PasswordGeneratorContent() {
                     })}
                   >
                     <span
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.400' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.400',
+                      })}
                     >
                       Password Strength
                     </span>
@@ -235,10 +272,19 @@ function PasswordGeneratorContent() {
                     </span>
                   </div>
                   <div
-                    className={css({ h: '2', overflow: 'hidden', rounded: 'full', bg: 'gray.800' })}
+                    className={css({
+                      h: '2',
+                      overflow: 'hidden',
+                      rounded: 'full',
+                      bg: 'gray.800',
+                    })}
                   >
                     <div
-                      className={css({ h: 'full', rounded: 'full', transition: 'all 0.3s' })}
+                      className={css({
+                        h: 'full',
+                        rounded: 'full',
+                        transition: 'all 0.3s',
+                      })}
                       style={{
                         width: `${(strength.score / 5) * 100}%`,
                         backgroundColor: strength.color,
@@ -247,7 +293,12 @@ function PasswordGeneratorContent() {
                   </div>
                   {strength.feedback.length > 0 && (
                     <ul
-                      className={css({ spaceY: '1', pl: '4', fontSize: 'sm', color: 'gray.400' })}
+                      className={css({
+                        spaceY: '1',
+                        pl: '4',
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                      })}
                     >
                       {strength.feedback.map((tip) => (
                         <li key={tip}>• {tip}</li>
@@ -273,7 +324,11 @@ function PasswordGeneratorContent() {
                   rounded: 'full',
                   bg: 'gray.700',
                   cursor: 'pointer',
-                  _focusVisible: { outline: 'none', ring: '2px', ringColor: 'red.500' },
+                  _focusVisible: {
+                    outline: 'none',
+                    ring: '2px',
+                    ringColor: 'red.500',
+                  },
                 })}
               />
               <div
@@ -292,12 +347,34 @@ function PasswordGeneratorContent() {
             {/* Character Sets */}
             <div className={css({ spaceY: '3' })}>
               <FieldLabel>Character Types</FieldLabel>
-              <div className={css({ display: 'grid', gap: '3', sm: { gridTemplateColumns: '2' } })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gap: '3',
+                  sm: { gridTemplateColumns: '2' },
+                })}
+              >
                 {[
-                  { key: 'uppercase' as const, label: 'Uppercase (A-Z)', example: 'ABC' },
-                  { key: 'lowercase' as const, label: 'Lowercase (a-z)', example: 'abc' },
-                  { key: 'numbers' as const, label: 'Numbers (0-9)', example: '123' },
-                  { key: 'symbols' as const, label: 'Symbols (!@#)', example: '!@#' },
+                  {
+                    key: 'uppercase' as const,
+                    label: 'Uppercase (A-Z)',
+                    example: 'ABC',
+                  },
+                  {
+                    key: 'lowercase' as const,
+                    label: 'Lowercase (a-z)',
+                    example: 'abc',
+                  },
+                  {
+                    key: 'numbers' as const,
+                    label: 'Numbers (0-9)',
+                    example: '123',
+                  },
+                  {
+                    key: 'symbols' as const,
+                    label: 'Symbols (!@#)',
+                    example: '!@#',
+                  },
                 ].map(({ key, label, example }) => (
                   <label
                     key={key}
@@ -312,7 +389,10 @@ function PasswordGeneratorContent() {
                       p: '3',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
-                      _hover: { borderColor: 'red.500/70', bg: 'rgba(239, 68, 68, 0.15)' },
+                      _hover: {
+                        borderColor: 'red.500/70',
+                        bg: 'rgba(239, 68, 68, 0.15)',
+                      },
                     })}
                   >
                     <input
@@ -330,9 +410,20 @@ function PasswordGeneratorContent() {
                       })}
                     />
                     <div className={css({ flex: '1' })}>
-                      <div className={css({ fontSize: 'sm', fontWeight: 'medium' })}>{label}</div>
                       <div
-                        className={css({ fontFamily: 'mono', fontSize: 'xs', color: 'gray.500' })}
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                        })}
+                      >
+                        {label}
+                      </div>
+                      <div
+                        className={css({
+                          fontFamily: 'mono',
+                          fontSize: 'xs',
+                          color: 'gray.500',
+                        })}
                       >
                         {example}
                       </div>
@@ -351,7 +442,12 @@ function PasswordGeneratorContent() {
             <Button
               onClick={handleGenerate}
               disabled={!atLeastOneSelected}
-              className={css({ w: 'full', h: '12', fontSize: 'lg', fontWeight: 'bold' })}
+              className={css({
+                w: 'full',
+                h: '12',
+                fontSize: 'lg',
+                fontWeight: 'bold',
+              })}
               style={{
                 background: 'linear-gradient(135deg, #ef4444, #ec4899)',
               }}
@@ -359,17 +455,31 @@ function PasswordGeneratorContent() {
               <RefreshCw className={css({ h: '5', w: '5' })} />
               Generate Password
             </Button>
-          </div>
+          </CardContent>
         </Card>
 
         {/* Bulk Generation */}
-        <Card className="glass" style={{ padding: '24px' }}>
-          <div className={css({ spaceY: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'yellow.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+              })}
+            >
               <Zap className={css({ h: '5', w: '5', color: 'yellow.400' })} />
-              <h2 className={css({ fontSize: '2xl', fontWeight: 'bold' })}>Bulk Generation</h2>
+              <CardTitle>Bulk Generation</CardTitle>
             </div>
-
+          </CardHeader>
+          <CardContent className={css({ spaceY: '6' })}>
             <Field>
               <FieldLabel>Number of Passwords</FieldLabel>
               <FieldInput
@@ -412,7 +522,13 @@ function PasswordGeneratorContent() {
                     justifyContent: 'space-between',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.400' })}>
+                  <p
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.400',
+                    })}
+                  >
                     Generated {bulkPasswords.length} passwords
                   </p>
                   <Button
@@ -468,41 +584,63 @@ function PasswordGeneratorContent() {
                 </div>
               </div>
             )}
-          </div>
+          </CardContent>
         </Card>
       </div>
 
       {/* Security Notice */}
       <Card
         className={css({
-          border: '1px solid rgba(59, 130, 246, 0.2)',
-          bg: 'rgba(59, 130, 246, 0.05)',
+          border: '1px solid',
+          borderColor: 'blue.500/20',
+          bg: 'blue.500/5',
+          backdropFilter: 'blur(16px)',
         })}
-        style={{ padding: '20px' }}
       >
-        <div className={css({ display: 'flex', gap: '4', alignItems: 'start' })}>
-          <Shield className={css({ h: '6', w: '6', color: 'blue.400', flexShrink: '0' })} />
-          <div className={css({ spaceY: '2' })}>
-            <h3 className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'blue.400' })}>
-              Security Notice
-            </h3>
-            <ul className={css({ spaceY: '1', fontSize: 'sm', color: 'gray.400' })}>
-              <li>
-                • Passwords are generated using cryptographically secure random numbers
-                (crypto.getRandomValues)
-              </li>
-              <li>
-                • All generation happens locally in your browser - no data is sent to any server
-              </li>
-              <li>
-                • For maximum security, use passwords with at least 16 characters and all character
-                types
-              </li>
-              <li>• Never reuse passwords across different accounts</li>
-              <li>• Consider using a password manager to store generated passwords securely</li>
-            </ul>
+        <CardContent className={css({ py: '6' })}>
+          <div className={css({ display: 'flex', gap: '4', alignItems: 'start' })}>
+            <Shield
+              className={css({
+                h: '6',
+                w: '6',
+                color: 'blue.400',
+                flexShrink: '0',
+              })}
+            />
+            <div className={css({ spaceY: '2' })}>
+              <h3
+                className={css({
+                  fontSize: 'lg',
+                  fontWeight: 'semibold',
+                  color: 'blue.300',
+                })}
+              >
+                Security Notice
+              </h3>
+              <ul
+                className={css({
+                  spaceY: '2',
+                  fontSize: 'sm',
+                  color: 'gray.400',
+                })}
+              >
+                <li>
+                  • Passwords are generated using cryptographically secure random numbers
+                  (crypto.getRandomValues)
+                </li>
+                <li>
+                  • All generation happens locally in your browser - no data is sent to any server
+                </li>
+                <li>
+                  • For maximum security, use passwords with at least 16 characters and all
+                  character types
+                </li>
+                <li>• Never reuse passwords across different accounts</li>
+                <li>• Consider using a password manager to store generated passwords securely</li>
+              </ul>
+            </div>
           </div>
-        </div>
+        </CardContent>
       </Card>
     </main>
   )

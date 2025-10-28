@@ -154,7 +154,17 @@ import { trackToolEvent } from "@/lib/analytics";
 </div>
 ```
 
-**Reference**: Always look at `app/tools/unit-converter/page.tsx` as the canonical example of correct Panda CSS usage in tool pages.
+**Reference**: Always look at `app/tools/unit-converter/page.tsx` as the canonical example of correct Panda CSS usage in tool pages. **DO NOT reference `app/tools/password-generator/page.tsx`, `app/tools/hash-generator/page.tsx`, or any other tool page** - many other pages have inconsistent or outdated styling patterns that don't follow the established conventions.
+
+**Common Mistakes to Avoid:**
+
+- ❌ Using `className="glass"` with inline `style={{ padding: '24px' }}` on Card components
+- ❌ Using non-responsive padding like `px: '4', py: '8'` instead of responsive objects like `px: { base: '4', sm: '6', md: '8' }`
+- ❌ Using Tailwind utility classes directly like `className="space-y-4 text-center"` instead of `className={css({ spaceY: '4', textAlign: 'center' })}`
+- ❌ Using template literals with conditional classes like `className={\`flex gap-2 \${condition ? 'bg-green-500' : 'bg-red-500'}\`}` instead of Panda CSS
+- ❌ Missing `w: 'full'` on main container
+- ❌ Using plain `<h2>` tags instead of `<CardTitle>` in Card headers
+- ❌ Wrapping Card content in extra `<div className={css({ spaceY: '6' })}>` when `CardContent` has built-in padding
 
 ### Component Patterns
 
@@ -206,6 +216,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { trackToolEvent } from "@/lib/analytics";
 import { css } from "@/styled-system/css";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 export default function ToolPage() {
   const handleAction = () => {
@@ -224,10 +241,44 @@ export default function ToolPage() {
         spaceY: { base: "6", sm: "8", md: "10" },
       })}
     >
-      <h1 className={css({ fontSize: "4xl", fontWeight: "extrabold" })}>
-        Tool Name
-      </h1>
-      {/* Tool implementation */}
+      {/* Header with gradient title */}
+      <div className={css({ textAlign: "center", spaceY: "4" })}>
+        <h1
+          className={css({
+            fontSize: { base: "4xl", sm: "5xl", md: "6xl" },
+            fontWeight: "extrabold",
+            bgGradient: "to-r",
+            gradientFrom: "blue.400",
+            gradientVia: "cyan.400",
+            gradientTo: "teal.400",
+            bgClip: "text",
+          })}
+          style={{
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Tool Name
+        </h1>
+      </div>
+
+      {/* Card with proper structure */}
+      <Card
+        className={css({
+          border: "1px solid",
+          borderColor: "blue.500/20",
+          bg: "gray.900/50",
+          backdropFilter: "blur(16px)",
+        })}
+      >
+        <CardHeader>
+          <CardTitle>Section Title</CardTitle>
+          <CardDescription>Section description</CardDescription>
+        </CardHeader>
+        <CardContent className={css({ spaceY: "6" })}>
+          {/* Card content - CardContent already has padding */}
+        </CardContent>
+      </Card>
     </main>
   );
 }

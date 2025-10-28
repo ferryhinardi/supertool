@@ -413,7 +413,16 @@ const tools: Tool[] = [
     gradient: 'from-cyan-500 to-blue-500',
     features: ['Multiple Timers', 'Lap Times', 'Presets', 'Alarm Sounds'],
     category: 'productivity',
-    comingSoon: true,
+  },
+  {
+    title: 'Tally Counter',
+    description:
+      'Simple and effective tally counter for counting events, inventory, or attendance. Features increment, decrement, reset functions, and customizable step values.',
+    icon: Star,
+    href: '/tools/tally-counter',
+    gradient: 'from-yellow-500 to-orange-500',
+    features: ['Increment/Decrement', 'Reset', 'Custom Steps', 'Keyboard Support'],
+    category: 'productivity',
   },
   {
     title: 'JSON to CSV Converter',
@@ -502,9 +511,29 @@ const tools: Tool[] = [
     features: ['Task Overview', 'Time Tracking', 'Productivity Insights', 'Download'],
     category: 'productivity',
   },
+  {
+    title: 'Prompt Formatter',
+    description:
+      'Format and optimize prompts for AI models. Enhance clarity and structure to get better responses from language models.',
+    icon: Wand2,
+    href: '/tools/prompt-formatter',
+    gradient: 'from-purple-500 to-pink-500',
+    features: [
+      'Prompt Optimization',
+      'AI Model Compatibility',
+      'Real-time Preview',
+      'Downloadable Templates',
+    ],
+    category: 'development',
+    comingSoon: true,
+  },
 ]
 
-const categories: { value: ToolCategory; label: string; icon: React.ElementType }[] = [
+const categories: {
+  value: ToolCategory
+  label: string
+  icon: React.ElementType
+}[] = [
   { value: 'all', label: 'All Tools', icon: LayoutGrid },
   { value: 'data', label: 'Data', icon: FileJson },
   { value: 'development', label: 'Development', icon: Terminal },
@@ -605,7 +634,14 @@ export default function HomePage() {
       })}
     >
       {/* Subtle background gradients */}
-      <div className={css({ pointerEvents: 'none', position: 'fixed', inset: '0', zIndex: '0' })}>
+      <div
+        className={css({
+          pointerEvents: 'none',
+          position: 'fixed',
+          inset: '0',
+          zIndex: '0',
+        })}
+      >
         <div
           className={css({
             position: 'absolute',
@@ -674,7 +710,13 @@ export default function HomePage() {
           })}
         >
           <Sparkles className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'base', fontWeight: 'semibold', color: 'purple.300' })}>
+          <span
+            className={css({
+              fontSize: 'base',
+              fontWeight: 'semibold',
+              color: 'purple.300',
+            })}
+          >
             {stats.total} Professional Tools for Daily Use
           </span>
         </div>
@@ -741,7 +783,9 @@ export default function HomePage() {
       >
         {/* Search Input */}
         <div
-          className={css({ w: { base: 'full', sm: '85%', md: '75%', lg: '60%' } })}
+          className={css({
+            w: { base: 'full', sm: '85%', md: '75%', lg: '60%' },
+          })}
           style={{ margin: '0 auto' }}
         >
           <Field>
@@ -1062,7 +1106,13 @@ export default function HomePage() {
                   bg: 'purple.400',
                 })}
               />
-              <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'purple.300' })}>
+              <p
+                className={css({
+                  fontSize: 'sm',
+                  fontWeight: 'medium',
+                  color: 'purple.300',
+                })}
+              >
                 {filteredTools.length} {filteredTools.length === 1 ? 'result' : 'results'}
                 {selectedCategory !== 'all' &&
                   ` in ${categories.find((c) => c.value === selectedCategory)?.label}`}
@@ -1168,7 +1218,12 @@ export default function HomePage() {
                 />
               </div>
               <h3
-                className={css({ mb: '3', fontSize: '2xl', fontWeight: 'bold', color: 'gray.300' })}
+                className={css({
+                  mb: '3',
+                  fontSize: '2xl',
+                  fontWeight: 'bold',
+                  color: 'gray.300',
+                })}
               >
                 No tools found
               </h3>
@@ -1184,7 +1239,12 @@ export default function HomePage() {
                 {searchQuery ? (
                   <>
                     No results for{' '}
-                    <span className={css({ fontWeight: 'semibold', color: 'purple.400' })}>
+                    <span
+                      className={css({
+                        fontWeight: 'semibold',
+                        color: 'purple.400',
+                      })}
+                    >
                       &quot;{searchQuery}&quot;
                     </span>
                   </>
@@ -1192,7 +1252,14 @@ export default function HomePage() {
                   'No tools match the selected filters'
                 )}
               </p>
-              <p className={css({ mb: '8', maxW: 'md', fontSize: 'sm', color: 'gray.600' })}>
+              <p
+                className={css({
+                  mb: '8',
+                  maxW: 'md',
+                  fontSize: 'sm',
+                  color: 'gray.600',
+                })}
+              >
                 Try adjusting your search or filters to find what you&apos;re looking for
               </p>
               <div className={css({ display: 'flex', gap: '3' })}>
@@ -1256,13 +1323,21 @@ export default function HomePage() {
         <div
           className={css({
             display: 'grid',
-            gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
+            gridTemplateColumns: {
+              base: 'repeat(2, 1fr)',
+              sm: 'repeat(4, 1fr)',
+            },
             gap: '8',
           })}
         >
           <div className={css({ textAlign: 'center' })}>
             <div
-              className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'purple.400' })}
+              className={css({
+                mb: '2',
+                fontSize: '4xl',
+                fontWeight: 'bold',
+                color: 'purple.400',
+              })}
             >
               {stats.active}
             </div>
@@ -1283,7 +1358,12 @@ export default function HomePage() {
           </div>
           <div className={css({ textAlign: 'center' })}>
             <div
-              className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'pink.400' })}
+              className={css({
+                mb: '2',
+                fontSize: '4xl',
+                fontWeight: 'bold',
+                color: 'pink.400',
+              })}
             >
               {stats.total}
             </div>
@@ -1304,7 +1384,12 @@ export default function HomePage() {
           </div>
           <div className={css({ textAlign: 'center' })}>
             <div
-              className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'blue.400' })}
+              className={css({
+                mb: '2',
+                fontSize: '4xl',
+                fontWeight: 'bold',
+                color: 'blue.400',
+              })}
             >
               {stats.popular}
             </div>
@@ -1325,7 +1410,12 @@ export default function HomePage() {
           </div>
           <div className={css({ textAlign: 'center' })}>
             <div
-              className={css({ mb: '2', fontSize: '4xl', fontWeight: 'bold', color: 'cyan.400' })}
+              className={css({
+                mb: '2',
+                fontSize: '4xl',
+                fontWeight: 'bold',
+                color: 'cyan.400',
+              })}
             >
               {stats.new}
             </div>
@@ -1464,7 +1554,13 @@ function ToolCard({
             })}
             style={{ padding: '20px' }}
           >
-            <div className={css({ display: 'flex', alignItems: 'flex-start', gap: '5' })}>
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '5',
+              })}
+            >
               <motion.div
                 className={css({
                   flexShrink: 0,
@@ -1492,7 +1588,11 @@ function ToolCard({
                   })}
                 >
                   <CardTitle
-                    className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'gray.100' })}
+                    className={css({
+                      fontSize: 'xl',
+                      fontWeight: 'bold',
+                      color: 'gray.100',
+                    })}
                   >
                     {tool.title}
                   </CardTitle>
@@ -1557,7 +1657,13 @@ function ToolCard({
                   {tool.description}
                 </CardDescription>
 
-                <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '2',
+                  })}
+                >
                   {tool.features.map((feature) => (
                     <Badge
                       key={feature}
@@ -1659,12 +1765,23 @@ function ToolCard({
                 <Icon className={css({ h: '7', w: '7', color: 'white' })} />
               </motion.div>
 
-              <div className={css({ display: 'flex', flexDirection: 'column', gap: '1' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1',
+                })}
+              >
                 {tool.popular && (
                   <Badge
                     variant="secondary"
                     size="sm"
-                    className={css({ bg: 'orange.500/20', px: '2', py: '1', color: 'orange.300' })}
+                    className={css({
+                      bg: 'orange.500/20',
+                      px: '2',
+                      py: '1',
+                      color: 'orange.300',
+                    })}
                   >
                     <TrendingUp className={css({ h: '3.5', w: '3.5' })} />
                   </Badge>
@@ -1674,7 +1791,12 @@ function ToolCard({
                   <Badge
                     variant="secondary"
                     size="sm"
-                    className={css({ bg: 'blue.500/20', px: '2', py: '1', color: 'blue.300' })}
+                    className={css({
+                      bg: 'blue.500/20',
+                      px: '2',
+                      py: '1',
+                      color: 'blue.300',
+                    })}
                   >
                     <Sparkles className={css({ h: '3.5', w: '3.5' })} />
                   </Badge>
@@ -1723,7 +1845,14 @@ function ToolCard({
               </CardDescription>
             </div>
 
-            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '1.5', pt: '2' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '1.5',
+                pt: '2',
+              })}
+            >
               {tool.features.slice(0, 3).map((feature) => (
                 <Badge
                   key={feature}
