@@ -181,8 +181,10 @@ function PasswordGeneratorContent() {
       <div
         className={css({
           display: 'grid',
-          gap: { base: '6', sm: '8' },
-          gridTemplateColumns: { base: '1', lg: '2' },
+          gap: { base: '6', lg: '8' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
+          w: 'full',
+          mb: { base: '8', lg: '10' },
         })}
       >
         {/* Password Generator */}
@@ -192,6 +194,7 @@ function PasswordGeneratorContent() {
             borderColor: 'red.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
+            w: 'full',
           })}
         >
           <CardHeader>
@@ -465,6 +468,7 @@ function PasswordGeneratorContent() {
             borderColor: 'yellow.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
+            w: 'full',
           })}
         >
           <CardHeader>
@@ -595,6 +599,7 @@ function PasswordGeneratorContent() {
           borderColor: 'blue.500/20',
           bg: 'blue.500/5',
           backdropFilter: 'blur(16px)',
+          w: 'full',
         })}
       >
         <CardContent className={css({ py: '6' })}>
