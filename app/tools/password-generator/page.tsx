@@ -182,7 +182,7 @@ function PasswordGeneratorContent() {
         className={css({
           display: 'grid',
           gap: { base: '6', sm: '8' },
-          lg: { gridTemplateColumns: '2', gridTemplateRows: 'auto' },
+          gridTemplateColumns: { base: '1', lg: '2' },
         })}
       >
         {/* Password Generator */}
@@ -217,7 +217,7 @@ function PasswordGeneratorContent() {
                     rounded: 'lg',
                     border: '2px solid',
                     borderColor: 'gray.700',
-                    bg: 'rgba(17, 24, 39, 0.5)',
+                    bg: 'gray.900/50',
                     p: '4',
                   })}
                 >
@@ -351,7 +351,7 @@ function PasswordGeneratorContent() {
                 className={css({
                   display: 'grid',
                   gap: '3',
-                  sm: { gridTemplateColumns: '2' },
+                  gridTemplateColumns: { base: '1', sm: '2' },
                 })}
               >
                 {[
@@ -385,13 +385,13 @@ function PasswordGeneratorContent() {
                       rounded: 'lg',
                       border: '1px solid',
                       borderColor: options[key] ? 'red.500/50' : 'gray.700',
-                      bg: options[key] ? 'rgba(239, 68, 68, 0.1)' : 'rgba(17, 24, 39, 0.3)',
+                      bg: options[key] ? 'red.500/10' : 'gray.900/30',
                       p: '3',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
                       _hover: {
                         borderColor: 'red.500/70',
-                        bg: 'rgba(239, 68, 68, 0.15)',
+                        bg: 'red.500/15',
                       },
                     })}
                   >
@@ -547,7 +547,7 @@ function PasswordGeneratorContent() {
                     rounded: 'lg',
                     border: '1px solid',
                     borderColor: 'gray.700',
-                    bg: 'rgba(17, 24, 39, 0.3)',
+                    bg: 'gray.900/30',
                     p: '3',
                   })}
                 >
@@ -560,9 +560,9 @@ function PasswordGeneratorContent() {
                           alignItems: 'center',
                           gap: '2',
                           rounded: 'md',
-                          bg: 'rgba(17, 24, 39, 0.5)',
+                          bg: 'gray.900/50',
                           p: '2',
-                          _hover: { bg: 'rgba(17, 24, 39, 0.7)' },
+                          _hover: { bg: 'gray.900/70' },
                         })}
                       >
                         <span

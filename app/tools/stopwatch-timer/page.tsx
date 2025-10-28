@@ -80,7 +80,7 @@ function StopwatchTimerContent() {
 
   // Notification permission
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>(
-    typeof window !== 'undefined' ? Notification.permission : 'default'
+    typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'default'
   )
 
   // Track page visit
@@ -125,7 +125,7 @@ function StopwatchTimerContent() {
       }
 
       // Show browser notification
-      if (notificationPermission === 'granted') {
+      if (notificationPermission === 'granted' && 'Notification' in window) {
         new Notification('Timer Complete!', {
           body: `${timer.name} has finished`,
           icon: '/icon.png',
@@ -281,7 +281,7 @@ function StopwatchTimerContent() {
   }
 
   const requestNotificationPermission = async () => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || !('Notification' in window)) return
     if (Notification.permission === 'granted') {
       setNotificationPermission('granted')
       return
