@@ -6,6 +6,12 @@ interface ToolMetadataParams {
   keywords?: string[]
   category?: string
   path: string
+  ogImage?: string
+}
+
+interface BreadcrumbItem {
+  name: string
+  url: string
 }
 
 export function generateToolMetadata({
@@ -14,10 +20,12 @@ export function generateToolMetadata({
   keywords = [],
   category = 'web tools',
   path,
+  ogImage,
 }: ToolMetadataParams): Metadata {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.dev'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
   const fullUrl = `${baseUrl}${path}`
   const fullTitle = `${title} | SuperTool`
+  const imageUrl = ogImage || `${baseUrl}/og-image.png`
 
   const defaultKeywords = [
     'free online tool',
@@ -39,7 +47,7 @@ export function generateToolMetadata({
       type: 'website',
       images: [
         {
-          url: `${baseUrl}/og-image.png`,
+          url: imageUrl,
           width: 1200,
           height: 630,
           alt: title,
@@ -50,7 +58,7 @@ export function generateToolMetadata({
       card: 'summary_large_image',
       title: fullTitle,
       description,
-      images: [`${baseUrl}/og-image.png`],
+      images: [imageUrl],
     },
     alternates: {
       canonical: fullUrl,
@@ -61,4 +69,17 @@ export function generateToolMetadata({
     },
     category,
   }
+}
+
+/**
+ * Generate breadcrumb items for a tool page
+ * @param toolName - The display name of the tool
+ * @returns Array of breadcrumb items
+ */
+export function generateToolBreadcrumbs(toolName: string): BreadcrumbItem[] {
+  return [
+    { name: 'Home', url: '/' },
+    { name: 'Tools', url: '/' },
+    { name: toolName, url: '' }, // Current page, no URL
+  ]
 }

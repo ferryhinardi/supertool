@@ -10,18 +10,20 @@ import { css } from '@/styled-system/css/css.mjs'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.dev'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: 'SuperTool - Modern Developer Toolkit',
+    default: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
     template: '%s | SuperTool',
   },
   description:
-    'Professional toolkit with 40+ tools for developers and productivity enthusiasts. JSON formatter, image optimizer, video converter, password generator, and more - all free and privacy-focused.',
+    'Professional toolkit with 40+ free tools for developers and productivity enthusiasts. JSON formatter, image optimizer, video converter, password generator, and more - all free, fast, and privacy-focused. No registration required.',
   keywords: [
     'developer tools',
+    'online tools indonesia',
+    'free web tools',
     'json formatter',
     'json beautifier',
     'image optimizer',
@@ -40,6 +42,8 @@ export const metadata: Metadata = {
     'online tools',
     'free tools',
     'developer utilities',
+    'alat developer',
+    'tools gratis',
   ],
   authors: [{ name: 'Ferry Hinardi', url: 'https://github.com/ferryhinardi' }],
   creator: 'Ferry Hinardi',
@@ -55,12 +59,15 @@ export const metadata: Metadata = {
       { url: '/favicon.png', type: 'image/png' },
       { url: '/icon.png', type: 'image/png', sizes: '32x32' },
     ],
+    apple: [{ url: '/icon.png', type: 'image/png', sizes: '180x180' }],
   },
+  manifest: '/manifest.json',
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: 'id_ID',
+    alternateLocale: ['en_US'],
     url: baseUrl,
-    title: 'SuperTool - Modern Developer Toolkit',
+    title: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
     description:
       'Professional toolkit with 40+ tools for developers and productivity. JSON formatter, image optimizer, video converter, and more - all free and privacy-focused.',
     siteName: 'SuperTool',
@@ -70,16 +77,18 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt: 'SuperTool - Modern Developer Toolkit',
+        type: 'image/png',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SuperTool - Modern Developer Toolkit',
+    title: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
     description:
       'Professional toolkit with 40+ tools for developers and productivity. All free and privacy-focused.',
     creator: '@ferryhinardi',
     images: [`${baseUrl}/og-image.png`],
+    site: '@supertool_id',
   },
   robots: {
     index: true,
@@ -94,15 +103,22 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: baseUrl,
+    languages: {
+      'id-ID': baseUrl,
+      'en-US': baseUrl,
+    },
   },
   category: 'technology',
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="id" className={inter.className}>
       <body
         className={css({
           display: 'flex',

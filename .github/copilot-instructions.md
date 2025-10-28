@@ -318,6 +318,64 @@ Every user action must call `trackToolEvent()` from `@/lib/analytics`. Never tra
 
 **Event Pattern**: `trackToolEvent('json_beautify', { success: true, input_length: 100 })`
 
+### SEO & Structured Data
+
+**Metadata**: Use `generateToolMetadata()` from `@/lib/metadata` in tool layouts. It handles OpenGraph, Twitter cards, and JSON-LD structured data automatically.
+
+**Breadcrumbs & FAQs**: Add breadcrumb navigation and FAQ structured data to tool layouts for rich snippets in search results:
+
+```tsx
+import type { Metadata } from 'next'
+import Script from 'next/script'
+import { generateToolMetadata, generateToolBreadcrumbs } from '@/lib/metadata'
+import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-data'
+
+export const metadata: Metadata = generateToolMetadata({
+  title: 'Tool Name',
+  description: 'SEO-optimized description',
+  keywords: ['keyword1', 'keyword2'],
+  category: 'development',
+  path: '/tools/tool-name',
+})
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
+const breadcrumbs = generateToolBreadcrumbs('Tool Name')
+
+const faqs = [
+  {
+    question: 'What is this tool?',
+    answer: 'Comprehensive answer with keywords for SEO.',
+  },
+  // Add 3-4 FAQs per tool
+]
+
+export default function ToolLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      {children}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbs, baseUrl)),
+        }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateFAQSchema(faqs)),
+        }}
+      />
+    </>
+  )
+}
+```
+
+**Important**: Always add `biome-ignore` comment before `dangerouslySetInnerHTML` when used for JSON-LD structured data. This is a safe use case and the comment suppresses false-positive security warnings.
+
 ### Adding New Tools Checklist
 
 **IMPORTANT**: Always read this checklist before creating a plan for adding new tools.

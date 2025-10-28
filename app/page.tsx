@@ -54,7 +54,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput } from '@/components/ui/field'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { generateOrganizationSchema, generateWebApplicationSchema } from '@/lib/structured-data'
+import {
+  generateOrganizationSchema,
+  generateWebApplicationSchema,
+  generateWebSiteSchema,
+} from '@/lib/structured-data'
 import { css } from '@/styled-system/css'
 
 type ToolCategory =
@@ -1378,14 +1382,22 @@ export default function HomePage() {
 
       {/* Structured Data for SEO */}
       <Script
+        id="structured-data-website"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe - JSON.stringify ensures proper escaping of structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            generateWebSiteSchema(process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id')
+          ),
+        }}
+      />
+      <Script
         id="structured-data-webapp"
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe - JSON.stringify ensures proper escaping of structured data
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
-            generateWebApplicationSchema(
-              process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.dev'
-            )
+            generateWebApplicationSchema(process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id')
           ),
         }}
       />
@@ -1395,7 +1407,7 @@ export default function HomePage() {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe - JSON.stringify ensures proper escaping of structured data
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
-            generateOrganizationSchema(process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.dev')
+            generateOrganizationSchema(process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id')
           ),
         }}
       />

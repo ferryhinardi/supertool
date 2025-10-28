@@ -1,15 +1,14 @@
 import type { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.dev'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
   const currentDate = new Date()
 
-  // List of all tools
-  const tools = [
-    'json-beautify',
-    'split-bill',
+  // List of all tools with priority levels
+  const popularTools = ['json-beautify', 'password-generator', 'split-bill']
+
+  const activeTools = [
     'qr-code',
-    'password-generator',
     'diff',
     'markdown-editor',
     'url-shortener',
@@ -28,6 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'encryption-tool',
     'gradient-generator',
     'website-screenshot',
+    'ip-lookup',
   ]
 
   // Home page
@@ -40,13 +40,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
-  // Add all tool pages
-  tools.forEach((tool) => {
+  // Add popular tool pages (higher priority)
+  popularTools.forEach((tool) => {
     routes.push({
       url: `${baseUrl}/tools/${tool}`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.9,
+    })
+  })
+
+  // Add active tool pages
+  activeTools.forEach((tool) => {
+    routes.push({
+      url: `${baseUrl}/tools/${tool}`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.7,
     })
   })
 
