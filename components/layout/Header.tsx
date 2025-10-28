@@ -8,7 +8,7 @@ export default function Header() {
       <h1 className="text-lg font-semibold">Dashboard</h1>
       <div className="flex items-center gap-3">
         <FeedbackDialog />
-        <button className="text-neutral-400 transition-colors hover:text-white">
+        <button type="button" className="text-neutral-400 transition-colors hover:text-white">
           Theme Toggle (coming soon)
         </button>
       </div>

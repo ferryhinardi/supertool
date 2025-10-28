@@ -76,6 +76,7 @@ export function DragDropZone({
   }
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: div required for drag-and-drop functionality
     <div
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}

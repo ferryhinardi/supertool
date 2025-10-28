@@ -1,7 +1,8 @@
 'use client'
 
 import { Copy, Download, Key, RefreshCw, Shield, Zap } from 'lucide-react'
-import { useState } from 'react'
+import { parseAsBoolean, parseAsInteger, useQueryState } from 'nuqs'
+import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -18,17 +19,23 @@ interface PasswordOptions {
   symbols: boolean
 }
 
-export default function PasswordGeneratorPage() {
+function PasswordGeneratorContent() {
   const [password, setPassword] = useState('')
   const [bulkPasswords, setBulkPasswords] = useState<string[]>([])
-  const [options, setOptions] = useState<PasswordOptions>({
-    length: 16,
-    uppercase: true,
-    lowercase: true,
-    numbers: true,
-    symbols: true,
-  })
+  const [length, setLength] = useQueryState('length', parseAsInteger.withDefault(16))
+  const [uppercase, setUppercase] = useQueryState('uppercase', parseAsBoolean.withDefault(true))
+  const [lowercase, setLowercase] = useQueryState('lowercase', parseAsBoolean.withDefault(true))
+  const [numbers, setNumbers] = useQueryState('numbers', parseAsBoolean.withDefault(true))
+  const [symbols, setSymbols] = useQueryState('symbols', parseAsBoolean.withDefault(true))
   const [bulkCount, setBulkCount] = useState(10)
+
+  const options: PasswordOptions = {
+    length,
+    uppercase,
+    lowercase,
+    numbers,
+    symbols,
+  }
 
   const strength = calculateStrength(password)
 
@@ -91,7 +98,11 @@ export default function PasswordGeneratorPage() {
   }
 
   const updateOption = <K extends keyof PasswordOptions>(key: K, value: PasswordOptions[K]) => {
-    setOptions((prev) => ({ ...prev, [key]: value }))
+    if (key === 'length') setLength(value as number)
+    else if (key === 'uppercase') setUppercase(value as boolean)
+    else if (key === 'lowercase') setLowercase(value as boolean)
+    else if (key === 'numbers') setNumbers(value as boolean)
+    else if (key === 'symbols') setSymbols(value as boolean)
   }
 
   const atLeastOneSelected =
@@ -494,5 +505,13 @@ export default function PasswordGeneratorPage() {
         </div>
       </Card>
     </main>
+  )
+}
+
+export default function PasswordGeneratorPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PasswordGeneratorContent />
+    </Suspense>
   )
 }

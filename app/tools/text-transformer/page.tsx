@@ -20,13 +20,16 @@ import {
   Sparkles,
   Type,
 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { parseAsBoolean, parseAsString, useQueryState } from 'nuqs'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent, trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
+
+export const dynamic = 'force-dynamic'
 
 type TransformOperation =
   | 'uppercase'
@@ -192,22 +195,21 @@ const transformButtons: TransformButton[] = [
   },
 ]
 
-export default function TextTransformerPage() {
-  const [inputText, setInputText] = useState('')
-  const [findText, setFindText] = useState('')
-  const [replaceText, setReplaceText] = useState('')
-  const [useRegex, setUseRegex] = useState(false)
-  const [caseSensitive, setCaseSensitive] = useState(false)
+function TextTransformerContent() {
+  const [inputText, setInputText] = useQueryState('text', { defaultValue: '' })
+  const [findText, setFindText] = useQueryState('find', { defaultValue: '' })
+  const [replaceText, setReplaceText] = useQueryState('replace', { defaultValue: '' })
+  const [useRegex, setUseRegex] = useQueryState('regex', parseAsBoolean.withDefault(false))
+  const [caseSensitive, setCaseSensitive] = useQueryState('case', parseAsBoolean.withDefault(false))
+  const [selectedCategory, setSelectedCategory] = useQueryState(
+    'category',
+    parseAsString.withDefault('all')
+  )
   const [copied, setCopied] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
   // Track page visit
   useEffect(() => {
-    trackEvent({
-      action: 'page_view',
-      category: 'text_transformer',
-      label: 'tool_opened',
-    })
+    trackToolEvent('text_transformer_open', {})
   }, [])
 
   // Text statistics
@@ -393,6 +395,7 @@ export default function TextTransformerPage() {
     setReplaceText('')
     setUseRegex(false)
     setCaseSensitive(false)
+    setSelectedCategory('all')
   }
 
   const categories = [
@@ -771,5 +774,13 @@ export default function TextTransformerPage() {
         </motion.div>
       </div>
     </main>
+  )
+}
+
+export default function TextTransformerPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TextTransformerContent />
+    </Suspense>
   )
 }

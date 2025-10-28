@@ -3,7 +3,8 @@
 import { json } from '@codemirror/lang-json'
 import CodeMirror from '@uiw/react-codemirror'
 import { Copy, Download, FileJson, Minimize2, Sparkles } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useQueryState } from 'nuqs'
+import { Suspense, useMemo } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,10 +12,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
-export default function JSONBeautifyPage() {
-  const [value, setValue] = useState(
-    '{\n  "example": true,\n  "message": "Welcome to SuperTool!"\n}'
-  )
+export const dynamic = 'force-dynamic'
+
+function JSONBeautifyContent() {
+  const [value, setValue] = useQueryState('json', {
+    defaultValue: '{\n  "example": true,\n  "message": "Welcome to SuperTool!"\n}',
+  })
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -324,5 +327,13 @@ export default function JSONBeautifyPage() {
         </div>
       </main>
     </TooltipProvider>
+  )
+}
+
+export default function JSONBeautifyPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <JSONBeautifyContent />
+    </Suspense>
   )
 }

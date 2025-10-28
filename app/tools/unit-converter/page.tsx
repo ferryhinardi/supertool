@@ -11,7 +11,8 @@ import {
   Trash2,
   TrendingUp,
 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { parseAsStringEnum, useQueryState } from 'nuqs'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -36,11 +37,14 @@ interface Favorite {
   name?: string
 }
 
-export default function UnitConverterPage() {
-  const [category, setCategory] = useState<UnitCategory>('length')
-  const [fromUnit, setFromUnit] = useState('meter')
-  const [toUnit, setToUnit] = useState('foot')
-  const [fromValue, setFromValue] = useState('1')
+function UnitConverterContent() {
+  const [category, setCategory] = useQueryState(
+    'category',
+    parseAsStringEnum<UnitCategory>(getAllCategories()).withDefault('length')
+  )
+  const [fromUnit, setFromUnit] = useQueryState('from', { defaultValue: 'meter' })
+  const [toUnit, setToUnit] = useQueryState('to', { defaultValue: 'foot' })
+  const [fromValue, setFromValue] = useQueryState('value', { defaultValue: '1' })
   const [favorites, setFavorites] = useState<Favorite[]>(() => {
     // Lazy initialization - only runs once on mount (client-side safe)
     if (typeof window === 'undefined') return []
@@ -680,5 +684,13 @@ export default function UnitConverterPage() {
         </Card>
       </motion.div>
     </main>
+  )
+}
+
+export default function UnitConverterPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UnitConverterContent />
+    </Suspense>
   )
 }

@@ -1,8 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Copy, Download, Image as ImageIcon, Lock, Unlock, Upload } from 'lucide-react'
-import { useState } from 'react'
+import { Copy, Download, ImageIcon, Lock, Unlock, Upload } from 'lucide-react'
+import { parseAsStringEnum, useQueryState } from 'nuqs'
+import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,11 +11,16 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { css } from '@/styled-system/css'
 
+export const dynamic = 'force-dynamic'
+
 type Mode = 'encode' | 'decode'
 
-export default function Base64Page() {
-  const [mode, setMode] = useState<Mode>('encode')
-  const [input, setInput] = useState('')
+function Base64Content() {
+  const [mode, setMode] = useQueryState(
+    'mode',
+    parseAsStringEnum<Mode>(['encode', 'decode']).withDefault('encode')
+  )
+  const [input, setInput] = useQueryState('input', { defaultValue: '' })
   const [output, setOutput] = useState('')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
 
@@ -88,6 +94,7 @@ export default function Base64Page() {
     setInput('')
     setOutput('')
     setImagePreview(null)
+    setMode('encode')
   }
 
   return (
@@ -352,5 +359,13 @@ export default function Base64Page() {
         ))}
       </motion.div>
     </main>
+  )
+}
+
+export default function Base64Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Base64Content />
+    </Suspense>
   )
 }

@@ -39,6 +39,7 @@ type ToolEvent =
   | 'password_bulk_generate'
   | 'password_copy'
   | 'password_download'
+  | 'text_transformer_open'
   | 'unit_converter_open'
   | 'unit_converter_convert'
   | 'unit_converter_swap'
