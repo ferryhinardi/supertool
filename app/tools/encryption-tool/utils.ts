@@ -173,11 +173,11 @@ export async function decryptFile(
     // Derive key from password
     const key = await deriveKey(password, new Uint8Array(saltBuffer))
 
-    // Decrypt file data - wrap in Uint8Array for Node.js compatibility
+    // Decrypt file data
     return await crypto.subtle.decrypt(
       { name: 'AES-GCM', iv: new Uint8Array(ivBuffer) },
       key,
-      new Uint8Array(encryptedBuffer)
+      encryptedBuffer
     )
   } catch {
     throw new Error('Decryption failed. Incorrect password or corrupted data.')
