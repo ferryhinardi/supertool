@@ -120,6 +120,8 @@ type ToolEvent =
   | 'browser_fingerprint_section_toggle'
   | 'browser_fingerprint_copy'
   | 'browser_fingerprint_copy_all'
+  | 'recent_tool_click'
+  | 'recent_tools_cleared'
 
 // Type-safe gtag wrapper
 declare global {

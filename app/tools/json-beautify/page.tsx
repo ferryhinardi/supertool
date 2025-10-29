@@ -9,12 +9,26 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useTrackToolView } from '@/hooks/useRecentTools'
 import { trackToolEvent } from '@/lib/analytics'
+import { tools } from '@/lib/tools'
 import { css } from '@/styled-system/css'
 
 export const dynamic = 'force-dynamic'
 
 function JSONBeautifyContent() {
+  // Find tool data for tracking
+  const toolData = tools.find((t) => t.href === '/tools/json-beautify')
+
+  // Track tool view
+  useTrackToolView({
+    toolId: toolData?.href || '/tools/json-beautify',
+    title: toolData?.title || 'JSON Beautifier',
+    href: toolData?.href || '/tools/json-beautify',
+    iconName: 'FileJson',
+    gradient: toolData?.gradient || 'from-purple-500 to-pink-500',
+  })
+
   const [value, setValue] = useQueryState('json', {
     defaultValue: '{\n  "example": true,\n  "message": "Welcome to SuperTool!"\n}',
   })

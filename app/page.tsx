@@ -25,6 +25,7 @@ import Link from 'next/link'
 import Script from 'next/script'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FeedbackDialog } from '@/components/features/FeedbackDialog'
+import { RecentTools } from '@/components/features/RecentTools'
 import { TreatMeDialog } from '@/components/features/TreatMeDialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -661,6 +662,9 @@ export default function HomePage() {
           </motion.div>
         )}
       </motion.div>
+
+      {/* Recent Tools Section */}
+      <RecentTools />
 
       {/* Tools by Category Sections */}
       <motion.div
