@@ -568,7 +568,7 @@ export const tools: Tool[] = [
     gradient: 'from-purple-500 to-indigo-500',
     features: ['Auto Generate', 'Type Inference', 'Schema Validation', 'Copy & Export'],
     category: 'data',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'UUID Generator & Validator',

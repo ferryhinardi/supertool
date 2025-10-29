@@ -33,6 +33,7 @@ import { css, cva } from '@/styled-system/css'
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'JSON Beautifier', href: '/tools/json-beautify', icon: Code },
+  { name: 'JSON Schema', href: '/tools/json-schema', icon: Code },
   { name: 'JSON to CSV', href: '/tools/json-to-csv', icon: FileSpreadsheet },
   { name: 'Split Bill', href: '/tools/split-bill', icon: Users },
   { name: 'Currency Converter', href: '/tools/currency-converter', icon: DollarSign },

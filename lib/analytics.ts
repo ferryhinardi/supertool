@@ -142,6 +142,9 @@ type ToolEvent =
   | 'screenshot_diff_compare'
   | 'screenshot_diff_reset'
   | 'screenshot_diff_download'
+  | 'json_schema_generate'
+  | 'json_schema_copy'
+  | 'json_schema_download'
 
 // Type-safe gtag wrapper
 declare global {
