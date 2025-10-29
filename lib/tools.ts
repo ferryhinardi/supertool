@@ -707,7 +707,6 @@ export const tools: Tool[] = [
     gradient: 'from-pink-500 to-rose-500',
     features: ['WCAG 2.1', 'AA/AAA Rating', 'Live Preview', 'Accessibility Score'],
     category: 'design',
-    comingSoon: true,
   },
 
   // Productivity & Workflow Tools

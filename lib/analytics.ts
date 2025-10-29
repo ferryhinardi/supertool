@@ -120,6 +120,12 @@ type ToolEvent =
   | 'browser_fingerprint_section_toggle'
   | 'browser_fingerprint_copy'
   | 'browser_fingerprint_copy_all'
+  | 'color_contrast_open'
+  | 'color_contrast_swap'
+  | 'color_contrast_copy'
+  | 'color_contrast_random'
+  | 'color_contrast_change_foreground'
+  | 'color_contrast_change_background'
   | 'recent_tool_click'
   | 'recent_tools_cleared'
 
