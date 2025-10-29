@@ -145,6 +145,9 @@ type ToolEvent =
   | 'json_schema_generate'
   | 'json_schema_copy'
   | 'json_schema_download'
+  | 'password_strength_open'
+  | 'password_strength_checked'
+  | 'password_strength_copy'
 
 // Type-safe gtag wrapper
 declare global {

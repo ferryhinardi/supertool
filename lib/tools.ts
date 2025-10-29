@@ -448,7 +448,6 @@ export const tools: Tool[] = [
     gradient: 'from-yellow-500 to-red-500',
     features: ['Entropy Score', 'Pattern Detection', 'Dictionary Check', 'Improvement Tips'],
     category: 'security',
-    comingSoon: true,
   },
   {
     title: 'Text Steganography Tool',
