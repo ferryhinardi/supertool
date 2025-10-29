@@ -128,6 +128,14 @@ type ToolEvent =
   | 'color_contrast_change_background'
   | 'recent_tool_click'
   | 'recent_tools_cleared'
+  | 'clipboard_paste'
+  | 'clipboard_format'
+  | 'clipboard_case_transform'
+  | 'clipboard_copy_formatted'
+  | 'clipboard_download'
+  | 'clipboard_reset'
+  | 'clipboard_load_history'
+  | 'clipboard_clear_history'
 
 // Type-safe gtag wrapper
 declare global {
@@ -163,7 +171,7 @@ if (
  */
 export const trackToolEvent = (
   eventName: ToolEvent,
-  params?: Record<string, string | number | boolean>
+  params?: Record<string, string | number | boolean | string[]>
 ): void => {
   if (!isGAEnabled()) {
     if (process.env.NODE_ENV === 'development') {
