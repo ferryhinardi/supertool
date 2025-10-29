@@ -737,7 +737,6 @@ export const tools: Tool[] = [
     gradient: 'from-green-500 to-emerald-500',
     features: ['Auto Timestamps', 'Custom Templates', 'Date Navigation', 'Export Markdown'],
     category: 'productivity',
-    comingSoon: true,
   },
   {
     title: 'Batch File Renamer',
