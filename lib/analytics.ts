@@ -180,6 +180,17 @@ type ToolEvent =
   | 'csv_merger_split'
   | 'csv_merger_download'
   | 'csv_merger_error'
+  | 'task_timer_open'
+  | 'task_timer_session_start'
+  | 'task_timer_session_end'
+  | 'task_timer_session_delete'
+  | 'task_timer_add'
+  | 'task_timer_start'
+  | 'task_timer_pause'
+  | 'task_timer_reset'
+  | 'task_timer_remove'
+  | 'task_timer_export_csv'
+  | 'task_timer_export_json'
 
 // Type-safe gtag wrapper
 declare global {

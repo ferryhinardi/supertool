@@ -712,7 +712,6 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-purple-500',
     features: ['Multiple Timers', 'Session Tracking', 'Sync Devices', 'Export Reports'],
     category: 'productivity',
-    comingSoon: true,
     premium: true,
   },
   {
