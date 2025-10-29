@@ -131,7 +131,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           gradientTo: 'gray.950',
           color: 'white',
           position: 'relative',
-          overflow: 'hidden',
+          overflow: 'auto',
         })}
       >
         <ReactQueryProvider>
@@ -148,7 +148,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 w: { base: '100vw', md: 'calc(100vw - 16rem)' },
                 flex: { base: '1', md: '1' },
                 overflowX: 'hidden',
-                overflowY: 'auto',
                 p: { base: '4', sm: '6', md: '8', lg: '10', xl: '12' },
                 pt: {
                   base: '20', // Space for mobile menu button
