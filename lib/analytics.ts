@@ -160,6 +160,12 @@ type ToolEvent =
   | 'cron_expression_pattern_select'
   | 'cron_expression_copy'
   | 'cron_expression_export'
+  | 'favicon_upload_image'
+  | 'favicon_select_emoji'
+  | 'favicon_generate'
+  | 'favicon_download_ico'
+  | 'favicon_download_png'
+  | 'favicon_copy_html'
 
 // Type-safe gtag wrapper
 declare global {

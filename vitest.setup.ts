@@ -61,6 +61,13 @@ beforeAll(async () => {
       }) as any
 
     HTMLCanvasElement.prototype.toDataURL = () => 'data:image/png;base64,test'
+    HTMLCanvasElement.prototype.toBlob = (callback) => {
+      // Create a mock blob for testing
+      const blob = new Blob(['mock-canvas-data'], { type: 'image/png' })
+      if (callback) {
+        setTimeout(() => callback(blob), 0)
+      }
+    }
   }
 
   // Mock URL.createObjectURL
@@ -70,6 +77,20 @@ beforeAll(async () => {
 
   if (typeof URL.revokeObjectURL === 'undefined') {
     URL.revokeObjectURL = () => {}
+  }
+
+  // Polyfill Blob.arrayBuffer() for Node.js test environment
+  if (typeof Blob !== 'undefined' && !Blob.prototype.arrayBuffer) {
+    Blob.prototype.arrayBuffer = async function () {
+      const reader = new FileReader()
+      return new Promise((resolve, reject) => {
+        reader.onload = () => {
+          resolve(reader.result as ArrayBuffer)
+        }
+        reader.onerror = reject
+        reader.readAsArrayBuffer(this)
+      })
+    }
   }
 })
 

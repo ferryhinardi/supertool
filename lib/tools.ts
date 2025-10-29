@@ -660,7 +660,6 @@ export const tools: Tool[] = [
     gradient: 'from-violet-500 to-purple-500',
     features: ['Multiple Sizes', 'ICO/PNG/SVG', 'Emoji Support', 'Preview & Download'],
     category: 'design',
-    comingSoon: true,
   },
   {
     title: 'Screenshot Diff Tool',
