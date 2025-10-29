@@ -589,7 +589,6 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Multiple Formats', 'Timezone Convert', 'Date Difference', 'Locale Support'],
     category: 'data',
-    comingSoon: true,
   },
   {
     title: 'CSV Merger & Splitter',
@@ -673,7 +672,6 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Pixel Comparison', 'Diff Highlight', 'Sensitivity Control', 'Side-by-Side View'],
     category: 'design',
-    comingSoon: false,
   },
   {
     title: 'SVG Optimizer & Editor',

@@ -148,6 +148,12 @@ type ToolEvent =
   | 'password_strength_open'
   | 'password_strength_checked'
   | 'password_strength_copy'
+  | 'date_formatter_open'
+  | 'date_parse'
+  | 'date_format'
+  | 'date_convert'
+  | 'date_copy'
+  | 'date_set_current'
 
 // Type-safe gtag wrapper
 declare global {
