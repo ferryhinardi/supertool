@@ -191,6 +191,14 @@ type ToolEvent =
   | 'task_timer_remove'
   | 'task_timer_export_csv'
   | 'task_timer_export_json'
+  | 'clipboard_history_open'
+  | 'clipboard_history_start_monitoring'
+  | 'clipboard_history_stop_monitoring'
+  | 'clipboard_history_add_item'
+  | 'clipboard_history_copy_item'
+  | 'clipboard_history_toggle_pin'
+  | 'clipboard_history_delete_item'
+  | 'clipboard_history_clear_all'
 
 // Type-safe gtag wrapper
 declare global {

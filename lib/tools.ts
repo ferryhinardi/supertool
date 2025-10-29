@@ -723,7 +723,6 @@ export const tools: Tool[] = [
     gradient: 'from-cyan-500 to-teal-500',
     features: ['Local Storage', 'Search History', 'Pin Favorites', 'Quick Restore'],
     category: 'productivity',
-    comingSoon: true,
   },
   {
     title: 'Daily Note Generator',
