@@ -376,8 +376,8 @@ describe('Hash Generator Utilities', () => {
     })
 
     it('should hash empty ArrayBuffer', async () => {
-      const data = new Uint8Array([]).buffer
-      const hash = await hashArrayBuffer(data, 'SHA-256')
+      const data = new Uint8Array([])
+      const hash = await hashArrayBuffer(data.buffer as ArrayBuffer, 'SHA-256')
       expect(hash).toBe('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
     })
 

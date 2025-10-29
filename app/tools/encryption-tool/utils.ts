@@ -33,7 +33,7 @@ async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey>
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: salt.buffer as ArrayBuffer,
+      salt: salt as BufferSource,
       iterations: 100000, // OWASP recommended minimum
       hash: 'SHA-256',
     },
