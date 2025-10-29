@@ -96,7 +96,9 @@ export async function hashArrayBuffer(
   buffer: ArrayBuffer,
   algorithm: 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
 ): Promise<string> {
-  const hashBuffer = await crypto.subtle.digest(algorithm, buffer)
+  // Ensure we have a proper typed array view for Node.js compatibility
+  const bufferView = buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : buffer
+  const hashBuffer = await crypto.subtle.digest(algorithm, bufferView)
   return arrayBufferToHex(hashBuffer)
 }
 

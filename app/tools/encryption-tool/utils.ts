@@ -71,8 +71,8 @@ export async function encryptText(plaintext: string, password: string): Promise<
   // Convert to base64 for easy storage/transport
   return {
     encrypted: arrayBufferToBase64(encryptedBuffer),
-    iv: arrayBufferToBase64(iv.buffer),
-    salt: arrayBufferToBase64(salt.buffer),
+    iv: arrayBufferToBase64(iv),
+    salt: arrayBufferToBase64(salt),
   }
 }
 
@@ -137,13 +137,14 @@ export async function encryptFile(
   // Derive key from password
   const key = await deriveKey(password, salt)
 
-  // Encrypt file data
-  const encryptedBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, fileData)
+  // Encrypt file data - ensure we have a proper ArrayBuffer view
+  const dataView = fileData instanceof ArrayBuffer ? new Uint8Array(fileData) : fileData
+  const encryptedBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, dataView)
 
   return {
     encrypted: arrayBufferToBase64(encryptedBuffer),
-    iv: arrayBufferToBase64(iv.buffer),
-    salt: arrayBufferToBase64(salt.buffer),
+    iv: arrayBufferToBase64(iv),
+    salt: arrayBufferToBase64(salt),
   }
 }
 
@@ -275,8 +276,8 @@ export function parseEncryptedLink(url: string): EncryptionResult | null {
 /**
  * Helper: ArrayBuffer to Base64
  */
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-  const bytes = new Uint8Array(buffer)
+function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer)
   let binary = ''
   for (let i = 0; i < bytes.length; i++) {
     binary += String.fromCharCode(bytes[i])
