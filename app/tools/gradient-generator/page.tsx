@@ -540,9 +540,10 @@ export default function GradientGeneratorPage() {
 
               <div className={css({ spaceY: '3' })}>
                 {colorStops.map((stop) => (
-                  <button
+                  <div
                     key={stop.id}
-                    type="button"
+                    role="button"
+                    tabIndex={0}
                     className={css({
                       display: 'flex',
                       alignItems: 'center',
@@ -556,6 +557,12 @@ export default function GradientGeneratorPage() {
                       width: 'full',
                     })}
                     onClick={() => setSelectedStopId(stop.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setSelectedStopId(stop.id)
+                      }
+                    }}
                   >
                     <input
                       type="color"
@@ -607,7 +614,7 @@ export default function GradientGeneratorPage() {
                         <Trash2 className={css({ h: '4', w: '4' })} />
                       </Button>
                     )}
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>

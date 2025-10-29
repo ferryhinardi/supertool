@@ -842,9 +842,10 @@ export default function PomodoroTimerPage() {
                 </div>
               ) : (
                 tasks.map((task) => (
-                  <button
-                    type="button"
+                  <div
                     key={task.id}
+                    role="button"
+                    tabIndex={0}
                     className={css({
                       p: '3',
                       rounded: 'lg',
@@ -859,6 +860,12 @@ export default function PomodoroTimerPage() {
                       textAlign: 'left',
                     })}
                     onClick={() => setActiveTaskId(activeTaskId === task.id ? null : task.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setActiveTaskId(activeTaskId === task.id ? null : task.id)
+                      }
+                    }}
                   >
                     <div
                       className={css({
@@ -940,7 +947,7 @@ export default function PomodoroTimerPage() {
                         {task.pomodorosCompleted}/{task.pomodorosTarget}
                       </div>
                     </div>
-                  </button>
+                  </div>
                 ))
               )}
             </div>

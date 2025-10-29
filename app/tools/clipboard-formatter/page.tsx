@@ -483,7 +483,10 @@ function ClipboardFormatterPageContent() {
                           type="checkbox"
                           checked={settings.autoFormat}
                           onChange={(e) =>
-                            setSettings({ ...settings, autoFormat: e.target.checked })
+                            setSettings({
+                              ...settings,
+                              autoFormat: e.target.checked,
+                            })
                           }
                         />
                         <span>Auto-format on input</span>
@@ -501,7 +504,10 @@ function ClipboardFormatterPageContent() {
                           type="checkbox"
                           checked={settings.trimLines}
                           onChange={(e) =>
-                            setSettings({ ...settings, trimLines: e.target.checked })
+                            setSettings({
+                              ...settings,
+                              trimLines: e.target.checked,
+                            })
                           }
                         />
                         <span>Trim lines</span>
@@ -519,7 +525,10 @@ function ClipboardFormatterPageContent() {
                           type="checkbox"
                           checked={settings.removeEmptyLines}
                           onChange={(e) =>
-                            setSettings({ ...settings, removeEmptyLines: e.target.checked })
+                            setSettings({
+                              ...settings,
+                              removeEmptyLines: e.target.checked,
+                            })
                           }
                         />
                         <span>Remove empty lines</span>
@@ -537,7 +546,10 @@ function ClipboardFormatterPageContent() {
                           type="checkbox"
                           checked={settings.normalizeLineBreaks}
                           onChange={(e) =>
-                            setSettings({ ...settings, normalizeLineBreaks: e.target.checked })
+                            setSettings({
+                              ...settings,
+                              normalizeLineBreaks: e.target.checked,
+                            })
                           }
                         />
                         <span>Normalize line breaks</span>

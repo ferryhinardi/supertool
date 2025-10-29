@@ -153,7 +153,13 @@ function ColorContrastContent() {
           })}
         >
           <Eye className={css({ h: '5', w: '5', color: 'pink.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'pink.300' })}>
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'pink.300',
+            })}
+          >
             WCAG 2.1 Compliant
           </span>
         </div>
@@ -212,11 +218,21 @@ function ColorContrastContent() {
             <div className={css({ spaceY: '3' })}>
               <label
                 htmlFor="foreground"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({
+                  fontSize: 'sm',
+                  fontWeight: 'medium',
+                  color: 'gray.300',
+                })}
               >
                 Foreground (Text Color)
               </label>
-              <div className={css({ display: 'flex', gap: '3', alignItems: 'center' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  gap: '3',
+                  alignItems: 'center',
+                })}
+              >
                 <input
                   type="color"
                   id="foreground"
@@ -306,11 +322,21 @@ function ColorContrastContent() {
             <div className={css({ spaceY: '3' })}>
               <label
                 htmlFor="background"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({
+                  fontSize: 'sm',
+                  fontWeight: 'medium',
+                  color: 'gray.300',
+                })}
               >
                 Background Color
               </label>
-              <div className={css({ display: 'flex', gap: '3', alignItems: 'center' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  gap: '3',
+                  alignItems: 'center',
+                })}
+              >
                 <input
                   type="color"
                   id="background"
@@ -374,7 +400,13 @@ function ColorContrastContent() {
             </div>
 
             {/* Quick Actions */}
-            <div className={css({ display: 'flex', gap: '3', justifyContent: 'center' })}>
+            <div
+              className={css({
+                display: 'flex',
+                gap: '3',
+                justifyContent: 'center',
+              })}
+            >
               <Button
                 onClick={handleRandomColors}
                 className={css({
@@ -391,13 +423,22 @@ function ColorContrastContent() {
 
             {/* Color Presets */}
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <div
+                className={css({
+                  fontSize: 'sm',
+                  fontWeight: 'medium',
+                  color: 'gray.300',
+                })}
+              >
                 Quick Presets
               </div>
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: 'repeat(4, 1fr)', sm: 'repeat(8, 1fr)' },
+                  gridTemplateColumns: {
+                    base: 'repeat(4, 1fr)',
+                    sm: 'repeat(8, 1fr)',
+                  },
                   gap: '2',
                 })}
               >
@@ -413,7 +454,10 @@ function ColorContrastContent() {
                       borderColor: foreground === preset.hex ? 'pink.500' : 'gray.700',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
-                      _hover: { borderColor: 'pink.400', transform: 'scale(1.05)' },
+                      _hover: {
+                        borderColor: 'pink.400',
+                        transform: 'scale(1.05)',
+                      },
                     })}
                     style={{ backgroundColor: preset.hex }}
                     title={preset.name}
@@ -520,7 +564,13 @@ function ColorContrastContent() {
                   spaceY: '2',
                 })}
               >
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   {compliance.normalText ? (
                     <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
                   ) : (
@@ -554,7 +604,13 @@ function ColorContrastContent() {
                   spaceY: '2',
                 })}
               >
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   {compliance.largeText ? (
                     <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
                   ) : (
@@ -687,13 +743,38 @@ function ColorContrastContent() {
           })}
         >
           <CardContent className={css({ py: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'start',
+                gap: '4',
+              })}
+            >
+              <Sparkles
+                className={css({
+                  h: '6',
+                  w: '6',
+                  color: 'cyan.400',
+                  flexShrink: '0',
+                })}
+              />
               <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
+                <h3
+                  className={css({
+                    fontSize: 'lg',
+                    fontWeight: 'semibold',
+                    color: 'cyan.300',
+                  })}
+                >
                   About WCAG Compliance
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul
+                  className={css({
+                    spaceY: '2',
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                  })}
+                >
                   <li>
                     • WCAG AA: Minimum contrast ratio of 4.5:1 for normal text, 3:1 for large text
                   </li>

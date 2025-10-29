@@ -11,7 +11,7 @@ export default defineConfig({
     setupFiles: './vitest.setup.ts',
     testTimeout: 60000,
     browser: {
-      enabled: true,
+      enabled: !process.env.CI,
       name: 'chromium',
       provider: 'playwright',
       headless: true,

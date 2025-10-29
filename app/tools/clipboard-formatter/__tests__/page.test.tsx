@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
+import { useState } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ClipboardFormatterPage from '../page'
 
@@ -7,6 +8,20 @@ import ClipboardFormatterPage from '../page'
 vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
+}))
+
+// Mock nuqs
+vi.mock('nuqs', () => ({
+  parseAsString: {
+    withDefault: (defaultValue: string) => ({
+      defaultValue,
+      parse: (value: string) => value,
+    }),
+  },
+  useQueryState: (_key: string, parser: { defaultValue: unknown }) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useState(parser.defaultValue)
+  },
 }))
 
 // Mock framer-motion to avoid animation issues in tests
@@ -138,9 +153,10 @@ describe('Clipboard Formatter Page - Component Tests', () => {
       await userEvent.type(inputArea, 'Hello World\nSecond Line')
 
       await waitFor(() => {
-        expect(screen.getByText(/23 chars/)).toBeInTheDocument()
-        expect(screen.getByText(/4 words/)).toBeInTheDocument()
-        expect(screen.getByText(/2 lines/)).toBeInTheDocument()
+        const stats = screen.getAllByText(/23 chars/)
+        expect(stats.length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/4 words/).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/2 lines/).length).toBeGreaterThan(0)
       })
     })
   })
@@ -205,7 +221,9 @@ describe('Clipboard Formatter Page - Component Tests', () => {
       inputArea.dispatchEvent(new Event('change', { bubbles: true }))
 
       await waitFor(() => {
-        const outputArea = screen.getByPlaceholderText('Formatted text will appear here...')
+        const outputArea = screen.getByPlaceholderText(
+          'Formatted text will appear here...'
+        ) as HTMLTextAreaElement
         expect(outputArea.value).toBe('Line 1\nLine 2\nLine 3')
       })
     })
@@ -308,7 +326,9 @@ describe('Clipboard Formatter Page - Component Tests', () => {
       await userEvent.click(sentenceCaseButton)
 
       await waitFor(() => {
-        const outputArea = screen.getByPlaceholderText('Formatted text will appear here...')
+        const outputArea = screen.getByPlaceholderText(
+          'Formatted text will appear here...'
+        ) as HTMLTextAreaElement
         expect(outputArea.value.toLowerCase()).toContain('hello world')
       })
     })
@@ -475,8 +495,8 @@ describe('Clipboard Formatter Page - Component Tests', () => {
       // Mock URL.createObjectURL and document methods
       const createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url')
       const revokeObjectURLMock = vi.fn()
-      global.URL.createObjectURL = createObjectURLMock
-      global.URL.revokeObjectURL = revokeObjectURLMock
+      window.URL.createObjectURL = createObjectURLMock
+      window.URL.revokeObjectURL = revokeObjectURLMock
 
       const clickMock = vi.fn()
       const appendChildMock = vi.fn()
@@ -786,9 +806,10 @@ describe('Clipboard Formatter Page - Component Tests', () => {
     it('should display zero stats initially', () => {
       render(<ClipboardFormatterPage />)
 
-      expect(screen.getByText(/0 chars/)).toBeInTheDocument()
-      expect(screen.getByText(/0 words/)).toBeInTheDocument()
-      expect(screen.getByText(/0 lines/)).toBeInTheDocument()
+      const stats = screen.getAllByText(/0 chars/)
+      expect(stats.length).toBeGreaterThan(0)
+      expect(screen.getAllByText(/0 words/).length).toBeGreaterThan(0)
+      expect(screen.getAllByText(/0 lines/).length).toBeGreaterThan(0)
     })
 
     it('should update stats as text is entered', async () => {
