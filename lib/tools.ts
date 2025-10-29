@@ -674,7 +674,7 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Pixel Comparison', 'Diff Highlight', 'Sensitivity Control', 'Side-by-Side View'],
     category: 'design',
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     title: 'SVG Optimizer & Editor',

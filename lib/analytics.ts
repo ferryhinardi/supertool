@@ -136,6 +136,12 @@ type ToolEvent =
   | 'clipboard_reset'
   | 'clipboard_load_history'
   | 'clipboard_clear_history'
+  | 'screenshot_diff_open'
+  | 'screenshot_diff_upload_image1'
+  | 'screenshot_diff_upload_image2'
+  | 'screenshot_diff_compare'
+  | 'screenshot_diff_reset'
+  | 'screenshot_diff_download'
 
 // Type-safe gtag wrapper
 declare global {
