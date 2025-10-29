@@ -154,6 +154,12 @@ type ToolEvent =
   | 'date_convert'
   | 'date_copy'
   | 'date_set_current'
+  | 'cron_expression_open'
+  | 'cron_expression_manual_edit'
+  | 'cron_expression_field_change'
+  | 'cron_expression_pattern_select'
+  | 'cron_expression_copy'
+  | 'cron_expression_export'
 
 // Type-safe gtag wrapper
 declare global {

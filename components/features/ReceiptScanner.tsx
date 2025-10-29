@@ -27,55 +27,229 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
 
+  // Preprocess image for better OCR accuracy
+  const preprocessImage = async (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      if (!ctx) throw new Error('Failed to get canvas context')
+      const img = new Image()
+
+      img.onload = () => {
+        // Set canvas size
+        canvas.width = img.width
+        canvas.height = img.height
+
+        // Draw original image
+        ctx.drawImage(img, 0, 0)
+
+        // Get image data
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const data = imageData.data
+
+        // Image enhancement techniques
+        // 1. Increase contrast and brightness
+        for (let i = 0; i < data.length; i += 4) {
+          // Contrast enhancement
+          const factor = 1.3 // Contrast factor
+          data[i] = Math.min(255, Math.max(0, factor * (data[i] - 128) + 128)) // Red
+          data[i + 1] = Math.min(255, Math.max(0, factor * (data[i + 1] - 128) + 128)) // Green
+          data[i + 2] = Math.min(255, Math.max(0, factor * (data[i + 2] - 128) + 128)) // Blue
+
+          // Brightness adjustment
+          const brightness = 20
+          data[i] = Math.min(255, data[i] + brightness)
+          data[i + 1] = Math.min(255, data[i + 1] + brightness)
+          data[i + 2] = Math.min(255, data[i + 2] + brightness)
+        }
+
+        // 2. Convert to grayscale for better OCR
+        for (let i = 0; i < data.length; i += 4) {
+          const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2])
+          data[i] = gray
+          data[i + 1] = gray
+          data[i + 2] = gray
+        }
+
+        // 3. Apply threshold for better text clarity
+        const threshold = 140
+        for (let i = 0; i < data.length; i += 4) {
+          const value = data[i] > threshold ? 255 : 0
+          data[i] = value
+          data[i + 1] = value
+          data[i + 2] = value
+        }
+
+        // Put processed image data back
+        ctx.putImageData(imageData, 0, 0)
+
+        // Return as data URL
+        resolve(canvas.toDataURL())
+      }
+
+      img.src = URL.createObjectURL(file)
+    })
+  }
+
   const extractAmountsFromText = (text: string): ReceiptData => {
     const data: ReceiptData = {}
 
-    // Common patterns for amounts (e.g., $12.34, 12.34, $12,34)
-    const amountPattern = /\$?\s*(\d{1,6}(?:[.,]\d{2}))/g
+    // Clean up text: remove extra spaces, normalize line breaks
+    const cleanText = text
+      .replace(/\s+/g, ' ')
+      .replace(/[\r\n]+/g, '\n')
+      .toUpperCase()
 
-    // Pattern matchers for different line items
-    // Order matters: Check for more specific patterns first (TOTAL before SUBTOTAL)
+    // Enhanced amount patterns with more variations
+    const amountPatterns = [
+      /\$?\s*(\d{1,6}[.,]\d{2})/g, // Standard: $12.34, 12.34
+      /(\d{1,6})\s*[.,]\s*(\d{2})/g, // Separated: 12 . 34
+      /\$?\s*(\d{1,6})\s+(\d{2})/g, // Space separated: $12 34
+    ]
+
+    // Comprehensive patterns for different receipt formats
     const patterns = {
-      total: /(?:^|\s)(?:TOTAL|AMOUNT\s*DUE|BALANCE\s*DUE)[:\s]*\$?\s*(\d{1,6}(?:[.,]\d{2}))/i,
-      subtotal:
-        /(?:^|\s)(?:SUB\s*TOTAL|SUBTOTAL|SUB-TOTAL|(?<!AMOUNT\s)AMOUNT(?!\s*DUE))[:\s]*\$?\s*(\d{1,6}(?:[.,]\d{2}))/i,
-      tax: /(?:^|\s)(?:TAX|GST|VAT|SALES\s*TAX)[:\s]*\$?\s*(\d{1,6}(?:[.,]\d{2}))/i,
-      tip: /(?:^|\s)(?:TIP|GRATUITY|SERVICE\s*CHARGE)[:\s]*\$?\s*(\d{1,6}(?:[.,]\d{2}))/i,
+      // Total patterns (most specific first)
+      total: [
+        /(?:^|\n|\s)(?:TOTAL|GRAND\s*TOTAL|AMOUNT\s*DUE|BALANCE\s*DUE|FINAL\s*TOTAL)[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /(?:^|\n)TOTAL[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /AMOUNT\s*DUE[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /BALANCE[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+      ],
+      // Subtotal patterns
+      subtotal: [
+        /(?:^|\n|\s)(?:SUB\s*TOTAL|SUBTOTAL|SUB-TOTAL|AMOUNT)[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /(?:^|\n)SUBTOTAL[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /SUB\s*TOTAL[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+      ],
+      // Tax patterns
+      tax: [
+        /(?:^|\n|\s)(?:TAX|GST|VAT|HST|SALES\s*TAX|STATE\s*TAX|LOCAL\s*TAX)[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /(?:^|\n)TAX[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /SALES\s*TAX[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+      ],
+      // Tip patterns
+      tip: [
+        /(?:^|\n|\s)(?:TIP|GRATUITY|SERVICE\s*CHARGE|SERVICE)[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /(?:^|\n)TIP[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+        /GRATUITY[:\s]*\$?\s*(\d{1,6}[.,]\d{2})/i,
+      ],
     }
 
-    // Extract each field
-    for (const [key, pattern] of Object.entries(patterns)) {
-      const match = text.match(pattern)
-      if (match?.[1]) {
-        const amount = parseFloat(match[1].replace(',', '.'))
-        if (!Number.isNaN(amount) && amount > 0) {
-          data[key as keyof ReceiptData] = amount
+    // Extract each field using multiple patterns
+    for (const [key, patternList] of Object.entries(patterns)) {
+      let found = false
+      for (const pattern of patternList) {
+        if (found) break
+
+        const match = cleanText.match(pattern)
+        if (match?.[1]) {
+          const amount = parseFloat(match[1].replace(',', '.'))
+          if (!Number.isNaN(amount) && amount > 0 && amount < 999999) {
+            data[key as keyof ReceiptData] = amount
+            found = true
+          }
         }
       }
     }
 
-    // Fallback: if no subtotal but we have total, use total as subtotal
+    // Advanced fallback strategies
+    const lines = cleanText.split('\n').filter((line) => line.trim())
+
+    // Strategy 1: Line-by-line analysis for context
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
+
+      // Look for amounts at end of lines (common receipt format)
+      const amountAtEndMatch = line.match(/(\d{1,6}[.,]\d{2})\s*$/)
+      if (amountAtEndMatch) {
+        const amount = parseFloat(amountAtEndMatch[1].replace(',', '.'))
+        if (!Number.isNaN(amount) && amount > 0) {
+          // Check if this line contains total keywords
+          if (/TOTAL|AMOUNT.*DUE|BALANCE/i.test(line) && !data.total) {
+            data.total = amount
+          }
+          // Check for subtotal
+          else if (/SUB.*TOTAL|SUBTOTAL/i.test(line) && !data.subtotal) {
+            data.subtotal = amount
+          }
+          // Check for tax
+          else if (/TAX|GST|VAT/i.test(line) && !data.tax) {
+            data.tax = amount
+          }
+          // Check for tip
+          else if (/TIP|GRATUITY|SERVICE/i.test(line) && !data.tip) {
+            data.tip = amount
+          }
+        }
+      }
+    }
+
+    // Strategy 2: Amount validation and correction
+    if (data.total && data.subtotal && data.tax && !data.tip) {
+      // Check if total = subtotal + tax (common case)
+      const calculated = data.subtotal + data.tax
+      if (Math.abs(calculated - data.total) < 0.02) {
+        // Values are consistent
+      } else {
+        // Try to find tip that makes it balance
+        const possibleTip = data.total - data.subtotal - data.tax
+        if (possibleTip > 0 && possibleTip < data.subtotal * 0.3) {
+          data.tip = possibleTip
+        }
+      }
+    }
+
+    // Strategy 3: Fallback amount extraction
+    if (Object.keys(data).length === 0) {
+      const allAmounts: { amount: number; line: string }[] = []
+
+      for (const pattern of amountPatterns) {
+        let match = pattern.exec(cleanText)
+        while (match !== null) {
+          const amount = parseFloat(match[1].replace(',', '.'))
+          if (!Number.isNaN(amount) && amount > 0 && amount < 999999) {
+            allAmounts.push({
+              amount,
+              line: lines.find((line) => line.includes(match?.[0] ?? '')) || '',
+            })
+          }
+          match = pattern.exec(cleanText)
+        }
+      }
+
+      // Sort by amount (largest first) and try to assign
+      allAmounts.sort((a, b) => b.amount - a.amount)
+
+      if (allAmounts.length > 0) {
+        data.total = allAmounts[0].amount
+        if (allAmounts.length > 1) {
+          data.subtotal = allAmounts[1].amount
+        }
+        if (allAmounts.length > 2) {
+          // Look for smaller amounts that might be tax
+          for (let i = 2; i < Math.min(allAmounts.length, 5); i++) {
+            const ratio = allAmounts[i].amount / allAmounts[0].amount
+            if (ratio < 0.2 && ratio > 0.02) {
+              // Likely tax (2-20% of total)
+              data.tax = allAmounts[i].amount
+              break
+            }
+          }
+        }
+      }
+    }
+
+    // Final validation: ensure subtotal exists
     if (!data.subtotal && data.total) {
-      data.subtotal = data.total
-    }
-
-    // Fallback: find all amounts and take the largest as total if not found
-    if (!data.total) {
-      const amounts: number[] = []
-      let match: RegExpExecArray | null = null
-      match = amountPattern.exec(text)
-      while (match !== null) {
-        const amount = parseFloat(match[1].replace(',', '.'))
-        if (!Number.isNaN(amount) && amount > 0) {
-          amounts.push(amount)
-        }
-        match = amountPattern.exec(text)
-      }
-      if (amounts.length > 0) {
-        data.total = Math.max(...amounts)
-        if (!data.subtotal) {
-          data.subtotal = data.total
-        }
+      if (data.tax && data.tip) {
+        data.subtotal = data.total - data.tax - data.tip
+      } else if (data.tax) {
+        data.subtotal = data.total - data.tax
+      } else if (data.tip) {
+        data.subtotal = data.total - data.tip
+      } else {
+        data.subtotal = data.total
       }
     }
 
@@ -91,51 +265,190 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
       const url = URL.createObjectURL(file)
       setPreviewUrl(url)
 
-      // Initialize Tesseract worker
+      // Preprocess image for better OCR accuracy
+      setProgress(10)
+      const preprocessedImageUrl = await preprocessImage(file)
+
+      // Initialize Tesseract worker with better configuration
+      setProgress(20)
       const worker = await createWorker('eng', 1, {
         logger: (m) => {
           if (m.status === 'recognizing text') {
-            setProgress(Math.round(m.progress * 100))
+            setProgress(20 + Math.round(m.progress * 60)) // 20-80%
           }
         },
       })
 
-      // Configure for receipt OCR (dense text, numbers important)
+      // Enhanced OCR parameters for receipts
       await worker.setParameters({
-        tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
-        tessedit_char_whitelist: '0123456789.$,ABCDEFGHIJKLMNOPQRSTUVWXYZ: ',
+        tessedit_pageseg_mode: PSM.SINGLE_BLOCK, // Treat as single block of text
+        tessedit_char_whitelist:
+          '0123456789.$,ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:()- \n',
+        tessedit_ocr_engine_mode: '1', // LSTM only (more accurate for modern receipts)
+        preserve_interword_spaces: '1',
+        user_defined_dpi: '300', // Higher DPI for better accuracy
+        tessedit_do_invert: '0', // Don't invert colors automatically
       })
 
-      // Perform OCR
-      const {
-        data: { text },
-      } = await worker.recognize(file)
+      setProgress(80)
+
+      // Try multiple OCR approaches for better results
+      const ocrResults: string[] = []
+
+      // Approach 1: Standard OCR on preprocessed image
+      try {
+        const {
+          data: { text },
+        } = await worker.recognize(preprocessedImageUrl)
+        if (text.trim()) ocrResults.push(text)
+      } catch (e) {
+        console.warn('Standard OCR failed:', e)
+      }
+
+      // Approach 2: OCR with different PSM mode for line-by-line processing
+      try {
+        await worker.setParameters({
+          tessedit_pageseg_mode: PSM.SINGLE_COLUMN, // Single column mode
+        })
+        const {
+          data: { text },
+        } = await worker.recognize(preprocessedImageUrl)
+        if (text.trim()) ocrResults.push(text)
+      } catch (e) {
+        console.warn('Single column OCR failed:', e)
+      }
+
+      // Approach 3: OCR on original image as fallback
+      try {
+        await worker.setParameters({
+          tessedit_pageseg_mode: PSM.AUTO,
+        })
+        const {
+          data: { text },
+        } = await worker.recognize(file)
+        if (text.trim()) ocrResults.push(text)
+      } catch (e) {
+        console.warn('Original image OCR failed:', e)
+      }
 
       await worker.terminate()
+      setProgress(90)
 
-      // Extract amounts from recognized text
-      const extractedData = extractAmountsFromText(text)
+      // Process all OCR results and combine findings
+      let bestExtractedData: ReceiptData = {}
+      let maxFieldsFound = 0
 
-      if (Object.keys(extractedData).length === 0) {
-        toast.error('Could not extract amounts from receipt. Please try again or enter manually.')
-        trackToolEvent('split_bill_ocr_error', { reason: 'no_amounts_found' })
+      for (const text of ocrResults) {
+        const extractedData = extractAmountsFromText(text)
+        const fieldsCount = Object.keys(extractedData).length
+
+        if (fieldsCount > maxFieldsFound) {
+          maxFieldsFound = fieldsCount
+          bestExtractedData = extractedData
+        } else if (fieldsCount === maxFieldsFound && fieldsCount > 0) {
+          // Merge results, preferring non-zero values
+          for (const [key, value] of Object.entries(extractedData)) {
+            if (
+              value &&
+              (!bestExtractedData[key as keyof ReceiptData] ||
+                bestExtractedData[key as keyof ReceiptData] === 0)
+            ) {
+              bestExtractedData[key as keyof ReceiptData] = value
+            }
+          }
+        }
+      }
+
+      setProgress(100)
+
+      // Validate and improve extracted data
+      bestExtractedData = validateAndCorrectData(bestExtractedData)
+
+      if (Object.keys(bestExtractedData).length === 0) {
+        toast.error('Could not extract amounts from receipt. Please try again or enter manually.', {
+          description: 'Tip: Ensure the receipt is well-lit and text is clearly visible',
+        })
+        trackToolEvent('split_bill_ocr_error', {
+          reason: 'no_amounts_found',
+          ocr_attempts: ocrResults.length,
+        })
       } else {
-        toast.success('Receipt scanned successfully! 🎉')
-        onDataExtracted(extractedData)
+        const fieldsFound = Object.keys(bestExtractedData)
+        toast.success(`Receipt scanned successfully! Found: ${fieldsFound.join(', ')} 🎉`, {
+          description: 'Review the extracted values and adjust if needed',
+        })
+        onDataExtracted(bestExtractedData)
         trackToolEvent('split_bill_ocr_success', {
-          fields_extracted: Object.keys(extractedData).length,
+          fields_extracted: fieldsFound.length,
+          fields: fieldsFound,
+          ocr_attempts: ocrResults.length,
         })
       }
     } catch (error) {
       console.error('OCR Error:', error)
-      toast.error('Failed to process image. Please try again.')
+      toast.error('Failed to process image. Please try again.', {
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+      })
       trackToolEvent('split_bill_ocr_error', {
         reason: error instanceof Error ? error.message : 'unknown',
       })
     } finally {
       setIsProcessing(false)
       setProgress(0)
+      // Clean up preprocessed image URL if created
     }
+  }
+
+  // Validate and correct extracted data
+  const validateAndCorrectData = (data: ReceiptData): ReceiptData => {
+    const validated = { ...data }
+
+    // Remove obviously incorrect values (too large or negative)
+    for (const [key, value] of Object.entries(validated)) {
+      if (typeof value === 'number' && (value <= 0 || value > 999999 || !Number.isFinite(value))) {
+        delete validated[key as keyof ReceiptData]
+      }
+    }
+
+    // Mathematical validation and correction
+    const { subtotal, tax, tip, total } = validated
+
+    if (total && subtotal && tax && tip) {
+      const calculated = subtotal + tax + tip
+      if (Math.abs(calculated - total) > 0.1) {
+        // Values don't add up, try to correct
+        if (Math.abs(subtotal + tax - total) < 0.1) {
+          // Total matches subtotal + tax, remove tip
+          delete validated.tip
+        } else if (Math.abs(subtotal + tip - total) < 0.1) {
+          // Total matches subtotal + tip, remove tax
+          delete validated.tax
+        }
+      }
+    }
+
+    // Ensure reasonable ratios
+    if (total && tax && tax > total * 0.5) {
+      // Tax is more than 50% of total, likely misidentified
+      delete validated.tax
+    }
+
+    if (total && tip && tip > total * 0.4) {
+      // Tip is more than 40% of total, likely misidentified
+      delete validated.tip
+    }
+
+    // Ensure subtotal makes sense
+    if (total && subtotal && subtotal > total) {
+      // Subtotal can't be larger than total
+      if (tax || tip) {
+        delete validated.subtotal
+      } else {
+        validated.subtotal = total
+      }
+    }
+
+    return validated
   }
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,12 +569,22 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
 
       {previewUrl && (
         <div className={css({ spaceY: '3' })}>
-          <div className={css({ position: 'relative', rounded: 'lg', overflow: 'hidden' })}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div
+            className={css({
+              position: 'relative',
+              rounded: 'lg',
+              overflow: 'hidden',
+            })}
+          >
             <img
               src={previewUrl}
               alt="Receipt preview"
-              className={css({ w: 'full', h: 'auto', maxH: '300px', objectFit: 'contain' })}
+              className={css({
+                w: 'full',
+                h: 'auto',
+                maxH: '300px',
+                objectFit: 'contain',
+              })}
             />
             {!isProcessing && (
               <button
@@ -313,13 +636,16 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
       >
         <div className="text-xs text-gray-400 space-y-1">
           <p>
-            📸 <strong>Tip:</strong> Ensure the receipt is well-lit and text is clear
+            📸 <strong>Best Results:</strong> Good lighting, flat surface, clear text
           </p>
           <p>
-            🔍 <strong>OCR will detect:</strong> Subtotal, Tax, Tip, and Total amounts
+            🔍 <strong>Auto-detects:</strong> Subtotal, Tax, Tip, Total + mathematical validation
           </p>
           <p>
-            ✨ <strong>Works offline:</strong> All processing happens in your browser
+            🎯 <strong>Enhanced OCR:</strong> Multiple recognition passes for higher accuracy
+          </p>
+          <p>
+            ✨ <strong>Privacy-first:</strong> All processing happens locally in your browser
           </p>
         </div>
       </div>

@@ -530,7 +530,6 @@ export const tools: Tool[] = [
     features: ['Visual Builder', 'Next 10 Runs', 'Pattern Library', 'Multi-Platform'],
     category: 'development',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Regex Pattern Library & Tester',
