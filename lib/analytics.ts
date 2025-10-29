@@ -116,6 +116,10 @@ type ToolEvent =
   | 'prompt_formatter_model_change'
   | 'json_markdown_copy'
   | 'json_markdown_download'
+  | 'browser_fingerprint_open'
+  | 'browser_fingerprint_section_toggle'
+  | 'browser_fingerprint_copy'
+  | 'browser_fingerprint_copy_all'
 
 // Type-safe gtag wrapper
 declare global {

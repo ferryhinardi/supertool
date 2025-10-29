@@ -19,26 +19,26 @@ export default defineConfig({
     extend: {
       tokens: {
         colors: {
-          // Base semantic colors
-          background: { value: 'oklch(0.141 0.005 285.823)' },
-          foreground: { value: 'oklch(0.985 0 0)' },
-          card: { value: 'oklch(0.21 0.006 285.885)' },
-          'card-foreground': { value: 'oklch(0.985 0 0)' },
-          popover: { value: 'oklch(0.21 0.006 285.885)' },
-          'popover-foreground': { value: 'oklch(0.985 0 0)' },
-          primary: { value: 'oklch(0.92 0.004 286.32)' },
-          'primary-foreground': { value: 'oklch(0.21 0.006 285.885)' },
-          secondary: { value: 'oklch(0.274 0.006 286.033)' },
-          'secondary-foreground': { value: 'oklch(0.985 0 0)' },
-          muted: { value: 'oklch(0.274 0.006 286.033)' },
-          'muted-foreground': { value: 'oklch(0.705 0.015 286.067)' },
-          accent: { value: 'oklch(0.274 0.006 286.033)' },
-          'accent-foreground': { value: 'oklch(0.985 0 0)' },
-          destructive: { value: 'oklch(0.704 0.191 22.216)' },
-          'destructive-foreground': { value: '#ffffff' },
-          border: { value: 'oklch(1 0 0 / 10%)' },
-          input: { value: 'oklch(1 0 0 / 15%)' },
-          ring: { value: 'oklch(0.552 0.016 285.938)' },
+          // Base semantic colors for dark theme
+          background: { value: 'oklch(0.141 0.005 285.823)' }, // Very dark background
+          foreground: { value: 'oklch(0.985 0 0)' }, // Very light text (white)
+          card: { value: 'oklch(0.21 0.006 285.885)' }, // Dark card background
+          'card-foreground': { value: 'oklch(0.985 0 0)' }, // Light card text
+          popover: { value: 'oklch(0.21 0.006 285.885)' }, // Dark popover background
+          'popover-foreground': { value: 'oklch(0.985 0 0)' }, // Light popover text
+          primary: { value: 'oklch(0.21 0.006 285.885)' }, // Dark button background (swapped)
+          'primary-foreground': { value: 'oklch(0.92 0.004 286.32)' }, // Light button text (swapped)
+          secondary: { value: 'oklch(0.274 0.006 286.033)' }, // Slightly lighter dark
+          'secondary-foreground': { value: 'oklch(0.985 0 0)' }, // Light text
+          muted: { value: 'oklch(0.274 0.006 286.033)' }, // Muted background
+          'muted-foreground': { value: 'oklch(0.705 0.015 286.067)' }, // Muted text (gray)
+          accent: { value: 'oklch(0.274 0.006 286.033)' }, // Accent background
+          'accent-foreground': { value: 'oklch(0.985 0 0)' }, // Accent text
+          destructive: { value: 'oklch(0.704 0.191 22.216)' }, // Red/destructive color
+          'destructive-foreground': { value: '#ffffff' }, // White text on destructive
+          border: { value: 'oklch(1 0 0 / 10%)' }, // Subtle border
+          input: { value: 'oklch(1 0 0 / 15%)' }, // Input border
+          ring: { value: 'oklch(0.552 0.016 285.938)' }, // Focus ring
 
           // Gray scale for dark theme
           gray: {

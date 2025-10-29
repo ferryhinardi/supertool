@@ -77,6 +77,7 @@ export interface Tool {
   comingSoon?: boolean
   popular?: boolean
   new?: boolean
+  premium?: boolean // Requires paid subscription for access
 }
 
 export const tools: Tool[] = [
@@ -171,6 +172,7 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-cyan-500',
     features: ['Drag & Drop', 'Cloud Storage', 'Public URLs', 'Instant Sharing'],
     category: 'productivity',
+    premium: true, // Cloud storage and CDN delivery costs
   },
 
   // Coming soon tools
@@ -267,6 +269,7 @@ export const tools: Tool[] = [
     features: ['Live Rates', '150+ Currencies', 'Rate History', 'Favorites'],
     category: 'finance',
     new: true,
+    premium: true, // Requires paid exchange rate API (e.g., exchangerate-api.io, fixer.io)
   },
   {
     title: 'Pomodoro Timer',
@@ -313,6 +316,7 @@ export const tools: Tool[] = [
     features: ['Templates', 'Tax & Discount', 'PDF Export', 'Client Management'],
     category: 'productivity',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'PDF Tools Suite',
@@ -334,6 +338,7 @@ export const tools: Tool[] = [
     features: ['Amortization Table', 'Payment Schedule', 'Interest Breakdown', 'Compare Loans'],
     category: 'finance',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'BMI & Health Calculator',
@@ -397,6 +402,7 @@ export const tools: Tool[] = [
     features: ['Geolocation', 'ISP Info', 'Map View', 'IPv4/IPv6'],
     category: 'development',
     new: true,
+    premium: true, // Requires geolocation API (e.g., ipapi.co, ipinfo.io)
   },
   {
     title: 'Website Screenshot Tool',
@@ -408,6 +414,7 @@ export const tools: Tool[] = [
     features: ['Full Page', 'Device Sizes', 'High Resolution', 'Download'],
     category: 'development',
     new: true,
+    premium: true, // Requires headless browser API (e.g., ScreenshotAPI, ApiFlash)
   },
   {
     title: 'Hash Generator & Verifier',
@@ -430,6 +437,7 @@ export const tools: Tool[] = [
     features: ['Certificate Details', 'Expiry Alerts', 'Chain Verification', 'Security Score'],
     category: 'security',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'Password Strength Analyzer',
@@ -549,6 +557,7 @@ export const tools: Tool[] = [
     features: ['CSV ⇄ XLSX', 'Multiple Sheets', 'Large Files', 'Browser-Only'],
     category: 'data',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'JSON Schema Generator',
@@ -593,6 +602,7 @@ export const tools: Tool[] = [
     features: ['Merge CSVs', 'Split by Rules', 'Deduplicate', 'Column Mapping'],
     category: 'data',
     comingSoon: true,
+    premium: true,
   },
 
   // Other tools
@@ -711,6 +721,7 @@ export const tools: Tool[] = [
     features: ['Multiple Timers', 'Session Tracking', 'Sync Devices', 'Export Reports'],
     category: 'productivity',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'Clipboard History Manager',
@@ -766,7 +777,7 @@ export const tools: Tool[] = [
     gradient: 'from-indigo-500 to-purple-500',
     features: ['Device Info', 'Canvas Fingerprint', 'WebGL Data', 'Privacy Insights'],
     category: 'development',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'Network Speed Test (Lite)',
@@ -778,6 +789,7 @@ export const tools: Tool[] = [
     features: ['Download Speed', 'Upload Speed', 'Real-time Graph', 'History Tracking'],
     category: 'development',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'Clipboard Formatter',
@@ -813,6 +825,7 @@ export const tools: Tool[] = [
     features: ['Grammar Check', 'Spell Check', 'Style Tips', 'Multi-language'],
     category: 'productivity',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'AI Prompt Explainer',
@@ -824,6 +837,7 @@ export const tools: Tool[] = [
     features: ['Prompt Analysis', 'Optimization Tips', 'Best Practices', 'AI Insights'],
     category: 'development',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'Text Summarizer',
@@ -835,6 +849,7 @@ export const tools: Tool[] = [
     features: ['AI Summaries', 'Bullet Points', 'Adjustable Length', 'Key Highlights'],
     category: 'productivity',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'Keyword Density Analyzer',
@@ -846,6 +861,7 @@ export const tools: Tool[] = [
     features: ['Keyword Tracking', 'Density Analysis', 'SEO Score', 'Distribution Chart'],
     category: 'productivity',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'Text Similarity Checker',
@@ -857,6 +873,7 @@ export const tools: Tool[] = [
     features: ['Similarity Score', 'NLP Analysis', 'Batch Compare', 'Highlight Matches'],
     category: 'productivity',
     comingSoon: true,
+    premium: true,
   },
 
   // AI-Powered Tools
@@ -870,6 +887,7 @@ export const tools: Tool[] = [
     features: ['Tone Control', 'Style Adjustment', 'Multiple Variants', 'Preserve Meaning'],
     category: 'productivity',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'AI JSON Analyzer',
@@ -881,6 +899,7 @@ export const tools: Tool[] = [
     features: ['Structure Summary', 'Pattern Detection', 'Relationship Mapping', 'Debug Insights'],
     category: 'development',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'AI Command Explainer',
@@ -897,6 +916,7 @@ export const tools: Tool[] = [
     ],
     category: 'development',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'AI Image Caption Generator',
@@ -913,6 +933,7 @@ export const tools: Tool[] = [
     ],
     category: 'media',
     comingSoon: true,
+    premium: true,
   },
   {
     title: 'AI Snippet Generator',
@@ -924,5 +945,6 @@ export const tools: Tool[] = [
     features: ['Multi-Language Support', 'Context-Aware', 'Instant Generation', 'Code Explanation'],
     category: 'development',
     comingSoon: true,
+    premium: true,
   },
 ]

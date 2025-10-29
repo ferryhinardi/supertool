@@ -137,8 +137,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* Sidebar */}
           <Sidebar />
 
-          {/* Main content */}
-          <main
+          {/* Main content wrapper - Changed from <main> to <div> to avoid nested <main> tags in tool pages */}
+          <div
             className={css({
               position: 'relative',
               zIndex: '1',
@@ -226,7 +226,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             >
               {children}
             </div>
-          </main>
+          </div>
 
           {/* Toast notifications */}
           <Toaster
