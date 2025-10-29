@@ -649,7 +649,7 @@ export const tools: Tool[] = [
     gradient: 'from-pink-500 to-rose-500',
     features: ['HEX/RGB/HSL', 'Palettes', 'Gradients', 'Accessibility'],
     category: 'design',
-    comingSoon: true,
+    new: true,
   },
   {
     title: 'Favicon Generator',

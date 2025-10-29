@@ -166,6 +166,12 @@ type ToolEvent =
   | 'favicon_download_ico'
   | 'favicon_download_png'
   | 'favicon_copy_html'
+  | 'color_picker_open'
+  | 'color_picker_change'
+  | 'color_picker_random'
+  | 'color_picker_copy'
+  | 'color_picker_copy_palette'
+  | 'color_picker_palette_type'
 
 // Type-safe gtag wrapper
 declare global {
