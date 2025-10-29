@@ -142,7 +142,7 @@ function ClipboardFormatterPageContent() {
     } else {
       setOutputText(inputText)
     }
-  }, [inputText, settings, formatText])
+  }, [inputText, formatText, settings.autoFormat])
 
   // Handle paste event
   const handlePaste = async () => {
