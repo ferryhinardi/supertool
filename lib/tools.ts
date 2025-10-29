@@ -554,7 +554,6 @@ export const tools: Tool[] = [
     gradient: 'from-green-500 to-teal-500',
     features: ['CSV ⇄ XLSX', 'Multiple Sheets', 'Large Files', 'Browser-Only'],
     category: 'data',
-    comingSoon: true,
     premium: true,
   },
   {

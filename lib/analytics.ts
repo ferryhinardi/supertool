@@ -172,6 +172,9 @@ type ToolEvent =
   | 'color_picker_copy'
   | 'color_picker_copy_palette'
   | 'color_picker_palette_type'
+  | 'csv_excel_convert'
+  | 'csv_excel_download'
+  | 'csv_excel_error'
 
 // Type-safe gtag wrapper
 declare global {
