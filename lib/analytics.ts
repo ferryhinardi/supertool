@@ -175,6 +175,11 @@ type ToolEvent =
   | 'csv_excel_convert'
   | 'csv_excel_download'
   | 'csv_excel_error'
+  | 'csv_merger_upload'
+  | 'csv_merger_merge'
+  | 'csv_merger_split'
+  | 'csv_merger_download'
+  | 'csv_merger_error'
 
 // Type-safe gtag wrapper
 declare global {

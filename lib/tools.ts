@@ -597,7 +597,6 @@ export const tools: Tool[] = [
     gradient: 'from-teal-500 to-emerald-500',
     features: ['Merge CSVs', 'Split by Rules', 'Deduplicate', 'Column Mapping'],
     category: 'data',
-    comingSoon: true,
     premium: true,
   },
 

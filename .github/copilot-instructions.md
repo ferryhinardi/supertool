@@ -580,24 +580,215 @@ export default function ToolLayout({
 **IMPORTANT**: Always read this checklist before creating a plan for adding new tools.
 
 1. Create `app/tools/[tool-name]/page.tsx` with default export
-2. **Follow the Page Layout Pattern** (use `<main>` with standardized Tailwind classes)
+2. **Follow the Page Layout Pattern** (use `<main>` with standardized Panda CSS classes)
 3. Add route to `navigation` array in `components/layout/Sidebar.tsx` with Lucide icon
-4. Add tool card to `tools` array in `app/page.tsx` with category, tags, gradient, and features
-5. Create `__tests__/` directory with logic and component tests
-6. Add analytics events for all user interactions
-7. Update `ToolEvent` type in `lib/analytics.ts` if needed
-8. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
-   - Explain how the tool works and its purpose
-   - Include creation date and last updated timestamp
-   - Document key features, usage instructions, and technical implementation
-   - Add analytics events, UI/UX details, and future enhancements
-   - Make each documentation unique with different structure and focus areas
-9. **Update tool documentation** whenever implementation changes to keep docs current
-10. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
+4. Add tool card to `tools` array in `lib/tools.ts` with category, tags, gradient, and features
+5. **Create SEO-optimized metadata and layout** (`app/tools/[tool-name]/layout.tsx`):
+   - Use `generateToolMetadata()` from `@/lib/metadata` with proper title, description, and keywords
+   - Include structured data (breadcrumbs and FAQs) using `generateBreadcrumbSchema()` and `generateFAQSchema()`
+   - Ensure descriptions are 150-160 characters for optimal snippet length
+   - Include relevant keywords naturally in title and description
+   - Add 3-4 SEO-focused FAQs that answer common user questions
+6. **Optimize tool page content for SEO**:
+   - Use semantic HTML5 elements (`<main>`, `<section>`, `<h1>`, `<h2>`)
+   - Include primary keyword in H1 title with natural gradient styling
+   - Add descriptive subheadings (H2) for major sections
+   - Include help/usage section with keyword-rich content
+   - Use descriptive alt text for icons and images
+   - Ensure content is at least 300 words when including help sections
+7. **URL and routing optimization**:
+   - Use kebab-case for tool names (e.g., `/tools/json-beautify`)
+   - Keep URLs short and descriptive (avoid deep nesting)
+   - Include primary keyword in URL path when possible
+8. Create `__tests__/` directory with logic and component tests
+9. Add analytics events for all user interactions
+10. Update `ToolEvent` type in `lib/analytics.ts` if needed
+11. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
+    - Explain how the tool works and its purpose
+    - Include creation date and last updated timestamp
+    - Document key features, usage instructions, and technical implementation
+    - Add analytics events, UI/UX details, and future enhancements
+    - Make each documentation unique with different structure and focus areas
+12. **Update tool documentation** whenever implementation changes to keep docs current
+13. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
     - `pnpm lint` - ESLint validation
     - `pnpm exec tsc --noEmit` - Type checking
     - `CI=true pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
     - `pnpm build` - Production build verification
+
+#### SEO Tool Layout Example
+
+```tsx
+// app/tools/example-tool/layout.tsx
+import type { Metadata } from "next";
+import Script from "next/script";
+import { generateToolMetadata, generateToolBreadcrumbs } from "@/lib/metadata";
+import {
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+} from "@/lib/structured-data";
+
+export const metadata: Metadata = generateToolMetadata({
+  title: "Example Tool - Free Online Utility",
+  description:
+    "Professional example tool for developers. Convert, format, and optimize your data with this free online utility. No registration required.",
+  keywords: [
+    "example tool",
+    "online utility",
+    "free converter",
+    "developer tools",
+  ],
+  category: "development",
+  path: "/tools/example-tool",
+});
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://supertool.id";
+const breadcrumbs = generateToolBreadcrumbs("Example Tool");
+
+const faqs = [
+  {
+    question: "What is the Example Tool?",
+    answer:
+      "The Example Tool is a free online utility that helps developers convert and format data quickly. It works entirely in your browser without requiring registration or file uploads.",
+  },
+  {
+    question: "Is the Example Tool free to use?",
+    answer:
+      "Yes, the Example Tool is completely free to use. There are no hidden costs, registration requirements, or usage limits.",
+  },
+  {
+    question: "Does the tool work offline?",
+    answer:
+      "Yes, all processing happens locally in your browser. Your data never leaves your device, ensuring complete privacy and security.",
+  },
+];
+
+export default function ExampleToolLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      {children}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            generateBreadcrumbSchema(breadcrumbs, baseUrl)
+          ),
+        }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateFAQSchema(faqs)),
+        }}
+      />
+    </>
+  );
+}
+```
+
+#### SEO Tool Page Structure
+
+```tsx
+// app/tools/example-tool/page.tsx
+export default function ExampleTool() {
+  return (
+    <main
+      className={css({
+        mx: "auto",
+        maxW: "7xl",
+        w: "full",
+        px: { base: "4", sm: "6", md: "8" },
+        py: { base: "6", sm: "8", md: "10" },
+        spaceY: { base: "6", sm: "8", md: "10" },
+      })}
+    >
+      {/* SEO-optimized header */}
+      <header className={css({ textAlign: "center", spaceY: "4" })}>
+        <h1
+          className={css({
+            fontSize: { base: "4xl", sm: "5xl", md: "6xl" },
+            fontWeight: "bold",
+            bgGradient: "to-r",
+            gradientFrom: "purple.400",
+            gradientVia: "pink.400",
+            gradientTo: "blue.400",
+            bgClip: "text",
+          })}
+          style={{
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Example Tool - Free Online Utility
+        </h1>
+        <p
+          className={css({
+            mx: "auto",
+            maxW: "2xl",
+            fontSize: "lg",
+            color: "gray.400",
+          })}
+        >
+          Convert and format your data with this professional online tool. Fast,
+          secure, and completely free - no registration required.
+        </p>
+      </header>
+
+      {/* Main tool functionality */}
+      <section aria-label="Tool interface">{/* Tool UI components */}</section>
+
+      {/* SEO content section */}
+      <section
+        aria-label="How to use"
+        className={css({
+          rounded: { base: "xl", sm: "2xl" },
+          border: "2px solid",
+          borderColor: "purple.500/20",
+          bg: "rgba(168, 85, 247, 0.05)",
+          p: { base: "4", sm: "5", md: "6" },
+          backdropFilter: "blur(16px)",
+        })}
+      >
+        <h2
+          className={css({
+            mb: "4",
+            fontSize: "xl",
+            fontWeight: "bold",
+            color: "purple.300",
+          })}
+        >
+          How to Use the Example Tool
+        </h2>
+        <div className={css({ spaceY: "3", color: "gray.300" })}>
+          <p>
+            This professional example tool helps you process data quickly and
+            efficiently:
+          </p>
+          <ol className={css({ pl: "6", spaceY: "2", listStyle: "decimal" })}>
+            <li>Upload your file or paste your data into the input field</li>
+            <li>Select your desired output format from the dropdown menu</li>
+            <li>Click the convert button to process your data instantly</li>
+            <li>Download or copy the converted result</li>
+          </ol>
+          <p>
+            All processing happens locally in your browser, ensuring your data
+            remains private and secure. This tool supports various formats and
+            provides instant results without requiring registration.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
+```
 
 ### Tool Categories System
 

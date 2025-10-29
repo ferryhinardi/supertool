@@ -37,6 +37,7 @@ const navigation = [
   { name: 'JSON Schema', href: '/tools/json-schema', icon: Code },
   { name: 'JSON to CSV', href: '/tools/json-to-csv', icon: FileSpreadsheet },
   { name: 'CSV ↔ Excel', href: '/tools/csv-excel', icon: FileSpreadsheet },
+  { name: 'CSV Merger & Splitter', href: '/tools/csv-merger', icon: FileSpreadsheet },
   { name: 'Split Bill', href: '/tools/split-bill', icon: Users },
   { name: 'Currency Converter', href: '/tools/currency-converter', icon: DollarSign },
   { name: 'QR Code', href: '/tools/qr-code', icon: QrCode },
