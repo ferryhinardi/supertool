@@ -1,9 +1,18 @@
 import { cleanup } from '@testing-library/react'
 import { afterEach, beforeAll, expect } from 'vitest'
 import '@testing-library/jest-dom/vitest'
+import { webcrypto } from 'node:crypto'
 
 // Setup global mocks before all tests
 beforeAll(() => {
+  // Polyfill Web Crypto API for Node.js test environment
+  if (!globalThis.crypto) {
+    Object.defineProperty(globalThis, 'crypto', {
+      value: webcrypto,
+      writable: true,
+      configurable: true,
+    })
+  }
   // Mock indexedDB
   if (typeof globalThis.indexedDB === 'undefined') {
     Object.defineProperty(globalThis, 'indexedDB', {

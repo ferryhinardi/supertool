@@ -277,6 +277,13 @@ export function parseEncryptedLink(url: string): EncryptionResult | null {
  * Helper: ArrayBuffer to Base64
  */
 function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
+  // Use Node.js Buffer if available, fallback to manual conversion
+  if (typeof Buffer !== 'undefined') {
+    const nodeBuffer = buffer instanceof Uint8Array ? Buffer.from(buffer) : Buffer.from(buffer)
+    return nodeBuffer.toString('base64')
+  }
+
+  // Fallback for browser environments
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer)
   let binary = ''
   for (let i = 0; i < bytes.length; i++) {
@@ -290,13 +297,24 @@ function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
  * Returns a properly aligned ArrayBuffer for Web Crypto API compatibility
  */
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
-  const binary = atob(base64)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i)
+  // Use Node.js Buffer if available for better Node.js WebCrypto compatibility
+  if (typeof Buffer !== 'undefined') {
+    const nodeBuffer = Buffer.from(base64, 'base64')
+    // Convert to ArrayBuffer that Node.js WebCrypto accepts
+    return nodeBuffer.buffer.slice(
+      nodeBuffer.byteOffset,
+      nodeBuffer.byteOffset + nodeBuffer.byteLength
+    )
   }
-  // Return a new ArrayBuffer copy to ensure proper alignment in Node.js
-  return bytes.buffer.slice(0)
+
+  // Fallback for browser environments
+  const binary = atob(base64)
+  const buffer = new ArrayBuffer(binary.length)
+  const view = new Uint8Array(buffer)
+  for (let i = 0; i < binary.length; i++) {
+    view[i] = binary.charCodeAt(i)
+  }
+  return buffer
 }
 
 /**
