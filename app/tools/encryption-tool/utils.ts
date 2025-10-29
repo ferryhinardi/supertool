@@ -173,11 +173,11 @@ export async function decryptFile(
     // Derive key from password
     const key = await deriveKey(password, new Uint8Array(saltBuffer))
 
-    // Decrypt file data
+    // Decrypt file data - wrap in Uint8Array for Node.js compatibility
     return await crypto.subtle.decrypt(
       { name: 'AES-GCM', iv: new Uint8Array(ivBuffer) },
       key,
-      encryptedBuffer
+      new Uint8Array(encryptedBuffer)
     )
   } catch {
     throw new Error('Decryption failed. Incorrect password or corrupted data.')
@@ -287,6 +287,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
 
 /**
  * Helper: Base64 to ArrayBuffer
+ * Returns a properly aligned ArrayBuffer for Web Crypto API compatibility
  */
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
   const binary = atob(base64)
@@ -294,7 +295,8 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i)
   }
-  return bytes.buffer
+  // Return a new ArrayBuffer copy to ensure proper alignment in Node.js
+  return bytes.buffer.slice(0)
 }
 
 /**
