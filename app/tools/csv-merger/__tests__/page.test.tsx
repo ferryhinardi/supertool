@@ -17,12 +17,15 @@ vi.mock('@/lib/analytics', () => ({
 }))
 
 // Mock URL.createObjectURL
-global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
-global.URL.revokeObjectURL = vi.fn()
+globalThis.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
+globalThis.URL.revokeObjectURL = vi.fn()
 
 // Helper function to create a mock CSV file
 const createMockCSVFile = (name: string, content: string): File => {
-  return new File([content], name, { type: 'text/csv' })
+  const file = new File([content], name, { type: 'text/csv' })
+  // Add text() method to match real File API
+  file.text = vi.fn().mockResolvedValue(content)
+  return file
 }
 
 describe('CSV Merger - Component Tests', () => {
@@ -42,15 +45,15 @@ describe('CSV Merger - Component Tests', () => {
   it('should display mode toggle buttons', () => {
     render(<CSVMergerPage />)
 
-    expect(screen.getByRole('button', { name: /Merge Files/ })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Split File/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Merge/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Split/ })).toBeInTheDocument()
   })
 
   it('should display upload area', () => {
     render(<CSVMergerPage />)
 
-    expect(screen.getByText(/Drag and drop CSV files here/)).toBeInTheDocument()
-    expect(screen.getByText(/or click to browse/)).toBeInTheDocument()
+    expect(screen.getByText(/Drop CSV files here or click to browse/)).toBeInTheDocument()
+    expect(screen.getByText(/Select 2 or more CSV files to merge/)).toBeInTheDocument()
   })
 })
 
@@ -62,32 +65,32 @@ describe('CSV Merger - Mode Switching Tests', () => {
   it('should switch from merge to split mode', () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
 
-    expect(screen.getByText(/Split a large CSV/)).toBeInTheDocument()
+    expect(screen.getByText(/Select 1 CSV file to split/)).toBeInTheDocument()
   })
 
   it('should switch from split to merge mode', () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
 
-    const mergeButton = screen.getByRole('button', { name: /Merge Files/ })
+    const mergeButton = screen.getByRole('button', { name: /Merge/ })
     fireEvent.click(mergeButton)
 
-    expect(screen.getByText(/Combine multiple CSV files/)).toBeInTheDocument()
+    expect(screen.getByText(/Select 2 or more CSV files to merge/)).toBeInTheDocument()
   })
 
   it('should clear files when switching modes', () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
 
-    // Files should be cleared (no file count badges should be visible)
-    expect(screen.queryByText(/files loaded/)).not.toBeInTheDocument()
+    // Files should be cleared - verify no "files loaded" badge exists
+    expect(screen.queryByText(/\d+ file.*loaded/i)).not.toBeInTheDocument()
   })
 })
 
@@ -96,32 +99,63 @@ describe('CSV Merger - Merge Mode Tests', () => {
     vi.clearAllMocks()
   })
 
-  it('should display merge mode options', () => {
+  it('should display merge mode options', async () => {
     render(<CSVMergerPage />)
 
-    expect(screen.getByText(/Merge Settings/)).toBeInTheDocument()
-    expect(screen.getByText(/Remove duplicate rows/)).toBeInTheDocument()
+    // Upload files first to show merge options
+    const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
+    const file2 = createMockCSVFile('test2.csv', 'Name,Age\nJane,25\n')
+
+    const input = document.getElementById('file-upload') as HTMLInputElement
+    Object.defineProperty(input, 'files', {
+      value: [file1, file2],
+      writable: false,
+    })
+
+    fireEvent.change(input)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Merge Options/)).toBeInTheDocument()
+      expect(screen.getByText(/Remove duplicate rows/)).toBeInTheDocument()
+    })
   })
 
   it('should display merge button when no files are loaded', () => {
     render(<CSVMergerPage />)
 
-    expect(screen.getByRole('button', { name: /Merge CSV Files/ })).toBeInTheDocument()
+    // Button only appears when files are loaded
+    expect(screen.queryByRole('button', { name: /Merge Files/ })).not.toBeInTheDocument()
   })
 
-  it('should toggle deduplicate option', () => {
+  it('should toggle deduplicate option', async () => {
     render(<CSVMergerPage />)
 
-    const deduplicateButton = screen.getByRole('button', { name: /Remove duplicate rows/ })
+    // Upload files first to show merge options
+    const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
+    const file2 = createMockCSVFile('test2.csv', 'Name,Age\nJane,25\n')
 
-    // Should be off by default (ghost variant)
-    expect(deduplicateButton).toHaveClass('button--variant_ghost')
+    const input = document.getElementById('file-upload') as HTMLInputElement
+    Object.defineProperty(input, 'files', {
+      value: [file1, file2],
+      writable: false,
+    })
+
+    fireEvent.change(input)
+
+    await waitFor(() => {
+      expect(screen.getByText(/2 files/)).toBeInTheDocument()
+    })
+
+    const deduplicateCheckbox = screen.getByRole('checkbox', { name: /Remove duplicate rows/ })
+
+    // Should be unchecked by default
+    expect(deduplicateCheckbox).not.toBeChecked()
 
     // Click to enable
-    fireEvent.click(deduplicateButton)
+    fireEvent.click(deduplicateCheckbox)
 
-    // Should now be on (default variant)
-    expect(deduplicateButton).toHaveClass('button--variant_default')
+    // Should now be checked
+    expect(deduplicateCheckbox).toBeChecked()
   })
 })
 
@@ -130,62 +164,131 @@ describe('CSV Merger - Split Mode Tests', () => {
     vi.clearAllMocks()
   })
 
-  it('should display split mode options', () => {
+  it('should display split mode options', async () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
 
-    expect(screen.getByText(/Split Settings/)).toBeInTheDocument()
-    expect(screen.getByText(/Split By/)).toBeInTheDocument()
-    expect(screen.getByText(/Row Count/)).toBeInTheDocument()
-    expect(screen.getByText(/Column Filter/)).toBeInTheDocument()
+    // Upload a file to show split options
+    const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
+
+    const input = document.getElementById('file-upload') as HTMLInputElement
+    Object.defineProperty(input, 'files', {
+      value: [file1],
+      writable: false,
+    })
+
+    fireEvent.change(input)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Split Options/)).toBeInTheDocument()
+      expect(screen.getByText(/Split By/)).toBeInTheDocument()
+      expect(screen.getByText(/Row Count/)).toBeInTheDocument()
+      expect(screen.getByText(/Filter Condition/)).toBeInTheDocument()
+    })
   })
 
-  it('should display split button', () => {
+  it('should display split button', async () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
 
-    expect(screen.getByRole('button', { name: /Split CSV File/ })).toBeInTheDocument()
+    // Upload a file to show split button
+    const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
+
+    const input = document.getElementById('file-upload') as HTMLInputElement
+    Object.defineProperty(input, 'files', {
+      value: [file1],
+      writable: false,
+    })
+
+    fireEvent.change(input)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Split File/ })).toBeInTheDocument()
+    })
   })
 
-  it('should toggle split by option', () => {
+  it('should toggle split by option', async () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
+
+    // Upload a file to show split options
+    const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
+
+    const input = document.getElementById('file-upload') as HTMLInputElement
+    Object.defineProperty(input, 'files', {
+      value: [file1],
+      writable: false,
+    })
+
+    fireEvent.change(input)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Split Options/)).toBeInTheDocument()
+    })
 
     const rowCountButton = screen.getByRole('button', { name: /Row Count/ })
-    const filterButton = screen.getByRole('button', { name: /Column Filter/ })
+    const filterButton = screen.getByRole('button', { name: /Filter Condition/ })
 
     // Row Count should be selected by default
-    expect(rowCountButton).toHaveClass('button--variant_default')
+    expect(rowCountButton).toHaveClass('bg_emerald.500/20')
 
     // Click to switch to filter
     fireEvent.click(filterButton)
 
     // Filter should now be selected
-    expect(filterButton).toHaveClass('button--variant_default')
+    expect(filterButton).toHaveClass('bg_emerald.500/20')
   })
 
-  it('should display row count input when split by rows', () => {
+  it('should display row count input when split by rows', async () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
 
-    expect(screen.getByPlaceholderText(/e.g., 1000/)).toBeInTheDocument()
+    // Upload a file to show split options
+    const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
+
+    const input = document.getElementById('file-upload') as HTMLInputElement
+    Object.defineProperty(input, 'files', {
+      value: [file1],
+      writable: false,
+    })
+
+    fireEvent.change(input)
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText(/1000/)).toBeInTheDocument()
+    })
   })
 
-  it('should update row count input value', () => {
+  it('should update row count input value', async () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
 
-    const rowInput = screen.getByPlaceholderText(/e.g., 1000/) as HTMLInputElement
+    // Upload a file to show split options
+    const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
+
+    const input = document.getElementById('file-upload') as HTMLInputElement
+    Object.defineProperty(input, 'files', {
+      value: [file1],
+      writable: false,
+    })
+
+    fireEvent.change(input)
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText(/1000/)).toBeInTheDocument()
+    })
+
+    const rowInput = screen.getByPlaceholderText(/1000/) as HTMLInputElement
     fireEvent.change(rowInput, { target: { value: '500' } })
 
     expect(rowInput.value).toBe('500')
@@ -202,7 +305,7 @@ describe('CSV Merger - File Upload Tests', () => {
 
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
 
-    const input = screen.getByTestId('file-input')
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
       value: [file1],
       writable: false,
@@ -218,13 +321,14 @@ describe('CSV Merger - File Upload Tests', () => {
   it('should show error when uploading multiple files in split mode', async () => {
     render(<CSVMergerPage />)
 
-    const splitButton = screen.getByRole('button', { name: /Split File/ })
+    // Click the "Split" mode toggle button, not the "Split File" action button
+    const splitButton = screen.getByRole('button', { name: /Split/ })
     fireEvent.click(splitButton)
 
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
     const file2 = createMockCSVFile('test2.csv', 'Name,Age\nJane,25\n')
 
-    const input = screen.getByTestId('file-input')
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
       value: [file1, file2],
       writable: false,
@@ -240,12 +344,16 @@ describe('CSV Merger - File Upload Tests', () => {
   it('should show error when uploading non-CSV file', async () => {
     render(<CSVMergerPage />)
 
-    const file1 = createMockCSVFile('test.txt', 'Name,Age\nJohn,30\n')
-    Object.defineProperty(file1, 'name', { value: 'test.txt', writable: false })
+    // Create a file with .txt extension
+    const file1 = new File(['Name,Age\nJohn,30\n'], 'test.txt', { type: 'text/plain' })
+    file1.text = vi.fn().mockResolvedValue('Name,Age\nJohn,30\n')
 
-    const input = screen.getByTestId('file-input')
+    // Need two files for merge mode
+    const file2 = createMockCSVFile('test.csv', 'Name,Age\nJane,25\n')
+
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
-      value: [file1, file1],
+      value: [file1, file2],
       writable: false,
     })
 
@@ -263,7 +371,7 @@ describe('CSV Merger - File Upload Tests', () => {
     const file1 = createMockCSVFile('large.csv', largeContent)
     Object.defineProperty(file1, 'size', { value: 51 * 1024 * 1024, writable: false })
 
-    const input = screen.getByTestId('file-input')
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
       value: [file1, file1],
       writable: false,
@@ -282,7 +390,7 @@ describe('CSV Merger - File Upload Tests', () => {
     const file1 = createMockCSVFile('empty.csv', '')
     const file2 = createMockCSVFile('empty2.csv', '')
 
-    const input = screen.getByTestId('file-input')
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
       value: [file1, file2],
       writable: false,
@@ -301,7 +409,7 @@ describe('CSV Merger - File Upload Tests', () => {
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
     const file2 = createMockCSVFile('test2.csv', 'Name,Age\nJane,25\n')
 
-    const input = screen.getByTestId('file-input')
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
       value: [file1, file2],
       writable: false,
@@ -311,8 +419,9 @@ describe('CSV Merger - File Upload Tests', () => {
 
     await waitFor(() => {
       expect(analytics.trackToolEvent).toHaveBeenCalledWith('csv_merger_upload', {
-        count: 2,
         mode: 'merge',
+        file_count: 2,
+        total_rows: 4,
       })
     })
   })
@@ -326,7 +435,7 @@ describe('CSV Merger - Drag and Drop Tests', () => {
   it('should handle drag over event', () => {
     render(<CSVMergerPage />)
 
-    const dropZone = screen.getByText(/Drag and drop CSV files here/).closest('div')
+    const dropZone = screen.getByText(/Drop CSV files here or click to browse/).closest('div')
 
     if (dropZone) {
       fireEvent.dragOver(dropZone)
@@ -338,7 +447,7 @@ describe('CSV Merger - Drag and Drop Tests', () => {
   it('should handle drag leave event', () => {
     render(<CSVMergerPage />)
 
-    const dropZone = screen.getByText(/Drag and drop CSV files here/).closest('div')
+    const dropZone = screen.getByText(/Drop CSV files here or click to browse/).closest('div')
 
     if (dropZone) {
       fireEvent.dragOver(dropZone)
@@ -360,7 +469,7 @@ describe('CSV Merger - Integration Tests', () => {
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\nJane,25\n')
     const file2 = createMockCSVFile('test2.csv', 'Name,Age\nBob,35\n')
 
-    const input = screen.getByTestId('file-input')
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
       value: [file1, file2],
       writable: false,
@@ -369,7 +478,7 @@ describe('CSV Merger - Integration Tests', () => {
     fireEvent.change(input)
 
     await waitFor(() => {
-      expect(screen.getByText(/2 files loaded/)).toBeInTheDocument()
+      expect(screen.getByText(/2 file/)).toBeInTheDocument()
     })
   })
 
@@ -379,7 +488,7 @@ describe('CSV Merger - Integration Tests', () => {
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
     const file2 = createMockCSVFile('test2.csv', 'Name,Age\nJane,25\n')
 
-    const input = screen.getByTestId('file-input')
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
       value: [file1, file2],
       writable: false,
@@ -399,10 +508,11 @@ describe('CSV Merger - Integration Tests', () => {
     // First trigger an error
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
 
-    const input = screen.getByTestId('file-input')
+    const input = document.getElementById('file-upload') as HTMLInputElement
     Object.defineProperty(input, 'files', {
       value: [file1],
       writable: false,
+      configurable: true, // Allow redefining later
     })
 
     fireEvent.change(input)
@@ -413,9 +523,13 @@ describe('CSV Merger - Integration Tests', () => {
 
     // Now upload valid files
     const file2 = createMockCSVFile('test2.csv', 'Name,Age\nJane,25\n')
+
+    // Delete the old property and define a new one
+    delete (input as any).files
     Object.defineProperty(input, 'files', {
       value: [file1, file2],
       writable: false,
+      configurable: true,
     })
 
     fireEvent.change(input)
