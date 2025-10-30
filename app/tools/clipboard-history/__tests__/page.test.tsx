@@ -21,6 +21,25 @@ describe('Clipboard History Page - Component Tests', () => {
   beforeEach(() => {
     localStorage.clear()
     vi.clearAllMocks()
+
+    // Mock clipboard API properly
+    Object.defineProperty(navigator, 'clipboard', {
+      writable: true,
+      configurable: true,
+      value: {
+        readText: vi.fn(),
+        writeText: vi.fn(),
+      },
+    })
+
+    // Mock permissions API
+    Object.defineProperty(navigator, 'permissions', {
+      writable: true,
+      configurable: true,
+      value: {
+        query: vi.fn().mockResolvedValue({ state: 'granted' }),
+      },
+    })
   })
 
   it('should render clipboard history page', () => {
@@ -29,13 +48,13 @@ describe('Clipboard History Page - Component Tests', () => {
     expect(
       screen.getByRole('heading', { name: /Clipboard History Manager/i, level: 1 })
     ).toBeInTheDocument()
-    expect(screen.getByText(/Track and manage your clipboard history locally/i)).toBeInTheDocument()
+    expect(screen.getByText(/Never lose copied text again/i)).toBeInTheDocument()
   })
 
-  it('should display monitoring control section', () => {
+  it('should display quick actions control section', () => {
     render(<ClipboardHistoryPage />)
 
-    expect(screen.getByRole('heading', { name: /Monitoring/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Quick Actions/i })).toBeInTheDocument()
   })
 
   it('should display start monitoring button initially', () => {
@@ -52,7 +71,9 @@ describe('Clipboard History Page - Component Tests', () => {
     await userEvent.click(startButton)
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Clipboard monitoring started')
+      expect(toast.success).toHaveBeenCalledWith(
+        'Clipboard monitoring started. Copy text to add to history.'
+      )
     })
 
     expect(screen.getByRole('button', { name: /Stop Monitoring/i })).toBeInTheDocument()
@@ -75,27 +96,25 @@ describe('Clipboard History Page - Component Tests', () => {
     await userEvent.click(stopButton)
 
     await waitFor(() => {
-      expect(toast.info).toHaveBeenCalledWith('Clipboard monitoring stopped')
+      expect(toast.info).toHaveBeenCalledWith('Clipboard monitoring stopped.')
     })
   })
 
-  it('should display manual add section', () => {
+  it('should display add current clipboard button', () => {
     render(<ClipboardHistoryPage />)
 
-    expect(screen.getByRole('heading', { name: /Add to History/i })).toBeInTheDocument()
-    expect(
-      screen.getByPlaceholderText('Paste or type content to add to history...')
-    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Add Current Clipboard/i })).toBeInTheDocument()
   })
 
-  it('should add item manually when button clicked', async () => {
+  it('should add current clipboard content when button clicked', async () => {
     const { toast } = await import('sonner')
+
+    // Set up clipboard mock
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('Test clipboard content')
+
     render(<ClipboardHistoryPage />)
 
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Test clipboard content')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
@@ -104,26 +123,30 @@ describe('Clipboard History Page - Component Tests', () => {
     })
   })
 
-  it('should show error when trying to add empty content', async () => {
+  it('should show error when trying to add empty clipboard', async () => {
     const { toast } = await import('sonner')
+
+    // Set up empty clipboard
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('')
+
     render(<ClipboardHistoryPage />)
 
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Content cannot be empty')
+      expect(toast.error).toHaveBeenCalledWith('Clipboard is empty')
     })
   })
 
   it('should display search input when items exist', async () => {
+    // Set up clipboard mock
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('Test item')
+
     render(<ClipboardHistoryPage />)
 
     // Add an item
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Test item')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
@@ -132,20 +155,25 @@ describe('Clipboard History Page - Component Tests', () => {
   })
 
   it('should filter items based on search query', async () => {
+    // Set up clipboard mock with different responses
+    let callCount = 0
+    vi.mocked(navigator.clipboard.readText).mockImplementation(() => {
+      callCount++
+      return Promise.resolve(callCount === 1 ? 'First item' : 'Second item')
+    })
+
     render(<ClipboardHistoryPage />)
 
     // Add multiple items
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
 
-    await userEvent.type(textarea, 'First item')
     await userEvent.click(addButton)
-    await userEvent.clear(textarea)
-    await userEvent.type(textarea, 'Second item')
-    await userEvent.click(addButton)
-
     await waitFor(() => {
       expect(screen.getByText('First item')).toBeInTheDocument()
+    })
+
+    await userEvent.click(addButton)
+    await waitFor(() => {
       expect(screen.getByText('Second item')).toBeInTheDocument()
     })
 
@@ -160,12 +188,12 @@ describe('Clipboard History Page - Component Tests', () => {
   })
 
   it('should display pin button for each item', async () => {
+    // Set up clipboard mock
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('Test item')
+
     render(<ClipboardHistoryPage />)
 
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Test item')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
@@ -177,13 +205,14 @@ describe('Clipboard History Page - Component Tests', () => {
 
   it('should pin and unpin items', async () => {
     const { toast } = await import('sonner')
+
+    // Set up clipboard mock
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('Test item to pin')
+
     render(<ClipboardHistoryPage />)
 
     // Add item
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Test item to pin')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
@@ -206,20 +235,14 @@ describe('Clipboard History Page - Component Tests', () => {
   it('should copy item to clipboard when copy button clicked', async () => {
     const { toast } = await import('sonner')
 
-    // Mock clipboard API
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: vi.fn().mockResolvedValue(undefined),
-      },
-    })
+    // Set up clipboard mock
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('Test copy item')
+    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined)
 
     render(<ClipboardHistoryPage />)
 
     // Add item
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Test copy item')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
@@ -235,20 +258,21 @@ describe('Clipboard History Page - Component Tests', () => {
 
       await waitFor(() => {
         expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Test copy item')
-        expect(toast.success).toHaveBeenCalledWith('Copied to clipboard')
+        expect(toast.success).toHaveBeenCalledWith('Copied to clipboard!')
       })
     }
   })
 
   it('should delete item when delete button clicked', async () => {
     const { toast } = await import('sonner')
+
+    // Set up clipboard mock
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('Test delete item')
+
     render(<ClipboardHistoryPage />)
 
     // Add item
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Test delete item')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
@@ -263,41 +287,50 @@ describe('Clipboard History Page - Component Tests', () => {
       await userEvent.click(deleteButton)
 
       await waitFor(() => {
-        expect(toast.success).toHaveBeenCalledWith('Item deleted')
+        expect(toast.success).toHaveBeenCalledWith('Deleted from history')
         expect(screen.queryByText('Test delete item')).not.toBeInTheDocument()
       })
     }
   })
 
   it('should display clear all button when items exist', async () => {
+    // Set up clipboard mock
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('Test item')
+
     render(<ClipboardHistoryPage />)
 
     // Add item
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Test item')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Clear All/i })).toBeInTheDocument()
+      const clearButton = screen.getByRole('button', { name: /Clear All/i })
+      expect(clearButton).toBeInTheDocument()
+      expect(clearButton).not.toBeDisabled()
     })
   })
 
   it('should clear all items when clear all button clicked', async () => {
     const { toast } = await import('sonner')
+
+    // Set up clipboard mock with different responses
+    let callCount = 0
+    vi.mocked(navigator.clipboard.readText).mockImplementation(() => {
+      callCount++
+      return Promise.resolve(callCount === 1 ? 'First item' : 'Second item')
+    })
+
     render(<ClipboardHistoryPage />)
 
     // Add multiple items
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
 
-    await userEvent.type(textarea, 'First item')
     await userEvent.click(addButton)
-    await userEvent.clear(textarea)
-    await userEvent.type(textarea, 'Second item')
-    await userEvent.click(addButton)
+    await waitFor(() => {
+      expect(screen.getByText('First item')).toBeInTheDocument()
+    })
 
+    await userEvent.click(addButton)
     await waitFor(() => {
       expect(screen.getByText('First item')).toBeInTheDocument()
       expect(screen.getByText('Second item')).toBeInTheDocument()
@@ -308,24 +341,24 @@ describe('Clipboard History Page - Component Tests', () => {
     await userEvent.click(clearButton)
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Clipboard history cleared')
+      expect(toast.success).toHaveBeenCalledWith('Cleared all unpinned items')
       expect(screen.queryByText('First item')).not.toBeInTheDocument()
       expect(screen.queryByText('Second item')).not.toBeInTheDocument()
     })
   })
 
   it('should persist items to localStorage', async () => {
+    // Set up clipboard mock
+    vi.mocked(navigator.clipboard.readText).mockResolvedValue('Persistent item')
+
     render(<ClipboardHistoryPage />)
 
     // Add item
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Persistent item')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
-      const saved = localStorage.getItem('clipboardHistory')
+      const saved = localStorage.getItem('clipboard-history')
       expect(saved).toBeTruthy()
       if (saved) {
         const items = JSON.parse(saved)
@@ -341,10 +374,11 @@ describe('Clipboard History Page - Component Tests', () => {
         id: '1',
         content: 'Previous item',
         timestamp: Date.now(),
-        pinned: false,
+        isPinned: false,
+        type: 'text' as const,
       },
     ]
-    localStorage.setItem('clipboardHistory', JSON.stringify(mockItems))
+    localStorage.setItem('clipboard-history', JSON.stringify(mockItems))
 
     render(<ClipboardHistoryPage />)
 
@@ -354,7 +388,7 @@ describe('Clipboard History Page - Component Tests', () => {
   it('should display empty state when no items', () => {
     render(<ClipboardHistoryPage />)
 
-    expect(screen.getByText(/No clipboard items yet/i)).toBeInTheDocument()
+    expect(screen.getByText(/No clipboard history yet/i)).toBeInTheDocument()
   })
 
   it('should show pinned items section when pinned items exist', async () => {
@@ -363,61 +397,64 @@ describe('Clipboard History Page - Component Tests', () => {
         id: '1',
         content: 'Pinned item',
         timestamp: Date.now(),
-        pinned: true,
+        isPinned: true,
+        type: 'text' as const,
       },
       {
         id: '2',
         content: 'Regular item',
         timestamp: Date.now(),
-        pinned: false,
+        isPinned: false,
+        type: 'text' as const,
       },
     ]
-    localStorage.setItem('clipboardHistory', JSON.stringify(mockItems))
+    localStorage.setItem('clipboard-history', JSON.stringify(mockItems))
 
     render(<ClipboardHistoryPage />)
 
-    expect(screen.getByRole('heading', { name: /Pinned Items/i })).toBeInTheDocument()
     expect(screen.getByText('Pinned item')).toBeInTheDocument()
+    expect(screen.getByText('Regular item')).toBeInTheDocument()
   })
 
   it('should display item count info', async () => {
+    // Mock clipboard API
+    Object.assign(navigator, {
+      clipboard: {
+        readText: vi.fn().mockResolvedValue('Test item'),
+        writeText: vi.fn().mockResolvedValue(undefined),
+      },
+    })
+
     render(<ClipboardHistoryPage />)
 
     // Add item
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'Test item')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
-      expect(screen.getByText(/1 item/i)).toBeInTheDocument()
+      expect(screen.getByText('1')).toBeInTheDocument()
     })
   })
 
-  it('should truncate long content in preview', () => {
+  it('should display long content without truncation', () => {
     const longContent = 'a'.repeat(200)
     const mockItems = [
       {
         id: '1',
         content: longContent,
         timestamp: Date.now(),
-        pinned: false,
+        isPinned: false,
+        type: 'text' as const,
       },
     ]
-    localStorage.setItem('clipboardHistory', JSON.stringify(mockItems))
+    localStorage.setItem('clipboard-history', JSON.stringify(mockItems))
 
     render(<ClipboardHistoryPage />)
 
-    // Content should be truncated (check for ellipsis or shortened version)
+    // Content should be displayed in full (no truncation)
     const displayedText = screen.getByText(/aaa/i)
-    expect(displayedText.textContent?.length).toBeLessThan(longContent.length)
-  })
-
-  it('should display pro tips section', () => {
-    render(<ClipboardHistoryPage />)
-
-    expect(screen.getByRole('heading', { name: /Pro Tips/i })).toBeInTheDocument()
+    expect(displayedText.textContent).toBe(longContent)
+    expect(screen.getByText('200 characters')).toBeInTheDocument()
   })
 
   it('should respect max items limit (100)', async () => {
@@ -426,21 +463,27 @@ describe('Clipboard History Page - Component Tests', () => {
       id: `${i}`,
       content: `Item ${i}`,
       timestamp: Date.now() - i * 1000,
-      pinned: false,
+      isPinned: false,
+      type: 'text' as const,
     }))
-    localStorage.setItem('clipboardHistory', JSON.stringify(maxItems))
+    localStorage.setItem('clipboard-history', JSON.stringify(maxItems))
+
+    // Mock clipboard API
+    Object.assign(navigator, {
+      clipboard: {
+        readText: vi.fn().mockResolvedValue('New item'),
+        writeText: vi.fn().mockResolvedValue(undefined),
+      },
+    })
 
     render(<ClipboardHistoryPage />)
 
     // Try to add one more item
-    const textarea = screen.getByPlaceholderText('Paste or type content to add to history...')
-    const addButton = screen.getByRole('button', { name: /Add to History/i })
-
-    await userEvent.type(textarea, 'New item')
+    const addButton = screen.getByRole('button', { name: /Add Current Clipboard/i })
     await userEvent.click(addButton)
 
     await waitFor(() => {
-      const saved = localStorage.getItem('clipboardHistory')
+      const saved = localStorage.getItem('clipboard-history')
       if (saved) {
         const items = JSON.parse(saved)
         // Should still be 100 items (oldest non-pinned item removed)

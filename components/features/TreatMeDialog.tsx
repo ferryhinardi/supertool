@@ -80,6 +80,12 @@ export function TreatMeDialog() {
           <button
             type="button"
             onClick={handleClose}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                handleClose()
+              }
+            }}
+            aria-label="Close dialog"
             style={{
               position: 'fixed',
               top: 0,
@@ -95,10 +101,15 @@ export function TreatMeDialog() {
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
               cursor: 'pointer',
+              border: 'none',
             }}
-            aria-label="Close dialog"
           >
             <div
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="treat-me-dialog-title"
               style={{
                 position: 'relative',
                 width: '100%',
@@ -110,6 +121,7 @@ export function TreatMeDialog() {
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
                 maxHeight: '90vh',
                 overflowY: 'auto',
+                cursor: 'default',
               }}
             >
               {/* Close button */}
