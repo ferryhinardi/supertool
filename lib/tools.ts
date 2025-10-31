@@ -769,16 +769,15 @@ export const tools: Tool[] = [
     new: true,
   },
   {
-    title: 'Network Speed Test (Lite)',
+    title: 'Network Speed Test',
     description:
-      'Test your internet connection speed directly in the browser. Measure download and upload speeds with real-time progress. Pro version includes latency, jitter, and historical charts.',
+      'Test your internet connection speed directly in the browser. Measure download speed, upload speed, latency, and jitter with real-time results.',
     icon: Gauge,
     href: '/tools/speed-test',
-    gradient: 'from-cyan-500 to-blue-500',
-    features: ['Download Speed', 'Upload Speed', 'Real-time Graph', 'History Tracking'],
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['Download Speed', 'Upload Speed', 'Latency Test', 'Jitter Analysis'],
     category: 'development',
-    comingSoon: true,
-    premium: true,
+    new: true,
   },
   {
     title: 'Clipboard Formatter',

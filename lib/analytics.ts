@@ -199,6 +199,10 @@ type ToolEvent =
   | 'clipboard_history_toggle_pin'
   | 'clipboard_history_delete_item'
   | 'clipboard_history_clear_all'
+  | 'speed_test_open'
+  | 'speed_test_start'
+  | 'speed_test_complete'
+  | 'speed_test_error'
 
 // Type-safe gtag wrapper
 declare global {

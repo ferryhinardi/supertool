@@ -596,21 +596,28 @@ export default function ToolLayout({
    - Include help/usage section with keyword-rich content
    - Use descriptive alt text for icons and images
    - Ensure content is at least 300 words when including help sections
-7. **URL and routing optimization**:
+7. **Mobile-first responsive design**:
+   - **Touch-friendly UI**: Minimum 44px touch targets for buttons and interactive elements
+   - **Responsive typography**: Use responsive font sizes with base/sm/md/lg breakpoints
+   - **Mobile navigation**: Ensure sidebar/navigation works properly on mobile devices
+   - **Viewport optimization**: Add proper viewport meta tags and test on mobile devices
+   - **Performance**: Optimize for mobile bandwidth with lazy loading and efficient assets
+   - **Accessibility**: Ensure keyboard navigation and screen reader compatibility
+8. **URL and routing optimization**:
    - Use kebab-case for tool names (e.g., `/tools/json-beautify`)
    - Keep URLs short and descriptive (avoid deep nesting)
    - Include primary keyword in URL path when possible
-8. Create `__tests__/` directory with logic and component tests
-9. Add analytics events for all user interactions
-10. Update `ToolEvent` type in `lib/analytics.ts` if needed
-11. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
+9. Create `__tests__/` directory with logic and component tests
+10. Add analytics events for all user interactions
+11. Update `ToolEvent` type in `lib/analytics.ts` if needed
+12. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
     - Explain how the tool works and its purpose
     - Include creation date and last updated timestamp
     - Document key features, usage instructions, and technical implementation
     - Add analytics events, UI/UX details, and future enhancements
     - Make each documentation unique with different structure and focus areas
-12. **Update tool documentation** whenever implementation changes to keep docs current
-13. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
+13. **Update tool documentation** whenever implementation changes to keep docs current
+14. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
     - `pnpm lint` - ESLint validation
     - `pnpm exec tsc --noEmit` - Type checking
     - `CI=true pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
@@ -694,10 +701,11 @@ export default function ExampleToolLayout({
 }
 ```
 
-#### SEO Tool Page Structure
+#### SEO Tool Page Structure (Mobile-First)
 
 ```tsx
 // app/tools/example-tool/page.tsx
+// Reference: unit-converter/page.tsx for mobile-first patterns
 export default function ExampleTool() {
   return (
     <main
@@ -710,12 +718,37 @@ export default function ExampleTool() {
         spaceY: { base: "6", sm: "8", md: "10" },
       })}
     >
-      {/* SEO-optimized header */}
-      <header className={css({ textAlign: "center", spaceY: "4" })}>
+      {/* SEO-optimized header with badge - Mobile responsive */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className={css({ textAlign: "center", spaceY: "4" })}
+      >
+        <div
+          className={css({
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "3",
+            rounded: "full",
+            border: "1px solid",
+            borderColor: "purple.500/30",
+            bg: "purple.500/10",
+            px: "5",
+            py: "2",
+            backdropFilter: "blur(8px)",
+          })}
+        >
+          <Sparkles className={css({ h: "5", w: "5", color: "purple.400" })} />
+          <span className={css({ fontSize: "sm", fontWeight: "semibold", color: "purple.300" })}>
+            Professional Tool • Free Forever
+          </span>
+        </div>
+
         <h1
           className={css({
             fontSize: { base: "4xl", sm: "5xl", md: "6xl" },
-            fontWeight: "bold",
+            fontWeight: "extrabold",
             bgGradient: "to-r",
             gradientFrom: "purple.400",
             gradientVia: "pink.400",
@@ -727,67 +760,356 @@ export default function ExampleTool() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Example Tool - Free Online Utility
+          Example Tool
         </h1>
+
         <p
           className={css({
             mx: "auto",
-            maxW: "2xl",
-            fontSize: "lg",
+            maxW: "3xl",
+            fontSize: { base: "lg", sm: "xl" },
             color: "gray.400",
           })}
         >
           Convert and format your data with this professional online tool. Fast,
           secure, and completely free - no registration required.
         </p>
-      </header>
+      </motion.div>
 
-      {/* Main tool functionality */}
-      <section aria-label="Tool interface">{/* Tool UI components */}</section>
-
-      {/* SEO content section */}
-      <section
-        aria-label="How to use"
-        className={css({
-          rounded: { base: "xl", sm: "2xl" },
-          border: "2px solid",
-          borderColor: "purple.500/20",
-          bg: "rgba(168, 85, 247, 0.05)",
-          p: { base: "4", sm: "5", md: "6" },
-          backdropFilter: "blur(16px)",
-        })}
+      {/* Category/Options selection - Advanced responsive grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
       >
-        <h2
+        <Card
           className={css({
-            mb: "4",
-            fontSize: "xl",
-            fontWeight: "bold",
-            color: "purple.300",
+            border: "1px solid",
+            borderColor: "purple.500/20",
+            bg: "gray.900/50",
+            backdropFilter: "blur(16px)",
           })}
         >
-          How to Use the Example Tool
-        </h2>
-        <div className={css({ spaceY: "3", color: "gray.300" })}>
-          <p>
-            This professional example tool helps you process data quickly and
-            efficiently:
-          </p>
-          <ol className={css({ pl: "6", spaceY: "2", listStyle: "decimal" })}>
-            <li>Upload your file or paste your data into the input field</li>
-            <li>Select your desired output format from the dropdown menu</li>
-            <li>Click the convert button to process your data instantly</li>
-            <li>Download or copy the converted result</li>
-          </ol>
-          <p>
-            All processing happens locally in your browser, ensuring your data
-            remains private and secure. This tool supports various formats and
-            provides instant results without requiring registration.
-          </p>
+          <CardHeader>
+            <CardTitle>Select Options</CardTitle>
+            <CardDescription>Choose your conversion or processing options</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div
+              className={css({
+                display: "grid",
+                gridTemplateColumns: {
+                  base: "repeat(2, 1fr)",      // 2 columns on mobile
+                  sm: "repeat(3, 1fr)",        // 3 columns on small screens
+                  md: "repeat(4, 1fr)",        // 4 columns on medium
+                  lg: "repeat(6, 1fr)",        // 6 columns on large screens
+                },
+                gap: "3",
+              })}
+            >
+              {options.map((option) => (
+                <Button
+                  key={option.id}
+                  onClick={() => handleOptionChange(option.id)}
+                  className={css({
+                    h: "auto",
+                    flexDirection: "column",
+                    gap: "2",
+                    py: "4",
+                    px: "3",
+                    bg: isActive ? "purple.500/20" : "gray.800/50",
+                    border: "1px solid",
+                    borderColor: isActive ? "purple.500/50" : "gray.700/50",
+                    color: isActive ? "purple.300" : "gray.400",
+                    transition: "all 0.2s",
+                    _hover: {
+                      bg: isActive ? "purple.500/30" : "gray.800",
+                      borderColor: isActive ? "purple.500/70" : "gray.600",
+                      transform: "translateY(-2px)",
+                    },
+                  })}
+                >
+                  <span className={css({ fontSize: "sm", fontWeight: "semibold" })}>
+                    {option.name}
+                  </span>
+                  <span className={css({ fontSize: "xs", color: "gray.500" })}>
+                    {option.description}
+                  </span>
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Main tool functionality - Mobile optimized forms */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: "1px solid",
+            borderColor: "purple.500/20",
+            bg: "gray.900/50",
+            backdropFilter: "blur(16px)",
+          })}
+        >
+          <CardHeader>
+            <CardTitle>Convert Your Data</CardTitle>
+            <CardDescription>Enter your input and get instant results</CardDescription>
+          </CardHeader>
+          <CardContent className={css({ spaceY: "6" })}>
+            {/* Input section with mobile-friendly grid layout */}
+            <div className={css({ spaceY: "3" })}>
+              <label
+                htmlFor="input-data"
+                className={css({ fontSize: "sm", fontWeight: "medium", color: "gray.300" })}
+              >
+                Input Data
+              </label>
+              <div className={css({ display: "grid", gridTemplateColumns: "1fr auto", gap: "3" })}>
+                <Input
+                  id="input-data"
+                  type="text"
+                  inputMode="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Enter your data here..."
+                  className={css({
+                    h: "14", // 56px - good touch target
+                    fontSize: "xl",
+                    bg: "gray.800/50",
+                    border: "1px solid",
+                    borderColor: "gray.700",
+                    _focus: { borderColor: "purple.500", ring: "2px", ringColor: "purple.500/20" },
+                  })}
+                />
+                <select
+                  value={inputFormat}
+                  onChange={(e) => setInputFormat(e.target.value)}
+                  className={css({
+                    h: "14",
+                    minW: "40",
+                    rounded: "lg",
+                    border: "1px solid",
+                    borderColor: "gray.700",
+                    bg: "gray.800/50",
+                    px: "4",
+                    fontSize: "base",
+                    color: "gray.200",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    _hover: { bg: "gray.800", borderColor: "gray.600" },
+                    _focus: {
+                      outline: "none",
+                      borderColor: "purple.500",
+                      ring: "2px",
+                      ringColor: "purple.500/20",
+                    },
+                  })}
+                >
+                  {inputFormats.map((format) => (
+                    <option key={format.value} value={format.value}>
+                      {format.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Action button - Mobile touch-friendly */}
+            <div className={css({ display: "flex", justifyContent: "center" })}>
+              <Button
+                onClick={handleConvert}
+                size="lg"
+                className={css({
+                  gap: "2",
+                  minH: "12", // 48px minimum touch target
+                  px: "8",
+                  bg: "purple.500/20",
+                  border: "1px solid",
+                  borderColor: "purple.500/50",
+                  color: "purple.300",
+                  _hover: {
+                    bg: "purple.500/30",
+                    transform: "translateY(-1px)",
+                    transition: "all 0.2s",
+                  },
+                })}
+              >
+                <ArrowRight className={css({ h: "5", w: "5" })} />
+                Convert Data
+              </Button>
+            </div>
+
+            {/* Result section with proper mobile styling */}
+            {result && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className={css({
+                  rounded: "lg",
+                  border: "1px solid",
+                  borderColor: "purple.500/20",
+                  bg: "purple.500/5",
+                  p: "4",
+                })}
+              >
+                <div className={css({ display: "flex", alignItems: "center", gap: "2", mb: "2" })}>
+                  <CheckCircle className={css({ h: "4", w: "4", color: "purple.400" })} />
+                  <span
+                    className={css({ fontSize: "sm", fontWeight: "medium", color: "purple.300" })}
+                  >
+                    Conversion Result
+                  </span>
+                </div>
+                <pre className={css({ fontSize: "sm", color: "gray.300", wordBreak: "break-all" })}>
+                  {result}
+                </pre>
+              </motion.div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+          {/* Input section */}
+          <div className={css({ spaceY: { base: "3", sm: "4" } })}>
+            {/* Mobile-friendly input controls */}
+          </div>
+
+          {/* Output/result section */}
+          <div className={css({ spaceY: { base: "3", sm: "4" } })}>
+            {/* Mobile-optimized results display */}
+          </div>
+        </div>
+
+        {/* Mobile-friendly action buttons */}
+        <div
+          className={css({
+            display: "flex",
+            flexDirection: { base: "column", sm: "row" },
+            gap: { base: "2", sm: "3" },
+            mt: { base: "4", sm: "6" },
+            justifyContent: { base: "stretch", sm: "center" },
+          })}
+        >
+          <Button
+            size="lg"
+            className={css({
+              minH: "11", // 44px minimum touch target
+              fontSize: { base: "sm", sm: "base" },
+              px: { base: "6", sm: "8" },
+            })}
+          >
+            Primary Action
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            className={css({
+              minH: "11", // 44px minimum touch target
+              fontSize: { base: "sm", sm: "base" },
+              px: { base: "6", sm: "8" },
+            })}
+          >
+            Secondary Action
+          </Button>
         </div>
       </section>
+
+      {/* Pro Tips section - Better pattern than generic "How to use" */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: "1px solid",
+            borderColor: "cyan.500/20",
+            bg: "cyan.500/5",
+            backdropFilter: "blur(16px)",
+          })}
+        >
+          <CardContent className={css({ py: "6" })}>
+            <div className={css({ display: "flex", alignItems: "start", gap: "4" })}>
+              <Sparkles className={css({ h: "6", w: "6", color: "cyan.400", flexShrink: "0" })} />
+              <div className={css({ spaceY: "2" })}>
+                <h3 className={css({ fontSize: "lg", fontWeight: "semibold", color: "cyan.300" })}>
+                  Pro Tips
+                </h3>
+                <ul className={css({ spaceY: "2", fontSize: "sm", color: "gray.400" })}>
+                  <li>• Use keyboard shortcuts for faster processing</li>
+                  <li>• Save frequently used formats as presets for quick access</li>
+                  <li>• All conversions work offline and process locally</li>
+                  <li>• Supports drag-and-drop for file inputs</li>
+                  <li>• Copy results with one click using the copy button</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </main>
   );
 }
+```
+
+#### Mobile-Friendly Component Guidelines
+
+**Touch Targets:**
+
+```tsx
+// Minimum 44px (11 in Tailwind) for touch elements
+<Button className={css({ minH: "11", minW: "11" })}>
+  Touch Me
+</Button>
+
+// Interactive areas with proper spacing
+<div className={css({
+  p: { base: "3", sm: "4" }, // More padding on mobile for easier tapping
+  gap: { base: "3", sm: "2" }, // Larger gaps on mobile
+})}>
+```
+
+**Responsive Typography:**
+
+```tsx
+// Scalable text that's readable on all devices
+<h1 className={css({
+  fontSize: { base: "2xl", sm: "3xl", md: "4xl", lg: "5xl" },
+  lineHeight: { base: "1.3", sm: "1.2" }, // Tighter line height on larger screens
+})}>
+
+// Body text with proper mobile spacing
+<p className={css({
+  fontSize: { base: "sm", sm: "base" },
+  lineHeight: { base: "1.6", sm: "1.5" },
+  px: { base: "2", sm: "0" }, // Add padding on mobile for edge readability
+})}>
+```
+
+**Layout Stacking:**
+
+```tsx
+// Stack vertically on mobile, grid on desktop
+<div className={css({
+  display: "grid",
+  gap: { base: "4", sm: "6" },
+  gridTemplateColumns: {
+    base: "1fr", // Single column on mobile
+    md: "repeat(2, 1fr)", // Two columns on medium screens and up
+    lg: "repeat(3, 1fr)", // Three columns on large screens
+  },
+})}>
+
+// Flex direction changes for mobile
+<div className={css({
+  display: "flex",
+  flexDirection: { base: "column", sm: "row" },
+  gap: { base: "2", sm: "4" },
+})}>
 ```
 
 ### Tool Categories System
