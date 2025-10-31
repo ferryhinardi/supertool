@@ -13,6 +13,7 @@ import {
   Upload,
 } from 'lucide-react'
 import { useCallback, useState } from 'react'
+import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -835,6 +836,9 @@ export default function EncryptionToolPage() {
             </ul>
           </CardContent>
         </Card>
+
+        {/* Affiliate Suggestions */}
+        <AffiliateSuggestion tool="encryption-tool" variant="banner" />
       </div>
     </div>
   )

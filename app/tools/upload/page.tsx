@@ -3,6 +3,7 @@
 import { Check, Copy, ExternalLink, FileUp, RotateCcw, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -789,6 +790,9 @@ export default function UploadTool() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Affiliate Suggestions */}
+        <AffiliateSuggestion tool="upload" variant="banner" />
       </div>
     </main>
   )

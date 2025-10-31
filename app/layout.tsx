@@ -7,6 +7,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Toaster } from 'sonner'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { ReactQueryProvider } from '@/components/providers/ReactQueryProvider'
+import { getAdsConfig } from '@/lib/ads-config'
 import { css } from '@/styled-system/css/css.mjs'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -117,6 +118,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+  const adsConfig = getAdsConfig()
 
   return (
     <html lang="id" className={inter.className}>
@@ -267,6 +269,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               `}
             </Script>
           </>
+        )}
+
+        {/* Google AdSense - only load if ads are enabled and ID exists */}
+        {adsConfig.adsense.enabled && adsConfig.adsense.clientId && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsConfig.adsense.clientId}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
+
+        {/* Carbon Ads - only load if enabled */}
+        {adsConfig.carbon.enabled && adsConfig.carbon.serveId && (
+          <link rel="preconnect" href="https://cdn.carbonads.com" crossOrigin="anonymous" />
+        )}
+
+        {/* EthicalAds - only load if enabled */}
+        {adsConfig.ethical.enabled && adsConfig.ethical.publisherId && (
+          <link rel="preconnect" href="https://media.ethicalads.io" crossOrigin="anonymous" />
         )}
       </body>
     </html>

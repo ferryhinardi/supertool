@@ -14,6 +14,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
+import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -786,6 +787,9 @@ export default function ImageOptimizerPage() {
           </Card>
         ))}
       </motion.div>
+
+      {/* Affiliate Suggestions */}
+      <AffiliateSuggestion tool="image-optimizer" variant="banner" />
     </main>
   )
 }

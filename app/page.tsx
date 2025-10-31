@@ -24,6 +24,7 @@ import {
 import Link from 'next/link'
 import Script from 'next/script'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { AdContainer } from '@/components/features/AdContainer'
 import { FeedbackDialog } from '@/components/features/FeedbackDialog'
 import { RecentTools } from '@/components/features/RecentTools'
 import { TreatMeDialog } from '@/components/features/TreatMeDialog'
@@ -666,6 +667,28 @@ export default function HomePage() {
       {/* Recent Tools Section */}
       <RecentTools />
 
+      {/* Ad Banner - Feature Flag Guarded */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.5 }}
+        className={css({
+          position: 'relative',
+          zIndex: '10',
+          mx: 'auto',
+          w: 'full',
+          maxW: { base: 'full', md: '100%' },
+        })}
+      >
+        <AdContainer
+          slot="homepage-top"
+          position="content"
+          className={css({
+            my: { base: '8', md: '10' },
+          })}
+        />
+      </motion.div>
+
       {/* Tools by Category Sections */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -939,6 +962,28 @@ export default function HomePage() {
             </motion.div>
           )}
         </AnimatePresence>
+      </motion.div>
+
+      {/* Ad Banner Bottom - Feature Flag Guarded */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className={css({
+          position: 'relative',
+          zIndex: '10',
+          mx: 'auto',
+          w: 'full',
+          maxW: { base: 'full', md: '100%' },
+        })}
+      >
+        <AdContainer
+          slot="homepage-bottom"
+          position="footer"
+          className={css({
+            my: { base: '8', md: '10' },
+          })}
+        />
       </motion.div>
 
       {/* Quick Stats Footer */}

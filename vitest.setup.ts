@@ -4,6 +4,18 @@ import '@testing-library/jest-dom/vitest'
 
 // Setup global mocks before all tests
 beforeAll(async () => {
+  // Mock process.env for browser mode
+  if (typeof window !== 'undefined' && typeof process === 'undefined') {
+    // @ts-expect-error - Mock process for browser mode
+    globalThis.process = {
+      env: {
+        NODE_ENV: 'test',
+        NEXT_PUBLIC_ENABLE_ADS: 'false',
+        NEXT_PUBLIC_GOOGLE_ADSENSE_ID: '',
+      },
+    }
+  }
+
   // Import CSS for browser mode screenshots
   if (typeof window !== 'undefined') {
     try {

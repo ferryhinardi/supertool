@@ -4,6 +4,7 @@ import { Copy, Download, Key, RefreshCw, Shield, Zap } from 'lucide-react'
 import { parseAsBoolean, parseAsInteger, useQueryState } from 'nuqs'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
+import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
@@ -650,6 +651,9 @@ function PasswordGeneratorContent() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Affiliate Suggestions */}
+      <AffiliateSuggestion tool="password-generator" variant="banner" />
     </main>
   )
 }

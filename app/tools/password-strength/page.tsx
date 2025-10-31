@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -736,6 +737,9 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Affiliate Suggestions */}
+      <AffiliateSuggestion tool="password-strength" variant="banner" />
     </main>
   )
 }
