@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -9,10 +10,21 @@ export default defineConfig({
   // @ts-expect-error - Vite version mismatch between Next.js and Vitest
   plugins: [react()],
   test: {
-    environment: 'jsdom',
     globals: true,
     setupFiles: './vitest.setup.ts',
     testTimeout: 60000,
+    // Browser mode configuration for screenshot tests with CSS styling
+    browser: {
+      enabled: !process.env.CI,
+      // @ts-expect-error - Provider API change in Vitest v4
+      provider: playwright(),
+      instances: [
+        {
+          browser: 'chromium',
+        },
+      ],
+      headless: true,
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
