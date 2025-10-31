@@ -64,6 +64,7 @@ const navigation = [
   { name: 'Stopwatch & Timer', href: '/tools/stopwatch-timer', icon: Clock },
   { name: 'Task Timer', href: '/tools/task-timer', icon: Timer },
   { name: 'Clipboard History', href: '/tools/clipboard-history', icon: Clipboard },
+  { name: 'Clipboard Formatter', href: '/tools/clipboard-formatter', icon: Clipboard },
   { name: 'Tally Counter', href: '/tools/tally-counter', icon: Star },
   { name: 'API Tester', href: '/tools/api-tester', icon: Terminal },
   { name: 'Network Speed Test', href: '/tools/speed-test', icon: Gauge },

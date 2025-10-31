@@ -788,7 +788,6 @@ export const tools: Tool[] = [
     gradient: 'from-green-500 to-teal-500',
     features: ['Auto Format', 'Smart Detection', 'Case Transform', 'Whitespace Cleanup'],
     category: 'productivity',
-    comingSoon: true,
   },
   {
     title: 'File Metadata Inspector',
