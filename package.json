@@ -79,8 +79,9 @@
     "@types/react-dom": "^19",
     "@types/xlsx": "^0.0.36",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitest/browser": "^2.1.8",
-    "@vitest/ui": "^2.1.8",
+    "@vitest/browser": "^4.0.5",
+    "@vitest/browser-playwright": "^4.0.5",
+    "@vitest/ui": "^4.0.5",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.38.0",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
@@ -92,7 +93,7 @@
     "typescript": "^5",
     "typescript-eslint": "^8.46.2",
     "vite": "^6.0.7",
-    "vitest": "^2.1.8",
+    "vitest": "^4.0.5",
     "webdriverio": "^9.4.2"
   }
 }

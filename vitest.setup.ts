@@ -4,6 +4,17 @@ import '@testing-library/jest-dom/vitest'
 
 // Setup global mocks before all tests
 beforeAll(async () => {
+  // Import CSS for browser mode screenshots
+  if (typeof window !== 'undefined') {
+    try {
+      await import('./app/panda.css')
+      await import('./app/globals.css')
+    } catch (error) {
+      // CSS files may not exist or fail to load, that's okay
+      console.warn('Failed to load CSS files:', error)
+    }
+  }
+
   // Polyfill Web Crypto API for Node.js test environment
   if (!globalThis.crypto) {
     try {

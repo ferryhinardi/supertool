@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+*.log
+!turbopack-backtrace.log
 
 # next.js
 /.next/
