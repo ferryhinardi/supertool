@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ColorContrastPage from '../page'
@@ -129,7 +130,7 @@ describe('Color Contrast Checker - Color Input Tests', () => {
     render(<ColorContrastPage />)
 
     const copyButtons = screen.getAllByRole('button', { name: /Copy/ })
-    fireEvent.click(copyButtons[0])
+    await userEvent.click(copyButtons[0])
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('#000000')
@@ -141,7 +142,7 @@ describe('Color Contrast Checker - Color Input Tests', () => {
     render(<ColorContrastPage />)
 
     const copyButtons = screen.getAllByRole('button', { name: /Copy/ })
-    fireEvent.click(copyButtons[1])
+    await userEvent.click(copyButtons[1])
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('#FFFFFF')
@@ -151,7 +152,7 @@ describe('Color Contrast Checker - Color Input Tests', () => {
 })
 
 describe('Color Contrast Checker - Functionality Tests', () => {
-  it('should swap colors when swap button is clicked', () => {
+  it('should swap colors when swap button is clicked', async () => {
     render(<ColorContrastPage />)
 
     const foregroundInput = screen.getByPlaceholderText('#000000')
@@ -161,13 +162,13 @@ describe('Color Contrast Checker - Functionality Tests', () => {
     const initialForeground = foregroundInput.getAttribute('value')
     const initialBackground = backgroundInput.getAttribute('value')
 
-    fireEvent.click(swapButton)
+    await userEvent.click(swapButton)
 
     expect(foregroundInput).toHaveValue(initialBackground)
     expect(backgroundInput).toHaveValue(initialForeground)
   })
 
-  it('should generate random colors', () => {
+  it('should generate random colors', async () => {
     render(<ColorContrastPage />)
 
     const foregroundInput = screen.getByPlaceholderText('#000000')
@@ -177,7 +178,7 @@ describe('Color Contrast Checker - Functionality Tests', () => {
     const initialForeground = foregroundInput.getAttribute('value')
     const initialBackground = backgroundInput.getAttribute('value')
 
-    fireEvent.click(randomButton)
+    await userEvent.click(randomButton)
 
     // Colors should be different after randomization
     const newForeground = foregroundInput.getAttribute('value')
@@ -187,7 +188,7 @@ describe('Color Contrast Checker - Functionality Tests', () => {
     expect(newBackground).not.toBe(initialBackground)
   })
 
-  it('should apply preset color when clicked', () => {
+  it('should apply preset color when clicked', async () => {
     render(<ColorContrastPage />)
 
     const foregroundInput = screen.getByPlaceholderText('#000000')
@@ -196,7 +197,7 @@ describe('Color Contrast Checker - Functionality Tests', () => {
     const presetButtons = document.querySelectorAll('button[title]')
 
     if (presetButtons.length > 0) {
-      fireEvent.click(presetButtons[0])
+      await userEvent.click(presetButtons[0] as HTMLElement)
 
       // Foreground color should have changed
       expect(foregroundInput.getAttribute('value')).not.toBe('#000000')

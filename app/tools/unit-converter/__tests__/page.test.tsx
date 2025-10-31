@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
@@ -69,7 +70,7 @@ describe('Unit Converter Page', () => {
       render(<UnitConverterPage />)
 
       const weightButton = screen.getByText('Weight / Mass')
-      fireEvent.click(weightButton)
+      await userEvent.click(weightButton)
 
       await waitFor(() => {
         expect(screen.getByText('Convert Weight / Mass')).toBeInTheDocument()
@@ -85,7 +86,7 @@ describe('Unit Converter Page', () => {
 
       // Switch to Temperature
       const tempButton = screen.getByText('Temperature')
-      fireEvent.click(tempButton)
+      await userEvent.click(tempButton)
 
       await waitFor(() => {
         const selects = screen.getAllByRole('combobox')
@@ -205,7 +206,7 @@ describe('Unit Converter Page', () => {
       const resultBeforeSwap = (screen.getByPlaceholderText('Result') as HTMLInputElement).value
 
       const swapButton = screen.getByText('Swap Units')
-      fireEvent.click(swapButton)
+      await userEvent.click(swapButton)
 
       await waitFor(() => {
         const inputAfterSwap = screen.getByPlaceholderText('Enter value') as HTMLInputElement
@@ -221,7 +222,7 @@ describe('Unit Converter Page', () => {
       const toUnitBefore = selects[1].value
 
       const swapButton = screen.getByText('Swap Units')
-      fireEvent.click(swapButton)
+      await userEvent.click(swapButton)
 
       await waitFor(() => {
         const selectsAfter = screen.getAllByRole('combobox') as HTMLSelectElement[]
@@ -241,7 +242,7 @@ describe('Unit Converter Page', () => {
       render(<UnitConverterPage />)
 
       const addButton = screen.getByText('Add to Favorites')
-      fireEvent.click(addButton)
+      await userEvent.click(addButton)
 
       await waitFor(() => {
         expect(screen.getByText('Favorite Conversions')).toBeInTheDocument()
@@ -252,7 +253,7 @@ describe('Unit Converter Page', () => {
       render(<UnitConverterPage />)
 
       const addButton = screen.getByText('Add to Favorites')
-      fireEvent.click(addButton)
+      await userEvent.click(addButton)
 
       await waitFor(() => {
         expect(screen.getAllByText('Length').length).toBeGreaterThan(0)
@@ -266,7 +267,7 @@ describe('Unit Converter Page', () => {
 
       // Change to different units
       const tempButton = screen.getByText('Temperature')
-      fireEvent.click(tempButton)
+      await userEvent.click(tempButton)
 
       await waitFor(() => {
         expect(screen.getByText('Convert Temperature')).toBeInTheDocument()
@@ -274,11 +275,11 @@ describe('Unit Converter Page', () => {
 
       // Add as favorite
       const addButton = screen.getByText('Add to Favorites')
-      fireEvent.click(addButton)
+      await userEvent.click(addButton)
 
       // Switch back to Length
       const lengthButton = screen.getByText('Length')
-      fireEvent.click(lengthButton)
+      await userEvent.click(lengthButton)
 
       await waitFor(() => {
         expect(screen.getByText('Convert Length')).toBeInTheDocument()
@@ -292,7 +293,7 @@ describe('Unit Converter Page', () => {
           badge.closest('article')?.textContent?.includes('Favorite Conversions')
         )
         if (favoriteBadge) {
-          fireEvent.click(favoriteBadge)
+          userEvent.click(favoriteBadge)
         }
       })
 
@@ -309,7 +310,7 @@ describe('Unit Converter Page', () => {
 
       // Add favorite
       const addButton = screen.getByText('Add to Favorites')
-      fireEvent.click(addButton)
+      await userEvent.click(addButton)
 
       await waitFor(() => {
         expect(screen.getByText('Favorite Conversions')).toBeInTheDocument()
@@ -321,7 +322,7 @@ describe('Unit Converter Page', () => {
         btn.querySelector('svg[class*="lucide-trash"]')
       )
       if (deleteButton) {
-        fireEvent.click(deleteButton)
+        await userEvent.click(deleteButton)
       }
 
       await waitFor(() => {
@@ -333,7 +334,7 @@ describe('Unit Converter Page', () => {
       render(<UnitConverterPage />)
 
       const addButton = screen.getByText('Add to Favorites')
-      fireEvent.click(addButton)
+      await userEvent.click(addButton)
 
       await waitFor(() => {
         const stored = localStorage.getItem('unitConverterFavorites')
@@ -351,7 +352,7 @@ describe('Unit Converter Page', () => {
 
       // Switch to Temperature
       const tempButton = screen.getByText('Temperature')
-      fireEvent.click(tempButton)
+      await userEvent.click(tempButton)
 
       await waitFor(() => {
         const input = screen.getByPlaceholderText('Enter value') as HTMLInputElement
@@ -369,7 +370,7 @@ describe('Unit Converter Page', () => {
 
       // Switch to Temperature
       const tempButton = screen.getByText('Temperature')
-      fireEvent.click(tempButton)
+      await userEvent.click(tempButton)
 
       await waitFor(() => {
         const selects = screen.getAllByRole('combobox') as HTMLSelectElement[]

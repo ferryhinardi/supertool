@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import GradientGeneratorPage from '../page'
@@ -79,23 +80,23 @@ describe('Gradient Generator Page - Component Tests', () => {
     expect(screen.getByRole('button', { name: /Download PNG/ })).toBeInTheDocument()
   })
 
-  it('should switch gradient types', () => {
+  it('should switch gradient types', async () => {
     render(<GradientGeneratorPage />)
 
     const radialButton = screen.getByRole('button', { name: 'radial' })
-    fireEvent.click(radialButton)
+    await userEvent.click(radialButton)
 
     // Angle control should not be visible for radial gradients
     expect(screen.queryByText(/Angle:/)).not.toBeInTheDocument()
   })
 
-  it('should add a new color stop', () => {
+  it('should add a new color stop', async () => {
     render(<GradientGeneratorPage />)
 
     const addButton = screen.getByRole('button', { name: /Add/ })
     const initialColorInputs = screen.getAllByRole('textbox').length
 
-    fireEvent.click(addButton)
+    await userEvent.click(addButton)
 
     const newColorInputs = screen.getAllByRole('textbox').length
     expect(newColorInputs).toBe(initialColorInputs + 1)
@@ -105,14 +106,14 @@ describe('Gradient Generator Page - Component Tests', () => {
     render(<GradientGeneratorPage />)
 
     const copyButton = screen.getByRole('button', { name: /Copy CSS/ })
-    fireEvent.click(copyButton)
+    await userEvent.click(copyButton)
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalled()
     })
   })
 
-  it('should randomize gradient', () => {
+  it('should randomize gradient', async () => {
     render(<GradientGeneratorPage />)
 
     const randomizeButton = screen.getAllByRole('button').find((btn) => {
@@ -122,7 +123,7 @@ describe('Gradient Generator Page - Component Tests', () => {
 
     expect(randomizeButton).toBeInTheDocument()
     if (randomizeButton) {
-      fireEvent.click(randomizeButton)
+      await userEvent.click(randomizeButton)
       // Gradient should be randomized (visual change, hard to test)
     }
   })
@@ -138,7 +139,7 @@ describe('Gradient Generator Page - Component Tests', () => {
     expect(reverseButton).toBeInTheDocument()
   })
 
-  it('should toggle preview background', () => {
+  it('should toggle preview background', async () => {
     render(<GradientGeneratorPage />)
 
     // Find the preview background toggle button
@@ -149,7 +150,7 @@ describe('Gradient Generator Page - Component Tests', () => {
 
     expect(previewToggle).toBeInTheDocument()
     if (previewToggle) {
-      fireEvent.click(previewToggle)
+      await userEvent.click(previewToggle)
       // Background should toggle (visual change)
     }
   })
@@ -177,21 +178,21 @@ describe('Gradient Generator - CSS Generation', () => {
     expect(cssOutput.textContent).toContain('linear-gradient')
   })
 
-  it('should generate radial gradient CSS when radial type is selected', () => {
+  it('should generate radial gradient CSS when radial type is selected', async () => {
     render(<GradientGeneratorPage />)
 
     const radialButton = screen.getByRole('button', { name: 'radial' })
-    fireEvent.click(radialButton)
+    await userEvent.click(radialButton)
 
     const cssOutput = screen.getByText(/background:/)
     expect(cssOutput.textContent).toContain('radial-gradient')
   })
 
-  it('should generate conic gradient CSS when conic type is selected', () => {
+  it('should generate conic gradient CSS when conic type is selected', async () => {
     render(<GradientGeneratorPage />)
 
     const conicButton = screen.getByRole('button', { name: 'conic' })
-    fireEvent.click(conicButton)
+    await userEvent.click(conicButton)
 
     const cssOutput = screen.getByText(/background:/)
     expect(cssOutput.textContent).toContain('conic-gradient')
@@ -221,7 +222,7 @@ describe('Gradient Generator - Presets', () => {
 
     // Click the first preset
     if (presetButtons[0]) {
-      fireEvent.click(presetButtons[0])
+      await userEvent.click(presetButtons[0])
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalled()
@@ -277,11 +278,11 @@ describe('Gradient Generator - Angle Control', () => {
     }
   })
 
-  it('should show angle control for conic gradient', () => {
+  it('should show angle control for conic gradient', async () => {
     render(<GradientGeneratorPage />)
 
     const conicButton = screen.getByRole('button', { name: 'conic' })
-    fireEvent.click(conicButton)
+    await userEvent.click(conicButton)
 
     expect(screen.getByText(/Angle:/)).toBeInTheDocument()
   })

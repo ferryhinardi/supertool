@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/analytics'
@@ -290,7 +291,7 @@ describe('Image Metadata Viewer - Copy Functionality Tests', () => {
     })
 
     if (copyButton) {
-      fireEvent.click(copyButton)
+      await userEvent.click(copyButton)
 
       await waitFor(() => {
         expect(mockWriteText).toHaveBeenCalledWith('Canon')
@@ -323,7 +324,7 @@ describe('Image Metadata Viewer - Copy Functionality Tests', () => {
     })
 
     if (copyButton) {
-      fireEvent.click(copyButton)
+      await userEvent.click(copyButton)
 
       await waitFor(() => {
         expect(analytics.trackToolEvent).toHaveBeenCalledWith('image_metadata_copy', {})
@@ -355,7 +356,7 @@ describe('Image Metadata Viewer - Clear Functionality Tests', () => {
     })
 
     const clearButton = screen.getByRole('button', { name: /Clear/ })
-    fireEvent.click(clearButton)
+    await userEvent.click(clearButton)
 
     await waitFor(() => {
       expect(screen.queryByText('test.jpg')).not.toBeInTheDocument()
@@ -381,7 +382,7 @@ describe('Image Metadata Viewer - Clear Functionality Tests', () => {
     })
 
     const clearButton = screen.getByRole('button', { name: /Clear/ })
-    fireEvent.click(clearButton)
+    await userEvent.click(clearButton)
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('image_metadata_clear', {})
   })
@@ -430,7 +431,7 @@ describe('Image Metadata Viewer - Download JSON Tests', () => {
     })
 
     const downloadButton = screen.getByRole('button', { name: /Download JSON/ })
-    fireEvent.click(downloadButton)
+    await userEvent.click(downloadButton)
 
     await waitFor(() => {
       expect(mockCreateObjectURL).toHaveBeenCalled()

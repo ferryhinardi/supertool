@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/analytics'
@@ -175,11 +176,11 @@ describe('Daily Note Page - Template Tests', () => {
     expect(dailyLogButton).toHaveClass('bd-c_green.500/30')
   })
 
-  it('should change template when clicking template button', () => {
+  it('should change template when clicking template button', async () => {
     render(<DailyNotePage />)
 
     const gratitudeButton = screen.getByRole('button', { name: 'Gratitude Journal' })
-    fireEvent.click(gratitudeButton)
+    await userEvent.click(gratitudeButton as HTMLElement)
 
     expect(toast.success).toHaveBeenCalledWith('Template "Gratitude Journal" applied! 📝')
     expect(analytics.trackEvent).toHaveBeenCalledWith({
@@ -226,11 +227,11 @@ describe('Daily Note Page - Date Navigation Tests', () => {
     cleanup()
   })
 
-  it('should navigate to previous day', () => {
+  it('should navigate to previous day', async () => {
     render(<DailyNotePage />)
 
     const prevButton = screen.getByRole('button', { name: /Previous/ })
-    fireEvent.click(prevButton)
+    await userEvent.click(prevButton as HTMLElement)
 
     expect(analytics.trackEvent).toHaveBeenCalledWith({
       action: 'daily_note_date_changed',
@@ -239,11 +240,11 @@ describe('Daily Note Page - Date Navigation Tests', () => {
     })
   })
 
-  it('should navigate to next day', () => {
+  it('should navigate to next day', async () => {
     render(<DailyNotePage />)
 
     const nextButton = screen.getByRole('button', { name: /Next/ })
-    fireEvent.click(nextButton)
+    await userEvent.click(nextButton as HTMLElement)
 
     expect(analytics.trackEvent).toHaveBeenCalledWith({
       action: 'daily_note_date_changed',
@@ -252,11 +253,11 @@ describe('Daily Note Page - Date Navigation Tests', () => {
     })
   })
 
-  it('should navigate to today', () => {
+  it('should navigate to today', async () => {
     render(<DailyNotePage />)
 
     const todayButton = screen.getByRole('button', { name: /Today/ })
-    fireEvent.click(todayButton)
+    await userEvent.click(todayButton as HTMLElement)
 
     expect(analytics.trackEvent).toHaveBeenCalledWith({
       action: 'daily_note_date_changed',
@@ -275,7 +276,7 @@ describe('Daily Note Page - Date Navigation Tests', () => {
 
     // Click previous
     const prevButton = screen.getByRole('button', { name: /Previous/ })
-    fireEvent.click(prevButton)
+    await userEvent.click(prevButton as HTMLElement)
 
     // Wait for the date to change
     await waitFor(() => {
@@ -296,7 +297,7 @@ describe('Daily Note Page - Save Note Tests', () => {
     cleanup()
   })
 
-  it('should save note to localStorage', () => {
+  it('should save note to localStorage', async () => {
     render(<DailyNotePage />)
 
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -306,7 +307,7 @@ describe('Daily Note Page - Save Note Tests', () => {
     fireEvent.change(textarea, { target: { value: '# My Daily Note\n\nThis is a test note.' } })
 
     // Save the note
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton as HTMLElement)
 
     expect(toast.success).toHaveBeenCalledWith('Note saved successfully! 💾')
     expect(analytics.trackEvent).toHaveBeenCalledWith({
@@ -316,7 +317,7 @@ describe('Daily Note Page - Save Note Tests', () => {
     })
   })
 
-  it('should show error when saving empty note', () => {
+  it('should show error when saving empty note', async () => {
     render(<DailyNotePage />)
 
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -326,12 +327,12 @@ describe('Daily Note Page - Save Note Tests', () => {
     fireEvent.change(textarea, { target: { value: '' } })
 
     // Try to save
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton as HTMLElement)
 
     expect(toast.error).toHaveBeenCalledWith('Note content cannot be empty')
   })
 
-  it('should update existing note', () => {
+  it('should update existing note', async () => {
     render(<DailyNotePage />)
 
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -339,11 +340,11 @@ describe('Daily Note Page - Save Note Tests', () => {
 
     // Save first version
     fireEvent.change(textarea, { target: { value: 'First version' } })
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton as HTMLElement)
 
     // Update and save again
     fireEvent.change(textarea, { target: { value: 'Second version' } })
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton as HTMLElement)
 
     expect(toast.success).toHaveBeenCalledWith('Note updated successfully! 💾')
   })
@@ -360,7 +361,7 @@ describe('Daily Note Page - Copy Tests', () => {
     cleanup()
   })
 
-  it('should copy note to clipboard', () => {
+  it('should copy note to clipboard', async () => {
     render(<DailyNotePage />)
 
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -370,7 +371,7 @@ describe('Daily Note Page - Copy Tests', () => {
     fireEvent.change(textarea, { target: { value: '# My Note\n\nContent here' } })
 
     // Copy
-    fireEvent.click(copyButton)
+    await userEvent.click(copyButton as HTMLElement)
 
     expect(mockWriteText).toHaveBeenCalledWith('# My Note\n\nContent here')
     expect(toast.success).toHaveBeenCalledWith('Note copied to clipboard! 📋')
@@ -380,7 +381,7 @@ describe('Daily Note Page - Copy Tests', () => {
     })
   })
 
-  it('should show error when copying empty note', () => {
+  it('should show error when copying empty note', async () => {
     render(<DailyNotePage />)
 
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -390,7 +391,7 @@ describe('Daily Note Page - Copy Tests', () => {
     fireEvent.change(textarea, { target: { value: '' } })
 
     // Try to copy
-    fireEvent.click(copyButton)
+    await userEvent.click(copyButton as HTMLElement)
 
     expect(toast.error).toHaveBeenCalledWith('No content to copy')
   })
@@ -406,7 +407,7 @@ describe('Daily Note Page - Download Tests', () => {
     cleanup()
   })
 
-  it('should download note as markdown file', () => {
+  it('should download note as markdown file', async () => {
     render(<DailyNotePage />)
 
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -432,7 +433,7 @@ describe('Daily Note Page - Download Tests', () => {
       .mockImplementation(mockRemoveChild)
 
     // Download
-    fireEvent.click(downloadButton)
+    await userEvent.click(downloadButton as HTMLElement)
 
     expect(mockClick).toHaveBeenCalled()
     expect(toast.success).toHaveBeenCalledWith('Note downloaded as Markdown! 💾')
@@ -448,7 +449,7 @@ describe('Daily Note Page - Download Tests', () => {
     removeChildSpy.mockRestore()
   })
 
-  it('should show error when downloading empty note', () => {
+  it('should show error when downloading empty note', async () => {
     render(<DailyNotePage />)
 
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -458,7 +459,7 @@ describe('Daily Note Page - Download Tests', () => {
     fireEvent.change(textarea, { target: { value: '' } })
 
     // Try to download
-    fireEvent.click(downloadButton)
+    await userEvent.click(downloadButton as HTMLElement)
 
     expect(toast.error).toHaveBeenCalledWith('No content to download')
   })
@@ -474,11 +475,11 @@ describe('Daily Note Page - Custom Template Tests', () => {
     cleanup()
   })
 
-  it('should show custom template creator', () => {
+  it('should show custom template creator', async () => {
     render(<DailyNotePage />)
 
     const createButton = screen.getByRole('button', { name: /Create Custom Template/ })
-    fireEvent.click(createButton)
+    await userEvent.click(createButton as HTMLElement)
 
     expect(screen.getByPlaceholderText('Template name...')).toBeInTheDocument()
     // Use getAllByRole and find the one that's just "Save" not "Save Note"
@@ -488,11 +489,11 @@ describe('Daily Note Page - Custom Template Tests', () => {
     expect(screen.getByRole('button', { name: /Cancel/ })).toBeInTheDocument()
   })
 
-  it('should create custom template', () => {
+  it('should create custom template', async () => {
     render(<DailyNotePage />)
 
     const createButton = screen.getByRole('button', { name: /Create Custom Template/ })
-    fireEvent.click(createButton)
+    await userEvent.click(createButton as HTMLElement)
 
     const nameInput = screen.getByPlaceholderText('Template name...')
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -505,7 +506,7 @@ describe('Daily Note Page - Custom Template Tests', () => {
     const saveButtons = screen.getAllByRole('button', { name: /Save/ })
     const templateSaveButton = saveButtons.find((btn) => btn.textContent === 'Save')
     if (templateSaveButton) {
-      fireEvent.click(templateSaveButton)
+      await userEvent.click(templateSaveButton as HTMLElement)
     }
 
     expect(toast.success).toHaveBeenCalledWith('Custom template "My Custom Template" created! ✨')
@@ -515,11 +516,11 @@ describe('Daily Note Page - Custom Template Tests', () => {
     })
   })
 
-  it('should show error when creating template with empty name', () => {
+  it('should show error when creating template with empty name', async () => {
     render(<DailyNotePage />)
 
     const createButton = screen.getByRole('button', { name: /Create Custom Template/ })
-    fireEvent.click(createButton)
+    await userEvent.click(createButton as HTMLElement)
 
     // Get the template save button (not the "Save Note" button)
     const saveButtons = screen.getAllByRole('button', { name: /Save/ })
@@ -527,20 +528,20 @@ describe('Daily Note Page - Custom Template Tests', () => {
 
     // Try to save without name
     if (templateSaveButton) {
-      fireEvent.click(templateSaveButton)
+      await userEvent.click(templateSaveButton as HTMLElement)
     }
 
     expect(toast.error).toHaveBeenCalledWith('Template name cannot be empty')
   })
 
-  it('should cancel custom template creation', () => {
+  it('should cancel custom template creation', async () => {
     render(<DailyNotePage />)
 
     const createButton = screen.getByRole('button', { name: /Create Custom Template/ })
-    fireEvent.click(createButton)
+    await userEvent.click(createButton as HTMLElement)
 
     const cancelButton = screen.getByRole('button', { name: /Cancel/ })
-    fireEvent.click(cancelButton)
+    await userEvent.click(cancelButton as HTMLElement)
 
     expect(screen.queryByPlaceholderText('Template name...')).not.toBeInTheDocument()
   })
@@ -624,7 +625,7 @@ describe('Daily Note Page - Recent Notes Tests', () => {
 
     // Save a note
     fireEvent.change(textarea, { target: { value: 'My first note' } })
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton as HTMLElement)
 
     // Recent notes should appear
     await waitFor(() => {
@@ -643,7 +644,7 @@ describe('Daily Note Page - LocalStorage Persistence Tests', () => {
     cleanup()
   })
 
-  it('should persist notes to localStorage', () => {
+  it('should persist notes to localStorage', async () => {
     render(<DailyNotePage />)
 
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -651,7 +652,7 @@ describe('Daily Note Page - LocalStorage Persistence Tests', () => {
 
     // Save a note
     fireEvent.change(textarea, { target: { value: 'Persistent note' } })
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton as HTMLElement)
 
     // Check localStorage
     const savedNotes = localStorageMock.getItem('dailyNotes')
@@ -678,11 +679,11 @@ describe('Daily Note Page - LocalStorage Persistence Tests', () => {
     expect(textarea).toHaveValue('# Loaded Note\n\nThis was loaded from storage')
   })
 
-  it('should persist custom templates to localStorage', () => {
+  it('should persist custom templates to localStorage', async () => {
     render(<DailyNotePage />)
 
     const createButton = screen.getByRole('button', { name: /Create Custom Template/ })
-    fireEvent.click(createButton)
+    await userEvent.click(createButton as HTMLElement)
 
     const nameInput = screen.getByPlaceholderText('Template name...')
     const textarea = screen.getByPlaceholderText('Start writing your note here...')
@@ -695,7 +696,7 @@ describe('Daily Note Page - LocalStorage Persistence Tests', () => {
     const saveButtons = screen.getAllByRole('button', { name: /Save/ })
     const templateSaveButton = saveButtons.find((btn) => btn.textContent === 'Save')
     if (templateSaveButton) {
-      fireEvent.click(templateSaveButton)
+      await userEvent.click(templateSaveButton as HTMLElement)
     }
 
     // Check localStorage

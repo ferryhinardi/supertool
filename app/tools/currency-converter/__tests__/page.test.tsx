@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
@@ -224,14 +225,20 @@ describe('Currency Converter Page', () => {
     it('swaps currencies when swap button is clicked', async () => {
       render(<CurrencyConverterPage />)
 
+      // Wait for initial render
       await waitFor(() => {
-        const selects = screen.getAllByRole('combobox') as HTMLSelectElement[]
-        const fromCurrencyBefore = selects[0].value
-        const toCurrencyBefore = selects[1].value
+        expect(screen.getByText('Swap')).toBeInTheDocument()
+      })
 
-        const swapButton = screen.getByText('Swap')
-        fireEvent.click(swapButton)
+      const selects = screen.getAllByRole('combobox') as HTMLSelectElement[]
+      const fromCurrencyBefore = selects[0].value
+      const toCurrencyBefore = selects[1].value
 
+      const swapButton = screen.getByText('Swap')
+      await userEvent.click(swapButton as HTMLElement)
+
+      // Wait for swap to complete
+      await waitFor(() => {
         expect(selects[0].value).toBe(toCurrencyBefore)
         expect(selects[1].value).toBe(fromCurrencyBefore)
       })
@@ -254,7 +261,7 @@ describe('Currency Converter Page', () => {
 
       // Swap
       const swapButton = screen.getByText('Swap')
-      fireEvent.click(swapButton)
+      await userEvent.click(swapButton as HTMLElement)
 
       // Verify currencies swapped
       await waitFor(() => {
@@ -275,12 +282,29 @@ describe('Currency Converter Page', () => {
         expect(result.value).not.toBe('Loading...')
       })
 
+      // Mock a delayed response for the refresh
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  ok: true,
+                  json: async () => mockExchangeRates,
+                }),
+              50
+            )
+          )
+      )
+
       // Click refresh
       const refreshButton = screen.getByText('Refresh Rates')
-      fireEvent.click(refreshButton)
+      await userEvent.click(refreshButton as HTMLElement)
 
       // Verify button is disabled during loading
-      expect(refreshButton).toBeDisabled()
+      await waitFor(() => {
+        expect(refreshButton).toBeDisabled()
+      })
 
       // Wait for refresh to complete
       await waitFor(() => {
@@ -298,11 +322,28 @@ describe('Currency Converter Page', () => {
         expect(refreshButton).not.toBeDisabled()
       })
 
+      // Mock a delayed response for the refresh
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  ok: true,
+                  json: async () => mockExchangeRates,
+                }),
+              50
+            )
+          )
+      )
+
       // Click to refresh
-      fireEvent.click(refreshButton)
+      await userEvent.click(refreshButton as HTMLElement)
 
       // Should be disabled during loading (briefly)
-      expect(refreshButton).toBeDisabled()
+      await waitFor(() => {
+        expect(refreshButton).toBeDisabled()
+      })
 
       // Should be enabled again after load
       await waitFor(() => {
@@ -322,9 +363,9 @@ describe('Currency Converter Page', () => {
     it('adds currency pair to favorites when button is clicked', async () => {
       render(<CurrencyConverterPage />)
 
-      await waitFor(() => {
+      await waitFor(async () => {
         const addButton = screen.getByText('Favorite')
-        fireEvent.click(addButton)
+        await userEvent.click(addButton as HTMLElement)
       })
 
       await waitFor(() => {
@@ -335,9 +376,9 @@ describe('Currency Converter Page', () => {
     it('displays favorite conversion details', async () => {
       render(<CurrencyConverterPage />)
 
-      await waitFor(() => {
+      await waitFor(async () => {
         const addButton = screen.getByText('Favorite')
-        fireEvent.click(addButton)
+        await userEvent.click(addButton as HTMLElement)
       })
 
       await waitFor(() => {
@@ -359,9 +400,9 @@ describe('Currency Converter Page', () => {
       })
 
       // Add as favorite
-      await waitFor(() => {
+      await waitFor(async () => {
         const addButton = screen.getByText('Favorite')
-        fireEvent.click(addButton)
+        await userEvent.click(addButton as HTMLElement)
       })
 
       // Change back to different currencies
@@ -371,13 +412,13 @@ describe('Currency Converter Page', () => {
       })
 
       // Click on favorite to load it
-      await waitFor(() => {
+      await waitFor(async () => {
         const favoriteButtons = screen.getAllByRole('button')
         const favoriteButton = favoriteButtons.find(
           (btn) => btn.textContent?.includes('EUR') && btn.textContent?.includes('GBP')
         )
         if (favoriteButton) {
-          fireEvent.click(favoriteButton)
+          await userEvent.click(favoriteButton as HTMLElement)
         }
       })
 
@@ -392,9 +433,9 @@ describe('Currency Converter Page', () => {
       render(<CurrencyConverterPage />)
 
       // Add favorite
-      await waitFor(() => {
+      await waitFor(async () => {
         const addButton = screen.getByText('Favorite')
-        fireEvent.click(addButton)
+        await userEvent.click(addButton as HTMLElement)
       })
 
       await waitFor(() => {
@@ -407,7 +448,7 @@ describe('Currency Converter Page', () => {
         btn.querySelector('svg[class*="lucide-trash"]')
       )
       if (deleteButton) {
-        fireEvent.click(deleteButton)
+        await userEvent.click(deleteButton as HTMLElement)
       }
 
       await waitFor(() => {
@@ -418,9 +459,9 @@ describe('Currency Converter Page', () => {
     it('persists favorites in localStorage', async () => {
       render(<CurrencyConverterPage />)
 
-      await waitFor(() => {
+      await waitFor(async () => {
         const addButton = screen.getByText('Favorite')
-        fireEvent.click(addButton)
+        await userEvent.click(addButton as HTMLElement)
       })
 
       await waitFor(() => {

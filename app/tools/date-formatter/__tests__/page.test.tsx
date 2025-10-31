@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import DateFormatterPage from '../page'
@@ -202,7 +203,7 @@ describe('Date Formatter Page', () => {
         /2024-01-01, 1704067200, or any date format.../
       ) as HTMLInputElement
 
-      fireEvent.click(nowButton)
+      await userEvent.click(nowButton)
 
       await waitFor(() => {
         expect(input.value).not.toBe('')
@@ -214,7 +215,7 @@ describe('Date Formatter Page', () => {
       render(<DateFormatterPage />)
       const nowButton = screen.getByText('Now')
 
-      fireEvent.click(nowButton)
+      await userEvent.click(nowButton)
 
       await waitFor(() => {
         expect(screen.getByText('Valid Date')).toBeInTheDocument()
@@ -264,9 +265,9 @@ describe('Date Formatter Page', () => {
 
       fireEvent.change(input, { target: { value: '2024-01-15T12:00:00Z' } })
 
-      await waitFor(() => {
+      await waitFor(async () => {
         const copyButtons = screen.getAllByText('Copy')
-        fireEvent.click(copyButtons[0])
+        await userEvent.click(copyButtons[0])
       })
 
       expect(navigator.clipboard.writeText).toHaveBeenCalled()
@@ -361,7 +362,7 @@ describe('Date Formatter Page', () => {
 
       expect(copyButton).not.toBeNull()
       expect(copyButton).toBeInstanceOf(HTMLElement)
-      fireEvent.click(copyButton as HTMLElement)
+      await userEvent.click(copyButton as HTMLElement)
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith('Converted date copied!')
@@ -533,9 +534,9 @@ describe('Date Formatter Page', () => {
 
       fireEvent.change(input, { target: { value: '2024-01-15T12:00:00Z' } })
 
-      await waitFor(() => {
+      await waitFor(async () => {
         const copyButtons = screen.getAllByText('Copy')
-        fireEvent.click(copyButtons[0])
+        await userEvent.click(copyButtons[0])
       })
 
       expect(trackToolEvent).toHaveBeenCalledWith('date_copy', expect.any(Object))
@@ -546,7 +547,7 @@ describe('Date Formatter Page', () => {
       render(<DateFormatterPage />)
       const nowButton = screen.getByText('Now')
 
-      fireEvent.click(nowButton)
+      await userEvent.click(nowButton)
 
       await waitFor(() => {
         expect(trackToolEvent).toHaveBeenCalledWith('date_set_current', expect.any(Object))

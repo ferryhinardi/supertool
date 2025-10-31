@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import PromptFormatterPage from '../page'
@@ -91,7 +92,7 @@ describe('Prompt Formatter Page', () => {
       render(<PromptFormatterPage />)
 
       const templateButton = screen.getByText('Few-Shot Learning')
-      fireEvent.click(templateButton)
+      await userEvent.click(templateButton)
 
       await waitFor(() => {
         const input = screen.getByPlaceholderText(
@@ -106,7 +107,7 @@ describe('Prompt Formatter Page', () => {
       render(<PromptFormatterPage />)
 
       const templateButton = screen.getByText('Role-Based')
-      fireEvent.click(templateButton)
+      await userEvent.click(templateButton)
 
       await waitFor(() => {
         const input = screen.getByPlaceholderText(
@@ -127,7 +128,7 @@ describe('Prompt Formatter Page', () => {
       render(<PromptFormatterPage />)
 
       const chatgptButton = screen.getByText('ChatGPT')
-      fireEvent.click(chatgptButton)
+      await userEvent.click(chatgptButton)
 
       // Check if the button has active styling - in the actual implementation,
       // the active state is shown through CSS classes, not data-active attribute
@@ -136,11 +137,11 @@ describe('Prompt Formatter Page', () => {
       })
     })
 
-    it('displays model-specific tips when model is selected', () => {
+    it('displays model-specific tips when model is selected', async () => {
       render(<PromptFormatterPage />)
 
       const claudeButton = screen.getByText('Claude')
-      fireEvent.click(claudeButton)
+      await userEvent.click(claudeButton)
 
       expect(screen.getByText(/Excels with detailed context/)).toBeInTheDocument()
     })
@@ -156,7 +157,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Test prompt   \n\n  Another line' } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -171,7 +172,7 @@ describe('Prompt Formatter Page', () => {
       render(<PromptFormatterPage />)
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       // Toast error should be triggered (would need toast mock to verify)
       await waitFor(() => {
@@ -187,7 +188,7 @@ describe('Prompt Formatter Page', () => {
 
       // Select ChatGPT model
       const chatgptButton = screen.getByText('ChatGPT')
-      fireEvent.click(chatgptButton)
+      await userEvent.click(chatgptButton)
 
       const input = screen.getByPlaceholderText(
         /Enter your prompt or select a template/
@@ -195,7 +196,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Write a poem about coding' } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -211,7 +212,7 @@ describe('Prompt Formatter Page', () => {
 
       // Select Claude model
       const claudeButton = screen.getByText('Claude')
-      fireEvent.click(claudeButton)
+      await userEvent.click(claudeButton)
 
       const input = screen.getByPlaceholderText(
         /Enter your prompt or select a template/
@@ -219,7 +220,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Explain quantum computing' } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -235,7 +236,7 @@ describe('Prompt Formatter Page', () => {
 
       // Select Gemini model
       const geminiButton = screen.getByText('Gemini')
-      fireEvent.click(geminiButton)
+      await userEvent.click(geminiButton)
 
       const input = screen.getByPlaceholderText(
         /Enter your prompt or select a template/
@@ -243,7 +244,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Describe machine learning' } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -265,7 +266,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Write some code' } })
 
       const optimizeButton = screen.getByText('Optimize')
-      fireEvent.click(optimizeButton)
+      await userEvent.click(optimizeButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -286,7 +287,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Explain photosynthesis' } })
 
       const optimizeButton = screen.getByText('Optimize')
-      fireEvent.click(optimizeButton)
+      await userEvent.click(optimizeButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -305,7 +306,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Task: Explain photosynthesis' } })
 
       const optimizeButton = screen.getByText('Optimize')
-      fireEvent.click(optimizeButton)
+      await userEvent.click(optimizeButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -321,7 +322,7 @@ describe('Prompt Formatter Page', () => {
       render(<PromptFormatterPage />)
 
       const optimizeButton = screen.getByText('Optimize')
-      fireEvent.click(optimizeButton)
+      await userEvent.click(optimizeButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -343,7 +344,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Test prompt' } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -354,17 +355,19 @@ describe('Prompt Formatter Page', () => {
 
       // Then copy
       const copyButton = screen.getByText('Copy')
-      fireEvent.click(copyButton)
+      await userEvent.click(copyButton)
 
       await waitFor(() => {
         expect(mockWriteText).toHaveBeenCalled()
       })
     })
 
-    it('shows error when trying to copy without output', async () => {
+    it('shows error when trying to copy without output', () => {
       render(<PromptFormatterPage />)
 
       const copyButton = screen.getByText('Copy')
+      // Use fireEvent here because the button is disabled (pointer-events: none)
+      // and userEvent correctly refuses to click disabled buttons
       fireEvent.click(copyButton)
 
       // Should show error toast (would need toast mock to verify fully)
@@ -383,7 +386,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: 'Test prompt' } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -394,7 +397,7 @@ describe('Prompt Formatter Page', () => {
 
       // Clear
       const clearButton = screen.getByText('Clear')
-      fireEvent.click(clearButton)
+      await userEvent.click(clearButton)
 
       await waitFor(() => {
         const inputAfter = screen.getByPlaceholderText(
@@ -414,7 +417,7 @@ describe('Prompt Formatter Page', () => {
 
       // Select a template
       const templateButton = screen.getByText('Chain of Thought')
-      fireEvent.click(templateButton)
+      await userEvent.click(templateButton)
 
       await waitFor(() => {
         const input = screen.getByPlaceholderText(
@@ -425,7 +428,7 @@ describe('Prompt Formatter Page', () => {
 
       // Clear
       const clearButton = screen.getByText('Clear')
-      fireEvent.click(clearButton)
+      await userEvent.click(clearButton)
 
       await waitFor(() => {
         const input = screen.getByPlaceholderText(
@@ -521,7 +524,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: longText } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -541,7 +544,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: specialText } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(
@@ -561,7 +564,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.change(input, { target: { value: multilineText } })
 
       const formatButton = screen.getByText('Format')
-      fireEvent.click(formatButton)
+      await userEvent.click(formatButton)
 
       await waitFor(() => {
         const output = screen.getByPlaceholderText(

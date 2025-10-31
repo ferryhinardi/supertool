@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/analytics'
 import CSVMergerPage from '../page'
@@ -62,32 +63,32 @@ describe('CSV Merger - Mode Switching Tests', () => {
     vi.clearAllMocks()
   })
 
-  it('should switch from merge to split mode', () => {
+  it('should switch from merge to split mode', async () => {
     render(<CSVMergerPage />)
 
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     expect(screen.getByText(/Select 1 CSV file to split/)).toBeInTheDocument()
   })
 
-  it('should switch from split to merge mode', () => {
+  it('should switch from split to merge mode', async () => {
     render(<CSVMergerPage />)
 
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     const mergeButton = screen.getByRole('button', { name: /Merge/ })
-    fireEvent.click(mergeButton)
+    await userEvent.click(mergeButton as HTMLElement)
 
     expect(screen.getByText(/Select 2 or more CSV files to merge/)).toBeInTheDocument()
   })
 
-  it('should clear files when switching modes', () => {
+  it('should clear files when switching modes', async () => {
     render(<CSVMergerPage />)
 
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     // Files should be cleared - verify no "files loaded" badge exists
     expect(screen.queryByText(/\d+ file.*loaded/i)).not.toBeInTheDocument()
@@ -152,7 +153,7 @@ describe('CSV Merger - Merge Mode Tests', () => {
     expect(deduplicateCheckbox).not.toBeChecked()
 
     // Click to enable
-    fireEvent.click(deduplicateCheckbox)
+    await userEvent.click(deduplicateCheckbox as HTMLElement)
 
     // Should now be checked
     expect(deduplicateCheckbox).toBeChecked()
@@ -168,7 +169,7 @@ describe('CSV Merger - Split Mode Tests', () => {
     render(<CSVMergerPage />)
 
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     // Upload a file to show split options
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
@@ -193,7 +194,7 @@ describe('CSV Merger - Split Mode Tests', () => {
     render(<CSVMergerPage />)
 
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     // Upload a file to show split button
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
@@ -215,7 +216,7 @@ describe('CSV Merger - Split Mode Tests', () => {
     render(<CSVMergerPage />)
 
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     // Upload a file to show split options
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
@@ -239,7 +240,7 @@ describe('CSV Merger - Split Mode Tests', () => {
     expect(rowCountButton).toHaveClass('bg_emerald.500/20')
 
     // Click to switch to filter
-    fireEvent.click(filterButton)
+    await userEvent.click(filterButton as HTMLElement)
 
     // Filter should now be selected
     expect(filterButton).toHaveClass('bg_emerald.500/20')
@@ -249,7 +250,7 @@ describe('CSV Merger - Split Mode Tests', () => {
     render(<CSVMergerPage />)
 
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     // Upload a file to show split options
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
@@ -271,7 +272,7 @@ describe('CSV Merger - Split Mode Tests', () => {
     render(<CSVMergerPage />)
 
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     // Upload a file to show split options
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
@@ -323,7 +324,7 @@ describe('CSV Merger - File Upload Tests', () => {
 
     // Click the "Split" mode toggle button, not the "Split File" action button
     const splitButton = screen.getByRole('button', { name: /Split/ })
-    fireEvent.click(splitButton)
+    await userEvent.click(splitButton as HTMLElement)
 
     const file1 = createMockCSVFile('test1.csv', 'Name,Age\nJohn,30\n')
     const file2 = createMockCSVFile('test2.csv', 'Name,Age\nJane,25\n')

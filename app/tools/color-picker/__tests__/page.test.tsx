@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/analytics'
@@ -134,24 +135,24 @@ describe('Color Picker - Random Color Tests', () => {
     vi.clearAllMocks()
   })
 
-  it('should generate random color when button is clicked', () => {
+  it('should generate random color when button is clicked', async () => {
     render(<ColorPickerPage />)
 
     const randomButton = screen.getByRole('button', { name: /Random Color/ })
     const hexInput = screen.getByDisplayValue('#667EEA')
 
     // Click random button
-    fireEvent.click(randomButton)
+    await userEvent.click(randomButton)
 
     // Color should have changed (but we don't know to what)
     expect(hexInput).not.toHaveValue('#667EEA')
   })
 
-  it('should track analytics when random color is generated', () => {
+  it('should track analytics when random color is generated', async () => {
     render(<ColorPickerPage />)
 
     const randomButton = screen.getByRole('button', { name: /Random Color/ })
-    fireEvent.click(randomButton)
+    await userEvent.click(randomButton)
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('color_picker_random', {})
   })
@@ -210,22 +211,22 @@ describe('Color Picker - Palette Generation Tests', () => {
     expect(complementaryButton).toHaveClass('button--variant_default')
   })
 
-  it('should change palette type when clicking buttons', () => {
+  it('should change palette type when clicking buttons', async () => {
     render(<ColorPickerPage />)
 
     const analogousButton = screen.getByRole('button', { name: 'analogous' })
 
-    fireEvent.click(analogousButton)
+    await userEvent.click(analogousButton)
 
     // Should now have default variant
     expect(analogousButton).toHaveClass('button--variant_default')
   })
 
-  it('should track analytics when palette type changes', () => {
+  it('should track analytics when palette type changes', async () => {
     render(<ColorPickerPage />)
 
     const triadicButton = screen.getByRole('button', { name: 'triadic' })
-    fireEvent.click(triadicButton)
+    await userEvent.click(triadicButton)
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('color_picker_palette_type', {
       type: 'triadic',
@@ -271,7 +272,7 @@ describe('Color Picker - Copy Functionality Tests', () => {
     })
 
     if (hexCopyButton) {
-      fireEvent.click(hexCopyButton)
+      await userEvent.click(hexCopyButton)
 
       await waitFor(() => {
         expect(mockWriteText).toHaveBeenCalledWith('#667EEA')
@@ -291,7 +292,7 @@ describe('Color Picker - Copy Functionality Tests', () => {
     })
 
     if (hexCopyButton) {
-      fireEvent.click(hexCopyButton)
+      await userEvent.click(hexCopyButton)
 
       await waitFor(() => {
         expect(analytics.trackToolEvent).toHaveBeenCalledWith('color_picker_copy', {
@@ -322,12 +323,12 @@ describe('Color Picker - Integration Tests', () => {
     expect(screen.getByText(/rgb\(0, 255, 0\)/)).toBeInTheDocument()
   })
 
-  it('should maintain palette type when color changes', () => {
+  it('should maintain palette type when color changes', async () => {
     render(<ColorPickerPage />)
 
     // Select triadic palette
     const triadicButton = screen.getByRole('button', { name: 'triadic' })
-    fireEvent.click(triadicButton)
+    await userEvent.click(triadicButton)
 
     // Change color
     const hexInput = screen.getByDisplayValue('#667EEA')
@@ -347,7 +348,7 @@ describe('Color Picker - Integration Tests', () => {
     })
 
     if (firstCopyButton) {
-      fireEvent.click(firstCopyButton)
+      await userEvent.click(firstCopyButton)
 
       // Should show success toast
       await waitFor(() => {
