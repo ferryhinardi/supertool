@@ -7,7 +7,7 @@ import { defineConfig } from 'vitest/config'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  // @ts-ignore - Vite version mismatch between Next.js and Vitest
+  // @ts-expect-error - Vite version mismatch between Next.js and Vitest
   plugins: [react()],
   test: {
     globals: true,
@@ -16,7 +16,7 @@ export default defineConfig({
     // Browser mode configuration for screenshot tests with CSS styling
     browser: {
       enabled: !process.env.CI,
-      // @ts-ignore - Provider API change in Vitest v4
+      // @ts-expect-error - Provider API change in Vitest v4
       provider: playwright(),
       instances: [
         {
