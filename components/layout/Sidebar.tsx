@@ -3,6 +3,7 @@
 import {
   Activity,
   Calendar,
+  Camera,
   Clipboard,
   Clock,
   Code,
@@ -54,6 +55,7 @@ const navigation = [
     href: '/tools/gradient-generator',
     icon: Wand2,
   },
+  { name: 'Image Metadata', href: '/tools/image-metadata', icon: Camera },
   { name: 'PDF Tools', href: '/tools/pdf-tools', icon: FileCog },
   {
     name: 'Daily Task Summary',
