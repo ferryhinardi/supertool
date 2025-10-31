@@ -203,6 +203,11 @@ type ToolEvent =
   | 'speed_test_start'
   | 'speed_test_complete'
   | 'speed_test_error'
+  | 'image_metadata_open'
+  | 'image_metadata_parse'
+  | 'image_metadata_clear'
+  | 'image_metadata_copy'
+  | 'image_metadata_download'
 
 // Type-safe gtag wrapper
 declare global {

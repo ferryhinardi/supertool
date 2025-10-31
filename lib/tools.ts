@@ -689,7 +689,6 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-cyan-500',
     features: ['EXIF Data', 'GPS Location', 'Camera Settings', 'Date & Time'],
     category: 'design',
-    comingSoon: true,
   },
   {
     title: 'Color Contrast Checker',
