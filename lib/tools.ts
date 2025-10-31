@@ -918,7 +918,6 @@ export const tools: Tool[] = [
       'Batch Processing',
     ],
     category: 'media',
-    comingSoon: true,
     premium: true,
   },
   {

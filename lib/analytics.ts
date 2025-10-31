@@ -208,6 +208,11 @@ type ToolEvent =
   | 'image_metadata_clear'
   | 'image_metadata_copy'
   | 'image_metadata_download'
+  | 'ai_caption_open'
+  | 'ai_caption_upload'
+  | 'ai_caption_generate'
+  | 'ai_caption_copy'
+  | 'ai_caption_error'
 
 // Type-safe gtag wrapper
 declare global {
