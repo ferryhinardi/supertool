@@ -76,11 +76,16 @@ function simpleHash(str: string): string {
  * Get basic browser information
  */
 export function getBasicInfo() {
+  // Normalize language by removing locale variants like @posix
+  const normalizeLanguage = (lang: string) => {
+    return lang.split('@')[0]
+  }
+
   return {
     userAgent: navigator.userAgent,
     platform: navigator.platform,
-    language: navigator.language,
-    languages: Array.from(navigator.languages || []),
+    language: normalizeLanguage(navigator.language),
+    languages: Array.from(navigator.languages || []).map(normalizeLanguage),
     cookieEnabled: navigator.cookieEnabled,
     doNotTrack: navigator.doNotTrack || null,
   }
