@@ -32,6 +32,9 @@ jobs:
       - name: Run ESLint
         run: pnpm lint
 
+      - name: Clean TypeScript cache
+        run: rm -f tsconfig.tsbuildinfo
+
       - name: Type check
         run: pnpm exec tsc --noEmit
 
