@@ -32,6 +32,9 @@ jobs:
       - name: Run ESLint
         run: pnpm lint
 
+      - name: Debug - Show vitest config
+        run: cat vitest.config.mts | head -25
+
       - name: Clean TypeScript cache
         run: rm -f tsconfig.tsbuildinfo
 
