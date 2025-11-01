@@ -31,6 +31,23 @@ interface SpeedTestResult {
 
 type TestPhase = 'idle' | 'latency' | 'download' | 'upload' | 'complete'
 
+// Helper function to generate random data in chunks
+// crypto.getRandomValues has a max limit of 65536 bytes
+function generateRandomData(totalBytes: number): ArrayBuffer {
+  const MAX_CHUNK_SIZE = 65536 // 64 KB - crypto.getRandomValues limit
+  const result = new Uint8Array(totalBytes)
+
+  let offset = 0
+  while (offset < totalBytes) {
+    const chunkSize = Math.min(MAX_CHUNK_SIZE, totalBytes - offset)
+    const chunk = result.subarray(offset, offset + chunkSize)
+    crypto.getRandomValues(chunk)
+    offset += chunkSize
+  }
+
+  return result.buffer
+}
+
 function SpeedTestContent() {
   const [phase, setPhase] = useState<TestPhase>('idle')
   const [progress, setProgress] = useState(0)
@@ -137,8 +154,7 @@ function SpeedTestContent() {
               // Fallback: Generate data locally and measure processing speed
               // This simulates download by creating and processing a large blob
               const fallbackStart = performance.now()
-              const randomData = new Uint8Array(size)
-              crypto.getRandomValues(randomData)
+              const randomData = generateRandomData(size)
               const blob = new Blob([randomData])
               await blob.arrayBuffer() // Simulate reading the data
               const fallbackEnd = performance.now()
@@ -213,8 +229,7 @@ function SpeedTestContent() {
 
             // Generate random data to upload
             console.log('    Generating random data...')
-            const randomData = new Uint8Array(size)
-            crypto.getRandomValues(randomData)
+            const randomData = generateRandomData(size)
             console.log('    Creating blob...')
             const blob = new Blob([randomData])
             console.log(`    Blob created: ${blob.size} bytes`)
