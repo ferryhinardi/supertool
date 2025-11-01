@@ -343,7 +343,7 @@ function ClipboardFormatterPageContent() {
         transition={{ delay: 0.1, duration: 0.5 }}
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
           gap: '6',
         })}
       >
@@ -373,7 +373,7 @@ function ClipboardFormatterPageContent() {
               >
                 <div className={css({ flex: '1', minWidth: '0' })}>
                   <CardTitle className={css({ color: 'gray.100' })}>Input Text</CardTitle>
-                  <CardDescription className={css({ color: 'gray.400', marginTop: '1.5' })}>
+                  <CardDescription className={css({ color: 'gray.400', mt: '1.5' })}>
                     Paste or type text to format. Auto-format is{' '}
                     {settings.autoFormat ? 'enabled' : 'disabled'}.
                   </CardDescription>
@@ -383,14 +383,15 @@ function ClipboardFormatterPageContent() {
                     display: 'flex',
                     gap: '2',
                     flexShrink: '0',
+                    flexWrap: 'wrap',
                   })}
                 >
                   <Button onClick={handlePaste} variant="secondary" size="sm">
                     <Clipboard
                       className={css({
-                        width: '4',
-                        height: '4',
-                        marginRight: '2',
+                        w: '4',
+                        h: '4',
+                        mr: '2',
                       })}
                     />
                     Paste from Clipboard
@@ -402,8 +403,8 @@ function ClipboardFormatterPageContent() {
                   >
                     <Settings
                       className={css({
-                        width: '4',
-                        height: '4',
+                        w: '4',
+                        h: '4',
                       })}
                     />
                   </Button>
@@ -416,7 +417,7 @@ function ClipboardFormatterPageContent() {
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Paste or type your text here..."
                 className={css({
-                  minHeight: '400px',
+                  minH: '400px',
                   fontFamily: 'mono',
                   fontSize: 'sm',
                 })}
@@ -426,9 +427,11 @@ function ClipboardFormatterPageContent() {
                 className={css({
                   display: 'flex',
                   justifyContent: 'space-between',
-                  marginTop: '4',
+                  mt: '4',
                   fontSize: 'sm',
                   color: 'gray.500',
+                  flexWrap: 'wrap',
+                  gap: '2',
                 })}
               >
                 <span>
@@ -443,10 +446,10 @@ function ClipboardFormatterPageContent() {
                   >
                     <Check
                       className={css({
-                        width: '4',
-                        height: '4',
+                        w: '4',
+                        h: '4',
                         display: 'inline',
-                        marginRight: '1',
+                        mr: '1',
                       })}
                     />
                     Pasted!
@@ -465,7 +468,7 @@ function ClipboardFormatterPageContent() {
             >
               <Card
                 className={css({
-                  marginTop: '4',
+                  mt: '4',
                   border: '1px solid',
                   borderColor: 'gray.700/20',
                   bg: 'gray.900/50',
@@ -482,7 +485,7 @@ function ClipboardFormatterPageContent() {
                   <div
                     className={css({
                       display: 'grid',
-                      gridTemplateColumns: { base: '1', md: '2' },
+                      gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
                       gap: '4',
                     })}
                   >
@@ -579,7 +582,7 @@ function ClipboardFormatterPageContent() {
                         htmlFor="tab-size-select"
                         className={css({
                           display: 'block',
-                          marginBottom: '2',
+                          mb: '2',
                           fontSize: 'sm',
                           color: 'gray.300',
                         })}
@@ -596,11 +599,11 @@ function ClipboardFormatterPageContent() {
                           })
                         }
                         className={css({
-                          padding: '2',
-                          borderRadius: 'md',
+                          p: '2',
+                          rounded: 'md',
                           border: '1px solid',
                           borderColor: 'gray.700',
-                          background: 'gray.800',
+                          bg: 'gray.800',
                           color: 'white',
                         })}
                       >
@@ -670,17 +673,17 @@ function ClipboardFormatterPageContent() {
                       onClick={() => loadFromHistory(item)}
                       type="button"
                       className={css({
-                        padding: '3',
-                        borderRadius: 'md',
+                        p: '3',
+                        rounded: 'md',
                         border: '1px solid',
                         borderColor: 'gray.700',
-                        background: 'gray.800',
+                        bg: 'gray.800',
                         textAlign: 'left',
                         cursor: 'pointer',
                         transition: 'all 0.2s',
                         _hover: {
                           borderColor: 'green.500',
-                          background: 'gray.700',
+                          bg: 'gray.700',
                         },
                       })}
                     >
@@ -688,7 +691,7 @@ function ClipboardFormatterPageContent() {
                         className={css({
                           fontSize: 'xs',
                           color: 'gray.400',
-                          marginBottom: '1',
+                          mb: '1',
                         })}
                       >
                         {new Date(item.timestamp).toLocaleTimeString()}
@@ -737,9 +740,9 @@ function ClipboardFormatterPageContent() {
                 gap: '4',
               })}
             >
-              <div>
+              <div className={css({ flex: '1', minWidth: '0' })}>
                 <CardTitle className={css({ color: 'gray.100' })}>Formatted Output</CardTitle>
-                <CardDescription className={css({ color: 'gray.400' })}>
+                <CardDescription className={css({ color: 'gray.400', mt: '1.5' })}>
                   {stats.charsRemoved > 0
                     ? `Removed ${stats.charsRemoved} characters`
                     : 'Apply transformations or let auto-format do its magic'}
@@ -760,9 +763,9 @@ function ClipboardFormatterPageContent() {
                 >
                   <CaseUpper
                     className={css({
-                      width: '4',
-                      height: '4',
-                      marginRight: '1',
+                      w: '4',
+                      h: '4',
+                      mr: '1',
                     })}
                   />
                   UPPER
@@ -774,9 +777,9 @@ function ClipboardFormatterPageContent() {
                 >
                   <CaseLower
                     className={css({
-                      width: '4',
-                      height: '4',
-                      marginRight: '1',
+                      w: '4',
+                      h: '4',
+                      mr: '1',
                     })}
                   />
                   lower
@@ -788,9 +791,9 @@ function ClipboardFormatterPageContent() {
                 >
                   <CaseSensitive
                     className={css({
-                      width: '4',
-                      height: '4',
-                      marginRight: '1',
+                      w: '4',
+                      h: '4',
+                      mr: '1',
                     })}
                   />
                   Title
@@ -802,9 +805,9 @@ function ClipboardFormatterPageContent() {
                 >
                   <Type
                     className={css({
-                      width: '4',
-                      height: '4',
-                      marginRight: '1',
+                      w: '4',
+                      h: '4',
+                      mr: '1',
                     })}
                   />
                   Sentence
@@ -818,10 +821,10 @@ function ClipboardFormatterPageContent() {
               onChange={(e) => setOutputText(e.target.value)}
               placeholder="Formatted text will appear here..."
               className={css({
-                minHeight: '400px',
+                minH: '400px',
                 fontFamily: 'mono',
                 fontSize: 'sm',
-                background: 'gray.900',
+                bg: 'gray.900',
               })}
             />
 
@@ -829,9 +832,11 @@ function ClipboardFormatterPageContent() {
               className={css({
                 display: 'flex',
                 justifyContent: 'space-between',
-                marginTop: '4',
+                mt: '4',
                 fontSize: 'sm',
                 color: 'gray.500',
+                flexWrap: 'wrap',
+                gap: '2',
               })}
             >
               <span>
@@ -843,7 +848,7 @@ function ClipboardFormatterPageContent() {
               className={css({
                 display: 'flex',
                 gap: '3',
-                marginTop: '6',
+                mt: '6',
                 flexWrap: 'wrap',
               })}
             >
@@ -851,9 +856,9 @@ function ClipboardFormatterPageContent() {
                 <Button onClick={handleFormat} disabled={!inputText}>
                   <Sparkles
                     className={css({
-                      width: '4',
-                      height: '4',
-                      marginRight: '2',
+                      w: '4',
+                      h: '4',
+                      mr: '2',
                     })}
                   />
                   Format Text
@@ -865,9 +870,9 @@ function ClipboardFormatterPageContent() {
                   <>
                     <Check
                       className={css({
-                        width: '4',
-                        height: '4',
-                        marginRight: '2',
+                        w: '4',
+                        h: '4',
+                        mr: '2',
                       })}
                     />
                     Copied!
@@ -876,9 +881,9 @@ function ClipboardFormatterPageContent() {
                   <>
                     <Copy
                       className={css({
-                        width: '4',
-                        height: '4',
-                        marginRight: '2',
+                        w: '4',
+                        h: '4',
+                        mr: '2',
                       })}
                     />
                     Copy to Clipboard
@@ -889,9 +894,9 @@ function ClipboardFormatterPageContent() {
               <Button onClick={downloadText} disabled={!outputText} variant="secondary">
                 <Download
                   className={css({
-                    width: '4',
-                    height: '4',
-                    marginRight: '2',
+                    w: '4',
+                    h: '4',
+                    mr: '2',
                   })}
                 />
                 Download
@@ -900,9 +905,9 @@ function ClipboardFormatterPageContent() {
               <Button onClick={handleReset} variant="secondary">
                 <RotateCcw
                   className={css({
-                    width: '4',
-                    height: '4',
-                    marginRight: '2',
+                    w: '4',
+                    h: '4',
+                    mr: '2',
                   })}
                 />
                 Reset
@@ -933,7 +938,14 @@ function ClipboardFormatterPageContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'amber.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul
+                  className={css({
+                    spaceY: '2',
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    listStylePosition: 'inside',
+                  })}
+                >
                   <li>
                     • Click &quot;Paste from Clipboard&quot; or type directly into the input area
                   </li>
