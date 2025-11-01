@@ -185,7 +185,7 @@ function SpeedTestContent() {
   }
 
   const measureUploadSpeed = async (): Promise<number> => {
-    console.log('▶ measureUploadSpeed() called')
+    console.log('▶ measureUploadSpeed() called - VERSION 2024-11-01-v2')
     const fileSizes = [100, 500, 1000] // KB
     const speeds: number[] = []
 
@@ -196,6 +196,11 @@ function SpeedTestContent() {
       console.log(
         `Upload test: Starting test for ${fileSizes[i]} KB (${i + 1}/${fileSizes.length})`
       )
+
+      // Update progress immediately when starting each file size test
+      const startProgress = (i / fileSizes.length) * 100
+      console.log(`Upload progress: ${startProgress.toFixed(0)}%`)
+      setProgress(startProgress)
 
       try {
         // Perform actual upload tests
@@ -301,11 +306,18 @@ function SpeedTestContent() {
         // Continue with next file size
       }
 
-      setProgress(((i + 1) / fileSizes.length) * 100)
+      // Update progress after completing each file size test
+      const endProgress = ((i + 1) / fileSizes.length) * 100
+      console.log(
+        `Upload progress: ${endProgress.toFixed(0)}% (completed ${i + 1}/${fileSizes.length})`
+      )
+      setProgress(endProgress)
     }
 
     const finalSpeed = speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
     console.log('◀ measureUploadSpeed() returning:', finalSpeed.toFixed(2), 'Mbps')
+    // Set final progress to 100%
+    setProgress(100)
     // Return average or 0 if no valid measurements
     return finalSpeed
   }
