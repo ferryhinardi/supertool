@@ -122,6 +122,7 @@ jobs:
           # Use secrets if available, otherwise use placeholder for build
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || 'sk-placeholder-key-for-build' }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
