@@ -227,6 +227,12 @@ type ToolEvent =
   | 'uuid_validate'
   | 'uuid_copy'
   | 'uuid_copy_bulk'
+  | 'batch_rename_open'
+  | 'batch_rename_upload'
+  | 'batch_rename_remove_file'
+  | 'batch_rename_clear'
+  | 'batch_rename_reset'
+  | 'batch_rename_apply'
 
 // Type-safe gtag wrapper
 declare global {

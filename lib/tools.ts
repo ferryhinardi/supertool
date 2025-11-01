@@ -742,7 +742,7 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Pattern Rules', 'Find & Replace', 'Sequential Numbers', 'Preview Changes'],
     category: 'productivity',
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     title: 'JSON to Markdown Table',
