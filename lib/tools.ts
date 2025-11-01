@@ -835,7 +835,7 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-cyan-500',
     features: ['AI Summaries', 'Bullet Points', 'Adjustable Length', 'Key Highlights'],
     category: 'productivity',
-    comingSoon: true,
+    comingSoon: false,
     premium: true,
   },
   {

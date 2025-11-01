@@ -233,6 +233,11 @@ type ToolEvent =
   | 'batch_rename_clear'
   | 'batch_rename_reset'
   | 'batch_rename_apply'
+  | 'text_summarizer_open'
+  | 'text_summarizer_summarize'
+  | 'text_summarizer_copy'
+  | 'text_summarizer_download'
+  | 'text_summarizer_error'
 
 // Type-safe gtag wrapper
 declare global {
