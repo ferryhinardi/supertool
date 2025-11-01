@@ -3,6 +3,7 @@
 import {
   Activity,
   Braces,
+  Brain,
   Calendar,
   Camera,
   Clipboard,
@@ -74,6 +75,7 @@ const navigation = [
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'AI Snippet Generator', href: '/tools/ai-snippet-generator', icon: Braces },
+  { name: 'AI JSON Analyzer', href: '/tools/ai-json-analyzer', icon: Brain },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
 ]
 const showAccessToGithub = false

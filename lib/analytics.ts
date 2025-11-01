@@ -217,6 +217,10 @@ type ToolEvent =
   | 'ai_snippet_generate'
   | 'ai_snippet_copy'
   | 'ai_snippet_error'
+  | 'ai_json_open'
+  | 'ai_json_analyze'
+  | 'ai_json_copy'
+  | 'ai_json_error'
 
 // Type-safe gtag wrapper
 declare global {

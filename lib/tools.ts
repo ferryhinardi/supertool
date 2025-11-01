@@ -884,7 +884,7 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-indigo-500',
     features: ['Structure Summary', 'Pattern Detection', 'Relationship Mapping', 'Debug Insights'],
     category: 'development',
-    comingSoon: true,
+    comingSoon: false,
     premium: true,
   },
   {
