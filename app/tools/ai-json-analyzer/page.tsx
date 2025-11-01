@@ -56,7 +56,7 @@ function AIJsonAnalyzerContent() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          json: jsonInput.trim(),
+          jsonData: jsonInput.trim(),
         }),
       })
 
@@ -469,9 +469,9 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                     Detected Patterns
                   </h3>
                   <ul className={css({ spaceY: '2' })}>
-                    {analysis.patterns.map((pattern, index) => (
+                    {analysis.patterns.map((pattern) => (
                       <li
-                        key={index}
+                        key={pattern}
                         className={css({
                           fontSize: 'sm',
                           color: 'gray.300',
@@ -516,9 +516,9 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                     </h3>
                   </div>
                   <ul className={css({ spaceY: '2' })}>
-                    {analysis.insights.map((insight, index) => (
+                    {analysis.insights.map((insight) => (
                       <li
-                        key={index}
+                        key={insight}
                         className={css({
                           fontSize: 'sm',
                           color: 'gray.300',
@@ -561,9 +561,9 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                     Data Relationships
                   </h3>
                   <ul className={css({ spaceY: '2' })}>
-                    {analysis.relationships.map((relationship, index) => (
+                    {analysis.relationships.map((relationship) => (
                       <li
-                        key={index}
+                        key={relationship}
                         className={css({
                           fontSize: 'sm',
                           color: 'gray.300',
