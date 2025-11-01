@@ -75,8 +75,13 @@ function SpeedTestContent() {
     const fileSizes = [100, 500, 1000, 2000] // KB
     const speeds: number[] = []
 
+    console.log('Download test: Testing with file sizes:', fileSizes, 'KB')
+
     for (let i = 0; i < fileSizes.length; i++) {
       const size = fileSizes[i] * 1024 // Convert to bytes
+      console.log(
+        `Download test: Starting test for ${fileSizes[i]} KB (${i + 1}/${fileSizes.length})`
+      )
 
       try {
         // Use actual network requests to measure download speed
@@ -85,6 +90,7 @@ function SpeedTestContent() {
 
         for (let j = 0; j < iterations; j++) {
           try {
+            console.log(`  Iteration ${j + 1}/${iterations} for ${fileSizes[i]} KB`)
             const start = performance.now()
 
             // Generate random data on the server and download it
@@ -109,6 +115,7 @@ function SpeedTestContent() {
             // Ensure we have a minimum duration to avoid division by very small numbers
             if (durationSeconds > 0.01) {
               const speedMbps = (size * 8) / (durationSeconds * 1000000)
+              console.log(`  Speed: ${speedMbps.toFixed(2)} Mbps (${durationSeconds.toFixed(2)}s)`)
               iterationSpeeds.push(speedMbps)
             }
           } catch (iterError) {
@@ -124,6 +131,9 @@ function SpeedTestContent() {
           const cappedSpeed = Math.min(avgSpeed, 1000)
           speeds.push(cappedSpeed)
           setDownloadSpeed(cappedSpeed)
+          console.log(`File size ${fileSizes[i]} KB average: ${cappedSpeed.toFixed(2)} Mbps`)
+        } else {
+          console.warn(`No valid speeds recorded for ${fileSizes[i]} KB`)
         }
       } catch (error) {
         console.error(`Download measurement error for size ${size}:`, error)
@@ -143,8 +153,13 @@ function SpeedTestContent() {
     const fileSizes = [100, 500, 1000] // KB
     const speeds: number[] = []
 
+    console.log('Upload test: Testing with file sizes:', fileSizes, 'KB')
+
     for (let i = 0; i < fileSizes.length; i++) {
       const size = fileSizes[i] * 1024
+      console.log(
+        `Upload test: Starting test for ${fileSizes[i]} KB (${i + 1}/${fileSizes.length})`
+      )
 
       try {
         // Perform actual upload tests
@@ -153,6 +168,7 @@ function SpeedTestContent() {
 
         for (let j = 0; j < iterations; j++) {
           try {
+            console.log(`  Iteration ${j + 1}/${iterations} for ${fileSizes[i]} KB`)
             const start = performance.now()
 
             // Generate random data to upload
@@ -182,6 +198,7 @@ function SpeedTestContent() {
             // Ensure minimum duration
             if (durationSeconds > 0.01) {
               const speedMbps = (size * 8) / (durationSeconds * 1000000)
+              console.log(`  Speed: ${speedMbps.toFixed(2)} Mbps (${durationSeconds.toFixed(2)}s)`)
               iterationSpeeds.push(speedMbps)
             }
           } catch (iterError) {
@@ -197,6 +214,9 @@ function SpeedTestContent() {
           const cappedSpeed = Math.min(avgSpeed, 500)
           speeds.push(cappedSpeed)
           setUploadSpeed(cappedSpeed)
+          console.log(`File size ${fileSizes[i]} KB average: ${cappedSpeed.toFixed(2)} Mbps`)
+        } else {
+          console.warn(`No valid speeds recorded for ${fileSizes[i]} KB`)
         }
       } catch (error) {
         console.error(`Upload measurement error for size ${size}:`, error)
@@ -225,29 +245,36 @@ function SpeedTestContent() {
       setProgress(0)
 
       // Measure latency
+      console.log('Starting latency test...')
       setPhase('latency')
       setProgress(0)
       const { latency: measuredLatency, jitter: measuredJitter } = await measureLatency()
       setLatency(measuredLatency)
       setJitter(measuredJitter)
+      console.log('Latency test completed:', measuredLatency.toFixed(2), 'ms')
 
       // Small delay between phases for better UX
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       // Measure download speed
+      console.log('Starting download test...')
       setPhase('download')
       setProgress(0)
       const downloadSpeedResult = await measureDownloadSpeed()
+      console.log('Download test returned:', downloadSpeedResult.toFixed(2), 'Mbps')
 
       // Small delay between phases for better UX
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       // Measure upload speed
+      console.log('Starting upload test...')
       setPhase('upload')
       setProgress(0)
       const uploadSpeedResult = await measureUploadSpeed()
+      console.log('Upload test returned:', uploadSpeedResult.toFixed(2), 'Mbps')
 
       // Complete
+      console.log('All tests completed. Setting final results...')
       setPhase('complete')
       setProgress(100)
       const finalResult: SpeedTestResult = {
