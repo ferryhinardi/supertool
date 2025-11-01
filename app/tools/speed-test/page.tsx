@@ -80,24 +80,28 @@ function SpeedTestContent() {
 
       try {
         // Use actual network requests to measure download speed
-        // Fetch the page's favicon or a known static asset multiple times
         const iterations = 3
         const iterationSpeeds: number[] = []
 
         for (let j = 0; j < iterations; j++) {
           const start = performance.now()
 
-          // Add cache busting and simulate data transfer
+          // Generate random data on the server and download it
+          // Using a public CDN test file or generating data via API
           const cacheBuster = `${Date.now()}-${Math.random()}`
-          await fetch(`/favicon.ico?size=${size}&bust=${cacheBuster}`, {
+          const response = await fetch(`https://httpbin.org/bytes/${size}?bust=${cacheBuster}`, {
             cache: 'no-store',
+            signal: AbortSignal.timeout(10000), // 10s timeout
           })
+
+          // Read the entire response to ensure data is transferred
+          await response.arrayBuffer()
 
           const end = performance.now()
           const durationSeconds = (end - start) / 1000
 
           // Ensure we have a minimum duration to avoid division by very small numbers
-          if (durationSeconds > 0.001) {
+          if (durationSeconds > 0.01) {
             const speedMbps = (size * 8) / (durationSeconds * 1000000)
             iterationSpeeds.push(speedMbps)
           }
@@ -130,38 +134,35 @@ function SpeedTestContent() {
       const size = fileSizes[i] * 1024
 
       try {
-        // Simulate upload with POST requests
+        // Perform actual upload tests
         const iterations = 3
         const iterationSpeeds: number[] = []
 
         for (let j = 0; j < iterations; j++) {
           const start = performance.now()
 
-          // Generate data to upload
+          // Generate random data to upload
           const randomData = new Uint8Array(size)
           crypto.getRandomValues(randomData)
           const blob = new Blob([randomData])
 
-          // Simulate upload by posting to a data URL or using FormData processing
-          // Since we can't actually upload, we'll measure the data serialization
-          // and blob processing time as a proxy
-          const formData = new FormData()
-          formData.append('data', blob)
+          // Upload to httpbin which echoes back the data
+          const response = await fetch('https://httpbin.org/post', {
+            method: 'POST',
+            body: blob,
+            cache: 'no-store',
+            signal: AbortSignal.timeout(10000), // 10s timeout
+          })
 
-          // Process the FormData (this simulates the upload overhead)
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          for (const _entry of formData.entries()) {
-            // Iterate through entries to simulate processing
-          }
+          // Read the response to ensure upload completes
+          await response.arrayBuffer()
 
           const end = performance.now()
           const durationSeconds = (end - start) / 1000
 
-          // Ensure minimum duration and apply a more conservative multiplier
-          // since local operations are much faster than actual network
-          if (durationSeconds > 0.001) {
-            // Apply a conservative factor since we're not doing actual network upload
-            const speedMbps = ((size * 8) / (durationSeconds * 1000000)) * 0.1 // 10% of local speed
+          // Ensure minimum duration
+          if (durationSeconds > 0.01) {
+            const speedMbps = (size * 8) / (durationSeconds * 1000000)
             iterationSpeeds.push(speedMbps)
           }
         }
