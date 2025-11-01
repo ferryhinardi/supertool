@@ -72,6 +72,7 @@ function SpeedTestContent() {
   }
 
   const measureDownloadSpeed = async (): Promise<number> => {
+    console.log('▶ measureDownloadSpeed() called')
     const fileSizes = [100, 500, 1000, 2000] // KB
     const speeds: number[] = []
 
@@ -178,12 +179,13 @@ function SpeedTestContent() {
     }
 
     const finalSpeed = speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
-    console.log('Download test completed. Final speed:', finalSpeed.toFixed(2), 'Mbps')
+    console.log('◀ measureDownloadSpeed() returning:', finalSpeed.toFixed(2), 'Mbps')
     // Return average or 0 if no valid measurements
     return finalSpeed
   }
 
   const measureUploadSpeed = async (): Promise<number> => {
+    console.log('▶ measureUploadSpeed() called')
     const fileSizes = [100, 500, 1000] // KB
     const speeds: number[] = []
 
@@ -294,12 +296,18 @@ function SpeedTestContent() {
     }
 
     const finalSpeed = speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
-    console.log('Upload test completed. Final speed:', finalSpeed.toFixed(2), 'Mbps')
+    console.log('◀ measureUploadSpeed() returning:', finalSpeed.toFixed(2), 'Mbps')
     // Return average or 0 if no valid measurements
     return finalSpeed
   }
 
   const runSpeedTest = async () => {
+    console.log('🚀 runSpeedTest() started')
+    let measuredLatency = 0
+    let measuredJitter = 0
+    let downloadSpeedResult = 0
+    let uploadSpeedResult = 0
+
     try {
       trackToolEvent('speed_test_start', {})
 
@@ -312,41 +320,79 @@ function SpeedTestContent() {
       setProgress(0)
 
       // Measure latency
-      console.log('Starting latency test...')
-      setPhase('latency')
-      setProgress(0)
-      const { latency: measuredLatency, jitter: measuredJitter } = await measureLatency()
-      setLatency(measuredLatency)
-      setJitter(measuredJitter)
-      console.log('Latency test completed:', measuredLatency.toFixed(2), 'ms')
-      toast.success(
-        `Latency: ${measuredLatency.toFixed(0)}ms | Jitter: ${measuredJitter.toFixed(0)}ms`
-      )
+      try {
+        console.log('=== PHASE 1: Starting latency test ===')
+        setPhase('latency')
+        setProgress(0)
+        const latencyResult = await measureLatency()
+        measuredLatency = latencyResult.latency
+        measuredJitter = latencyResult.jitter
+        setLatency(measuredLatency)
+        setJitter(measuredJitter)
+        console.log('✓ Latency test completed:', measuredLatency.toFixed(2), 'ms')
+        toast.success(
+          `Latency: ${measuredLatency.toFixed(0)}ms | Jitter: ${measuredJitter.toFixed(0)}ms`
+        )
+      } catch (latencyError) {
+        console.error('✗ Latency test failed, but continuing:', latencyError)
+        // Continue anyway
+      }
 
       // Small delay between phases for better UX
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       // Measure download speed
-      console.log('Starting download test...')
-      setPhase('download')
-      setProgress(0)
-      const downloadSpeedResult = await measureDownloadSpeed()
-      console.log('Download test returned:', downloadSpeedResult.toFixed(2), 'Mbps')
-      toast.success(`Download speed: ${downloadSpeedResult.toFixed(2)} Mbps`)
+      try {
+        console.log('=== PHASE 2: Starting download test ===')
+        setPhase('download')
+        setProgress(0)
+
+        // Add a maximum timeout of 30 seconds for the entire download test
+        const downloadPromise = measureDownloadSpeed()
+        const timeoutPromise = new Promise<number>((resolve) => {
+          setTimeout(() => {
+            console.warn('⚠️ Download test exceeded 30s timeout, forcing completion')
+            resolve(0)
+          }, 30000) // 30 seconds max
+        })
+
+        downloadSpeedResult = await Promise.race([downloadPromise, timeoutPromise])
+        console.log('✓ Download test completed:', downloadSpeedResult.toFixed(2), 'Mbps')
+        toast.success(`Download speed: ${downloadSpeedResult.toFixed(2)} Mbps`)
+      } catch (downloadError) {
+        console.error('✗ Download test failed, but continuing:', downloadError)
+        // Continue anyway with 0 speed
+      }
 
       // Small delay between phases for better UX
+      console.log('=== Waiting 500ms before upload test ===')
       await new Promise((resolve) => setTimeout(resolve, 500))
 
-      // Measure upload speed
-      console.log('Starting upload test...')
-      setPhase('upload')
-      setProgress(0)
-      const uploadSpeedResult = await measureUploadSpeed()
-      console.log('Upload test returned:', uploadSpeedResult.toFixed(2), 'Mbps')
-      toast.success(`Upload speed: ${uploadSpeedResult.toFixed(2)} Mbps`)
+      // Measure upload speed - ALWAYS RUN THIS
+      try {
+        console.log('=== PHASE 3: Starting upload test ===')
+        setPhase('upload')
+        setProgress(0)
+
+        // Add a maximum timeout of 30 seconds for the entire upload test
+        const uploadPromise = measureUploadSpeed()
+        const timeoutPromise = new Promise<number>((resolve) => {
+          setTimeout(() => {
+            console.warn('⚠️ Upload test exceeded 30s timeout, forcing completion')
+            resolve(0)
+          }, 30000) // 30 seconds max
+        })
+
+        uploadSpeedResult = await Promise.race([uploadPromise, timeoutPromise])
+        console.log('✓ Upload test completed:', uploadSpeedResult.toFixed(2), 'Mbps')
+        toast.success(`Upload speed: ${uploadSpeedResult.toFixed(2)} Mbps`)
+      } catch (uploadError) {
+        console.error('✗ Upload test failed:', uploadError)
+        // Set to 0 if failed
+      }
 
       // Complete
-      console.log('All tests completed. Setting final results...')
+      console.log('=== PHASE 4: Finalizing results ===')
       setPhase('complete')
       setProgress(100)
       const finalResult: SpeedTestResult = {
@@ -365,8 +411,9 @@ function SpeedTestContent() {
       })
 
       toast.success('All tests completed successfully!')
+      console.log('=== ALL TESTS COMPLETED ===')
     } catch (error) {
-      console.error('Speed test error:', error)
+      console.error('!!! CRITICAL ERROR in runSpeedTest:', error)
       toast.error('Failed to complete speed test. Please try again.')
       setPhase('idle')
       setProgress(0)
