@@ -359,37 +359,95 @@ function SpeedTestContent() {
         downloadSpeedResult = await Promise.race([downloadPromise, timeoutPromise])
         console.log('✓ Download test completed:', downloadSpeedResult.toFixed(2), 'Mbps')
         toast.success(`Download speed: ${downloadSpeedResult.toFixed(2)} Mbps`)
+        console.log('DEBUG: Toast for download completed, about to continue')
       } catch (downloadError) {
         console.error('✗ Download test failed, but continuing:', downloadError)
         // Continue anyway with 0 speed
       }
+      console.log('DEBUG: Exited download test try-catch block')
 
       // Small delay between phases for better UX
       console.log('=== Waiting 500ms before upload test ===')
+      console.log('DEBUG: About to wait 500ms...')
       await new Promise((resolve) => setTimeout(resolve, 500))
+      console.log('DEBUG: 500ms wait completed')
+      console.log('DEBUG: *** CHECKPOINT BEFORE UPLOAD TEST ***')
 
       // Measure upload speed - ALWAYS RUN THIS
-      try {
-        console.log('=== PHASE 3: Starting upload test ===')
-        setPhase('upload')
-        setProgress(0)
+      // Wrap in a self-executing function to avoid any state update blocking
+      console.log('DEBUG: About to execute upload test section')
+      console.log('DEBUG: Current phase:', phase)
+      console.log('DEBUG: Download result:', downloadSpeedResult)
 
-        // Add a maximum timeout of 30 seconds for the entire upload test
-        const uploadPromise = measureUploadSpeed()
-        const timeoutPromise = new Promise<number>((resolve) => {
+      uploadSpeedResult = await (async () => {
+        console.log('DEBUG: Inside upload test IIFE')
+        try {
+          console.log('=== PHASE 3: Starting upload test ===')
+
+          // Update UI in a non-blocking way with error handling
+          try {
+            console.log('DEBUG: About to call setPhase(upload)')
+            setTimeout(() => {
+              try {
+                console.log('DEBUG: Setting phase to upload in setTimeout')
+                setPhase('upload')
+                console.log('DEBUG: setPhase(upload) succeeded')
+              } catch (e) {
+                console.error('DEBUG: setPhase(upload) failed:', e)
+              }
+            }, 0)
+
+            console.log('DEBUG: About to call setProgress(0)')
+            setTimeout(() => {
+              try {
+                console.log('DEBUG: Setting progress to 0 in setTimeout')
+                setProgress(0)
+                console.log('DEBUG: setProgress(0) succeeded')
+              } catch (e) {
+                console.error('DEBUG: setProgress(0) failed:', e)
+              }
+            }, 0)
+          } catch (stateError) {
+            console.error('DEBUG: Error setting up state updates:', stateError)
+            // Continue anyway - state updates are not critical
+          }
+
+          console.log('DEBUG: Creating uploadPromise')
+          // Add a maximum timeout of 30 seconds for the entire upload test
+          const uploadPromise = measureUploadSpeed()
+          console.log('DEBUG: uploadPromise created successfully')
+
+          console.log('DEBUG: Creating timeoutPromise (30s)')
+          const timeoutPromise = new Promise<number>((resolve) => {
+            setTimeout(() => {
+              console.warn('⚠️ Upload test exceeded 30s timeout, forcing completion')
+              resolve(0)
+            }, 30000) // 30 seconds max
+          })
+          console.log('DEBUG: timeoutPromise created successfully')
+
+          console.log('DEBUG: Starting Promise.race for upload')
+          const result = await Promise.race([uploadPromise, timeoutPromise])
+          console.log('DEBUG: Promise.race completed, result:', result)
+          console.log('✓ Upload test completed:', result.toFixed(2), 'Mbps')
+
+          // Show toast in a non-blocking way
           setTimeout(() => {
-            console.warn('⚠️ Upload test exceeded 30s timeout, forcing completion')
-            resolve(0)
-          }, 30000) // 30 seconds max
-        })
+            try {
+              toast.success(`Upload speed: ${result.toFixed(2)} Mbps`)
+            } catch (e) {
+              console.error('DEBUG: Toast failed:', e)
+            }
+          }, 0)
 
-        uploadSpeedResult = await Promise.race([uploadPromise, timeoutPromise])
-        console.log('✓ Upload test completed:', uploadSpeedResult.toFixed(2), 'Mbps')
-        toast.success(`Upload speed: ${uploadSpeedResult.toFixed(2)} Mbps`)
-      } catch (uploadError) {
-        console.error('✗ Upload test failed:', uploadError)
-        // Set to 0 if failed
-      }
+          return result
+        } catch (uploadError) {
+          console.error('✗ Upload test failed:', uploadError)
+          console.error('DEBUG: Upload test error stack:', uploadError)
+          return 0
+        }
+      })()
+      console.log('DEBUG: Exited upload test IIFE, result:', uploadSpeedResult)
 
       // Complete
       console.log('=== PHASE 4: Finalizing results ===')
