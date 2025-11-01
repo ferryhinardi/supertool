@@ -1,10 +1,9 @@
 'use client'
 
-import { json } from '@codemirror/lang-json'
-import CodeMirror from '@uiw/react-codemirror'
 import { CheckCircle, Code, Copy, Download, Sparkles, XCircle } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
-import { Suspense, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -16,7 +15,8 @@ import { tools } from '@/lib/tools'
 import { css } from '@/styled-system/css'
 import { formatSchema, generateSchema, type JSONSchema, validateSchema } from './utils'
 
-export const dynamic = 'force-dynamic'
+// Dynamically import CodeMirror to reduce initial bundle size (~200KB)
+const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), { ssr: false })
 
 function JSONSchemaContent() {
   // Find tool data for tracking
@@ -54,6 +54,17 @@ function JSONSchemaContent() {
   const [schemaDescription, setSchemaDescription] = useState('')
   const [detectRequired, setDetectRequired] = useState(true)
   const [detectFormats, setDetectFormats] = useState(true)
+
+  // Dynamically load json extension
+  const [jsonExtension, setJsonExtension] = useState<any>(null)
+
+  useEffect(() => {
+    const loadExtension = async () => {
+      const { json } = await import('@codemirror/lang-json')
+      setJsonExtension(json())
+    }
+    loadExtension()
+  }, [])
 
   // Validate input JSON and generate schema
   const result = useMemo(() => {
@@ -487,19 +498,21 @@ function JSONSchemaContent() {
             </CardHeader>
             <CardContent>
               <div className={css({ rounded: 'lg', overflow: 'hidden' })}>
-                <CodeMirror
-                  value={inputJson}
-                  height="400px"
-                  theme="dark"
-                  extensions={[json()]}
-                  onChange={(val) => setInputJson(val)}
-                  basicSetup={{
-                    lineNumbers: true,
-                    highlightActiveLineGutter: true,
-                    highlightActiveLine: true,
-                    foldGutter: true,
-                  }}
-                />
+                {jsonExtension && (
+                  <CodeMirror
+                    value={inputJson}
+                    height="400px"
+                    theme="dark"
+                    extensions={[jsonExtension]}
+                    onChange={(val) => setInputJson(val)}
+                    basicSetup={{
+                      lineNumbers: true,
+                      highlightActiveLineGutter: true,
+                      highlightActiveLine: true,
+                      foldGutter: true,
+                    }}
+                  />
+                )}
               </div>
             </CardContent>
           </Card>
@@ -519,19 +532,21 @@ function JSONSchemaContent() {
             </CardHeader>
             <CardContent>
               <div className={css({ rounded: 'lg', overflow: 'hidden' })}>
-                <CodeMirror
-                  value={result.schemaString}
-                  height="400px"
-                  theme="dark"
-                  extensions={[json()]}
-                  readOnly
-                  basicSetup={{
-                    lineNumbers: true,
-                    highlightActiveLineGutter: true,
-                    highlightActiveLine: true,
-                    foldGutter: true,
-                  }}
-                />
+                {jsonExtension && (
+                  <CodeMirror
+                    value={result.schemaString}
+                    height="400px"
+                    theme="dark"
+                    extensions={[jsonExtension]}
+                    readOnly
+                    basicSetup={{
+                      lineNumbers: true,
+                      highlightActiveLineGutter: true,
+                      highlightActiveLine: true,
+                      foldGutter: true,
+                    }}
+                  />
+                )}
               </div>
             </CardContent>
           </Card>

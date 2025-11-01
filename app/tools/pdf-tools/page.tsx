@@ -19,7 +19,7 @@ import {
   Trash2,
   Zap,
 } from 'lucide-react'
-import { degrees, PDFDocument, rgb } from 'pdf-lib'
+import type * as PdfLibTypes from 'pdf-lib'
 import type * as PdfjsTypes from 'pdfjs-dist'
 import { useCallback, useEffect, useState } from 'react'
 import { DragDropZone } from '@/components/features/DragDropZone'
@@ -28,6 +28,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
+
+// Dynamic import for pdf-lib (client-side only)
+let pdfLib: typeof PdfLibTypes | null = null
+let pdfLibInitPromise: Promise<typeof PdfLibTypes> | null = null
+
+const loadPdfLib = async () => {
+  if (pdfLib) return pdfLib
+  if (pdfLibInitPromise) return pdfLibInitPromise
+
+  pdfLibInitPromise = import('pdf-lib').then((module) => {
+    pdfLib = module
+    return module
+  })
+
+  return pdfLibInitPromise
+}
 
 // Dynamic import for pdfjs-dist (client-side only)
 let pdfjsLib: typeof PdfjsTypes | null = null
@@ -112,6 +128,8 @@ export default function PDFToolsPage() {
       value: pdfFiles.length,
     })
 
+    const { PDFDocument } = await loadPdfLib()
+
     const newPdfs: PDFFile[] = await Promise.all(
       pdfFiles.map(async (file) => {
         let pages = 0
@@ -161,6 +179,7 @@ export default function PDFToolsPage() {
     setIsProcessing(true)
 
     try {
+      const { PDFDocument } = await loadPdfLib()
       const mergedPdf = await PDFDocument.create()
 
       for (let i = 0; i < pdfs.length; i++) {
@@ -217,6 +236,7 @@ export default function PDFToolsPage() {
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
     try {
+      const { PDFDocument } = await loadPdfLib()
       const arrayBuffer = await pdf.file.arrayBuffer()
       const pdfDoc = await PDFDocument.load(arrayBuffer)
       const totalPages = pdfDoc.getPageCount()
@@ -294,6 +314,7 @@ export default function PDFToolsPage() {
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
     try {
+      const { PDFDocument } = await loadPdfLib()
       const arrayBuffer = await pdf.file.arrayBuffer()
       const pdfDoc = await PDFDocument.load(arrayBuffer)
 
@@ -419,11 +440,12 @@ export default function PDFToolsPage() {
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
     try {
+      const { PDFDocument, rgb, degrees } = await loadPdfLib()
       const arrayBuffer = await pdf.file.arrayBuffer()
       const pdfDoc = await PDFDocument.load(arrayBuffer)
       const pages = pdfDoc.getPages()
 
-      pages.forEach((page, index) => {
+      pages.forEach((page: any, index: number) => {
         const { width, height } = page.getSize()
 
         page.drawText(watermarkText, {
@@ -478,6 +500,7 @@ export default function PDFToolsPage() {
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
     try {
+      const { PDFDocument } = await loadPdfLib()
       const arrayBuffer = await pdf.file.arrayBuffer()
       const pdfDoc = await PDFDocument.load(arrayBuffer)
       const totalPages = pdfDoc.getPageCount()
@@ -538,11 +561,12 @@ export default function PDFToolsPage() {
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
     try {
+      const { PDFDocument, degrees } = await loadPdfLib()
       const arrayBuffer = await pdf.file.arrayBuffer()
       const pdfDoc = await PDFDocument.load(arrayBuffer)
       const pages = pdfDoc.getPages()
 
-      pages.forEach((page, index) => {
+      pages.forEach((page: any, index: number) => {
         page.setRotation(degrees(rotationAngle))
 
         updatePdfStatus(pdf.id, {

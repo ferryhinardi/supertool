@@ -1,10 +1,9 @@
 'use client'
 
-import { json } from '@codemirror/lang-json'
-import CodeMirror from '@uiw/react-codemirror'
 import { Copy, Download, FileJson, Minimize2, Sparkles } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
-import { Suspense, useMemo } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,7 +13,8 @@ import { trackToolEvent } from '@/lib/analytics'
 import { tools } from '@/lib/tools'
 import { css } from '@/styled-system/css'
 
-export const dynamic = 'force-dynamic'
+// Dynamically import CodeMirror to reduce initial bundle size (~200KB)
+const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), { ssr: false })
 
 function JSONBeautifyContent() {
   // Find tool data for tracking
@@ -32,6 +32,17 @@ function JSONBeautifyContent() {
   const [value, setValue] = useQueryState('json', {
     defaultValue: '{\n  "example": true,\n  "message": "Welcome to SuperTool!"\n}',
   })
+
+  // Dynamically load json extension
+  const [jsonExtension, setJsonExtension] = useState<any>(null)
+
+  useEffect(() => {
+    const loadExtension = async () => {
+      const { json } = await import('@codemirror/lang-json')
+      setJsonExtension(json())
+    }
+    loadExtension()
+  }, [])
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -235,20 +246,22 @@ function JSONBeautifyContent() {
           })}
         >
           <div className={css({ overflowX: 'auto' })}>
-            <CodeMirror
-              value={value}
-              height="400px"
-              theme="dark"
-              extensions={[json()]}
-              onChange={(val) => setValue(val)}
-              className="text-sm sm:text-base"
-              basicSetup={{
-                lineNumbers: true,
-                highlightActiveLineGutter: true,
-                highlightActiveLine: true,
-                foldGutter: true,
-              }}
-            />
+            {jsonExtension && (
+              <CodeMirror
+                value={value}
+                height="400px"
+                theme="dark"
+                extensions={[jsonExtension]}
+                onChange={(val) => setValue(val)}
+                className="text-sm sm:text-base"
+                basicSetup={{
+                  lineNumbers: true,
+                  highlightActiveLineGutter: true,
+                  highlightActiveLine: true,
+                  foldGutter: true,
+                }}
+              />
+            )}
           </div>
         </div>
 

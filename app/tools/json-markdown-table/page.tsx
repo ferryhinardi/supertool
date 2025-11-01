@@ -1,9 +1,8 @@
 'use client'
 
-import { json } from '@codemirror/lang-json'
-import CodeMirror from '@uiw/react-codemirror'
 import { AlertCircle, Copy, Download, RefreshCw, Table } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import dynamic from 'next/dynamic'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,6 +10,9 @@ import { Field, FieldLabel } from '@/components/ui/field'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
+
+// Dynamically import CodeMirror to reduce initial bundle size (~200KB)
+const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), { ssr: false })
 
 type Alignment = 'left' | 'center' | 'right'
 
@@ -20,6 +22,17 @@ export default function JSONToMarkdownTablePage() {
   )
   const [alignment, setAlignment] = useState<Alignment>('left')
   const [customHeaders, setCustomHeaders] = useState('')
+
+  // Dynamically load json extension
+  const [jsonExtension, setJsonExtension] = useState<any>(null)
+
+  useEffect(() => {
+    const loadExtension = async () => {
+      const { json } = await import('@codemirror/lang-json')
+      setJsonExtension(json())
+    }
+    loadExtension()
+  }, [])
 
   // Calculate stats and preview
   const { stats, markdownOutput, isValid, error } = useMemo(() => {
@@ -481,36 +494,38 @@ export default function JSONToMarkdownTablePage() {
           >
             <h3 className="text-sm font-semibold text-purple-300 sm:text-base">JSON Input</h3>
           </div>
-          <CodeMirror
-            value={jsonInput}
-            height="300px"
-            extensions={[json()]}
-            onChange={setJsonInput}
-            theme="dark"
-            basicSetup={{
-              lineNumbers: true,
-              highlightActiveLineGutter: true,
-              highlightSpecialChars: true,
-              foldGutter: true,
-              drawSelection: true,
-              dropCursor: true,
-              allowMultipleSelections: true,
-              indentOnInput: true,
-              bracketMatching: true,
-              closeBrackets: true,
-              autocompletion: true,
-              rectangularSelection: true,
-              crosshairCursor: true,
-              highlightActiveLine: true,
-              highlightSelectionMatches: true,
-              closeBracketsKeymap: true,
-              searchKeymap: true,
-              foldKeymap: true,
-              completionKeymap: true,
-              lintKeymap: true,
-            }}
-            className="text-sm sm:text-base"
-          />
+          {jsonExtension && (
+            <CodeMirror
+              value={jsonInput}
+              height="300px"
+              extensions={[jsonExtension]}
+              onChange={setJsonInput}
+              theme="dark"
+              basicSetup={{
+                lineNumbers: true,
+                highlightActiveLineGutter: true,
+                highlightSpecialChars: true,
+                foldGutter: true,
+                drawSelection: true,
+                dropCursor: true,
+                allowMultipleSelections: true,
+                indentOnInput: true,
+                bracketMatching: true,
+                closeBrackets: true,
+                autocompletion: true,
+                rectangularSelection: true,
+                crosshairCursor: true,
+                highlightActiveLine: true,
+                highlightSelectionMatches: true,
+                closeBracketsKeymap: true,
+                searchKeymap: true,
+                foldKeymap: true,
+                completionKeymap: true,
+                lintKeymap: true,
+              }}
+              className="text-sm sm:text-base"
+            />
+          )}
         </div>
 
         {/* Markdown Output Preview */}

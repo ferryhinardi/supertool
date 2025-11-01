@@ -10,13 +10,18 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import * as XLSX from 'xlsx'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
+
+// Dynamically import XLSX to reduce initial bundle size (~600KB)
+const loadXLSX = async () => {
+  const XLSX = await import('xlsx')
+  return XLSX
+}
 
 type ConversionMode = 'csv-to-excel' | 'excel-to-csv'
 
@@ -140,6 +145,7 @@ export default function CSVExcelConverterPage() {
   }
 
   const processExcelToCSV = async (excelFile: File) => {
+    const XLSX = await loadXLSX()
     const arrayBuffer = await excelFile.arrayBuffer()
     const workbook = XLSX.read(arrayBuffer, { type: 'array' })
 
@@ -147,7 +153,7 @@ export default function CSVExcelConverterPage() {
       throw new Error('Excel file has no sheets')
     }
 
-    const sheets: SheetData[] = workbook.SheetNames.map((sheetName) => {
+    const sheets: SheetData[] = workbook.SheetNames.map((sheetName: string) => {
       const worksheet = workbook.Sheets[sheetName]
       const jsonData: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
         header: 1,
@@ -187,7 +193,7 @@ export default function CSVExcelConverterPage() {
     )
   }
 
-  const handleDownload = (sheetIndex = 0) => {
+  const handleDownload = async (sheetIndex = 0) => {
     if (!result) {
       toast.error('No conversion result to download')
       return
@@ -196,6 +202,7 @@ export default function CSVExcelConverterPage() {
     try {
       if (mode === 'csv-to-excel') {
         // Create Excel file from CSV data
+        const XLSX = await loadXLSX()
         const workbook = XLSX.utils.book_new()
 
         for (const sheet of result.sheets) {

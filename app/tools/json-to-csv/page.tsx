@@ -1,9 +1,8 @@
 'use client'
 
-import { json } from '@codemirror/lang-json'
-import CodeMirror from '@uiw/react-codemirror'
 import { AlertCircle, Copy, Download, FileSpreadsheet, RefreshCw } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import dynamic from 'next/dynamic'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -12,12 +11,26 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
+// Dynamically import CodeMirror to reduce initial bundle size (~200KB)
+const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), { ssr: false })
+
 export default function JSONToCSVPage() {
   const [jsonInput, setJsonInput] = useState(
     '[\n  {\n    "name": "John Doe",\n    "age": 30,\n    "email": "john@example.com"\n  },\n  {\n    "name": "Jane Smith",\n    "age": 25,\n    "email": "jane@example.com"\n  }\n]'
   )
   const [delimiter, setDelimiter] = useState(',')
   const [flattenNested, setFlattenNested] = useState(true)
+
+  // Dynamically load json extension
+  const [jsonExtension, setJsonExtension] = useState<any>(null)
+
+  useEffect(() => {
+    const loadExtension = async () => {
+      const { json } = await import('@codemirror/lang-json')
+      setJsonExtension(json())
+    }
+    loadExtension()
+  }, [])
 
   // Calculate stats and preview
   const { stats, csvOutput, isValid, error } = useMemo(() => {
@@ -455,36 +468,38 @@ export default function JSONToCSVPage() {
           >
             <h3 className="text-sm font-semibold text-teal-300 sm:text-base">JSON Input</h3>
           </div>
-          <CodeMirror
-            value={jsonInput}
-            height="300px"
-            extensions={[json()]}
-            onChange={setJsonInput}
-            theme="dark"
-            basicSetup={{
-              lineNumbers: true,
-              highlightActiveLineGutter: true,
-              highlightSpecialChars: true,
-              foldGutter: true,
-              drawSelection: true,
-              dropCursor: true,
-              allowMultipleSelections: true,
-              indentOnInput: true,
-              bracketMatching: true,
-              closeBrackets: true,
-              autocompletion: true,
-              rectangularSelection: true,
-              crosshairCursor: true,
-              highlightActiveLine: true,
-              highlightSelectionMatches: true,
-              closeBracketsKeymap: true,
-              searchKeymap: true,
-              foldKeymap: true,
-              completionKeymap: true,
-              lintKeymap: true,
-            }}
-            className="text-sm sm:text-base"
-          />
+          {jsonExtension && (
+            <CodeMirror
+              value={jsonInput}
+              height="300px"
+              extensions={[jsonExtension]}
+              onChange={setJsonInput}
+              theme="dark"
+              basicSetup={{
+                lineNumbers: true,
+                highlightActiveLineGutter: true,
+                highlightSpecialChars: true,
+                foldGutter: true,
+                drawSelection: true,
+                dropCursor: true,
+                allowMultipleSelections: true,
+                indentOnInput: true,
+                bracketMatching: true,
+                closeBrackets: true,
+                autocompletion: true,
+                rectangularSelection: true,
+                crosshairCursor: true,
+                highlightActiveLine: true,
+                highlightSelectionMatches: true,
+                closeBracketsKeymap: true,
+                searchKeymap: true,
+                foldKeymap: true,
+                completionKeymap: true,
+                lintKeymap: true,
+              }}
+              className="text-sm sm:text-base"
+            />
+          )}
         </div>
 
         {/* CSV Output Preview */}

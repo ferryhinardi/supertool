@@ -1,7 +1,6 @@
 'use client'
 
-import { FFmpeg } from '@ffmpeg/ffmpeg'
-import { fetchFile, toBlobURL } from '@ffmpeg/util'
+import type { FFmpeg } from '@ffmpeg/ffmpeg'
 import { motion } from 'framer-motion'
 import {
   Download,
@@ -71,6 +70,11 @@ export default function VideoConverterPage() {
 
     setLoadingFFmpeg(true)
     try {
+      const [{ FFmpeg }, { toBlobURL }] = await Promise.all([
+        import('@ffmpeg/ffmpeg'),
+        import('@ffmpeg/util'),
+      ])
+
       const ffmpeg = new FFmpeg()
       ffmpegRef.current = ffmpeg
 
@@ -188,6 +192,7 @@ export default function VideoConverterPage() {
         label: `${videoCodec}_${outputFormat}`,
       })
 
+      const { fetchFile } = await import('@ffmpeg/util')
       const ffmpeg = ffmpegRef.current
       const inputName = `input${videoFile.file.name.substring(videoFile.file.name.lastIndexOf('.'))}`
       const outputName = `output.${outputFormat}`

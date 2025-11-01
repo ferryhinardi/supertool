@@ -16,6 +16,33 @@ vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
+// Mock next/dynamic to return the mocked component synchronously
+vi.mock('next/dynamic', () => ({
+  __esModule: true,
+  default: (importFn: any, options?: any) => {
+    // Return a component that matches CodeMirror's interface
+    const MockComponent = ({
+      value,
+      onChange,
+    }: {
+      value: string
+      onChange: (value: string) => void
+      height?: string
+      extensions?: unknown[]
+      theme?: string
+      basicSetup?: Record<string, boolean>
+    }) => (
+      <textarea
+        data-testid="code-editor"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label="JSON Input Editor"
+      />
+    )
+    return MockComponent
+  },
+}))
+
 // Mock CodeMirror
 vi.mock('@uiw/react-codemirror', () => ({
   default: ({
@@ -49,7 +76,7 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
     vi.restoreAllMocks()
   })
 
-  it('should render page with heading', () => {
+  it('should render page with heading', async () => {
     render(<JSONToMarkdownTablePage />)
 
     expect(
@@ -58,6 +85,11 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
     expect(
       screen.getByText(/Convert JSON arrays to beautifully formatted Markdown tables/i)
     ).toBeInTheDocument()
+
+    // Wait for CodeMirror to load
+    await waitFor(() => {
+      expect(screen.getByTestId('code-editor')).toBeInTheDocument()
+    })
   })
 
   it('should display valid stats for default JSON', () => {
@@ -85,11 +117,13 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
     expect(screen.getByRole('button', { name: /Reset/i })).toBeInTheDocument()
   })
 
-  it('should display JSON input editor', () => {
+  it('should display JSON input editor', async () => {
     render(<JSONToMarkdownTablePage />)
 
     expect(screen.getByText('JSON Input')).toBeInTheDocument()
-    expect(screen.getByTestId('code-editor')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByTestId('code-editor')).toBeInTheDocument()
+    })
   })
 
   it('should display markdown output preview', () => {
@@ -101,7 +135,8 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
   it('should show error for invalid JSON', async () => {
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor')
+    // Wait for CodeMirror to load
+    const editor = await screen.findByTestId('code-editor')
     await userEvent.clear(editor)
     await userEvent.type(editor, 'invalid json')
 
@@ -113,7 +148,8 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
   it('should show error for non-array JSON', async () => {
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor') as HTMLTextAreaElement
+    // Wait for CodeMirror to load
+    const editor = (await screen.findByTestId('code-editor')) as HTMLTextAreaElement
     await userEvent.clear(editor)
     await userEvent.click(editor)
     await userEvent.paste('{"name": "test"}')
@@ -126,7 +162,8 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
   it('should show error for empty array', async () => {
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor') as HTMLTextAreaElement
+    // Wait for CodeMirror to load
+    const editor = (await screen.findByTestId('code-editor')) as HTMLTextAreaElement
     await userEvent.clear(editor)
     await userEvent.click(editor)
     await userEvent.paste('[]')
@@ -212,7 +249,8 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
 
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor') as HTMLTextAreaElement
+    // Wait for CodeMirror to load
+    const editor = (await screen.findByTestId('code-editor')) as HTMLTextAreaElement
     await userEvent.clear(editor)
     await userEvent.click(editor)
     await userEvent.paste('[{"foo": "bar"}]')
@@ -279,7 +317,8 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
   it('should disable buttons when JSON is invalid', async () => {
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor')
+    // Wait for CodeMirror to load
+    const editor = await screen.findByTestId('code-editor')
     await userEvent.clear(editor)
     await userEvent.type(editor, 'invalid')
 
@@ -297,7 +336,8 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
   it('should show placeholder when no valid output', async () => {
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor') as HTMLTextAreaElement
+    // Wait for CodeMirror to load
+    const editor = (await screen.findByTestId('code-editor')) as HTMLTextAreaElement
     await userEvent.clear(editor)
     await userEvent.click(editor)
     await userEvent.paste('[]')
@@ -322,7 +362,8 @@ describe('JSON to Markdown Conversion Logic', () => {
   it('should escape pipe characters in cell values', async () => {
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor') as HTMLTextAreaElement
+    // Wait for CodeMirror to load
+    const editor = (await screen.findByTestId('code-editor')) as HTMLTextAreaElement
     await userEvent.clear(editor)
     await userEvent.click(editor)
     await userEvent.paste('[{"text": "value|with|pipes"}]')
@@ -337,7 +378,8 @@ describe('JSON to Markdown Conversion Logic', () => {
   it('should handle null and undefined values', async () => {
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor') as HTMLTextAreaElement
+    // Wait for CodeMirror to load
+    const editor = (await screen.findByTestId('code-editor')) as HTMLTextAreaElement
     await userEvent.clear(editor)
     await userEvent.click(editor)
     await userEvent.paste('[{"name": "John", "age": null}]')
@@ -351,7 +393,8 @@ describe('JSON to Markdown Conversion Logic', () => {
   it('should sort headers alphabetically', async () => {
     render(<JSONToMarkdownTablePage />)
 
-    const editor = screen.getByTestId('code-editor') as HTMLTextAreaElement
+    // Wait for CodeMirror to load
+    const editor = (await screen.findByTestId('code-editor')) as HTMLTextAreaElement
     await userEvent.clear(editor)
     await userEvent.click(editor)
     await userEvent.paste('[{"zebra": 1, "apple": 2, "banana": 3}]')

@@ -12,17 +12,17 @@ import {
   SplitSquareHorizontal,
   Upload,
 } from 'lucide-react'
-import { useCallback, useMemo, useState } from 'react'
-import ReactMarkdown from 'react-markdown'
-import rehypeHighlight from 'rehype-highlight'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
+import dynamic from 'next/dynamic'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { css } from '@/styled-system/css'
+
+// Dynamically import ReactMarkdown with SSR disabled
+const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false })
 
 type ViewMode = 'split' | 'editor' | 'preview'
 
@@ -96,6 +96,28 @@ Happy writing! 🚀
 export default function MarkdownEditorPage() {
   const [value, setValue] = useState(defaultMarkdown)
   const [viewMode, setViewMode] = useState<ViewMode>('split')
+  const [markdownPlugins, setMarkdownPlugins] = useState<{
+    remarkGfm: any
+    rehypeHighlight: any
+    rehypeRaw: any
+  } | null>(null)
+
+  // Load markdown plugins dynamically
+  useEffect(() => {
+    const loadPlugins = async () => {
+      const [remarkGfmModule, rehypeHighlightModule, rehypeRawModule] = await Promise.all([
+        import('remark-gfm'),
+        import('rehype-highlight'),
+        import('rehype-raw'),
+      ])
+      setMarkdownPlugins({
+        remarkGfm: remarkGfmModule.default,
+        rehypeHighlight: rehypeHighlightModule.default,
+        rehypeRaw: rehypeRawModule.default,
+      })
+    }
+    loadPlugins()
+  }, [])
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -515,108 +537,114 @@ export default function MarkdownEditorPage() {
               <CardContent>
                 <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
                   <div className="markdown-preview prose prose-invert min-h-[600px] w-max max-w-none overflow-auto rounded-lg border border-gray-700 bg-gray-950 p-6">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      rehypePlugins={[rehypeHighlight, rehypeRaw]}
-                      components={{
-                        // Custom component styling
-                        h1: ({ ...props }) => (
-                          <h1
-                            className="mb-4 border-b border-gray-700 pb-2 text-3xl font-bold"
-                            {...props}
-                          />
-                        ),
-                        h2: ({ ...props }) => (
-                          <h2
-                            className="mt-6 mb-3 border-b border-gray-800 pb-2 text-2xl font-bold"
-                            {...props}
-                          />
-                        ),
-                        h3: ({ ...props }) => (
-                          <h3 className="mt-5 mb-2 text-xl font-bold" {...props} />
-                        ),
-                        a: ({ ...props }) => (
-                          <a
-                            className="text-blue-400 hover:text-blue-300 hover:underline"
-                            {...props}
-                          />
-                        ),
-                        code: ({ className, children, ...props }) => {
-                          const match = /language-(\w+)/.exec(className || '')
-                          return match ? (
-                            <code className={className} {...props}>
-                              {children}
-                            </code>
-                          ) : (
-                            <code
-                              className="rounded bg-gray-800 px-1.5 py-0.5 text-sm text-pink-400"
-                              {...props}
-                            >
-                              {children}
-                            </code>
-                          )
-                        },
-                        pre: ({ ...props }) => (
-                          <pre
-                            className="overflow-x-auto rounded-lg border border-gray-700 bg-gray-900 p-4"
-                            {...props}
-                          />
-                        ),
-                        table: ({ ...props }) => (
-                          <div className="overflow-x-auto">
-                            <table
-                              className="min-w-full border-collapse border border-gray-700"
+                    {markdownPlugins ? (
+                      <ReactMarkdown
+                        remarkPlugins={[markdownPlugins.remarkGfm]}
+                        rehypePlugins={[markdownPlugins.rehypeHighlight, markdownPlugins.rehypeRaw]}
+                        components={{
+                          // Custom component styling
+                          h1: ({ ...props }) => (
+                            <h1
+                              className="mb-4 border-b border-gray-700 pb-2 text-3xl font-bold"
                               {...props}
                             />
-                          </div>
-                        ),
-                        th: ({ ...props }) => (
-                          <th
-                            className="border border-gray-700 bg-gray-800 px-4 py-2 text-left font-bold"
-                            {...props}
-                          />
-                        ),
-                        td: ({ ...props }) => (
-                          <td className="border border-gray-700 px-4 py-2" {...props} />
-                        ),
-                        blockquote: ({ ...props }) => (
-                          <blockquote
-                            className="border-l-4 border-gray-600 pl-4 text-gray-400 italic"
-                            {...props}
-                          />
-                        ),
-                        ul: ({ ...props }) => <ul className="list-disc pl-6" {...props} />,
-                        ol: ({ ...props }) => <ol className="list-decimal pl-6" {...props} />,
-                        li: ({ children, ...props }) => {
-                          // Check if this is a task list item
-                          const firstChild = Array.isArray(children) ? children[0] : null
-                          if (
-                            firstChild &&
-                            typeof firstChild === 'object' &&
-                            'props' in firstChild
-                          ) {
-                            const input = firstChild.props?.children?.[0]
-                            if (input?.type === 'input' && input?.props?.type === 'checkbox') {
-                              return (
-                                <li className="flex list-none items-center gap-2" {...props}>
-                                  <input
-                                    type="checkbox"
-                                    checked={input.props.checked}
-                                    disabled
-                                    className="h-4 w-4 rounded border-gray-600 bg-gray-800"
-                                  />
-                                  <span>{firstChild.props.children.slice(1)}</span>
-                                </li>
-                              )
+                          ),
+                          h2: ({ ...props }) => (
+                            <h2
+                              className="mt-6 mb-3 border-b border-gray-800 pb-2 text-2xl font-bold"
+                              {...props}
+                            />
+                          ),
+                          h3: ({ ...props }) => (
+                            <h3 className="mt-5 mb-2 text-xl font-bold" {...props} />
+                          ),
+                          a: ({ ...props }) => (
+                            <a
+                              className="text-blue-400 hover:text-blue-300 hover:underline"
+                              {...props}
+                            />
+                          ),
+                          code: ({ className, children, ...props }) => {
+                            const match = /language-(\w+)/.exec(className || '')
+                            return match ? (
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            ) : (
+                              <code
+                                className="rounded bg-gray-800 px-1.5 py-0.5 text-sm text-pink-400"
+                                {...props}
+                              >
+                                {children}
+                              </code>
+                            )
+                          },
+                          pre: ({ ...props }) => (
+                            <pre
+                              className="overflow-x-auto rounded-lg border border-gray-700 bg-gray-900 p-4"
+                              {...props}
+                            />
+                          ),
+                          table: ({ ...props }) => (
+                            <div className="overflow-x-auto">
+                              <table
+                                className="min-w-full border-collapse border border-gray-700"
+                                {...props}
+                              />
+                            </div>
+                          ),
+                          th: ({ ...props }) => (
+                            <th
+                              className="border border-gray-700 bg-gray-800 px-4 py-2 text-left font-bold"
+                              {...props}
+                            />
+                          ),
+                          td: ({ ...props }) => (
+                            <td className="border border-gray-700 px-4 py-2" {...props} />
+                          ),
+                          blockquote: ({ ...props }) => (
+                            <blockquote
+                              className="border-l-4 border-gray-600 pl-4 text-gray-400 italic"
+                              {...props}
+                            />
+                          ),
+                          ul: ({ ...props }) => <ul className="list-disc pl-6" {...props} />,
+                          ol: ({ ...props }) => <ol className="list-decimal pl-6" {...props} />,
+                          li: ({ children, ...props }) => {
+                            // Check if this is a task list item
+                            const firstChild = Array.isArray(children) ? children[0] : null
+                            if (
+                              firstChild &&
+                              typeof firstChild === 'object' &&
+                              'props' in firstChild
+                            ) {
+                              const input = firstChild.props?.children?.[0]
+                              if (input?.type === 'input' && input?.props?.type === 'checkbox') {
+                                return (
+                                  <li className="flex list-none items-center gap-2" {...props}>
+                                    <input
+                                      type="checkbox"
+                                      checked={input.props.checked}
+                                      disabled
+                                      className="h-4 w-4 rounded border-gray-600 bg-gray-800"
+                                    />
+                                    <span>{firstChild.props.children.slice(1)}</span>
+                                  </li>
+                                )
+                              }
                             }
-                          }
-                          return <li {...props}>{children}</li>
-                        },
-                        hr: ({ ...props }) => <hr className="my-4 border-gray-700" {...props} />,
-                      }}
-                    >
-                      {value}
-                    </ReactMarkdown>
+                            return <li {...props}>{children}</li>
+                          },
+                          hr: ({ ...props }) => <hr className="my-4 border-gray-700" {...props} />,
+                        }}
+                      >
+                        {value}
+                      </ReactMarkdown>
+                    ) : (
+                      <div className="flex items-center justify-center text-gray-400">
+                        Loading preview...
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
