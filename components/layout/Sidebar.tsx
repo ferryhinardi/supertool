@@ -2,6 +2,7 @@
 
 import {
   Activity,
+  Braces,
   Calendar,
   Camera,
   Clipboard,
@@ -72,6 +73,7 @@ const navigation = [
   { name: 'Network Speed Test', href: '/tools/speed-test', icon: Gauge },
   { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
+  { name: 'AI Snippet Generator', href: '/tools/ai-snippet-generator', icon: Braces },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
 ]
 const showAccessToGithub = false

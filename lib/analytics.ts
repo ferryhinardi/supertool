@@ -213,6 +213,10 @@ type ToolEvent =
   | 'ai_caption_generate'
   | 'ai_caption_copy'
   | 'ai_caption_error'
+  | 'ai_snippet_open'
+  | 'ai_snippet_generate'
+  | 'ai_snippet_copy'
+  | 'ai_snippet_error'
 
 // Type-safe gtag wrapper
 declare global {

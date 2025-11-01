@@ -929,7 +929,7 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-amber-500',
     features: ['Multi-Language Support', 'Context-Aware', 'Instant Generation', 'Code Explanation'],
     category: 'development',
-    comingSoon: true,
+    comingSoon: false,
     premium: true,
   },
 ]
