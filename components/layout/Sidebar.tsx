@@ -52,6 +52,7 @@ const navigation = [
   { name: 'Password Strength', href: '/tools/password-strength', icon: ShieldAlert },
   { name: 'Encryption Tool', href: '/tools/encryption-tool', icon: Shield },
   { name: 'Hash Generator', href: '/tools/hash-generator', icon: Hash },
+  { name: 'UUID Generator', href: '/tools/uuid-generator', icon: Hash },
   { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
   {
     name: 'Gradient Generator',

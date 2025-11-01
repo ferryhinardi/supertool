@@ -576,7 +576,7 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-cyan-500',
     features: ['UUID v1-v5', 'Bulk Generate', 'Validation', 'Format Check'],
     category: 'data',
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     title: 'Date Formatter & Parser',

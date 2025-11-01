@@ -74,12 +74,13 @@ export function generateToolMetadata({
 /**
  * Generate breadcrumb items for a tool page
  * @param toolName - The display name of the tool
+ * @param toolPath - Optional URL path of the tool (defaults to empty string)
  * @returns Array of breadcrumb items
  */
-export function generateToolBreadcrumbs(toolName: string): BreadcrumbItem[] {
+export function generateToolBreadcrumbs(toolName: string, toolPath = ''): BreadcrumbItem[] {
   return [
     { name: 'Home', url: '/' },
     { name: 'Tools', url: '/' },
-    { name: toolName, url: '' }, // Current page, no URL
+    { name: toolName, url: toolPath }, // Current page
   ]
 }

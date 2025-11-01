@@ -221,6 +221,12 @@ type ToolEvent =
   | 'ai_json_analyze'
   | 'ai_json_copy'
   | 'ai_json_error'
+  | 'uuid_generator_open'
+  | 'uuid_generate_single'
+  | 'uuid_generate_bulk'
+  | 'uuid_validate'
+  | 'uuid_copy'
+  | 'uuid_copy_bulk'
 
 // Type-safe gtag wrapper
 declare global {
