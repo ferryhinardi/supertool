@@ -212,18 +212,23 @@ function SpeedTestContent() {
             console.log(`  Iteration ${j + 1}/${iterations} for ${fileSizes[i]} KB`)
 
             // Generate random data to upload
+            console.log('    Generating random data...')
             const randomData = new Uint8Array(size)
             crypto.getRandomValues(randomData)
+            console.log('    Creating blob...')
             const blob = new Blob([randomData])
+            console.log(`    Blob created: ${blob.size} bytes`)
 
             const start = performance.now()
 
             // Upload with 10s timeout (increased from 3s)
+            console.log('    Setting up abort controller...')
             const controller = new AbortController()
             const timeoutId = setTimeout(() => {
               console.warn(`  Upload timeout after 10s for ${fileSizes[i]} KB`)
               controller.abort()
             }, 10000) // 10s timeout
+            console.log('    Abort controller ready')
 
             try {
               console.log(`  Uploading to httpbin.org...`)
@@ -258,7 +263,11 @@ function SpeedTestContent() {
               }
             } catch (fetchError) {
               clearTimeout(timeoutId)
-              console.warn(`  httpbin.org failed for upload:`, fetchError)
+              console.error(`  httpbin.org failed for upload:`, fetchError)
+              console.log(`  Error details:`, {
+                name: (fetchError as Error)?.name,
+                message: (fetchError as Error)?.message,
+              })
               console.warn(`  Using fallback method for ${fileSizes[i]} KB`)
 
               // Fallback: Use download speed as a baseline
@@ -285,7 +294,12 @@ function SpeedTestContent() {
               }
             }
           } catch (iterError) {
-            console.warn(`Upload iteration ${j + 1} failed:`, iterError)
+            console.error(`!!! Upload iteration ${j + 1} OUTER CATCH:`, iterError)
+            console.error(`    Error details:`, {
+              name: (iterError as Error)?.name,
+              message: (iterError as Error)?.message,
+              stack: (iterError as Error)?.stack?.substring(0, 200),
+            })
             // Continue with other iterations
           }
         }
