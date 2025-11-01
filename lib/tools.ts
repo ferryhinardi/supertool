@@ -797,7 +797,8 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['MIME Type', 'File Hash', 'Size Analysis', 'No Upload Required'],
     category: 'development',
-    comingSoon: true,
+    comingSoon: false,
+    premium: true,
   },
 
   // Text, Content & AI Tools

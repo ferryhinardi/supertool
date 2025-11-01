@@ -20,6 +20,7 @@ import {
   Home,
   Key,
   Menu,
+  MessageSquare,
   QrCode,
   Repeat,
   Shield,
@@ -76,6 +77,7 @@ const navigation = [
   { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
   { name: 'AI Snippet Generator', href: '/tools/ai-snippet-generator', icon: Braces },
   { name: 'AI JSON Analyzer', href: '/tools/ai-json-analyzer', icon: Brain },
+  { name: 'AI Command Explainer', href: '/tools/ai-command-explainer', icon: MessageSquare },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
 ]
 const showAccessToGithub = false
