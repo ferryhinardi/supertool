@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import {
   AlertCircle,
   Copy,
@@ -9,6 +10,7 @@ import {
   Link as LinkIcon,
   Lock,
   Shield,
+  Sparkles,
   Unlock,
   Upload,
 } from 'lucide-react'
@@ -261,24 +263,88 @@ export default function EncryptionToolPage() {
   }
 
   return (
-    <div className={css({ maxW: '6xl', mx: 'auto', py: { base: 8, md: 12 }, px: 4 })}>
-      <div className={css({ display: 'flex', flexDir: 'column', gap: 8 })}>
-        {/* Header */}
-        <div className={css({ textAlign: 'center' })}>
-          <div className={css({ display: 'flex', justifyContent: 'center', mb: 4 })}>
-            <Shield className={css({ w: 10, h: 10, color: 'indigo.500' })} />
-          </div>
-          <h1 className={css({ fontSize: '3xl', fontWeight: 'bold', mb: 2 })}>
-            Encryption & Decryption Tool
-          </h1>
-          <p className={css({ color: 'gray.600', maxW: '2xl', mx: 'auto' })}>
-            Secure your data with AES-256-GCM encryption. All encryption happens in your browser -
-            nothing is sent to any server.
-          </p>
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
+      })}
+    >
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className={css({ textAlign: 'center', spaceY: '4' })}
+      >
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '3',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'indigo.500/30',
+            bg: 'indigo.500/10',
+            px: '5',
+            py: '2',
+            backdropFilter: 'blur(8px)',
+          })}
+        >
+          <Shield className={css({ h: '5', w: '5', color: 'indigo.400' })} />
+          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'indigo.300' })}>
+            AES-256-GCM Encryption
+          </span>
         </div>
 
-        {/* Mode Selection */}
-        <Card>
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'extrabold',
+            bgGradient: 'to-r',
+            gradientFrom: 'indigo.400',
+            gradientVia: 'purple.400',
+            gradientTo: 'pink.400',
+            bgClip: 'text',
+          })}
+          style={{
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Encryption & Decryption Tool
+        </h1>
+
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '3xl',
+            fontSize: { base: 'lg', sm: 'xl' },
+            color: 'gray.400',
+          })}
+        >
+          Secure your data with AES-256-GCM encryption. All encryption happens in your browser -
+          nothing is sent to any server.
+        </p>
+      </motion.div>
+
+      {/* Mode Selection */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'indigo.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
           <CardContent className={css({ pt: 6 })}>
             <div
               className={css({
@@ -321,10 +387,23 @@ export default function EncryptionToolPage() {
             </div>
           </CardContent>
         </Card>
+      </motion.div>
 
-        {/* Text Mode */}
-        {mode === 'text' && (
-          <Card>
+      {/* Text Mode */}
+      {mode === 'text' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'indigo.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
             <CardContent className={css({ pt: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 {/* Action Selection */}
@@ -349,7 +428,7 @@ export default function EncryptionToolPage() {
                 {/* Input Text */}
                 {action === 'encrypt' && (
                   <Field>
-                    <FieldLabel>Text to Encrypt</FieldLabel>
+                    <FieldLabel className={css({ color: 'gray.300' })}>Text to Encrypt</FieldLabel>
                     <Textarea
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
@@ -361,7 +440,7 @@ export default function EncryptionToolPage() {
 
                 {/* Password Input */}
                 <Field>
-                  <FieldLabel>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'gray.300' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -414,7 +493,7 @@ export default function EncryptionToolPage() {
                         {passwordStrength.suggestions.map((suggestion) => (
                           <p
                             key={suggestion}
-                            className={css({ fontSize: 'xs', color: 'gray.600' })}
+                            className={css({ fontSize: 'xs', color: 'gray.400' })}
                           >
                             • {suggestion}
                           </p>
@@ -522,11 +601,24 @@ export default function EncryptionToolPage() {
               </div>
             </CardContent>
           </Card>
-        )}
+        </motion.div>
+      )}
 
-        {/* File Mode */}
-        {mode === 'file' && (
-          <Card>
+      {/* File Mode */}
+      {mode === 'file' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'indigo.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
             <CardContent className={css({ pt: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 {/* Action Selection */}
@@ -573,7 +665,7 @@ export default function EncryptionToolPage() {
 
                 {/* Password Input */}
                 <Field>
-                  <FieldLabel>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'gray.300' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -707,15 +799,28 @@ export default function EncryptionToolPage() {
               </div>
             </CardContent>
           </Card>
-        )}
+        </motion.div>
+      )}
 
-        {/* Link Decryption Mode */}
-        {mode === 'link' && (
-          <Card>
+      {/* Link Decryption Mode */}
+      {mode === 'link' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'indigo.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
             <CardContent className={css({ pt: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 <Field>
-                  <FieldLabel>Encrypted Link</FieldLabel>
+                  <FieldLabel className={css({ color: 'gray.300' })}>Encrypted Link</FieldLabel>
                   <Textarea
                     value={encryptedLink}
                     onChange={(e) => setEncryptedLink(e.target.value)}
@@ -725,7 +830,7 @@ export default function EncryptionToolPage() {
                 </Field>
 
                 <Field>
-                  <FieldLabel>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'gray.300' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -809,18 +914,31 @@ export default function EncryptionToolPage() {
               </div>
             </CardContent>
           </Card>
-        )}
+        </motion.div>
+      )}
 
-        {/* Info Section */}
-        <Card>
+      {/* Info Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'indigo.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
           <CardHeader>
-            <CardTitle>Security Features</CardTitle>
+            <CardTitle className={css({ color: 'gray.200' })}>Security Features</CardTitle>
           </CardHeader>
           <CardContent>
             <ul
               className={css({
                 fontSize: 'sm',
-                color: 'gray.600',
+                color: 'gray.400',
                 pl: 5,
                 display: 'flex',
                 flexDir: 'column',
@@ -836,10 +954,44 @@ export default function EncryptionToolPage() {
             </ul>
           </CardContent>
         </Card>
+      </motion.div>
 
-        {/* Affiliate Suggestions */}
-        <AffiliateSuggestion tool="encryption-tool" variant="banner" />
-      </div>
-    </div>
+      {/* Pro Tips */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'amber.500/20',
+            bg: 'amber.500/5',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardContent className={css({ py: '6' })}>
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+              <Sparkles className={css({ h: '6', w: '6', color: 'amber.400', flexShrink: '0' })} />
+              <div className={css({ spaceY: '2' })}>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'amber.300' })}>
+                  Pro Tips
+                </h3>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                  <li>• Use long, complex passwords with mixed characters for maximum security</li>
+                  <li>• Never share your password in the same channel as your encrypted data</li>
+                  <li>• Save encrypted data and password separately for better security</li>
+                  <li>• All encryption happens locally - your data never leaves your browser</li>
+                  <li>• Use the shareable link feature to securely send encrypted messages</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Affiliate Suggestions */}
+      <AffiliateSuggestion tool="encryption-tool" variant="banner" />
+    </main>
   )
 }

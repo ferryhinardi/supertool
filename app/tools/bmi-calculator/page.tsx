@@ -1,6 +1,7 @@
 'use client'
 
-import { Activity, Info, Ruler, Scale, TrendingUp } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Activity, Info, Ruler, Scale, Sparkles, TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -229,705 +230,822 @@ export default function BMICalculator() {
   return (
     <main
       className={css({
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: { base: '1rem', md: '2rem' },
+        mx: 'auto',
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      <div
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
         className={css({
-          marginBottom: '2rem',
+          textAlign: 'center',
+          spaceY: '4',
         })}
       >
         <div
           className={css({
             display: 'flex',
             alignItems: 'center',
-            gap: '0.75rem',
-            marginBottom: '0.5rem',
+            justifyContent: 'center',
+            gap: '3',
+            marginBottom: '4',
           })}
         >
           <Activity
             className={css({
               width: '2rem',
               height: '2rem',
-              color: 'green.500',
+              color: 'green.400',
             })}
           />
           <h1
             className={css({
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: 'gray.900',
-              _dark: { color: 'gray.100' },
+              fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
+              fontWeight: 'extrabold',
+              bgGradient: 'to-r',
+              gradientFrom: 'green.400',
+              gradientVia: 'emerald.400',
+              gradientTo: 'teal.400',
+              bgClip: 'text',
             })}
+            style={{
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
           >
             BMI & Health Calculator
           </h1>
         </div>
         <p
           className={css({
-            color: 'gray.600',
-            _dark: { color: 'gray.400' },
+            mx: 'auto',
+            maxW: '3xl',
+            fontSize: { base: 'base', sm: 'lg' },
+            color: 'gray.400',
           })}
         >
           Calculate your Body Mass Index and get personalized health insights
         </p>
-      </div>
+      </motion.div>
 
       <div
         className={css({
           display: 'grid',
           gridTemplateColumns: { base: '1fr', lg: '1fr 1fr' },
-          gap: '2rem',
+          gap: { base: '6', lg: '8' },
         })}
       >
         {/* Input Section */}
-        <div>
-          <Card
-            className={css({
-              padding: '1.5rem',
-              marginBottom: '1.5rem',
-            })}
+        <div className={css({ spaceY: '6' })}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <div
+            <Card
               className={css({
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '1.5rem',
+                padding: '6',
+                border: '1px solid',
+                borderColor: 'green.500/20',
+                bg: 'gray.900/50',
+                backdropFilter: 'blur(16px)',
+              })}
+            >
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '6',
+                })}
+              >
+                <h2
+                  className={css({
+                    fontSize: 'xl',
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                  })}
+                >
+                  Enter Your Details
+                </h2>
+                <Button onClick={handleUnitToggle} variant="outline" size="sm">
+                  {isMetric ? 'Metric' : 'Imperial'}
+                </Button>
+              </div>
+
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '6',
+                })}
+              >
+                <Field>
+                  <FieldLabel
+                    className={css({
+                      color: 'gray.300',
+                    })}
+                  >{`Weight (${isMetric ? 'kg' : 'lbs'})`}</FieldLabel>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      gap: '2',
+                      alignItems: 'center',
+                    })}
+                  >
+                    <Scale
+                      className={css({
+                        width: '5',
+                        height: '5',
+                        color: 'gray.500',
+                      })}
+                    />
+                    <Input
+                      type="number"
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                      placeholder={`Enter weight in ${isMetric ? 'kg' : 'lbs'}`}
+                      min="0"
+                      step="0.1"
+                    />
+                  </div>
+                </Field>
+
+                {isMetric ? (
+                  <Field>
+                    <FieldLabel
+                      className={css({
+                        color: 'gray.300',
+                      })}
+                    >
+                      Height (cm)
+                    </FieldLabel>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        gap: '2',
+                        alignItems: 'center',
+                      })}
+                    >
+                      <Ruler
+                        className={css({
+                          width: '5',
+                          height: '5',
+                          color: 'gray.500',
+                        })}
+                      />
+                      <Input
+                        type="number"
+                        value={height}
+                        onChange={(e) => setHeight(e.target.value)}
+                        placeholder="Enter height in cm"
+                        min="0"
+                        step="0.1"
+                      />
+                    </div>
+                  </Field>
+                ) : (
+                  <Field>
+                    <FieldLabel
+                      className={css({
+                        color: 'gray.300',
+                      })}
+                    >
+                      Height (feet & inches)
+                    </FieldLabel>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        gap: '2',
+                        alignItems: 'center',
+                      })}
+                    >
+                      <Ruler
+                        className={css({
+                          width: '5',
+                          height: '5',
+                          color: 'gray.500',
+                        })}
+                      />
+                      <Input
+                        type="number"
+                        value={heightFeet}
+                        onChange={(e) => setHeightFeet(e.target.value)}
+                        placeholder="Feet"
+                        min="0"
+                        step="1"
+                        className={css({ flex: '1' })}
+                      />
+                      <Input
+                        type="number"
+                        value={heightInches}
+                        onChange={(e) => setHeightInches(e.target.value)}
+                        placeholder="Inches"
+                        min="0"
+                        max="11"
+                        step="0.1"
+                        className={css({ flex: '1' })}
+                      />
+                    </div>
+                  </Field>
+                )}
+              </div>
+
+              <div
+                className={css({
+                  display: 'flex',
+                  gap: '3',
+                  marginTop: '6',
+                })}
+              >
+                <Button onClick={handleCalculate} className={css({ flex: '1' })}>
+                  Calculate BMI
+                </Button>
+                <Button onClick={handleReset} variant="outline">
+                  Reset
+                </Button>
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* BMI Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <Card
+              className={css({
+                padding: '6',
+                border: '1px solid',
+                borderColor: 'green.500/20',
+                bg: 'gray.900/50',
+                backdropFilter: 'blur(16px)',
               })}
             >
               <h2
                 className={css({
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  color: 'gray.900',
-                  _dark: { color: 'gray.100' },
+                  fontSize: 'xl',
+                  fontWeight: 'semibold',
+                  color: 'gray.100',
+                  marginBottom: '4',
                 })}
               >
-                Enter Your Details
+                BMI Classification Chart
               </h2>
-              <Button onClick={handleUnitToggle} variant="outline" size="sm">
-                {isMetric ? 'Metric' : 'Imperial'}
-              </Button>
-            </div>
 
-            <div
-              className={css({
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1.5rem',
-              })}
-            >
-              <Field>
-                <FieldLabel>{`Weight (${isMetric ? 'kg' : 'lbs'})`}</FieldLabel>
+              <div
+                className={css({
+                  marginBottom: '6',
+                })}
+              >
                 <div
                   className={css({
+                    height: '8',
+                    borderRadius: 'lg',
+                    overflow: 'hidden',
                     display: 'flex',
-                    gap: '0.5rem',
-                    alignItems: 'center',
+                    marginBottom: '2',
                   })}
                 >
-                  <Scale
+                  <div
                     className={css({
-                      width: '1.25rem',
-                      height: '1.25rem',
-                      color: 'gray.500',
+                      flex: '1',
+                      backgroundColor: 'blue.400',
                     })}
                   />
-                  <Input
-                    type="number"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                    placeholder={`Enter weight in ${isMetric ? 'kg' : 'lbs'}`}
-                    min="0"
-                    step="0.1"
+                  <div
+                    className={css({
+                      flex: '1',
+                      backgroundColor: 'green.400',
+                    })}
+                  />
+                  <div
+                    className={css({
+                      flex: '1',
+                      backgroundColor: 'yellow.400',
+                    })}
+                  />
+                  <div
+                    className={css({
+                      flex: '1',
+                      backgroundColor: 'red.400',
+                    })}
                   />
                 </div>
-              </Field>
 
-              {isMetric ? (
-                <Field>
-                  <FieldLabel>Height (cm)</FieldLabel>
+                {result && (
                   <div
                     className={css({
-                      display: 'flex',
-                      gap: '0.5rem',
-                      alignItems: 'center',
+                      position: 'relative',
+                      height: '8',
                     })}
                   >
-                    <Ruler
+                    <div
                       className={css({
-                        width: '1.25rem',
-                        height: '1.25rem',
-                        color: 'gray.500',
+                        position: 'absolute',
+                        top: '0',
+                        transform: 'translateX(-50%)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
                       })}
-                    />
-                    <Input
-                      type="number"
-                      value={height}
-                      onChange={(e) => setHeight(e.target.value)}
-                      placeholder="Enter height in cm"
-                      min="0"
-                      step="0.1"
-                    />
-                  </div>
-                </Field>
-              ) : (
-                <Field>
-                  <FieldLabel>Height (feet & inches)</FieldLabel>
-                  <div
-                    className={css({
-                      display: 'flex',
-                      gap: '0.5rem',
-                      alignItems: 'center',
-                    })}
-                  >
-                    <Ruler
-                      className={css({
-                        width: '1.25rem',
-                        height: '1.25rem',
-                        color: 'gray.500',
-                      })}
-                    />
-                    <Input
-                      type="number"
-                      value={heightFeet}
-                      onChange={(e) => setHeightFeet(e.target.value)}
-                      placeholder="Feet"
-                      min="0"
-                      step="1"
-                      className={css({ flex: '1' })}
-                    />
-                    <Input
-                      type="number"
-                      value={heightInches}
-                      onChange={(e) => setHeightInches(e.target.value)}
-                      placeholder="Inches"
-                      min="0"
-                      max="11"
-                      step="0.1"
-                      className={css({ flex: '1' })}
-                    />
-                  </div>
-                </Field>
-              )}
-            </div>
-
-            <div
-              className={css({
-                display: 'flex',
-                gap: '0.75rem',
-                marginTop: '1.5rem',
-              })}
-            >
-              <Button onClick={handleCalculate} className={css({ flex: '1' })}>
-                Calculate BMI
-              </Button>
-              <Button onClick={handleReset} variant="outline">
-                Reset
-              </Button>
-            </div>
-          </Card>
-
-          {/* BMI Chart */}
-          <Card
-            className={css({
-              padding: '1.5rem',
-            })}
-          >
-            <h2
-              className={css({
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: 'gray.900',
-                _dark: { color: 'gray.100' },
-                marginBottom: '1rem',
-              })}
-            >
-              BMI Classification Chart
-            </h2>
-
-            <div
-              className={css({
-                marginBottom: '1.5rem',
-              })}
-            >
-              <div
-                className={css({
-                  height: '2rem',
-                  borderRadius: '0.5rem',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  marginBottom: '0.5rem',
-                })}
-              >
-                <div
-                  className={css({
-                    flex: '1',
-                    backgroundColor: 'blue.400',
-                  })}
-                />
-                <div
-                  className={css({
-                    flex: '1',
-                    backgroundColor: 'green.400',
-                  })}
-                />
-                <div
-                  className={css({
-                    flex: '1',
-                    backgroundColor: 'yellow.400',
-                  })}
-                />
-                <div
-                  className={css({
-                    flex: '1',
-                    backgroundColor: 'red.400',
-                  })}
-                />
-              </div>
-
-              {result && (
-                <div
-                  className={css({
-                    position: 'relative',
-                    height: '2rem',
-                  })}
-                >
-                  <div
-                    className={css({
-                      position: 'absolute',
-                      top: '0',
-                      transform: 'translateX(-50%)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    })}
-                    style={{ left: getBMIPosition(result.bmi) }}
-                  >
-                    <TrendingUp
-                      className={css({
-                        width: '1.5rem',
-                        height: '1.5rem',
-                        color: 'gray.900',
-                        _dark: { color: 'gray.100' },
-                      })}
-                    />
-                    <span
-                      className={css({
-                        fontSize: '0.875rem',
-                        fontWeight: '600',
-                        color: 'gray.900',
-                        _dark: { color: 'gray.100' },
-                      })}
+                      style={{ left: getBMIPosition(result.bmi) }}
                     >
-                      {result.bmi.toFixed(1)}
-                    </span>
+                      <TrendingUp
+                        className={css({
+                          width: '6',
+                          height: '6',
+                          color: 'gray.100',
+                        })}
+                      />
+                      <span
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'semibold',
+                          color: 'gray.100',
+                        })}
+                      >
+                        {result.bmi.toFixed(1)}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            <div
-              className={css({
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.5rem',
-                fontSize: '0.875rem',
-              })}
-            >
               <div
                 className={css({
                   display: 'flex',
-                  justifyContent: 'space-between',
-                })}
-              >
-                <span
-                  className={css({
-                    color: 'gray.600',
-                    _dark: { color: 'gray.400' },
-                  })}
-                >
-                  Underweight
-                </span>
-                <span
-                  className={css({
-                    color: 'gray.900',
-                    _dark: { color: 'gray.100' },
-                  })}
-                >
-                  &lt; 18.5
-                </span>
-              </div>
-              <div
-                className={css({
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                })}
-              >
-                <span
-                  className={css({
-                    color: 'gray.600',
-                    _dark: { color: 'gray.400' },
-                  })}
-                >
-                  Normal Weight
-                </span>
-                <span
-                  className={css({
-                    color: 'gray.900',
-                    _dark: { color: 'gray.100' },
-                  })}
-                >
-                  18.5 - 24.9
-                </span>
-              </div>
-              <div
-                className={css({
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                })}
-              >
-                <span
-                  className={css({
-                    color: 'gray.600',
-                    _dark: { color: 'gray.400' },
-                  })}
-                >
-                  Overweight
-                </span>
-                <span
-                  className={css({
-                    color: 'gray.900',
-                    _dark: { color: 'gray.100' },
-                  })}
-                >
-                  25 - 29.9
-                </span>
-              </div>
-              <div
-                className={css({
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                })}
-              >
-                <span
-                  className={css({
-                    color: 'gray.600',
-                    _dark: { color: 'gray.400' },
-                  })}
-                >
-                  Obese
-                </span>
-                <span
-                  className={css({
-                    color: 'gray.900',
-                    _dark: { color: 'gray.100' },
-                  })}
-                >
-                  ≥ 30
-                </span>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Results Section */}
-        <div>
-          {result ? (
-            <>
-              <Card
-                className={css({
-                  padding: '1.5rem',
-                  marginBottom: '1.5rem',
+                  flexDirection: 'column',
+                  gap: '2',
+                  fontSize: 'sm',
                 })}
               >
                 <div
                   className={css({
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '1rem',
                   })}
                 >
-                  <h2
+                  <span
                     className={css({
-                      fontSize: '1.25rem',
-                      fontWeight: '600',
-                      color: 'gray.900',
-                      _dark: { color: 'gray.100' },
+                      color: 'gray.300',
                     })}
                   >
-                    Your Results
-                  </h2>
-                  <Button onClick={handleExport} variant="outline" size="sm">
-                    Export
-                  </Button>
+                    Underweight
+                  </span>
+                  <span
+                    className={css({
+                      color: 'gray.200',
+                      fontWeight: 'medium',
+                    })}
+                  >
+                    &lt; 18.5
+                  </span>
                 </div>
-
                 <div
                   className={css({
-                    textAlign: 'center',
-                    padding: '2rem 0',
-                    borderBottom: '1px solid',
-                    borderColor: 'gray.200',
-                    _dark: { borderColor: 'gray.700' },
-                    marginBottom: '1.5rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
                   })}
                 >
-                  <div
+                  <span
                     className={css({
-                      fontSize: '3rem',
-                      fontWeight: 'bold',
-                      color: 'gray.900',
-                      _dark: { color: 'gray.100' },
-                      marginBottom: '0.5rem',
+                      color: 'gray.300',
                     })}
                   >
-                    {result.bmi.toFixed(1)}
-                  </div>
-                  <Badge
+                    Normal Weight
+                  </span>
+                  <span
                     className={css({
-                      fontSize: '1rem',
-                      padding: '0.5rem 1rem',
+                      color: 'gray.200',
+                      fontWeight: 'medium',
                     })}
                   >
-                    {result.category}
-                  </Badge>
+                    18.5 - 24.9
+                  </span>
                 </div>
-
                 <div
                   className={css({
-                    marginBottom: '1.5rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
                   })}
                 >
-                  <h3
+                  <span
                     className={css({
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      color: 'gray.900',
-                      _dark: { color: 'gray.100' },
-                      marginBottom: '0.5rem',
+                      color: 'gray.300',
                     })}
                   >
-                    Ideal Weight Range
-                  </h3>
-                  <p
+                    Overweight
+                  </span>
+                  <span
                     className={css({
-                      fontSize: '1.25rem',
-                      color: 'green.600',
-                      _dark: { color: 'green.400' },
-                      fontWeight: '600',
+                      color: 'gray.200',
+                      fontWeight: 'medium',
                     })}
                   >
-                    {result.idealWeightRange[0].toFixed(1)} -{' '}
-                    {result.idealWeightRange[1].toFixed(1)} {isMetric ? 'kg' : 'lbs'}
-                  </p>
-                  <p
-                    className={css({
-                      fontSize: '0.875rem',
-                      color: 'gray.600',
-                      _dark: { color: 'gray.400' },
-                      marginTop: '0.25rem',
-                    })}
-                  >
-                    For your height of {isMetric ? `${height}cm` : `${heightFeet}'${heightInches}"`}
-                  </p>
+                    25 - 29.9
+                  </span>
                 </div>
-              </Card>
+                <div
+                  className={css({
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  })}
+                >
+                  <span
+                    className={css({
+                      color: 'gray.300',
+                    })}
+                  >
+                    Obese
+                  </span>
+                  <span
+                    className={css({
+                      color: 'gray.200',
+                      fontWeight: 'medium',
+                    })}
+                  >
+                    ≥ 30
+                  </span>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
 
-              <Card
-                className={css({
-                  padding: '1.5rem',
-                })}
+        {/* Results Section */}
+        <div className={css({ spaceY: '6' })}>
+          {result ? (
+            <>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
               >
-                <div
-                  className={css({
-                    display: 'flex',
-                    gap: '0.5rem',
-                    alignItems: 'flex-start',
-                    marginBottom: '1rem',
-                  })}
-                >
-                  <Info
-                    className={css({
-                      width: '1.25rem',
-                      height: '1.25rem',
-                      color: 'blue.500',
-                      flexShrink: '0',
-                      marginTop: '0.25rem',
-                    })}
-                  />
-                  <h2
-                    className={css({
-                      fontSize: '1.25rem',
-                      fontWeight: '600',
-                      color: 'gray.900',
-                      _dark: { color: 'gray.100' },
-                    })}
-                  >
-                    Health Tips & Recommendations
-                  </h2>
-                </div>
-
-                <ul
-                  className={css({
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.75rem',
-                    paddingLeft: '1.5rem',
-                  })}
-                >
-                  {result.healthTips.map((tip) => (
-                    <li
-                      key={tip}
-                      className={css({
-                        color: 'gray.700',
-                        _dark: { color: 'gray.300' },
-                        lineHeight: '1.6',
-                      })}
-                    >
-                      {tip}
-                    </li>
-                  ))}
-                </ul>
-
-                <div
-                  className={css({
-                    marginTop: '1.5rem',
-                    padding: '1rem',
-                    backgroundColor: 'blue.50',
-                    borderRadius: '0.5rem',
-                    fontSize: '0.875rem',
-                    color: 'gray.700',
-                    _dark: { backgroundColor: 'blue.900/20', color: 'gray.300' },
-                  })}
-                >
-                  <strong>Note:</strong> BMI is a screening tool and does not diagnose health
-                  conditions. Factors like muscle mass, bone density, and overall body composition
-                  are not considered. Always consult with a healthcare professional for personalized
-                  health advice.
-                </div>
-              </Card>
-
-              {history.length > 0 && (
                 <Card
                   className={css({
-                    padding: '1.5rem',
-                    marginTop: '1.5rem',
+                    padding: '6',
+                    border: '1px solid',
+                    borderColor: 'green.500/20',
+                    bg: 'gray.900/50',
+                    backdropFilter: 'blur(16px)',
                   })}
                 >
-                  <h2
-                    className={css({
-                      fontSize: '1.25rem',
-                      fontWeight: '600',
-                      color: 'gray.900',
-                      _dark: { color: 'gray.100' },
-                      marginBottom: '1rem',
-                    })}
-                  >
-                    Recent History
-                  </h2>
-
                   <div
                     className={css({
                       display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.75rem',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '4',
                     })}
                   >
-                    {history.slice(0, 5).map((entry) => (
-                      <div
-                        key={entry.date}
-                        className={css({
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          padding: '0.75rem',
-                          backgroundColor: 'gray.50',
-                          _dark: { backgroundColor: 'gray.800' },
-                          borderRadius: '0.375rem',
-                        })}
-                      >
-                        <div>
-                          <div
-                            className={css({
-                              fontSize: '0.875rem',
-                              color: 'gray.600',
-                              _dark: { color: 'gray.400' },
-                            })}
-                          >
-                            {new Date(entry.date).toLocaleDateString()}
-                          </div>
-                          <div
-                            className={css({
-                              fontSize: '0.875rem',
-                              color: 'gray.700',
-                              _dark: { color: 'gray.300' },
-                            })}
-                          >
-                            {entry.weight}
-                            {entry.isMetric ? 'kg' : 'lbs'} • {entry.height}
-                            {entry.isMetric ? 'cm' : '"'}
-                          </div>
-                        </div>
-                        <div
-                          className={css({
-                            fontSize: '1.25rem',
-                            fontWeight: '600',
-                            color: 'gray.900',
-                            _dark: { color: 'gray.100' },
-                          })}
-                        >
-                          {entry.bmi.toFixed(1)}
-                        </div>
-                      </div>
-                    ))}
+                    <h2
+                      className={css({
+                        fontSize: 'xl',
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                      })}
+                    >
+                      Your Results
+                    </h2>
+                    <Button onClick={handleExport} variant="outline" size="sm">
+                      Export
+                    </Button>
+                  </div>
+
+                  <div
+                    className={css({
+                      textAlign: 'center',
+                      padding: '8 0',
+                      borderBottom: '1px solid',
+                      borderColor: 'gray.700',
+                      marginBottom: '6',
+                    })}
+                  >
+                    <div
+                      className={css({
+                        fontSize: '5xl',
+                        fontWeight: 'bold',
+                        color: 'gray.100',
+                        marginBottom: '2',
+                      })}
+                    >
+                      {result.bmi.toFixed(1)}
+                    </div>
+                    <Badge
+                      className={css({
+                        fontSize: 'base',
+                        padding: '2 4',
+                      })}
+                    >
+                      {result.category}
+                    </Badge>
+                  </div>
+
+                  <div
+                    className={css({
+                      marginBottom: '6',
+                    })}
+                  >
+                    <h3
+                      className={css({
+                        fontSize: 'base',
+                        fontWeight: 'semibold',
+                        color: 'gray.200',
+                        marginBottom: '2',
+                      })}
+                    >
+                      Ideal Weight Range
+                    </h3>
+                    <p
+                      className={css({
+                        fontSize: 'xl',
+                        color: 'green.400',
+                        fontWeight: 'semibold',
+                      })}
+                    >
+                      {result.idealWeightRange[0].toFixed(1)} -{' '}
+                      {result.idealWeightRange[1].toFixed(1)} {isMetric ? 'kg' : 'lbs'}
+                    </p>
+                    <p
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                        marginTop: '1',
+                      })}
+                    >
+                      For your height of{' '}
+                      {isMetric ? `${height}cm` : `${heightFeet}'${heightInches}"`}
+                    </p>
                   </div>
                 </Card>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                <Card
+                  className={css({
+                    padding: '6',
+                    border: '1px solid',
+                    borderColor: 'green.500/20',
+                    bg: 'gray.900/50',
+                    backdropFilter: 'blur(16px)',
+                  })}
+                >
+                  <div
+                    className={css({
+                      display: 'flex',
+                      gap: '2',
+                      alignItems: 'flex-start',
+                      marginBottom: '4',
+                    })}
+                  >
+                    <Info
+                      className={css({
+                        width: '5',
+                        height: '5',
+                        color: 'blue.400',
+                        flexShrink: '0',
+                        marginTop: '1',
+                      })}
+                    />
+                    <h2
+                      className={css({
+                        fontSize: 'xl',
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                      })}
+                    >
+                      Health Tips & Recommendations
+                    </h2>
+                  </div>
+
+                  <ul
+                    className={css({
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '3',
+                      paddingLeft: '6',
+                    })}
+                  >
+                    {result.healthTips.map((tip) => (
+                      <li
+                        key={tip}
+                        className={css({
+                          color: 'gray.400',
+                          lineHeight: '1.6',
+                        })}
+                      >
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div
+                    className={css({
+                      marginTop: '6',
+                      padding: '4',
+                      backgroundColor: 'blue.500/10',
+                      border: '1px solid',
+                      borderColor: 'blue.500/20',
+                      borderRadius: 'lg',
+                      fontSize: 'sm',
+                      color: 'gray.400',
+                    })}
+                  >
+                    <strong className={css({ color: 'gray.300' })}>Note:</strong> BMI is a screening
+                    tool and does not diagnose health conditions. Factors like muscle mass, bone
+                    density, and overall body composition are not considered. Always consult with a
+                    healthcare professional for personalized health advice.
+                  </div>
+                </Card>
+              </motion.div>
+
+              {history.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                >
+                  <Card
+                    className={css({
+                      padding: '6',
+                      border: '1px solid',
+                      borderColor: 'green.500/20',
+                      bg: 'gray.900/50',
+                      backdropFilter: 'blur(16px)',
+                    })}
+                  >
+                    <h2
+                      className={css({
+                        fontSize: 'xl',
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                        marginBottom: '4',
+                      })}
+                    >
+                      Recent History
+                    </h2>
+
+                    <div
+                      className={css({
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '3',
+                      })}
+                    >
+                      {history.slice(0, 5).map((entry) => (
+                        <div
+                          key={entry.date}
+                          className={css({
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '3',
+                            backgroundColor: 'gray.800/50',
+                            borderRadius: 'lg',
+                          })}
+                        >
+                          <div>
+                            <div
+                              className={css({
+                                fontSize: 'sm',
+                                color: 'gray.400',
+                              })}
+                            >
+                              {new Date(entry.date).toLocaleDateString()}
+                            </div>
+                            <div
+                              className={css({
+                                fontSize: 'sm',
+                                color: 'gray.300',
+                              })}
+                            >
+                              {entry.weight}
+                              {entry.isMetric ? 'kg' : 'lbs'} • {entry.height}
+                              {entry.isMetric ? 'cm' : '"'}
+                            </div>
+                          </div>
+                          <div
+                            className={css({
+                              fontSize: 'xl',
+                              fontWeight: 'semibold',
+                              color: 'gray.100',
+                            })}
+                          >
+                            {entry.bmi.toFixed(1)}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </motion.div>
               )}
             </>
           ) : (
-            <Card
-              className={css({
-                padding: '3rem 1.5rem',
-                textAlign: 'center',
-              })}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
             >
-              <Activity
+              <Card
                 className={css({
-                  width: '4rem',
-                  height: '4rem',
-                  color: 'gray.300',
-                  _dark: { color: 'gray.600' },
-                  margin: '0 auto 1rem',
-                })}
-              />
-              <h3
-                className={css({
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  color: 'gray.900',
-                  _dark: { color: 'gray.100' },
-                  marginBottom: '0.5rem',
+                  padding: '12 6',
+                  textAlign: 'center',
+                  border: '1px solid',
+                  borderColor: 'green.500/20',
+                  bg: 'gray.900/50',
+                  backdropFilter: 'blur(16px)',
                 })}
               >
-                Calculate Your BMI
-              </h3>
-              <p
-                className={css({
-                  color: 'gray.600',
-                  _dark: { color: 'gray.400' },
-                })}
-              >
-                Enter your weight and height to get started
-              </p>
-            </Card>
+                <Activity
+                  className={css({
+                    width: '16',
+                    height: '16',
+                    color: 'gray.600',
+                    margin: '0 auto 4',
+                  })}
+                />
+                <h3
+                  className={css({
+                    fontSize: 'xl',
+                    fontWeight: 'semibold',
+                    color: 'gray.200',
+                    marginBottom: '2',
+                  })}
+                >
+                  Calculate Your BMI
+                </h3>
+                <p
+                  className={css({
+                    color: 'gray.400',
+                  })}
+                >
+                  Enter your weight and height to get started
+                </p>
+              </Card>
+            </motion.div>
           )}
         </div>
       </div>
+
+      {/* Pro Tips Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'amber.500/20',
+            bg: 'amber.500/5',
+            backdropFilter: 'blur(16px)',
+            padding: '6',
+          })}
+        >
+          <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+            <Sparkles
+              className={css({
+                h: '6',
+                w: '6',
+                color: 'amber.400',
+                flexShrink: '0',
+              })}
+            />
+            <div className={css({ spaceY: '2' })}>
+              <h3
+                className={css({
+                  fontSize: 'lg',
+                  fontWeight: 'semibold',
+                  color: 'amber.300',
+                })}
+              >
+                Pro Tips
+              </h3>
+              <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <li>• Switch between metric and imperial units with one click</li>
+                <li>• Your calculation history is automatically saved in your browser</li>
+                <li>• Export your results as JSON for health tracking apps</li>
+                <li>
+                  • BMI is most accurate for adults; consult healthcare providers for children and
+                  athletes
+                </li>
+              </ul>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
     </main>
   )
 }

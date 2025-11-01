@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { CheckCircle, Code, Copy, Download, Sparkles, XCircle } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
@@ -203,7 +204,12 @@ function JSONSchemaContent() {
         })}
       >
         {/* Header */}
-        <div className={css({ textAlign: 'center', spaceY: '4' })}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className={css({ textAlign: 'center', spaceY: '4' })}
+        >
           <div
             className={css({
               display: 'inline-flex',
@@ -253,229 +259,244 @@ function JSONSchemaContent() {
             Automatically generate JSON Schema from sample JSON data with type inference, format
             detection, and validation
           </p>
-        </div>
+        </motion.div>
 
         {/* Stats Bar */}
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
-          })}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
         >
-          <CardContent className={css({ py: '4' })}>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '3',
-              })}
-            >
-              <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-                <Badge
-                  className={css({
-                    bg: 'purple.500/20',
-                    color: 'purple.300',
-                    border: '1px solid',
-                    borderColor: 'purple.500/30',
-                  })}
-                >
-                  {stats.properties} Properties
-                </Badge>
-                <Badge
-                  className={css({
-                    bg: 'blue.500/20',
-                    color: 'blue.300',
-                    border: '1px solid',
-                    borderColor: 'blue.500/30',
-                  })}
-                >
-                  Depth: {stats.depth}
-                </Badge>
-                <Badge
-                  className={css({
-                    bg: 'cyan.500/20',
-                    color: 'cyan.300',
-                    border: '1px solid',
-                    borderColor: 'cyan.500/30',
-                  })}
-                >
-                  {stats.required} Required
-                </Badge>
-              </div>
-
-              <Badge
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'purple.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '4' })}>
+              <div
                 className={css({
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '2',
-                  bg: result.isValid ? 'green.500/20' : 'red.500/20',
-                  color: result.isValid ? 'green.300' : 'red.300',
-                  border: '1px solid',
-                  borderColor: result.isValid ? 'green.500/30' : 'red.500/30',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '3',
                 })}
               >
-                {result.isValid ? (
-                  <>
-                    <CheckCircle className={css({ h: '4', w: '4' })} />
-                    Valid JSON
-                  </>
-                ) : (
-                  <>
-                    <XCircle className={css({ h: '4', w: '4' })} />
-                    Invalid JSON
-                  </>
-                )}
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+                <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+                  <Badge
+                    className={css({
+                      bg: 'purple.500/20',
+                      color: 'purple.300',
+                      border: '1px solid',
+                      borderColor: 'purple.500/30',
+                    })}
+                  >
+                    {stats.properties} Properties
+                  </Badge>
+                  <Badge
+                    className={css({
+                      bg: 'blue.500/20',
+                      color: 'blue.300',
+                      border: '1px solid',
+                      borderColor: 'blue.500/30',
+                    })}
+                  >
+                    Depth: {stats.depth}
+                  </Badge>
+                  <Badge
+                    className={css({
+                      bg: 'cyan.500/20',
+                      color: 'cyan.300',
+                      border: '1px solid',
+                      borderColor: 'cyan.500/30',
+                    })}
+                  >
+                    {stats.required} Required
+                  </Badge>
+                </div>
+
+                <Badge
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                    bg: result.isValid ? 'green.500/20' : 'red.500/20',
+                    color: result.isValid ? 'green.300' : 'red.300',
+                    border: '1px solid',
+                    borderColor: result.isValid ? 'green.500/30' : 'red.500/30',
+                  })}
+                >
+                  {result.isValid ? (
+                    <>
+                      <CheckCircle className={css({ h: '4', w: '4' })} />
+                      Valid JSON
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className={css({ h: '4', w: '4' })} />
+                      Invalid JSON
+                    </>
+                  )}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Options */}
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
-          })}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <CardHeader>
-            <CardTitle>Schema Options</CardTitle>
-            <CardDescription>Customize schema generation settings</CardDescription>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '4' })}>
-            <div
-              className={css({
-                display: 'grid',
-                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
-                gap: '4',
-              })}
-            >
-              <div className={css({ spaceY: '2' })}>
-                <label
-                  htmlFor="schema-title"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                >
-                  Schema Title (Optional)
-                </label>
-                <input
-                  id="schema-title"
-                  type="text"
-                  value={schemaTitle}
-                  onChange={(e) => setSchemaTitle(e.target.value)}
-                  placeholder="My Schema"
-                  className={css({
-                    w: 'full',
-                    h: '10',
-                    rounded: 'lg',
-                    border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
-                    px: '4',
-                    color: 'gray.200',
-                    fontSize: 'sm',
-                    transition: 'all 0.2s',
-                    _focus: {
-                      outline: 'none',
-                      borderColor: 'purple.500',
-                      ring: '2px',
-                      ringColor: 'purple.500/20',
-                    },
-                  })}
-                />
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'purple.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <CardTitle>Schema Options</CardTitle>
+              <CardDescription>Customize schema generation settings</CardDescription>
+            </CardHeader>
+            <CardContent className={css({ spaceY: '4' })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                  gap: '4',
+                })}
+              >
+                <div className={css({ spaceY: '2' })}>
+                  <label
+                    htmlFor="schema-title"
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  >
+                    Schema Title (Optional)
+                  </label>
+                  <input
+                    id="schema-title"
+                    type="text"
+                    value={schemaTitle}
+                    onChange={(e) => setSchemaTitle(e.target.value)}
+                    placeholder="My Schema"
+                    className={css({
+                      w: 'full',
+                      h: '10',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      bg: 'gray.800/50',
+                      px: '4',
+                      color: 'gray.200',
+                      fontSize: 'sm',
+                      transition: 'all 0.2s',
+                      _focus: {
+                        outline: 'none',
+                        borderColor: 'purple.500',
+                        ring: '2px',
+                        ringColor: 'purple.500/20',
+                      },
+                    })}
+                  />
+                </div>
+
+                <div className={css({ spaceY: '2' })}>
+                  <label
+                    htmlFor="schema-description"
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  >
+                    Schema Description (Optional)
+                  </label>
+                  <input
+                    id="schema-description"
+                    type="text"
+                    value={schemaDescription}
+                    onChange={(e) => setSchemaDescription(e.target.value)}
+                    placeholder="Schema description"
+                    className={css({
+                      w: 'full',
+                      h: '10',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      bg: 'gray.800/50',
+                      px: '4',
+                      color: 'gray.200',
+                      fontSize: 'sm',
+                      transition: 'all 0.2s',
+                      _focus: {
+                        outline: 'none',
+                        borderColor: 'purple.500',
+                        ring: '2px',
+                        ringColor: 'purple.500/20',
+                      },
+                    })}
+                  />
+                </div>
               </div>
 
-              <div className={css({ spaceY: '2' })}>
-                <label
-                  htmlFor="schema-description"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                >
-                  Schema Description (Optional)
+              <div
+                className={css({
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '4',
+                })}
+              >
+                <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <input
+                    type="checkbox"
+                    checked={detectRequired}
+                    onChange={(e) => setDetectRequired(e.target.checked)}
+                    className={css({
+                      h: '4',
+                      w: '4',
+                      rounded: 'sm',
+                      border: '1px solid',
+                      borderColor: 'gray.600',
+                      bg: 'gray.800',
+                      cursor: 'pointer',
+                    })}
+                  />
+                  <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    Detect Required Fields
+                  </span>
                 </label>
-                <input
-                  id="schema-description"
-                  type="text"
-                  value={schemaDescription}
-                  onChange={(e) => setSchemaDescription(e.target.value)}
-                  placeholder="Schema description"
-                  className={css({
-                    w: 'full',
-                    h: '10',
-                    rounded: 'lg',
-                    border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
-                    px: '4',
-                    color: 'gray.200',
-                    fontSize: 'sm',
-                    transition: 'all 0.2s',
-                    _focus: {
-                      outline: 'none',
-                      borderColor: 'purple.500',
-                      ring: '2px',
-                      ringColor: 'purple.500/20',
-                    },
-                  })}
-                />
+
+                <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <input
+                    type="checkbox"
+                    checked={detectFormats}
+                    onChange={(e) => setDetectFormats(e.target.checked)}
+                    className={css({
+                      h: '4',
+                      w: '4',
+                      rounded: 'sm',
+                      border: '1px solid',
+                      borderColor: 'gray.600',
+                      bg: 'gray.800',
+                      cursor: 'pointer',
+                    })}
+                  />
+                  <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    Detect String Formats
+                  </span>
+                </label>
               </div>
-            </div>
-
-            <div
-              className={css({
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '4',
-              })}
-            >
-              <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <input
-                  type="checkbox"
-                  checked={detectRequired}
-                  onChange={(e) => setDetectRequired(e.target.checked)}
-                  className={css({
-                    h: '4',
-                    w: '4',
-                    rounded: 'sm',
-                    border: '1px solid',
-                    borderColor: 'gray.600',
-                    bg: 'gray.800',
-                    cursor: 'pointer',
-                  })}
-                />
-                <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                  Detect Required Fields
-                </span>
-              </label>
-
-              <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <input
-                  type="checkbox"
-                  checked={detectFormats}
-                  onChange={(e) => setDetectFormats(e.target.checked)}
-                  className={css({
-                    h: '4',
-                    w: '4',
-                    rounded: 'sm',
-                    border: '1px solid',
-                    borderColor: 'gray.600',
-                    bg: 'gray.800',
-                    cursor: 'pointer',
-                  })}
-                />
-                <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                  Detect String Formats
-                </span>
-              </label>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Input/Output Editors */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
           className={css({
             display: 'grid',
             gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
@@ -550,119 +571,133 @@ function JSONSchemaContent() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
 
         {/* Action Buttons */}
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
-          })}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
         >
-          <CardContent className={css({ py: '4' })}>
-            <div
-              className={css({
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '3',
-              })}
-            >
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleGenerate}
-                    className={css({
-                      gap: '2',
-                      bg: 'purple.600',
-                      color: 'white',
-                      _hover: { bg: 'purple.700' },
-                    })}
-                  >
-                    <Sparkles className={css({ h: '4', w: '4' })} />
-                    Generate Schema
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Generate JSON Schema from input</p>
-                </TooltipContent>
-              </Tooltip>
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'purple.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '4' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '3',
+                })}
+              >
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleGenerate}
+                      className={css({
+                        gap: '2',
+                        bg: 'purple.600',
+                        color: 'white',
+                        _hover: { bg: 'purple.700' },
+                      })}
+                    >
+                      <Sparkles className={css({ h: '4', w: '4' })} />
+                      Generate Schema
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Generate JSON Schema from input</p>
+                  </TooltipContent>
+                </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleCopy}
-                    disabled={!result.isValid}
-                    className={css({
-                      gap: '2',
-                      bg: 'gray.800',
-                      color: 'gray.300',
-                      _hover: { bg: 'gray.700' },
-                      _disabled: { opacity: '0.5', cursor: 'not-allowed' },
-                    })}
-                  >
-                    <Copy className={css({ h: '4', w: '4' })} />
-                    Copy Schema
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Copy schema to clipboard</p>
-                </TooltipContent>
-              </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleCopy}
+                      disabled={!result.isValid}
+                      className={css({
+                        gap: '2',
+                        bg: 'gray.800',
+                        color: 'gray.300',
+                        _hover: { bg: 'gray.700' },
+                        _disabled: { opacity: '0.5', cursor: 'not-allowed' },
+                      })}
+                    >
+                      <Copy className={css({ h: '4', w: '4' })} />
+                      Copy Schema
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Copy schema to clipboard</p>
+                  </TooltipContent>
+                </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleDownload}
-                    disabled={!result.isValid}
-                    className={css({
-                      gap: '2',
-                      bg: 'gray.800',
-                      color: 'gray.300',
-                      _hover: { bg: 'gray.700' },
-                      _disabled: { opacity: '0.5', cursor: 'not-allowed' },
-                    })}
-                  >
-                    <Download className={css({ h: '4', w: '4' })} />
-                    Download
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Download as .json file</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </CardContent>
-        </Card>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={handleDownload}
+                      disabled={!result.isValid}
+                      className={css({
+                        gap: '2',
+                        bg: 'gray.800',
+                        color: 'gray.300',
+                        _hover: { bg: 'gray.700' },
+                        _disabled: { opacity: '0.5', cursor: 'not-allowed' },
+                      })}
+                    >
+                      <Download className={css({ h: '4', w: '4' })} />
+                      Download
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Download as .json file</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Info Card */}
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
-            backdropFilter: 'blur(16px)',
-          })}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <CardContent className={css({ py: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
-                  Features
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
-                  <li>• Automatic type inference from sample JSON data</li>
-                  <li>• Detects string formats (email, URI, date-time, UUID)</li>
-                  <li>• Identifies required fields based on non-null values</li>
-                  <li>• Supports nested objects and arrays</li>
-                  <li>• Generates JSON Schema Draft 2020-12 compatible output</li>
-                </ul>
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'cyan.500/20',
+              bg: 'cyan.500/5',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '6' })}>
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+                <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
+                <div className={css({ spaceY: '2' })}>
+                  <h3
+                    className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}
+                  >
+                    Pro Tips
+                  </h3>
+                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                    <li>• Automatic type inference from sample JSON data</li>
+                    <li>• Detects string formats (email, URI, date-time, UUID)</li>
+                    <li>• Identifies required fields based on non-null values</li>
+                    <li>• Supports nested objects and arrays</li>
+                    <li>• Generates JSON Schema Draft 2020-12 compatible output</li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
       </main>
     </TooltipProvider>
   )

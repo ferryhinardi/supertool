@@ -267,425 +267,461 @@ function ClipboardFormatterPageContent() {
   }, [inputText, outputText])
 
   return (
-    <div
+    <main
       className={css({
-        minHeight: '100vh',
-        background: 'linear-gradient(to bottom, #0f172a, #1e293b)',
-        padding: { base: '4', md: '8' },
+        mx: 'auto',
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      <div
-        className={css({
-          maxWidth: '7xl',
-          margin: '0 auto',
-        })}
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className={css({ textAlign: 'center', spaceY: '4' })}
       >
-        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          animate={{
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: 'easeInOut',
+          }}
         >
-          <div
+          <Clipboard
             className={css({
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '4',
-              marginBottom: '8',
+              width: '16',
+              height: '16',
+              color: 'green.400',
+              mx: 'auto',
             })}
-          >
-            <motion.div
-              animate={{
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: 'easeInOut',
-              }}
-            >
-              <Clipboard
-                className={css({
-                  width: '16',
-                  height: '16',
-                  color: 'green.400',
-                })}
-              />
-            </motion.div>
-
-            <h1
-              className={css({
-                fontSize: { base: '3xl', md: '5xl' },
-                fontWeight: 'bold',
-                textAlign: 'center',
-                background: 'linear-gradient(to right, #10b981, #14b8a6)',
-                backgroundClip: 'text',
-                color: 'transparent',
-              })}
-            >
-              Clipboard Formatter
-            </h1>
-
-            <p
-              className={css({
-                fontSize: { base: 'lg', md: 'xl' },
-                color: 'gray.400',
-                textAlign: 'center',
-                maxWidth: '2xl',
-              })}
-            >
-              Paste and format text instantly. Remove extra whitespace, normalize line breaks, and
-              apply transformations.
-            </p>
-          </div>
+          />
         </motion.div>
 
-        {/* Main Content */}
-        <div
+        <h1
           className={css({
-            display: 'grid',
-            gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
-            gap: '6',
-            marginBottom: '8',
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'extrabold',
+            bgGradient: 'to-r',
+            gradientFrom: 'green.400',
+            gradientVia: 'emerald.400',
+            gradientTo: 'teal.400',
+            bgClip: 'text',
+          })}
+          style={{
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Clipboard Formatter
+        </h1>
+
+        <p
+          className={css({
+            fontSize: { base: 'lg', md: 'xl' },
+            color: 'gray.400',
+            textAlign: 'center',
+            maxWidth: '3xl',
+            mx: 'auto',
           })}
         >
-          {/* Input Section */}
-          <div
+          Paste and format text instantly. Remove extra whitespace, normalize line breaks, and apply
+          transformations.
+        </p>
+      </motion.div>
+
+      {/* Main Content */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+        className={css({
+          display: 'grid',
+          gridTemplateColumns: { base: '1', lg: 'repeat(3, 1fr)' },
+          gap: '6',
+        })}
+      >
+        {/* Input Section */}
+        <div
+          className={css({
+            gridColumn: { base: 'span 1', lg: 'span 2' },
+          })}
+        >
+          <Card
             className={css({
-              gridColumn: { base: 'span 1', lg: 'span 2' },
+              border: '1px solid',
+              borderColor: 'green.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
             })}
           >
-            <Card>
-              <CardHeader>
+            <CardHeader>
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                })}
+              >
+                <CardTitle className={css({ color: 'gray.100' })}>Input Text</CardTitle>
                 <div
                   className={css({
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
+                    gap: '2',
                   })}
                 >
-                  <CardTitle>Input Text</CardTitle>
+                  <Button onClick={handlePaste} variant="secondary" size="sm">
+                    <Clipboard
+                      className={css({
+                        width: '4',
+                        height: '4',
+                        marginRight: '2',
+                      })}
+                    />
+                    Paste from Clipboard
+                  </Button>
+                  <Button
+                    onClick={() => setShowSettings(!showSettings)}
+                    variant="secondary"
+                    size="sm"
+                  >
+                    <Settings
+                      className={css({
+                        width: '4',
+                        height: '4',
+                      })}
+                    />
+                  </Button>
+                </div>
+              </div>
+              <CardDescription className={css({ color: 'gray.400' })}>
+                Paste or type text to format. Auto-format is{' '}
+                {settings.autoFormat ? 'enabled' : 'disabled'}.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder="Paste or type your text here..."
+                className={css({
+                  minHeight: '400px',
+                  fontFamily: 'mono',
+                  fontSize: 'sm',
+                })}
+              />
+
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginTop: '4',
+                  fontSize: 'sm',
+                  color: 'gray.500',
+                })}
+              >
+                <span>
+                  {stats.inputChars} chars, {stats.inputWords} words, {stats.inputLines} lines
+                </span>
+                {pasteDetected && (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={css({ color: 'green.400' })}
+                  >
+                    <Check
+                      className={css({
+                        width: '4',
+                        height: '4',
+                        display: 'inline',
+                        marginRight: '1',
+                      })}
+                    />
+                    Pasted!
+                  </motion.span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Settings Panel */}
+          {showSettings && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+            >
+              <Card
+                className={css({
+                  marginTop: '4',
+                  border: '1px solid',
+                  borderColor: 'gray.700/20',
+                  bg: 'gray.900/50',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <CardTitle className={css({ color: 'gray.100' })}>Format Settings</CardTitle>
+                  <CardDescription className={css({ color: 'gray.400' })}>
+                    Customize how text is formatted
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
                   <div
                     className={css({
-                      display: 'flex',
-                      gap: '2',
+                      display: 'grid',
+                      gridTemplateColumns: { base: '1', md: '2' },
+                      gap: '4',
                     })}
                   >
-                    <Button onClick={handlePaste} variant="secondary" size="sm">
-                      <Clipboard
-                        className={css({
-                          width: '4',
-                          height: '4',
-                          marginRight: '2',
-                        })}
-                      />
-                      Paste from Clipboard
-                    </Button>
-                    <Button
-                      onClick={() => setShowSettings(!showSettings)}
-                      variant="secondary"
-                      size="sm"
-                    >
-                      <Settings
-                        className={css({
-                          width: '4',
-                          height: '4',
-                        })}
-                      />
-                    </Button>
-                  </div>
-                </div>
-                <CardDescription>
-                  Paste or type text to format. Auto-format is{' '}
-                  {settings.autoFormat ? 'enabled' : 'disabled'}.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Textarea
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Paste or type your text here..."
-                  className={css({
-                    minHeight: '400px',
-                    fontFamily: 'mono',
-                    fontSize: 'sm',
-                  })}
-                />
-
-                <div
-                  className={css({
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    marginTop: '4',
-                    fontSize: 'sm',
-                    color: 'gray.500',
-                  })}
-                >
-                  <span>
-                    {stats.inputChars} chars, {stats.inputWords} words, {stats.inputLines} lines
-                  </span>
-                  {pasteDetected && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className={css({ color: 'green.400' })}
-                    >
-                      <Check
-                        className={css({
-                          width: '4',
-                          height: '4',
-                          display: 'inline',
-                          marginRight: '1',
-                        })}
-                      />
-                      Pasted!
-                    </motion.span>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Settings Panel */}
-            {showSettings && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <Card
-                  className={css({
-                    marginTop: '4',
-                  })}
-                >
-                  <CardHeader>
-                    <CardTitle>Format Settings</CardTitle>
-                    <CardDescription>Customize how text is formatted</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div
+                    <label
                       className={css({
-                        display: 'grid',
-                        gridTemplateColumns: { base: '1', md: '2' },
-                        gap: '4',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                        cursor: 'pointer',
+                        color: 'gray.300',
                       })}
                     >
+                      <input
+                        type="checkbox"
+                        checked={settings.autoFormat}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            autoFormat: e.target.checked,
+                          })
+                        }
+                      />
+                      <span>Auto-format on input</span>
+                    </label>
+
+                    <label
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                        cursor: 'pointer',
+                        color: 'gray.300',
+                      })}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={settings.trimLines}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            trimLines: e.target.checked,
+                          })
+                        }
+                      />
+                      <span>Trim lines</span>
+                    </label>
+
+                    <label
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                        cursor: 'pointer',
+                        color: 'gray.300',
+                      })}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={settings.removeEmptyLines}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            removeEmptyLines: e.target.checked,
+                          })
+                        }
+                      />
+                      <span>Remove empty lines</span>
+                    </label>
+
+                    <label
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                        cursor: 'pointer',
+                        color: 'gray.300',
+                      })}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={settings.normalizeLineBreaks}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            normalizeLineBreaks: e.target.checked,
+                          })
+                        }
+                      />
+                      <span>Normalize line breaks</span>
+                    </label>
+
+                    <div>
                       <label
+                        htmlFor="tab-size-select"
                         className={css({
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '2',
-                          cursor: 'pointer',
+                          display: 'block',
+                          marginBottom: '2',
+                          fontSize: 'sm',
+                          color: 'gray.300',
                         })}
                       >
-                        <input
-                          type="checkbox"
-                          checked={settings.autoFormat}
-                          onChange={(e) =>
-                            setSettings({
-                              ...settings,
-                              autoFormat: e.target.checked,
-                            })
-                          }
-                        />
-                        <span>Auto-format on input</span>
+                        Tab size (spaces)
                       </label>
-
-                      <label
+                      <select
+                        id="tab-size-select"
+                        value={settings.tabSize}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            tabSize: Number.parseInt(e.target.value, 10) as 2 | 4 | 8,
+                          })
+                        }
                         className={css({
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '2',
-                          cursor: 'pointer',
-                        })}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={settings.trimLines}
-                          onChange={(e) =>
-                            setSettings({
-                              ...settings,
-                              trimLines: e.target.checked,
-                            })
-                          }
-                        />
-                        <span>Trim lines</span>
-                      </label>
-
-                      <label
-                        className={css({
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '2',
-                          cursor: 'pointer',
-                        })}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={settings.removeEmptyLines}
-                          onChange={(e) =>
-                            setSettings({
-                              ...settings,
-                              removeEmptyLines: e.target.checked,
-                            })
-                          }
-                        />
-                        <span>Remove empty lines</span>
-                      </label>
-
-                      <label
-                        className={css({
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '2',
-                          cursor: 'pointer',
-                        })}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={settings.normalizeLineBreaks}
-                          onChange={(e) =>
-                            setSettings({
-                              ...settings,
-                              normalizeLineBreaks: e.target.checked,
-                            })
-                          }
-                        />
-                        <span>Normalize line breaks</span>
-                      </label>
-
-                      <div>
-                        <label
-                          htmlFor="tab-size-select"
-                          className={css({
-                            display: 'block',
-                            marginBottom: '2',
-                            fontSize: 'sm',
-                          })}
-                        >
-                          Tab size (spaces)
-                        </label>
-                        <select
-                          id="tab-size-select"
-                          value={settings.tabSize}
-                          onChange={(e) =>
-                            setSettings({
-                              ...settings,
-                              tabSize: Number.parseInt(e.target.value, 10) as 2 | 4 | 8,
-                            })
-                          }
-                          className={css({
-                            padding: '2',
-                            borderRadius: 'md',
-                            border: '1px solid',
-                            borderColor: 'gray.700',
-                            background: 'gray.800',
-                            color: 'white',
-                          })}
-                        >
-                          <option value="2">2 spaces</option>
-                          <option value="4">4 spaces</option>
-                          <option value="8">8 spaces</option>
-                        </select>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
-          </div>
-
-          {/* History Sidebar */}
-          <div>
-            <Card>
-              <CardHeader>
-                <div
-                  className={css({
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  })}
-                >
-                  <CardTitle>History</CardTitle>
-                  {history.length > 0 && (
-                    <Button onClick={clearHistory} variant="secondary" size="sm">
-                      Clear
-                    </Button>
-                  )}
-                </div>
-                <CardDescription>Last 5 clipboard items</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {history.length === 0 ? (
-                  <p
-                    className={css({
-                      textAlign: 'center',
-                      color: 'gray.500',
-                      fontSize: 'sm',
-                    })}
-                  >
-                    No history yet. Paste some text to get started.
-                  </p>
-                ) : (
-                  <div
-                    className={css({
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '2',
-                    })}
-                  >
-                    {history.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => loadFromHistory(item)}
-                        type="button"
-                        className={css({
-                          padding: '3',
+                          padding: '2',
                           borderRadius: 'md',
                           border: '1px solid',
                           borderColor: 'gray.700',
                           background: 'gray.800',
-                          textAlign: 'left',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          _hover: {
-                            borderColor: 'green.500',
-                            background: 'gray.700',
-                          },
+                          color: 'white',
                         })}
                       >
-                        <p
-                          className={css({
-                            fontSize: 'xs',
-                            color: 'gray.400',
-                            marginBottom: '1',
-                          })}
-                        >
-                          {new Date(item.timestamp).toLocaleTimeString()}
-                        </p>
-                        <p
-                          className={css({
-                            fontSize: 'sm',
-                            color: 'white',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                          })}
-                        >
-                          {item.preview}
-                        </p>
-                      </button>
-                    ))}
+                        <option value="2">2 spaces</option>
+                        <option value="4">4 spaces</option>
+                        <option value="8">8 spaces</option>
+                      </select>
+                    </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
         </div>
 
-        {/* Output Section */}
-        <Card>
+        {/* History Sidebar */}
+        <div>
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'green.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                })}
+              >
+                <CardTitle className={css({ color: 'gray.100' })}>History</CardTitle>
+                {history.length > 0 && (
+                  <Button onClick={clearHistory} variant="secondary" size="sm">
+                    Clear
+                  </Button>
+                )}
+              </div>
+              <CardDescription className={css({ color: 'gray.400' })}>
+                Last 5 clipboard items
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {history.length === 0 ? (
+                <p
+                  className={css({
+                    textAlign: 'center',
+                    color: 'gray.500',
+                    fontSize: 'sm',
+                  })}
+                >
+                  No history yet. Paste some text to get started.
+                </p>
+              ) : (
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2',
+                  })}
+                >
+                  {history.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => loadFromHistory(item)}
+                      type="button"
+                      className={css({
+                        padding: '3',
+                        borderRadius: 'md',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        background: 'gray.800',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        _hover: {
+                          borderColor: 'green.500',
+                          background: 'gray.700',
+                        },
+                      })}
+                    >
+                      <p
+                        className={css({
+                          fontSize: 'xs',
+                          color: 'gray.400',
+                          marginBottom: '1',
+                        })}
+                      >
+                        {new Date(item.timestamp).toLocaleTimeString()}
+                      </p>
+                      <p
+                        className={css({
+                          fontSize: 'sm',
+                          color: 'gray.200',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        })}
+                      >
+                        {item.preview}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </motion.div>
+
+      {/* Output Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'green.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
           <CardHeader>
             <div
               className={css({
@@ -697,8 +733,8 @@ function ClipboardFormatterPageContent() {
               })}
             >
               <div>
-                <CardTitle>Formatted Output</CardTitle>
-                <CardDescription>
+                <CardTitle className={css({ color: 'gray.100' })}>Formatted Output</CardTitle>
+                <CardDescription className={css({ color: 'gray.400' })}>
                   {stats.charsRemoved > 0
                     ? `Removed ${stats.charsRemoved} characters`
                     : 'Apply transformations or let auto-format do its magic'}
@@ -869,97 +905,44 @@ function ClipboardFormatterPageContent() {
             </div>
           </CardContent>
         </Card>
+      </motion.div>
 
-        {/* Help Section */}
+      {/* Pro Tips */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+      >
         <Card
           className={css({
-            marginTop: '8',
+            border: '1px solid',
+            borderColor: 'amber.500/20',
+            bg: 'amber.500/5',
+            backdropFilter: 'blur(16px)',
           })}
         >
-          <CardHeader>
-            <CardTitle>How to Use</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              className={css({
-                display: 'grid',
-                gridTemplateColumns: { base: '1', md: '2' },
-                gap: '4',
-              })}
-            >
-              <div>
-                <h3
-                  className={css({
-                    fontWeight: 'semibold',
-                    marginBottom: '2',
-                    color: 'green.400',
-                  })}
-                >
-                  Quick Start
+          <CardContent className={css({ py: '6' })}>
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+              <Sparkles className={css({ h: '6', w: '6', color: 'amber.400', flexShrink: '0' })} />
+              <div className={css({ spaceY: '2' })}>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'amber.300' })}>
+                  Pro Tips
                 </h3>
-                <ul
-                  className={css({
-                    listStyle: 'disc',
-                    paddingLeft: '5',
-                    color: 'gray.400',
-                    fontSize: 'sm',
-                    '& li': {
-                      marginBottom: '2',
-                    },
-                  })}
-                >
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
                   <li>
-                    Click &quot;Paste from Clipboard&quot; or type directly into the input area
+                    • Click &quot;Paste from Clipboard&quot; or type directly into the input area
                   </li>
-                  <li>Text is automatically formatted based on your settings</li>
-                  <li>Toggle auto-format off to format manually</li>
-                  <li>Use case transformation buttons for quick changes</li>
-                  <li>Access your last 5 clipboard items from the history sidebar</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3
-                  className={css({
-                    fontWeight: 'semibold',
-                    marginBottom: '2',
-                    color: 'green.400',
-                  })}
-                >
-                  Format Options
-                </h3>
-                <ul
-                  className={css({
-                    listStyle: 'disc',
-                    paddingLeft: '5',
-                    color: 'gray.400',
-                    fontSize: 'sm',
-                    '& li': {
-                      marginBottom: '2',
-                    },
-                  })}
-                >
-                  <li>
-                    <strong>Trim Lines:</strong> Remove leading and trailing whitespace from each
-                    line
-                  </li>
-                  <li>
-                    <strong>Remove Empty Lines:</strong> Filter out blank lines
-                  </li>
-                  <li>
-                    <strong>Normalize Line Breaks:</strong> Convert all line endings to Unix format
-                    (\n)
-                  </li>
-                  <li>
-                    <strong>Tab Size:</strong> Convert tabs to 2, 4, or 8 spaces
-                  </li>
+                  <li>• Toggle auto-format off in settings to format manually when needed</li>
+                  <li>• Use case transformation buttons for quick text conversions</li>
+                  <li>• Access your last 5 clipboard items from the history sidebar</li>
+                  <li>• All settings are saved automatically in your browser</li>
                 </ul>
               </div>
             </div>
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </motion.div>
+    </main>
   )
 }
 
