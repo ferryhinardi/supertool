@@ -252,6 +252,9 @@ function SpeedTestContent() {
       setLatency(measuredLatency)
       setJitter(measuredJitter)
       console.log('Latency test completed:', measuredLatency.toFixed(2), 'ms')
+      toast.success(
+        `Latency: ${measuredLatency.toFixed(0)}ms | Jitter: ${measuredJitter.toFixed(0)}ms`
+      )
 
       // Small delay between phases for better UX
       await new Promise((resolve) => setTimeout(resolve, 500))
@@ -262,6 +265,7 @@ function SpeedTestContent() {
       setProgress(0)
       const downloadSpeedResult = await measureDownloadSpeed()
       console.log('Download test returned:', downloadSpeedResult.toFixed(2), 'Mbps')
+      toast.success(`Download speed: ${downloadSpeedResult.toFixed(2)} Mbps`)
 
       // Small delay between phases for better UX
       await new Promise((resolve) => setTimeout(resolve, 500))
@@ -272,6 +276,7 @@ function SpeedTestContent() {
       setProgress(0)
       const uploadSpeedResult = await measureUploadSpeed()
       console.log('Upload test returned:', uploadSpeedResult.toFixed(2), 'Mbps')
+      toast.success(`Upload speed: ${uploadSpeedResult.toFixed(2)} Mbps`)
 
       // Complete
       console.log('All tests completed. Setting final results...')
@@ -292,7 +297,7 @@ function SpeedTestContent() {
         latency: measuredLatency.toFixed(2),
       })
 
-      toast.success('Speed test completed!')
+      toast.success('All tests completed successfully!')
     } catch (error) {
       console.error('Speed test error:', error)
       toast.error('Failed to complete speed test. Please try again.')
