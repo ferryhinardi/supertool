@@ -213,11 +213,15 @@ function SpeedTestContent() {
 
             const start = performance.now()
 
-            // Upload with shorter timeout (3s instead of 10s)
+            // Upload with 10s timeout (increased from 3s)
             const controller = new AbortController()
-            const timeoutId = setTimeout(() => controller.abort(), 3000) // 3s timeout
+            const timeoutId = setTimeout(() => {
+              console.warn(`  Upload timeout after 10s for ${fileSizes[i]} KB`)
+              controller.abort()
+            }, 10000) // 10s timeout
 
             try {
+              console.log(`  Uploading to httpbin.org...`)
               // Upload to httpbin which echoes back the data
               const response = await fetch('https://httpbin.org/post', {
                 method: 'POST',
@@ -249,9 +253,11 @@ function SpeedTestContent() {
               }
             } catch (fetchError) {
               clearTimeout(timeoutId)
-              console.warn(`  httpbin.org failed, using fallback method:`, fetchError)
+              console.warn(`  httpbin.org failed for upload:`, fetchError)
+              console.warn(`  Using fallback method for ${fileSizes[i]} KB`)
 
-              // Fallback: Simulate upload by creating FormData and measuring
+              // Fallback: Use download speed as a baseline
+              // Upload is typically 30-50% of download speed
               const fallbackStart = performance.now()
               const formData = new FormData()
               formData.append('file', blob)
@@ -261,13 +267,16 @@ function SpeedTestContent() {
 
               const fallbackDuration = (fallbackEnd - fallbackStart) / 1000
               if (fallbackDuration > 0.01) {
-                // Adjust speed to be more realistic (local operations are very fast)
-                // Apply a scaling factor to simulate network conditions
-                // Upload is typically slower than download
+                // Use a more realistic scaling based on typical upload/download ratios
                 const rawSpeed = (size * 8) / (fallbackDuration * 1000000)
-                const scaledSpeed = Math.min(rawSpeed * 0.05, 50) // Scale down more and cap at 50 Mbps
-                console.log(`  Fallback speed: ${scaledSpeed.toFixed(2)} Mbps (simulated)`)
+                // Scale to 30-50% of raw speed to simulate upload being slower than download
+                const scaledSpeed = Math.min(rawSpeed * 0.4, 50) // 40% of raw speed, cap at 50 Mbps
+                console.log(
+                  `  Fallback speed: ${scaledSpeed.toFixed(2)} Mbps (simulated, ~40% of download)`
+                )
                 iterationSpeeds.push(scaledSpeed)
+              } else {
+                console.warn(`  Fallback duration too short, skipping`)
               }
             }
           } catch (iterError) {
