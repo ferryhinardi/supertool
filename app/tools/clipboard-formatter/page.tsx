@@ -366,14 +366,23 @@ function ClipboardFormatterPageContent() {
                 className={css({
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'center',
+                  alignItems: 'flex-start',
+                  gap: '4',
+                  flexWrap: 'wrap',
                 })}
               >
-                <CardTitle className={css({ color: 'gray.100' })}>Input Text</CardTitle>
+                <div className={css({ flex: '1', minWidth: '0' })}>
+                  <CardTitle className={css({ color: 'gray.100' })}>Input Text</CardTitle>
+                  <CardDescription className={css({ color: 'gray.400', marginTop: '1.5' })}>
+                    Paste or type text to format. Auto-format is{' '}
+                    {settings.autoFormat ? 'enabled' : 'disabled'}.
+                  </CardDescription>
+                </div>
                 <div
                   className={css({
                     display: 'flex',
                     gap: '2',
+                    flexShrink: '0',
                   })}
                 >
                   <Button onClick={handlePaste} variant="secondary" size="sm">
@@ -400,10 +409,6 @@ function ClipboardFormatterPageContent() {
                   </Button>
                 </div>
               </div>
-              <CardDescription className={css({ color: 'gray.400' })}>
-                Paste or type text to format. Auto-format is{' '}
-                {settings.autoFormat ? 'enabled' : 'disabled'}.
-              </CardDescription>
             </CardHeader>
             <CardContent>
               <Textarea

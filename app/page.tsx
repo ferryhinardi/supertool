@@ -24,8 +24,7 @@ import {
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import Script from 'next/script'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { RecentTools } from '@/components/features/RecentTools'
+import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
@@ -40,6 +39,14 @@ import { type Tool, type ToolCategory, tools } from '@/lib/tools'
 import { css } from '@/styled-system/css'
 
 // Lazy load non-critical components to reduce initial bundle size
+const RecentTools = dynamic(
+  () => import('@/components/features/RecentTools').then((mod) => ({ default: mod.RecentTools })),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+)
+
 const AdContainer = dynamic(
   () => import('@/components/features/AdContainer').then((mod) => ({ default: mod.AdContainer })),
   {
@@ -159,14 +166,17 @@ export default function HomePage() {
 
   // Toggle category expansion
   const toggleCategory = (category: ToolCategory) => {
-    setExpandedCategories((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(category)) {
-        newSet.delete(category)
-      } else {
-        newSet.add(category)
-      }
-      return newSet
+    // Use startTransition to mark this as non-urgent
+    startTransition(() => {
+      setExpandedCategories((prev) => {
+        const newSet = new Set(prev)
+        if (newSet.has(category)) {
+          newSet.delete(category)
+        } else {
+          newSet.add(category)
+        }
+        return newSet
+      })
     })
   }
 
@@ -179,7 +189,10 @@ export default function HomePage() {
       }
       // ESC to clear search
       if (e.key === 'Escape' && searchQuery) {
-        setSearchQuery('')
+        // Use startTransition for non-urgent state update
+        startTransition(() => {
+          setSearchQuery('')
+        })
         searchInputRef.current?.blur()
       }
     }
@@ -317,11 +330,9 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Compact Hero Section */}
+      {/* Compact Hero Section - Skip initial animation to reduce TBT */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        initial={false}
         className={css({
           position: 'relative',
           zIndex: '10',
@@ -404,11 +415,9 @@ export default function HomePage() {
         </p>
       </motion.div>
 
-      {/* Search and Filter Bar */}
+      {/* Search and Filter Bar - Skip initial animation to reduce TBT */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+        initial={false}
         className={css({
           position: 'relative',
           zIndex: '10',
@@ -447,9 +456,13 @@ export default function HomePage() {
                 type="search"
                 placeholder="Search tools..."
                 value={searchQuery}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setSearchQuery(e.target.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value
+                  // Use startTransition for non-urgent filtering
+                  startTransition(() => {
+                    setSearchQuery(value)
+                  })
+                }}
                 className={css({
                   h: '16',
                   w: 'full',
@@ -690,11 +703,9 @@ export default function HomePage() {
       {/* Recent Tools Section */}
       <RecentTools />
 
-      {/* Ad Banner - Feature Flag Guarded */}
+      {/* Ad Banner - Feature Flag Guarded - Skip initial animation */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25, duration: 0.5 }}
+        initial={false}
         className={css({
           position: 'relative',
           zIndex: '10',
@@ -712,11 +723,9 @@ export default function HomePage() {
         />
       </motion.div>
 
-      {/* Tools by Category Sections */}
+      {/* Tools by Category Sections - Skip initial animation */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+        initial={false}
         style={{
           position: 'relative',
           zIndex: 10,
@@ -987,11 +996,9 @@ export default function HomePage() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Ad Banner Bottom - Feature Flag Guarded */}
+      {/* Ad Banner Bottom - Feature Flag Guarded - Skip initial animation */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+        initial={false}
         className={css({
           position: 'relative',
           zIndex: '10',
@@ -1009,11 +1016,9 @@ export default function HomePage() {
         />
       </motion.div>
 
-      {/* Quick Stats Footer */}
+      {/* Quick Stats Footer - Skip initial animation */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
+        initial={false}
         style={{
           position: 'relative',
           zIndex: 10,
@@ -1231,12 +1236,7 @@ function ToolCard({
 
   if (viewMode === 'list') {
     return (
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: index * 0.05, duration: 0.3 }}
-        whileHover={noMotion ? {} : { x: 4 }}
-      >
+      <motion.div initial={false} whileHover={noMotion ? {} : { x: 4 }}>
         <Link
           href={isComingSoon ? '#' : tool.href}
           className={css({
@@ -1417,9 +1417,7 @@ function ToolCard({
   // Grid view
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.3 }}
+      initial={false}
       whileHover={noMotion ? {} : { y: -8, scale: 1.02 }}
       whileTap={noMotion ? {} : { scale: 0.98 }}
     >

@@ -98,12 +98,8 @@ export function RecentTools() {
               gradientFrom: 'purple.400',
               gradientTo: 'pink.400',
               bgClip: 'text',
-              color: 'transparent',
+              color: 'gray.100',
             })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
           >
             Recently Viewed
           </h2>
@@ -245,7 +241,13 @@ export function RecentTools() {
                       }}
                     />
 
-                    <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'start',
+                        gap: '4',
+                      })}
+                    >
                       <div
                         className={css({
                           display: 'flex',
