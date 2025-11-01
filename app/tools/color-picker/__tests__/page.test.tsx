@@ -119,7 +119,7 @@ describe('Color Picker - Color Input Tests', () => {
     render(<ColorPickerPage />)
 
     const hexInput = screen.getByPlaceholderText('#667EEA')
-    const originalValue = hexInput.getAttribute('value')
+    const _originalValue = hexInput.getAttribute('value')
 
     // Try to enter invalid color
     fireEvent.change(hexInput, { target: { value: 'INVALID' } })

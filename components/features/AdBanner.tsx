@@ -47,7 +47,7 @@ export function AdBanner({
     try {
       // Push ad to adsbygoogle array if using Google AdSense
       // @ts-expect-error
-      if (window.adsbygoogle && window.adsbygoogle.push) {
+      if (window.adsbygoogle?.push) {
         // @ts-expect-error
         window.adsbygoogle.push({})
       }
