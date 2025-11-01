@@ -1,5 +1,10 @@
 import type { NextConfig } from 'next'
 
+// Bundle analyzer configuration (set ANALYZE=true to enable)
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 const nextConfig: NextConfig = {
   reactCompiler: true,
   images: {
@@ -13,6 +18,19 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ['pdfjs-dist'],
+
+  // Performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+
+  // Optimize package imports - reduces bundle size
+  experimental: {
+    optimizePackageImports: ['framer-motion', '@tanstack/react-query', 'lucide-react'],
+  },
+
+  // Enable compression
+  compress: true,
 }
 
-export default nextConfig
+export default withBundleAnalyzer(nextConfig)

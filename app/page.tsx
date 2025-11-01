@@ -21,13 +21,11 @@ import {
   X,
   Zap,
 } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import Script from 'next/script'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AdContainer } from '@/components/features/AdContainer'
-import { FeedbackDialog } from '@/components/features/FeedbackDialog'
 import { RecentTools } from '@/components/features/RecentTools'
-import { TreatMeDialog } from '@/components/features/TreatMeDialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
@@ -40,6 +38,31 @@ import {
 } from '@/lib/structured-data'
 import { type Tool, type ToolCategory, tools } from '@/lib/tools'
 import { css } from '@/styled-system/css'
+
+// Lazy load non-critical components to reduce initial bundle size
+const AdContainer = dynamic(
+  () => import('@/components/features/AdContainer').then((mod) => ({ default: mod.AdContainer })),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+)
+
+const FeedbackDialog = dynamic(
+  () =>
+    import('@/components/features/FeedbackDialog').then((mod) => ({ default: mod.FeedbackDialog })),
+  {
+    ssr: false,
+  }
+)
+
+const TreatMeDialog = dynamic(
+  () =>
+    import('@/components/features/TreatMeDialog').then((mod) => ({ default: mod.TreatMeDialog })),
+  {
+    ssr: false,
+  }
+)
 
 // Color mapping for gradients
 const colorMap: Record<string, string> = {

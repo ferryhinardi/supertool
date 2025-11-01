@@ -250,12 +250,13 @@ function AISnippetGeneratorContent() {
                 className={css({
                   display: 'grid',
                   gridTemplateColumns: {
-                    base: '2',
-                    sm: '3',
-                    md: '4',
-                    lg: '6',
+                    base: 'repeat(2, 1fr)',
+                    sm: 'repeat(3, 1fr)',
+                    md: 'repeat(4, 1fr)',
+                    lg: 'repeat(6, 1fr)',
                   },
                   gap: '2',
+                  w: 'full',
                 })}
               >
                 {LANGUAGES.map((lang) => {

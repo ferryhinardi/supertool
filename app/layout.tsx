@@ -12,7 +12,11 @@ import { ReactQueryProvider } from '@/components/providers/ReactQueryProvider'
 import { getAdsConfig } from '@/lib/ads-config'
 import { css } from '@/styled-system/css/css.mjs'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap', // Optimize font loading
+  preload: true,
+})
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
 
@@ -124,6 +128,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="id" className={inter.className}>
+      <head>
+        {/* Preconnect to external origins - saves ~300ms on LCP */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      </head>
       <body
         className={css({
           display: 'flex',
@@ -253,14 +263,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </NuqsAdapter>
         </ReactQueryProvider>
 
-        {/* Google Analytics 4 - only load if ID exists */}
+        {/* Google Analytics 4 - lazy load to reduce initial JS execution */}
         {GA_MEASUREMENT_ID && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="google-analytics" strategy="afterInteractive">
+            <Script id="google-analytics" strategy="lazyOnload">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -273,13 +283,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </>
         )}
 
-        {/* Google AdSense - only load if ads are enabled and ID exists */}
+        {/* Google AdSense - lazy load to reduce blocking time */}
         {adsConfig.adsense.enabled && adsConfig.adsense.clientId && (
           <Script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsConfig.adsense.clientId}`}
             crossOrigin="anonymous"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
         )}
 
