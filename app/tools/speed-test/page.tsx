@@ -84,26 +84,36 @@ function SpeedTestContent() {
         const iterationSpeeds: number[] = []
 
         for (let j = 0; j < iterations; j++) {
-          const start = performance.now()
+          try {
+            const start = performance.now()
 
-          // Generate random data on the server and download it
-          // Using a public CDN test file or generating data via API
-          const cacheBuster = `${Date.now()}-${Math.random()}`
-          const response = await fetch(`https://httpbin.org/bytes/${size}?bust=${cacheBuster}`, {
-            cache: 'no-store',
-            signal: AbortSignal.timeout(10000), // 10s timeout
-          })
+            // Generate random data on the server and download it
+            // Using a public CDN test file or generating data via API
+            const cacheBuster = `${Date.now()}-${Math.random()}`
+            const response = await fetch(`https://httpbin.org/bytes/${size}?bust=${cacheBuster}`, {
+              cache: 'no-store',
+              signal: AbortSignal.timeout(10000), // 10s timeout
+            })
 
-          // Read the entire response to ensure data is transferred
-          await response.arrayBuffer()
+            if (!response.ok) {
+              console.warn(`Download test failed with status: ${response.status}`)
+              continue
+            }
 
-          const end = performance.now()
-          const durationSeconds = (end - start) / 1000
+            // Read the entire response to ensure data is transferred
+            await response.arrayBuffer()
 
-          // Ensure we have a minimum duration to avoid division by very small numbers
-          if (durationSeconds > 0.01) {
-            const speedMbps = (size * 8) / (durationSeconds * 1000000)
-            iterationSpeeds.push(speedMbps)
+            const end = performance.now()
+            const durationSeconds = (end - start) / 1000
+
+            // Ensure we have a minimum duration to avoid division by very small numbers
+            if (durationSeconds > 0.01) {
+              const speedMbps = (size * 8) / (durationSeconds * 1000000)
+              iterationSpeeds.push(speedMbps)
+            }
+          } catch (iterError) {
+            console.warn(`Download iteration ${j + 1} failed:`, iterError)
+            // Continue with other iterations
           }
         }
 
@@ -116,14 +126,17 @@ function SpeedTestContent() {
           setDownloadSpeed(cappedSpeed)
         }
       } catch (error) {
-        console.error('Download measurement error:', error)
+        console.error(`Download measurement error for size ${size}:`, error)
+        // Continue with next file size
       }
 
       setProgress(((i + 1) / fileSizes.length) * 100)
     }
 
+    const finalSpeed = speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
+    console.log('Download test completed. Final speed:', finalSpeed.toFixed(2), 'Mbps')
     // Return average or 0 if no valid measurements
-    return speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
+    return finalSpeed
   }
 
   const measureUploadSpeed = async (): Promise<number> => {
@@ -139,31 +152,41 @@ function SpeedTestContent() {
         const iterationSpeeds: number[] = []
 
         for (let j = 0; j < iterations; j++) {
-          const start = performance.now()
+          try {
+            const start = performance.now()
 
-          // Generate random data to upload
-          const randomData = new Uint8Array(size)
-          crypto.getRandomValues(randomData)
-          const blob = new Blob([randomData])
+            // Generate random data to upload
+            const randomData = new Uint8Array(size)
+            crypto.getRandomValues(randomData)
+            const blob = new Blob([randomData])
 
-          // Upload to httpbin which echoes back the data
-          const response = await fetch('https://httpbin.org/post', {
-            method: 'POST',
-            body: blob,
-            cache: 'no-store',
-            signal: AbortSignal.timeout(10000), // 10s timeout
-          })
+            // Upload to httpbin which echoes back the data
+            const response = await fetch('https://httpbin.org/post', {
+              method: 'POST',
+              body: blob,
+              cache: 'no-store',
+              signal: AbortSignal.timeout(10000), // 10s timeout
+            })
 
-          // Read the response to ensure upload completes
-          await response.arrayBuffer()
+            if (!response.ok) {
+              console.warn(`Upload test failed with status: ${response.status}`)
+              continue
+            }
 
-          const end = performance.now()
-          const durationSeconds = (end - start) / 1000
+            // Read the response to ensure upload completes
+            await response.arrayBuffer()
 
-          // Ensure minimum duration
-          if (durationSeconds > 0.01) {
-            const speedMbps = (size * 8) / (durationSeconds * 1000000)
-            iterationSpeeds.push(speedMbps)
+            const end = performance.now()
+            const durationSeconds = (end - start) / 1000
+
+            // Ensure minimum duration
+            if (durationSeconds > 0.01) {
+              const speedMbps = (size * 8) / (durationSeconds * 1000000)
+              iterationSpeeds.push(speedMbps)
+            }
+          } catch (iterError) {
+            console.warn(`Upload iteration ${j + 1} failed:`, iterError)
+            // Continue with other iterations
           }
         }
 
@@ -176,14 +199,17 @@ function SpeedTestContent() {
           setUploadSpeed(cappedSpeed)
         }
       } catch (error) {
-        console.error('Upload measurement error:', error)
+        console.error(`Upload measurement error for size ${size}:`, error)
+        // Continue with next file size
       }
 
       setProgress(((i + 1) / fileSizes.length) * 100)
     }
 
+    const finalSpeed = speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
+    console.log('Upload test completed. Final speed:', finalSpeed.toFixed(2), 'Mbps')
     // Return average or 0 if no valid measurements
-    return speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
+    return finalSpeed
   }
 
   const runSpeedTest = async () => {
@@ -200,14 +226,21 @@ function SpeedTestContent() {
 
       // Measure latency
       setPhase('latency')
+      setProgress(0)
       const { latency: measuredLatency, jitter: measuredJitter } = await measureLatency()
       setLatency(measuredLatency)
       setJitter(measuredJitter)
+
+      // Small delay between phases for better UX
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
       // Measure download speed
       setPhase('download')
       setProgress(0)
       const downloadSpeedResult = await measureDownloadSpeed()
+
+      // Small delay between phases for better UX
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
       // Measure upload speed
       setPhase('upload')
@@ -216,6 +249,7 @@ function SpeedTestContent() {
 
       // Complete
       setPhase('complete')
+      setProgress(100)
       const finalResult: SpeedTestResult = {
         downloadSpeed: downloadSpeedResult,
         uploadSpeed: uploadSpeedResult,
@@ -236,6 +270,7 @@ function SpeedTestContent() {
       console.error('Speed test error:', error)
       toast.error('Failed to complete speed test. Please try again.')
       setPhase('idle')
+      setProgress(0)
       trackToolEvent('speed_test_error', {})
     }
   }
