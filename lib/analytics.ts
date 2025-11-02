@@ -254,6 +254,10 @@ type ToolEvent =
   | 'ai_command_explainer_copy'
   | 'ai_command_explainer_load_example'
   | 'ai_command_explainer_error'
+  | 'grammar_checker_open'
+  | 'grammar_checker_check'
+  | 'grammar_checker_apply_fix'
+  | 'grammar_checker_error'
 
 // Type-safe gtag wrapper
 declare global {

@@ -802,14 +802,14 @@ export const tools: Tool[] = [
   {
     title: 'Grammar & Spell Checker',
     description:
-      'Detect and fix grammar, spelling, and syntax errors with AI-powered suggestions. Support for multiple languages with style recommendations and contextual corrections. Powered by LanguageTool API.',
+      'Detect and fix grammar, spelling, and syntax errors with AI-powered suggestions. Support for multiple languages with style recommendations and contextual corrections. Powered by OpenAI GPT-4o-mini.',
     icon: FileCheck,
     href: '/tools/grammar-checker',
     gradient: 'from-green-500 to-teal-500',
-    features: ['Grammar Check', 'Spell Check', 'Style Tips', 'Multi-language'],
+    features: ['Grammar Check', 'Spell Check', 'Style Tips', 'AI-Powered'],
     category: 'productivity',
-    comingSoon: true,
-    premium: true,
+    comingSoon: false,
+    premium: false,
   },
   {
     title: 'AI Prompt Explainer',
