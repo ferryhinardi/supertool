@@ -292,7 +292,6 @@ export const tools: Tool[] = [
     features: ['Multiple Modes', 'Discount Calculator', 'Tax Calculator', 'Reverse Calculate'],
     category: 'finance',
     new: true,
-    comingSoon: false,
   },
   {
     title: 'Age Calculator',
@@ -315,7 +314,6 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-indigo-500',
     features: ['Templates', 'Tax & Discount', 'PDF Export', 'Client Management'],
     category: 'productivity',
-    comingSoon: false,
     premium: true,
   },
   {
@@ -434,8 +432,6 @@ export const tools: Tool[] = [
     gradient: 'from-teal-500 to-cyan-500',
     features: ['Certificate Details', 'Expiry Alerts', 'Chain Verification', 'Security Score'],
     category: 'security',
-    comingSoon: true,
-    premium: true,
   },
   {
     title: 'Password Strength Analyzer',

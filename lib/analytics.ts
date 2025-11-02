@@ -284,6 +284,11 @@ type ToolEvent =
   | 'loan_calculator_add_comparison'
   | 'loan_calculator_remove_comparison'
   | 'loan_calculator_currency_change'
+  | 'steganography_open'
+  | 'steganography_encode'
+  | 'steganography_decode'
+  | 'steganography_copy'
+  | 'steganography_error'
 
 // Type-safe gtag wrapper
 declare global {
