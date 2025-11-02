@@ -873,8 +873,8 @@ export const tools: Tool[] = [
     gradient: 'from-violet-500 to-fuchsia-500',
     features: ['Tone Control', 'Style Adjustment', 'Multiple Variants', 'Preserve Meaning'],
     category: 'productivity',
-    comingSoon: true,
-    premium: true,
+    comingSoon: false,
+    premium: false,
   },
   {
     title: 'AI JSON Analyzer',

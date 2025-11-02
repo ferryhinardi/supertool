@@ -243,6 +243,12 @@ type ToolEvent =
   | 'text_similarity_clear'
   | 'text_similarity_load_example'
   | 'text_similarity_copy_result'
+  | 'ai_text_rewriter_open'
+  | 'ai_text_rewriter_rewrite'
+  | 'ai_text_rewriter_copy'
+  | 'ai_text_rewriter_clear'
+  | 'ai_text_rewriter_load_example'
+  | 'ai_text_rewriter_error'
 
 // Type-safe gtag wrapper
 declare global {
