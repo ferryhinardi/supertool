@@ -283,6 +283,7 @@ type ToolEvent =
   | 'loan_calculator_toggle_schedule'
   | 'loan_calculator_add_comparison'
   | 'loan_calculator_remove_comparison'
+  | 'loan_calculator_currency_change'
 
 // Type-safe gtag wrapper
 declare global {

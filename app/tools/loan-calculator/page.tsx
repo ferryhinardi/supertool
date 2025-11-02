@@ -11,13 +11,14 @@ import {
   Plus,
   TrendingUp,
 } from 'lucide-react'
-import { parseAsFloat, parseAsInteger, useQueryState } from 'nuqs'
+import { parseAsFloat, parseAsInteger, parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { trackToolEvent } from '@/lib/analytics'
+import { CURRENCIES, formatCurrency as formatCurrencyUtil } from '@/lib/currency'
 import { css } from '@/styled-system/css'
 
 interface PaymentScheduleItem {
@@ -37,6 +38,7 @@ interface LoanComparison {
   monthlyPayment: number
   totalInterest: number
   totalCost: number
+  currency: string
 }
 
 function LoanCalculatorContent() {
@@ -44,6 +46,7 @@ function LoanCalculatorContent() {
   const [rate, setRate] = useQueryState('rate', parseAsFloat.withDefault(4.5))
   const [years, setYears] = useQueryState('years', parseAsInteger.withDefault(30))
   const [extraPayment, setExtraPayment] = useQueryState('extra', parseAsFloat.withDefault(0))
+  const [currency, setCurrency] = useQueryState('currency', parseAsString.withDefault('IDR'))
 
   const [comparisons, setComparisons] = useState<LoanComparison[]>([])
   const [showSchedule, setShowSchedule] = useState(false)
@@ -162,6 +165,7 @@ function LoanCalculatorContent() {
       monthlyPayment: loanData.monthlyPayment,
       totalInterest: loanData.totalInterest,
       totalCost: loanData.totalPayment,
+      currency,
     }
     setComparisons([...comparisons, newComparison])
     trackToolEvent('loan_calculator_add_comparison', {
@@ -179,7 +183,7 @@ function LoanCalculatorContent() {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value)
@@ -280,6 +284,58 @@ function LoanCalculatorContent() {
                 gap: '6',
               })}
             >
+              {/* Currency Selection */}
+              <div className={css({ spaceY: '3' })}>
+                <label
+                  htmlFor="currency"
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <DollarSign className={css({ h: '4', w: '4', color: 'emerald.400' })} />
+                  Currency
+                </label>
+                <select
+                  id="currency"
+                  value={currency}
+                  onChange={(e) => {
+                    setCurrency(e.target.value)
+                    trackToolEvent('loan_calculator_currency_change', { currency: e.target.value })
+                  }}
+                  className={css({
+                    h: '12',
+                    w: 'full',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    bg: 'gray.800/50',
+                    px: '4',
+                    fontSize: 'lg',
+                    color: 'gray.200',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    _hover: { bg: 'gray.800', borderColor: 'gray.600' },
+                    _focus: {
+                      outline: 'none',
+                      borderColor: 'emerald.500',
+                      ring: '2px',
+                      ringColor: 'emerald.500/20',
+                    },
+                  })}
+                >
+                  {CURRENCIES.map((curr) => (
+                    <option key={curr.code} value={curr.code}>
+                      {curr.code} - {curr.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Loan Amount */}
               <div className={css({ spaceY: '3' })}>
                 <label
@@ -849,7 +905,12 @@ function LoanCalculatorContent() {
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
                           <span className={css({ color: 'gray.400' })}>Loan Amount:</span>
                           <span className={css({ color: 'gray.200' })}>
-                            {formatCurrency(loan.principal)}
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: loan.currency,
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0,
+                            }).format(loan.principal)}
                           </span>
                         </div>
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
@@ -864,19 +925,34 @@ function LoanCalculatorContent() {
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
                           <span className={css({ color: 'gray.400' })}>Monthly Payment:</span>
                           <span className={css({ fontWeight: 'bold', color: 'emerald.300' })}>
-                            {formatCurrency(loan.monthlyPayment)}
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: loan.currency,
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0,
+                            }).format(loan.monthlyPayment)}
                           </span>
                         </div>
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
                           <span className={css({ color: 'gray.400' })}>Total Interest:</span>
                           <span className={css({ fontWeight: 'bold', color: 'orange.300' })}>
-                            {formatCurrency(loan.totalInterest)}
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: loan.currency,
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0,
+                            }).format(loan.totalInterest)}
                           </span>
                         </div>
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
                           <span className={css({ color: 'gray.400' })}>Total Cost:</span>
                           <span className={css({ fontWeight: 'bold', color: 'blue.300' })}>
-                            {formatCurrency(loan.totalCost)}
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: loan.currency,
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0,
+                            }).format(loan.totalCost)}
                           </span>
                         </div>
                       </div>
