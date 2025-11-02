@@ -258,6 +258,11 @@ type ToolEvent =
   | 'grammar_checker_check'
   | 'grammar_checker_apply_fix'
   | 'grammar_checker_error'
+  | 'keyword_density_open'
+  | 'keyword_density_analyze'
+  | 'keyword_density_copy'
+  | 'keyword_density_clear'
+  | 'keyword_density_export'
 
 // Type-safe gtag wrapper
 declare global {

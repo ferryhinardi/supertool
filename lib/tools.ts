@@ -842,8 +842,8 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Keyword Tracking', 'Density Analysis', 'SEO Score', 'Distribution Chart'],
     category: 'productivity',
-    comingSoon: true,
-    premium: true,
+    comingSoon: false,
+    premium: false,
   },
   {
     title: 'Text Similarity Checker',
