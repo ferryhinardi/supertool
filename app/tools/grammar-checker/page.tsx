@@ -91,7 +91,7 @@ export default function GrammarCheckerPage() {
     }
   }
 
-  const handleApplyFix = (issue: GrammarIssue, index: number) => {
+  const handleApplyFix = (issue: GrammarIssue, _index: number) => {
     const before = text.substring(0, issue.offset)
     const after = text.substring(issue.offset + issue.length)
     const newText = before + issue.suggestion + after

@@ -19,7 +19,7 @@ vi.mock('@/lib/analytics', () => ({
 // Mock next/dynamic to return the mocked component synchronously
 vi.mock('next/dynamic', () => ({
   __esModule: true,
-  default: (importFn: any, options?: any) => {
+  default: (_importFn: any, _options?: any) => {
     // Return a component that matches CodeMirror's interface
     const MockComponent = ({
       value,

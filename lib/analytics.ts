@@ -268,6 +268,15 @@ type ToolEvent =
   | 'percentage_calculator_mode_change'
   | 'percentage_calculator_copy'
   | 'percentage_calculator_clear'
+  | 'invoice_generator_open'
+  | 'invoice_generator_add_item'
+  | 'invoice_generator_remove_item'
+  | 'invoice_generator_save'
+  | 'invoice_generator_load'
+  | 'invoice_generator_delete'
+  | 'invoice_generator_new'
+  | 'invoice_generator_print'
+  | 'invoice_generator_download'
 
 // Type-safe gtag wrapper
 declare global {

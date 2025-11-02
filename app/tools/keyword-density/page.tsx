@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Copy,
   Download,
-  Info,
   Sparkles,
   Trash2,
   TrendingUp,

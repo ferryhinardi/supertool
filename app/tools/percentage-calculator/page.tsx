@@ -23,7 +23,7 @@ type CalculationMode =
 interface ModeConfig {
   name: string
   description: string
-  inputs: { label: string; placeholder: string; suffix?: string }[]
+  inputs: { id: string; label: string; placeholder: string; suffix?: string }[]
   calculate: (values: string[]) => { result: string; formula: string } | null
 }
 
@@ -32,8 +32,8 @@ const modes: Record<CalculationMode, ModeConfig> = {
     name: 'What is X% of Y?',
     description: 'Calculate percentage of a number',
     inputs: [
-      { label: 'Percentage', placeholder: '25', suffix: '%' },
-      { label: 'Of Number', placeholder: '200' },
+      { id: 'percent-input-1', label: 'Percentage', placeholder: '25', suffix: '%' },
+      { id: 'percent-input-2', label: 'Of Number', placeholder: '200' },
     ],
     calculate: ([percent, number]) => {
       const p = Number.parseFloat(percent)
@@ -50,8 +50,8 @@ const modes: Record<CalculationMode, ModeConfig> = {
     name: 'X is what % of Y?',
     description: 'Find what percentage one number is of another',
     inputs: [
-      { label: 'Number', placeholder: '50' },
-      { label: 'Of Number', placeholder: '200' },
+      { id: 'is-what-percent-input-1', label: 'Number', placeholder: '50' },
+      { id: 'is-what-percent-input-2', label: 'Of Number', placeholder: '200' },
     ],
     calculate: ([number, total]) => {
       const n = Number.parseFloat(number)
@@ -68,8 +68,8 @@ const modes: Record<CalculationMode, ModeConfig> = {
     name: 'X is Y% of what?',
     description: 'Find the whole when you know the part and percentage',
     inputs: [
-      { label: 'Number', placeholder: '50' },
-      { label: 'Is Percentage', placeholder: '25', suffix: '%' },
+      { id: 'is-percent-of-what-input-1', label: 'Number', placeholder: '50' },
+      { id: 'is-percent-of-what-input-2', label: 'Is Percentage', placeholder: '25', suffix: '%' },
     ],
     calculate: ([number, percent]) => {
       const n = Number.parseFloat(number)
@@ -86,8 +86,8 @@ const modes: Record<CalculationMode, ModeConfig> = {
     name: 'Percentage Change',
     description: 'Calculate percentage increase or decrease between two numbers',
     inputs: [
-      { label: 'Original Value', placeholder: '100' },
-      { label: 'New Value', placeholder: '150' },
+      { id: 'percent-change-input-1', label: 'Original Value', placeholder: '100' },
+      { id: 'percent-change-input-2', label: 'New Value', placeholder: '150' },
     ],
     calculate: ([original, newValue]) => {
       const o = Number.parseFloat(original)
@@ -105,8 +105,8 @@ const modes: Record<CalculationMode, ModeConfig> = {
     name: 'Discount Calculator',
     description: 'Calculate final price after discount',
     inputs: [
-      { label: 'Original Price', placeholder: '100', suffix: '$' },
-      { label: 'Discount', placeholder: '20', suffix: '%' },
+      { id: 'discount-input-1', label: 'Original Price', placeholder: '100', suffix: '$' },
+      { id: 'discount-input-2', label: 'Discount', placeholder: '20', suffix: '%' },
     ],
     calculate: ([price, discount]) => {
       const p = Number.parseFloat(price)
@@ -124,8 +124,8 @@ const modes: Record<CalculationMode, ModeConfig> = {
     name: 'Tip Calculator',
     description: 'Calculate tip amount and total bill',
     inputs: [
-      { label: 'Bill Amount', placeholder: '100', suffix: '$' },
-      { label: 'Tip Percentage', placeholder: '15', suffix: '%' },
+      { id: 'tip-input-1', label: 'Bill Amount', placeholder: '100', suffix: '$' },
+      { id: 'tip-input-2', label: 'Tip Percentage', placeholder: '15', suffix: '%' },
     ],
     calculate: ([bill, tipPercent]) => {
       const b = Number.parseFloat(bill)
@@ -143,8 +143,8 @@ const modes: Record<CalculationMode, ModeConfig> = {
     name: 'Tax Calculator',
     description: 'Calculate price with tax included',
     inputs: [
-      { label: 'Price Before Tax', placeholder: '100', suffix: '$' },
-      { label: 'Tax Rate', placeholder: '8', suffix: '%' },
+      { id: 'tax-input-1', label: 'Price Before Tax', placeholder: '100', suffix: '$' },
+      { id: 'tax-input-2', label: 'Tax Rate', placeholder: '8', suffix: '%' },
     ],
     calculate: ([price, taxRate]) => {
       const p = Number.parseFloat(price)

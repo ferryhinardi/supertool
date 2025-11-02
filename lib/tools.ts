@@ -315,7 +315,7 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-indigo-500',
     features: ['Templates', 'Tax & Discount', 'PDF Export', 'Client Management'],
     category: 'productivity',
-    comingSoon: true,
+    comingSoon: false,
     premium: true,
   },
   {
