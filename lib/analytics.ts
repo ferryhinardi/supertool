@@ -296,6 +296,13 @@ type ToolEvent =
   | 'timezone_converter_favorite_add'
   | 'timezone_converter_favorite_remove'
   | 'timezone_converter_favorite_load'
+  | 'yaml_json_converter_open'
+  | 'yaml_json_converter_convert'
+  | 'yaml_json_converter_swap'
+  | 'yaml_json_converter_copy'
+  | 'yaml_json_converter_download'
+  | 'yaml_json_converter_clear'
+  | 'yaml_json_converter_load_example'
 
 // Type-safe gtag wrapper
 declare global {

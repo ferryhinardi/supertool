@@ -499,7 +499,6 @@ export const tools: Tool[] = [
     features: ['YAML ⇄ JSON', 'Syntax Highlight', 'Validation', 'Copy & Download'],
     category: 'development',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Dockerfile Formatter & Linter',
