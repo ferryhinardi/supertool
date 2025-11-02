@@ -823,7 +823,7 @@ export const tools: Tool[] = [
     gradient: 'from-purple-500 to-pink-500',
     features: ['Prompt Analysis', 'Optimization Tips', 'Best Practices', 'AI Insights'],
     category: 'development',
-    comingSoon: true,
+    comingSoon: false,
     premium: true,
   },
   {
