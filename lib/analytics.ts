@@ -238,6 +238,11 @@ type ToolEvent =
   | 'text_summarizer_copy'
   | 'text_summarizer_download'
   | 'text_summarizer_error'
+  | 'text_similarity_open'
+  | 'text_similarity_compare'
+  | 'text_similarity_clear'
+  | 'text_similarity_load_example'
+  | 'text_similarity_copy_result'
 
 // Type-safe gtag wrapper
 declare global {

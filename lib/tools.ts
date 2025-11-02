@@ -859,8 +859,8 @@ export const tools: Tool[] = [
     gradient: 'from-indigo-500 to-purple-500',
     features: ['Similarity Score', 'NLP Analysis', 'Batch Compare', 'Highlight Matches'],
     category: 'productivity',
-    comingSoon: true,
-    premium: true,
+    comingSoon: false,
+    premium: false,
   },
 
   // AI-Powered Tools
