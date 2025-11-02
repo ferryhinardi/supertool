@@ -16,6 +16,7 @@ import {
   Gauge,
   GitCompare,
   Github,
+  Globe,
   Hash,
   Home,
   Key,
@@ -54,6 +55,7 @@ const navigation = [
   { name: 'Hash Generator', href: '/tools/hash-generator', icon: Hash },
   { name: 'UUID Generator', href: '/tools/uuid-generator', icon: Hash },
   { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
+  { name: 'Timezone Converter', href: '/tools/timezone-converter', icon: Globe },
   {
     name: 'Gradient Generator',
     href: '/tools/gradient-generator',

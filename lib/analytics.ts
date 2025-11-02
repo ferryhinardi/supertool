@@ -289,6 +289,13 @@ type ToolEvent =
   | 'steganography_decode'
   | 'steganography_copy'
   | 'steganography_error'
+  | 'timezone_converter_open'
+  | 'timezone_converter_add'
+  | 'timezone_converter_remove'
+  | 'timezone_converter_time_change'
+  | 'timezone_converter_favorite_add'
+  | 'timezone_converter_favorite_remove'
+  | 'timezone_converter_favorite_load'
 
 // Type-safe gtag wrapper
 declare global {

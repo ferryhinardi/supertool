@@ -245,7 +245,6 @@ export const tools: Tool[] = [
     features: ['Multiple Zones', 'DST Aware', 'Meeting Planner', 'Time Slider'],
     category: 'productivity',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Tip Calculator',
