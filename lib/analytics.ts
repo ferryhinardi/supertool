@@ -277,6 +277,12 @@ type ToolEvent =
   | 'invoice_generator_new'
   | 'invoice_generator_print'
   | 'invoice_generator_download'
+  | 'loan_calculator_open'
+  | 'loan_calculator_calculate'
+  | 'loan_calculator_extra_payment'
+  | 'loan_calculator_toggle_schedule'
+  | 'loan_calculator_add_comparison'
+  | 'loan_calculator_remove_comparison'
 
 // Type-safe gtag wrapper
 declare global {

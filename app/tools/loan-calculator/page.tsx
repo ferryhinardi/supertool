@@ -1,0 +1,936 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import {
+  Calculator,
+  Calendar,
+  DollarSign,
+  Info,
+  Percent,
+  PiggyBank,
+  Plus,
+  TrendingUp,
+} from 'lucide-react'
+import { parseAsFloat, parseAsInteger, useQueryState } from 'nuqs'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { trackToolEvent } from '@/lib/analytics'
+import { css } from '@/styled-system/css'
+
+interface PaymentScheduleItem {
+  month: number
+  payment: number
+  principal: number
+  interest: number
+  balance: number
+}
+
+interface LoanComparison {
+  id: string
+  name: string
+  principal: number
+  rate: number
+  years: number
+  monthlyPayment: number
+  totalInterest: number
+  totalCost: number
+}
+
+function LoanCalculatorContent() {
+  const [principal, setPrincipal] = useQueryState('principal', parseAsFloat.withDefault(300000))
+  const [rate, setRate] = useQueryState('rate', parseAsFloat.withDefault(4.5))
+  const [years, setYears] = useQueryState('years', parseAsInteger.withDefault(30))
+  const [extraPayment, setExtraPayment] = useQueryState('extra', parseAsFloat.withDefault(0))
+
+  const [comparisons, setComparisons] = useState<LoanComparison[]>([])
+  const [showSchedule, setShowSchedule] = useState(false)
+
+  // Track page visit
+  useEffect(() => {
+    trackToolEvent('loan_calculator_open', {})
+  }, [])
+
+  // Calculate monthly payment using standard mortgage formula
+  const calculateMonthlyPayment = useCallback((p: number, r: number, n: number): number => {
+    if (r === 0) return p / n
+    const monthlyRate = r / 100 / 12
+    const numPayments = n * 12
+    return (
+      (p * monthlyRate * (1 + monthlyRate) ** numPayments) / ((1 + monthlyRate) ** numPayments - 1)
+    )
+  }, [])
+
+  // Main loan calculations
+  const loanData = useMemo(() => {
+    const monthlyRate = rate / 100 / 12
+    const numPayments = years * 12
+    const monthlyPayment = calculateMonthlyPayment(principal, rate, years)
+    const totalPayment = monthlyPayment * numPayments
+    const totalInterest = totalPayment - principal
+
+    // Calculate with extra payments
+    let extraBalance = principal
+    let extraTotalPaid = 0
+    let extraMonths = 0
+
+    while (extraBalance > 0 && extraMonths < numPayments * 2) {
+      const interestPayment = extraBalance * monthlyRate
+      const principalPayment = monthlyPayment - interestPayment + extraPayment
+      extraBalance -= principalPayment
+      extraTotalPaid += monthlyPayment + extraPayment
+      extraMonths++
+
+      if (extraBalance < 0) {
+        extraTotalPaid += extraBalance
+        extraBalance = 0
+      }
+    }
+
+    const extraTotalInterest = extraTotalPaid - principal
+    const savedInterest = totalInterest - extraTotalInterest
+    const savedMonths = numPayments - extraMonths
+
+    return {
+      monthlyPayment,
+      totalPayment,
+      totalInterest,
+      principalPercent: (principal / totalPayment) * 100,
+      interestPercent: (totalInterest / totalPayment) * 100,
+      withExtra:
+        extraPayment > 0
+          ? {
+              totalPaid: extraTotalPaid,
+              totalInterest: extraTotalInterest,
+              monthsSaved: savedMonths,
+              interestSaved: savedInterest,
+              payoffYears: Math.floor(extraMonths / 12),
+              payoffMonths: extraMonths % 12,
+            }
+          : null,
+    }
+  }, [principal, rate, years, extraPayment, calculateMonthlyPayment])
+
+  // Generate amortization schedule
+  const schedule = useMemo((): PaymentScheduleItem[] => {
+    const monthlyRate = rate / 100 / 12
+    const monthlyPayment = loanData.monthlyPayment
+    let balance = principal
+    const items: PaymentScheduleItem[] = []
+
+    for (let month = 1; month <= years * 12; month++) {
+      const interestPayment = balance * monthlyRate
+      const principalPayment = monthlyPayment - interestPayment
+      balance -= principalPayment
+
+      if (balance < 0) balance = 0
+
+      items.push({
+        month,
+        payment: monthlyPayment,
+        principal: principalPayment,
+        interest: interestPayment,
+        balance,
+      })
+
+      if (balance === 0) break
+    }
+
+    return items
+  }, [principal, rate, years, loanData.monthlyPayment])
+
+  // Group schedule by year for display
+  const scheduleByYear = useMemo(() => {
+    const grouped: { [year: number]: PaymentScheduleItem[] } = {}
+    schedule.forEach((item) => {
+      const year = Math.ceil(item.month / 12)
+      if (!grouped[year]) grouped[year] = []
+      grouped[year].push(item)
+    })
+    return grouped
+  }, [schedule])
+
+  const handleAddComparison = () => {
+    const newComparison: LoanComparison = {
+      id: Date.now().toString(),
+      name: `Loan ${comparisons.length + 1}`,
+      principal,
+      rate,
+      years,
+      monthlyPayment: loanData.monthlyPayment,
+      totalInterest: loanData.totalInterest,
+      totalCost: loanData.totalPayment,
+    }
+    setComparisons([...comparisons, newComparison])
+    trackToolEvent('loan_calculator_add_comparison', {
+      principal,
+      rate,
+      years,
+    })
+  }
+
+  const handleRemoveComparison = (id: string) => {
+    setComparisons(comparisons.filter((c) => c.id !== id))
+    trackToolEvent('loan_calculator_remove_comparison', {})
+  }
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value)
+  }
+
+  return (
+    <main
+      className={css({
+        mx: 'auto',
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
+      })}
+    >
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className={css({ textAlign: 'center', spaceY: '4' })}
+      >
+        <div
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '3',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'emerald.500/30',
+            bg: 'emerald.500/10',
+            px: '5',
+            py: '2',
+            backdropFilter: 'blur(8px)',
+          })}
+        >
+          <Calculator className={css({ h: '5', w: '5', color: 'emerald.400' })} />
+          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'emerald.300' })}>
+            Mortgage & Loan Calculator
+          </span>
+        </div>
+
+        <h1
+          className={css({
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+            fontWeight: 'extrabold',
+            bgGradient: 'to-r',
+            gradientFrom: 'emerald.400',
+            gradientVia: 'green.400',
+            gradientTo: 'teal.400',
+            bgClip: 'text',
+          })}
+          style={{
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Loan Calculator
+        </h1>
+
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '3xl',
+            fontSize: { base: 'lg', sm: 'xl' },
+            color: 'gray.400',
+          })}
+        >
+          Calculate monthly payments, view amortization schedules, and compare different loan
+          scenarios. Perfect for mortgages, auto loans, and personal loans.
+        </p>
+      </motion.div>
+
+      {/* Calculator Inputs */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'emerald.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <CardTitle>Loan Details</CardTitle>
+            <CardDescription>Enter your loan information to calculate payments</CardDescription>
+          </CardHeader>
+          <CardContent className={css({ spaceY: '6' })}>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+                gap: '6',
+              })}
+            >
+              {/* Loan Amount */}
+              <div className={css({ spaceY: '3' })}>
+                <label
+                  htmlFor="principal"
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <DollarSign className={css({ h: '4', w: '4', color: 'emerald.400' })} />
+                  Loan Amount
+                </label>
+                <Input
+                  id="principal"
+                  type="number"
+                  value={principal}
+                  onChange={(e) => {
+                    setPrincipal(Number(e.target.value))
+                    trackToolEvent('loan_calculator_calculate', { field: 'principal' })
+                  }}
+                  placeholder="300000"
+                  className={css({
+                    h: '12',
+                    fontSize: 'lg',
+                    bg: 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    _focus: {
+                      borderColor: 'emerald.500',
+                      ring: '2px',
+                      ringColor: 'emerald.500/20',
+                    },
+                  })}
+                />
+              </div>
+
+              {/* Interest Rate */}
+              <div className={css({ spaceY: '3' })}>
+                <label
+                  htmlFor="rate"
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <Percent className={css({ h: '4', w: '4', color: 'emerald.400' })} />
+                  Annual Interest Rate (%)
+                </label>
+                <Input
+                  id="rate"
+                  type="number"
+                  step="0.1"
+                  value={rate}
+                  onChange={(e) => {
+                    setRate(Number(e.target.value))
+                    trackToolEvent('loan_calculator_calculate', { field: 'rate' })
+                  }}
+                  placeholder="4.5"
+                  className={css({
+                    h: '12',
+                    fontSize: 'lg',
+                    bg: 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    _focus: {
+                      borderColor: 'emerald.500',
+                      ring: '2px',
+                      ringColor: 'emerald.500/20',
+                    },
+                  })}
+                />
+              </div>
+
+              {/* Loan Term */}
+              <div className={css({ spaceY: '3' })}>
+                <label
+                  htmlFor="years"
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <Calendar className={css({ h: '4', w: '4', color: 'emerald.400' })} />
+                  Loan Term (Years)
+                </label>
+                <Input
+                  id="years"
+                  type="number"
+                  value={years}
+                  onChange={(e) => {
+                    setYears(Number(e.target.value))
+                    trackToolEvent('loan_calculator_calculate', { field: 'years' })
+                  }}
+                  placeholder="30"
+                  className={css({
+                    h: '12',
+                    fontSize: 'lg',
+                    bg: 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    _focus: {
+                      borderColor: 'emerald.500',
+                      ring: '2px',
+                      ringColor: 'emerald.500/20',
+                    },
+                  })}
+                />
+              </div>
+
+              {/* Extra Payment */}
+              <div className={css({ spaceY: '3' })}>
+                <label
+                  htmlFor="extra"
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <Plus className={css({ h: '4', w: '4', color: 'emerald.400' })} />
+                  Extra Monthly Payment (Optional)
+                </label>
+                <Input
+                  id="extra"
+                  type="number"
+                  value={extraPayment}
+                  onChange={(e) => {
+                    setExtraPayment(Number(e.target.value))
+                    trackToolEvent('loan_calculator_extra_payment', {
+                      amount: Number(e.target.value),
+                    })
+                  }}
+                  placeholder="0"
+                  className={css({
+                    h: '12',
+                    fontSize: 'lg',
+                    bg: 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    _focus: {
+                      borderColor: 'emerald.500',
+                      ring: '2px',
+                      ringColor: 'emerald.500/20',
+                    },
+                  })}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Results */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+      >
+        <div
+          className={css({
+            display: 'grid',
+            gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+            gap: '4',
+          })}
+        >
+          {/* Monthly Payment */}
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'emerald.500/30',
+              bg: 'emerald.500/10',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '6' })}>
+              <div className={css({ spaceY: '2' })}>
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Calculator className={css({ h: '5', w: '5', color: 'emerald.400' })} />
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Monthly Payment
+                  </span>
+                </div>
+                <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'emerald.300' })}>
+                  {formatCurrency(loanData.monthlyPayment)}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Total Interest */}
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'orange.500/30',
+              bg: 'orange.500/10',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '6' })}>
+              <div className={css({ spaceY: '2' })}>
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Percent className={css({ h: '5', w: '5', color: 'orange.400' })} />
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Interest</span>
+                </div>
+                <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'orange.300' })}>
+                  {formatCurrency(loanData.totalInterest)}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Total Cost */}
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'blue.500/30',
+              bg: 'blue.500/10',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '6' })}>
+              <div className={css({ spaceY: '2' })}>
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <TrendingUp className={css({ h: '5', w: '5', color: 'blue.400' })} />
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Cost</span>
+                </div>
+                <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'blue.300' })}>
+                  {formatCurrency(loanData.totalPayment)}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Principal/Interest Split */}
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'purple.500/30',
+              bg: 'purple.500/10',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '6' })}>
+              <div className={css({ spaceY: '2' })}>
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <PiggyBank className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Principal / Interest
+                  </span>
+                </div>
+                <p className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'purple.300' })}>
+                  {loanData.principalPercent.toFixed(1)}% / {loanData.interestPercent.toFixed(1)}%
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </motion.div>
+
+      {/* Extra Payment Benefits */}
+      {loanData.withExtra && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'green.500/20',
+              bg: 'green.500/5',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <CardTitle className={css({ color: 'green.300' })}>Extra Payment Benefits</CardTitle>
+              <CardDescription>
+                See how much you can save with extra monthly payments
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+                  gap: '4',
+                })}
+              >
+                <div className={css({ spaceY: '1' })}>
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Interest Saved</span>
+                  <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
+                    {formatCurrency(loanData.withExtra.interestSaved)}
+                  </p>
+                </div>
+                <div className={css({ spaceY: '1' })}>
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Time Saved</span>
+                  <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
+                    {loanData.withExtra.monthsSaved} months
+                  </p>
+                </div>
+                <div className={css({ spaceY: '1' })}>
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    New Payoff Time
+                  </span>
+                  <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
+                    {loanData.withExtra.payoffYears}y {loanData.withExtra.payoffMonths}m
+                  </p>
+                </div>
+                <div className={css({ spaceY: '1' })}>
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    New Total Interest
+                  </span>
+                  <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
+                    {formatCurrency(loanData.withExtra.totalInterest)}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Amortization Schedule */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'emerald.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              })}
+            >
+              <div>
+                <CardTitle>Amortization Schedule</CardTitle>
+                <CardDescription>Detailed payment breakdown by year</CardDescription>
+              </div>
+              <Button
+                onClick={() => {
+                  setShowSchedule(!showSchedule)
+                  trackToolEvent('loan_calculator_toggle_schedule', { show: !showSchedule })
+                }}
+                className={css({
+                  gap: '2',
+                  bg: 'emerald.500/20',
+                  color: 'emerald.300',
+                  _hover: { bg: 'emerald.500/30' },
+                })}
+              >
+                {showSchedule ? 'Hide' : 'Show'} Schedule
+              </Button>
+            </div>
+          </CardHeader>
+          {showSchedule && (
+            <CardContent>
+              <div className={css({ spaceY: '4', maxH: '600px', overflowY: 'auto' })}>
+                {Object.entries(scheduleByYear).map(([year, items]) => {
+                  const yearTotal = items.reduce((sum, item) => sum + item.payment, 0)
+                  const yearPrincipal = items.reduce((sum, item) => sum + item.principal, 0)
+                  const yearInterest = items.reduce((sum, item) => sum + item.interest, 0)
+                  const endBalance = items[items.length - 1].balance
+
+                  return (
+                    <div
+                      key={year}
+                      className={css({
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                        p: '4',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          mb: '3',
+                        })}
+                      >
+                        <h3
+                          className={css({
+                            fontSize: 'lg',
+                            fontWeight: 'semibold',
+                            color: 'emerald.300',
+                          })}
+                        >
+                          Year {year}
+                        </h3>
+                        <Badge
+                          className={css({
+                            bg: 'emerald.500/20',
+                            color: 'emerald.300',
+                            border: '1px solid',
+                            borderColor: 'emerald.500/30',
+                          })}
+                        >
+                          {items.length} payments
+                        </Badge>
+                      </div>
+                      <div
+                        className={css({
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(4, 1fr)',
+                          gap: '4',
+                          fontSize: 'sm',
+                        })}
+                      >
+                        <div>
+                          <span className={css({ color: 'gray.400' })}>Total Paid</span>
+                          <p className={css({ fontWeight: 'semibold', color: 'gray.200' })}>
+                            {formatCurrency(yearTotal)}
+                          </p>
+                        </div>
+                        <div>
+                          <span className={css({ color: 'gray.400' })}>Principal</span>
+                          <p className={css({ fontWeight: 'semibold', color: 'emerald.300' })}>
+                            {formatCurrency(yearPrincipal)}
+                          </p>
+                        </div>
+                        <div>
+                          <span className={css({ color: 'gray.400' })}>Interest</span>
+                          <p className={css({ fontWeight: 'semibold', color: 'orange.300' })}>
+                            {formatCurrency(yearInterest)}
+                          </p>
+                        </div>
+                        <div>
+                          <span className={css({ color: 'gray.400' })}>End Balance</span>
+                          <p className={css({ fontWeight: 'semibold', color: 'blue.300' })}>
+                            {formatCurrency(endBalance)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      </motion.div>
+
+      {/* Loan Comparison */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'blue.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              })}
+            >
+              <div>
+                <CardTitle>Compare Loans</CardTitle>
+                <CardDescription>Add current loan to comparison list</CardDescription>
+              </div>
+              <Button
+                onClick={handleAddComparison}
+                className={css({
+                  gap: '2',
+                  bg: 'blue.500/20',
+                  color: 'blue.300',
+                  _hover: { bg: 'blue.500/30' },
+                })}
+              >
+                <Plus className={css({ h: '4', w: '4' })} />
+                Add to Compare
+              </Button>
+            </div>
+          </CardHeader>
+          {comparisons.length > 0 && (
+            <CardContent>
+              <div className={css({ spaceY: '4' })}>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: {
+                      base: '1fr',
+                      md: 'repeat(2, 1fr)',
+                      lg: 'repeat(3, 1fr)',
+                    },
+                    gap: '4',
+                  })}
+                >
+                  {comparisons.map((loan) => (
+                    <div
+                      key={loan.id}
+                      className={css({
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                        p: '4',
+                        spaceY: '3',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        })}
+                      >
+                        <h4
+                          className={css({
+                            fontSize: 'lg',
+                            fontWeight: 'semibold',
+                            color: 'blue.300',
+                          })}
+                        >
+                          {loan.name}
+                        </h4>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveComparison(loan.id)}
+                          className={css({
+                            color: 'gray.500',
+                            _hover: { color: 'red.400' },
+                            bg: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: 'sm',
+                          })}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div className={css({ spaceY: '2', fontSize: 'sm' })}>
+                        <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                          <span className={css({ color: 'gray.400' })}>Loan Amount:</span>
+                          <span className={css({ color: 'gray.200' })}>
+                            {formatCurrency(loan.principal)}
+                          </span>
+                        </div>
+                        <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                          <span className={css({ color: 'gray.400' })}>Rate:</span>
+                          <span className={css({ color: 'gray.200' })}>{loan.rate}%</span>
+                        </div>
+                        <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                          <span className={css({ color: 'gray.400' })}>Term:</span>
+                          <span className={css({ color: 'gray.200' })}>{loan.years} years</span>
+                        </div>
+                        <div className={css({ h: 'px', bg: 'gray.700', my: '2' })} />
+                        <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                          <span className={css({ color: 'gray.400' })}>Monthly Payment:</span>
+                          <span className={css({ fontWeight: 'bold', color: 'emerald.300' })}>
+                            {formatCurrency(loan.monthlyPayment)}
+                          </span>
+                        </div>
+                        <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                          <span className={css({ color: 'gray.400' })}>Total Interest:</span>
+                          <span className={css({ fontWeight: 'bold', color: 'orange.300' })}>
+                            {formatCurrency(loan.totalInterest)}
+                          </span>
+                        </div>
+                        <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                          <span className={css({ color: 'gray.400' })}>Total Cost:</span>
+                          <span className={css({ fontWeight: 'bold', color: 'blue.300' })}>
+                            {formatCurrency(loan.totalCost)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      </motion.div>
+
+      {/* Info Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'cyan.500/20',
+            bg: 'cyan.500/5',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardContent className={css({ py: '6' })}>
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+              <Info className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
+              <div className={css({ spaceY: '2' })}>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
+                  How It Works
+                </h3>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                  <li>• Monthly payments are calculated using the standard amortization formula</li>
+                  <li>
+                    • Extra payments go directly to principal, reducing interest and loan term
+                  </li>
+                  <li>• Compare different loan scenarios to find the best option for you</li>
+                  <li>• All calculations are instant and performed locally in your browser</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </main>
+  )
+}
+
+export default function LoanCalculatorPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoanCalculatorContent />
+    </Suspense>
+  )
+}

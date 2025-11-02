@@ -337,8 +337,6 @@ export const tools: Tool[] = [
     gradient: 'from-emerald-500 to-teal-500',
     features: ['Amortization Table', 'Payment Schedule', 'Interest Breakdown', 'Compare Loans'],
     category: 'finance',
-    comingSoon: true,
-    premium: true,
   },
   {
     title: 'BMI & Health Calculator',
