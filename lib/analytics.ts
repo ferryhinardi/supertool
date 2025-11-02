@@ -263,6 +263,11 @@ type ToolEvent =
   | 'keyword_density_copy'
   | 'keyword_density_clear'
   | 'keyword_density_export'
+  | 'percentage_calculator_open'
+  | 'percentage_calculator_calculate'
+  | 'percentage_calculator_mode_change'
+  | 'percentage_calculator_copy'
+  | 'percentage_calculator_clear'
 
 // Type-safe gtag wrapper
 declare global {

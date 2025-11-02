@@ -292,7 +292,7 @@ export const tools: Tool[] = [
     features: ['Multiple Modes', 'Discount Calculator', 'Tax Calculator', 'Reverse Calculate'],
     category: 'finance',
     new: true,
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     title: 'Age Calculator',
@@ -808,7 +808,6 @@ export const tools: Tool[] = [
     gradient: 'from-green-500 to-teal-500',
     features: ['Grammar Check', 'Spell Check', 'Style Tips', 'AI-Powered'],
     category: 'productivity',
-    comingSoon: false,
     premium: false,
   },
   {
@@ -842,7 +841,6 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Keyword Tracking', 'Density Analysis', 'SEO Score', 'Distribution Chart'],
     category: 'productivity',
-    comingSoon: false,
     premium: false,
   },
   {
@@ -894,7 +892,6 @@ export const tools: Tool[] = [
       'Alternative Suggestions',
     ],
     category: 'development',
-    comingSoon: false,
     premium: false,
   },
   {
