@@ -3,11 +3,11 @@
 import { motion } from 'framer-motion'
 import {
   AlertTriangle,
-  ArrowRight,
-  Check,
+  BookOpen,
+  CheckCircle2,
   Copy,
-  FileCode,
   Lightbulb,
+  Loader2,
   MessageSquare,
   Sparkles,
   Terminal,
@@ -17,53 +17,46 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
-import { trackEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
-interface CommandExplanation {
-  summary: string
-  breakdown: Array<{
-    component: string
-    explanation: string
-  }>
-  warnings: string[]
-  alternatives: string[]
+interface ExplanationResult {
   commandType: string
+  overallPurpose: string
+  breakdown: Array<{ part: string; explanation: string }>
+  parameters: Array<{ parameter: string; description: string }>
+  safetyWarnings: string[]
+  alternatives: string[]
 }
 
 const EXAMPLE_COMMANDS = [
   {
-    label: 'Git Force Push',
-    command: 'git push origin main --force',
-    type: 'git',
+    title: 'Docker Container Management',
+    command: 'docker run -d -p 8080:80 --name myapp -v /data:/app/data nginx:latest',
   },
   {
-    label: 'Docker Multi-Stage',
-    command: 'docker build --target production -t myapp:latest .',
-    type: 'docker',
+    title: 'Git Interactive Rebase',
+    command: 'git rebase -i HEAD~5 && git push --force-with-lease origin main',
   },
   {
-    label: 'Find & Delete',
-    command: 'find . -name "*.log" -type f -delete',
-    type: 'bash',
+    title: 'Find and Delete Files',
+    command: 'find . -name "*.log" -type f -mtime +30 -exec rm {} \\;',
   },
   {
-    label: 'Kubectl Scale',
-    command: 'kubectl scale deployment/nginx --replicas=3',
-    type: 'k8s',
+    title: 'Kubernetes Pod Inspection',
+    command: 'kubectl get pods -n production -l app=backend -o jsonpath="{.items[*].status.podIP}"',
   },
 ]
 
 function AICommandExplainerContent() {
   const [command, setCommand] = useState('')
-  const [explanation, setExplanation] = useState<CommandExplanation | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [explanation, setExplanation] = useState<ExplanationResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Track page visit
   useEffect(() => {
-    trackEvent({ action: 'open', category: 'ai_command_explainer' })
+    trackToolEvent('ai_command_explainer_open', {})
   }, [])
 
   const handleExplain = async () => {
@@ -72,7 +65,8 @@ function AICommandExplainerContent() {
       return
     }
 
-    setLoading(true)
+    setIsLoading(true)
+    setError(null)
     setExplanation(null)
 
     try {
@@ -81,9 +75,7 @@ function AICommandExplainerContent() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          command: command.trim(),
-        }),
+        body: JSON.stringify({ command }),
       })
 
       const data = await response.json()
@@ -92,57 +84,40 @@ function AICommandExplainerContent() {
         throw new Error(data.error || 'Failed to explain command')
       }
 
-      setExplanation({
-        summary: data.summary,
-        breakdown: data.breakdown,
-        warnings: data.warnings || [],
-        alternatives: data.alternatives || [],
-        commandType: data.commandType,
-      })
-
+      setExplanation(data)
       toast.success('Command explained successfully!')
 
-      trackEvent({
-        action: 'explain',
-        category: 'ai_command_explainer',
-        label: data.commandType,
-        value: data.usage?.total_tokens || 0,
+      trackToolEvent('ai_command_explainer_explain', {
+        command_type: data.commandType,
+        has_warnings: data.safetyWarnings.length > 0,
       })
-    } catch (error) {
-      console.error('Error explaining command:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Failed to explain command'
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to explain command'
+      setError(errorMessage)
       toast.error(errorMessage)
 
-      trackEvent({
-        action: 'error',
-        category: 'ai_command_explainer',
-        label: 'explanation_failed',
+      trackToolEvent('ai_command_explainer_error', {
+        error: errorMessage,
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text)
-    toast.success('Copied to clipboard')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+  const handleCopyCommand = () => {
+    navigator.clipboard.writeText(command)
+    toast.success('Command copied to clipboard!')
 
-    trackEvent({ action: 'copy', category: 'ai_command_explainer' })
-  }
-
-  const handleClear = () => {
-    setCommand('')
-    setExplanation(null)
-    setCopied(false)
+    trackToolEvent('ai_command_explainer_copy', {})
   }
 
   const handleLoadExample = (exampleCommand: string) => {
     setCommand(exampleCommand)
     setExplanation(null)
+    setError(null)
+    toast.success('Example loaded!')
 
-    trackEvent({ action: 'load_example', category: 'ai_command_explainer' })
+    trackToolEvent('ai_command_explainer_load_example', {})
   }
 
   return (
@@ -177,9 +152,9 @@ function AICommandExplainerContent() {
             backdropFilter: 'blur(8px)',
           })}
         >
-          <Sparkles className={css({ h: '5', w: '5', color: 'green.400' })} />
+          <MessageSquare className={css({ h: '5', w: '5', color: 'green.400' })} />
           <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'green.300' })}>
-            Powered by AI • Bash, Git, Docker, kubectl
+            AI-Powered • GPT-4o-mini
           </span>
         </div>
 
@@ -209,8 +184,8 @@ function AICommandExplainerContent() {
             color: 'gray.400',
           })}
         >
-          Understand complex CLI commands in plain English. Get detailed breakdowns, safety
-          warnings, and alternative suggestions powered by AI.
+          Understand complex CLI commands with AI assistance. Get detailed breakdowns, parameter
+          explanations, safety warnings, and alternative suggestions.
         </p>
       </motion.div>
 
@@ -230,495 +205,469 @@ function AICommandExplainerContent() {
         >
           <CardHeader>
             <CardTitle>Enter Command</CardTitle>
-            <CardDescription>
-              Paste any bash, git, docker, kubectl, or other CLI command for detailed explanation
-            </CardDescription>
+            <CardDescription>Paste any CLI command to get a detailed explanation</CardDescription>
           </CardHeader>
           <CardContent className={css({ spaceY: '4' })}>
-            <Textarea
-              placeholder="e.g., git push origin main --force&#10;docker run -d -p 8080:80 nginx&#10;find . -name '*.log' -type f -delete"
-              value={command}
-              onChange={(e) => setCommand(e.target.value)}
-              className={css({
-                minH: '32',
-                fontFamily: 'mono',
-                fontSize: 'sm',
-                bg: 'gray.950/50',
-                border: '1px solid',
-                borderColor: 'gray.700',
-                _focus: {
-                  borderColor: 'green.500',
-                  ring: '2px',
-                  ringColor: 'green.500/20',
-                },
-              })}
-            />
+            <div className={css({ position: 'relative' })}>
+              <Terminal
+                className={css({
+                  position: 'absolute',
+                  left: '3',
+                  top: '3',
+                  h: '5',
+                  w: '5',
+                  color: 'gray.500',
+                  pointerEvents: 'none',
+                })}
+              />
+              <textarea
+                value={command}
+                onChange={(e) => setCommand(e.target.value)}
+                placeholder="e.g., docker run -d -p 8080:80 nginx:latest"
+                rows={4}
+                className={css({
+                  w: 'full',
+                  rounded: 'lg',
+                  border: '1px solid',
+                  borderColor: 'gray.700',
+                  bg: 'gray.800/50',
+                  px: '10',
+                  py: '3',
+                  fontSize: 'base',
+                  fontFamily: 'mono',
+                  color: 'gray.200',
+                  resize: 'vertical',
+                  transition: 'all 0.2s',
+                  _focus: {
+                    outline: 'none',
+                    borderColor: 'green.500',
+                    ring: '2px',
+                    ringColor: 'green.500/20',
+                  },
+                  _placeholder: { color: 'gray.500' },
+                })}
+              />
+            </div>
 
-            <div
-              className={css({
-                display: 'flex',
-                flexDirection: { base: 'column', sm: 'row' },
-                gap: '3',
-                justifyContent: 'space-between',
-              })}
-            >
+            <div className={css({ display: 'flex', gap: '3', flexWrap: 'wrap' })}>
               <Button
                 onClick={handleExplain}
-                disabled={loading || !command.trim()}
+                disabled={isLoading || !command.trim()}
                 className={css({
-                  flex: { sm: '1' },
                   gap: '2',
-                  bgGradient: 'to-r',
-                  gradientFrom: 'green.500',
-                  gradientTo: 'teal.500',
-                  color: 'white',
+                  bg: 'green.500/20',
+                  border: '1px solid',
+                  borderColor: 'green.500/50',
+                  color: 'green.300',
                   _hover: {
-                    opacity: 0.9,
-                    transform: 'translateY(-1px)',
+                    bg: 'green.500/30',
+                    borderColor: 'green.500/70',
                   },
                   _disabled: {
-                    opacity: 0.5,
+                    opacity: '0.5',
                     cursor: 'not-allowed',
                   },
                 })}
               >
-                {loading ? (
+                {isLoading ? (
                   <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: 'linear' }}
-                    >
-                      <MessageSquare className={css({ h: '5', w: '5' })} />
-                    </motion.div>
+                    <Loader2 className={css({ h: '4', w: '4', animation: 'spin' })} />
                     Explaining...
                   </>
                 ) : (
                   <>
-                    <MessageSquare className={css({ h: '5', w: '5' })} />
+                    <Sparkles className={css({ h: '4', w: '4' })} />
                     Explain Command
                   </>
                 )}
               </Button>
 
-              {(command || explanation) && (
-                <Button
-                  onClick={handleClear}
-                  variant="outline"
-                  className={css({
-                    gap: '2',
-                    borderColor: 'gray.700',
-                    color: 'gray.400',
-                    _hover: {
-                      bg: 'gray.800',
-                      borderColor: 'gray.600',
-                    },
-                  })}
-                >
-                  Clear
-                </Button>
-              )}
+              <Button
+                onClick={handleCopyCommand}
+                disabled={!command.trim()}
+                className={css({
+                  gap: '2',
+                  bg: 'gray.800',
+                  color: 'gray.400',
+                  _hover: { bg: 'gray.700' },
+                  _disabled: {
+                    opacity: '0.5',
+                    cursor: 'not-allowed',
+                  },
+                })}
+              >
+                <Copy className={css({ h: '4', w: '4' })} />
+                Copy
+              </Button>
             </div>
+
+            {error && (
+              <div
+                className={css({
+                  rounded: 'lg',
+                  border: '1px solid',
+                  borderColor: 'red.500/30',
+                  bg: 'red.500/10',
+                  p: '4',
+                })}
+              >
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <AlertTriangle className={css({ h: '5', w: '5', color: 'red.400' })} />
+                  <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
 
       {/* Example Commands */}
-      {!explanation && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <Card
-            className={css({
-              border: '1px solid',
-              borderColor: 'green.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
-            })}
-          >
-            <CardHeader>
-              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <Lightbulb className={css({ h: '5', w: '5', color: 'yellow.400' })} />
-                Example Commands
-              </CardTitle>
-              <CardDescription>Click an example to try it out</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
-                className={css({
-                  display: 'grid',
-                  gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
-                  gap: '3',
-                })}
-              >
-                {EXAMPLE_COMMANDS.map((example) => (
-                  <button
-                    type="button"
-                    key={example.command}
-                    onClick={() => handleLoadExample(example.command)}
-                    className={css({
-                      p: '4',
-                      textAlign: 'left',
-                      rounded: 'lg',
-                      border: '1px solid',
-                      borderColor: 'gray.700/50',
-                      bg: 'gray.800/30',
-                      transition: 'all 0.2s',
-                      cursor: 'pointer',
-                      _hover: {
-                        borderColor: 'green.500/50',
-                        bg: 'gray.800/50',
-                        transform: 'translateY(-2px)',
-                      },
-                    })}
-                  >
-                    <div
-                      className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}
-                    >
-                      <Badge
-                        className={css({
-                          fontSize: 'xs',
-                          bg: 'green.500/20',
-                          color: 'green.300',
-                          border: 'none',
-                        })}
-                      >
-                        {example.type}
-                      </Badge>
-                      <span
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                      >
-                        {example.label}
-                      </span>
-                    </div>
-                    <code
-                      className={css({
-                        display: 'block',
-                        fontFamily: 'mono',
-                        fontSize: 'xs',
-                        color: 'gray.400',
-                        overflowX: 'auto',
-                      })}
-                    >
-                      {example.command}
-                    </code>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Explanation Result */}
-      {explanation && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className={css({ spaceY: '6' })}
-        >
-          {/* Summary */}
-          <Card
-            className={css({
-              border: '1px solid',
-              borderColor: 'green.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
-            })}
-          >
-            <CardHeader>
-              <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-                <Terminal className={css({ h: '5', w: '5', color: 'green.400' })} />
-                <div className={css({ flex: '1' })}>
-                  <CardTitle>Command Summary</CardTitle>
-                  <CardDescription>
-                    <Badge
-                      className={css({
-                        mt: '2',
-                        fontSize: 'xs',
-                        bg: 'green.500/20',
-                        color: 'green.300',
-                        border: 'none',
-                      })}
-                    >
-                      {explanation.commandType}
-                    </Badge>
-                  </CardDescription>
-                </div>
-                <Button
-                  onClick={() => handleCopy(command)}
-                  size="sm"
-                  variant="outline"
-                  className={css({
-                    gap: '2',
-                    borderColor: 'gray.700',
-                    color: 'gray.400',
-                    _hover: {
-                      bg: 'gray.800',
-                      borderColor: 'gray.600',
-                    },
-                  })}
-                >
-                  {copied ? (
-                    <Check className={css({ h: '4', w: '4' })} />
-                  ) : (
-                    <Copy className={css({ h: '4', w: '4' })} />
-                  )}
-                  {copied ? 'Copied!' : 'Copy'}
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className={css({ fontSize: 'base', color: 'gray.300', lineHeight: 'relaxed' })}>
-                {explanation.summary}
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Breakdown */}
-          <Card
-            className={css({
-              border: '1px solid',
-              borderColor: 'green.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
-            })}
-          >
-            <CardHeader>
-              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <FileCode className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-                Command Breakdown
-              </CardTitle>
-              <CardDescription>
-                Detailed explanation of each component and parameter
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className={css({ spaceY: '4' })}>
-                {explanation.breakdown.map((item, idx) => (
-                  <div
-                    key={`${item.component}-${idx}`}
-                    className={css({
-                      p: '4',
-                      rounded: 'lg',
-                      bg: 'gray.800/30',
-                      border: '1px solid',
-                      borderColor: 'gray.700/30',
-                    })}
-                  >
-                    <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                      <div
-                        className={css({
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minW: '6',
-                          h: '6',
-                          rounded: 'full',
-                          bg: 'green.500/20',
-                          color: 'green.300',
-                          fontSize: 'xs',
-                          fontWeight: 'bold',
-                        })}
-                      >
-                        {idx + 1}
-                      </div>
-                      <div className={css({ flex: '1', minW: '0' })}>
-                        <code
-                          className={css({
-                            display: 'block',
-                            fontFamily: 'mono',
-                            fontSize: 'sm',
-                            fontWeight: 'semibold',
-                            color: 'cyan.300',
-                            mb: '2',
-                            overflowX: 'auto',
-                          })}
-                        >
-                          {item.component}
-                        </code>
-                        <p
-                          className={css({
-                            fontSize: 'sm',
-                            color: 'gray.400',
-                            lineHeight: 'relaxed',
-                          })}
-                        >
-                          {item.explanation}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Warnings */}
-          {explanation.warnings.length > 0 && (
-            <Card
-              className={css({
-                border: '1px solid',
-                borderColor: 'red.500/30',
-                bg: 'red.950/30',
-                backdropFilter: 'blur(16px)',
-              })}
-            >
-              <CardHeader>
-                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <AlertTriangle className={css({ h: '5', w: '5', color: 'red.400' })} />
-                  Safety Warnings
-                </CardTitle>
-                <CardDescription>
-                  Important considerations before running this command
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className={css({ spaceY: '3' })}>
-                  {explanation.warnings.map((warning, idx) => (
-                    <div
-                      key={`warning-${idx}-${warning.substring(0, 20)}`}
-                      className={css({
-                        display: 'flex',
-                        alignItems: 'start',
-                        gap: '3',
-                        p: '3',
-                        rounded: 'lg',
-                        bg: 'red.950/50',
-                        border: '1px solid',
-                        borderColor: 'red.500/20',
-                      })}
-                    >
-                      <AlertTriangle
-                        className={css({ h: '5', w: '5', color: 'red.400', flexShrink: '0' })}
-                      />
-                      <p
-                        className={css({ fontSize: 'sm', color: 'red.200', lineHeight: 'relaxed' })}
-                      >
-                        {warning}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Alternatives */}
-          {explanation.alternatives.length > 0 && (
-            <Card
-              className={css({
-                border: '1px solid',
-                borderColor: 'blue.500/20',
-                bg: 'gray.900/50',
-                backdropFilter: 'blur(16px)',
-              })}
-            >
-              <CardHeader>
-                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <ArrowRight className={css({ h: '5', w: '5', color: 'blue.400' })} />
-                  Alternative Commands
-                </CardTitle>
-                <CardDescription>Safer or more efficient alternatives to consider</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className={css({ spaceY: '3' })}>
-                  {explanation.alternatives.map((alt, idx) => (
-                    <div
-                      key={`alt-${idx}-${alt.substring(0, 20)}`}
-                      className={css({
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: '3',
-                        p: '3',
-                        rounded: 'lg',
-                        bg: 'gray.800/30',
-                        border: '1px solid',
-                        borderColor: 'gray.700/30',
-                      })}
-                    >
-                      <code
-                        className={css({
-                          flex: '1',
-                          fontFamily: 'mono',
-                          fontSize: 'sm',
-                          color: 'blue.300',
-                          overflowX: 'auto',
-                        })}
-                      >
-                        {alt}
-                      </code>
-                      <Button
-                        onClick={() => handleCopy(alt)}
-                        size="sm"
-                        variant="ghost"
-                        aria-label="Copy alternative command"
-                        className={css({
-                          gap: '2',
-                          color: 'gray.400',
-                          _hover: {
-                            bg: 'gray.700',
-                            color: 'white',
-                          },
-                        })}
-                      >
-                        <Copy className={css({ h: '4', w: '4' })} />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </motion.div>
-      )}
-
-      {/* Pro Tips */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
       >
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'green.500/20',
+            borderColor: 'teal.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Lightbulb className={css({ h: '5', w: '5', color: 'yellow.400' })} />
-              Pro Tips
-            </CardTitle>
+            <CardTitle>Example Commands</CardTitle>
+            <CardDescription>
+              Try these complex commands to see detailed explanations
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className={css({ spaceY: '3' })}>
-              {[
-                'Use this tool before running unfamiliar commands to understand their impact',
-                'Pay attention to safety warnings for destructive commands',
-                'Try alternative suggestions for safer or more efficient approaches',
-                'Copy breakdown components to learn command syntax step by step',
-              ].map((tip) => (
-                <li
-                  key={tip.substring(0, 30)}
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+                gap: '3',
+              })}
+            >
+              {EXAMPLE_COMMANDS.map((example, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => handleLoadExample(example.command)}
                   className={css({
-                    display: 'flex',
-                    alignItems: 'start',
-                    gap: '3',
-                    fontSize: 'sm',
-                    color: 'gray.400',
+                    textAlign: 'left',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    bg: 'gray.800/50',
+                    p: '4',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer',
+                    _hover: {
+                      bg: 'gray.800',
+                      borderColor: 'teal.500/50',
+                      transform: 'translateY(-2px)',
+                    },
                   })}
                 >
-                  <Check className={css({ h: '5', w: '5', color: 'green.400', flexShrink: '0' })} />
-                  {tip}
-                </li>
+                  <div className={css({ spaceY: '2' })}>
+                    <h4
+                      className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'teal.300' })}
+                    >
+                      {example.title}
+                    </h4>
+                    <code
+                      className={css({
+                        display: 'block',
+                        fontSize: 'xs',
+                        fontFamily: 'mono',
+                        color: 'gray.400',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      })}
+                    >
+                      {example.command}
+                    </code>
+                  </div>
+                </button>
               ))}
-            </ul>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Explanation Results */}
+      {explanation && (
+        <>
+          {/* Overall Purpose */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <Card
+              className={css({
+                border: '1px solid',
+                borderColor: 'green.500/20',
+                bg: 'gray.900/50',
+                backdropFilter: 'blur(16px)',
+              })}
+            >
+              <CardHeader>
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                  <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
+                  <CardTitle>Command Type: {explanation.commandType}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className={css({ fontSize: 'base', color: 'gray.300', lineHeight: '1.8' })}>
+                  {explanation.overallPurpose}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Safety Warnings */}
+          {explanation.safetyWarnings.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              <Card
+                className={css({
+                  border: '1px solid',
+                  borderColor: 'red.500/30',
+                  bg: 'red.500/5',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                    <AlertTriangle className={css({ h: '5', w: '5', color: 'red.400' })} />
+                    <CardTitle className={css({ color: 'red.300' })}>Safety Warnings</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className={css({ spaceY: '2' })}>
+                    {explanation.safetyWarnings.map((warning, index) => (
+                      <li
+                        key={index}
+                        className={css({
+                          fontSize: 'sm',
+                          color: 'red.200',
+                          pl: '4',
+                          position: 'relative',
+                          _before: {
+                            content: '"⚠"',
+                            position: 'absolute',
+                            left: '0',
+                          },
+                        })}
+                      >
+                        {warning}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* Command Breakdown */}
+          {explanation.breakdown.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <Card
+                className={css({
+                  border: '1px solid',
+                  borderColor: 'teal.500/20',
+                  bg: 'gray.900/50',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                    <BookOpen className={css({ h: '5', w: '5', color: 'teal.400' })} />
+                    <CardTitle>Command Breakdown</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className={css({ spaceY: '4' })}>
+                    {explanation.breakdown.map((item, index) => (
+                      <div
+                        key={index}
+                        className={css({
+                          rounded: 'lg',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'gray.800/50',
+                          p: '4',
+                        })}
+                      >
+                        <code
+                          className={css({
+                            display: 'block',
+                            fontSize: 'sm',
+                            fontFamily: 'mono',
+                            fontWeight: 'bold',
+                            color: 'teal.300',
+                            mb: '2',
+                          })}
+                        >
+                          {item.part}
+                        </code>
+                        <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                          {item.explanation}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* Parameters */}
+          {explanation.parameters.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+            >
+              <Card
+                className={css({
+                  border: '1px solid',
+                  borderColor: 'cyan.500/20',
+                  bg: 'gray.900/50',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <CardTitle>Parameters & Flags</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className={css({ spaceY: '3' })}>
+                    {explanation.parameters.map((param, index) => (
+                      <div
+                        key={index}
+                        className={css({
+                          display: 'flex',
+                          gap: '3',
+                          rounded: 'lg',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'gray.800/50',
+                          p: '3',
+                        })}
+                      >
+                        <Badge
+                          className={css({
+                            bg: 'cyan.500/20',
+                            color: 'cyan.300',
+                            border: '1px solid',
+                            borderColor: 'cyan.500/30',
+                            fontFamily: 'mono',
+                            fontSize: 'xs',
+                            flexShrink: '0',
+                          })}
+                        >
+                          {param.parameter}
+                        </Badge>
+                        <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                          {param.description}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* Alternatives */}
+          {explanation.alternatives.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+            >
+              <Card
+                className={css({
+                  border: '1px solid',
+                  borderColor: 'yellow.500/20',
+                  bg: 'yellow.500/5',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                    <Lightbulb className={css({ h: '5', w: '5', color: 'yellow.400' })} />
+                    <CardTitle>Alternative Suggestions</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className={css({ spaceY: '2' })}>
+                    {explanation.alternatives.map((alt, index) => (
+                      <li
+                        key={index}
+                        className={css({
+                          fontSize: 'sm',
+                          color: 'gray.300',
+                          pl: '4',
+                          position: 'relative',
+                          _before: {
+                            content: '"💡"',
+                            position: 'absolute',
+                            left: '0',
+                          },
+                        })}
+                      >
+                        {alt}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </>
+      )}
+
+      {/* Info Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'green.500/20',
+            bg: 'green.500/5',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardContent className={css({ py: '6' })}>
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+              <Sparkles className={css({ h: '6', w: '6', color: 'green.400', flexShrink: '0' })} />
+              <div className={css({ spaceY: '2' })}>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'green.300' })}>
+                  How It Works
+                </h3>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                  <li>• AI analyzes your command and identifies the shell/tool type</li>
+                  <li>• Get detailed breakdowns of each command component</li>
+                  <li>• Understand what each flag and parameter does</li>
+                  <li>• Receive safety warnings for potentially dangerous operations</li>
+                  <li>• Discover safer or more efficient alternatives</li>
+                </ul>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </motion.div>
@@ -728,7 +677,7 @@ function AICommandExplainerContent() {
 
 export default function AICommandExplainerPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<div>Loading...</div>}>
       <AICommandExplainerContent />
     </Suspense>
   )

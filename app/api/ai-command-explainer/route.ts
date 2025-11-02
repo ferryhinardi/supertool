@@ -25,31 +25,40 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No command provided' }, { status: 400 })
     }
 
+    // Validate command length (max 2000 characters for safety)
+    if (command.length > 2000) {
+      return NextResponse.json(
+        { error: 'Command is too long. Maximum 2000 characters allowed.' },
+        { status: 400 }
+      )
+    }
+
     // Define system prompt for command explanation
-    const systemPrompt = `You are an expert systems administrator and CLI command explainer. Analyze and explain complex command-line commands (bash, git, docker, kubectl, etc.) in plain English. Break down each component, flag, and argument clearly.
+    const systemPrompt = `You are an expert in command-line interfaces, shell scripting, and system administration. Your task is to explain CLI commands in a clear, educational way.
 
-For the response, provide:
-1. A brief summary of what the command does
-2. A detailed breakdown of each part of the command
-3. Any safety warnings if the command could be dangerous or destructive
-4. Alternative or safer commands if applicable
+When given a command, provide a comprehensive explanation with:
+1. **Command Type**: Identify the shell/tool (bash, git, docker, kubectl, npm, etc.)
+2. **Overall Purpose**: What does this command accomplish?
+3. **Breakdown**: Explain each part of the command (command, flags, arguments, operators)
+4. **Parameters**: Detail what each flag/option does
+5. **Safety Warnings**: Highlight any potentially dangerous operations (deletions, overwrites, sudo, etc.)
+6. **Alternatives**: Suggest safer or more common alternatives if applicable
 
-Format your response as JSON with these fields:
-- "summary": A 1-2 sentence overview of what the command does
-- "breakdown": An array of objects, each containing:
-  - "component": The part of the command (e.g., "git", "-f", "origin main")
-  - "explanation": What this component does
-- "warnings": An array of warning strings (if any safety concerns exist, otherwise empty array)
-- "alternatives": An array of alternative command strings (if applicable, otherwise empty array)
-- "commandType": The type of command (e.g., "git", "bash", "docker", "kubectl", "general")
+Format your response as JSON with:
+- "commandType": string (e.g., "bash", "git", "docker")
+- "overallPurpose": string (1-2 sentences explaining what the command does)
+- "breakdown": array of objects with "part" (string) and "explanation" (string)
+- "parameters": array of objects with "parameter" (string) and "description" (string)
+- "safetyWarnings": array of strings (warnings about dangerous operations, empty array if none)
+- "alternatives": array of strings (alternative commands or safer approaches, empty array if none)
 
-Be concise but thorough. Focus on practical understanding.`
+Be concise but thorough. Use plain English. Assume the user has basic command-line knowledge but wants to understand the specifics.
+
+Do not add extra commentary outside the JSON structure.`
 
     const userPrompt = `Explain this command:
 
-${command}
-
-Provide a clear breakdown suitable for users learning about CLI commands.`
+${command}`
 
     // Call OpenAI API
     const response = await openai.chat.completions.create({
@@ -77,11 +86,12 @@ Provide a clear breakdown suitable for users learning about CLI commands.`
 
     // Parse the JSON response
     let parsedContent: {
-      summary?: string
-      breakdown?: Array<{ component: string; explanation: string }>
-      warnings?: string[]
-      alternatives?: string[]
       commandType?: string
+      overallPurpose?: string
+      breakdown?: Array<{ part: string; explanation: string }>
+      parameters?: Array<{ parameter: string; description: string }>
+      safetyWarnings?: string[]
+      alternatives?: string[]
     }
     try {
       parsedContent = JSON.parse(content)
@@ -93,18 +103,20 @@ Provide a clear breakdown suitable for users learning about CLI commands.`
       )
     }
 
-    const { summary, breakdown, warnings, alternatives, commandType } = parsedContent
+    const { commandType, overallPurpose, breakdown, parameters, safetyWarnings, alternatives } =
+      parsedContent
 
-    if (!summary || !breakdown) {
+    if (!commandType || !overallPurpose) {
       return NextResponse.json({ error: 'Incomplete explanation in response' }, { status: 500 })
     }
 
     return NextResponse.json({
-      summary,
-      breakdown,
-      warnings: warnings || [],
+      commandType,
+      overallPurpose,
+      breakdown: breakdown || [],
+      parameters: parameters || [],
+      safetyWarnings: safetyWarnings || [],
       alternatives: alternatives || [],
-      commandType: commandType || 'general',
       usage: response.usage,
     })
   } catch (error: unknown) {

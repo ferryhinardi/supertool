@@ -249,6 +249,11 @@ type ToolEvent =
   | 'ai_text_rewriter_clear'
   | 'ai_text_rewriter_load_example'
   | 'ai_text_rewriter_error'
+  | 'ai_command_explainer_open'
+  | 'ai_command_explainer_explain'
+  | 'ai_command_explainer_copy'
+  | 'ai_command_explainer_load_example'
+  | 'ai_command_explainer_error'
 
 // Type-safe gtag wrapper
 declare global {

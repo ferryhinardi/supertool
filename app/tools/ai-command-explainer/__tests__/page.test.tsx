@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -24,7 +24,7 @@ vi.mock('sonner', () => ({
 
 // Mock analytics
 vi.mock('@/lib/analytics', () => ({
-  trackEvent: vi.fn(),
+  trackToolEvent: vi.fn(),
 }))
 
 // Mock clipboard API
@@ -81,35 +81,30 @@ describe('AI Command Explainer - Component Tests', () => {
   it('should display command textarea', () => {
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
     expect(textarea).toBeInTheDocument()
   })
 
   it('should track page visit on mount', () => {
     render(<AICommandExplainerPage />)
 
-    expect(analytics.trackEvent).toHaveBeenCalledWith({
-      action: 'open',
-      category: 'ai_command_explainer',
-    })
+    expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_command_explainer_open', {})
   })
 
-  it('should display pro tips card', () => {
-    render(<AICommandExplainerPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/unfamiliar commands|safety warnings/i)
-  })
-
-  it('should display example commands', () => {
+  it('should display example commands card', () => {
     render(<AICommandExplainerPage />)
 
     expect(screen.getByText('Example Commands')).toBeInTheDocument()
-    expect(screen.getByText('Git Force Push')).toBeInTheDocument()
-    expect(screen.getByText('Docker Multi-Stage')).toBeInTheDocument()
-    expect(screen.getByText('Find & Delete')).toBeInTheDocument()
-    expect(screen.getByText('Kubectl Scale')).toBeInTheDocument()
+    expect(screen.getByText('Docker Container Management')).toBeInTheDocument()
+    expect(screen.getByText('Git Interactive Rebase')).toBeInTheDocument()
+  })
+
+  it('should display how it works section', () => {
+    render(<AICommandExplainerPage />)
+
+    expect(screen.getByText('How It Works')).toBeInTheDocument()
+    const content = document.body.textContent || ''
+    expect(content).toMatch(/AI analyzes your command/i)
   })
 })
 
@@ -121,105 +116,85 @@ describe('AI Command Explainer - Command Input Tests', () => {
   it('should accept user input in textarea', async () => {
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'ls -la')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'docker ps -a' } })
 
-    expect(textarea).toHaveValue('ls -la')
+    expect(textarea).toHaveValue('docker ps -a')
   })
 
-  it('should have disabled button when command is empty', async () => {
+  it('should show error for empty command', async () => {
     render(<AICommandExplainerPage />)
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
     expect(explainButton).toBeDefined()
 
-    // Button should be disabled when command is empty
+    if (explainButton) {
+      await userEvent.click(explainButton)
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith('Please enter a command to explain')
+      })
+    }
+  })
+
+  it('should disable explain button when textarea is empty', () => {
+    render(<AICommandExplainerPage />)
+
+    const buttons = screen.getAllByRole('button')
+    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
+    expect(explainButton).toBeDefined()
+
+    // Button should be disabled when textarea is empty
     expect(explainButton).toHaveAttribute('disabled')
-  })
-
-  it('should enable button when command is entered', async () => {
-    render(<AICommandExplainerPage />)
-
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'ls -la')
-
-    const buttons = screen.getAllByRole('button')
-    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
-    expect(explainButton).toBeDefined()
-    expect(explainButton).not.toHaveAttribute('disabled')
   })
 })
 
-describe('AI Command Explainer - Example Loading Tests', () => {
+describe('AI Command Explainer - Load Example Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('should load example command when clicked', async () => {
+  it('should load example command when example button is clicked', async () => {
     render(<AICommandExplainerPage />)
 
-    const exampleButton = screen.getByText('Git Force Push')
-    const button = exampleButton.closest('button')
-    if (button) await userEvent.click(button)
+    const buttons = screen.getAllByRole('button')
+    const exampleButtons = buttons.filter((btn) =>
+      btn.textContent?.match(/Docker Container Management|Git Interactive Rebase/)
+    )
+    expect(exampleButtons.length).toBeGreaterThan(0)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    expect(textarea).toHaveValue('git push origin main --force')
+    if (exampleButtons[0]) {
+      await userEvent.click(exampleButtons[0])
+
+      const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+      const value = (textarea as HTMLTextAreaElement).value
+      expect(value.length).toBeGreaterThan(0)
+    }
   })
 
   it('should track analytics when loading example', async () => {
     render(<AICommandExplainerPage />)
 
-    const exampleButton = screen.getByText('Docker Multi-Stage')
-    const button = exampleButton.closest('button')
-    if (button) await userEvent.click(button)
-
-    expect(analytics.trackEvent).toHaveBeenCalledWith({
-      action: 'load_example',
-      category: 'ai_command_explainer',
-    })
-  })
-
-  it('should hide examples after explanation', async () => {
-    mockFetch.mockResolvedValueOnce(
-      createMockResponse({
-        summary: 'Lists files in the current directory',
-        breakdown: [
-          { component: 'ls', explanation: 'List files command' },
-          { component: '-la', explanation: 'Long format, all files' },
-        ],
-        warnings: [],
-        alternatives: [],
-        commandType: 'bash',
-        usage: { total_tokens: 100 },
-      })
+    const buttons = screen.getAllByRole('button')
+    const exampleButtons = buttons.filter((btn) =>
+      btn.textContent?.match(/Docker Container Management/)
     )
 
-    render(<AICommandExplainerPage />)
+    if (exampleButtons[0]) {
+      await userEvent.click(exampleButtons[0])
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'ls -la')
-
-    const buttons = screen.getAllByRole('button')
-    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
-
-    if (explainButton) {
-      await userEvent.click(explainButton)
-
-      await waitFor(
-        () => {
-          expect(toast.success).toHaveBeenCalledWith('Command explained successfully!')
-        },
-        { timeout: 5000 }
-      )
-
-      // Example commands should not be visible after explanation
-      expect(screen.queryByText('Example Commands')).not.toBeInTheDocument()
+      await waitFor(() => {
+        expect(analytics.trackToolEvent).toHaveBeenCalledWith(
+          'ai_command_explainer_load_example',
+          expect.any(Object)
+        )
+      })
     }
   })
 })
 
-describe('AI Command Explainer - Command Explanation Tests', () => {
+describe('AI Command Explainer - Explanation Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetch.mockClear()
@@ -228,26 +203,26 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
   it('should explain command successfully', async () => {
     mockFetch.mockResolvedValueOnce(
       createMockResponse({
-        summary: 'Force pushes commits to the main branch',
+        commandType: 'docker',
+        overallPurpose: 'Lists all Docker containers',
         breakdown: [
-          { component: 'git push', explanation: 'Uploads local commits to remote repository' },
-          { component: 'origin', explanation: 'The default remote repository name' },
-          { component: 'main', explanation: 'The branch to push to' },
-          { component: '--force', explanation: 'Overwrites remote history even if it diverges' },
+          { part: 'docker', explanation: 'Docker CLI command' },
+          { part: 'ps', explanation: 'List containers' },
+          { part: '-a', explanation: 'Show all containers (default shows just running)' },
         ],
-        warnings: [
-          'Force push can overwrite commits on the remote branch and cause data loss for collaborators',
+        parameters: [
+          { parameter: '-a', description: 'Show all containers, including stopped ones' },
         ],
-        alternatives: ['git push origin main --force-with-lease'],
-        commandType: 'git',
-        usage: { total_tokens: 250 },
+        safetyWarnings: [],
+        alternatives: ['Use docker container ls -a for newer syntax'],
+        usage: { total_tokens: 200 },
       })
     )
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'git push origin main --force')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'docker ps -a' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
@@ -264,8 +239,8 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
       )
 
       const content = document.body.textContent || ''
-      expect(content).toContain('Force pushes commits to the main branch')
-      expect(content).toContain('Command Breakdown')
+      expect(content).toContain('Lists all Docker containers')
+      expect(content).toContain('Command Type: docker')
     }
   })
 
@@ -277,11 +252,12 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
             () =>
               resolve(
                 createMockResponse({
-                  summary: 'test',
-                  breakdown: [{ component: 'test', explanation: 'test' }],
-                  warnings: [],
-                  alternatives: [],
                   commandType: 'bash',
+                  overallPurpose: 'Test purpose',
+                  breakdown: [],
+                  parameters: [],
+                  safetyWarnings: [],
+                  alternatives: [],
                   usage: { total_tokens: 100 },
                 })
               ),
@@ -292,8 +268,8 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'test command')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'ls -la' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
@@ -312,79 +288,36 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
     }
   })
 
-  it('should display breakdown with numbered steps', async () => {
+  it('should display safety warnings when present', async () => {
     mockFetch.mockResolvedValueOnce(
       createMockResponse({
-        summary: 'Finds and deletes log files',
-        breakdown: [
-          { component: 'find .', explanation: 'Search starting from current directory' },
-          { component: '-name "*.log"', explanation: 'Match files ending with .log' },
-          { component: '-type f', explanation: 'Only match regular files' },
-          { component: '-delete', explanation: 'Delete matched files' },
-        ],
-        warnings: ['This will permanently delete files without confirmation'],
-        alternatives: ['find . -name "*.log" -type f -exec rm -i {} \\;'],
         commandType: 'bash',
-        usage: { total_tokens: 200 },
+        overallPurpose: 'Removes all files in current directory',
+        breakdown: [
+          { part: 'rm', explanation: 'Remove files or directories' },
+          { part: '-rf', explanation: 'Force recursive deletion' },
+        ],
+        parameters: [
+          { parameter: '-r', description: 'Remove directories recursively' },
+          { parameter: '-f', description: 'Force removal without confirmation' },
+        ],
+        safetyWarnings: [
+          'This command will permanently delete files without confirmation',
+          'Be extremely careful with rm -rf as it can delete important data',
+        ],
+        alternatives: ['Use trash command for recoverable deletion'],
+        usage: { total_tokens: 250 },
       })
     )
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'find . -name "*.log" -type f -delete')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'rm -rf *' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
-
-    if (explainButton) {
-      await userEvent.click(explainButton)
-
-      await waitFor(
-        () => {
-          expect(toast.success).toHaveBeenCalledWith('Command explained successfully!')
-        },
-        { timeout: 5000 }
-      )
-
-      const content = document.body.textContent || ''
-      expect(content).toContain('1')
-      expect(content).toContain('2')
-      expect(content).toContain('3')
-      expect(content).toContain('4')
-      expect(content).toContain('find .')
-      expect(content).toContain('-delete')
-    }
-  })
-
-  it('should show safety warnings when present', async () => {
-    mockFetch.mockResolvedValueOnce(
-      createMockResponse({
-        summary: 'Recursively removes directory',
-        breakdown: [
-          {
-            component: 'rm -rf',
-            explanation: 'Remove files/directories recursively without prompt',
-          },
-          { component: '/', explanation: 'Root directory - DANGEROUS!' },
-        ],
-        warnings: [
-          'This command can destroy your entire system',
-          'Never run this command as root or with sudo',
-        ],
-        alternatives: ['Be very specific with the path, e.g., rm -rf ./specific-directory'],
-        commandType: 'bash',
-        usage: { total_tokens: 180 },
-      })
-    )
-
-    render(<AICommandExplainerPage />)
-
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'rm -rf /')
-
-    const buttons = screen.getAllByRole('button')
-    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
+    expect(explainButton).toBeDefined()
 
     if (explainButton) {
       await userEvent.click(explainButton)
@@ -398,65 +331,27 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
 
       const content = document.body.textContent || ''
       expect(content).toContain('Safety Warnings')
-      expect(content).toContain('destroy your entire system')
-    }
-  })
-
-  it('should show alternatives when available', async () => {
-    mockFetch.mockResolvedValueOnce(
-      createMockResponse({
-        summary: 'Force pushes to remote',
-        breakdown: [{ component: 'git push --force', explanation: 'Force push command' }],
-        warnings: ['Can overwrite remote history'],
-        alternatives: [
-          'git push origin main --force-with-lease',
-          'git push origin main --force-if-includes',
-        ],
-        commandType: 'git',
-        usage: { total_tokens: 150 },
-      })
-    )
-
-    render(<AICommandExplainerPage />)
-
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'git push --force')
-
-    const buttons = screen.getAllByRole('button')
-    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
-
-    if (explainButton) {
-      await userEvent.click(explainButton)
-
-      await waitFor(
-        () => {
-          expect(toast.success).toHaveBeenCalledWith('Command explained successfully!')
-        },
-        { timeout: 5000 }
-      )
-
-      const content = document.body.textContent || ''
-      expect(content).toContain('Alternative Commands')
-      expect(content).toContain('--force-with-lease')
+      expect(content).toContain('permanently delete files')
     }
   })
 
   it('should track analytics on successful explanation', async () => {
     mockFetch.mockResolvedValueOnce(
       createMockResponse({
-        summary: 'test',
-        breakdown: [{ component: 'docker', explanation: 'Container command' }],
-        warnings: [],
+        commandType: 'git',
+        overallPurpose: 'Shows git status',
+        breakdown: [],
+        parameters: [],
+        safetyWarnings: [],
         alternatives: [],
-        commandType: 'docker',
-        usage: { total_tokens: 200 },
+        usage: { total_tokens: 150 },
       })
     )
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'docker ps')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'git status' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
@@ -471,12 +366,13 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
         { timeout: 5000 }
       )
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith({
-        action: 'explain',
-        category: 'ai_command_explainer',
-        label: 'docker',
-        value: 200,
-      })
+      expect(analytics.trackToolEvent).toHaveBeenCalledWith(
+        'ai_command_explainer_explain',
+        expect.objectContaining({
+          command_type: 'git',
+          has_warnings: false,
+        })
+      )
     }
   })
 
@@ -487,8 +383,8 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'test command')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'docker ps' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
@@ -508,8 +404,8 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'test command')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'ls -la' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
@@ -529,8 +425,8 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'test command')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'docker ps' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
@@ -540,11 +436,12 @@ describe('AI Command Explainer - Command Explanation Tests', () => {
       await userEvent.click(explainButton)
 
       await waitFor(() => {
-        expect(analytics.trackEvent).toHaveBeenCalledWith({
-          action: 'error',
-          category: 'ai_command_explainer',
-          label: 'explanation_failed',
-        })
+        expect(analytics.trackToolEvent).toHaveBeenCalledWith(
+          'ai_command_explainer_error',
+          expect.objectContaining({
+            error: 'API error',
+          })
+        )
       })
     }
   })
@@ -558,217 +455,107 @@ describe('AI Command Explainer - Copy Functionality Tests', () => {
   })
 
   it('should copy command to clipboard', async () => {
-    mockFetch.mockResolvedValueOnce(
-      createMockResponse({
-        summary: 'Test command',
-        breakdown: [{ component: 'test', explanation: 'test' }],
-        warnings: [],
-        alternatives: [],
-        commandType: 'bash',
-        usage: { total_tokens: 100 },
-      })
-    )
-
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'echo "hello world"')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    const testCommand = 'docker ps -a'
+    fireEvent.change(textarea, { target: { value: testCommand } })
 
     const buttons = screen.getAllByRole('button')
-    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
-    expect(explainButton).toBeDefined()
+    const copyButton = buttons.find((btn) => btn.textContent?.includes('Copy'))
+    expect(copyButton).toBeDefined()
 
-    if (explainButton) {
-      await userEvent.click(explainButton)
+    if (copyButton) {
+      await userEvent.click(copyButton)
 
-      await waitFor(
-        () => {
-          expect(toast.success).toHaveBeenCalledWith('Command explained successfully!')
-        },
-        { timeout: 5000 }
-      )
-
-      const allButtons = screen.getAllByRole('button')
-      const copyButton = allButtons.find((btn) => btn.textContent?.includes('Copy'))
-      expect(copyButton).toBeDefined()
-
-      if (copyButton) {
-        await userEvent.click(copyButton)
-
-        await waitFor(() => {
-          expect(mockWriteText).toHaveBeenCalledWith('echo "hello world"')
-          expect(toast.success).toHaveBeenCalledWith('Copied to clipboard')
-        })
-      }
-    }
-  })
-
-  it('should copy alternative command to clipboard', async () => {
-    mockFetch.mockResolvedValueOnce(
-      createMockResponse({
-        summary: 'Dangerous command that needs alternatives',
-        breakdown: [{ component: 'dangerous-command', explanation: 'A risky command' }],
-        warnings: ['This command is dangerous'],
-        alternatives: ['safer-command --option', 'another-safe-option'],
-        commandType: 'bash',
-        usage: { total_tokens: 100 },
+      await waitFor(() => {
+        expect(mockWriteText).toHaveBeenCalledWith(testCommand)
+        expect(toast.success).toHaveBeenCalledWith('Command copied to clipboard!')
       })
-    )
-
-    render(<AICommandExplainerPage />)
-
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'dangerous-command')
-
-    const buttons = screen.getAllByRole('button')
-    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
-
-    if (explainButton) {
-      await userEvent.click(explainButton)
-
-      await waitFor(
-        () => {
-          expect(toast.success).toHaveBeenCalledWith('Command explained successfully!')
-        },
-        { timeout: 5000 }
-      )
-
-      // Wait for alternatives section to render
-      await waitFor(
-        () => {
-          const content = document.body.textContent || ''
-          expect(content).toContain('safer-command --option')
-        },
-        { timeout: 2000 }
-      )
-
-      // Now check for copy buttons in alternatives section
-      // One main copy button + two alternative copy buttons with aria-label
-      const allButtons = screen.getAllByRole('button')
-      const copyButtons = allButtons.filter(
-        (btn) =>
-          btn.textContent?.includes('Copy') || btn.getAttribute('aria-label')?.includes('Copy')
-      )
-      // Should have at least 3 copy buttons: one main + one for each alternative
-      expect(copyButtons.length).toBeGreaterThanOrEqual(3)
     }
   })
 
   it('should track analytics when copying', async () => {
-    mockFetch.mockResolvedValueOnce(
-      createMockResponse({
-        summary: 'Test command',
-        breakdown: [{ component: 'test', explanation: 'test' }],
-        warnings: [],
-        alternatives: [],
-        commandType: 'bash',
-        usage: { total_tokens: 100 },
-      })
-    )
-
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'test command')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'git status' } })
 
     const buttons = screen.getAllByRole('button')
-    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
+    const copyButton = buttons.find((btn) => btn.textContent?.includes('Copy'))
 
-    if (explainButton) {
-      await userEvent.click(explainButton)
+    if (copyButton) {
+      await userEvent.click(copyButton)
 
-      await waitFor(
-        () => {
-          expect(toast.success).toHaveBeenCalledWith('Command explained successfully!')
-        },
-        { timeout: 5000 }
-      )
-
-      const allButtons = screen.getAllByRole('button')
-      const copyButton = allButtons.find((btn) => btn.textContent?.includes('Copy'))
-
-      if (copyButton) {
-        await userEvent.click(copyButton)
-
-        await waitFor(() => {
-          expect(analytics.trackEvent).toHaveBeenCalledWith({
-            action: 'copy',
-            category: 'ai_command_explainer',
-          })
-        })
-      }
+      await waitFor(() => {
+        expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_command_explainer_copy', {})
+      })
     }
   })
 })
 
-describe('AI Command Explainer - Clear Functionality Tests', () => {
+describe('AI Command Explainer - Breakdown Display Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetch.mockClear()
   })
 
-  it('should clear command and explanation', async () => {
+  it('should display command breakdown', async () => {
     mockFetch.mockResolvedValueOnce(
       createMockResponse({
-        summary: 'Test command',
-        breakdown: [{ component: 'test', explanation: 'test' }],
-        warnings: [],
+        commandType: 'docker',
+        overallPurpose: 'Run a container',
+        breakdown: [
+          { part: 'docker run', explanation: 'Create and start a new container' },
+          { part: '-d', explanation: 'Run container in detached mode' },
+          { part: 'nginx', explanation: 'Use nginx image' },
+        ],
+        parameters: [],
+        safetyWarnings: [],
         alternatives: [],
-        commandType: 'bash',
-        usage: { total_tokens: 100 },
       })
     )
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'test command')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'docker run -d nginx' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
-    expect(explainButton).toBeDefined()
 
     if (explainButton) {
       await userEvent.click(explainButton)
 
-      await waitFor(
-        () => {
-          expect(toast.success).toHaveBeenCalledWith('Command explained successfully!')
-        },
-        { timeout: 5000 }
-      )
+      await waitFor(() => {
+        expect(screen.getByText('Command Breakdown')).toBeInTheDocument()
+      })
 
-      const allButtons = screen.getAllByRole('button')
-      const clearButton = allButtons.find((btn) => btn.textContent?.includes('Clear'))
-      expect(clearButton).toBeDefined()
-
-      if (clearButton) {
-        await userEvent.click(clearButton)
-
-        await waitFor(() => {
-          expect(textarea).toHaveValue('')
-          expect(screen.queryByText('Command Breakdown')).not.toBeInTheDocument()
-        })
-      }
+      const content = document.body.textContent || ''
+      expect(content).toContain('docker run')
+      expect(content).toContain('Create and start a new container')
     }
   })
 
-  it('should show examples again after clearing', async () => {
+  it('should display parameters section', async () => {
     mockFetch.mockResolvedValueOnce(
       createMockResponse({
-        summary: 'Test command',
-        breakdown: [{ component: 'test', explanation: 'test' }],
-        warnings: [],
+        commandType: 'docker',
+        overallPurpose: 'Run a container',
+        breakdown: [],
+        parameters: [
+          { parameter: '-d', description: 'Run in detached mode' },
+          { parameter: '-p', description: 'Publish a container port to the host' },
+        ],
+        safetyWarnings: [],
         alternatives: [],
-        commandType: 'bash',
-        usage: { total_tokens: 100 },
       })
     )
 
     render(<AICommandExplainerPage />)
 
-    const textarea = screen.getByPlaceholderText(/git push origin main/)
-    await userEvent.type(textarea, 'test command')
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'docker run -d -p 8080:80 nginx' } })
 
     const buttons = screen.getAllByRole('button')
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
@@ -776,27 +563,48 @@ describe('AI Command Explainer - Clear Functionality Tests', () => {
     if (explainButton) {
       await userEvent.click(explainButton)
 
-      await waitFor(
-        () => {
-          expect(toast.success).toHaveBeenCalledWith('Command explained successfully!')
-        },
-        { timeout: 5000 }
-      )
+      await waitFor(() => {
+        expect(screen.getByText('Parameters & Flags')).toBeInTheDocument()
+      })
 
-      // Examples should be hidden
-      expect(screen.queryByText('Example Commands')).not.toBeInTheDocument()
+      const content = document.body.textContent || ''
+      expect(content).toContain('-d')
+      expect(content).toContain('Run in detached mode')
+    }
+  })
 
-      const allButtons = screen.getAllByRole('button')
-      const clearButton = allButtons.find((btn) => btn.textContent?.includes('Clear'))
+  it('should display alternatives section', async () => {
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
+        commandType: 'bash',
+        overallPurpose: 'Find files',
+        breakdown: [],
+        parameters: [],
+        safetyWarnings: [],
+        alternatives: [
+          'Use fd command for faster file searching',
+          'Use ripgrep (rg) for content search',
+        ],
+      })
+    )
 
-      if (clearButton) {
-        await userEvent.click(clearButton)
+    render(<AICommandExplainerPage />)
 
-        await waitFor(() => {
-          // Examples should be visible again
-          expect(screen.getByText('Example Commands')).toBeInTheDocument()
-        })
-      }
+    const textarea = screen.getByPlaceholderText(/e.g., docker run/i)
+    fireEvent.change(textarea, { target: { value: 'find . -name "*.js"' } })
+
+    const buttons = screen.getAllByRole('button')
+    const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
+
+    if (explainButton) {
+      await userEvent.click(explainButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alternative Suggestions')).toBeInTheDocument()
+      })
+
+      const content = document.body.textContent || ''
+      expect(content).toContain('fd command for faster file searching')
     }
   })
 })

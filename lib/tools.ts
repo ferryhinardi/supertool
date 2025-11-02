@@ -576,7 +576,6 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-cyan-500',
     features: ['UUID v1-v5', 'Bulk Generate', 'Validation', 'Format Check'],
     category: 'data',
-    comingSoon: false,
   },
   {
     title: 'Date Formatter & Parser',
@@ -742,7 +741,6 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Pattern Rules', 'Find & Replace', 'Sequential Numbers', 'Preview Changes'],
     category: 'productivity',
-    comingSoon: false,
   },
   {
     title: 'JSON to Markdown Table',
@@ -797,7 +795,6 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-red-500',
     features: ['MIME Type', 'File Hash', 'Size Analysis', 'No Upload Required'],
     category: 'development',
-    comingSoon: false,
     premium: true,
   },
 
@@ -823,7 +820,6 @@ export const tools: Tool[] = [
     gradient: 'from-purple-500 to-pink-500',
     features: ['Prompt Analysis', 'Optimization Tips', 'Best Practices', 'AI Insights'],
     category: 'development',
-    comingSoon: false,
     premium: true,
   },
   {
@@ -835,7 +831,6 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-cyan-500',
     features: ['AI Summaries', 'Bullet Points', 'Adjustable Length', 'Key Highlights'],
     category: 'productivity',
-    comingSoon: false,
     premium: true,
   },
   {
@@ -859,7 +854,6 @@ export const tools: Tool[] = [
     gradient: 'from-indigo-500 to-purple-500',
     features: ['Similarity Score', 'NLP Analysis', 'Batch Compare', 'Highlight Matches'],
     category: 'productivity',
-    comingSoon: false,
     premium: false,
   },
 
@@ -873,7 +867,6 @@ export const tools: Tool[] = [
     gradient: 'from-violet-500 to-fuchsia-500',
     features: ['Tone Control', 'Style Adjustment', 'Multiple Variants', 'Preserve Meaning'],
     category: 'productivity',
-    comingSoon: false,
     premium: false,
   },
   {
@@ -885,7 +878,6 @@ export const tools: Tool[] = [
     gradient: 'from-blue-500 to-indigo-500',
     features: ['Structure Summary', 'Pattern Detection', 'Relationship Mapping', 'Debug Insights'],
     category: 'development',
-    comingSoon: false,
     premium: true,
   },
   {
@@ -902,8 +894,8 @@ export const tools: Tool[] = [
       'Alternative Suggestions',
     ],
     category: 'development',
-    comingSoon: true,
-    premium: true,
+    comingSoon: false,
+    premium: false,
   },
   {
     title: 'AI Image Caption Generator',
@@ -930,7 +922,6 @@ export const tools: Tool[] = [
     gradient: 'from-orange-500 to-amber-500',
     features: ['Multi-Language Support', 'Context-Aware', 'Instant Generation', 'Code Explanation'],
     category: 'development',
-    comingSoon: false,
     premium: true,
   },
 ]

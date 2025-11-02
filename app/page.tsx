@@ -40,7 +40,10 @@ import { css } from '@/styled-system/css'
 
 // Lazy load non-critical components to reduce initial bundle size
 const RecentTools = dynamic(
-  () => import('@/components/features/RecentTools').then((mod) => ({ default: mod.RecentTools })),
+  () =>
+    import('@/components/features/RecentTools').then((mod) => ({
+      default: mod.RecentTools,
+    })),
   {
     ssr: false,
     loading: () => null,
@@ -48,7 +51,10 @@ const RecentTools = dynamic(
 )
 
 const AdContainer = dynamic(
-  () => import('@/components/features/AdContainer').then((mod) => ({ default: mod.AdContainer })),
+  () =>
+    import('@/components/features/AdContainer').then((mod) => ({
+      default: mod.AdContainer,
+    })),
   {
     ssr: false,
     loading: () => null,
@@ -57,7 +63,9 @@ const AdContainer = dynamic(
 
 const FeedbackDialog = dynamic(
   () =>
-    import('@/components/features/FeedbackDialog').then((mod) => ({ default: mod.FeedbackDialog })),
+    import('@/components/features/FeedbackDialog').then((mod) => ({
+      default: mod.FeedbackDialog,
+    })),
   {
     ssr: false,
   }
@@ -65,7 +73,9 @@ const FeedbackDialog = dynamic(
 
 const TreatMeDialog = dynamic(
   () =>
-    import('@/components/features/TreatMeDialog').then((mod) => ({ default: mod.TreatMeDialog })),
+    import('@/components/features/TreatMeDialog').then((mod) => ({
+      default: mod.TreatMeDialog,
+    })),
   {
     ssr: false,
   }
@@ -1338,6 +1348,24 @@ function ToolCard({
                     </Badge>
                   )}
 
+                  {tool.premium && (
+                    <Badge
+                      variant="secondary"
+                      size="sm"
+                      className={css({
+                        bg: 'violet.500/20',
+                        px: '2.5',
+                        py: '1',
+                        color: 'violet.300',
+                        border: '1px solid',
+                        borderColor: 'violet.500/30',
+                      })}
+                    >
+                      <Star className={css({ mr: '1', h: '3.5', w: '3.5' })} />
+                      Pro
+                    </Badge>
+                  )}
+
                   {isComingSoon && (
                     <Badge
                       variant="warning"
@@ -1506,6 +1534,23 @@ function ToolCard({
                     })}
                   >
                     <Sparkles className={css({ h: '3.5', w: '3.5' })} />
+                  </Badge>
+                )}
+
+                {tool.premium && (
+                  <Badge
+                    variant="secondary"
+                    size="sm"
+                    className={css({
+                      bg: 'violet.500/20',
+                      px: '2',
+                      py: '1',
+                      color: 'violet.300',
+                      border: '1px solid',
+                      borderColor: 'violet.500/30',
+                    })}
+                  >
+                    <Star className={css({ h: '3.5', w: '3.5' })} />
                   </Badge>
                 )}
 
