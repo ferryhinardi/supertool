@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { trackToolEvent } from '@/lib/analytics'
+import { CURRENCIES } from '@/lib/currency'
 import { css } from '@/styled-system/css'
 
 interface LineItem {
@@ -67,19 +68,8 @@ const DEFAULT_INVOICE: InvoiceData = {
   taxRate: 0,
   discountAmount: 0,
   notes: '',
-  currency: 'USD',
+  currency: 'IDR',
 }
-
-const CURRENCIES = [
-  { code: 'USD', symbol: '$', name: 'US Dollar' },
-  { code: 'EUR', symbol: '€', name: 'Euro' },
-  { code: 'GBP', symbol: '£', name: 'British Pound' },
-  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
-  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
-  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
-  { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
-  { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar' },
-]
 
 export default function InvoiceGeneratorPage() {
   const [invoice, setInvoice] = useState<InvoiceData>(DEFAULT_INVOICE)
@@ -151,7 +141,10 @@ export default function InvoiceGeneratorPage() {
   }
 
   const handleSaveInvoice = () => {
-    const invoiceToSave = { ...invoice, id: invoice.id || Date.now().toString() }
+    const invoiceToSave = {
+      ...invoice,
+      id: invoice.id || Date.now().toString(),
+    }
     const existingIndex = savedInvoices.findIndex((inv) => inv.id === invoiceToSave.id)
 
     let updatedInvoices: InvoiceData[]
@@ -415,7 +408,13 @@ export default function InvoiceGeneratorPage() {
           })}
         >
           <FileSpreadsheet className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.300' })}>
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'blue.300',
+            })}
+          >
             Professional Invoicing
           </span>
         </div>
@@ -516,7 +515,10 @@ export default function InvoiceGeneratorPage() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: 'minmax(0, 2fr) minmax(0, 1fr)' },
+          gridTemplateColumns: {
+            base: '1fr',
+            lg: 'minmax(0, 2fr) minmax(0, 1fr)',
+          },
           gap: '6',
         })}
       >
@@ -551,14 +553,23 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="invoice-number"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Invoice Number
                     </label>
                     <Input
                       id="invoice-number"
                       value={invoice.invoiceNumber}
-                      onChange={(e) => setInvoice({ ...invoice, invoiceNumber: e.target.value })}
+                      onChange={(e) =>
+                        setInvoice({
+                          ...invoice,
+                          invoiceNumber: e.target.value,
+                        })
+                      }
                       className={css({
                         bg: 'gray.800/50',
                         border: '1px solid',
@@ -569,7 +580,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="currency"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Currency
                     </label>
@@ -606,7 +621,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="invoice-date"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Invoice Date
                     </label>
@@ -625,7 +644,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="due-date"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Due Date
                     </label>
@@ -661,7 +684,13 @@ export default function InvoiceGeneratorPage() {
               })}
             >
               <CardHeader>
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   <Building2 className={css({ h: '5', w: '5', color: 'blue.400' })} />
                   <CardTitle>From (Your Company)</CardTitle>
                 </div>
@@ -670,7 +699,11 @@ export default function InvoiceGeneratorPage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="from-company"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.300',
+                    })}
                   >
                     Company Name *
                   </label>
@@ -696,7 +729,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="from-email"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Email
                     </label>
@@ -716,7 +753,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="from-phone"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Phone
                     </label>
@@ -737,7 +778,11 @@ export default function InvoiceGeneratorPage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="from-address"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.300',
+                    })}
                   >
                     Address
                   </label>
@@ -772,7 +817,13 @@ export default function InvoiceGeneratorPage() {
               })}
             >
               <CardHeader>
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   <User className={css({ h: '5', w: '5', color: 'indigo.400' })} />
                   <CardTitle>Bill To (Client)</CardTitle>
                 </div>
@@ -781,7 +832,11 @@ export default function InvoiceGeneratorPage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="to-company"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.300',
+                    })}
                   >
                     Client Name *
                   </label>
@@ -807,7 +862,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="to-email"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Email
                     </label>
@@ -827,7 +886,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="to-phone"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Phone
                     </label>
@@ -848,7 +911,11 @@ export default function InvoiceGeneratorPage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="to-address"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.300',
+                    })}
                   >
                     Address
                   </label>
@@ -927,7 +994,11 @@ export default function InvoiceGeneratorPage() {
                       })}
                     >
                       <span
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.400' })}
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.400',
+                        })}
                       >
                         Item #{index + 1}
                       </span>
@@ -949,7 +1020,11 @@ export default function InvoiceGeneratorPage() {
                     <div className={css({ spaceY: '2' })}>
                       <label
                         htmlFor={`description-${item.id}`}
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
                       >
                         Description *
                       </label>
@@ -1090,7 +1165,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="tax-rate"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Tax Rate (%)
                     </label>
@@ -1101,7 +1180,12 @@ export default function InvoiceGeneratorPage() {
                       max="100"
                       step="0.01"
                       value={invoice.taxRate}
-                      onChange={(e) => setInvoice({ ...invoice, taxRate: Number(e.target.value) })}
+                      onChange={(e) =>
+                        setInvoice({
+                          ...invoice,
+                          taxRate: Number(e.target.value),
+                        })
+                      }
                       className={css({
                         bg: 'gray.800/50',
                         border: '1px solid',
@@ -1112,7 +1196,11 @@ export default function InvoiceGeneratorPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="discount"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Discount ({selectedCurrency.symbol})
                     </label>
@@ -1123,7 +1211,10 @@ export default function InvoiceGeneratorPage() {
                       step="0.01"
                       value={invoice.discountAmount}
                       onChange={(e) =>
-                        setInvoice({ ...invoice, discountAmount: Number(e.target.value) })
+                        setInvoice({
+                          ...invoice,
+                          discountAmount: Number(e.target.value),
+                        })
                       }
                       className={css({
                         bg: 'gray.800/50',
