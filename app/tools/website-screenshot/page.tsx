@@ -77,20 +77,23 @@ export default function WebsiteScreenshotPage() {
       const normalizedUrl = normalizeUrl(url)
       const device = DEVICE_SIZES[deviceSize]
 
-      // Using ScreenshotOne API (Free tier available)
-      // You can replace this with any screenshot service API
-      // Alternative services: ApiFlash, ScreenshotAPI, URLBox, etc.
-
-      // For demo purposes, we'll use a screenshot API that doesn't require authentication
-      // In production, you should use your own API key
-      const screenshotApiUrl = `https://api.screenshotone.com/take?url=${encodeURIComponent(normalizedUrl)}&viewport_width=${device.width}&viewport_height=${device.height}&device_scale_factor=2&format=png&block_ads=true&block_cookie_banners=true&block_trackers=true&cache=false${captureMode === 'fullpage' ? '&full_page=true' : ''}`
-
-      // Note: In production, you should make this request through your own API endpoint
-      // to keep your API key secure. For now, we'll use the public endpoint
-      const response = await fetch(screenshotApiUrl)
+      // Call our server-side API endpoint that securely handles the screenshot capture
+      const response = await fetch('/api/screenshot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: normalizedUrl,
+          width: device.width,
+          height: device.height,
+          fullPage: captureMode === 'fullpage',
+        }),
+      })
 
       if (!response.ok) {
-        throw new Error(`Screenshot service returned ${response.status}`)
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `Screenshot service returned ${response.status}`)
       }
 
       const blob = await response.blob()
