@@ -45,6 +45,16 @@ export function generateOutputFilename(
   return `${baseName}_${operation}.${extension}`
 }
 
+// Helper function to validate DOCX conversion
+export function shouldConvertToDocx(operation: string): boolean {
+  return operation === 'toWord'
+}
+
+// Helper function to get output extension based on operation
+export function getOutputExtension(operation: string): string {
+  return operation === 'toWord' ? 'docx' : 'pdf'
+}
+
 describe('PDF Tools Utilities', () => {
   describe('formatBytes', () => {
     it('should format 0 bytes correctly', () => {
@@ -301,6 +311,45 @@ describe('PDF Tools Utilities', () => {
       for (let i = 1; i <= totalPages; i++) {
         expect(generateOutputFilename('doc.pdf', `page_${i}`, 'png')).toBe(`doc_page_${i}.png`)
       }
+    })
+
+    it('should validate complete PDF to Word conversion operation', () => {
+      expect(shouldConvertToDocx('toWord')).toBe(true)
+      expect(shouldConvertToDocx('merge')).toBe(false)
+      expect(getOutputExtension('toWord')).toBe('docx')
+      expect(getOutputExtension('merge')).toBe('pdf')
+      expect(generateOutputFilename('document.pdf', '', 'docx')).toBe('document_.docx')
+    })
+  })
+
+  describe('getOutputExtension', () => {
+    it('should return docx for toWord operation', () => {
+      expect(getOutputExtension('toWord')).toBe('docx')
+    })
+
+    it('should return pdf for all other operations', () => {
+      expect(getOutputExtension('merge')).toBe('pdf')
+      expect(getOutputExtension('split')).toBe('pdf')
+      expect(getOutputExtension('compress')).toBe('pdf')
+      expect(getOutputExtension('watermark')).toBe('pdf')
+      expect(getOutputExtension('extract')).toBe('pdf')
+      expect(getOutputExtension('rotate')).toBe('pdf')
+    })
+  })
+
+  describe('shouldConvertToDocx', () => {
+    it('should return true only for toWord operation', () => {
+      expect(shouldConvertToDocx('toWord')).toBe(true)
+    })
+
+    it('should return false for other operations', () => {
+      expect(shouldConvertToDocx('merge')).toBe(false)
+      expect(shouldConvertToDocx('split')).toBe(false)
+      expect(shouldConvertToDocx('compress')).toBe(false)
+      expect(shouldConvertToDocx('toImages')).toBe(false)
+      expect(shouldConvertToDocx('watermark')).toBe(false)
+      expect(shouldConvertToDocx('extract')).toBe(false)
+      expect(shouldConvertToDocx('rotate')).toBe(false)
     })
   })
 

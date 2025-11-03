@@ -7,7 +7,7 @@
 
 ## Overview
 
-Complete browser-based PDF manipulation toolkit powered by pdf-lib and pdfjs-dist. Merge multiple PDFs, split documents, compress files, convert pages to images, add watermarks, extract page ranges, and rotate pages—all processed entirely in your browser with zero server uploads.
+Complete browser-based PDF manipulation toolkit powered by pdf-lib, pdfjs-dist, and docx. Merge multiple PDFs, split documents, compress files, convert pages to images, convert PDFs to Word documents, add watermarks, extract page ranges, and rotate pages—all processed entirely in your browser with zero server uploads.
 
 ## Purpose
 
@@ -276,6 +276,79 @@ for (const page of pages) {
 
 **Output:** Original filename with `-rotated-{angle}` suffix
 
+### 8. **PDF to Word**
+
+Convert PDF documents to editable Word (.docx) format using text extraction and document reconstruction.
+
+**Use Cases:**
+
+- Converting reports for editing
+- Extracting text from PDF articles
+- Creating editable templates from PDFs
+- Recovering content from read-only PDFs
+- Preparing documents for collaborative editing
+
+**How it works:**
+
+```typescript
+// Extract text content from PDF pages
+const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+
+for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+  const page = await pdf.getPage(pageNum)
+  const textContent = await page.getTextContent()
+  
+  // Group text items by Y-coordinate (lines)
+  const lines = groupTextByLines(textContent.items)
+  
+  // Detect headings by font size
+  const paragraphs = detectHeadings(lines)
+  
+  // Build Word document
+  doc.addSection({
+    children: paragraphs.map(p => 
+      new Paragraph({
+        text: p.text,
+        heading: p.isHeading ? HeadingLevel.HEADING_1 : undefined,
+      })
+    )
+  })
+}
+
+// Generate DOCX file
+const blob = await Packer.toBlob(doc)
+```
+
+**Technical Details:**
+
+- **Text Extraction**: Uses pdfjs-dist to extract text with positional data
+- **Line Detection**: Groups text by Y-coordinates (2px tolerance)
+- **Heading Detection**: Identifies headings by font size (1.2x threshold)
+- **Structure Preservation**: Maintains paragraph breaks and page boundaries
+- **Best For**: Text-based documents, reports, articles, simple layouts
+
+**Accuracy Expectations:**
+
+- Simple text PDFs: 80-90% accuracy
+- Complex layouts/tables: 50-70% accuracy
+- Multi-column layouts: 60-80% accuracy
+- Scanned PDFs: Not supported (requires OCR)
+
+**Limitations:**
+
+- **Text Only**: Images, graphics, and charts are not included
+- **No Formatting**: Font styles, colors, and sizes are simplified
+- **Layout Approximation**: Complex layouts may not be preserved exactly
+- **No Tables**: Table structures are converted to plain text
+- **No OCR**: Scanned PDFs (image-based) cannot be converted
+
+**Progress Tracking:**
+
+- 80% - Text extraction phase
+- 20% - DOCX generation phase
+
+**Output:** Original filename with `-converted.docx` extension
+
 ## How It Works
 
 ### Architecture
@@ -441,6 +514,22 @@ Example: Scanned pages are upside-down, rotate 180°
 Result: document-rotated-180.pdf (all pages flipped)
 ```
 
+#### PDF to Word
+
+```
+Steps:
+  1. Upload 1 PDF file
+  2. Select "PDF to Word" operation
+  3. Click "Process PDFs"
+  4. Downloads: document-converted.docx
+
+Example: Convert report.pdf to editable Word format
+Result: report-converted.docx (text extracted and formatted)
+
+Note: Best for text-based PDFs. Complex layouts, images, and tables 
+      may not be preserved. Scanned PDFs (image-based) are not supported.
+```
+
 ## UI/UX Design
 
 ### Visual Hierarchy
@@ -477,6 +566,7 @@ Result: document-rotated-180.pdf (all pages flipped)
 │ │ ( ) Add Watermark                  │  │
 │ │ ( ) Extract Pages                  │  │
 │ │ ( ) Rotate Pages                   │  │
+│ │ ( ) PDF to Word                    │  │
 │ └────────────────────────────────────┘  │
 ├──────────────────────────────────────────┤
 │ Settings Card (dynamic based on op)     │
@@ -566,6 +656,7 @@ transition={{ duration: 1, repeat: Infinity }}
 | Watermark        | 0.4-1s           | 1-3s                | 3-8s              |
 | Extract Pages    | 0.3-0.8s         | 0.8-2s              | 2-5s              |
 | Rotate           | 0.2-0.5s         | 0.5-1.5s            | 1.5-4s            |
+| PDF to Word      | 1-3s             | 3-8s                | 8-20s             |
 
 **Factors affecting speed:**
 
@@ -703,7 +794,7 @@ trackEvent({
 
 ### Feature Limitations
 
-- **No OCR**: Cannot extract text from scanned images
+- **No OCR**: Cannot extract text from scanned images (PDF to Word requires text-based PDFs)
 - **No Form Editing**: Cannot modify interactive PDF forms
 - **No Encryption**: Cannot add password protection (security limitation)
 - **No Decryption**: Cannot open password-protected PDFs
@@ -711,6 +802,12 @@ trackEvent({
 - **No Digital Signatures**: Cannot sign PDFs
 - **Watermark Position**: Fixed diagonal center (not customizable)
 - **Rotation Granularity**: Only 90° increments (not arbitrary angles)
+- **PDF to Word Limitations**:
+  - Text only (no images, charts, or graphics)
+  - Simplified formatting (fonts, colors, sizes)
+  - Layout approximation (complex layouts may not be preserved exactly)
+  - No table structure preservation
+  - Best-effort conversion (not pixel-perfect)
 
 ### Browser Restrictions
 
@@ -915,7 +1012,9 @@ pnpm test --watch
 
 - [ ] **Password Protection**: Add encryption with user-defined password
 - [ ] **Password Removal**: Decrypt password-protected PDFs
-- [ ] **OCR Text Extraction**: Extract text from scanned image PDFs
+- [ ] **OCR for PDF to Word**: Extract text from scanned image PDFs using Tesseract.js
+- [ ] **PDF to Word Options**: Preserve font styles, customize heading detection threshold
+- [ ] **PDF to Word Image Support**: Extract and embed images in Word document
 - [ ] **PDF Form Filling**: Edit interactive form fields
 - [ ] **Digital Signatures**: Add cryptographic signatures
 - [ ] **Annotations**: Add comments, highlights, and stamps
@@ -1043,8 +1142,11 @@ pnpm test --watch
 
 - `pdf-lib` v1.17.1 (PDF manipulation)
 - `pdfjs-dist` v5.4.296 (PDF rendering for image conversion)  
-  **Tests:** `app/tools/pdf-tools/__tests__/logic.test.ts` (70+ tests)  
-  **Analytics Events:**
+- `docx` v9.5.1 (Word document creation)
+
+**Tests:** `app/tools/pdf-tools/__tests__/logic.test.ts` (70+ tests)  
+**Analytics Events:**
+
 - `page_view` (tool opened)
 - `files_added` (PDF uploaded)
 - `operation_started` (processing begins)

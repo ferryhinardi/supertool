@@ -9,6 +9,7 @@ import {
   Copy,
   Download,
   Droplet,
+  FileOutput,
   FileText,
   Image as ImageIcon,
   Merge,
@@ -85,6 +86,7 @@ type OperationType =
   | 'watermark'
   | 'extract'
   | 'rotate'
+  | 'toWord'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -607,6 +609,162 @@ export default function PDFToolsPage() {
     }
   }
 
+  const convertToWord = async (pdf: PDFFile) => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      // Initialize pdfjs dynamically
+      const pdfjs = await initPdfjs()
+      // Import docx library dynamically
+      const { Document, Paragraph, TextRun, HeadingLevel, Packer } = await import('docx')
+
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+      const pdfDoc = await loadingTask.promise
+
+      const paragraphs: any[] = []
+
+      // Extract text from each page
+      for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+        const page = await pdfDoc.getPage(pageNum)
+        const textContent = await page.getTextContent()
+
+        updatePdfStatus(pdf.id, {
+          status: 'processing',
+          progress: (pageNum / pdfDoc.numPages) * 80, // Reserve 20% for DOCX generation
+        })
+
+        // Group text items by line (similar Y coordinates)
+        const lines: Map<number, any[]> = new Map()
+        const tolerance = 2 // Y-coordinate tolerance for grouping
+
+        for (const item of textContent.items) {
+          if ('str' in item && item.str.trim()) {
+            const y = Math.round(item.transform[5] / tolerance) * tolerance
+            if (!lines.has(y)) {
+              lines.set(y, [])
+            }
+            lines.get(y)?.push(item)
+          }
+        }
+
+        // Sort lines by Y coordinate (top to bottom)
+        const sortedLines = Array.from(lines.entries()).sort((a, b) => b[0] - a[0])
+
+        // Add page header if multiple pages
+        if (pdfDoc.numPages > 1) {
+          paragraphs.push(
+            new Paragraph({
+              text: `--- Page ${pageNum} ---`,
+              heading: HeadingLevel.HEADING_2,
+              spacing: { before: 240, after: 120 },
+            })
+          )
+        }
+
+        // Convert each line to a paragraph
+        for (const [_, lineItems] of sortedLines) {
+          // Sort items in line by X coordinate (left to right)
+          lineItems.sort((a, b) => a.transform[4] - b.transform[4])
+
+          const textRuns: any[] = []
+          let previousX = -1
+          let previousFontSize = -1
+
+          for (const item of lineItems) {
+            const text = item.str
+            const x = item.transform[4]
+            const fontSize = item.transform[0]
+
+            // Detect if this is a potential heading (larger font)
+            const isLarger = previousFontSize > 0 && fontSize > previousFontSize * 1.2
+
+            // Add space between words if X gap is significant
+            if (previousX !== -1 && x - previousX > fontSize * 0.3) {
+              textRuns.push(new TextRun(' '))
+            }
+
+            textRuns.push(
+              new TextRun({
+                text: text,
+                bold: isLarger,
+                size: Math.round(fontSize * 2), // Convert to half-points
+              })
+            )
+
+            previousX = x + text.length * fontSize * 0.5
+            previousFontSize = fontSize
+          }
+
+          if (textRuns.length > 0) {
+            paragraphs.push(
+              new Paragraph({
+                children: textRuns,
+                spacing: { after: 120 },
+              })
+            )
+          }
+        }
+
+        // Add page break between pages (except last page)
+        if (pageNum < pdfDoc.numPages) {
+          paragraphs.push(
+            new Paragraph({
+              text: '',
+              pageBreakBefore: true,
+            })
+          )
+        }
+      }
+
+      updatePdfStatus(pdf.id, {
+        status: 'processing',
+        progress: 90,
+      })
+
+      // Create Word document
+      const doc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: paragraphs,
+          },
+        ],
+      })
+
+      // Generate DOCX blob
+      const blob = await Packer.toBlob(doc)
+
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: blob,
+        processedSize: blob.size,
+      })
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'pdf_to_word',
+        category: 'pdf_tools',
+        label: 'convert_to_word',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error converting to Word:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to convert to Word',
+      })
+
+      trackEvent({
+        action: 'to_word_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
+
   const handleProcess = async () => {
     setIsProcessing(true)
 
@@ -633,6 +791,9 @@ export default function PDFToolsPage() {
             break
           case 'rotate':
             await rotatePDF(pdf)
+            break
+          case 'toWord':
+            await convertToWord(pdf)
             break
         }
       }
@@ -700,7 +861,7 @@ export default function PDFToolsPage() {
         label: 'download_split',
       })
     } else {
-      // Download single PDF
+      // Download single PDF or DOCX
       if (!pdf.processedBlob) return
 
       const url = URL.createObjectURL(pdf.processedBlob)
@@ -708,6 +869,8 @@ export default function PDFToolsPage() {
       a.href = url
 
       let suffix = ''
+      let extension = '.pdf'
+
       switch (operation) {
         case 'merge':
           suffix = '_merged'
@@ -724,9 +887,13 @@ export default function PDFToolsPage() {
         case 'rotate':
           suffix = '_rotated'
           break
+        case 'toWord':
+          suffix = ''
+          extension = '.docx'
+          break
       }
 
-      a.download = pdf.name.replace('.pdf', `${suffix}.pdf`)
+      a.download = pdf.name.replace('.pdf', `${suffix}${extension}`)
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -769,6 +936,7 @@ export default function PDFToolsPage() {
     { value: 'watermark', label: 'Watermark', icon: Droplet },
     { value: 'extract', label: 'Extract Pages', icon: Copy },
     { value: 'rotate', label: 'Rotate', icon: RotateCw },
+    { value: 'toWord', label: 'PDF to Word', icon: FileOutput },
   ]
 
   return (
@@ -1698,8 +1866,8 @@ export default function PDFToolsPage() {
           },
           {
             icon: Merge,
-            title: '7 Powerful Tools',
-            description: 'Merge, split, compress, convert, and more.',
+            title: '8 Powerful Tools',
+            description: 'Merge, split, compress, convert to Word/images, and more.',
           },
           {
             icon: FileText,
