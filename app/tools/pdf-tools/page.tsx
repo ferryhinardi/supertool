@@ -9,6 +9,7 @@ import {
   Copy,
   Download,
   Droplet,
+  Edit3,
   FileOutput,
   FileText,
   Image as ImageIcon,
@@ -24,6 +25,7 @@ import type * as PdfLibTypes from 'pdf-lib'
 import type * as PdfjsTypes from 'pdfjs-dist'
 import { useCallback, useEffect, useState } from 'react'
 import { DragDropZone } from '@/components/features/DragDropZone'
+import { PDFEditor } from '@/components/features/PDFEditor'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -78,6 +80,21 @@ interface PDFFile {
   processedSize?: number
 }
 
+interface Annotation {
+  id: string
+  type: 'select' | 'text' | 'highlight' | 'rectangle' | 'circle' | 'line'
+  page: number
+  x: number
+  y: number
+  width?: number
+  height?: number
+  x2?: number
+  y2?: number
+  text?: string
+  color: string
+  fontSize?: number
+}
+
 type OperationType =
   | 'merge'
   | 'split'
@@ -87,11 +104,16 @@ type OperationType =
   | 'extract'
   | 'rotate'
   | 'toWord'
+  | 'edit'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
   const [operation, setOperation] = useState<OperationType>('merge')
   const [isProcessing, setIsProcessing] = useState(false)
+
+  // Edit options
+  const [editingPdf, setEditingPdf] = useState<PDFFile | null>(null)
+  const [_isEditorOpen, setIsEditorOpen] = useState(false)
 
   // Split options
   const [splitPageNumber, setSplitPageNumber] = useState(1)
@@ -447,6 +469,7 @@ export default function PDFToolsPage() {
       const pdfDoc = await PDFDocument.load(arrayBuffer)
       const pages = pdfDoc.getPages()
 
+      // biome-ignore lint/suspicious/noExplicitAny: pdf-lib types compatibility
       pages.forEach((page: any, index: number) => {
         const { width, height } = page.getSize()
 
@@ -569,6 +592,7 @@ export default function PDFToolsPage() {
       const pages = pdfDoc.getPages()
 
       pages.forEach((page: any, index: number) => {
+        // biome-ignore lint/suspicious/noExplicitAny: pdf-lib types compatibility
         page.setRotation(degrees(rotationAngle))
 
         updatePdfStatus(pdf.id, {
@@ -623,6 +647,7 @@ export default function PDFToolsPage() {
       const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
       const pdfDoc = await loadingTask.promise
 
+      // biome-ignore lint/suspicious/noExplicitAny: pdfjs document structure
       const paragraphs: any[] = []
 
       // Extract text from each page
@@ -636,6 +661,7 @@ export default function PDFToolsPage() {
         })
 
         // Group text items by line (similar Y coordinates)
+        // biome-ignore lint/suspicious/noExplicitAny: pdfjs text content items
         const lines: Map<number, any[]> = new Map()
         const tolerance = 2 // Y-coordinate tolerance for grouping
 
@@ -669,6 +695,7 @@ export default function PDFToolsPage() {
           lineItems.sort((a, b) => a.transform[4] - b.transform[4])
 
           const textRuns: any[] = []
+          // biome-ignore lint/suspicious/noExplicitAny: pdfjs text run structure
           let previousX = -1
           let previousFontSize = -1
 
@@ -765,11 +792,167 @@ export default function PDFToolsPage() {
     }
   }
 
+  // Apply annotations to PDF using pdf-lib
+  const applyAnnotationsToPDF = async (pdf: PDFFile, annotations: Annotation[]): Promise<void> => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 10 })
+
+    try {
+      const { PDFDocument, rgb } = await loadPdfLib()
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const pdfDoc = await PDFDocument.load(arrayBuffer)
+
+      // Helper to convert hex color to RGB
+      const hexToRgb = (hex: string) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+        return result
+          ? {
+              r: Number.parseInt(result[1], 16) / 255,
+              g: Number.parseInt(result[2], 16) / 255,
+              b: Number.parseInt(result[3], 16) / 255,
+            }
+          : { r: 0, g: 0, b: 0 }
+      }
+
+      updatePdfStatus(pdf.id, { progress: 30 })
+
+      // Group annotations by page
+      const annotationsByPage = annotations.reduce(
+        (acc, ann) => {
+          if (!acc[ann.page]) acc[ann.page] = []
+          acc[ann.page].push(ann)
+          return acc
+        },
+        {} as Record<number, Annotation[]>
+      )
+
+      updatePdfStatus(pdf.id, { progress: 50 })
+
+      // Apply annotations to each page
+      for (const [pageNum, pageAnnotations] of Object.entries(annotationsByPage)) {
+        const pageIndex = Number.parseInt(pageNum, 10) - 1
+        const page = pdfDoc.getPages()[pageIndex]
+        if (!page) continue
+
+        const { height } = page.getSize()
+
+        for (const ann of pageAnnotations) {
+          const color = hexToRgb(ann.color)
+          // Convert coordinates (canvas has origin at top-left, PDF has origin at bottom-left)
+          const pdfY = height - ann.y
+
+          switch (ann.type) {
+            case 'text':
+              if (ann.text) {
+                page.drawText(ann.text, {
+                  x: ann.x,
+                  y: pdfY,
+                  size: ann.fontSize || 16,
+                  color: rgb(color.r, color.g, color.b),
+                })
+              }
+              break
+
+            case 'highlight':
+              if (ann.width && ann.height) {
+                page.drawRectangle({
+                  x: ann.x,
+                  y: pdfY - (ann.height || 0),
+                  width: ann.width,
+                  height: ann.height,
+                  color: rgb(color.r, color.g, color.b),
+                  opacity: 0.3,
+                })
+              }
+              break
+
+            case 'rectangle':
+              if (ann.width && ann.height) {
+                page.drawRectangle({
+                  x: ann.x,
+                  y: pdfY - (ann.height || 0),
+                  width: ann.width,
+                  height: ann.height,
+                  borderColor: rgb(color.r, color.g, color.b),
+                  borderWidth: 2,
+                })
+              }
+              break
+
+            case 'circle':
+              if (ann.width && ann.height) {
+                const radius = Math.sqrt(ann.width ** 2 + ann.height ** 2) / 2
+                page.drawCircle({
+                  x: ann.x,
+                  y: pdfY,
+                  size: radius,
+                  borderColor: rgb(color.r, color.g, color.b),
+                  borderWidth: 2,
+                })
+              }
+              break
+
+            case 'line':
+              if (ann.x2 !== undefined && ann.y2 !== undefined) {
+                const pdfY2 = height - ann.y2
+                page.drawLine({
+                  start: { x: ann.x, y: pdfY },
+                  end: { x: ann.x2, y: pdfY2 },
+                  color: rgb(color.r, color.g, color.b),
+                  thickness: 2,
+                })
+              }
+              break
+          }
+        }
+      }
+
+      updatePdfStatus(pdf.id, { progress: 80 })
+
+      const pdfBytes = await pdfDoc.save()
+      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: blob,
+        processedSize: blob.size,
+      })
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'pdf_edited',
+        category: 'pdf_tools',
+        label: 'edit_pdf',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error editing PDF:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to edit PDF',
+      })
+
+      trackEvent({
+        action: 'edit_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
   const handleProcess = async () => {
     setIsProcessing(true)
 
     if (operation === 'merge') {
       await mergePDFs()
+    } else if (operation === 'edit') {
+      const pendingPdfs = pdfs.filter((p) => p.status === 'pending')
+      if (pendingPdfs.length > 0) {
+        setEditingPdf(pendingPdfs[0])
+        setIsEditorOpen(true)
+      }
+      setIsProcessing(false)
+      return
     } else {
       const pendingPdfs = pdfs.filter((p) => p.status === 'pending')
       for (const pdf of pendingPdfs) {
@@ -891,6 +1074,9 @@ export default function PDFToolsPage() {
           suffix = ''
           extension = '.docx'
           break
+        case 'edit':
+          suffix = '_edited'
+          break
       }
 
       a.download = pdf.name.replace('.pdf', `${suffix}${extension}`)
@@ -937,6 +1123,7 @@ export default function PDFToolsPage() {
     { value: 'extract', label: 'Extract Pages', icon: Copy },
     { value: 'rotate', label: 'Rotate', icon: RotateCw },
     { value: 'toWord', label: 'PDF to Word', icon: FileOutput },
+    { value: 'edit', label: 'Edit PDF', icon: Edit3 },
   ]
 
   return (
@@ -1917,6 +2104,23 @@ export default function PDFToolsPage() {
           </Card>
         ))}
       </motion.div>
+
+      {editingPdf && (
+        <PDFEditor
+          pdfFile={editingPdf.file}
+          onSave={async (annotations) => {
+            setIsEditorOpen(false)
+            if (annotations.length > 0) {
+              await applyAnnotationsToPDF(editingPdf, annotations)
+            }
+            setEditingPdf(null)
+          }}
+          onClose={() => {
+            setIsEditorOpen(false)
+            setEditingPdf(null)
+          }}
+        />
+      )}
     </main>
   )
 }
