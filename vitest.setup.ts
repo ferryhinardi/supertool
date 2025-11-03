@@ -1,5 +1,5 @@
 import { cleanup } from '@testing-library/react'
-import { afterEach, beforeAll, expect } from 'vitest'
+import { afterEach, beforeAll, beforeEach, expect, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 
 // Setup global mocks before all tests
@@ -115,11 +115,39 @@ beforeAll(async () => {
       })
     }
   }
+
+  // Mock clipboard API globally - make it writable so tests can spy on it
+  if (!navigator.clipboard) {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: (text: string) => Promise.resolve(),
+        readText: () => Promise.resolve(''),
+      },
+      writable: true,
+      configurable: true,
+    })
+  }
+})
+
+// Setup spies before each test
+beforeEach(() => {
+  // Reset and spy on clipboard methods for each test
+  if (navigator.clipboard) {
+    // Check if methods exist before spying
+    if (typeof navigator.clipboard.writeText === 'function') {
+      vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue()
+    }
+    if (typeof navigator.clipboard.readText === 'function') {
+      vi.spyOn(navigator.clipboard, 'readText').mockResolvedValue('')
+    }
+  }
 })
 
 // Cleanup after each test case
 afterEach(() => {
   cleanup()
+  // Clear all mocks after each test
+  vi.clearAllMocks()
 })
 
 // Extend Vitest's expect with jest-dom matchers

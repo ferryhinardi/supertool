@@ -4,13 +4,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import TextSimilarityPage from '../page'
 
-// Mock clipboard API
-Object.assign(navigator, {
-  clipboard: {
-    writeText: vi.fn(),
-  },
-})
-
 describe('Text Similarity Checker Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()

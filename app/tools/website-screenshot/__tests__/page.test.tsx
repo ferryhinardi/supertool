@@ -242,7 +242,11 @@ describe('Website Screenshot Tool - Component Tests', () => {
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('url=https%3A%2F%2Fexample.com')
+        '/api/screenshot',
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('"url":"https://example.com"'),
+        })
       )
     })
   })
@@ -343,8 +347,13 @@ describe('Website Screenshot Tool - Component Tests', () => {
     await userEvent.click(captureButton)
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('viewport_width=375'))
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('viewport_height=667'))
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/api/screenshot',
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringMatching(/"width":375.*"height":667/),
+        })
+      )
     })
   })
 
@@ -368,7 +377,13 @@ describe('Website Screenshot Tool - Component Tests', () => {
     await userEvent.click(captureButton)
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('full_page=true'))
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/api/screenshot',
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('"fullPage":true'),
+        })
+      )
     })
   })
 

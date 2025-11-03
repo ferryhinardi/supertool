@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import KeywordDensityPage from '../page'
 
@@ -8,15 +8,6 @@ import KeywordDensityPage from '../page'
 vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
-
-// Mock clipboard API - ensure it's available before tests run
-beforeAll(() => {
-  Object.assign(navigator, {
-    clipboard: {
-      writeText: vi.fn(() => Promise.resolve()),
-    },
-  })
-})
 
 describe('Keyword Density Analyzer Page', () => {
   describe('Initial Render', () => {
@@ -240,8 +231,8 @@ describe('Keyword Density Analyzer Page', () => {
       })
 
       // Mock URL.createObjectURL and anchor click
-      global.URL.createObjectURL = vi.fn(() => 'blob:test')
-      global.URL.revokeObjectURL = vi.fn()
+      globalThis.URL.createObjectURL = vi.fn(() => 'blob:test')
+      globalThis.URL.revokeObjectURL = vi.fn()
       const clickSpy = vi.fn()
       HTMLAnchorElement.prototype.click = clickSpy
 

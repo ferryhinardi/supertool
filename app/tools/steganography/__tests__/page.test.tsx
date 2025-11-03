@@ -9,13 +9,6 @@ vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-Object.assign(navigator, {
-  clipboard: {
-    writeText: vi.fn(() => Promise.resolve()),
-  },
-})
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {

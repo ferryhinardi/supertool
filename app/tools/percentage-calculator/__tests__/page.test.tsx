@@ -25,13 +25,6 @@ vi.mock('nuqs', () => ({
   },
 }))
 
-// Mock clipboard API
-Object.assign(navigator, {
-  clipboard: {
-    writeText: vi.fn(() => Promise.resolve()),
-  },
-})
-
 describe('Percentage Calculator Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()

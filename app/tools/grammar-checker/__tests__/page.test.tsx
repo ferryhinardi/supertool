@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/vitest'
 import GrammarCheckerPage from '../page'
 
 // Mock fetch
-global.fetch = vi.fn()
+globalThis.fetch = vi.fn()
 
 describe('Grammar Checker Page', () => {
   beforeEach(() => {
@@ -148,7 +148,7 @@ describe('Grammar Checker Page', () => {
         issueCount: 0,
       }
 
-      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       })
@@ -164,7 +164,7 @@ describe('Grammar Checker Page', () => {
       await userEvent.click(checkButton)
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith(
+        expect(globalThis.fetch).toHaveBeenCalledWith(
           '/api/grammar-check',
           expect.objectContaining({
             method: 'POST',
@@ -175,7 +175,7 @@ describe('Grammar Checker Page', () => {
     })
 
     it('shows loading state during check', async () => {
-      ;(global.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
         () => new Promise((resolve) => setTimeout(resolve, 100))
       )
 
@@ -201,7 +201,7 @@ describe('Grammar Checker Page', () => {
         issueCount: 0,
       }
 
-      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       })
@@ -240,7 +240,7 @@ describe('Grammar Checker Page', () => {
         issueCount: 1,
       }
 
-      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       })
@@ -280,7 +280,7 @@ describe('Grammar Checker Page', () => {
         issueCount: 1,
       }
 
-      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       })
@@ -302,7 +302,7 @@ describe('Grammar Checker Page', () => {
     })
 
     it('handles API errors gracefully', async () => {
-      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,
         json: async () => ({ error: 'API error' }),
       })
@@ -342,7 +342,7 @@ describe('Grammar Checker Page', () => {
         issueCount: 1,
       }
 
-      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       })
@@ -391,7 +391,7 @@ describe('Grammar Checker Page', () => {
         issueCount: 1,
       }
 
-      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       })

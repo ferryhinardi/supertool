@@ -204,8 +204,8 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
     const { trackToolEvent } = await import('@/lib/analytics')
 
     // Mock URL.createObjectURL and revokeObjectURL
-    global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
-    global.URL.revokeObjectURL = vi.fn()
+    globalThis.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
+    globalThis.URL.revokeObjectURL = vi.fn()
 
     render(<JSONToMarkdownTablePage />)
 
