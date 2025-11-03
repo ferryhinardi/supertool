@@ -451,7 +451,6 @@ export const tools: Tool[] = [
     gradient: 'from-gray-500 to-slate-700',
     features: ['Zero-Width Encoding', 'Invisible Text', 'Decode Messages', 'Copy & Share'],
     category: 'security',
-    comingSoon: true,
   },
   {
     title: 'File Integrity Verifier',

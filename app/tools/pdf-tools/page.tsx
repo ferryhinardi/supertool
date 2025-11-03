@@ -790,15 +790,15 @@ export default function PDFToolsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        style={{
+        className={css({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '1rem',
+          gap: '4',
           textAlign: 'center',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
+          w: 'full',
+          maxW: '1400px',
+        })}
       >
         <div
           className={css({
@@ -814,8 +814,22 @@ export default function PDFToolsPage() {
             backdropFilter: 'blur(4px)',
           })}
         >
-          <FileText className="h-5 w-5 text-red-400" />
-          <span className="text-sm font-semibold text-red-300">Professional PDF Processing</span>
+          <FileText
+            className={css({
+              h: '5',
+              w: '5',
+              color: 'red.400',
+            })}
+          />
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'red.300',
+            })}
+          >
+            Professional PDF Processing
+          </span>
         </div>
 
         <h1
@@ -824,7 +838,16 @@ export default function PDFToolsPage() {
             fontWeight: 'bold',
           })}
         >
-          <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
+          <span
+            className={css({
+              bgGradient: 'to-r',
+              gradientFrom: 'red.400',
+              gradientVia: 'orange.400',
+              gradientTo: 'yellow.400',
+              bgClip: 'text',
+              color: 'transparent',
+            })}
+          >
             PDF Tools Suite
           </span>
         </h1>
@@ -848,40 +871,104 @@ export default function PDFToolsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          style={{
+          className={css({
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '1rem',
-            width: '100%',
-            maxWidth: '1400px',
-          }}
-          className="sm:grid-cols-3"
+            w: 'full',
+            gap: '4',
+            gridTemplateColumns: {
+              base: 'repeat(2, 1fr)',
+              sm: 'repeat(3, 1fr)',
+            },
+            maxW: '1400px',
+          })}
         >
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardContent>
               <div className={css({ p: '4', textAlign: 'center' })}>
-                <div className="mb-2 text-2xl font-bold text-red-400">{pdfs.length}</div>
-                <div className="text-xs text-gray-400">Total PDFs</div>
+                <div
+                  className={css({
+                    mb: '2',
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'red.400',
+                  })}
+                >
+                  {pdfs.length}
+                </div>
+                <div
+                  className={css({
+                    fontSize: 'xs',
+                    color: 'gray.400',
+                  })}
+                >
+                  Total PDFs
+                </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardContent>
               <div className={css({ p: '4', textAlign: 'center' })}>
-                <div className="mb-2 text-2xl font-bold text-orange-400">
+                <div
+                  className={css({
+                    mb: '2',
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'orange.400',
+                  })}
+                >
                   {pdfs.reduce((sum, pdf) => sum + pdf.pages, 0)}
                 </div>
-                <div className="text-xs text-gray-400">Total Pages</div>
+                <div
+                  className={css({
+                    fontSize: 'xs',
+                    color: 'gray.400',
+                  })}
+                >
+                  Total Pages
+                </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardContent>
               <div className={css({ p: '4', textAlign: 'center' })}>
-                <div className="mb-2 text-2xl font-bold text-yellow-400">
+                <div
+                  className={css({
+                    mb: '2',
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'yellow.400',
+                  })}
+                >
                   {formatBytes(pdfs.reduce((sum, pdf) => sum + pdf.size, 0))}
                 </div>
-                <div className="text-xs text-gray-400">Total Size</div>
+                <div
+                  className={css({
+                    fontSize: 'xs',
+                    color: 'gray.400',
+                  })}
+                >
+                  Total Size
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -902,14 +989,34 @@ export default function PDFToolsPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          style={{ width: '100%' }}
-          className="lg:col-span-1"
+          className={css({
+            w: 'full',
+            gridColumn: { base: 'span 1', lg: 'span 1' },
+          })}
         >
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5 text-red-400" />
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <Settings
+                    className={css({
+                      h: '5',
+                      w: '5',
+                      color: 'red.400',
+                    })}
+                  />
                   Operations
                 </CardTitle>
                 <CardDescription>Choose a PDF operation to perform</CardDescription>
@@ -919,7 +1026,14 @@ export default function PDFToolsPage() {
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
                 {/* Operation Selection */}
                 <div className={css({ spaceY: '2' })}>
-                  <label htmlFor="operation-select" className="text-sm font-medium text-gray-300">
+                  <label
+                    htmlFor="operation-select"
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.300',
+                    })}
+                  >
                     Select Operation
                   </label>
                   <div id="operation-select" className={css({ spaceY: '2' })}>
@@ -936,13 +1050,27 @@ export default function PDFToolsPage() {
                             label: op.value,
                           })
                         }}
-                        className={`w-full justify-start gap-2 ${
-                          operation === op.value
-                            ? 'border-red-500/50 bg-red-500/20 text-red-200'
-                            : 'border-gray-700'
-                        }`}
+                        className={css({
+                          w: 'full',
+                          justifyContent: 'start',
+                          gap: '2',
+                          ...(operation === op.value
+                            ? {
+                                borderColor: 'red.500/50',
+                                bg: 'red.500/20',
+                                color: 'red.200',
+                              }
+                            : {
+                                borderColor: 'gray.700',
+                              }),
+                        })}
                       >
-                        <op.icon className="h-4 w-4" />
+                        <op.icon
+                          className={css({
+                            h: '4',
+                            w: '4',
+                          })}
+                        />
                         {op.label}
                       </Button>
                     ))}
@@ -952,7 +1080,14 @@ export default function PDFToolsPage() {
                 {/* Operation-specific settings */}
                 {operation === 'split' && (
                   <div className={css({ spaceY: '2' })}>
-                    <label htmlFor="split-page" className="text-sm font-medium text-gray-300">
+                    <label
+                      htmlFor="split-page"
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
+                    >
                       Split at Page
                     </label>
                     <input
@@ -960,17 +1095,45 @@ export default function PDFToolsPage() {
                       type="number"
                       value={splitPageNumber}
                       onChange={(e) => setSplitPageNumber(Number(e.target.value))}
-                      className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-red-500 focus:outline-none"
+                      className={css({
+                        w: 'full',
+                        rounded: 'md',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800',
+                        px: '3',
+                        py: '2',
+                        fontSize: 'sm',
+                        color: 'gray.100',
+                        _focus: {
+                          borderColor: 'red.500',
+                          outline: 'none',
+                        },
+                      })}
                       min="1"
                     />
-                    <p className="text-xs text-gray-500">Pages 1-N will be in part 1</p>
+                    <p
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'gray.500',
+                      })}
+                    >
+                      Pages 1-N will be in part 1
+                    </p>
                   </div>
                 )}
 
                 {operation === 'watermark' && (
                   <>
                     <div className={css({ spaceY: '2' })}>
-                      <label htmlFor="watermark-text" className="text-sm font-medium text-gray-300">
+                      <label
+                        htmlFor="watermark-text"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
                         Watermark Text
                       </label>
                       <input
@@ -978,7 +1141,21 @@ export default function PDFToolsPage() {
                         type="text"
                         value={watermarkText}
                         onChange={(e) => setWatermarkText(e.target.value)}
-                        className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-red-500 focus:outline-none"
+                        className={css({
+                          w: 'full',
+                          rounded: 'md',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'gray.800',
+                          px: '3',
+                          py: '2',
+                          fontSize: 'sm',
+                          color: 'gray.100',
+                          _focus: {
+                            borderColor: 'red.500',
+                            outline: 'none',
+                          },
+                        })}
                       />
                     </div>
                     <div className={css({ spaceY: '3' })}>
@@ -991,11 +1168,21 @@ export default function PDFToolsPage() {
                       >
                         <label
                           htmlFor="watermark-opacity"
-                          className="text-sm font-medium text-gray-300"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                          })}
                         >
                           Opacity
                         </label>
-                        <span className="text-sm font-bold text-red-400">
+                        <span
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'bold',
+                            color: 'red.400',
+                          })}
+                        >
                           {Math.round(watermarkOpacity * 100)}%
                         </span>
                       </div>
@@ -1007,7 +1194,10 @@ export default function PDFToolsPage() {
                         step="0.1"
                         value={watermarkOpacity}
                         onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
-                        className="w-full accent-red-500"
+                        className={css({
+                          w: 'full',
+                          accentColor: 'red.500',
+                        })}
                       />
                     </div>
                   </>
@@ -1015,7 +1205,15 @@ export default function PDFToolsPage() {
 
                 {operation === 'extract' && (
                   <div className={css({ spaceY: '2' })}>
-                    <div className="text-sm font-medium text-gray-300">Page Range</div>
+                    <div
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
+                    >
+                      Page Range
+                    </div>
                     <div
                       className={css({
                         display: 'grid',
@@ -1025,7 +1223,15 @@ export default function PDFToolsPage() {
                       })}
                     >
                       <div>
-                        <label htmlFor="extract-from" className="mb-1 block text-xs text-gray-400">
+                        <label
+                          htmlFor="extract-from"
+                          className={css({
+                            mb: '1',
+                            display: 'block',
+                            fontSize: 'xs',
+                            color: 'gray.400',
+                          })}
+                        >
                           From
                         </label>
                         <input
@@ -1033,12 +1239,34 @@ export default function PDFToolsPage() {
                           type="number"
                           value={extractStartPage}
                           onChange={(e) => setExtractStartPage(Number(e.target.value))}
-                          className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-red-500 focus:outline-none"
+                          className={css({
+                            w: 'full',
+                            rounded: 'md',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            bg: 'gray.800',
+                            px: '3',
+                            py: '2',
+                            fontSize: 'sm',
+                            color: 'gray.100',
+                            _focus: {
+                              borderColor: 'red.500',
+                              outline: 'none',
+                            },
+                          })}
                           min="1"
                         />
                       </div>
                       <div>
-                        <label htmlFor="extract-to" className="mb-1 block text-xs text-gray-400">
+                        <label
+                          htmlFor="extract-to"
+                          className={css({
+                            mb: '1',
+                            display: 'block',
+                            fontSize: 'xs',
+                            color: 'gray.400',
+                          })}
+                        >
                           To
                         </label>
                         <input
@@ -1046,7 +1274,21 @@ export default function PDFToolsPage() {
                           type="number"
                           value={extractEndPage}
                           onChange={(e) => setExtractEndPage(Number(e.target.value))}
-                          className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-red-500 focus:outline-none"
+                          className={css({
+                            w: 'full',
+                            rounded: 'md',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            bg: 'gray.800',
+                            px: '3',
+                            py: '2',
+                            fontSize: 'sm',
+                            color: 'gray.100',
+                            _focus: {
+                              borderColor: 'red.500',
+                              outline: 'none',
+                            },
+                          })}
                           min="1"
                         />
                       </div>
@@ -1056,7 +1298,15 @@ export default function PDFToolsPage() {
 
                 {operation === 'rotate' && (
                   <div className={css({ spaceY: '2' })}>
-                    <div className="text-sm font-medium text-gray-300">Rotation Angle</div>
+                    <div
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
+                    >
+                      Rotation Angle
+                    </div>
                     <div
                       className={css({
                         display: 'grid',
@@ -1071,11 +1321,17 @@ export default function PDFToolsPage() {
                           variant={rotationAngle === angle ? 'default' : 'outline'}
                           size="sm"
                           onClick={() => setRotationAngle(angle)}
-                          className={`${
-                            rotationAngle === angle
-                              ? 'border-red-500/50 bg-red-500/20 text-red-200'
-                              : 'border-gray-700'
-                          }`}
+                          className={css({
+                            ...(rotationAngle === angle
+                              ? {
+                                  borderColor: 'red.500/50',
+                                  bg: 'red.500/20',
+                                  color: 'red.200',
+                                }
+                              : {
+                                  borderColor: 'gray.700',
+                                }),
+                          })}
                         >
                           {angle}°
                         </Button>
@@ -1089,18 +1345,43 @@ export default function PDFToolsPage() {
                   <Button
                     onClick={handleProcess}
                     disabled={pdfs.length === 0 || isProcessing}
-                    className="w-full gap-2 bg-red-600 hover:bg-red-700"
+                    className={css({
+                      w: 'full',
+                      gap: '2',
+                      bg: 'red.600',
+                      _hover: {
+                        bg: 'red.700',
+                      },
+                    })}
                   >
-                    <Zap className="h-4 w-4" />
+                    <Zap
+                      className={css({
+                        h: '4',
+                        w: '4',
+                      })}
+                    />
                     Process PDFs
                   </Button>
                   <Button
                     variant="outline"
                     onClick={handleClearAll}
                     disabled={pdfs.length === 0}
-                    className="w-full gap-2 border-red-500/30 text-red-400 hover:bg-red-500/10"
+                    className={css({
+                      w: 'full',
+                      gap: '2',
+                      borderColor: 'red.500/30',
+                      color: 'red.400',
+                      _hover: {
+                        bg: 'red.500/10',
+                      },
+                    })}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2
+                      className={css({
+                        h: '4',
+                        w: '4',
+                      })}
+                    />
                     Clear All
                   </Button>
                 </div>
@@ -1114,14 +1395,34 @@ export default function PDFToolsPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          style={{ width: '100%' }}
-          className="lg:col-span-2"
+          className={css({
+            w: 'full',
+            gridColumn: { base: 'span 1', lg: 'span 2' },
+          })}
         >
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-red-400" />
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <FileText
+                    className={css({
+                      h: '5',
+                      w: '5',
+                      color: 'red.400',
+                    })}
+                  />
                   PDF Files ({pdfs.length})
                 </CardTitle>
                 <CardDescription>
@@ -1148,7 +1449,9 @@ export default function PDFToolsPage() {
                       accept="application/pdf"
                       maxSize={100 * 1024 * 1024}
                       multiple
-                      className="!py-8"
+                      className={css({
+                        py: '8',
+                      })}
                     />
 
                     <div
@@ -1191,9 +1494,21 @@ export default function PDFToolsPage() {
                                 })}
                               >
                                 {pdf.status === 'completed' ? (
-                                  <CheckCircle className="h-8 w-8 text-red-400" />
+                                  <CheckCircle
+                                    className={css({
+                                      h: '8',
+                                      w: '8',
+                                      color: 'red.400',
+                                    })}
+                                  />
                                 ) : (
-                                  <FileText className="h-8 w-8 text-gray-400" />
+                                  <FileText
+                                    className={css({
+                                      h: '8',
+                                      w: '8',
+                                      color: 'gray.400',
+                                    })}
+                                  />
                                 )}
                               </div>
 
@@ -1209,7 +1524,14 @@ export default function PDFToolsPage() {
                                   })}
                                 >
                                   <div className={css({ minW: '0', flex: '1' })}>
-                                    <p className="truncate text-sm font-medium text-gray-200">
+                                    <p
+                                      className={css({
+                                        truncate: true,
+                                        fontSize: 'sm',
+                                        fontWeight: 'medium',
+                                        color: 'gray.200',
+                                      })}
+                                    >
                                       {pdf.name}
                                     </p>
                                     <div
@@ -1228,7 +1550,11 @@ export default function PDFToolsPage() {
                                       {pdf.processedSize && (
                                         <>
                                           <span>→</span>
-                                          <span className="text-red-400">
+                                          <span
+                                            className={css({
+                                              color: 'red.400',
+                                            })}
+                                          >
                                             {formatBytes(pdf.processedSize)}
                                           </span>
                                         </>
@@ -1243,18 +1569,44 @@ export default function PDFToolsPage() {
                                         size="sm"
                                         variant="ghost"
                                         onClick={() => handleDownload(pdf)}
-                                        className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
+                                        className={css({
+                                          h: '8',
+                                          w: '8',
+                                          p: '0',
+                                          color: 'red.400',
+                                          _hover: {
+                                            bg: 'red.500/20',
+                                          },
+                                        })}
                                       >
-                                        <Download className="h-4 w-4" />
+                                        <Download
+                                          className={css({
+                                            h: '4',
+                                            w: '4',
+                                          })}
+                                        />
                                       </Button>
                                     )}
                                     <Button
                                       size="sm"
                                       variant="ghost"
                                       onClick={() => handleRemove(pdf.id)}
-                                      className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
+                                      className={css({
+                                        h: '8',
+                                        w: '8',
+                                        p: '0',
+                                        color: 'red.400',
+                                        _hover: {
+                                          bg: 'red.500/20',
+                                        },
+                                      })}
                                     >
-                                      <Trash2 className="h-4 w-4" />
+                                      <Trash2
+                                        className={css({
+                                          h: '4',
+                                          w: '4',
+                                        })}
+                                      />
                                     </Button>
                                   </div>
                                 </div>
@@ -1262,8 +1614,18 @@ export default function PDFToolsPage() {
                                 {/* Progress Bar */}
                                 {pdf.status === 'processing' && (
                                   <div className={css({ spaceY: '1' })}>
-                                    <Progress value={pdf.progress} className="h-2" />
-                                    <p className="text-xs text-gray-500">
+                                    <Progress
+                                      value={pdf.progress}
+                                      className={css({
+                                        h: '2',
+                                      })}
+                                    />
+                                    <p
+                                      className={css({
+                                        fontSize: 'xs',
+                                        color: 'gray.500',
+                                      })}
+                                    >
                                       Processing... {Math.round(pdf.progress)}%
                                     </p>
                                   </div>
@@ -1271,12 +1633,26 @@ export default function PDFToolsPage() {
 
                                 {/* Error Message */}
                                 {pdf.status === 'error' && (
-                                  <p className="text-xs text-red-400">{pdf.error}</p>
+                                  <p
+                                    className={css({
+                                      fontSize: 'xs',
+                                      color: 'red.400',
+                                    })}
+                                  >
+                                    {pdf.error}
+                                  </p>
                                 )}
 
                                 {/* Status */}
                                 {pdf.status === 'pending' && (
-                                  <p className="text-xs text-gray-500">Ready to process</p>
+                                  <p
+                                    className={css({
+                                      fontSize: 'xs',
+                                      color: 'gray.500',
+                                    })}
+                                  >
+                                    Ready to process
+                                  </p>
                                 )}
                               </div>
                             </div>
@@ -1297,14 +1673,17 @@ export default function PDFToolsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        style={{
+        className={css({
           display: 'grid',
-          gap: '1rem',
-          gridTemplateColumns: '1fr',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
-        className="sm:grid-cols-2 lg:grid-cols-4"
+          w: 'full',
+          gap: '4',
+          gridTemplateColumns: {
+            base: '1fr',
+            sm: 'repeat(2, 1fr)',
+            lg: 'repeat(4, 1fr)',
+          },
+          maxW: '1400px',
+        })}
       >
         {[
           {
@@ -1330,13 +1709,41 @@ export default function PDFToolsPage() {
         ].map((feature) => (
           <Card
             key={feature.title}
-            className="border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm"
+            className={css({
+              borderColor: 'gray.800',
+              bgGradient: 'to-br',
+              gradientFrom: 'gray.900/50',
+              gradientTo: 'gray.900/30',
+              backdropFilter: 'blur(4px)',
+            })}
           >
             <CardContent>
               <div className={css({ p: '6' })}>
-                <feature.icon className="mb-3 h-8 w-8 text-red-400" />
-                <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
-                <p className="text-sm text-gray-500">{feature.description}</p>
+                <feature.icon
+                  className={css({
+                    mb: '3',
+                    h: '8',
+                    w: '8',
+                    color: 'red.400',
+                  })}
+                />
+                <h3
+                  className={css({
+                    mb: '2',
+                    fontWeight: 'semibold',
+                    color: 'gray.200',
+                  })}
+                >
+                  {feature.title}
+                </h3>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  {feature.description}
+                </p>
               </div>
             </CardContent>
           </Card>

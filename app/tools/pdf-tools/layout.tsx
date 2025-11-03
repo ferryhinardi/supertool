@@ -1,28 +1,78 @@
 import type { Metadata } from 'next'
-import { generateToolMetadata } from '@/lib/metadata'
+import Script from 'next/script'
+import { generateToolBreadcrumbs, generateToolMetadata } from '@/lib/metadata'
+import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-data'
 
 export const metadata: Metadata = generateToolMetadata({
-  title: 'PDF Tools Suite (Merge, Split, Compress)',
+  title: 'PDF Tools Suite - Free PDF Merger, Splitter & Compressor',
   description:
-    'Free online PDF tools to merge, split, compress, and convert PDF files. Edit PDFs, extract pages, and optimize file size. All processing done securely in your browser with no uploads required.',
+    'Professional PDF tools to merge, split, compress, watermark, and convert PDFs. Extract pages, rotate, and optimize file size. 100% secure browser-based processing with no uploads.',
   keywords: [
     'pdf tools',
     'pdf merger',
     'pdf splitter',
     'pdf compressor',
-    'merge pdf',
-    'split pdf',
+    'merge pdf online',
+    'split pdf free',
     'compress pdf',
     'pdf converter',
-    'pdf editor',
-    'pdf online',
+    'pdf editor online',
     'combine pdf',
     'reduce pdf size',
+    'pdf watermark',
+    'extract pdf pages',
+    'rotate pdf',
   ],
-  category: 'utilities',
+  category: 'productivity',
   path: '/tools/pdf-tools',
 })
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
+const breadcrumbs = generateToolBreadcrumbs('PDF Tools Suite')
+
+const faqs = [
+  {
+    question: 'How do I merge multiple PDF files?',
+    answer:
+      'Upload 2 or more PDF files, select the "Merge PDFs" operation, and click "Process PDFs". The tool will combine all files into a single PDF document that you can download. All processing happens in your browser without uploading files to any server.',
+  },
+  {
+    question: 'Can I split a PDF into multiple files?',
+    answer:
+      'Yes, upload your PDF, select "Split PDF", specify the page number where you want to split, and process. The tool will create two separate PDF files - one with pages before the split point and another with remaining pages.',
+  },
+  {
+    question: 'Does PDF compression reduce quality?',
+    answer:
+      'The compression feature optimizes PDF structure and removes redundant data without significantly affecting visual quality. It works best for PDFs with complex structures and can reduce file size by 10-30% in most cases.',
+  },
+  {
+    question: 'Are my PDF files uploaded to a server?',
+    answer:
+      'No, all PDF processing happens entirely in your browser using JavaScript libraries. Your files never leave your device, ensuring complete privacy and security. This also means the tool works offline once loaded.',
+  },
+]
+
 export default function PDFToolsLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbs, baseUrl)),
+        }}
+      />
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateFAQSchema(faqs)),
+        }}
+      />
+    </>
+  )
 }
