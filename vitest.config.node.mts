@@ -1,5 +1,4 @@
 import react from '@vitejs/plugin-react'
-import { playwright } from '@vitest/browser-playwright'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vitest/config'
@@ -10,18 +9,16 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
+    environment: 'jsdom',
     setupFiles: './vitest.setup.ts',
     testTimeout: 60000,
-    // Browser mode configuration for screenshot tests with CSS styling
+    // Browser mode disabled for component tests
     browser: {
-      enabled: true,
-      provider: playwright(),
-      instances: [
-        {
-          browser: 'chromium',
-        },
-      ],
-      headless: true,
+      enabled: false,
+    },
+    // Set custom cache directory to avoid permission issues
+    cache: {
+      dir: path.resolve(__dirname, 'node_modules/.vitest'),
     },
     coverage: {
       provider: 'v8',

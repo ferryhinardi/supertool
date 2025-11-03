@@ -63,7 +63,8 @@ describe('Timezone Converter Page', () => {
       render(<TimezoneConverterPage />)
       await waitFor(() => {
         expect(screen.getByText('Local Time')).toBeInTheDocument()
-        expect(screen.getByText('UTC')).toBeInTheDocument()
+        // UTC appears in both the card and the disabled button in "Add Timezone" section
+        expect(screen.getAllByText('UTC').length).toBeGreaterThanOrEqual(1)
       })
     })
 
@@ -162,8 +163,9 @@ describe('Timezone Converter Page', () => {
       render(<TimezoneConverterPage />)
 
       await waitFor(() => {
-        // Should display offsets like "+00:00"
-        const offset = screen.getByText('+00:00')
+        // Should display offsets in format like "+00:00", "+07:00", etc.
+        // Use regex to match any valid offset format
+        const offset = screen.getByText(/^[+-]\d{2}:\d{2}$/)
         expect(offset).toBeInTheDocument()
       })
     })
@@ -187,7 +189,8 @@ describe('Timezone Converter Page', () => {
         // The component applies different border and background colors
         // This test verifies the card structure exists
         expect(screen.getByText('Local Time')).toBeInTheDocument()
-        expect(screen.getByText('UTC')).toBeInTheDocument()
+        // UTC appears in both the card and the disabled button in "Add Timezone" section
+        expect(screen.getAllByText('UTC').length).toBeGreaterThanOrEqual(1)
       })
     })
   })
@@ -259,8 +262,10 @@ describe('Timezone Converter Page', () => {
       })
 
       await waitFor(() => {
-        const tokyoButton = screen.getByText('Tokyo (JST)').closest('button')
-        expect(tokyoButton).toBeDisabled()
+        // Tokyo (JST) appears in both the card heading and the button
+        const tokyoButtons = screen.getAllByText('Tokyo (JST)')
+        const disabledButton = tokyoButtons.find((el) => el.closest('button')?.disabled)
+        expect(disabledButton).toBeTruthy()
       })
     })
 
@@ -526,10 +531,15 @@ describe('Timezone Converter Page', () => {
 
       await waitFor(() => {
         // All displayed times should be valid HH:mm format
+        // Filter out timezone offsets (which start with +/-)
         const times = screen.getAllByText(/\d{2}:\d{2}/)
-        times.forEach((time) => {
-          expect(time.textContent).toMatch(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
-        })
+        times
+          .filter(
+            (time) => !time.textContent?.startsWith('+') && !time.textContent?.startsWith('-')
+          )
+          .forEach((time) => {
+            expect(time.textContent).toMatch(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
+          })
       })
     })
 

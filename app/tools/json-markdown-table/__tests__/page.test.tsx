@@ -203,6 +203,10 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
     const { toast } = await import('sonner')
     const { trackToolEvent } = await import('@/lib/analytics')
 
+    // Mock URL.createObjectURL and revokeObjectURL
+    global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
+    global.URL.revokeObjectURL = vi.fn()
+
     render(<JSONToMarkdownTablePage />)
 
     // Wait for the download button to be available first

@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import KeywordDensityPage from '../page'
 
@@ -9,11 +9,13 @@ vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-Object.assign(navigator, {
-  clipboard: {
-    writeText: vi.fn(() => Promise.resolve()),
-  },
+// Mock clipboard API - ensure it's available before tests run
+beforeAll(() => {
+  Object.assign(navigator, {
+    clipboard: {
+      writeText: vi.fn(() => Promise.resolve()),
+    },
+  })
 })
 
 describe('Keyword Density Analyzer Page', () => {
@@ -199,12 +201,15 @@ describe('Keyword Density Analyzer Page', () => {
     })
 
     it('copies results to clipboard', async () => {
+      const writeTextSpy = vi.spyOn(navigator.clipboard, 'writeText')
       render(<KeywordDensityPage />)
       const textarea = screen.getByPlaceholderText(/Paste your content here/i)
       const analyzeBtn = screen.getByRole('button', { name: /Analyze/i })
       const user = userEvent.setup()
 
-      const sampleText = 'test content for analysis with keywords'
+      // Use longer text with actual keywords to ensure analysis generates results
+      const sampleText =
+        'keyword optimization test keyword analysis content keyword density keyword frequency measurement'
       await user.type(textarea, sampleText)
       await user.click(analyzeBtn)
 
@@ -215,7 +220,9 @@ describe('Keyword Density Analyzer Page', () => {
       const copyBtn = screen.getByRole('button', { name: /Copy/i })
       await user.click(copyBtn)
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalled()
+      await waitFor(() => {
+        expect(writeTextSpy).toHaveBeenCalled()
+      })
     })
 
     it('exports results as CSV', async () => {

@@ -19,6 +19,12 @@ vi.mock('nuqs', () => ({
       parse: (value: number) => value,
     }),
   },
+  parseAsString: {
+    withDefault: (defaultValue: string) => ({
+      defaultValue,
+      parse: (value: string) => value,
+    }),
+  },
   useQueryState: (_key: string, parser: { defaultValue: unknown }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     return useState(parser.defaultValue)
@@ -74,8 +80,8 @@ describe('Loan Calculator Page', () => {
 
       await waitFor(() => {
         // For $300,000 at 4.5% for 30 years, monthly payment should be ~$1,520
-        const monthlyPaymentText = screen.getByText(/Monthly Payment/)
-        expect(monthlyPaymentText).toBeInTheDocument()
+        const monthlyPaymentElements = screen.getAllByText(/Monthly Payment/)
+        expect(monthlyPaymentElements.length).toBeGreaterThan(0)
       })
     })
 
@@ -113,7 +119,8 @@ describe('Loan Calculator Page', () => {
 
       // Verify that calculation updates (monthly payment should change)
       await waitFor(() => {
-        expect(screen.getByText(/Monthly Payment/)).toBeInTheDocument()
+        const monthlyPaymentElements = screen.getAllByText(/Monthly Payment/)
+        expect(monthlyPaymentElements.length).toBeGreaterThan(0)
       })
     })
 
@@ -139,7 +146,8 @@ describe('Loan Calculator Page', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText(/Monthly Payment/)).toBeInTheDocument()
+        const monthlyPaymentElements = screen.getAllByText(/Monthly Payment/)
+        expect(monthlyPaymentElements.length).toBeGreaterThan(0)
       })
     })
   })
@@ -209,13 +217,12 @@ describe('Loan Calculator Page', () => {
     it('shows schedule when toggle button is clicked', async () => {
       render(<LoanCalculatorPage />)
 
-      await waitFor(async () => {
-        const toggleButton = screen.getByText(/Show Schedule/)
-        await userEvent.click(toggleButton as HTMLElement)
-      })
+      const toggleButton = await screen.findByText(/Show Schedule/)
+      await userEvent.click(toggleButton as HTMLElement)
 
       await waitFor(() => {
-        expect(screen.getByText(/Year 1/)).toBeInTheDocument()
+        const yearElements = screen.getAllByText(/Year 1/)
+        expect(yearElements.length).toBeGreaterThan(0)
       })
     })
 
@@ -223,20 +230,17 @@ describe('Loan Calculator Page', () => {
       render(<LoanCalculatorPage />)
 
       // Show schedule
-      await waitFor(async () => {
-        const showButton = screen.getByText(/Show Schedule/)
-        await userEvent.click(showButton as HTMLElement)
-      })
+      const showButton = await screen.findByText(/Show Schedule/)
+      await userEvent.click(showButton as HTMLElement)
 
       await waitFor(() => {
-        expect(screen.getByText(/Year 1/)).toBeInTheDocument()
+        const yearElements = screen.getAllByText(/Year 1/)
+        expect(yearElements.length).toBeGreaterThan(0)
       })
 
       // Hide schedule
-      await waitFor(async () => {
-        const hideButton = screen.getByText(/Hide Schedule/)
-        await userEvent.click(hideButton as HTMLElement)
-      })
+      const hideButton = await screen.findByText(/Hide Schedule/)
+      await userEvent.click(hideButton as HTMLElement)
 
       await waitFor(() => {
         expect(screen.queryByText(/Year 1/)).not.toBeInTheDocument()
@@ -246,17 +250,15 @@ describe('Loan Calculator Page', () => {
     it('displays year summaries in schedule', async () => {
       render(<LoanCalculatorPage />)
 
-      await waitFor(async () => {
-        const toggleButton = screen.getByText(/Show Schedule/)
-        await userEvent.click(toggleButton as HTMLElement)
-      })
+      const toggleButton = await screen.findByText(/Show Schedule/)
+      await userEvent.click(toggleButton as HTMLElement)
 
       await waitFor(() => {
-        expect(screen.getByText(/Year 1/)).toBeInTheDocument()
-        expect(screen.getByText(/Total Paid/)).toBeInTheDocument()
-        expect(screen.getByText(/Principal/)).toBeInTheDocument()
-        expect(screen.getByText(/Interest/)).toBeInTheDocument()
-        expect(screen.getByText(/End Balance/)).toBeInTheDocument()
+        expect(screen.getAllByText(/Year 1/).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/Total Paid/).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/Principal/).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/Interest/).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/End Balance/).length).toBeGreaterThan(0)
       })
     })
   })
@@ -406,8 +408,8 @@ describe('Loan Calculator Page', () => {
 
       await waitFor(() => {
         // Check that dollar signs are present
-        const content = screen.getByText(/Monthly Payment/)
-        expect(content).toBeInTheDocument()
+        const elements = screen.getAllByText(/Monthly Payment/)
+        expect(elements.length).toBeGreaterThan(0)
       })
     })
   })
@@ -422,7 +424,8 @@ describe('Loan Calculator Page', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText(/Monthly Payment/)).toBeInTheDocument()
+        const elements = screen.getAllByText(/Monthly Payment/)
+        expect(elements.length).toBeGreaterThan(0)
       })
     })
 
@@ -435,7 +438,8 @@ describe('Loan Calculator Page', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText(/Monthly Payment/)).toBeInTheDocument()
+        const elements = screen.getAllByText(/Monthly Payment/)
+        expect(elements.length).toBeGreaterThan(0)
       })
     })
 
@@ -448,7 +452,8 @@ describe('Loan Calculator Page', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText(/Monthly Payment/)).toBeInTheDocument()
+        const elements = screen.getAllByText(/Monthly Payment/)
+        expect(elements.length).toBeGreaterThan(0)
       })
     })
 
@@ -461,7 +466,8 @@ describe('Loan Calculator Page', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText(/Monthly Payment/)).toBeInTheDocument()
+        const elements = screen.getAllByText(/Monthly Payment/)
+        expect(elements.length).toBeGreaterThan(0)
       })
     })
 
@@ -474,7 +480,8 @@ describe('Loan Calculator Page', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText(/Monthly Payment/)).toBeInTheDocument()
+        const elements = screen.getAllByText(/Monthly Payment/)
+        expect(elements.length).toBeGreaterThan(0)
       })
     })
   })

@@ -129,13 +129,11 @@ describe('AI Command Explainer - Command Input Tests', () => {
     const explainButton = buttons.find((btn) => btn.textContent?.includes('Explain Command'))
     expect(explainButton).toBeDefined()
 
-    if (explainButton) {
-      await userEvent.click(explainButton)
+    // Button should be disabled when command is empty, preventing the click
+    expect(explainButton).toHaveAttribute('disabled')
 
-      await waitFor(() => {
-        expect(toast.error).toHaveBeenCalledWith('Please enter a command to explain')
-      })
-    }
+    // Verify toast.error is not called since button can't be clicked when disabled
+    expect(toast.error).not.toHaveBeenCalled()
   })
 
   it('should disable explain button when textarea is empty', () => {

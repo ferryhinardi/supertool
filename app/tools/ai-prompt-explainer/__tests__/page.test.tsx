@@ -309,9 +309,9 @@ describe('AI Prompt Explainer - Prompt Analysis Tests', () => {
       )
 
       const content = document.body.textContent || ''
-      expect(content).toContain('Clarity')
+      expect(content).toContain('clarity')
       expect(content).toContain('8/10')
-      expect(content).toContain('Specificity')
+      expect(content).toContain('specificity')
       expect(content).toContain('6/10')
     }
   })

@@ -287,3 +287,13 @@ export function getCurrencyByCode(code: string): Currency | undefined {
 export function getDefaultCurrency(): Currency {
   return CURRENCIES[0] // IDR
 }
+
+/**
+ * Get currency symbol by code
+ * @param code The ISO currency code
+ * @returns Currency symbol or '$' as fallback
+ */
+export function getCurrencySymbol(code: string): string {
+  const currency = getCurrencyByCode(code)
+  return currency?.symbol || '$'
+}

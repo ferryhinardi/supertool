@@ -45,18 +45,22 @@ describe('Percentage Calculator Page', () => {
 
     it('renders mode selection with all 7 modes', () => {
       render(<PercentageCalculatorPage />)
-      expect(screen.getByText('What is X% of Y?')).toBeInTheDocument()
-      expect(screen.getByText('X is what % of Y?')).toBeInTheDocument()
-      expect(screen.getByText('X is Y% of what?')).toBeInTheDocument()
-      expect(screen.getByText('Percentage Change')).toBeInTheDocument()
-      expect(screen.getByText('Discount Calculator')).toBeInTheDocument()
-      expect(screen.getByText('Tip Calculator')).toBeInTheDocument()
-      expect(screen.getByText('Tax Calculator')).toBeInTheDocument()
+      // Each mode name appears twice: in the button and in the active card title
+      expect(screen.getAllByText('What is X% of Y?').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('X is what % of Y?').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('X is Y% of what?').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('Percentage Change').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('Discount Calculator').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('Tip Calculator').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('Tax Calculator').length).toBeGreaterThanOrEqual(1)
     })
 
     it('renders default mode (percent-of)', () => {
       render(<PercentageCalculatorPage />)
-      expect(screen.getByText('Calculate percentage of a number')).toBeInTheDocument()
+      // Description appears in both the button and the active card
+      expect(screen.getAllByText('Calculate percentage of a number').length).toBeGreaterThanOrEqual(
+        1
+      )
     })
 
     it('renders input fields', () => {
@@ -75,11 +79,13 @@ describe('Percentage Calculator Page', () => {
     it('changes mode when mode button is clicked', async () => {
       render(<PercentageCalculatorPage />)
 
-      const discountButton = screen.getByText('Discount Calculator')
+      const discountButton = screen.getAllByText('Discount Calculator')[0]
       await userEvent.click(discountButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Calculate final price after discount')).toBeInTheDocument()
+        expect(
+          screen.getAllByText('Calculate final price after discount').length
+        ).toBeGreaterThanOrEqual(1)
       })
     })
 
@@ -163,7 +169,7 @@ describe('Percentage Calculator Page', () => {
     it('handles division by zero gracefully', async () => {
       render(<PercentageCalculatorPage />)
 
-      const modeButton = screen.getByText('X is what % of Y?')
+      const modeButton = screen.getAllByText('X is what % of Y?')[0]
       await userEvent.click(modeButton)
 
       await waitFor(() => {
@@ -173,7 +179,9 @@ describe('Percentage Calculator Page', () => {
       })
 
       await waitFor(() => {
-        expect(screen.queryByText(/Result/)).not.toBeInTheDocument()
+        // The component should not show the result section (which contains a label "Result")
+        // Note: "Result" also appears in header text "Instant Results", so we need to be specific
+        expect(screen.queryByText('Result', { selector: 'div' })).not.toBeInTheDocument()
       })
     })
   })
@@ -201,7 +209,7 @@ describe('Percentage Calculator Page', () => {
     it('calculates percentage increase correctly', async () => {
       render(<PercentageCalculatorPage />)
 
-      const modeButton = screen.getByText('Percentage Change')
+      const modeButton = screen.getAllByText('Percentage Change')[0]
       await userEvent.click(modeButton)
 
       await waitFor(() => {
@@ -212,14 +220,16 @@ describe('Percentage Calculator Page', () => {
 
       await waitFor(() => {
         expect(screen.getByText('+50.00%')).toBeInTheDocument()
-        expect(screen.getByText(/increase/)).toBeInTheDocument()
+        // "increase" appears in the formula text
+        const increaseText = screen.getAllByText(/increase/)
+        expect(increaseText.length).toBeGreaterThanOrEqual(1)
       })
     })
 
     it('calculates percentage decrease correctly', async () => {
       render(<PercentageCalculatorPage />)
 
-      const modeButton = screen.getByText('Percentage Change')
+      const modeButton = screen.getAllByText('Percentage Change')[0]
       await userEvent.click(modeButton)
 
       await waitFor(() => {
@@ -230,7 +240,9 @@ describe('Percentage Calculator Page', () => {
 
       await waitFor(() => {
         expect(screen.getByText('-25.00%')).toBeInTheDocument()
-        expect(screen.getByText(/decrease/)).toBeInTheDocument()
+        // "decrease" appears in the formula text
+        const decreaseText = screen.getAllByText(/decrease/)
+        expect(decreaseText.length).toBeGreaterThanOrEqual(1)
       })
     })
   })
@@ -387,7 +399,9 @@ describe('Percentage Calculator Page', () => {
       fireEvent.change(inputs[1], { target: { value: '' } })
 
       await waitFor(() => {
-        expect(screen.queryByText(/Result/)).not.toBeInTheDocument()
+        // The component should not show the result section label "Result"
+        // Note: "Result" also appears in header text "Instant Results", so we need to be specific
+        expect(screen.queryByText('Result', { selector: 'div' })).not.toBeInTheDocument()
       })
     })
 
@@ -399,7 +413,9 @@ describe('Percentage Calculator Page', () => {
       fireEvent.change(inputs[1], { target: { value: '100' } })
 
       await waitFor(() => {
-        expect(screen.queryByText(/Result/)).not.toBeInTheDocument()
+        // The component should not show the result section label "Result"
+        // Note: "Result" also appears in header text "Instant Results", so we need to be specific
+        expect(screen.queryByText('Result', { selector: 'div' })).not.toBeInTheDocument()
       })
     })
 

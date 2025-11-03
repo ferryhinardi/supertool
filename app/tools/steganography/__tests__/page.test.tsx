@@ -32,29 +32,34 @@ describe('Steganography Page', () => {
   describe('Initial Render', () => {
     it('renders the page title', () => {
       render(<SteganographyPage />)
-      expect(screen.getByText('Text Steganography')).toBeInTheDocument()
+      expect(screen.getByText('Text Steganography Tool')).toBeInTheDocument()
     })
 
     it('renders encode mode by default', () => {
       render(<SteganographyPage />)
-      expect(screen.getByText('Encode Mode')).toBeInTheDocument()
+      expect(screen.getByText('Encode Secret Message')).toBeInTheDocument()
     })
 
     it('renders mode toggle buttons', () => {
       render(<SteganographyPage />)
-      expect(screen.getByText('Encode')).toBeInTheDocument()
-      expect(screen.getByText('Decode')).toBeInTheDocument()
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      expect(encodeButtons.length).toBeGreaterThan(0)
+      expect(decodeButtons.length).toBeGreaterThan(0)
     })
 
     it('renders encode mode inputs', () => {
       render(<SteganographyPage />)
-      expect(screen.getByPlaceholderText(/Enter the visible text/i)).toBeInTheDocument()
-      expect(screen.getByPlaceholderText(/Enter your secret message/i)).toBeInTheDocument()
+      expect(
+        screen.getByPlaceholderText(/Enter normal text that will be visible/i)
+      ).toBeInTheDocument()
+      expect(screen.getByPlaceholderText(/Enter your secret message to hide/i)).toBeInTheDocument()
     })
 
     it('renders encode button', () => {
       render(<SteganographyPage />)
-      expect(screen.getByText('Encode Message')).toBeInTheDocument()
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      expect(encodeButtons.length).toBeGreaterThan(0)
     })
   })
 
@@ -62,22 +67,26 @@ describe('Steganography Page', () => {
     it('switches to decode mode when decode button is clicked', async () => {
       render(<SteganographyPage />)
 
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
     })
 
     it('renders decode mode input', async () => {
       render(<SteganographyPage />)
 
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/Paste text that may contain/i)).toBeInTheDocument()
+        expect(
+          screen.getByPlaceholderText(/Paste text that might contain a hidden message/i)
+        ).toBeInTheDocument()
       })
     })
 
@@ -85,19 +94,21 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       // Switch to decode
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
       // Switch back to encode
-      const encodeButton = screen.getByText('Encode')
-      await userEvent.click(encodeButton)
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons.find((el) => el.textContent === 'Encode Message')
+      await userEvent.click(encodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Encode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Encode Secret Message')).toBeInTheDocument()
       })
     })
   })
@@ -107,7 +118,8 @@ describe('Steganography Page', () => {
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
       await userEvent.click(encodeButton)
 
       expect(toast.error).toHaveBeenCalledWith('Please enter cover text')
@@ -117,10 +129,11 @@ describe('Steganography Page', () => {
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
-      const coverTextInput = screen.getByPlaceholderText(/Enter the visible text/i)
+      const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       await userEvent.type(coverTextInput, 'Cover text')
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
       await userEvent.click(encodeButton)
 
       expect(toast.error).toHaveBeenCalledWith('Please enter a secret message')
@@ -130,13 +143,14 @@ describe('Steganography Page', () => {
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
-      const coverTextInput = screen.getByPlaceholderText(/Enter the visible text/i)
-      const secretInput = screen.getByPlaceholderText(/Enter your secret message/i)
+      const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
+      const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
       await userEvent.type(coverTextInput, 'This is cover text')
       await userEvent.type(secretInput, 'Secret')
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
       await userEvent.click(encodeButton)
 
       await waitFor(() => {
@@ -147,34 +161,37 @@ describe('Steganography Page', () => {
     it('displays encoded result', async () => {
       render(<SteganographyPage />)
 
-      const coverTextInput = screen.getByPlaceholderText(/Enter the visible text/i)
-      const secretInput = screen.getByPlaceholderText(/Enter your secret message/i)
+      const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
+      const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
       await userEvent.type(coverTextInput, 'Cover')
       await userEvent.type(secretInput, 'Secret')
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
       await userEvent.click(encodeButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Encoded Result')).toBeInTheDocument()
+        expect(screen.getByText(/Encoded Text.*contains hidden message/i)).toBeInTheDocument()
       })
     })
 
     it('shows copy button after encoding', async () => {
       render(<SteganographyPage />)
 
-      const coverTextInput = screen.getByPlaceholderText(/Enter the visible text/i)
-      const secretInput = screen.getByPlaceholderText(/Enter your secret message/i)
+      const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
+      const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
       await userEvent.type(coverTextInput, 'Cover')
       await userEvent.type(secretInput, 'Secret')
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
       await userEvent.click(encodeButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Copy Encoded Text')).toBeInTheDocument()
+        const copyButtons = screen.getAllByText('Copy')
+        expect(copyButtons.length).toBeGreaterThan(0)
       })
     })
   })
@@ -185,17 +202,19 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       // Switch to decode mode
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
-      const decodeActionButton = screen.getByText('Decode Message')
+      const decodeActionButtons = screen.getAllByText(/Decode Message/i)
+      const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
       await userEvent.click(decodeActionButton)
 
-      expect(toast.error).toHaveBeenCalledWith('Please enter text to decode')
+      expect(toast.error).toHaveBeenCalledWith('Please paste text to decode')
     })
 
     it('shows error when no hidden message is detected', async () => {
@@ -203,20 +222,24 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       // Switch to decode mode
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
-      const textInput = screen.getByPlaceholderText(/Paste text that may contain/i)
+      const textInput = screen.getByPlaceholderText(
+        /Paste text that might contain a hidden message/i
+      )
       await userEvent.type(textInput, 'Just plain text')
 
-      const decodeActionButton = screen.getByText('Decode Message')
+      const decodeActionButtons = screen.getAllByText(/Decode Message/i)
+      const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
       await userEvent.click(decodeActionButton)
 
-      expect(toast.error).toHaveBeenCalledWith('No hidden message detected in the text')
+      expect(toast.error).toHaveBeenCalledWith('No hidden message detected in this text')
     })
 
     it('decodes message successfully', async () => {
@@ -224,17 +247,18 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       // First encode a message
-      const coverTextInput = screen.getByPlaceholderText(/Enter the visible text/i)
-      const secretInput = screen.getByPlaceholderText(/Enter your secret message/i)
+      const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
+      const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
       await userEvent.type(coverTextInput, 'Cover')
       await userEvent.type(secretInput, 'Secret')
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1]
       await userEvent.click(encodeButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Encoded Result')).toBeInTheDocument()
+        expect(screen.getByText(/Encoded Text.*contains hidden message/i)).toBeInTheDocument()
       })
 
       // Get the encoded text from the textarea
@@ -242,19 +266,23 @@ describe('Steganography Page', () => {
       const encodedText = (resultTextarea as HTMLTextAreaElement).value
 
       // Switch to decode mode
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
       // Paste the encoded text
-      const decodeTextInput = screen.getByPlaceholderText(/Paste text that may contain/i)
+      const decodeTextInput = screen.getByPlaceholderText(
+        /Paste text that might contain a hidden message/i
+      )
       await userEvent.clear(decodeTextInput)
       await userEvent.type(decodeTextInput, encodedText)
 
-      const decodeActionButton = screen.getByText('Decode Message')
+      const decodeActionButtons = screen.getAllByText(/Decode Message/i)
+      const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
       await userEvent.click(decodeActionButton)
 
       await waitFor(() => {
@@ -266,39 +294,44 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       // Encode first
-      const coverTextInput = screen.getByPlaceholderText(/Enter the visible text/i)
-      const secretInput = screen.getByPlaceholderText(/Enter your secret message/i)
+      const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
+      const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
       await userEvent.type(coverTextInput, 'Cover')
       await userEvent.type(secretInput, 'TestSecret')
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1]
       await userEvent.click(encodeButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Encoded Result')).toBeInTheDocument()
+        expect(screen.getByText(/Encoded Text.*contains hidden message/i)).toBeInTheDocument()
       })
 
       const resultTextarea = screen.getAllByRole('textbox')[2]
       const encodedText = (resultTextarea as HTMLTextAreaElement).value
 
       // Switch to decode
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
-      const decodeTextInput = screen.getByPlaceholderText(/Paste text that may contain/i)
+      const decodeTextInput = screen.getByPlaceholderText(
+        /Paste text that might contain a hidden message/i
+      )
       await userEvent.clear(decodeTextInput)
       await userEvent.type(decodeTextInput, encodedText)
 
-      const decodeActionButton = screen.getByText('Decode Message')
+      const decodeActionButtons = screen.getAllByText(/Decode Message/i)
+      const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
       await userEvent.click(decodeActionButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Decoded Message')).toBeInTheDocument()
+        expect(screen.getByText('Decoded Secret Message')).toBeInTheDocument()
         const decodedTextarea = screen.getAllByRole('textbox')[1]
         expect((decodedTextarea as HTMLTextAreaElement).value).toBe('TestSecret')
       })
@@ -310,25 +343,27 @@ describe('Steganography Page', () => {
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
-      const coverTextInput = screen.getByPlaceholderText(/Enter the visible text/i)
-      const secretInput = screen.getByPlaceholderText(/Enter your secret message/i)
+      const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
+      const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
       await userEvent.type(coverTextInput, 'Cover')
       await userEvent.type(secretInput, 'Secret')
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1]
       await userEvent.click(encodeButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Copy Encoded Text')).toBeInTheDocument()
+        const copyButtons = screen.getAllByText('Copy')
+        expect(copyButtons.length).toBeGreaterThan(0)
       })
 
-      const copyButton = screen.getByText('Copy Encoded Text')
-      await userEvent.click(copyButton)
+      const copyButtons = screen.getAllByText('Copy')
+      await userEvent.click(copyButtons[0])
 
       await waitFor(() => {
         expect(navigator.clipboard.writeText).toHaveBeenCalled()
-        expect(toast.success).toHaveBeenCalledWith('Copied to clipboard!')
+        expect(toast.success).toHaveBeenCalledWith('Encoded text copied to clipboard!')
       })
     })
 
@@ -337,47 +372,53 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       // Encode first
-      const coverTextInput = screen.getByPlaceholderText(/Enter the visible text/i)
-      const secretInput = screen.getByPlaceholderText(/Enter your secret message/i)
+      const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
+      const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
       await userEvent.type(coverTextInput, 'Cover')
       await userEvent.type(secretInput, 'Secret')
 
-      const encodeButton = screen.getByText('Encode Message')
+      const encodeButtons = screen.getAllByText(/Encode Message/i)
+      const encodeButton = encodeButtons[encodeButtons.length - 1]
       await userEvent.click(encodeButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Encoded Result')).toBeInTheDocument()
+        expect(screen.getByText(/Encoded Text.*contains hidden message/i)).toBeInTheDocument()
       })
 
       const resultTextarea = screen.getAllByRole('textbox')[2]
       const encodedText = (resultTextarea as HTMLTextAreaElement).value
 
       // Decode
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
-      const decodeTextInput = screen.getByPlaceholderText(/Paste text that may contain/i)
+      const decodeTextInput = screen.getByPlaceholderText(
+        /Paste text that might contain a hidden message/i
+      )
       await userEvent.clear(decodeTextInput)
       await userEvent.type(decodeTextInput, encodedText)
 
-      const decodeActionButton = screen.getByText('Decode Message')
+      const decodeActionButtons = screen.getAllByText(/Decode Message/i)
+      const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
       await userEvent.click(decodeActionButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Copy Decoded Text')).toBeInTheDocument()
+        const copyButtons = screen.getAllByText('Copy')
+        expect(copyButtons.length).toBeGreaterThan(0)
       })
 
-      const copyButton = screen.getByText('Copy Decoded Text')
-      await userEvent.click(copyButton)
+      const copyButtons = screen.getAllByText('Copy')
+      await userEvent.click(copyButtons[0])
 
       await waitFor(() => {
         expect(navigator.clipboard.writeText).toHaveBeenCalled()
-        expect(toast.success).toHaveBeenCalledWith('Copied to clipboard!')
+        expect(toast.success).toHaveBeenCalledWith('Decoded message copied!')
       })
     })
   })
@@ -387,10 +428,10 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       const coverTextInput = screen.getByPlaceholderText(
-        /Enter the visible text/i
+        /Enter normal text that will be visible/i
       ) as HTMLTextAreaElement
       const secretInput = screen.getByPlaceholderText(
-        /Enter your secret message/i
+        /Enter your secret message to hide/i
       ) as HTMLTextAreaElement
 
       await userEvent.type(coverTextInput, 'Cover')
@@ -399,7 +440,7 @@ describe('Steganography Page', () => {
       expect(coverTextInput.value).toBe('Cover')
       expect(secretInput.value).toBe('Secret')
 
-      const clearButton = screen.getByText('Clear All')
+      const clearButton = screen.getByText('Clear')
       await userEvent.click(clearButton)
 
       await waitFor(() => {
@@ -412,21 +453,22 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       // Switch to decode mode
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
       const textInput = screen.getByPlaceholderText(
-        /Paste text that may contain/i
+        /Paste text that might contain a hidden message/i
       ) as HTMLTextAreaElement
       await userEvent.type(textInput, 'Some text')
 
       expect(textInput.value).toBe('Some text')
 
-      const clearButton = screen.getByText('Clear All')
+      const clearButton = screen.getByText('Clear')
       await userEvent.click(clearButton)
 
       await waitFor(() => {
@@ -445,10 +487,10 @@ describe('Steganography Page', () => {
 
       await waitFor(() => {
         const coverTextInput = screen.getByPlaceholderText(
-          /Enter the visible text/i
+          /Enter normal text that will be visible/i
         ) as HTMLTextAreaElement
         const secretInput = screen.getByPlaceholderText(
-          /Enter your secret message/i
+          /Enter your secret message to hide/i
         ) as HTMLTextAreaElement
 
         expect(coverTextInput.value).toBeTruthy()
@@ -462,11 +504,12 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       // Switch to decode mode
-      const decodeButton = screen.getByText('Decode')
-      await userEvent.click(decodeButton)
+      const decodeButtons = screen.getAllByText(/Decode Message/i)
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      await userEvent.click(decodeButton!)
 
       await waitFor(() => {
-        expect(screen.getByText('Decode Mode')).toBeInTheDocument()
+        expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
       const loadExampleButton = screen.getByText('Load Example')
@@ -474,10 +517,12 @@ describe('Steganography Page', () => {
 
       await waitFor(() => {
         const textInput = screen.getByPlaceholderText(
-          /Paste text that may contain/i
+          /Paste text that might contain a hidden message/i
         ) as HTMLTextAreaElement
         expect(textInput.value).toBeTruthy()
-        expect(toast.success).toHaveBeenCalledWith('Example loaded!')
+        expect(toast.success).toHaveBeenCalledWith(
+          'Example loaded! Click Decode to reveal the secret.'
+        )
       })
     })
   })

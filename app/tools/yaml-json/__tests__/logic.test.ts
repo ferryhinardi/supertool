@@ -443,7 +443,7 @@ settings:
 
     it('handles YAML with special characters in strings', () => {
       const yamlInput = `message: "Hello: World!"
-path: "C:\\Users\\John"`
+path: 'C:\\Users\\John'`
 
       const parsed = yaml.load(yamlInput)
       const jsonOutput = JSON.stringify(parsed, null, 2)
@@ -623,7 +623,7 @@ volumes:
         noRefs: true,
       })
 
-      const result = yaml.load(yamlOutput)
+      const result = yaml.load(yamlOutput) as any
 
       expect(result).toHaveProperty('status', 'success')
       expect(result.data).toHaveProperty('users')

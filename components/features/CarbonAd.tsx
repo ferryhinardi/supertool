@@ -37,6 +37,7 @@ export function CarbonAd({ className, position = 'content' }: CarbonAdProps) {
     script.src = `//cdn.carbonads.com/carbon.js?serve=${config.carbon.serveId}&placement=${config.carbon.placement}`
     script.id = '_carbonads_js'
     script.async = true
+    script.setAttribute('async', '')
 
     if (adContainerRef.current) {
       adContainerRef.current.appendChild(script)

@@ -34,6 +34,7 @@ export function EthicalAd({ className, position = 'content', type = 'image' }: E
     const script = document.createElement('script')
     script.src = 'https://media.ethicalads.io/media/client/ethicalads.min.js'
     script.async = true
+    script.setAttribute('async', '')
     document.body.appendChild(script)
 
     adInitialized.current = true

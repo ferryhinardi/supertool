@@ -61,8 +61,8 @@ describe('InvoiceGeneratorPage', () => {
 
   it('initializes with default invoice data', () => {
     render(<InvoiceGeneratorPage />)
-    const invoiceNumberInput = screen.getByLabelText('Invoice Number')
-    expect(invoiceNumberInput).toHaveValue(expect.stringContaining('INV-'))
+    const invoiceNumberInput = screen.getByLabelText('Invoice Number') as HTMLInputElement
+    expect(invoiceNumberInput.value).toContain('INV-')
   })
 
   it('allows updating company information', () => {
@@ -93,7 +93,7 @@ describe('InvoiceGeneratorPage', () => {
     })
   })
 
-  it('calculates subtotal correctly', () => {
+  it('calculates subtotal correctly', async () => {
     render(<InvoiceGeneratorPage />)
 
     // Find the first quantity and rate inputs
@@ -104,12 +104,16 @@ describe('InvoiceGeneratorPage', () => {
     fireEvent.change(quantityInput, { target: { value: '2' } })
     fireEvent.change(rateInput, { target: { value: '100' } })
 
-    // Check that subtotal is displayed correctly
-    expect(screen.getByText(/Subtotal:/i)).toBeInTheDocument()
-    expect(screen.getByText(/\$200\.00/)).toBeInTheDocument()
+    // Check that subtotal is displayed correctly - wait for calculation
+    await waitFor(() => {
+      expect(screen.getByText(/Subtotal:/i)).toBeInTheDocument()
+      // Check that Rp200.00 appears somewhere in the document (default currency is IDR)
+      const body = document.body.textContent || ''
+      expect(body).toContain('Rp200.00')
+    })
   })
 
-  it('calculates tax correctly', () => {
+  it('calculates tax correctly', async () => {
     render(<InvoiceGeneratorPage />)
 
     // Set line item values
@@ -122,12 +126,16 @@ describe('InvoiceGeneratorPage', () => {
     const taxInput = screen.getByLabelText('Tax Rate (%)')
     fireEvent.change(taxInput, { target: { value: '10' } })
 
-    // Check that tax is calculated correctly
-    expect(screen.getByText(/Tax \(10%\):/)).toBeInTheDocument()
-    expect(screen.getByText(/\$10\.00/)).toBeInTheDocument()
+    // Check that tax is calculated correctly - wait for calculation
+    await waitFor(() => {
+      expect(screen.getByText(/Tax \(10%\):/)).toBeInTheDocument()
+      // Check that Rp10.00 appears somewhere in the document (default currency is IDR)
+      const body = document.body.textContent || ''
+      expect(body).toContain('Rp10.00')
+    })
   })
 
-  it('applies discount correctly', () => {
+  it('applies discount correctly', async () => {
     render(<InvoiceGeneratorPage />)
 
     // Set line item values
@@ -140,12 +148,16 @@ describe('InvoiceGeneratorPage', () => {
     const discountInput = screen.getByLabelText(/Discount/)
     fireEvent.change(discountInput, { target: { value: '20' } })
 
-    // Check that discount is displayed
-    expect(screen.getByText(/Discount:/)).toBeInTheDocument()
-    expect(screen.getByText(/-\$20\.00/)).toBeInTheDocument()
+    // Check that discount is displayed - wait for calculation
+    await waitFor(() => {
+      expect(screen.getByText(/Discount:/)).toBeInTheDocument()
+      // Check that -Rp20.00 appears somewhere in the document (default currency is IDR)
+      const body = document.body.textContent || ''
+      expect(body).toContain('-Rp20.00')
+    })
   })
 
-  it('calculates total correctly with tax and discount', () => {
+  it('calculates total correctly with tax and discount', async () => {
     render(<InvoiceGeneratorPage />)
 
     // Set line item: 1 × $100 = $100
@@ -162,9 +174,12 @@ describe('InvoiceGeneratorPage', () => {
     const discountInput = screen.getByLabelText(/Discount/)
     fireEvent.change(discountInput, { target: { value: '20' } })
 
-    // Total should be: $100 + $10 - $20 = $90
-    const totalElements = screen.getAllByText(/\$90\.00/)
-    expect(totalElements.length).toBeGreaterThan(0)
+    // Total should be: $100 + $10 - $20 = $90 - wait for calculation
+    await waitFor(() => {
+      // Check that Rp90.00 appears somewhere in the document (default currency is IDR)
+      const body = document.body.textContent || ''
+      expect(body).toContain('Rp90.00')
+    })
   })
 
   it('allows selecting different currencies', () => {

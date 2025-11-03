@@ -246,6 +246,7 @@ describe('Favicon Generator Utils', () => {
       const removeChildSpy = vi
         .spyOn(document.body, 'removeChild')
         .mockImplementation(() => mockLink as unknown as Node)
+      const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url')
       const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
 
       const blob = new Blob(['test'], { type: 'image/png' })
@@ -256,11 +257,13 @@ describe('Favicon Generator Utils', () => {
       expect(mockClick).toHaveBeenCalled()
       expect(appendChildSpy).toHaveBeenCalledWith(mockLink)
       expect(removeChildSpy).toHaveBeenCalledWith(mockLink)
+      expect(createObjectURLSpy).toHaveBeenCalledWith(blob)
       expect(revokeObjectURLSpy).toHaveBeenCalled()
 
       createElementSpy.mockRestore()
       appendChildSpy.mockRestore()
       removeChildSpy.mockRestore()
+      createObjectURLSpy.mockRestore()
       revokeObjectURLSpy.mockRestore()
     })
 
@@ -276,6 +279,7 @@ describe('Favicon Generator Utils', () => {
       vi.spyOn(document, 'createElement').mockReturnValue(mockLink as unknown as HTMLElement)
       vi.spyOn(document.body, 'appendChild').mockImplementation(() => mockLink as unknown as Node)
       vi.spyOn(document.body, 'removeChild').mockImplementation(() => mockLink as unknown as Node)
+      vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url')
       vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
 
       const icoBlob = new Blob(['test'], { type: 'image/x-icon' })
