@@ -115,15 +115,15 @@ function Base64Content() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        style={{
+        className={css({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '1rem',
+          gap: '4',
           textAlign: 'center',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
+          w: 'full',
+          maxW: '1400px',
+        })}
       >
         <div
           className={css({
@@ -138,8 +138,10 @@ function Base64Content() {
             py: '2',
           })}
         >
-          <Lock className="h-5 w-5 text-indigo-400" />
-          <span className="text-sm font-semibold text-indigo-300">Base64 Conversion</span>
+          <Lock className={css({ h: '5', w: '5', color: 'indigo.400' })} />
+          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'indigo.300' })}>
+            Base64 Conversion
+          </span>
         </div>
 
         <h1
@@ -148,7 +150,20 @@ function Base64Content() {
             fontWeight: 'bold',
           })}
         >
-          <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <span
+            className={css({
+              bgGradient: 'to-r',
+              gradientFrom: 'indigo.400',
+              gradientVia: 'purple.400',
+              gradientTo: 'pink.400',
+              bgClip: 'text',
+              color: 'transparent',
+            })}
+            style={{
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Base64 Encoder & Decoder
           </span>
         </h1>
@@ -170,13 +185,13 @@ function Base64Content() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        style={{
+        className={css({
           display: 'flex',
           justifyContent: 'center',
-          gap: '0.5rem',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
+          gap: '2',
+          w: 'full',
+          maxW: '1400px',
+        })}
       >
         <Button
           variant={mode === 'encode' ? 'default' : 'outline'}
@@ -186,7 +201,7 @@ function Base64Content() {
           }}
           className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
         >
-          <Lock className="h-4 w-4" />
+          <Lock className={css({ h: '4', w: '4' })} />
           Encode
         </Button>
         <Button
@@ -197,7 +212,7 @@ function Base64Content() {
           }}
           className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
         >
-          <Unlock className="h-4 w-4" />
+          <Unlock className={css({ h: '4', w: '4' })} />
           Decode
         </Button>
       </motion.div>
@@ -207,17 +222,22 @@ function Base64Content() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        style={{
+        className={css({
           display: 'grid',
-          gap: '1.5rem',
-          gridTemplateColumns: '1fr',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
-        className="lg:grid-cols-2"
+          gap: '6',
+          gridTemplateColumns: { base: '1', lg: '2' },
+          w: 'full',
+          maxW: '1400px',
+        })}
       >
         {/* Input */}
-        <Card className="border-gray-800 bg-gray-900/50">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+          })}
+        >
           <CardHeader>
             <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
               <CardTitle>{mode === 'encode' ? 'Original Text/File' : 'Base64 String'}</CardTitle>
@@ -236,7 +256,11 @@ function Base64Content() {
                 }
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="min-h-[300px] font-mono text-sm"
+                className={css({
+                  minH: '[300px]',
+                  fontFamily: 'mono',
+                  fontSize: 'sm',
+                })}
               />
 
               {mode === 'encode' && (
@@ -244,19 +268,25 @@ function Base64Content() {
                   <Input
                     type="file"
                     onChange={handleFileUpload}
-                    className="cursor-pointer"
+                    className={css({ cursor: 'pointer' })}
                     accept="*/*"
                   />
-                  <p className="mt-2 text-xs text-gray-500">Upload any file to encode</p>
+                  <p className={css({ mt: '2', fontSize: 'xs', color: 'gray.500' })}>
+                    Upload any file to encode
+                  </p>
                 </div>
               )}
 
               <Button
                 onClick={mode === 'encode' ? handleEncode : handleDecode}
-                className="w-full gap-2"
+                className={css({ w: 'full', gap: '2' })}
                 disabled={!input}
               >
-                {mode === 'encode' ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
+                {mode === 'encode' ? (
+                  <Lock className={css({ h: '4', w: '4' })} />
+                ) : (
+                  <Unlock className={css({ h: '4', w: '4' })} />
+                )}
                 {mode === 'encode' ? 'Encode to Base64' : 'Decode from Base64'}
               </Button>
             </div>
@@ -264,7 +294,13 @@ function Base64Content() {
         </Card>
 
         {/* Output */}
-        <Card className="border-gray-800 bg-gray-900/50">
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+          })}
+        >
           <CardHeader>
             <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
               <CardTitle>{mode === 'encode' ? 'Base64 Output' : 'Decoded Output'}</CardTitle>
@@ -279,7 +315,11 @@ function Base64Content() {
                 value={output}
                 readOnly
                 placeholder="Output will appear here..."
-                className="min-h-[300px] font-mono text-sm"
+                className={css({
+                  minH: '[300px]',
+                  fontFamily: 'mono',
+                  fontSize: 'sm',
+                })}
               />
 
               {imagePreview && mode === 'decode' && (
@@ -292,12 +332,25 @@ function Base64Content() {
                     p: '4',
                   })}
                 >
-                  <p className="mb-2 text-sm font-medium text-gray-400">Image Preview:</p>
+                  <p
+                    className={css({
+                      mb: '2',
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.400',
+                    })}
+                  >
+                    Image Preview:
+                  </p>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imagePreview}
                     alt="Decoded base64"
-                    className="max-h-64 rounded-lg object-contain"
+                    className={css({
+                      maxH: '64',
+                      rounded: 'lg',
+                      objectFit: 'contain',
+                    })}
                   />
                 </div>
               )}
@@ -306,19 +359,19 @@ function Base64Content() {
                 <Button
                   onClick={handleCopy}
                   variant="outline"
-                  className="flex-1 gap-2"
+                  className={css({ flex: '1', gap: '2' })}
                   disabled={!output}
                 >
-                  <Copy className="h-4 w-4" />
+                  <Copy className={css({ h: '4', w: '4' })} />
                   Copy
                 </Button>
                 <Button
                   onClick={handleDownload}
                   variant="outline"
-                  className="flex-1 gap-2"
+                  className={css({ flex: '1', gap: '2' })}
                   disabled={!output}
                 >
-                  <Download className="h-4 w-4" />
+                  <Download className={css({ h: '4', w: '4' })} />
                   Download
                 </Button>
               </div>
@@ -332,14 +385,13 @@ function Base64Content() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        style={{
+        className={css({
           display: 'grid',
-          gap: '1rem',
-          gridTemplateColumns: '1fr',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
-        className="sm:grid-cols-2 lg:grid-cols-4"
+          gap: '4',
+          gridTemplateColumns: { base: '1', sm: '2', lg: '4' },
+          w: 'full',
+          maxW: '1400px',
+        })}
       >
         {[
           { icon: Lock, title: 'Text Encoding', desc: 'Convert text to Base64' },
@@ -347,12 +399,34 @@ function Base64Content() {
           { icon: ImageIcon, title: 'Image Preview', desc: 'Preview decoded images' },
           { icon: Download, title: 'Export', desc: 'Copy or download results' },
         ].map((feature) => (
-          <Card key={feature.title} className="border-gray-800 bg-gray-900/30">
+          <Card
+            key={feature.title}
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/30',
+            })}
+          >
             <CardContent>
               <div className={css({ p: '6' })}>
-                <feature.icon className="mb-3 h-8 w-8 text-indigo-400" />
-                <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
-                <p className="text-sm text-gray-500">{feature.desc}</p>
+                <feature.icon
+                  className={css({
+                    mb: '3',
+                    h: '8',
+                    w: '8',
+                    color: 'indigo.400',
+                  })}
+                />
+                <h3
+                  className={css({
+                    mb: '2',
+                    fontWeight: 'semibold',
+                    color: 'gray.200',
+                  })}
+                >
+                  {feature.title}
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.desc}</p>
               </div>
             </CardContent>
           </Card>
@@ -364,7 +438,21 @@ function Base64Content() {
 
 export default function Base64Page() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minH: 'screen',
+            color: 'gray.400',
+          })}
+        >
+          Loading...
+        </div>
+      }
+    >
       <Base64Content />
     </Suspense>
   )
