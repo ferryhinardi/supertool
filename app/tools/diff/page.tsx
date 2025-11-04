@@ -23,8 +23,15 @@ import { css } from '@/styled-system/css'
 const ReactDiffViewer = dynamic(() => import('react-diff-viewer-continued'), {
   ssr: false,
   loading: () => (
-    <div className="flex h-64 items-center justify-center">
-      <div className="text-gray-400">Loading diff viewer...</div>
+    <div
+      className={css({
+        display: 'flex',
+        h: '64',
+        alignItems: 'center',
+        justifyContent: 'center',
+      })}
+    >
+      <div className={css({ color: 'gray.400' })}>Loading diff viewer...</div>
     </div>
   ),
 })
