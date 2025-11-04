@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import {
   CheckCircle2,
   Code2,
@@ -7,13 +8,13 @@ import {
   Download,
   Eye,
   FileText,
-  Github,
   RotateCcw,
+  Sparkles,
   SplitSquareHorizontal,
   Upload,
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -119,37 +120,22 @@ export default function MarkdownEditorPage() {
     loadPlugins()
   }, [])
 
-  // Calculate stats
-  const stats = useMemo(() => {
-    const lines = value.split('\n').length
-    const chars = value.length
-    const words = value.trim().split(/\s+/).filter(Boolean).length
-    const headings = (value.match(/^#{1,6}\s/gm) || []).length
-    const codeBlocks = (value.match(/```/g) || []).length / 2
-    const links = (value.match(/\[.*?\]\(.*?\)/g) || []).length
-    const images = (value.match(/!\[.*?\]\(.*?\)/g) || []).length
-    const tables = (value.match(/\|.*\|/g) || []).length > 0 ? 1 : 0
-    const taskLists = (value.match(/^- \[[ x]\]/gm) || []).length
+  // Calculate stats (derived values - React Compiler handles optimization)
+  const lines = value.split('\n').length
+  const chars = value.length
+  const words = value.trim().split(/\s+/).filter(Boolean).length
+  const headings = (value.match(/^#{1,6}\s/gm) || []).length
+  const codeBlocks = (value.match(/```/g) || []).length / 2
+  const links = (value.match(/\[.*?\]\(.*?\)/g) || []).length
+  const images = (value.match(/!\[.*?\]\(.*?\)/g) || []).length
+  const taskLists = (value.match(/^- \[[ x]\]/gm) || []).length
 
-    return {
-      lines,
-      chars,
-      words,
-      headings,
-      codeBlocks,
-      links,
-      images,
-      tables,
-      taskLists,
-    }
-  }, [value])
-
-  const handleCopyMarkdown = useCallback(() => {
+  const handleCopyMarkdown = () => {
     navigator.clipboard.writeText(value)
     toast.success('Markdown copied to clipboard! 📋')
-  }, [value])
+  }
 
-  const handleCopyHTML = useCallback(() => {
+  const handleCopyHTML = () => {
     const tempDiv = document.createElement('div')
     const container = document.querySelector('.markdown-preview')
     if (container) {
@@ -157,9 +143,9 @@ export default function MarkdownEditorPage() {
       navigator.clipboard.writeText(tempDiv.innerHTML)
       toast.success('HTML copied to clipboard! 📋')
     }
-  }, [])
+  }
 
-  const handleDownloadMarkdown = useCallback(() => {
+  const handleDownloadMarkdown = () => {
     const blob = new Blob([value], { type: 'text/markdown' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -170,9 +156,9 @@ export default function MarkdownEditorPage() {
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
     toast.success('Markdown downloaded! 💾')
-  }, [value])
+  }
 
-  const handleDownloadHTML = useCallback(() => {
+  const handleDownloadHTML = () => {
     const container = document.querySelector('.markdown-preview')
     if (container) {
       const htmlContent = `<!DOCTYPE html>
@@ -216,14 +202,14 @@ export default function MarkdownEditorPage() {
       URL.revokeObjectURL(url)
       toast.success('HTML downloaded! 💾')
     }
-  }, [])
+  }
 
-  const handleReset = useCallback(() => {
+  const handleReset = () => {
     setValue(defaultMarkdown)
     toast.info('Reset to default template! 🔄')
-  }, [])
+  }
 
-  const handleLoadFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLoadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       if (file.name.endsWith('.md') || file.name.endsWith('.markdown')) {
@@ -238,7 +224,7 @@ export default function MarkdownEditorPage() {
         toast.error('Please select a .md or .markdown file! ⚠️')
       }
     }
-  }, [])
+  }
 
   return (
     <>
@@ -268,213 +254,482 @@ export default function MarkdownEditorPage() {
         }}
       />
 
-      <div
+      <main
         className={css({
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          minH: '100vh',
           mx: 'auto',
           maxW: '1400px',
           w: 'full',
           px: { base: '4', sm: '6', md: '8' },
           py: { base: '6', sm: '8', md: '10' },
-          gap: { base: '6', sm: '6', md: '8' },
+          spaceY: { base: '6', sm: '8', md: '10' },
         })}
       >
         {/* Header */}
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: { base: 'column', md: 'row' },
-            alignItems: { base: 'start', md: 'start' },
-            justifyContent: { base: 'start', md: 'space-between' },
-            gap: { base: '4', md: '4' },
-          })}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className={css({ textAlign: 'center', spaceY: '4' })}
         >
-          <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
-            <div
-              className={css({
-                display: 'flex',
-                h: { base: '12', sm: '14' },
-                w: { base: '12', sm: '14' },
-                alignItems: 'center',
-                justifyContent: 'center',
-                rounded: '2xl',
-                bgGradient: 'to-br',
-                gradientFrom: 'green.500',
-                gradientTo: 'emerald.600',
-                shadow: 'lg',
-                boxShadow: '0 10px 15px rgba(34, 197, 94, 0.3)',
-              })}
-            >
-              <FileText
-                className={css({
-                  h: { base: '6', sm: '7' },
-                  w: { base: '6', sm: '7' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  fontSize: { base: '2xl', sm: '3xl' },
-                  fontWeight: 'bold',
-                  color: 'white',
-                })}
-              >
-                Markdown Editor & Preview
-              </h1>
-              <p
-                className={css({
-                  mt: '1',
-                  fontSize: { base: 'sm', sm: 'base' },
-                  color: 'gray.400',
-                })}
-              >
-                GitHub-flavored markdown with live preview and syntax highlighting
-              </p>
-            </div>
+          <div
+            className={css({
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '3',
+              rounded: 'full',
+              border: '1px solid',
+              borderColor: 'green.500/30',
+              bg: 'green.500/10',
+              px: '5',
+              py: '2',
+              backdropFilter: 'blur(8px)',
+            })}
+          >
+            <FileText className={css({ h: '5', w: '5', color: 'green.400' })} />
+            <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'green.300' })}>
+              GitHub-Flavored Markdown • Live Preview
+            </span>
           </div>
 
-          {/* View Mode Controls */}
-          <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-            <Button
-              variant={viewMode === 'editor' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('editor')}
-              className="gap-2"
-            >
-              <Code2 className="h-4 w-4" />
-              Editor Only
-            </Button>
-            <Button
-              variant={viewMode === 'split' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('split')}
-              className="gap-2"
-            >
-              <SplitSquareHorizontal className="h-4 w-4" />
-              Split View
-            </Button>
-            <Button
-              variant={viewMode === 'preview' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('preview')}
-              className="gap-2"
-            >
-              <Eye className="h-4 w-4" />
-              Preview Only
-            </Button>
-          </div>
-        </div>
+          <h1
+            className={css({
+              fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
+              fontWeight: 'extrabold',
+              bgGradient: 'to-r',
+              gradientFrom: 'green.400',
+              gradientVia: 'emerald.400',
+              gradientTo: 'teal.400',
+              bgClip: 'text',
+            })}
+            style={{
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            Markdown Editor
+          </h1>
+
+          <p
+            className={css({
+              mx: 'auto',
+              maxW: '3xl',
+              fontSize: { base: 'lg', sm: 'xl' },
+              color: 'gray.400',
+            })}
+          >
+            Write and preview markdown in real-time with syntax highlighting, tables, task lists,
+            and full GitHub-flavored markdown support.
+          </p>
+        </motion.div>
+
+        {/* View Mode Controls */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'green.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <CardTitle>View Mode</CardTitle>
+              <CardDescription>Choose how you want to work with your markdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    base: '1fr',
+                    sm: 'repeat(3, 1fr)',
+                  },
+                  gap: '3',
+                  w: 'full',
+                })}
+              >
+                <Button
+                  variant={viewMode === 'editor' ? 'default' : 'outline'}
+                  size="lg"
+                  onClick={() => setViewMode('editor')}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    py: '4',
+                    bg: viewMode === 'editor' ? 'green.500/20' : 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: viewMode === 'editor' ? 'green.500/50' : 'gray.700/50',
+                    color: viewMode === 'editor' ? 'green.300' : 'gray.400',
+                    transition: 'all 0.2s',
+                    _hover: {
+                      bg: viewMode === 'editor' ? 'green.500/30' : 'gray.800',
+                      borderColor: viewMode === 'editor' ? 'green.500/70' : 'gray.600',
+                      transform: 'translateY(-2px)',
+                    },
+                  })}
+                >
+                  <Code2 className={css({ h: '5', w: '5' })} />
+                  <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
+                    Editor Only
+                  </span>
+                </Button>
+                <Button
+                  variant={viewMode === 'split' ? 'default' : 'outline'}
+                  size="lg"
+                  onClick={() => setViewMode('split')}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    py: '4',
+                    bg: viewMode === 'split' ? 'green.500/20' : 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: viewMode === 'split' ? 'green.500/50' : 'gray.700/50',
+                    color: viewMode === 'split' ? 'green.300' : 'gray.400',
+                    transition: 'all 0.2s',
+                    _hover: {
+                      bg: viewMode === 'split' ? 'green.500/30' : 'gray.800',
+                      borderColor: viewMode === 'split' ? 'green.500/70' : 'gray.600',
+                      transform: 'translateY(-2px)',
+                    },
+                  })}
+                >
+                  <SplitSquareHorizontal className={css({ h: '5', w: '5' })} />
+                  <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
+                    Split View
+                  </span>
+                </Button>
+                <Button
+                  variant={viewMode === 'preview' ? 'default' : 'outline'}
+                  size="lg"
+                  onClick={() => setViewMode('preview')}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    py: '4',
+                    bg: viewMode === 'preview' ? 'green.500/20' : 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: viewMode === 'preview' ? 'green.500/50' : 'gray.700/50',
+                    color: viewMode === 'preview' ? 'green.300' : 'gray.400',
+                    transition: 'all 0.2s',
+                    _hover: {
+                      bg: viewMode === 'preview' ? 'green.500/30' : 'gray.800',
+                      borderColor: viewMode === 'preview' ? 'green.500/70' : 'gray.600',
+                      transform: 'translateY(-2px)',
+                    },
+                  })}
+                >
+                  <Eye className={css({ h: '5', w: '5' })} />
+                  <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
+                    Preview Only
+                  </span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Stats Bar */}
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'rgba(17, 24, 39, 0.5)',
-            backdropFilter: 'blur(8px)',
-          })}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <CardContent>
-            <div
-              className={css({
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                gap: '3',
-                p: { base: '4', sm: '5' },
-              })}
-            >
-              <Badge variant="outline" className="gap-1.5 border-green-500/30 text-green-400">
-                <CheckCircle2 className="h-3 w-3" />
-                {stats.lines} lines
-              </Badge>
-              <Badge variant="outline" className="gap-1.5 border-blue-500/30 text-blue-400">
-                {stats.words} words
-              </Badge>
-              <Badge variant="outline" className="gap-1.5 border-purple-500/30 text-purple-400">
-                {stats.chars} characters
-              </Badge>
-              {stats.headings > 0 && (
-                <Badge variant="outline" className="gap-1.5 border-orange-500/30 text-orange-400">
-                  {stats.headings} headings
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(8px)',
+            })}
+          >
+            <CardContent className={css({ py: '5' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  gap: '3',
+                })}
+              >
+                <Badge
+                  variant="outline"
+                  className={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '1.5',
+                    border: '1px solid',
+                    borderColor: 'green.500/30',
+                    color: 'green.400',
+                  })}
+                >
+                  <CheckCircle2 className={css({ h: '3', w: '3' })} />
+                  {lines} lines
                 </Badge>
-              )}
-              {stats.codeBlocks > 0 && (
-                <Badge variant="outline" className="gap-1.5 border-cyan-500/30 text-cyan-400">
-                  <Code2 className="h-3 w-3" />
-                  {stats.codeBlocks} code blocks
+                <Badge
+                  variant="outline"
+                  className={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '1.5',
+                    border: '1px solid',
+                    borderColor: 'blue.500/30',
+                    color: 'blue.400',
+                  })}
+                >
+                  {words} words
                 </Badge>
-              )}
-              {stats.links > 0 && (
-                <Badge variant="outline" className="gap-1.5 border-pink-500/30 text-pink-400">
-                  {stats.links} links
+                <Badge
+                  variant="outline"
+                  className={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '1.5',
+                    border: '1px solid',
+                    borderColor: 'purple.500/30',
+                    color: 'purple.400',
+                  })}
+                >
+                  {chars} characters
                 </Badge>
-              )}
-              {stats.images > 0 && (
-                <Badge variant="outline" className="gap-1.5 border-yellow-500/30 text-yellow-400">
-                  {stats.images} images
-                </Badge>
-              )}
-              {stats.taskLists > 0 && (
-                <Badge variant="outline" className="gap-1.5 border-green-500/30 text-green-400">
-                  ✓ {stats.taskLists} tasks
-                </Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                {headings > 0 && (
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '1.5',
+                      border: '1px solid',
+                      borderColor: 'orange.500/30',
+                      color: 'orange.400',
+                    })}
+                  >
+                    {headings} headings
+                  </Badge>
+                )}
+                {codeBlocks > 0 && (
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '1.5',
+                      border: '1px solid',
+                      borderColor: 'cyan.500/30',
+                      color: 'cyan.400',
+                    })}
+                  >
+                    <Code2 className={css({ h: '3', w: '3' })} />
+                    {codeBlocks} code blocks
+                  </Badge>
+                )}
+                {links > 0 && (
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '1.5',
+                      border: '1px solid',
+                      borderColor: 'pink.500/30',
+                      color: 'pink.400',
+                    })}
+                  >
+                    {links} links
+                  </Badge>
+                )}
+                {images > 0 && (
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '1.5',
+                      border: '1px solid',
+                      borderColor: 'yellow.500/30',
+                      color: 'yellow.400',
+                    })}
+                  >
+                    {images} images
+                  </Badge>
+                )}
+                {taskLists > 0 && (
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '1.5',
+                      border: '1px solid',
+                      borderColor: 'green.500/30',
+                      color: 'green.400',
+                    })}
+                  >
+                    ✓ {taskLists} tasks
+                  </Badge>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Action Buttons */}
-        <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-          <label htmlFor="file-upload">
-            <Button variant="outline" size="sm" className="gap-2" asChild>
-              <span>
-                <Upload className="h-4 w-4" />
-                Load File
-              </span>
-            </Button>
-            <input
-              id="file-upload"
-              type="file"
-              accept=".md,.markdown"
-              className="hidden"
-              onChange={handleLoadFile}
-            />
-          </label>
-          <Button variant="outline" size="sm" onClick={handleCopyMarkdown} className="gap-2">
-            <Copy className="h-4 w-4" />
-            Copy Markdown
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleCopyHTML} className="gap-2">
-            <Copy className="h-4 w-4" />
-            Copy HTML
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleDownloadMarkdown} className="gap-2">
-            <Download className="h-4 w-4" />
-            Download .md
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleDownloadHTML} className="gap-2">
-            <Download className="h-4 w-4" />
-            Download .html
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleReset} className="gap-2">
-            <RotateCcw className="h-4 w-4" />
-            Reset
-          </Button>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'green.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <CardTitle>Actions</CardTitle>
+              <CardDescription>Load, copy, download, or reset your markdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    base: 'repeat(2, 1fr)',
+                    sm: 'repeat(3, 1fr)',
+                    md: 'repeat(6, 1fr)',
+                  },
+                  gap: '3',
+                  w: 'full',
+                })}
+              >
+                <label htmlFor="file-upload">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className={css({
+                      h: 'auto',
+                      w: 'full',
+                      flexDirection: 'column',
+                      gap: '2',
+                      py: '3',
+                      cursor: 'pointer',
+                      minH: '11',
+                    })}
+                  >
+                    <span>
+                      <Upload className={css({ h: '4', w: '4' })} />
+                      <span className={css({ fontSize: 'xs' })}>Load File</span>
+                    </span>
+                  </Button>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept=".md,.markdown"
+                    className={css({ display: 'none' })}
+                    onChange={handleLoadFile}
+                  />
+                </label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopyMarkdown}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    py: '3',
+                    minH: '11',
+                  })}
+                >
+                  <Copy className={css({ h: '4', w: '4' })} />
+                  <span className={css({ fontSize: 'xs' })}>Copy MD</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopyHTML}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    py: '3',
+                    minH: '11',
+                  })}
+                >
+                  <Copy className={css({ h: '4', w: '4' })} />
+                  <span className={css({ fontSize: 'xs' })}>Copy HTML</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownloadMarkdown}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    py: '3',
+                    minH: '11',
+                  })}
+                >
+                  <Download className={css({ h: '4', w: '4' })} />
+                  <span className={css({ fontSize: 'xs' })}>Download MD</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownloadHTML}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    py: '3',
+                    minH: '11',
+                  })}
+                >
+                  <Download className={css({ h: '4', w: '4' })} />
+                  <span className={css({ fontSize: 'xs' })}>Download HTML</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  className={css({
+                    h: 'auto',
+                    flexDirection: 'column',
+                    gap: '2',
+                    py: '3',
+                    minH: '11',
+                  })}
+                >
+                  <RotateCcw className={css({ h: '4', w: '4' })} />
+                  <span className={css({ fontSize: 'xs' })}>Reset</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Editor and Preview */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
           className={css({
             display: 'grid',
-            flex: '1',
             gap: { base: '6', lg: '6' },
-            gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
+            gridTemplateColumns: {
+              base: '1fr',
+              lg: viewMode === 'split' ? 'repeat(2, 1fr)' : '1fr',
+            },
             w: 'full',
           })}
         >
@@ -484,31 +739,40 @@ export default function MarkdownEditorPage() {
               className={css({
                 border: '1px solid',
                 borderColor: 'gray.800',
-                bg: 'rgba(17, 24, 39, 0.5)',
+                bg: 'gray.900/50',
                 backdropFilter: 'blur(8px)',
                 w: 'full',
               })}
             >
               <CardHeader>
-                <div className={css({ spaceY: '2', p: { base: '4', sm: '5', md: '6' } })}>
-                  <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <Code2 className={css({ h: '5', w: '5', color: 'green.500' })} />
-                    Markdown Editor
-                  </CardTitle>
-                  <CardDescription>
-                    Write your markdown content using GitHub-flavored syntax
-                  </CardDescription>
-                </div>
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Code2 className={css({ h: '5', w: '5', color: 'green.500' })} />
+                  Markdown Editor
+                </CardTitle>
+                <CardDescription>
+                  Write your markdown content using GitHub-flavored syntax
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                  <Textarea
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    placeholder="Start typing markdown here..."
-                    className="min-h-[600px] resize-none border-gray-700 bg-gray-950 font-mono text-gray-100 focus:ring-green-500"
-                  />
-                </div>
+                <Textarea
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  placeholder="Start typing markdown here..."
+                  className={css({
+                    minH: '600px',
+                    resize: 'none',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    bg: 'gray.950',
+                    fontFamily: 'mono',
+                    color: 'gray.100',
+                    _focus: {
+                      ring: '2px',
+                      ringColor: 'green.500/20',
+                      borderColor: 'green.500',
+                    },
+                  })}
+                />
               </CardContent>
             </Card>
           )}
@@ -519,24 +783,34 @@ export default function MarkdownEditorPage() {
               className={css({
                 border: '1px solid',
                 borderColor: 'gray.800',
-                bg: 'rgba(17, 24, 39, 0.5)',
+                bg: 'gray.900/50',
                 backdropFilter: 'blur(8px)',
               })}
             >
               <CardHeader>
-                <div className={css({ spaceY: '2', p: { base: '4', sm: '5', md: '6' } })}>
-                  <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <Eye className={css({ h: '5', w: '5', color: 'emerald.500' })} />
-                    Live Preview
-                  </CardTitle>
-                  <CardDescription>
-                    See how your markdown will be rendered with GitHub styling
-                  </CardDescription>
-                </div>
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Eye className={css({ h: '5', w: '5', color: 'emerald.500' })} />
+                  Live Preview
+                </CardTitle>
+                <CardDescription>
+                  See how your markdown will be rendered with GitHub styling
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                  <div className="markdown-preview prose prose-invert min-h-[600px] w-max max-w-none overflow-auto rounded-lg border border-gray-700 bg-gray-950 p-6">
+                <div
+                  className={css({
+                    minH: '600px',
+                    w: 'full',
+                    maxW: 'none',
+                    overflow: 'auto',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    bg: 'gray.950',
+                    p: '6',
+                  })}
+                >
+                  <div className="markdown-preview prose prose-invert w-full max-w-none">
                     {markdownPlugins ? (
                       <ReactMarkdown
                         remarkPlugins={[markdownPlugins.remarkGfm]}
@@ -641,7 +915,14 @@ export default function MarkdownEditorPage() {
                         {value}
                       </ReactMarkdown>
                     ) : (
-                      <div className="flex items-center justify-center text-gray-400">
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'gray.400',
+                        })}
+                      >
                         Loading preview...
                       </div>
                     )}
@@ -650,44 +931,49 @@ export default function MarkdownEditorPage() {
               </CardContent>
             </Card>
           )}
-        </div>
+        </motion.div>
 
-        {/* Info Card */}
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'gray.800',
-            bgGradient: 'to-r',
-            gradientFrom: 'green.500/10',
-            gradientTo: 'emerald.500/10',
-          })}
+        {/* Pro Tips */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <CardContent>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'start',
-                gap: '4',
-                p: { base: '5', sm: '6' },
-              })}
-            >
-              <Github
-                className={css({ mt: '1', h: '6', w: '6', flexShrink: '0', color: 'green.400' })}
-              />
-              <div className={css({ flex: '1' })}>
-                <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'white' })}>
-                  GitHub-Flavored Markdown Support
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
-                  This editor supports all GitHub-flavored markdown features including tables, task
-                  lists, strikethrough, autolinks, and syntax-highlighted code blocks. Perfect for
-                  writing README files, PR summaries, documentation, and more!
-                </p>
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'green.500/20',
+              bg: 'green.500/5',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '6' })}>
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+                <Sparkles
+                  className={css({ h: '6', w: '6', color: 'green.400', flexShrink: '0' })}
+                />
+                <div className={css({ spaceY: '2' })}>
+                  <h3
+                    className={css({
+                      fontSize: 'lg',
+                      fontWeight: 'semibold',
+                      color: 'green.300',
+                    })}
+                  >
+                    Pro Tips
+                  </h3>
+                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                    <li>• Supports GitHub-flavored markdown with tables and task lists</li>
+                    <li>• Use the view mode switcher to focus on editing or previewing</li>
+                    <li>• Export your work as HTML with styling or plain markdown</li>
+                    <li>• Perfect for README files, documentation, and PR descriptions</li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </main>
     </>
   )
 }
