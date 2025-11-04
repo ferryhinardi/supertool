@@ -269,8 +269,14 @@ export default function ImageOptimizerPage() {
             backdropFilter: 'blur(4px)',
           })}
         >
-          <ImageIcon className="h-5 w-5 text-teal-400" />
-          <span className="text-sm font-semibold text-teal-300">
+          <ImageIcon className={css({ h: '5', w: '5', color: 'teal.400' })} />
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'teal.300',
+            })}
+          >
             Professional Image Optimization
           </span>
         </div>
@@ -281,7 +287,20 @@ export default function ImageOptimizerPage() {
             fontWeight: 'bold',
           })}
         >
-          <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+          <span
+            className={css({
+              bgGradient: 'to-r',
+              gradientFrom: 'teal.400',
+              gradientVia: 'cyan.400',
+              gradientTo: 'blue.400',
+              bgClip: 'text',
+              color: 'transparent',
+            })}
+            style={{
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Image Optimizer & Converter
           </span>
         </h1>
@@ -305,48 +324,107 @@ export default function ImageOptimizerPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          style={{
+          className={css({
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '1rem',
-            width: '100%',
-            maxWidth: '1400px',
-          }}
-          className="sm:grid-cols-4"
+            gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
+            gap: '4',
+            w: 'full',
+            maxW: '1400px',
+          })}
         >
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardContent>
               <div className={css({ p: '4', textAlign: 'center' })}>
-                <div className="mb-2 text-2xl font-bold text-teal-400">{images.length}</div>
-                <div className="text-xs text-gray-400">Total Images</div>
+                <div
+                  className={css({
+                    mb: '2',
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'teal.400',
+                  })}
+                >
+                  {images.length}
+                </div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Total Images</div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardContent>
               <div className={css({ p: '4', textAlign: 'center' })}>
-                <div className="mb-2 text-2xl font-bold text-blue-400">
+                <div
+                  className={css({
+                    mb: '2',
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'blue.400',
+                  })}
+                >
                   {formatBytes(totalOriginalSize)}
                 </div>
-                <div className="text-xs text-gray-400">Original Size</div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Original Size</div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardContent>
               <div className={css({ p: '4', textAlign: 'center' })}>
-                <div className="mb-2 text-2xl font-bold text-green-400">
+                <div
+                  className={css({
+                    mb: '2',
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'green.400',
+                  })}
+                >
                   {formatBytes(totalCompressedSize)}
                 </div>
-                <div className="text-xs text-gray-400">Compressed Size</div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Compressed Size</div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardContent>
               <div className={css({ p: '4', textAlign: 'center' })}>
-                <div className="mb-2 text-2xl font-bold text-purple-400">{totalSavings}%</div>
-                <div className="text-xs text-gray-400">Space Saved</div>
+                <div
+                  className={css({
+                    mb: '2',
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'purple.400',
+                  })}
+                >
+                  {totalSavings}%
+                </div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Space Saved</div>
               </div>
             </CardContent>
           </Card>
@@ -367,14 +445,26 @@ export default function ImageOptimizerPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          style={{ width: '100%' }}
-          className="lg:col-span-1"
+          className={css({ w: 'full', lg: { gridColumn: 'span 1' } })}
         >
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5 text-teal-400" />
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <Settings className={css({ h: '5', w: '5', color: 'teal.400' })} />
                   Optimization Settings
                 </CardTitle>
                 <CardDescription>Configure compression and output options</CardDescription>
@@ -384,7 +474,14 @@ export default function ImageOptimizerPage() {
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
                 {/* Output Format */}
                 <div className={css({ spaceY: '2' })}>
-                  <label htmlFor="output-format" className="text-sm font-medium text-gray-300">
+                  <label
+                    htmlFor="output-format"
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.300',
+                    })}
+                  >
                     Output Format
                   </label>
                   <div
@@ -401,11 +498,12 @@ export default function ImageOptimizerPage() {
                         variant={outputFormat === format ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => setOutputFormat(format)}
-                        className={`${
-                          outputFormat === format
-                            ? 'border-teal-500/50 bg-teal-500/20 text-teal-200'
-                            : 'border-gray-700'
-                        }`}
+                        className={css({
+                          border: '1px solid',
+                          borderColor: outputFormat === format ? 'teal.500/50' : 'gray.700',
+                          bg: outputFormat === format ? 'teal.500/20' : 'transparent',
+                          color: outputFormat === format ? 'teal.200' : 'inherit',
+                        })}
                       >
                         {format.toUpperCase()}
                       </Button>
@@ -422,10 +520,25 @@ export default function ImageOptimizerPage() {
                       justifyContent: 'space-between',
                     })}
                   >
-                    <label htmlFor="quality-slider" className="text-sm font-medium text-gray-300">
+                    <label
+                      htmlFor="quality-slider"
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
+                    >
                       Quality
                     </label>
-                    <span className="text-sm font-bold text-teal-400">{quality}%</span>
+                    <span
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'bold',
+                        color: 'teal.400',
+                      })}
+                    >
+                      {quality}%
+                    </span>
                   </div>
                   <input
                     id="quality-slider"
@@ -435,7 +548,7 @@ export default function ImageOptimizerPage() {
                     step="5"
                     value={quality}
                     onChange={(e) => setQuality(Number(e.target.value))}
-                    className="w-full accent-teal-500"
+                    className={css({ w: 'full', accentColor: 'teal.500' })}
                   />
                   <div
                     className={css({
@@ -452,7 +565,14 @@ export default function ImageOptimizerPage() {
 
                 {/* Max Dimensions */}
                 <div className={css({ spaceY: '3' })}>
-                  <label htmlFor="max-dimensions" className="text-sm font-medium text-gray-300">
+                  <label
+                    htmlFor="max-dimensions"
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.300',
+                    })}
+                  >
                     Max Dimensions
                   </label>
                   <div
@@ -464,7 +584,15 @@ export default function ImageOptimizerPage() {
                     })}
                   >
                     <div>
-                      <label htmlFor="max-width" className="mb-1 block text-xs text-gray-400">
+                      <label
+                        htmlFor="max-width"
+                        className={css({
+                          mb: '1',
+                          display: 'block',
+                          fontSize: 'xs',
+                          color: 'gray.400',
+                        })}
+                      >
                         Width (px)
                       </label>
                       <input
@@ -472,13 +600,35 @@ export default function ImageOptimizerPage() {
                         type="number"
                         value={maxWidth}
                         onChange={(e) => setMaxWidth(Number(e.target.value))}
-                        className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-teal-500 focus:outline-none"
+                        className={css({
+                          w: 'full',
+                          rounded: 'md',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'gray.800',
+                          px: '3',
+                          py: '2',
+                          fontSize: 'sm',
+                          color: 'gray.100',
+                          _focus: {
+                            borderColor: 'teal.500',
+                            outline: 'none',
+                          },
+                        })}
                         min="100"
                         max="10000"
                       />
                     </div>
                     <div>
-                      <label htmlFor="max-height" className="mb-1 block text-xs text-gray-400">
+                      <label
+                        htmlFor="max-height"
+                        className={css({
+                          mb: '1',
+                          display: 'block',
+                          fontSize: 'xs',
+                          color: 'gray.400',
+                        })}
+                      >
                         Height (px)
                       </label>
                       <input
@@ -486,18 +636,54 @@ export default function ImageOptimizerPage() {
                         type="number"
                         value={maxHeight}
                         onChange={(e) => setMaxHeight(Number(e.target.value))}
-                        className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:border-teal-500 focus:outline-none"
+                        className={css({
+                          w: 'full',
+                          rounded: 'md',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'gray.800',
+                          px: '3',
+                          py: '2',
+                          fontSize: 'sm',
+                          color: 'gray.100',
+                          _focus: {
+                            borderColor: 'teal.500',
+                            outline: 'none',
+                          },
+                        })}
                         min="100"
                         max="10000"
                       />
                     </div>
                   </div>
-                  <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-300">
+                  <label
+                    className={css({
+                      display: 'flex',
+                      cursor: 'pointer',
+                      alignItems: 'center',
+                      gap: '2',
+                      fontSize: 'sm',
+                      color: 'gray.300',
+                    })}
+                  >
                     <input
                       type="checkbox"
                       checked={maintainAspectRatio}
                       onChange={(e) => setMaintainAspectRatio(e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-teal-500 focus:ring-2 focus:ring-teal-500 focus:ring-offset-0"
+                      className={css({
+                        h: '4',
+                        w: '4',
+                        rounded: 'sm',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800',
+                        color: 'teal.500',
+                        _focus: {
+                          ring: '2',
+                          ringColor: 'teal.500',
+                          ringOffset: '0',
+                        },
+                      })}
                     />
                     Maintain aspect ratio
                   </label>
@@ -508,27 +694,43 @@ export default function ImageOptimizerPage() {
                   <Button
                     onClick={handleOptimizeAll}
                     disabled={images.length === 0 || isProcessing}
-                    className="w-full gap-2 bg-teal-600 hover:bg-teal-700"
+                    className={css({
+                      w: 'full',
+                      gap: '2',
+                      bg: 'teal.600',
+                      _hover: {
+                        bg: 'teal.700',
+                      },
+                    })}
                   >
-                    <Zap className="h-4 w-4" />
+                    <Zap className={css({ h: '4', w: '4' })} />
                     Optimize All Images
                   </Button>
                   <Button
                     variant="outline"
                     onClick={handleDownloadAll}
                     disabled={!images.some((img) => img.status === 'completed')}
-                    className="w-full gap-2"
+                    className={css({ w: 'full', gap: '2' })}
                   >
-                    <Download className="h-4 w-4" />
+                    <Download className={css({ h: '4', w: '4' })} />
                     Download All
                   </Button>
                   <Button
                     variant="outline"
                     onClick={handleClearAll}
                     disabled={images.length === 0}
-                    className="w-full gap-2 border-red-500/30 text-red-400 hover:bg-red-500/10"
+                    className={css({
+                      w: 'full',
+                      gap: '2',
+                      border: '1px solid',
+                      borderColor: 'red.500/30',
+                      color: 'red.400',
+                      _hover: {
+                        bg: 'red.500/10',
+                      },
+                    })}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className={css({ h: '4', w: '4' })} />
                     Clear All
                   </Button>
                 </div>
@@ -542,14 +744,26 @@ export default function ImageOptimizerPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          style={{ width: '100%' }}
-          className="lg:col-span-2"
+          className={css({ w: 'full', lg: { gridColumn: 'span 2' } })}
         >
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                <CardTitle className="flex items-center gap-2">
-                  <FileImage className="h-5 w-5 text-teal-400" />
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <FileImage className={css({ h: '5', w: '5', color: 'teal.400' })} />
                   Images ({images.length})
                 </CardTitle>
                 <CardDescription>
@@ -619,7 +833,11 @@ export default function ImageOptimizerPage() {
                                 <img
                                   src={image.preview}
                                   alt={image.file.name}
-                                  className="h-full w-full object-cover"
+                                  className={css({
+                                    h: 'full',
+                                    w: 'full',
+                                    objectFit: 'cover',
+                                  })}
                                 />
                                 {image.status === 'completed' && (
                                   <div
@@ -632,7 +850,9 @@ export default function ImageOptimizerPage() {
                                       bg: 'teal.500/20',
                                     })}
                                   >
-                                    <CheckCircle className="h-6 w-6 text-teal-400" />
+                                    <CheckCircle
+                                      className={css({ h: '6', w: '6', color: 'teal.400' })}
+                                    />
                                   </div>
                                 )}
                               </div>
@@ -649,7 +869,14 @@ export default function ImageOptimizerPage() {
                                   })}
                                 >
                                   <div className={css({ minW: '0', flex: '1' })}>
-                                    <p className="truncate text-sm font-medium text-gray-200">
+                                    <p
+                                      className={css({
+                                        truncate: true,
+                                        fontSize: 'sm',
+                                        fontWeight: 'medium',
+                                        color: 'gray.200',
+                                      })}
+                                    >
                                       {image.file.name}
                                     </p>
                                     <div
@@ -666,10 +893,18 @@ export default function ImageOptimizerPage() {
                                       {image.compressedSize && (
                                         <>
                                           <span>→</span>
-                                          <span className="text-teal-400">
+                                          <span className={css({ color: 'teal.400' })}>
                                             {formatBytes(image.compressedSize)}
                                           </span>
-                                          <span className="rounded bg-teal-500/20 px-2 py-0.5 text-teal-300">
+                                          <span
+                                            className={css({
+                                              rounded: 'md',
+                                              bg: 'teal.500/20',
+                                              px: '2',
+                                              py: '0.5',
+                                              color: 'teal.300',
+                                            })}
+                                          >
                                             {calculateSavings(
                                               image.originalSize,
                                               image.compressedSize
@@ -688,18 +923,34 @@ export default function ImageOptimizerPage() {
                                         size="sm"
                                         variant="ghost"
                                         onClick={() => handleDownload(image)}
-                                        className="h-8 w-8 p-0 text-teal-400 hover:bg-teal-500/20"
+                                        className={css({
+                                          h: '8',
+                                          w: '8',
+                                          p: '0',
+                                          color: 'teal.400',
+                                          _hover: {
+                                            bg: 'teal.500/20',
+                                          },
+                                        })}
                                       >
-                                        <Download className="h-4 w-4" />
+                                        <Download className={css({ h: '4', w: '4' })} />
                                       </Button>
                                     )}
                                     <Button
                                       size="sm"
                                       variant="ghost"
                                       onClick={() => handleRemove(image.id)}
-                                      className="h-8 w-8 p-0 text-red-400 hover:bg-red-500/20"
+                                      className={css({
+                                        h: '8',
+                                        w: '8',
+                                        p: '0',
+                                        color: 'red.400',
+                                        _hover: {
+                                          bg: 'red.500/20',
+                                        },
+                                      })}
                                     >
-                                      <Trash2 className="h-4 w-4" />
+                                      <Trash2 className={css({ h: '4', w: '4' })} />
                                     </Button>
                                   </div>
                                 </div>
@@ -707,8 +958,8 @@ export default function ImageOptimizerPage() {
                                 {/* Progress Bar */}
                                 {image.status === 'processing' && (
                                   <div className={css({ spaceY: '1' })}>
-                                    <Progress value={image.progress} className="h-2" />
-                                    <p className="text-xs text-gray-500">
+                                    <Progress value={image.progress} className={css({ h: '2' })} />
+                                    <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
                                       Optimizing... {image.progress}%
                                     </p>
                                   </div>
@@ -716,12 +967,16 @@ export default function ImageOptimizerPage() {
 
                                 {/* Error Message */}
                                 {image.status === 'error' && (
-                                  <p className="text-xs text-red-400">{image.error}</p>
+                                  <p className={css({ fontSize: 'xs', color: 'red.400' })}>
+                                    {image.error}
+                                  </p>
                                 )}
 
                                 {/* Status */}
                                 {image.status === 'pending' && (
-                                  <p className="text-xs text-gray-500">Ready to optimize</p>
+                                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                                    Ready to optimize
+                                  </p>
                                 )}
                               </div>
                             </div>
@@ -742,14 +997,13 @@ export default function ImageOptimizerPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        style={{
+        className={css({
           display: 'grid',
-          gap: '1rem',
-          gridTemplateColumns: '1fr',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
-        className="sm:grid-cols-2 lg:grid-cols-4"
+          gap: '4',
+          gridTemplateColumns: { base: '1', sm: '2', lg: '4' },
+          w: 'full',
+          maxW: '1400px',
+        })}
       >
         {[
           {
@@ -775,13 +1029,35 @@ export default function ImageOptimizerPage() {
         ].map((feature) => (
           <Card
             key={feature.title}
-            className="border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm"
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bgGradient: 'to-br',
+              gradientFrom: 'gray.900/50',
+              gradientTo: 'gray.900/30',
+              backdropFilter: 'blur(4px)',
+            })}
           >
             <CardContent>
               <div className={css({ p: '6' })}>
-                <feature.icon className="mb-3 h-8 w-8 text-teal-400" />
-                <h3 className="mb-2 font-semibold text-gray-200">{feature.title}</h3>
-                <p className="text-sm text-gray-500">{feature.description}</p>
+                <feature.icon
+                  className={css({
+                    mb: '3',
+                    h: '8',
+                    w: '8',
+                    color: 'teal.400',
+                  })}
+                />
+                <h3
+                  className={css({
+                    mb: '2',
+                    fontWeight: 'semibold',
+                    color: 'gray.200',
+                  })}
+                >
+                  {feature.title}
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.description}</p>
               </div>
             </CardContent>
           </Card>
