@@ -443,8 +443,10 @@ function TextTransformerContent() {
             backdropFilter: 'blur(4px)',
           })}
         >
-          <Type className="h-5 w-5 text-yellow-400" />
-          <span className="text-sm font-semibold text-yellow-300">20+ Text Transformations</span>
+          <Type className={css({ h: '5', w: '5', color: 'yellow.400' })} />
+          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'yellow.300' })}>
+            20+ Text Transformations
+          </span>
         </div>
 
         <h1
@@ -453,7 +455,20 @@ function TextTransformerContent() {
             fontWeight: 'bold',
           })}
         >
-          <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
+          <span
+            className={css({
+              bgGradient: 'to-r',
+              gradientFrom: 'yellow.400',
+              gradientVia: 'orange.400',
+              gradientTo: 'red.400',
+              bgClip: 'text',
+              color: 'transparent',
+            })}
+            style={{
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Text Transformer & Counter
           </span>
         </h1>
@@ -476,26 +491,28 @@ function TextTransformerContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        style={{
+        className={css({
           display: 'grid',
-          gap: '16px',
+          gap: '4',
           gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-        }}
+        })}
       >
         {[
-          { label: 'Characters', value: stats.chars, gradient: 'from-purple-500 to-pink-500' },
+          { label: 'Characters', value: stats.chars, from: 'purple.500', to: 'pink.500' },
           {
             label: 'No Spaces',
             value: stats.charsNoSpaces,
-            gradient: 'from-pink-500 to-rose-500',
+            from: 'pink.500',
+            to: 'rose.500',
           },
-          { label: 'Words', value: stats.words, gradient: 'from-blue-500 to-cyan-500' },
-          { label: 'Lines', value: stats.lines, gradient: 'from-green-500 to-emerald-500' },
-          { label: 'Sentences', value: stats.sentences, gradient: 'from-orange-500 to-red-500' },
+          { label: 'Words', value: stats.words, from: 'blue.500', to: 'cyan.500' },
+          { label: 'Lines', value: stats.lines, from: 'green.500', to: 'emerald.500' },
+          { label: 'Sentences', value: stats.sentences, from: 'orange.500', to: 'red.500' },
           {
             label: 'Paragraphs',
             value: stats.paragraphs,
-            gradient: 'from-yellow-500 to-amber-500',
+            from: 'yellow.500',
+            to: 'amber.500',
           },
         ].map((stat, index) => (
           <motion.div
@@ -504,7 +521,14 @@ function TextTransformerContent() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 + index * 0.05 }}
           >
-            <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+            <Card
+              className={css({
+                border: '1px solid',
+                borderColor: 'gray.800',
+                bg: 'gray.900/50',
+                backdropFilter: 'blur(4px)',
+              })}
+            >
               <CardContent>
                 <div
                   className={css({
@@ -513,11 +537,24 @@ function TextTransformerContent() {
                   })}
                 >
                   <div
-                    className={`mb-2 bg-gradient-to-r ${stat.gradient} bg-clip-text text-3xl font-bold text-transparent`}
+                    className={css({
+                      mb: '2',
+                      bgGradient: 'to-r',
+                      gradientFrom: stat.from,
+                      gradientTo: stat.to,
+                      bgClip: 'text',
+                      color: 'transparent',
+                      fontSize: '3xl',
+                      fontWeight: 'bold',
+                    })}
+                    style={{
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
                   >
                     {stat.value.toLocaleString()}
                   </div>
-                  <div className="text-xs text-gray-400">{stat.label}</div>
+                  <div className={css({ fontSize: 'xs', color: 'gray.400' })}>{stat.label}</div>
                 </div>
               </CardContent>
             </Card>
@@ -540,7 +577,14 @@ function TextTransformerContent() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className={css({ gridColumn: { lg: 'span 2' } })}
         >
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
                 <div
@@ -553,8 +597,8 @@ function TextTransformerContent() {
                   })}
                 >
                   <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Type className="h-5 w-5 text-yellow-400" />
+                    <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                      <Type className={css({ h: '5', w: '5', color: 'yellow.400' })} />
                       Text Input
                     </CardTitle>
                     <CardDescription>Enter or paste your text below</CardDescription>
@@ -565,16 +609,16 @@ function TextTransformerContent() {
                       size="sm"
                       onClick={handleCopy}
                       disabled={!inputText}
-                      className="gap-2"
+                      className={css({ gap: '2' })}
                     >
                       {copied ? (
                         <>
-                          <Check className="h-4 w-4" />
+                          <Check className={css({ h: '4', w: '4' })} />
                           Copied
                         </>
                       ) : (
                         <>
-                          <Copy className="h-4 w-4" />
+                          <Copy className={css({ h: '4', w: '4' })} />
                           Copy
                         </>
                       )}
@@ -584,9 +628,9 @@ function TextTransformerContent() {
                       size="sm"
                       onClick={handleDownload}
                       disabled={!inputText}
-                      className="gap-2"
+                      className={css({ gap: '2' })}
                     >
-                      <Download className="h-4 w-4" />
+                      <Download className={css({ h: '4', w: '4' })} />
                       Download
                     </Button>
                     <Button
@@ -594,9 +638,9 @@ function TextTransformerContent() {
                       size="sm"
                       onClick={handleReset}
                       disabled={!inputText}
-                      className="gap-2"
+                      className={css({ gap: '2' })}
                     >
-                      <RotateCcw className="h-4 w-4" />
+                      <RotateCcw className={css({ h: '4', w: '4' })} />
                       Clear
                     </Button>
                   </div>
@@ -609,7 +653,11 @@ function TextTransformerContent() {
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="Start typing or paste your text here..."
-                  className="min-h-[400px] font-mono text-base"
+                  className={css({
+                    minH: '[400px]',
+                    fontFamily: 'mono',
+                    fontSize: 'base',
+                  })}
                 />
               </div>
             </CardContent>
@@ -619,15 +667,16 @@ function TextTransformerContent() {
           <Card
             className={css({
               mt: '6',
-              border: 'gray.800',
+              border: '1px solid',
+              borderColor: 'gray.800',
               bg: 'gray.900/50',
               backdropFilter: 'blur(4px)',
             })}
           >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="h-5 w-5 text-blue-400" />
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Search className={css({ h: '5', w: '5', color: 'blue.400' })} />
                   Find & Replace
                 </CardTitle>
                 <CardDescription>Search and replace text with regex support</CardDescription>
@@ -643,8 +692,11 @@ function TextTransformerContent() {
                     w: 'full',
                   })}
                 >
-                  <div className="space-y-2">
-                    <label htmlFor="find-text" className="text-sm font-medium text-gray-300">
+                  <div className={css({ spaceY: '2' })}>
+                    <label
+                      htmlFor="find-text"
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    >
                       Find
                     </label>
                     <Input
@@ -652,11 +704,14 @@ function TextTransformerContent() {
                       value={findText}
                       onChange={(e) => setFindText(e.target.value)}
                       placeholder="Search text or regex pattern"
-                      className="font-mono"
+                      className={css({ fontFamily: 'mono' })}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label htmlFor="replace-text" className="text-sm font-medium text-gray-300">
+                  <div className={css({ spaceY: '2' })}>
+                    <label
+                      htmlFor="replace-text"
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    >
                       Replace with
                     </label>
                     <Input
@@ -664,7 +719,7 @@ function TextTransformerContent() {
                       value={replaceText}
                       onChange={(e) => setReplaceText(e.target.value)}
                       placeholder="Replacement text"
-                      className="font-mono"
+                      className={css({ fontFamily: 'mono' })}
                     />
                   </div>
                 </div>
@@ -677,30 +732,78 @@ function TextTransformerContent() {
                     gap: '4',
                   })}
                 >
-                  <label className="flex cursor-pointer items-center gap-2">
+                  <label
+                    className={css({
+                      display: 'flex',
+                      cursor: 'pointer',
+                      alignItems: 'center',
+                      gap: '2',
+                    })}
+                  >
                     <input
                       type="checkbox"
                       checked={useRegex}
                       onChange={(e) => setUseRegex(e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+                      className={css({
+                        h: '4',
+                        w: '4',
+                        rounded: 'default',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800',
+                        color: 'blue.500',
+                        _focus: {
+                          ring: '2',
+                          ringColor: 'blue.500',
+                          ringOffset: '0',
+                        },
+                      })}
                     />
-                    <span className="text-sm text-gray-300">Use Regex</span>
+                    <span className={css({ fontSize: 'sm', color: 'gray.300' })}>Use Regex</span>
                   </label>
-                  <label className="flex cursor-pointer items-center gap-2">
+                  <label
+                    className={css({
+                      display: 'flex',
+                      cursor: 'pointer',
+                      alignItems: 'center',
+                      gap: '2',
+                    })}
+                  >
                     <input
                       type="checkbox"
                       checked={caseSensitive}
                       onChange={(e) => setCaseSensitive(e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+                      className={css({
+                        h: '4',
+                        w: '4',
+                        rounded: 'default',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800',
+                        color: 'blue.500',
+                        _focus: {
+                          ring: '2',
+                          ringColor: 'blue.500',
+                          ringOffset: '0',
+                        },
+                      })}
                     />
-                    <span className="text-sm text-gray-300">Case Sensitive</span>
+                    <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                      Case Sensitive
+                    </span>
                   </label>
                   <Button
                     onClick={handleFindReplace}
                     disabled={!findText || !inputText}
-                    className="gap-2 bg-blue-600 hover:bg-blue-700"
+                    className={css({
+                      gap: '2',
+                      bg: 'blue.600',
+                      _hover: {
+                        bg: 'blue.700',
+                      },
+                    })}
                   >
-                    <Replace className="h-4 w-4" />
+                    <Replace className={css({ h: '4', w: '4' })} />
                     Replace All
                   </Button>
                 </div>
@@ -715,11 +818,18 @@ function TextTransformerContent() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(4px)',
+            })}
+          >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-yellow-400" />
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Sparkles className={css({ h: '5', w: '5', color: 'yellow.400' })} />
                   Transformations
                 </CardTitle>
                 <CardDescription>Apply text transformations instantly</CardDescription>
@@ -731,19 +841,22 @@ function TextTransformerContent() {
                 <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
                   {categories.map((cat) => {
                     const Icon = cat.icon
+                    const isSelected = selectedCategory === cat.id
                     return (
                       <Button
                         key={cat.id}
-                        variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                        variant={isSelected ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => setSelectedCategory(cat.id)}
-                        className={`gap-1.5 ${
-                          selectedCategory === cat.id
-                            ? 'border-yellow-500/50 bg-yellow-500/20 text-yellow-200'
-                            : 'border-gray-700'
-                        }`}
+                        className={css({
+                          gap: '1.5',
+                          border: '1px solid',
+                          borderColor: isSelected ? 'yellow.500/50' : 'gray.700',
+                          bg: isSelected ? 'yellow.500/20' : 'transparent',
+                          color: isSelected ? 'yellow.200' : 'inherit',
+                        })}
                       >
-                        <Icon className="h-3.5 w-3.5" />
+                        <Icon className={css({ h: '3.5', w: '3.5' })} />
                         {cat.label}
                       </Button>
                     )
@@ -761,11 +874,21 @@ function TextTransformerContent() {
                         size="sm"
                         onClick={() => handleTransform(btn.id)}
                         disabled={!inputText}
-                        className="w-full justify-start gap-2 border-gray-700 hover:border-yellow-500/50 hover:bg-yellow-500/10"
+                        className={css({
+                          w: 'full',
+                          justifyContent: 'start',
+                          gap: '2',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          _hover: {
+                            borderColor: 'yellow.500/50',
+                            bg: 'yellow.500/10',
+                          },
+                        })}
                         title={btn.description}
                       >
-                        <Icon className="h-4 w-4 text-gray-400" />
-                        <span className="flex-1 text-left">{btn.label}</span>
+                        <Icon className={css({ h: '4', w: '4', color: 'gray.400' })} />
+                        <span className={css({ flex: '1', textAlign: 'left' })}>{btn.label}</span>
                       </Button>
                     )
                   })}
@@ -781,7 +904,20 @@ function TextTransformerContent() {
 
 export default function TextTransformerPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div
+          className={css({
+            display: 'flex',
+            h: 'screen',
+            alignItems: 'center',
+            justifyContent: 'center',
+          })}
+        >
+          <div className={css({ color: 'gray.400' })}>Loading...</div>
+        </div>
+      }
+    >
       <TextTransformerContent />
     </Suspense>
   )
