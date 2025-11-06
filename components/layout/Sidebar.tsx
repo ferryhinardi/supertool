@@ -12,6 +12,7 @@ import {
   DollarSign,
   FileCog,
   FileJson,
+  FileSearch,
   FileSpreadsheet,
   FileText,
   Gauge,
@@ -83,6 +84,7 @@ const navigation = [
   { name: 'AI Snippet Generator', href: '/tools/ai-snippet-generator', icon: Braces },
   { name: 'AI JSON Analyzer', href: '/tools/ai-json-analyzer', icon: Brain },
   { name: 'AI Command Explainer', href: '/tools/ai-command-explainer', icon: MessageSquare },
+  { name: 'File Inspector', href: '/tools/file-inspector', icon: FileSearch },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
 ]
 const showAccessToGithub = false

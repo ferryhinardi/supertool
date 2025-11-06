@@ -311,6 +311,10 @@ type ToolEvent =
   | 'yaml_json_converter_download'
   | 'yaml_json_converter_clear'
   | 'yaml_json_converter_load_example'
+  | 'file_inspector_open'
+  | 'file_inspector_analyze'
+  | 'file_inspector_clear'
+  | 'file_inspector_copy'
 
 // Type-safe gtag wrapper
 declare global {
