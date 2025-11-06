@@ -24,7 +24,7 @@ import {
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import Script from 'next/script'
-import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
@@ -173,6 +173,69 @@ export default function HomePage() {
     new Set(categories.map((c) => c.value))
   )
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const hasRestoredScroll = useRef(false)
+
+  // Scroll restoration - save and restore scroll position
+  useEffect(() => {
+    const scrollKey = 'homepage-scroll-y'
+
+    // Restore scroll position on mount
+    if (!hasRestoredScroll.current) {
+      const savedScroll = sessionStorage.getItem(scrollKey)
+      if (savedScroll) {
+        // Delay restoration to ensure content is rendered
+        const timeoutId = setTimeout(() => {
+          window.scrollTo(0, Number.parseInt(savedScroll, 10))
+        }, 100)
+        hasRestoredScroll.current = true
+        return () => clearTimeout(timeoutId)
+      }
+      hasRestoredScroll.current = true
+    }
+
+    // Save scroll position periodically and on navigation
+    let rafId: number
+    let lastScroll = 0
+
+    const saveScroll = () => {
+      const currentScroll = window.scrollY
+      // Only save if scroll changed significantly (reduces sessionStorage writes)
+      if (Math.abs(currentScroll - lastScroll) > 50) {
+        sessionStorage.setItem(scrollKey, currentScroll.toString())
+        lastScroll = currentScroll
+      }
+    }
+
+    const handleScroll = () => {
+      // Use requestAnimationFrame for better performance
+      if (rafId) {
+        cancelAnimationFrame(rafId)
+      }
+      rafId = requestAnimationFrame(saveScroll)
+    }
+
+    // Listen to scroll
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    // Save on page hide (navigation, tab close, etc.)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        sessionStorage.setItem(scrollKey, window.scrollY.toString())
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId)
+      }
+      window.removeEventListener('scroll', handleScroll)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      // Final save on unmount
+      sessionStorage.setItem(scrollKey, window.scrollY.toString())
+    }
+  }, [])
 
   // Toggle category expansion
   const toggleCategory = (category: ToolCategory) => {
@@ -892,11 +955,10 @@ export default function HomePage() {
                             gap: viewMode === 'grid' ? '6' : '4',
                           })}
                         >
-                          {toolsInCategory.map((tool, index) => (
+                          {toolsInCategory.map((tool) => (
                             <ToolCard
                               key={tool.title}
                               tool={tool}
-                              index={index}
                               viewMode={viewMode}
                               shouldReduceMotion={shouldReduceMotion}
                             />
@@ -1228,15 +1290,13 @@ export default function HomePage() {
   )
 }
 
-// Tool Card Component
-function ToolCard({
+// Tool Card Component - Memoized to prevent unnecessary re-renders
+const ToolCard = memo(function ToolCard({
   tool,
-  index,
   viewMode,
   shouldReduceMotion,
 }: {
   tool: Tool
-  index: number
   viewMode: 'grid' | 'list'
   shouldReduceMotion: boolean | null
 }) {
@@ -1663,4 +1723,4 @@ function ToolCard({
       </Link>
     </motion.div>
   )
-}
+})
