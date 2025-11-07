@@ -171,6 +171,9 @@ importers:
       '@testing-library/user-event':
         specifier: ^14.5.2
         version: 14.6.1(@testing-library/dom@10.4.1)
+      '@types/mockdate':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/node':
         specifier: ^20
         version: 20.19.23
@@ -219,6 +222,9 @@ importers:
       lint-staged:
         specifier: ^16.2.6
         version: 16.2.6
+      mockdate:
+        specifier: ^3.0.5
+        version: 3.0.5
       playwright:
         specifier: ^1.49.1
         version: 1.56.1
@@ -1483,6 +1489,10 @@ packages:
 
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
+
+  '@types/mockdate@3.0.0':
+    resolution: {integrity: sha512-p2mDrXSBlcpz1JFRTzeF12g4yGpHgh8HKoOWUw6gE/+W/s+oXPfip/n1Z+qLyE7wU1NSWCslexEEd1FAlNCWPQ==}
+    deprecated: This is a stub types definition. mockdate provides its own type definitions, so you do not need this installed.
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
@@ -3650,6 +3660,9 @@ packages:
 
   mitt@3.0.1:
     resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+
+  mockdate@3.0.5:
+    resolution: {integrity: sha512-iniQP4rj1FhBdBYS/+eQv7j1tadJ9lJtdzgOpvsOHng/GbcDh2Fhdeq+ZRldrPYdXvCyfFUmFeEwEGXZB5I/AQ==}
 
   motion-dom@12.23.23:
     resolution: {integrity: sha512-n5yolOs0TQQBRUFImrRfs/+6X4p3Q4n1dUEqt/H58Vx7OW6RF+foWEgmTVDhIWJIMXOuNNL0apKH2S16en9eiA==}
@@ -6392,6 +6405,10 @@ snapshots:
   '@types/mdast@4.0.4':
     dependencies:
       '@types/unist': 3.0.3
+
+  '@types/mockdate@3.0.0':
+    dependencies:
+      mockdate: 3.0.5
 
   '@types/ms@2.1.0': {}
 
@@ -9180,6 +9197,8 @@ snapshots:
   minipass@7.1.2: {}
 
   mitt@3.0.1: {}
+
+  mockdate@3.0.5: {}
 
   motion-dom@12.23.23:
     dependencies:

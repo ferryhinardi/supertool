@@ -1,7 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import MockDate from 'mockdate'
 import { useState } from 'react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import TimezoneConverterPage from '../page'
 
@@ -30,9 +31,18 @@ vi.mock('framer-motion', () => ({
 
 describe('Timezone Converter Page', () => {
   beforeEach(() => {
+    // Mock a stable date/time for consistent testing
+    // November 7, 2025, 12:00:00 UTC (Friday)
+    MockDate.set('2025-11-07T12:00:00.000Z')
+
     // Clear localStorage before each test
     localStorage.clear()
     vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    // Reset the mocked date after each test
+    MockDate.reset()
   })
 
   describe('Initial Render', () => {
