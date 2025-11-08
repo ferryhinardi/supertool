@@ -1,7 +1,11 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import { generateToolBreadcrumbs, generateToolMetadata } from '@/lib/metadata'
-import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-data'
+import {
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+  generateHowToSchema,
+} from '@/lib/structured-data'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'JSON Beautifier & Formatter',
@@ -51,6 +55,25 @@ const faqs = [
   },
 ]
 
+const howToSteps = [
+  {
+    name: 'Paste or type your JSON data',
+    text: 'Copy your minified or unformatted JSON code from your API response, configuration file, or any source. Paste it into the left editor panel of the JSON beautifier tool. You can also type or edit JSON directly in the editor.',
+  },
+  {
+    name: 'Click the Beautify button',
+    text: 'Click the "Beautify" button to format your JSON with proper indentation and line breaks. The tool will automatically add spacing, indent nested objects and arrays, and apply syntax highlighting for better readability.',
+  },
+  {
+    name: 'Review and validate the formatted JSON',
+    text: 'The beautified JSON appears in the right panel with color-coded syntax highlighting. Red error indicators will appear if there are any syntax issues. Review the formatted structure to understand the data hierarchy and relationships.',
+  },
+  {
+    name: 'Copy or download the formatted JSON',
+    text: 'Use the "Copy" button to copy the beautified JSON to your clipboard for pasting elsewhere. Alternatively, click "Download" to save the formatted JSON as a .json file to your computer for later use or sharing with your team.',
+  },
+]
+
 export default function JSONBeautifyLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -69,6 +92,22 @@ export default function JSONBeautifyLayout({ children }: { children: React.React
         // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(generateFAQSchema(faqs)),
+        }}
+      />
+      <Script
+        id="howto-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            generateHowToSchema(
+              'How to Format and Beautify JSON',
+              'Learn how to format minified JSON data into a readable structure with proper indentation and syntax highlighting using our free online JSON beautifier tool.',
+              howToSteps,
+              baseUrl,
+              '/tools/json-beautify'
+            )
+          ),
         }}
       />
     </>

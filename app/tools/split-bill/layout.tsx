@@ -1,7 +1,11 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import { generateToolBreadcrumbs, generateToolMetadata } from '@/lib/metadata'
-import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-data'
+import {
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+  generateHowToSchema,
+} from '@/lib/structured-data'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'Split Bill Calculator',
@@ -51,6 +55,25 @@ const faqs = [
   },
 ]
 
+const howToSteps = [
+  {
+    name: 'Add participants to the bill',
+    text: 'Click "Add Person" to include everyone who will be splitting the bill. Enter each person\'s name to identify who owes what. You can add as many participants as needed for your group dining or shared expense situation.',
+  },
+  {
+    name: 'Enter the total bill amount and tax',
+    text: "Input the total bill amount from your receipt. If there's tax, enter the tax amount or percentage separately. This ensures accurate calculations. You can also scan your receipt using the camera feature to automatically extract these values.",
+  },
+  {
+    name: 'Select tip percentage',
+    text: 'Choose a tip percentage from the preset options (10%, 15%, 18%, 20%, 25%) or enter a custom tip amount. The tip will be calculated on the subtotal and divided equally among all participants, or you can assign custom tip amounts per person.',
+  },
+  {
+    name: 'Review individual amounts and share',
+    text: 'The calculator automatically displays how much each person owes, including their share of tax and tip. Review the breakdown, mark payments as received, and use the share button to send a summary link to all participants via text or social media.',
+  },
+]
+
 export default function SplitBillLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -69,6 +92,22 @@ export default function SplitBillLayout({ children }: { children: React.ReactNod
         // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(generateFAQSchema(faqs)),
+        }}
+      />
+      <Script
+        id="howto-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            generateHowToSchema(
+              'How to Split a Bill with Friends',
+              'Learn how to fairly split restaurant bills, shared expenses, and group payments with automatic tip calculation and receipt scanning using our free bill splitter tool.',
+              howToSteps,
+              baseUrl,
+              '/tools/split-bill'
+            )
+          ),
         }}
       />
     </>
