@@ -19,6 +19,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Textarea } from '@/components/ui/textarea'
 import { css } from '@/styled-system/css'
 
@@ -26,6 +27,34 @@ import { css } from '@/styled-system/css'
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false })
 
 type ViewMode = 'split' | 'editor' | 'preview'
+
+const faqs = [
+  {
+    question: 'What is Markdown and why should I use it?',
+    answer:
+      "Markdown is a lightweight markup language that uses plain text formatting to create structured documents. It's widely used for README files, documentation, blog posts, and technical writing because it's easy to read, write, and convert to HTML. Markdown allows you to focus on content while maintaining formatting consistency.",
+  },
+  {
+    question: 'Does this editor support GitHub-flavored Markdown (GFM)?',
+    answer:
+      'Yes! Our editor fully supports GitHub-flavored Markdown including task lists, tables, strikethrough, automatic URL linking, code fencing with syntax highlighting, and emoji shortcuts. This makes it perfect for writing README files, GitHub issues, pull request descriptions, and documentation that will be displayed on GitHub.',
+  },
+  {
+    question: 'Can I export my Markdown to other formats?',
+    answer:
+      'Yes, you can export your content in multiple formats: save as .md file for Markdown, export as .html for web publishing, or copy the rendered HTML to paste into other applications. The live preview shows exactly how your Markdown will render, making it easy to see the final result before exporting.',
+  },
+  {
+    question: 'How do I create tables in Markdown?',
+    answer:
+      'Use pipes (|) and hyphens (-) to create tables. Start with a header row, add a separator row with hyphens, then add data rows. Example: | Column 1 | Column 2 | followed by |----------|----------|. Our editor supports table alignment (left, center, right) and renders them with proper formatting in the live preview.',
+  },
+  {
+    question: 'Is my Markdown content saved automatically?',
+    answer:
+      "Your content is automatically saved to your browser's local storage as you type, so you won't lose work if you accidentally close the tab. However, this is device-specific storage. For permanent backup, use the export feature to download your Markdown file or copy it to a version control system like Git.",
+  },
+]
 
 const defaultMarkdown = `# Welcome to Markdown Editor & Preview
 
@@ -972,6 +1001,15 @@ export default function MarkdownEditorPage() {
               </div>
             </CardContent>
           </Card>
+        </motion.div>
+
+        {/* FAQ Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+        >
+          <FAQAccordion faqs={faqs} />
         </motion.div>
       </main>
     </>

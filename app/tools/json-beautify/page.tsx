@@ -7,6 +7,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTrackToolView } from '@/hooks/useRecentTools'
 import { trackToolEvent } from '@/lib/analytics'
@@ -15,6 +16,29 @@ import { css } from '@/styled-system/css'
 
 // Dynamically import CodeMirror to reduce initial bundle size (~200KB)
 const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), { ssr: false })
+
+const faqs = [
+  {
+    question: 'What is JSON beautifier and why do I need it?',
+    answer:
+      'A JSON beautifier formats compressed or minified JSON data into a readable, indented structure. It helps developers debug API responses, review configuration files, and understand complex JSON structures by adding proper indentation, line breaks, and syntax highlighting.',
+  },
+  {
+    question: 'Is my JSON data safe when using this tool?',
+    answer:
+      'Yes, absolutely. All JSON formatting, validation, and beautification happens entirely in your browser using client-side JavaScript. Your data never leaves your device and is not sent to any server, ensuring complete privacy and security.',
+  },
+  {
+    question: 'Can I validate JSON syntax with this tool?',
+    answer:
+      'Yes! The JSON beautifier automatically validates your JSON syntax as you type. It will highlight errors and show you exactly where syntax issues occur, making it easy to fix malformed JSON quickly.',
+  },
+  {
+    question: 'What is the difference between beautify and minify?',
+    answer:
+      'Beautify adds indentation, line breaks, and spacing to make JSON human-readable. Minify does the opposite - it removes all unnecessary whitespace to create the smallest possible file size, which is useful for production environments to reduce bandwidth usage.',
+  },
+]
 
 function JSONBeautifyContent() {
   // Find tool data for tracking
@@ -518,6 +542,8 @@ function JSONBeautifyContent() {
             </Tooltip>
           </div>
         </div>
+
+        <FAQAccordion faqs={faqs} />
       </main>
     </TooltipProvider>
   )

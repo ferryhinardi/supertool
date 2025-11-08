@@ -23,6 +23,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
@@ -69,6 +70,34 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   notificationsEnabled: true,
   soundEnabled: true,
 }
+
+const faqs = [
+  {
+    question: 'What is the Pomodoro Technique and how does it work?',
+    answer:
+      'The Pomodoro Technique is a time management method developed by Francesco Cirillo that uses a timer to break work into focused intervals (traditionally 25 minutes) separated by short breaks (5 minutes). After 4 work sessions, you take a longer break (15-30 minutes). This helps maintain concentration, reduce mental fatigue, and improve productivity by creating structured work cycles.',
+  },
+  {
+    question: 'Can I customize the timer intervals?',
+    answer:
+      'Yes! While the classic Pomodoro uses 25-minute work sessions and 5-minute breaks, our timer is fully customizable. Adjust work duration from 1-60 minutes, short breaks from 1-15 minutes, and long breaks from 10-60 minutes. Save your custom settings as presets for different types of tasks like deep work, studying, or creative projects.',
+  },
+  {
+    question: 'How do I track tasks with the Pomodoro timer?',
+    answer:
+      "Add tasks to your task list before starting a session. When you start the timer, select the task you're working on. The tool tracks completed Pomodoros per task, helping you understand time spent on different activities. Review your statistics to see total focus time, completed sessions, and productivity patterns over time.",
+  },
+  {
+    question: 'Does the timer work when I close the browser tab?',
+    answer:
+      "The timer continues running in the background even when you switch tabs or minimize the browser. You'll receive desktop notifications when each session ends (if you grant notification permissions). However, closing the browser entirely will stop the timer. For best results, keep the browser open or pinned during your work sessions.",
+  },
+  {
+    question: 'What are the benefits of using the Pomodoro Technique?',
+    answer:
+      'The Pomodoro Technique helps combat procrastination, improves focus by creating urgency, prevents burnout through regular breaks, makes large tasks less overwhelming by breaking them into smaller chunks, and provides clear metrics to measure productivity. Studies show it reduces anxiety about time and helps maintain sustained mental energy throughout the day.',
+  },
+]
 
 export default function PomodoroTimerPage() {
   // Timer state
@@ -1080,6 +1109,9 @@ export default function PomodoroTimerPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* FAQ Section */}
+      <FAQAccordion faqs={faqs} />
     </main>
   )
 }
