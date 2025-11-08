@@ -28,6 +28,7 @@ import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { trackEvent, trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -931,6 +932,7 @@ function TextTransformerContent() {
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/text-transformer" category="productivity" />
+      <ToolRating toolId="/tools/text-transformer" toolName="Text Transformer" />
     </main>
   )
 }

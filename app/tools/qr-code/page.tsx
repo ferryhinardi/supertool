@@ -11,6 +11,7 @@ import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -756,6 +757,7 @@ END:VCARD`
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/qr-code" category="productivity" />
+      <ToolRating toolId="/tools/qr-code" toolName="QR Code Generator" />
     </main>
   )
 }

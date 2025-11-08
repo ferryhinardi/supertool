@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import { calculateStrength, generatePassword } from './utils'
@@ -679,6 +680,7 @@ function PasswordGeneratorContent() {
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/password-generator" category="security" />
+      <ToolRating toolId="/tools/password-generator" toolName="Password Generator" />
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="password-generator" variant="banner" />

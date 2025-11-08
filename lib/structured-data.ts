@@ -17,6 +17,11 @@ interface HowToStep {
   url?: string
 }
 
+interface RatingData {
+  averageRating: number
+  totalRatings: number
+}
+
 export function generateWebApplicationSchema(baseUrl: string) {
   return {
     '@context': 'https://schema.org',
@@ -166,4 +171,36 @@ export function generateWebSiteSchema(baseUrl: string) {
     },
     inLanguage: ['id-ID', 'en-US'],
   }
+}
+
+/**
+ * Generate AggregateRating schema for a tool
+ * This enables star ratings to appear in Google search results (Rich Snippets)
+ * @param toolName - Name of the tool
+ * @param toolUrl - URL of the tool page
+ * @param ratingData - Rating statistics (averageRating, totalRatings)
+ * @param baseUrl - Base URL of the site
+ */
+export function generateToolWithRatingSchema(
+  tool: Tool,
+  ratingData: RatingData | null,
+  baseUrl: string
+) {
+  const baseSchema = generateSoftwareApplicationSchema(tool, baseUrl)
+
+  // Only add aggregateRating if we have actual rating data
+  if (ratingData && ratingData.totalRatings > 0) {
+    return {
+      ...baseSchema,
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: ratingData.averageRating.toFixed(1),
+        ratingCount: ratingData.totalRatings.toString(),
+        bestRating: '5',
+        worstRating: '1',
+      },
+    }
+  }
+
+  return baseSchema
 }

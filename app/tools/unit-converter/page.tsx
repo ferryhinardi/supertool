@@ -20,6 +20,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -716,6 +717,7 @@ function UnitConverterContent() {
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/unit-converter" category="productivity" />
+      <ToolRating toolId="/tools/unit-converter" toolName="Unit Converter" />
     </main>
   )
 }

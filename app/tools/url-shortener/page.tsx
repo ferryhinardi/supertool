@@ -23,6 +23,7 @@ import { Card } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { css } from '@/styled-system/css'
 
 const faqs = [
@@ -856,6 +857,7 @@ export default function URLShortenerPage() {
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/url-shortener" category="productivity" />
+      <ToolRating toolId="/tools/url-shortener" toolName="URL Shortener" />
     </div>
   )
 }

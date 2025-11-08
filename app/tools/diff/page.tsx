@@ -19,6 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { css } from '@/styled-system/css'
 
 // Dynamically import the diff viewer to avoid SSR issues
@@ -650,6 +651,7 @@ export default function DiffTool() {
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/diff" category="development" />
+      <ToolRating toolId="/tools/diff" toolName="Code Diff Viewer" />
     </main>
   )
 }

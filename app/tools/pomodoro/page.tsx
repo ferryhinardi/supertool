@@ -26,6 +26,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -1114,6 +1115,7 @@ export default function PomodoroTimerPage() {
       {/* FAQ Section */}
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/pomodoro" category="productivity" />
+      <ToolRating toolId="/tools/pomodoro" toolName="Pomodoro Timer" />
     </main>
   )
 }

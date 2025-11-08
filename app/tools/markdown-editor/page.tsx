@@ -22,6 +22,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { css } from '@/styled-system/css'
 
 // Dynamically import ReactMarkdown with SSR disabled
@@ -1014,6 +1015,7 @@ export default function MarkdownEditorPage() {
         </motion.div>
         <RelatedTools currentToolPath="/tools/markdown-editor" category="productivity" />
       </main>
+      <ToolRating toolId="/tools/markdown-editor" toolName="Markdown Editor" />
     </>
   )
 }
