@@ -1,8 +1,21 @@
 'use client'
 
-import { Copy, Download, Key, RefreshCw, Shield, Zap } from 'lucide-react'
-import { parseAsBoolean, parseAsInteger, useQueryState } from 'nuqs'
-import { Suspense, useState } from 'react'
+import {
+  AlertTriangle,
+  Clock,
+  Copy,
+  Download,
+  History,
+  Key,
+  RefreshCw,
+  Shield,
+  Sparkles,
+  Star,
+  Trash2,
+  Zap,
+} from 'lucide-react'
+import { parseAsBoolean, parseAsInteger, parseAsString, useQueryState } from 'nuqs'
+import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
 import { Button } from '@/components/ui/button'
@@ -13,7 +26,25 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
-import { calculateStrength, generatePassword } from './utils'
+import type { PasswordHistory } from './utils'
+import {
+  calculateStrength,
+  checkCommonPassword,
+  checkPasswordPwned,
+  clearHistory,
+  deleteFromHistory,
+  exportBulkToCSV,
+  exportHistoryToCSV,
+  generateBulkPasswords,
+  generateDiceware,
+  generateFromTemplate,
+  generatePassword,
+  generatePronounceable,
+  getPasswordHistory,
+  PASSWORD_TEMPLATES,
+  savePasswordToHistory,
+  toggleFavorite,
+} from './utils'
 
 interface PasswordOptions {
   length: number
@@ -35,9 +66,14 @@ const faqs = [
       'A strong password should be at least 12 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters. The longer and more varied the password, the harder it is to crack. Our generator follows these best practices by default.',
   },
   {
-    question: 'How long should my password be?',
+    question: 'What is a diceware passphrase?',
     answer:
-      'We recommend passwords of at least 12-16 characters for most accounts. For highly sensitive accounts like banking or email, consider 20+ characters. Our generator supports passwords up to 128 characters for maximum security.',
+      'A diceware passphrase is a password made from a list of random words (e.g., "correct-horse-battery-staple"). These are easier to remember than random characters while still being very secure. A 6-word passphrase has about 77 bits of entropy, making it extremely strong.',
+  },
+  {
+    question: 'What is the "Have I Been Pwned" check?',
+    answer:
+      'Have I Been Pwned (HIBP) is a service that checks if a password has been compromised in known data breaches. Our tool uses k-anonymity, meaning we only send the first 5 characters of your password hash to the API, keeping your password secure.',
   },
   {
     question: 'Should I use different passwords for different accounts?',
@@ -49,12 +85,23 @@ const faqs = [
 function PasswordGeneratorContent() {
   const [password, setPassword] = useState('')
   const [bulkPasswords, setBulkPasswords] = useState<string[]>([])
+  const [passwordHistory, setPasswordHistory] = useState<PasswordHistory[]>([])
+  const [showHistory, setShowHistory] = useState(false)
+  const [checkingPwned, setCheckingPwned] = useState(false)
+  const [pwnedResult, setPwnedResult] = useState<{ isPwned: boolean; count: number } | null>(null)
+
+  // URL state
   const [length, setLength] = useQueryState('length', parseAsInteger.withDefault(16))
   const [uppercase, setUppercase] = useQueryState('uppercase', parseAsBoolean.withDefault(true))
   const [lowercase, setLowercase] = useQueryState('lowercase', parseAsBoolean.withDefault(true))
   const [numbers, setNumbers] = useQueryState('numbers', parseAsBoolean.withDefault(true))
   const [symbols, setSymbols] = useQueryState('symbols', parseAsBoolean.withDefault(true))
+  const [mode, setMode] = useQueryState('mode', parseAsString.withDefault('random'))
+
+  // Local state
   const [bulkCount, setBulkCount] = useState(10)
+  const [dicewareWords, setDicewareWords] = useState(6)
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('banking')
 
   const options: PasswordOptions = {
     length,
@@ -65,18 +112,46 @@ function PasswordGeneratorContent() {
   }
 
   const strength = calculateStrength(password)
+  const isCommon = password && checkCommonPassword(password)
+
+  // Load history on mount
+  useEffect(() => {
+    setPasswordHistory(getPasswordHistory())
+  }, [])
 
   const handleGenerate = () => {
     try {
-      const newPassword = generatePassword(options)
+      let newPassword = ''
+
+      switch (mode) {
+        case 'random':
+          newPassword = generatePassword(options)
+          trackToolEvent('password_generate_random', {
+            length: options.length,
+            has_uppercase: options.uppercase,
+            has_lowercase: options.lowercase,
+            has_numbers: options.numbers,
+            has_symbols: options.symbols,
+          })
+          break
+        case 'diceware':
+          newPassword = generateDiceware(dicewareWords, '-')
+          trackToolEvent('password_generate_diceware', { words: dicewareWords })
+          break
+        case 'pronounceable':
+          newPassword = generatePronounceable(length)
+          trackToolEvent('password_generate_pronounceable', { length })
+          break
+        case 'template':
+          newPassword = generateFromTemplate(selectedTemplate)
+          trackToolEvent('password_generate_template', { template: selectedTemplate })
+          break
+      }
+
       setPassword(newPassword)
-      trackToolEvent('password_generate', {
-        length: options.length,
-        has_uppercase: options.uppercase,
-        has_lowercase: options.lowercase,
-        has_numbers: options.numbers,
-        has_symbols: options.symbols,
-      })
+      savePasswordToHistory(newPassword)
+      setPasswordHistory(getPasswordHistory())
+      setPwnedResult(null)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to generate password')
     }
@@ -84,13 +159,10 @@ function PasswordGeneratorContent() {
 
   const handleBulkGenerate = () => {
     try {
-      const passwords: string[] = []
-      for (let i = 0; i < bulkCount; i++) {
-        passwords.push(generatePassword(options))
-      }
+      const passwords = generateBulkPasswords(bulkCount, options)
       setBulkPasswords(passwords)
-      trackToolEvent('password_bulk_generate', { count: bulkCount })
-      toast.success(`Generated ${bulkCount} passwords 🔐`)
+      trackToolEvent('password_bulk_generate', { count: bulkCount, unique: passwords.length })
+      toast.success(`Generated ${passwords.length} unique passwords`)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to generate passwords')
     }
@@ -100,7 +172,7 @@ function PasswordGeneratorContent() {
     try {
       await navigator.clipboard.writeText(text)
       trackToolEvent('password_copy', { success: true })
-      toast.success('Copied to clipboard! 📋')
+      toast.success('Copied to clipboard!')
     } catch {
       toast.error('Failed to copy to clipboard')
     }
@@ -108,19 +180,79 @@ function PasswordGeneratorContent() {
 
   const handleDownloadBulk = () => {
     try {
-      const blob = new Blob([bulkPasswords.join('\n')], { type: 'text/plain' })
+      const csv = exportBulkToCSV(bulkPasswords)
+      const blob = new Blob([csv], { type: 'text/csv' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `passwords-${Date.now()}.txt`
+      a.download = `passwords-${Date.now()}.csv`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      trackToolEvent('password_download', { count: bulkPasswords.length })
-      toast.success('Downloaded passwords file 💾')
+      trackToolEvent('password_bulk_export', { count: bulkPasswords.length })
+      toast.success('Downloaded passwords CSV')
     } catch {
       toast.error('Failed to download passwords')
+    }
+  }
+
+  const handleCheckPwned = async () => {
+    if (!password) return
+
+    setCheckingPwned(true)
+    setPwnedResult(null)
+
+    try {
+      const result = await checkPasswordPwned(password)
+      setPwnedResult(result)
+      trackToolEvent('password_pwned_check', { isPwned: result.isPwned })
+
+      if (result.isPwned) {
+        toast.error(`⚠️ Password found in ${result.count.toLocaleString()} breaches!`)
+      } else {
+        toast.success('✅ Password not found in known breaches')
+      }
+    } catch (_error) {
+      toast.error('Failed to check password')
+    } finally {
+      setCheckingPwned(false)
+    }
+  }
+
+  const handleFavorite = (pwd: string) => {
+    toggleFavorite(pwd)
+    setPasswordHistory(getPasswordHistory())
+  }
+
+  const handleDeleteHistory = (pwd: string) => {
+    deleteFromHistory(pwd)
+    setPasswordHistory(getPasswordHistory())
+    toast.success('Removed from history')
+  }
+
+  const handleClearHistory = () => {
+    clearHistory()
+    setPasswordHistory([])
+    toast.success('History cleared')
+  }
+
+  const handleExportHistory = () => {
+    try {
+      const csv = exportHistoryToCSV(passwordHistory)
+      const blob = new Blob([csv], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `password-history-${Date.now()}.csv`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      trackToolEvent('password_history_export', { count: passwordHistory.length })
+      toast.success('Downloaded history CSV')
+    } catch {
+      toast.error('Failed to export history')
     }
   }
 
@@ -162,7 +294,7 @@ function PasswordGeneratorContent() {
             backdropFilter: 'blur(8px)',
           })}
         >
-          <Key className={css({ h: '5', w: '5', color: 'red.400' })} />
+          <Sparkles className={css({ h: '5', w: '5', color: 'red.400' })} />
           <span
             className={css({
               fontSize: 'sm',
@@ -170,7 +302,7 @@ function PasswordGeneratorContent() {
               color: 'red.300',
             })}
           >
-            Secure Password Generator
+            Password Generator Pro
           </span>
         </div>
 
@@ -200,10 +332,99 @@ function PasswordGeneratorContent() {
             color: 'gray.400',
           })}
         >
-          Generate cryptographically secure passwords with customizable length and character sets.
-          Includes password strength meter and bulk generation.
+          Generate cryptographically secure passwords with advanced strength analysis, pattern-based
+          generation, breach checking, and password history management.
         </p>
       </div>
+
+      {/* Generation Mode Selector */}
+      <Card
+        className={css({
+          border: '1px solid',
+          borderColor: 'purple.500/20',
+          bg: 'gray.900/50',
+          backdropFilter: 'blur(16px)',
+          w: 'full',
+        })}
+      >
+        <CardContent className={css({ py: '6' })}>
+          <div className={css({ spaceY: '4' })}>
+            <FieldLabel>Generation Mode</FieldLabel>
+            <div
+              className={css({
+                display: 'grid',
+                gap: '3',
+                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+              })}
+            >
+              {[
+                { id: 'random' as const, label: 'Random', icon: Key, desc: 'Traditional random' },
+                {
+                  id: 'diceware' as const,
+                  label: 'Diceware',
+                  icon: Sparkles,
+                  desc: 'Word-based',
+                },
+                {
+                  id: 'pronounceable' as const,
+                  label: 'Pronounceable',
+                  icon: Zap,
+                  desc: 'Easy to say',
+                },
+                {
+                  id: 'template' as const,
+                  label: 'Template',
+                  icon: Shield,
+                  desc: 'Pre-defined',
+                },
+              ].map(({ id, label, icon: Icon, desc }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setMode(id)}
+                  className={css({
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '2',
+                    rounded: 'lg',
+                    border: '2px solid',
+                    borderColor: mode === id ? 'purple.500' : 'gray.700',
+                    bg: mode === id ? 'purple.500/20' : 'gray.900/30',
+                    p: '4',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    _hover: {
+                      borderColor: 'purple.500',
+                      bg: 'purple.500/15',
+                    },
+                  })}
+                >
+                  <Icon
+                    className={css({
+                      h: '6',
+                      w: '6',
+                      color: mode === id ? 'purple.400' : 'gray.400',
+                    })}
+                  />
+                  <div className={css({ textAlign: 'center' })}>
+                    <div
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'semibold',
+                        color: 'white',
+                      })}
+                    >
+                      {label}
+                    </div>
+                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>{desc}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div
         className={css({
@@ -211,7 +432,6 @@ function PasswordGeneratorContent() {
           gap: { base: '6', lg: '8' },
           gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
           w: 'full',
-          mb: { base: '8', lg: '10' },
         })}
       >
         {/* Password Generator */}
@@ -254,10 +474,11 @@ function PasswordGeneratorContent() {
                   <div
                     className={css({
                       fontFamily: 'mono',
-                      fontSize: 'xl',
+                      fontSize: { base: 'md', sm: 'lg' },
                       fontWeight: 'bold',
                       color: 'white',
                       overflowWrap: 'break-word',
+                      pr: '10',
                     })}
                   >
                     {password}
@@ -276,8 +497,31 @@ function PasswordGeneratorContent() {
                   </Button>
                 </div>
 
-                {/* Strength Meter */}
-                <div className={css({ spaceY: '2' })}>
+                {/* Common Password Warning */}
+                {isCommon && (
+                  <div
+                    className={css({
+                      display: 'flex',
+                      gap: '2',
+                      alignItems: 'start',
+                      rounded: 'lg',
+                      bg: 'red.500/10',
+                      border: '1px solid',
+                      borderColor: 'red.500/30',
+                      p: '3',
+                    })}
+                  >
+                    <AlertTriangle
+                      className={css({ h: '4', w: '4', color: 'red.400', mt: '0.5' })}
+                    />
+                    <div className={css({ fontSize: 'sm', color: 'red.300' })}>
+                      Warning: This password contains a common pattern. Generate a new one!
+                    </div>
+                  </div>
+                )}
+
+                {/* Enhanced Strength Meter */}
+                <div className={css({ spaceY: '3' })}>
                   <div
                     className={css({
                       display: 'flex',
@@ -303,7 +547,7 @@ function PasswordGeneratorContent() {
                   </div>
                   <div
                     className={css({
-                      h: '2',
+                      h: '3',
                       overflow: 'hidden',
                       rounded: 'full',
                       bg: 'gray.800',
@@ -316,11 +560,53 @@ function PasswordGeneratorContent() {
                         transition: 'all 0.3s',
                       })}
                       style={{
-                        width: `${(strength.score / 5) * 100}%`,
+                        width: `${((strength.score + 1) / 5) * 100}%`,
                         backgroundColor: strength.color,
                       }}
                     />
                   </div>
+
+                  {/* Advanced metrics */}
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gap: '2',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                    })}
+                  >
+                    <div
+                      className={css({
+                        rounded: 'lg',
+                        bg: 'gray.900/50',
+                        p: '3',
+                      })}
+                    >
+                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Entropy</div>
+                      <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'white' })}>
+                        {strength.entropy?.toFixed(1) || 'N/A'} bits
+                      </div>
+                    </div>
+                    <div
+                      className={css({
+                        rounded: 'lg',
+                        bg: 'gray.900/50',
+                        p: '3',
+                      })}
+                    >
+                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Crack Time</div>
+                      <div
+                        className={css({
+                          fontSize: 'lg',
+                          fontWeight: 'bold',
+                          color: 'white',
+                        })}
+                      >
+                        {strength.crackTime || 'N/A'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Feedback */}
                   {strength.feedback.length > 0 && (
                     <ul
                       className={css({
@@ -335,145 +621,293 @@ function PasswordGeneratorContent() {
                       ))}
                     </ul>
                   )}
+
+                  {/* HIBP Check */}
+                  <div className={css({ pt: '2' })}>
+                    <Button
+                      onClick={handleCheckPwned}
+                      disabled={checkingPwned}
+                      variant="outline"
+                      size="sm"
+                      className={css({ w: 'full' })}
+                    >
+                      {checkingPwned ? (
+                        <>
+                          <Clock
+                            className={css({
+                              h: '4',
+                              w: '4',
+                              animation: 'spin 1s linear infinite',
+                            })}
+                          />
+                          Checking...
+                        </>
+                      ) : (
+                        <>
+                          <Shield className={css({ h: '4', w: '4' })} />
+                          Check if Pwned
+                        </>
+                      )}
+                    </Button>
+
+                    {pwnedResult && (
+                      <div
+                        className={css({
+                          mt: '2',
+                          rounded: 'lg',
+                          border: '1px solid',
+                          borderColor: pwnedResult.isPwned ? 'red.500/30' : 'green.500/30',
+                          bg: pwnedResult.isPwned ? 'red.500/10' : 'green.500/10',
+                          p: '3',
+                        })}
+                      >
+                        <div
+                          className={css({
+                            fontSize: 'sm',
+                            color: pwnedResult.isPwned ? 'red.300' : 'green.300',
+                          })}
+                        >
+                          {pwnedResult.isPwned
+                            ? `⚠️ Found in ${pwnedResult.count.toLocaleString()} breaches!`
+                            : '✅ Not found in known breaches'}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Password Length */}
-            <Field>
-              <FieldLabel>Password Length: {options.length}</FieldLabel>
-              <input
-                type="range"
-                min="8"
-                max="64"
-                value={options.length}
-                onChange={(e) => updateOption('length', parseInt(e.target.value, 10))}
-                className={css({
-                  w: 'full',
-                  h: '2',
-                  rounded: 'full',
-                  bg: 'gray.700',
-                  cursor: 'pointer',
-                  _focusVisible: {
-                    outline: 'none',
-                    ring: '2px',
-                    ringColor: 'red.500',
-                  },
-                })}
-              />
-              <div
-                className={css({
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontSize: 'xs',
-                  color: 'gray.500',
-                })}
-              >
-                <span>8</span>
-                <span>64</span>
-              </div>
-            </Field>
-
-            {/* Character Sets */}
-            <div className={css({ spaceY: '3' })}>
-              <FieldLabel>Character Types</FieldLabel>
-              <div
-                className={css({
-                  display: 'grid',
-                  gap: '3',
-                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
-                  w: 'full',
-                })}
-              >
-                {[
-                  {
-                    key: 'uppercase' as const,
-                    label: 'Uppercase (A-Z)',
-                    example: 'ABC',
-                  },
-                  {
-                    key: 'lowercase' as const,
-                    label: 'Lowercase (a-z)',
-                    example: 'abc',
-                  },
-                  {
-                    key: 'numbers' as const,
-                    label: 'Numbers (0-9)',
-                    example: '123',
-                  },
-                  {
-                    key: 'symbols' as const,
-                    label: 'Symbols (!@#)',
-                    example: '!@#',
-                  },
-                ].map(({ key, label, example }) => (
-                  <label
-                    key={key}
+            {/* Mode-specific options */}
+            {mode === 'random' && (
+              <>
+                {/* Password Length */}
+                <Field>
+                  <FieldLabel htmlFor="length-slider">Password Length: {options.length}</FieldLabel>
+                  <input
+                    id="length-slider"
+                    type="range"
+                    min="8"
+                    max="64"
+                    value={options.length}
+                    onChange={(e) => updateOption('length', parseInt(e.target.value, 10))}
                     className={css({
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '3',
-                      rounded: 'lg',
-                      border: '1px solid',
-                      borderColor: options[key] ? 'red.500/50' : 'gray.700',
-                      bg: options[key] ? 'red.500/10' : 'gray.900/30',
-                      p: '3',
+                      w: 'full',
+                      h: '2',
+                      rounded: 'full',
+                      bg: 'gray.700',
                       cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      _hover: {
-                        borderColor: 'red.500/70',
-                        bg: 'red.500/15',
+                      _focusVisible: {
+                        outline: 'none',
+                        ring: '2px',
+                        ringColor: 'red.500',
                       },
                     })}
+                  />
+                  <div
+                    className={css({
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: 'xs',
+                      color: 'gray.500',
+                    })}
                   >
-                    <input
-                      type="checkbox"
-                      checked={options[key]}
-                      onChange={(e) => updateOption(key, e.target.checked)}
-                      className={css({
-                        h: '4',
-                        w: '4',
-                        rounded: 'sm',
-                        border: '2px solid',
-                        borderColor: 'gray.600',
-                        cursor: 'pointer',
-                        _checked: { bg: 'red.500', borderColor: 'red.500' },
-                      })}
-                    />
-                    <div className={css({ flex: '1' })}>
-                      <div
+                    <span>8</span>
+                    <span>64</span>
+                  </div>
+                </Field>
+
+                {/* Character Sets */}
+                <div className={css({ spaceY: '3' })}>
+                  <FieldLabel>Character Types</FieldLabel>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gap: '3',
+                      gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                      w: 'full',
+                    })}
+                  >
+                    {[
+                      {
+                        key: 'uppercase' as const,
+                        label: 'Uppercase (A-Z)',
+                        example: 'ABC',
+                      },
+                      {
+                        key: 'lowercase' as const,
+                        label: 'Lowercase (a-z)',
+                        example: 'abc',
+                      },
+                      {
+                        key: 'numbers' as const,
+                        label: 'Numbers (0-9)',
+                        example: '123',
+                      },
+                      {
+                        key: 'symbols' as const,
+                        label: 'Symbols (!@#)',
+                        example: '!@#',
+                      },
+                    ].map(({ key, label, example }) => (
+                      <label
+                        key={key}
+                        htmlFor={`checkbox-${key}`}
                         className={css({
-                          fontSize: 'sm',
-                          fontWeight: 'medium',
-                          color: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '3',
+                          rounded: 'lg',
+                          border: '1px solid',
+                          borderColor: options[key] ? 'red.500/50' : 'gray.700',
+                          bg: options[key] ? 'red.500/10' : 'gray.900/30',
+                          p: '3',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          _hover: {
+                            borderColor: 'red.500/70',
+                            bg: 'red.500/15',
+                          },
                         })}
                       >
-                        {label}
-                      </div>
-                      <div
-                        className={css({
-                          fontFamily: 'mono',
-                          fontSize: 'xs',
-                          color: 'gray.500',
-                        })}
-                      >
-                        {example}
-                      </div>
-                    </div>
-                  </label>
-                ))}
-              </div>
-              {!atLeastOneSelected && (
-                <p className={css({ fontSize: 'sm', color: 'red.400' })}>
-                  ⚠️ Select at least one character type
+                        <input
+                          id={`checkbox-${key}`}
+                          type="checkbox"
+                          checked={options[key]}
+                          onChange={(e) => updateOption(key, e.target.checked)}
+                          className={css({
+                            h: '4',
+                            w: '4',
+                            rounded: 'sm',
+                            border: '2px solid',
+                            borderColor: 'gray.600',
+                            cursor: 'pointer',
+                            _checked: { bg: 'red.500', borderColor: 'red.500' },
+                          })}
+                        />
+                        <div className={css({ flex: '1' })}>
+                          <div
+                            className={css({
+                              fontSize: 'sm',
+                              fontWeight: 'medium',
+                              color: 'white',
+                            })}
+                          >
+                            {label}
+                          </div>
+                          <div
+                            className={css({
+                              fontFamily: 'mono',
+                              fontSize: 'xs',
+                              color: 'gray.500',
+                            })}
+                          >
+                            {example}
+                          </div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                  {!atLeastOneSelected && (
+                    <p className={css({ fontSize: 'sm', color: 'red.400' })}>
+                      ⚠️ Select at least one character type
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
+
+            {mode === 'diceware' && (
+              <Field>
+                <FieldLabel htmlFor="diceware-words">Number of Words: {dicewareWords}</FieldLabel>
+                <input
+                  id="diceware-words"
+                  type="range"
+                  min="4"
+                  max="10"
+                  value={dicewareWords}
+                  onChange={(e) => setDicewareWords(parseInt(e.target.value, 10))}
+                  className={css({
+                    w: 'full',
+                    h: '2',
+                    rounded: 'full',
+                    bg: 'gray.700',
+                    cursor: 'pointer',
+                  })}
+                />
+                <div
+                  className={css({
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: 'xs',
+                    color: 'gray.500',
+                  })}
+                >
+                  <span>4 words</span>
+                  <span>10 words</span>
+                </div>
+                <p className={css({ fontSize: 'xs', color: 'gray.500', mt: '2' })}>
+                  6 words ≈ 77 bits of entropy (recommended)
                 </p>
-              )}
-            </div>
+              </Field>
+            )}
+
+            {mode === 'pronounceable' && (
+              <Field>
+                <FieldLabel htmlFor="pronounce-length">Password Length: {length}</FieldLabel>
+                <input
+                  id="pronounce-length"
+                  type="range"
+                  min="8"
+                  max="32"
+                  value={length}
+                  onChange={(e) => setLength(parseInt(e.target.value, 10))}
+                  className={css({
+                    w: 'full',
+                    h: '2',
+                    rounded: 'full',
+                    bg: 'gray.700',
+                    cursor: 'pointer',
+                  })}
+                />
+              </Field>
+            )}
+
+            {mode === 'template' && (
+              <Field>
+                <FieldLabel htmlFor="template-select">Select Template</FieldLabel>
+                <select
+                  id="template-select"
+                  value={selectedTemplate}
+                  onChange={(e) => setSelectedTemplate(e.target.value)}
+                  className={css({
+                    w: 'full',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    bg: 'gray.900',
+                    color: 'white',
+                    p: '3',
+                    fontSize: 'sm',
+                    cursor: 'pointer',
+                  })}
+                >
+                  {PASSWORD_TEMPLATES.map((template) => (
+                    <option key={template.id} value={template.id}>
+                      {template.name} - {template.description}
+                    </option>
+                  ))}
+                </select>
+                <p className={css({ fontSize: 'xs', color: 'gray.500', mt: '2' })}>
+                  Example: {PASSWORD_TEMPLATES.find((t) => t.id === selectedTemplate)?.example}
+                </p>
+              </Field>
+            )}
 
             {/* Generate Button */}
             <Button
               onClick={handleGenerate}
-              disabled={!atLeastOneSelected}
+              disabled={mode === 'random' && !atLeastOneSelected}
               className={css({
                 w: 'full',
                 h: '12',
@@ -515,8 +949,9 @@ function PasswordGeneratorContent() {
           </CardHeader>
           <CardContent className={css({ spaceY: '6' })}>
             <Field>
-              <FieldLabel>Number of Passwords</FieldLabel>
+              <FieldLabel htmlFor="bulk-count">Number of Passwords</FieldLabel>
               <FieldInput
+                id="bulk-count"
                 type="number"
                 min="1"
                 max="100"
@@ -527,14 +962,14 @@ function PasswordGeneratorContent() {
                 className={css({ h: '12' })}
               />
               <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
-                Generate up to 100 passwords at once
+                Generate up to 100 unique passwords at once
               </p>
             </Field>
 
             <div className={css({ display: 'flex', gap: '3' })}>
               <Button
                 onClick={handleBulkGenerate}
-                disabled={!atLeastOneSelected}
+                disabled={mode === 'random' && !atLeastOneSelected}
                 className={css({ flex: '1', h: '12' })}
               >
                 <Zap className={css({ h: '5', w: '5' })} />
@@ -622,6 +1057,144 @@ function PasswordGeneratorContent() {
         </Card>
       </div>
 
+      {/* Password History */}
+      <Card
+        className={css({
+          border: '1px solid',
+          borderColor: 'blue.500/20',
+          bg: 'gray.900/50',
+          backdropFilter: 'blur(16px)',
+          w: 'full',
+        })}
+      >
+        <CardHeader>
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            })}
+          >
+            <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <History className={css({ h: '5', w: '5', color: 'blue.400' })} />
+              <CardTitle>Password History</CardTitle>
+              <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                (Last {passwordHistory.length})
+              </span>
+            </div>
+            <div className={css({ display: 'flex', gap: '2' })}>
+              {passwordHistory.length > 0 && (
+                <>
+                  <Button onClick={handleExportHistory} variant="outline" size="sm">
+                    <Download className={css({ h: '4', w: '4' })} />
+                    Export
+                  </Button>
+                  <Button onClick={handleClearHistory} variant="outline" size="sm">
+                    Clear All
+                  </Button>
+                </>
+              )}
+              <Button onClick={() => setShowHistory(!showHistory)} variant="ghost" size="sm">
+                {showHistory ? 'Hide' : 'Show'}
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+
+        {showHistory && passwordHistory.length > 0 && (
+          <CardContent>
+            <div className={css({ spaceY: '2' })}>
+              {passwordHistory.map((entry, index) => (
+                <div
+                  key={`${entry.password}-${index}`}
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '3',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: entry.favorite ? 'yellow.500/30' : 'gray.700',
+                    bg: entry.favorite ? 'yellow.500/5' : 'gray.900/30',
+                    p: '3',
+                  })}
+                >
+                  <button
+                    type="button"
+                    onClick={() => handleFavorite(entry.password)}
+                    className={css({
+                      flexShrink: '0',
+                      color: entry.favorite ? 'yellow.400' : 'gray.600',
+                      _hover: { color: 'yellow.400' },
+                    })}
+                  >
+                    {entry.favorite ? (
+                      <Star className={css({ h: '4', w: '4', fill: 'currentColor' })} />
+                    ) : (
+                      <Star className={css({ h: '4', w: '4' })} />
+                    )}
+                  </button>
+                  <div className={css({ flex: '1', minW: '0' })}>
+                    <div
+                      className={css({
+                        fontFamily: 'mono',
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'white',
+                        overflowWrap: 'break-word',
+                      })}
+                    >
+                      {entry.password}
+                    </div>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        gap: '3',
+                        fontSize: 'xs',
+                        color: 'gray.500',
+                        mt: '1',
+                      })}
+                    >
+                      <span style={{ color: entry.strength.color }}>{entry.strength.label}</span>
+                      <span>•</span>
+                      <span>{entry.length} chars</span>
+                      <span>•</span>
+                      <span>{entry.strength.entropy?.toFixed(1)} bits</span>
+                      <span>•</span>
+                      <span>{new Date(entry.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                  </div>
+                  <Button onClick={() => handleCopy(entry.password)} variant="ghost" size="sm">
+                    <Copy className={css({ h: '4', w: '4' })} />
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteHistory(entry.password)}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <Trash2 className={css({ h: '4', w: '4', color: 'red.400' })} />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        )}
+
+        {showHistory && passwordHistory.length === 0 && (
+          <CardContent>
+            <div
+              className={css({
+                textAlign: 'center',
+                py: '8',
+                color: 'gray.500',
+              })}
+            >
+              <History className={css({ h: '12', w: '12', mx: 'auto', mb: '3', opacity: '0.3' })} />
+              <p>No password history yet. Generate a password to get started!</p>
+            </div>
+          </CardContent>
+        )}
+      </Card>
+
       {/* Security Notice */}
       <Card
         className={css({
@@ -650,7 +1223,7 @@ function PasswordGeneratorContent() {
                   color: 'blue.300',
                 })}
               >
-                Security Notice
+                Security & Privacy Notice
               </h3>
               <ul
                 className={css({
@@ -660,18 +1233,21 @@ function PasswordGeneratorContent() {
                 })}
               >
                 <li>
-                  • Passwords are generated using cryptographically secure random numbers
+                  • All passwords are generated using cryptographically secure random numbers
                   (crypto.getRandomValues)
                 </li>
                 <li>
-                  • All generation happens locally in your browser - no data is sent to any server
+                  • Generation happens 100% locally in your browser - no data is sent to any server
+                </li>
+                <li>• Password history is stored locally in your browser using localStorage</li>
+                <li>
+                  • HIBP breach checking uses k-anonymity - only the first 5 characters of your
+                  password hash are sent
                 </li>
                 <li>
-                  • For maximum security, use passwords with at least 16 characters and all
-                  character types
+                  • For maximum security, use 16+ character passwords with all character types
                 </li>
                 <li>• Never reuse passwords across different accounts</li>
-                <li>• Consider using a password manager to store generated passwords securely</li>
               </ul>
             </div>
           </div>
