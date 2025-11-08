@@ -532,7 +532,6 @@ export const tools: Tool[] = [
     features: ['Live Testing', 'Pattern Templates', 'Match Groups', 'Regex Explainer'],
     category: 'development',
     new: true,
-    comingSoon: true,
   },
 
   // Data & Conversion Utilities (Coming Soon)

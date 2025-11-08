@@ -338,6 +338,12 @@ type ToolEvent =
   | 'file_inspector_analyze'
   | 'file_inspector_clear'
   | 'file_inspector_copy'
+  | 'regex_tester_open'
+  | 'regex_tester_test'
+  | 'regex_tester_pattern_load'
+  | 'regex_tester_copy'
+  | 'regex_tester_download'
+  | 'regex_tester_clear'
 
 // Type-safe gtag wrapper
 declare global {
