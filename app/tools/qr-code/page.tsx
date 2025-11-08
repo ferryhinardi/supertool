@@ -1,8 +1,8 @@
 'use client'
 
-import { Copy, Download, QrCode } from 'lucide-react'
+import { Copy, Download, Image as ImageIcon, QrCode, Upload, X } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -16,6 +16,9 @@ import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
 type QRCodeType = 'url' | 'text' | 'wifi' | 'vcard'
+type QRStylePreset = 'classic' | 'modern' | 'branded' | 'minimalist' | 'professional' | 'vibrant'
+type QRCornerStyle = 'square' | 'rounded' | 'extra-rounded' | 'dot'
+type QRDotStyle = 'square' | 'rounded' | 'dots' | 'classy'
 
 interface WiFiConfig {
   ssid: string
@@ -32,6 +35,26 @@ interface VCardConfig {
   email: string
   website: string
   address: string
+}
+
+interface QRStyleConfig {
+  preset: QRStylePreset
+  cornerStyle: QRCornerStyle
+  dotStyle: QRDotStyle
+  hasGradient: boolean
+  gradientColor1: string
+  gradientColor2: string
+  hasLogo: boolean
+  logoUrl: string
+  logoSize: number
+  logoOpacity: number
+  logoPosition: 'center' | 'top' | 'bottom' | 'left' | 'right'
+  logoMask: 'none' | 'circle' | 'square' | 'rounded'
+  eyeColor: string
+  hasEyeStyle: boolean
+  hasFrame: boolean
+  frameText: string
+  frameColor: string
 }
 
 const faqs = [
@@ -62,6 +85,66 @@ const faqs = [
   },
 ]
 
+// Style presets configuration
+const stylePresets: Record<QRStylePreset, Partial<QRStyleConfig>> = {
+  classic: {
+    preset: 'classic',
+    cornerStyle: 'square',
+    dotStyle: 'square',
+    hasGradient: false,
+    hasEyeStyle: false,
+    hasFrame: false,
+  },
+  modern: {
+    preset: 'modern',
+    cornerStyle: 'rounded',
+    dotStyle: 'rounded',
+    hasGradient: true,
+    gradientColor1: '#8B5CF6',
+    gradientColor2: '#EC4899',
+    hasEyeStyle: true,
+    eyeColor: '#8B5CF6',
+    hasFrame: false,
+  },
+  branded: {
+    preset: 'branded',
+    cornerStyle: 'extra-rounded',
+    dotStyle: 'classy',
+    hasGradient: false,
+    hasEyeStyle: true,
+    hasFrame: true,
+  },
+  minimalist: {
+    preset: 'minimalist',
+    cornerStyle: 'square',
+    dotStyle: 'dots',
+    hasGradient: false,
+    hasEyeStyle: false,
+    hasFrame: false,
+  },
+  professional: {
+    preset: 'professional',
+    cornerStyle: 'rounded',
+    dotStyle: 'square',
+    hasGradient: false,
+    hasEyeStyle: true,
+    eyeColor: '#1E293B',
+    hasFrame: true,
+    frameColor: '#1E293B',
+  },
+  vibrant: {
+    preset: 'vibrant',
+    cornerStyle: 'extra-rounded',
+    dotStyle: 'rounded',
+    hasGradient: true,
+    gradientColor1: '#F59E0B',
+    gradientColor2: '#EF4444',
+    hasEyeStyle: true,
+    eyeColor: '#DC2626',
+    hasFrame: false,
+  },
+}
+
 export default function QRCodePage() {
   const [type, setType] = useState<QRCodeType>('url')
   const [urlInput, setUrlInput] = useState('')
@@ -85,6 +168,31 @@ export default function QRCodePage() {
   const [bgColor, setBgColor] = useState('#ffffff')
   const [size, setSize] = useState(256)
   const [includeMargin, setIncludeMargin] = useState(true)
+
+  // Advanced styling state
+  const [styleConfig, setStyleConfig] = useState<QRStyleConfig>({
+    preset: 'classic',
+    cornerStyle: 'square',
+    dotStyle: 'square',
+    hasGradient: false,
+    gradientColor1: '#8B5CF6',
+    gradientColor2: '#EC4899',
+    hasLogo: false,
+    logoUrl: '',
+    logoSize: 20,
+    logoOpacity: 100,
+    logoPosition: 'center',
+    logoMask: 'none',
+    eyeColor: '#000000',
+    hasEyeStyle: false,
+    hasFrame: false,
+    frameText: '',
+    frameColor: '#000000',
+  })
+
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const qrRef = useRef<HTMLDivElement>(null)
 
   const getQRValue = () => {
     switch (type) {
@@ -113,6 +221,74 @@ END:VCARD`
   const qrValue = getQRValue()
   const hasValidInput = qrValue.trim().length > 0
 
+  // Handle logo upload
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB')
+      return
+    }
+
+    setLogoFile(file)
+
+    // Convert to data URL for preview
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string
+      setStyleConfig({ ...styleConfig, hasLogo: true, logoUrl: dataUrl })
+      toast.success('Logo uploaded successfully')
+      trackToolEvent('qr_logo_upload', { fileType: file.type })
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const removeLogo = () => {
+    setLogoFile(null)
+    setStyleConfig({ ...styleConfig, hasLogo: false, logoUrl: '' })
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+    toast.success('Logo removed')
+  }
+
+  const applyStylePreset = (preset: QRStylePreset) => {
+    const presetConfig = stylePresets[preset]
+    setStyleConfig({
+      ...styleConfig,
+      ...presetConfig,
+      // Keep existing logo settings
+      hasLogo: styleConfig.hasLogo,
+      logoUrl: styleConfig.logoUrl,
+      logoSize: styleConfig.logoSize,
+      logoOpacity: styleConfig.logoOpacity,
+      logoPosition: styleConfig.logoPosition,
+      logoMask: styleConfig.logoMask,
+    })
+
+    // Apply preset colors to main colors if not using gradient
+    if (!presetConfig.hasGradient) {
+      if (preset === 'modern') {
+        setFgColor('#8B5CF6')
+      } else if (preset === 'professional') {
+        setFgColor('#1E293B')
+      } else if (preset === 'vibrant') {
+        setFgColor('#F59E0B')
+      }
+    }
+
+    toast.success(`${preset.charAt(0).toUpperCase() + preset.slice(1)} style applied`)
+    trackToolEvent('qr_style_preset', { preset })
+  }
+
   const downloadQRCode = (format: 'png' | 'svg') => {
     if (!hasValidInput) {
       toast.error('Please enter content to generate QR code')
@@ -139,29 +315,111 @@ END:VCARD`
           const ctx = canvas.getContext('2d')
           if (ctx) {
             ctx.drawImage(img, 0, 0)
-            canvas.toBlob((blob) => {
-              if (blob) {
-                const link = document.createElement('a')
-                link.download = `qrcode-${Date.now()}.png`
-                link.href = URL.createObjectURL(blob)
-                link.click()
-                URL.revokeObjectURL(link.href)
-                toast.success('QR code downloaded as PNG 🎉')
-                trackToolEvent('qr_code_download', { format: 'png', type })
+
+            // Draw logo if present
+            if (styleConfig.hasLogo && styleConfig.logoUrl) {
+              const logoImg = new Image()
+              logoImg.onload = () => {
+                const logoSize = (size * styleConfig.logoSize) / 100
+                const logoX = (size - logoSize) / 2
+                const logoY = (size - logoSize) / 2
+
+                ctx.globalAlpha = styleConfig.logoOpacity / 100
+
+                // Apply mask
+                if (styleConfig.logoMask === 'circle') {
+                  ctx.save()
+                  ctx.beginPath()
+                  ctx.arc(size / 2, size / 2, logoSize / 2, 0, Math.PI * 2)
+                  ctx.closePath()
+                  ctx.clip()
+                  ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize)
+                  ctx.restore()
+                } else if (styleConfig.logoMask === 'rounded') {
+                  ctx.save()
+                  const radius = 8
+                  ctx.beginPath()
+                  ctx.moveTo(logoX + radius, logoY)
+                  ctx.lineTo(logoX + logoSize - radius, logoY)
+                  ctx.quadraticCurveTo(logoX + logoSize, logoY, logoX + logoSize, logoY + radius)
+                  ctx.lineTo(logoX + logoSize, logoY + logoSize - radius)
+                  ctx.quadraticCurveTo(
+                    logoX + logoSize,
+                    logoY + logoSize,
+                    logoX + logoSize - radius,
+                    logoY + logoSize
+                  )
+                  ctx.lineTo(logoX + radius, logoY + logoSize)
+                  ctx.quadraticCurveTo(logoX, logoY + logoSize, logoX, logoY + logoSize - radius)
+                  ctx.lineTo(logoX, logoY + radius)
+                  ctx.quadraticCurveTo(logoX, logoY, logoX + radius, logoY)
+                  ctx.closePath()
+                  ctx.clip()
+                  ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize)
+                  ctx.restore()
+                } else {
+                  ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize)
+                }
+
+                ctx.globalAlpha = 1.0
+
+                canvas.toBlob((blob) => {
+                  if (blob) {
+                    const link = document.createElement('a')
+                    link.download = `qrcode-${Date.now()}.png`
+                    link.href = URL.createObjectURL(blob)
+                    link.click()
+                    URL.revokeObjectURL(link.href)
+                    toast.success('QR code downloaded as PNG 🎉')
+                    trackToolEvent('qr_code_download', { format: 'png', type, hasLogo: true })
+                  }
+                })
               }
-            })
+              logoImg.src = styleConfig.logoUrl
+            } else {
+              canvas.toBlob((blob) => {
+                if (blob) {
+                  const link = document.createElement('a')
+                  link.download = `qrcode-${Date.now()}.png`
+                  link.href = URL.createObjectURL(blob)
+                  link.click()
+                  URL.revokeObjectURL(link.href)
+                  toast.success('QR code downloaded as PNG 🎉')
+                  trackToolEvent('qr_code_download', { format: 'png', type, hasLogo: false })
+                }
+              })
+            }
           }
           URL.revokeObjectURL(url)
         }
         img.src = url
       } else {
+        // SVG export with logo embedded
         const svg = document.getElementById('qr-code-svg')
         if (!svg) {
           toast.error('QR code not found')
           return
         }
 
-        const svgData = new XMLSerializer().serializeToString(svg)
+        let svgData = new XMLSerializer().serializeToString(svg)
+
+        // Add logo to SVG if present
+        if (styleConfig.hasLogo && styleConfig.logoUrl) {
+          const logoSize = (size * styleConfig.logoSize) / 100
+          const logoX = (size - logoSize) / 2
+          const logoY = (size - logoSize) / 2
+
+          const logoElement = `<image href="${styleConfig.logoUrl}" x="${logoX}" y="${logoY}" width="${logoSize}" height="${logoSize}" opacity="${styleConfig.logoOpacity / 100}" ${
+            styleConfig.logoMask === 'circle'
+              ? `clip-path="circle(${logoSize / 2}px at ${logoSize / 2}px ${logoSize / 2}px)"`
+              : styleConfig.logoMask === 'rounded'
+                ? `style="border-radius: 8px;"`
+                : ''
+          } />`
+
+          svgData = svgData.replace('</svg>', `${logoElement}</svg>`)
+        }
+
         const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' })
         const url = URL.createObjectURL(svgBlob)
         const link = document.createElement('a')
@@ -170,7 +428,11 @@ END:VCARD`
         link.click()
         URL.revokeObjectURL(url)
         toast.success('QR code downloaded as SVG 🎉')
-        trackToolEvent('qr_code_download', { format: 'svg', type })
+        trackToolEvent('qr_code_download', {
+          format: 'svg',
+          type,
+          hasLogo: styleConfig.hasLogo,
+        })
       }
     } catch (error) {
       console.error('Download error:', error)
@@ -203,18 +465,82 @@ END:VCARD`
         const ctx = canvas.getContext('2d')
         if (ctx) {
           ctx.drawImage(img, 0, 0)
-          canvas.toBlob(async (blob) => {
-            if (blob) {
-              try {
-                await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-                toast.success('QR code copied to clipboard 📋')
-                trackToolEvent('qr_code_copy', { type })
-              } catch (error) {
-                console.error('Copy error:', error)
-                toast.error('Failed to copy QR code')
+
+          // Draw logo if present
+          if (styleConfig.hasLogo && styleConfig.logoUrl) {
+            const logoImg = new Image()
+            logoImg.onload = async () => {
+              const logoSize = (size * styleConfig.logoSize) / 100
+              const logoX = (size - logoSize) / 2
+              const logoY = (size - logoSize) / 2
+
+              ctx.globalAlpha = styleConfig.logoOpacity / 100
+
+              // Apply mask
+              if (styleConfig.logoMask === 'circle') {
+                ctx.save()
+                ctx.beginPath()
+                ctx.arc(size / 2, size / 2, logoSize / 2, 0, Math.PI * 2)
+                ctx.closePath()
+                ctx.clip()
+                ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize)
+                ctx.restore()
+              } else if (styleConfig.logoMask === 'rounded') {
+                ctx.save()
+                const radius = 8
+                ctx.beginPath()
+                ctx.moveTo(logoX + radius, logoY)
+                ctx.lineTo(logoX + logoSize - radius, logoY)
+                ctx.quadraticCurveTo(logoX + logoSize, logoY, logoX + logoSize, logoY + radius)
+                ctx.lineTo(logoX + logoSize, logoY + logoSize - radius)
+                ctx.quadraticCurveTo(
+                  logoX + logoSize,
+                  logoY + logoSize,
+                  logoX + logoSize - radius,
+                  logoY + logoSize
+                )
+                ctx.lineTo(logoX + radius, logoY + logoSize)
+                ctx.quadraticCurveTo(logoX, logoY + logoSize, logoX, logoY + logoSize - radius)
+                ctx.lineTo(logoX, logoY + radius)
+                ctx.quadraticCurveTo(logoX, logoY, logoX + radius, logoY)
+                ctx.closePath()
+                ctx.clip()
+                ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize)
+                ctx.restore()
+              } else {
+                ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize)
               }
+
+              ctx.globalAlpha = 1.0
+
+              canvas.toBlob(async (blob) => {
+                if (blob) {
+                  try {
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+                    toast.success('QR code copied to clipboard 📋')
+                    trackToolEvent('qr_code_copy', { type, hasLogo: true })
+                  } catch (error) {
+                    console.error('Copy error:', error)
+                    toast.error('Failed to copy QR code')
+                  }
+                }
+              })
             }
-          })
+            logoImg.src = styleConfig.logoUrl
+          } else {
+            canvas.toBlob(async (blob) => {
+              if (blob) {
+                try {
+                  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+                  toast.success('QR code copied to clipboard 📋')
+                  trackToolEvent('qr_code_copy', { type, hasLogo: false })
+                } catch (error) {
+                  console.error('Copy error:', error)
+                  toast.error('Failed to copy QR code')
+                }
+              }
+            })
+          }
         }
         URL.revokeObjectURL(url)
       }
@@ -581,6 +907,188 @@ END:VCARD`
               </label>
             </div>
           </div>
+
+          {/* Style Presets Section */}
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <h2
+              className={css({
+                fontSize: { base: 'lg', sm: 'xl' },
+                fontWeight: 'bold',
+                color: 'violet.300',
+              })}
+            >
+              Style Presets
+            </h2>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: {
+                  base: 'repeat(2, 1fr)',
+                  sm: 'repeat(3, 1fr)',
+                  md: 'repeat(6, 1fr)',
+                },
+                gap: '3',
+              })}
+            >
+              {(
+                ['classic', 'modern', 'branded', 'minimalist', 'professional', 'vibrant'] as const
+              ).map((preset) => (
+                <Button
+                  key={preset}
+                  onClick={() => applyStylePreset(preset)}
+                  variant={styleConfig.preset === preset ? 'default' : 'outline'}
+                  size="sm"
+                  className="capitalize"
+                >
+                  {preset}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Logo Upload Section */}
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <h2
+              className={css({
+                fontSize: { base: 'lg', sm: 'xl' },
+                fontWeight: 'bold',
+                color: 'violet.300',
+              })}
+            >
+              Logo / Icon
+            </h2>
+            <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+              {!styleConfig.hasLogo ? (
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    onClick={() => fileInputRef.current?.click()}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Logo
+                  </Button>
+                  <p
+                    className={css({
+                      mt: '2',
+                      fontSize: 'sm',
+                      color: 'gray.400',
+                      textAlign: 'center',
+                    })}
+                  >
+                    Max 5MB • PNG, JPG, SVG supported
+                  </p>
+                </div>
+              ) : (
+                <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '3',
+                      p: '3',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: 'violet.500/30',
+                      bg: 'rgba(139, 92, 246, 0.1)',
+                    })}
+                  >
+                    <ImageIcon className="h-5 w-5 text-violet-400" />
+                    <span className="flex-1 text-sm text-gray-200 truncate">
+                      {logoFile?.name || 'Logo uploaded'}
+                    </span>
+                    <Button onClick={removeLogo} size="sm" variant="ghost" className="h-8 w-8 p-0">
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <Field>
+                    <FieldLabel>Logo Size: {styleConfig.logoSize}%</FieldLabel>
+                    <input
+                      type="range"
+                      min="10"
+                      max="40"
+                      step="5"
+                      value={styleConfig.logoSize}
+                      onChange={(e) =>
+                        setStyleConfig({ ...styleConfig, logoSize: Number(e.target.value) })
+                      }
+                      className="w-full"
+                    />
+                  </Field>
+
+                  <Field>
+                    <FieldLabel>Logo Opacity: {styleConfig.logoOpacity}%</FieldLabel>
+                    <input
+                      type="range"
+                      min="50"
+                      max="100"
+                      step="10"
+                      value={styleConfig.logoOpacity}
+                      onChange={(e) =>
+                        setStyleConfig({ ...styleConfig, logoOpacity: Number(e.target.value) })
+                      }
+                      className="w-full"
+                    />
+                  </Field>
+
+                  <Field>
+                    <FieldLabel>Logo Mask</FieldLabel>
+                    <div
+                      className={css({
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gap: '2',
+                      })}
+                    >
+                      {(['none', 'circle', 'square', 'rounded'] as const).map((mask) => (
+                        <Button
+                          key={mask}
+                          onClick={() => setStyleConfig({ ...styleConfig, logoMask: mask })}
+                          variant={styleConfig.logoMask === mask ? 'default' : 'outline'}
+                          size="sm"
+                          className="capitalize"
+                        >
+                          {mask}
+                        </Button>
+                      ))}
+                    </div>
+                  </Field>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Preview Section */}
@@ -623,15 +1131,55 @@ END:VCARD`
               style={{ backgroundColor: bgColor }}
             >
               {hasValidInput ? (
-                <QRCodeSVG
-                  id="qr-code-svg"
-                  value={qrValue}
-                  size={size}
-                  bgColor={bgColor}
-                  fgColor={fgColor}
-                  level="H"
-                  includeMargin={includeMargin}
-                />
+                <div ref={qrRef} className={css({ position: 'relative', display: 'inline-block' })}>
+                  <QRCodeSVG
+                    id="qr-code-svg"
+                    value={qrValue}
+                    size={size}
+                    bgColor={bgColor}
+                    fgColor={fgColor}
+                    level="H"
+                    includeMargin={includeMargin}
+                  />
+                  {styleConfig.hasLogo && styleConfig.logoUrl && (
+                    <div
+                      className={css({
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      })}
+                      style={{
+                        width: `${(size * styleConfig.logoSize) / 100}px`,
+                        height: `${(size * styleConfig.logoSize) / 100}px`,
+                        opacity: styleConfig.logoOpacity / 100,
+                      }}
+                    >
+                      <img
+                        src={styleConfig.logoUrl}
+                        alt="Logo"
+                        className={css({
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
+                        })}
+                        style={{
+                          borderRadius:
+                            styleConfig.logoMask === 'circle'
+                              ? '50%'
+                              : styleConfig.logoMask === 'rounded'
+                                ? '8px'
+                                : styleConfig.logoMask === 'square'
+                                  ? '0'
+                                  : '0',
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className={css({ textAlign: 'center' })}>
                   <QrCode
