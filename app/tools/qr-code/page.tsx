@@ -65,9 +65,31 @@ import {
   type ValidationResult,
   validateQRCode,
 } from '@/lib/qr-scanner-service'
+import {
+  generateAppStoreQR,
+  generateEmailQR,
+  generateEventQR,
+  generateGeoQR,
+  generatePhoneQR,
+  generateSMSQR,
+  generateSocialQR,
+  generateWhatsAppQR,
+} from '@/lib/qr-types'
 import { css } from '@/styled-system/css'
 
-export type QRCodeType = 'url' | 'text' | 'wifi' | 'vcard'
+export type QRCodeType =
+  | 'url'
+  | 'text'
+  | 'wifi'
+  | 'vcard'
+  | 'email'
+  | 'sms'
+  | 'phone'
+  | 'whatsapp'
+  | 'geo'
+  | 'event'
+  | 'appstore'
+  | 'social'
 type QRStylePreset = 'classic' | 'modern' | 'branded' | 'minimalist' | 'professional' | 'vibrant'
 type QRCornerStyle = 'square' | 'rounded' | 'extra-rounded' | 'dot'
 type QRDotStyle = 'square' | 'rounded' | 'dots' | 'classy'
@@ -87,6 +109,52 @@ interface VCardConfig {
   email: string
   website: string
   address: string
+}
+
+interface EmailConfig {
+  to: string
+  subject: string
+  body: string
+}
+
+interface SMSConfig {
+  phone: string
+  message: string
+}
+
+interface PhoneConfig {
+  phone: string
+}
+
+interface WhatsAppConfig {
+  phone: string
+  message: string
+}
+
+interface GeoConfig {
+  latitude: string
+  longitude: string
+  label?: string
+}
+
+interface EventConfig {
+  title: string
+  location: string
+  startDate: string
+  startTime: string
+  endDate: string
+  endTime: string
+  description: string
+}
+
+interface AppStoreConfig {
+  platform: 'ios' | 'android'
+  appId: string
+}
+
+interface SocialConfig {
+  platform: 'instagram' | 'twitter' | 'linkedin' | 'facebook' | 'tiktok' | 'youtube'
+  handle: string
 }
 
 interface QRStyleConfig {
@@ -231,6 +299,44 @@ export default function QRCodePage() {
     website: '',
     address: '',
   })
+  const [emailConfig, setEmailConfig] = useState<EmailConfig>({
+    to: '',
+    subject: '',
+    body: '',
+  })
+  const [smsConfig, setSmsConfig] = useState<SMSConfig>({
+    phone: '',
+    message: '',
+  })
+  const [phoneConfig, setPhoneConfig] = useState<PhoneConfig>({
+    phone: '',
+  })
+  const [whatsappConfig, setWhatsappConfig] = useState<WhatsAppConfig>({
+    phone: '',
+    message: '',
+  })
+  const [geoConfig, setGeoConfig] = useState<GeoConfig>({
+    latitude: '',
+    longitude: '',
+    label: '',
+  })
+  const [eventConfig, setEventConfig] = useState<EventConfig>({
+    title: '',
+    location: '',
+    startDate: '',
+    startTime: '',
+    endDate: '',
+    endTime: '',
+    description: '',
+  })
+  const [appStoreConfig, setAppStoreConfig] = useState<AppStoreConfig>({
+    platform: 'ios',
+    appId: '',
+  })
+  const [socialConfig, setSocialConfig] = useState<SocialConfig>({
+    platform: 'instagram',
+    handle: '',
+  })
   const [fgColor, setFgColor] = useState('#000000')
   const [bgColor, setBgColor] = useState('#ffffff')
   const [size, setSize] = useState(256)
@@ -323,6 +429,22 @@ EMAIL:${vcardConfig.email}
 URL:${vcardConfig.website}
 ADR:;;${vcardConfig.address};;;;
 END:VCARD`
+      case 'email':
+        return generateEmailQR(emailConfig)
+      case 'sms':
+        return generateSMSQR(smsConfig)
+      case 'phone':
+        return generatePhoneQR(phoneConfig)
+      case 'whatsapp':
+        return generateWhatsAppQR(whatsappConfig)
+      case 'geo':
+        return generateGeoQR(geoConfig)
+      case 'event':
+        return generateEventQR(eventConfig)
+      case 'appstore':
+        return generateAppStoreQR(appStoreConfig)
+      case 'social':
+        return generateSocialQR(socialConfig)
       default:
         return ''
     }
@@ -1264,7 +1386,22 @@ url,https://github.com,GitHub,#000000`
                 gap: '3',
               })}
             >
-              {(['url', 'text', 'wifi', 'vcard'] as const).map((t) => (
+              {(
+                [
+                  'url',
+                  'text',
+                  'wifi',
+                  'vcard',
+                  'email',
+                  'sms',
+                  'phone',
+                  'whatsapp',
+                  'geo',
+                  'event',
+                  'appstore',
+                  'social',
+                ] as const
+              ).map((t) => (
                 <Button
                   key={t}
                   onClick={() => {
@@ -1275,7 +1412,7 @@ url,https://github.com,GitHub,#000000`
                   size="sm"
                   className="capitalize"
                 >
-                  {t}
+                  {t === 'appstore' ? 'App Store' : t === 'whatsapp' ? 'WhatsApp' : t}
                 </Button>
               ))}
             </div>
@@ -1447,6 +1584,303 @@ url,https://github.com,GitHub,#000000`
                     placeholder="123 Main St, City, Country"
                     value={vcardConfig.address}
                     onChange={(e) => setVcardConfig({ ...vcardConfig, address: e.target.value })}
+                  />
+                </Field>
+              </div>
+            )}
+
+            {type === 'email' && (
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                <Field>
+                  <FieldLabel>Email Address</FieldLabel>
+                  <Input
+                    type="email"
+                    placeholder="contact@example.com"
+                    value={emailConfig.to}
+                    onChange={(e) => setEmailConfig({ ...emailConfig, to: e.target.value })}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Subject (optional)</FieldLabel>
+                  <Input
+                    placeholder="Email subject"
+                    value={emailConfig.subject}
+                    onChange={(e) => setEmailConfig({ ...emailConfig, subject: e.target.value })}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Body (optional)</FieldLabel>
+                  <Textarea
+                    placeholder="Email body text..."
+                    value={emailConfig.body}
+                    onChange={(e) => setEmailConfig({ ...emailConfig, body: e.target.value })}
+                    rows={4}
+                  />
+                </Field>
+              </div>
+            )}
+
+            {type === 'sms' && (
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                <Field>
+                  <FieldLabel>Phone Number</FieldLabel>
+                  <Input
+                    placeholder="+1234567890"
+                    value={smsConfig.phone}
+                    onChange={(e) => setSmsConfig({ ...smsConfig, phone: e.target.value })}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Message (optional)</FieldLabel>
+                  <Textarea
+                    placeholder="Pre-filled message text..."
+                    value={smsConfig.message}
+                    onChange={(e) => setSmsConfig({ ...smsConfig, message: e.target.value })}
+                    rows={4}
+                  />
+                </Field>
+              </div>
+            )}
+
+            {type === 'phone' && (
+              <Field>
+                <FieldLabel>Phone Number</FieldLabel>
+                <Input
+                  placeholder="+1234567890"
+                  value={phoneConfig.phone}
+                  onChange={(e) => setPhoneConfig({ ...phoneConfig, phone: e.target.value })}
+                />
+              </Field>
+            )}
+
+            {type === 'whatsapp' && (
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                <Field>
+                  <FieldLabel>Phone Number (with country code)</FieldLabel>
+                  <Input
+                    placeholder="1234567890"
+                    value={whatsappConfig.phone}
+                    onChange={(e) =>
+                      setWhatsappConfig({ ...whatsappConfig, phone: e.target.value })
+                    }
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Pre-filled Message (optional)</FieldLabel>
+                  <Textarea
+                    placeholder="Hello! I'd like to..."
+                    value={whatsappConfig.message}
+                    onChange={(e) =>
+                      setWhatsappConfig({ ...whatsappConfig, message: e.target.value })
+                    }
+                    rows={4}
+                  />
+                </Field>
+              </div>
+            )}
+
+            {type === 'geo' && (
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                    gap: '4',
+                  })}
+                >
+                  <Field>
+                    <FieldLabel>Latitude</FieldLabel>
+                    <Input
+                      type="number"
+                      step="any"
+                      placeholder="37.7749"
+                      value={geoConfig.latitude}
+                      onChange={(e) => setGeoConfig({ ...geoConfig, latitude: e.target.value })}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel>Longitude</FieldLabel>
+                    <Input
+                      type="number"
+                      step="any"
+                      placeholder="-122.4194"
+                      value={geoConfig.longitude}
+                      onChange={(e) => setGeoConfig({ ...geoConfig, longitude: e.target.value })}
+                    />
+                  </Field>
+                </div>
+                <Field>
+                  <FieldLabel>Label (optional)</FieldLabel>
+                  <Input
+                    placeholder="Location name"
+                    value={geoConfig.label}
+                    onChange={(e) => setGeoConfig({ ...geoConfig, label: e.target.value })}
+                  />
+                </Field>
+              </div>
+            )}
+
+            {type === 'event' && (
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                <Field>
+                  <FieldLabel>Event Title</FieldLabel>
+                  <Input
+                    placeholder="Team Meeting"
+                    value={eventConfig.title}
+                    onChange={(e) => setEventConfig({ ...eventConfig, title: e.target.value })}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Location (optional)</FieldLabel>
+                  <Input
+                    placeholder="Conference Room A"
+                    value={eventConfig.location}
+                    onChange={(e) => setEventConfig({ ...eventConfig, location: e.target.value })}
+                  />
+                </Field>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                    gap: '4',
+                  })}
+                >
+                  <Field>
+                    <FieldLabel>Start Date</FieldLabel>
+                    <Input
+                      type="date"
+                      value={eventConfig.startDate}
+                      onChange={(e) =>
+                        setEventConfig({ ...eventConfig, startDate: e.target.value })
+                      }
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel>Start Time</FieldLabel>
+                    <Input
+                      type="time"
+                      value={eventConfig.startTime}
+                      onChange={(e) =>
+                        setEventConfig({ ...eventConfig, startTime: e.target.value })
+                      }
+                    />
+                  </Field>
+                </div>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                    gap: '4',
+                  })}
+                >
+                  <Field>
+                    <FieldLabel>End Date</FieldLabel>
+                    <Input
+                      type="date"
+                      value={eventConfig.endDate}
+                      onChange={(e) => setEventConfig({ ...eventConfig, endDate: e.target.value })}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel>End Time</FieldLabel>
+                    <Input
+                      type="time"
+                      value={eventConfig.endTime}
+                      onChange={(e) => setEventConfig({ ...eventConfig, endTime: e.target.value })}
+                    />
+                  </Field>
+                </div>
+                <Field>
+                  <FieldLabel>Description (optional)</FieldLabel>
+                  <Textarea
+                    placeholder="Event details..."
+                    value={eventConfig.description}
+                    onChange={(e) =>
+                      setEventConfig({ ...eventConfig, description: e.target.value })
+                    }
+                    rows={3}
+                  />
+                </Field>
+              </div>
+            )}
+
+            {type === 'appstore' && (
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                <Field>
+                  <FieldLabel>Platform</FieldLabel>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: '2',
+                    })}
+                  >
+                    {(['ios', 'android'] as const).map((platform) => (
+                      <Button
+                        key={platform}
+                        onClick={() => setAppStoreConfig({ ...appStoreConfig, platform })}
+                        variant={appStoreConfig.platform === platform ? 'default' : 'outline'}
+                        size="sm"
+                        className="capitalize"
+                      >
+                        {platform === 'ios' ? 'iOS App Store' : 'Google Play'}
+                      </Button>
+                    ))}
+                  </div>
+                </Field>
+                <Field>
+                  <FieldLabel>App ID</FieldLabel>
+                  <Input
+                    placeholder={
+                      appStoreConfig.platform === 'ios'
+                        ? 'e.g., 123456789'
+                        : 'e.g., com.example.app'
+                    }
+                    value={appStoreConfig.appId}
+                    onChange={(e) =>
+                      setAppStoreConfig({ ...appStoreConfig, appId: e.target.value })
+                    }
+                  />
+                </Field>
+              </div>
+            )}
+
+            {type === 'social' && (
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                <Field>
+                  <FieldLabel>Platform</FieldLabel>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' },
+                      gap: '2',
+                    })}
+                  >
+                    {(
+                      ['instagram', 'twitter', 'linkedin', 'facebook', 'tiktok', 'youtube'] as const
+                    ).map((platform) => (
+                      <Button
+                        key={platform}
+                        onClick={() => setSocialConfig({ ...socialConfig, platform })}
+                        variant={socialConfig.platform === platform ? 'default' : 'outline'}
+                        size="sm"
+                        className="capitalize"
+                      >
+                        {platform}
+                      </Button>
+                    ))}
+                  </div>
+                </Field>
+                <Field>
+                  <FieldLabel>Username/Handle</FieldLabel>
+                  <Input
+                    placeholder={
+                      socialConfig.platform === 'youtube'
+                        ? '@username or channel/UCxxxxxx'
+                        : '@username'
+                    }
+                    value={socialConfig.handle}
+                    onChange={(e) => setSocialConfig({ ...socialConfig, handle: e.target.value })}
                   />
                 </Field>
               </div>
