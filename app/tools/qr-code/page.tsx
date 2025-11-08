@@ -6,8 +6,12 @@ import {
   Download,
   FileDown,
   FileUp,
+  History,
   Image as ImageIcon,
   QrCode,
+  Search,
+  Star,
+  Trash2,
   Upload,
   X,
 } from 'lucide-react'
@@ -23,9 +27,20 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
+import type { QRHistoryItem } from '@/lib/qr-history-service'
+import {
+  clearHistory,
+  deleteHistoryItem,
+  exportHistory,
+  getFilteredHistory,
+  getHistory,
+  importHistory,
+  saveToHistory,
+  toggleFavorite,
+} from '@/lib/qr-history-service'
 import { css } from '@/styled-system/css'
 
-type QRCodeType = 'url' | 'text' | 'wifi' | 'vcard'
+export type QRCodeType = 'url' | 'text' | 'wifi' | 'vcard'
 type QRStylePreset = 'classic' | 'modern' | 'branded' | 'minimalist' | 'professional' | 'vibrant'
 type QRCornerStyle = 'square' | 'rounded' | 'extra-rounded' | 'dot'
 type QRDotStyle = 'square' | 'rounded' | 'dots' | 'classy'
@@ -228,6 +243,23 @@ export default function QRCodePage() {
   })
   const [showBulkMode, setShowBulkMode] = useState(false)
   const csvInputRef = useRef<HTMLInputElement>(null)
+
+  // History state
+  const [history, setHistory] = useState<QRHistoryItem[]>([])
+  const [showHistory, setShowHistory] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [typeFilter, setTypeFilter] = useState<QRCodeType | 'all'>('all')
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'favorites'>('newest')
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
+  const historyInputRef = useRef<HTMLInputElement>(null)
+
+  // Load history on mount
+  useEffect(() => {
+    setHistory(getHistory())
+  }, [])
+
+  // Get filtered history
+  const filteredHistory = getFilteredHistory(searchQuery, typeFilter, sortBy, showFavoritesOnly)
 
   const getQRValue = () => {
     switch (type) {
@@ -440,7 +472,7 @@ url,https://github.com,GitHub,#000000`
         svg.setAttribute('viewBox', `0 0 ${size} ${size}`)
 
         // Generate QR code data (simplified - in production use proper QR generation)
-        const qrData = item.content
+        const _qrData = item.content
         const fileName = `${item.label?.replace(/[^a-z0-9]/gi, '_') || item.id}.png`
 
         // Create canvas and draw QR code
@@ -670,6 +702,182 @@ url,https://github.com,GitHub,#000000`
       console.error('Download error:', error)
       toast.error('Failed to download QR code')
     }
+  }
+
+  // Generate QR thumbnail for history
+  const generateQRThumbnail = (): string => {
+    try {
+      const svg = document.getElementById('qr-code-svg')
+      if (!svg) return ''
+
+      const svgData = new XMLSerializer().serializeToString(svg)
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' })
+      return URL.createObjectURL(svgBlob)
+    } catch {
+      return ''
+    }
+  }
+
+  // Save current QR to history
+  const handleSaveToHistory = () => {
+    if (!hasValidInput) {
+      toast.error('Please generate a QR code first')
+      return
+    }
+
+    try {
+      const thumbnail = generateQRThumbnail()
+      const _newItem = saveToHistory({
+        type,
+        content: qrValue,
+        isFavorite: false,
+        styleConfig,
+        thumbnail,
+      })
+
+      setHistory(getHistory())
+      toast.success('QR code saved to history')
+      trackToolEvent('qr_history_save', { type })
+    } catch (error) {
+      console.error('Failed to save to history:', error)
+      toast.error('Failed to save to history')
+    }
+  }
+
+  // Load QR from history
+  const handleLoadFromHistory = (item: QRHistoryItem) => {
+    setType(item.type)
+
+    // Set content based on type
+    switch (item.type) {
+      case 'url':
+        setUrlInput(item.content)
+        break
+      case 'text':
+        setTextInput(item.content)
+        break
+      case 'wifi': {
+        // Parse WiFi string
+        const ssidMatch = item.content.match(/S:([^;]+)/)
+        const passwordMatch = item.content.match(/P:([^;]+)/)
+        const encryptionMatch = item.content.match(/T:([^;]+)/)
+        const hiddenMatch = item.content.match(/H:([^;]+)/)
+
+        setWifiConfig({
+          ssid: ssidMatch?.[1] || '',
+          password: passwordMatch?.[1] || '',
+          encryption: (encryptionMatch?.[1] as 'WPA' | 'WEP' | 'nopass') || 'WPA',
+          hidden: hiddenMatch?.[1] === 'true',
+        })
+        break
+      }
+      case 'vcard': {
+        // Parse vCard string (simplified)
+        const fnMatch = item.content.match(/FN:([^\n]+)/)
+        const phoneMatch = item.content.match(/TEL:([^\n]+)/)
+        const emailMatch = item.content.match(/EMAIL:([^\n]+)/)
+        const orgMatch = item.content.match(/ORG:([^\n]+)/)
+        const urlMatch = item.content.match(/URL:([^\n]+)/)
+        const adrMatch = item.content.match(/ADR:;;([^\n;]+)/)
+
+        const name = fnMatch?.[1]?.split(' ') || ['', '']
+        setVcardConfig({
+          firstName: name[0] || '',
+          lastName: name[1] || '',
+          phone: phoneMatch?.[1] || '',
+          email: emailMatch?.[1] || '',
+          organization: orgMatch?.[1] || '',
+          website: urlMatch?.[1] || '',
+          address: adrMatch?.[1] || '',
+        })
+        break
+      }
+    }
+
+    // Apply style config
+    setStyleConfig(item.styleConfig as QRStyleConfig)
+
+    toast.success('QR code loaded from history')
+    trackToolEvent('qr_history_load', { type: item.type })
+  }
+
+  // Toggle favorite
+  const handleToggleFavorite = (id: string) => {
+    toggleFavorite(id)
+    setHistory(getHistory())
+    trackToolEvent('qr_history_favorite', {})
+  }
+
+  // Delete from history
+  const handleDeleteFromHistory = (id: string) => {
+    deleteHistoryItem(id)
+    setHistory(getHistory())
+    toast.success('QR code removed from history')
+    trackToolEvent('qr_history_delete', {})
+  }
+
+  // Clear all history
+  const handleClearHistory = () => {
+    if (history.length === 0) {
+      toast.error('History is already empty')
+      return
+    }
+
+    if (window.confirm('Are you sure you want to clear all history? This cannot be undone.')) {
+      clearHistory()
+      setHistory([])
+      toast.success('History cleared')
+      trackToolEvent('qr_history_clear', {})
+    }
+  }
+
+  // Export history
+  const handleExportHistory = () => {
+    try {
+      const json = exportHistory()
+      const blob = new Blob([json], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.download = `qr-history-${Date.now()}.json`
+      link.href = url
+      link.click()
+      URL.revokeObjectURL(url)
+      toast.success('History exported successfully')
+      trackToolEvent('qr_history_export', { count: history.length })
+    } catch (error) {
+      console.error('Export error:', error)
+      toast.error('Failed to export history')
+    }
+  }
+
+  // Import history
+  const handleImportHistory = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.name.endsWith('.json')) {
+      toast.error('Please upload a JSON file')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      try {
+        const json = event.target?.result as string
+        const count = importHistory(json)
+        setHistory(getHistory())
+        toast.success(`Imported ${count} QR code${count !== 1 ? 's' : ''} successfully`)
+        trackToolEvent('qr_history_import', { count })
+
+        if (historyInputRef.current) {
+          historyInputRef.current.value = ''
+        }
+      } catch (error) {
+        console.error('Import error:', error)
+        toast.error('Failed to import history: Invalid format')
+      }
+    }
+    reader.readAsText(file)
   }
 
   const copyQRCode = async () => {
@@ -1638,7 +1846,371 @@ url,https://github.com,GitHub,#000000`
                 <Copy className="mr-2 h-4 w-4" />
                 Copy Image
               </Button>
+              <Button
+                onClick={handleSaveToHistory}
+                disabled={!hasValidInput}
+                variant="outline"
+                className={css({ flex: '1' })}
+              >
+                <History className="mr-2 h-4 w-4" />
+                Save to History
+              </Button>
             </div>
+          </div>
+
+          {/* History Section */}
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'violet.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <div
+              className={css({
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              })}
+            >
+              <h2
+                className={css({
+                  fontSize: { base: 'lg', sm: 'xl' },
+                  fontWeight: 'bold',
+                  color: 'violet.300',
+                })}
+              >
+                History & Management
+              </h2>
+              <Button onClick={() => setShowHistory(!showHistory)} variant="ghost" size="sm">
+                {showHistory ? 'Hide' : 'Show'}
+              </Button>
+            </div>
+
+            {showHistory && (
+              <>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  {history.length === 0
+                    ? 'No saved QR codes yet. Generate and save QR codes to see them here.'
+                    : `${history.length} saved QR code${history.length !== 1 ? 's' : ''} (max 20)`}
+                </p>
+
+                {history.length > 0 && (
+                  <>
+                    {/* Search and Filter Controls */}
+                    <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+                      <div className={css({ position: 'relative' })}>
+                        <Search
+                          className={css({
+                            position: 'absolute',
+                            left: '3',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            h: '4',
+                            w: '4',
+                            color: 'gray.400',
+                          })}
+                        />
+                        <Input
+                          type="text"
+                          placeholder="Search by content, label, or type..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className={css({ pl: '10' })}
+                        />
+                      </div>
+
+                      <div
+                        className={css({
+                          display: 'grid',
+                          gridTemplateColumns: {
+                            base: '1fr',
+                            sm: 'repeat(2, 1fr)',
+                            md: 'repeat(4, 1fr)',
+                          },
+                          gap: '2',
+                        })}
+                      >
+                        <Field>
+                          <FieldLabel>Type</FieldLabel>
+                          <select
+                            value={typeFilter}
+                            onChange={(e) => setTypeFilter(e.target.value as QRCodeType | 'all')}
+                            className={css({
+                              w: 'full',
+                              rounded: 'md',
+                              border: '1px solid',
+                              borderColor: 'violet.500/30',
+                              bg: 'rgba(17, 24, 39, 0.5)',
+                              px: '3',
+                              py: '2',
+                              fontSize: 'sm',
+                              color: 'gray.200',
+                              _focus: { outline: 'none', borderColor: 'violet.500' },
+                            })}
+                          >
+                            <option value="all">All Types</option>
+                            <option value="url">URL</option>
+                            <option value="text">Text</option>
+                            <option value="wifi">WiFi</option>
+                            <option value="vcard">vCard</option>
+                          </select>
+                        </Field>
+
+                        <Field>
+                          <FieldLabel>Sort</FieldLabel>
+                          <select
+                            value={sortBy}
+                            onChange={(e) =>
+                              setSortBy(e.target.value as 'newest' | 'oldest' | 'favorites')
+                            }
+                            className={css({
+                              w: 'full',
+                              rounded: 'md',
+                              border: '1px solid',
+                              borderColor: 'violet.500/30',
+                              bg: 'rgba(17, 24, 39, 0.5)',
+                              px: '3',
+                              py: '2',
+                              fontSize: 'sm',
+                              color: 'gray.200',
+                              _focus: { outline: 'none', borderColor: 'violet.500' },
+                            })}
+                          >
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="favorites">Favorites First</option>
+                          </select>
+                        </Field>
+
+                        <Button
+                          onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                          variant={showFavoritesOnly ? 'default' : 'outline'}
+                          size="sm"
+                          className={css({ h: '10', alignSelf: 'end' })}
+                        >
+                          <Star
+                            className={css({
+                              mr: '2',
+                              h: '4',
+                              w: '4',
+                              fill: showFavoritesOnly ? 'currentColor' : 'none',
+                            })}
+                          />
+                          Favorites
+                        </Button>
+
+                        <Button
+                          onClick={handleClearHistory}
+                          variant="outline"
+                          size="sm"
+                          className={css({ h: '10', alignSelf: 'end' })}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Clear All
+                        </Button>
+                      </div>
+
+                      {/* Export/Import Controls */}
+                      <div
+                        className={css({
+                          display: 'grid',
+                          gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                          gap: '2',
+                        })}
+                      >
+                        <Button onClick={handleExportHistory} variant="outline" size="sm">
+                          <Download className="mr-2 h-4 w-4" />
+                          Export History (JSON)
+                        </Button>
+                        <div>
+                          <input
+                            ref={historyInputRef}
+                            type="file"
+                            accept=".json"
+                            onChange={handleImportHistory}
+                            className="hidden"
+                          />
+                          <Button
+                            onClick={() => historyInputRef.current?.click()}
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                          >
+                            <Upload className="mr-2 h-4 w-4" />
+                            Import History (JSON)
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* History Grid */}
+                    <div
+                      className={css({
+                        display: 'grid',
+                        gridTemplateColumns: {
+                          base: '1fr',
+                          sm: 'repeat(2, 1fr)',
+                          lg: 'repeat(3, 1fr)',
+                        },
+                        gap: '4',
+                        mt: '2',
+                      })}
+                    >
+                      {filteredHistory.length === 0 ? (
+                        <div
+                          className={css({
+                            gridColumn: '1 / -1',
+                            textAlign: 'center',
+                            py: '8',
+                            color: 'gray.400',
+                          })}
+                        >
+                          No matching QR codes found
+                        </div>
+                      ) : (
+                        filteredHistory.map((item) => (
+                          <div
+                            key={item.id}
+                            className={css({
+                              rounded: 'lg',
+                              border: '1px solid',
+                              borderColor: item.isFavorite ? 'violet.500/50' : 'violet.500/20',
+                              bg: 'rgba(17, 24, 39, 0.3)',
+                              p: '3',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '3',
+                              transition: 'all 0.2s',
+                              _hover: { borderColor: 'violet.500/70', bg: 'rgba(17, 24, 39, 0.5)' },
+                            })}
+                          >
+                            {/* Thumbnail */}
+                            <div
+                              role="button"
+                              tabIndex={0}
+                              className={css({
+                                w: 'full',
+                                aspectRatio: '1',
+                                rounded: 'md',
+                                bg: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                overflow: 'hidden',
+                                cursor: 'pointer',
+                              })}
+                              onClick={() => handleLoadFromHistory(item)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  handleLoadFromHistory(item)
+                                }
+                              }}
+                            >
+                              <img
+                                src={item.thumbnail}
+                                alt="QR Code"
+                                className={css({ w: 'full', h: 'full', objectFit: 'contain' })}
+                              />
+                            </div>
+
+                            {/* Info */}
+                            <div
+                              className={css({
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '2',
+                              })}
+                            >
+                              <div
+                                className={css({
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                })}
+                              >
+                                <Badge className="capitalize">{item.type}</Badge>
+                                <button
+                                  onClick={() => handleToggleFavorite(item.id)}
+                                  className={css({
+                                    p: '1',
+                                    rounded: 'sm',
+                                    transition: 'all 0.2s',
+                                    _hover: { bg: 'rgba(139, 92, 246, 0.2)' },
+                                  })}
+                                  type="button"
+                                  aria-label={
+                                    item.isFavorite ? 'Remove from favorites' : 'Add to favorites'
+                                  }
+                                >
+                                  <Star
+                                    className={css({
+                                      h: '4',
+                                      w: '4',
+                                      color: 'violet.400',
+                                      fill: item.isFavorite ? 'currentColor' : 'none',
+                                    })}
+                                  />
+                                </button>
+                              </div>
+
+                              <p
+                                className={css({
+                                  fontSize: 'xs',
+                                  color: 'gray.300',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                })}
+                              >
+                                {item.label || item.content}
+                              </p>
+
+                              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                                {new Date(item.timestamp).toLocaleDateString()}
+                              </p>
+                            </div>
+
+                            {/* Actions */}
+                            <div
+                              className={css({
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(2, 1fr)',
+                                gap: '2',
+                              })}
+                            >
+                              <Button
+                                onClick={() => handleLoadFromHistory(item)}
+                                size="sm"
+                                variant="outline"
+                                className={css({ fontSize: 'xs' })}
+                              >
+                                Load
+                              </Button>
+                              <Button
+                                onClick={() => handleDeleteFromHistory(item.id)}
+                                size="sm"
+                                variant="ghost"
+                                className={css({ fontSize: 'xs' })}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
 
           <div
