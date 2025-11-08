@@ -5,11 +5,15 @@ import {
   Copy,
   Download,
   FileDown,
+  FileText,
   FileUp,
   History,
   Image as ImageIcon,
+  PackageOpen,
+  Printer,
   QrCode,
   Search,
+  Settings,
   Star,
   Trash2,
   Upload,
@@ -27,6 +31,15 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
+import {
+  type ExportFormat,
+  exportToJPEG,
+  exportToPDF,
+  exportToPNG,
+  exportToSVG,
+  exportToWebP,
+  type PrintTemplate,
+} from '@/lib/qr-export-service'
 import type { QRHistoryItem } from '@/lib/qr-history-service'
 import {
   clearHistory,
@@ -252,6 +265,13 @@ export default function QRCodePage() {
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'favorites'>('newest')
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
   const historyInputRef = useRef<HTMLInputElement>(null)
+
+  // Enhanced export state
+  const [showExportOptions, setShowExportOptions] = useState(false)
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('png')
+  const [exportDPI, setExportDPI] = useState(300)
+  const [exportQuality, setExportQuality] = useState(0.95)
+  const [printTemplate, setPrintTemplate] = useState<PrintTemplate>('none')
 
   // Load history on mount
   useEffect(() => {
@@ -878,6 +898,62 @@ url,https://github.com,GitHub,#000000`
       }
     }
     reader.readAsText(file)
+  }
+
+  // Enhanced export handler
+  const handleEnhancedExport = async () => {
+    if (!hasValidInput) {
+      toast.error('Please enter content to generate QR code')
+      return
+    }
+
+    const svgElement = document.getElementById('qr-code-svg') as unknown as SVGSVGElement
+    if (!svgElement) {
+      toast.error('QR code not found')
+      return
+    }
+
+    try {
+      const filename = `qrcode-${Date.now()}`
+      const metadata = {
+        title: type === 'url' ? urlInput : 'QR Code',
+        description: qrValue.substring(0, 100),
+        url: type === 'url' ? urlInput : undefined,
+        createdAt: new Date().toISOString(),
+        qrType: type,
+      }
+
+      switch (exportFormat) {
+        case 'png':
+          await exportToPNG(svgElement, filename, exportDPI)
+          trackToolEvent('qr_export_png_dpi', { dpi: exportDPI, type })
+          toast.success(`QR code exported as PNG (${exportDPI} DPI) 🎉`)
+          break
+        case 'jpeg':
+          await exportToJPEG(svgElement, filename, exportQuality, exportDPI)
+          trackToolEvent('qr_export_jpeg', { quality: exportQuality, dpi: exportDPI, type })
+          toast.success(`QR code exported as JPEG 🎉`)
+          break
+        case 'webp':
+          await exportToWebP(svgElement, filename, exportQuality)
+          trackToolEvent('qr_export_webp', { quality: exportQuality, type })
+          toast.success(`QR code exported as WebP 🎉`)
+          break
+        case 'svg':
+          exportToSVG(svgElement, filename)
+          trackToolEvent('qr_code_download', { format: 'svg', type })
+          toast.success(`QR code exported as SVG 🎉`)
+          break
+        case 'pdf':
+          await exportToPDF(svgElement, filename, printTemplate, metadata)
+          trackToolEvent('qr_export_pdf', { template: printTemplate, type })
+          toast.success(`QR code exported as PDF 🎉`)
+          break
+      }
+    } catch (error) {
+      console.error('Export error:', error)
+      toast.error('Failed to export QR code')
+    }
   }
 
   const copyQRCode = async () => {
@@ -1858,6 +1934,335 @@ url,https://github.com,GitHub,#000000`
             </div>
           </div>
 
+          {/* Enhanced Export Options */}
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'emerald.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <div
+              className={css({
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              })}
+            >
+              <h2
+                className={css({
+                  fontSize: { base: 'lg', sm: 'xl' },
+                  fontWeight: 'bold',
+                  color: 'emerald.300',
+                })}
+              >
+                Enhanced Export Options
+              </h2>
+              <Button
+                onClick={() => setShowExportOptions(!showExportOptions)}
+                variant="ghost"
+                size="sm"
+              >
+                {showExportOptions ? 'Hide' : 'Show'}
+              </Button>
+            </div>
+
+            {showExportOptions && (
+              <>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  Export your QR code in various formats with professional quality settings for
+                  printing and digital use.
+                </p>
+
+                <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                  {/* Format Selection */}
+                  <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
+                    <div
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                        display: 'flex',
+                        alignItems: 'center',
+                      })}
+                    >
+                      <FileText className="mr-2 h-4 w-4 inline" />
+                      Export Format
+                    </div>
+                    <select
+                      value={exportFormat}
+                      onChange={(e) =>
+                        setExportFormat(e.target.value as 'png' | 'jpeg' | 'webp' | 'svg' | 'pdf')
+                      }
+                      className={css({
+                        w: 'full',
+                        px: '3',
+                        py: '2',
+                        bg: 'rgba(17, 24, 39, 0.8)',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        rounded: 'lg',
+                        color: 'white',
+                        fontSize: 'sm',
+                        _focus: {
+                          outline: 'none',
+                          borderColor: 'emerald.500',
+                          ring: '2px',
+                          ringColor: 'emerald.500/20',
+                        },
+                      })}
+                    >
+                      <option value="png">PNG - High quality raster (best for web)</option>
+                      <option value="jpeg">JPEG - Compressed raster (smaller file size)</option>
+                      <option value="webp">WebP - Modern format (best compression)</option>
+                      <option value="svg">SVG - Vector format (scalable)</option>
+                      <option value="pdf">PDF - Print-ready document</option>
+                    </select>
+                  </div>
+
+                  {/* DPI Selection (PNG/JPEG only) */}
+                  {(exportFormat === 'png' || exportFormat === 'jpeg') && (
+                    <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                          display: 'flex',
+                          alignItems: 'center',
+                        })}
+                      >
+                        <Settings className="mr-2 h-4 w-4 inline" />
+                        DPI (Dots Per Inch) - {exportDPI}
+                      </div>
+                      <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                        <input
+                          type="range"
+                          min="72"
+                          max="600"
+                          step="78"
+                          value={exportDPI}
+                          onChange={(e) => setExportDPI(Number(e.target.value))}
+                          className={css({
+                            flex: '1',
+                            h: '2',
+                            bg: 'gray.700',
+                            rounded: 'full',
+                            appearance: 'none',
+                            cursor: 'pointer',
+                            _focusVisible: {
+                              outline: '2px solid',
+                              outlineColor: 'emerald.500',
+                              outlineOffset: '2px',
+                            },
+                          })}
+                        />
+                        <span
+                          className={css({
+                            fontSize: 'xs',
+                            color: 'gray.400',
+                            minW: '20',
+                            textAlign: 'right',
+                          })}
+                        >
+                          {exportDPI === 72 && 'Screen (72)'}
+                          {exportDPI === 150 && 'Standard (150)'}
+                          {exportDPI === 300 && 'Print (300)'}
+                          {exportDPI === 378 && 'High (378)'}
+                          {exportDPI === 456 && 'Pro (456)'}
+                          {exportDPI === 534 && 'Ultra (534)'}
+                          {exportDPI === 600 && 'Max (600)'}
+                        </span>
+                      </div>
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        72 DPI for screens, 150+ for standard printing, 300+ for professional
+                        printing
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Quality Selection (JPEG/WebP only) */}
+                  {(exportFormat === 'jpeg' || exportFormat === 'webp') && (
+                    <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                          display: 'flex',
+                          alignItems: 'center',
+                        })}
+                      >
+                        <Settings className="mr-2 h-4 w-4 inline" />
+                        Quality - {Math.round(exportQuality * 100)}%
+                      </div>
+                      <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.1"
+                          value={exportQuality}
+                          onChange={(e) => setExportQuality(Number(e.target.value))}
+                          className={css({
+                            flex: '1',
+                            h: '2',
+                            bg: 'gray.700',
+                            rounded: 'full',
+                            appearance: 'none',
+                            cursor: 'pointer',
+                            _focusVisible: {
+                              outline: '2px solid',
+                              outlineColor: 'emerald.500',
+                              outlineOffset: '2px',
+                            },
+                          })}
+                        />
+                        <span
+                          className={css({
+                            fontSize: 'xs',
+                            color: 'gray.400',
+                            minW: '20',
+                            textAlign: 'right',
+                          })}
+                        >
+                          {exportQuality <= 0.5 && 'Low'}
+                          {exportQuality > 0.5 && exportQuality < 0.8 && 'Medium'}
+                          {exportQuality >= 0.8 && 'High'}
+                        </span>
+                      </div>
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        Higher quality = larger file size. Recommended: 80% or higher
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Print Template Selection (PDF only) */}
+                  {exportFormat === 'pdf' && (
+                    <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                          display: 'flex',
+                          alignItems: 'center',
+                        })}
+                      >
+                        <Printer className="mr-2 h-4 w-4 inline" />
+                        Print Template
+                      </div>
+                      <select
+                        value={printTemplate}
+                        onChange={(e) =>
+                          setPrintTemplate(
+                            e.target.value as
+                              | 'business-card'
+                              | 'flyer'
+                              | 'product-label'
+                              | 'a4-sheet'
+                          )
+                        }
+                        className={css({
+                          w: 'full',
+                          px: '3',
+                          py: '2',
+                          bg: 'rgba(17, 24, 39, 0.8)',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          rounded: 'lg',
+                          color: 'white',
+                          fontSize: 'sm',
+                          _focus: {
+                            outline: 'none',
+                            borderColor: 'emerald.500',
+                            ring: '2px',
+                            ringColor: 'emerald.500/20',
+                          },
+                        })}
+                      >
+                        <option value="business-card">Business Card (3.5" × 2")</option>
+                        <option value="flyer">Flyer (8.5" × 11")</option>
+                        <option value="product-label">Product Label (4" × 6")</option>
+                        <option value="a4-sheet">A4 Sheet (210mm × 297mm)</option>
+                      </select>
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        Choose a template optimized for your printing needs
+                      </p>
+                    </div>
+                  )}
+
+                  {/* File Size Estimation */}
+                  <div
+                    className={css({
+                      p: '3',
+                      bg: 'rgba(16, 185, 129, 0.1)',
+                      border: '1px solid',
+                      borderColor: 'emerald.500/30',
+                      rounded: 'lg',
+                    })}
+                  >
+                    <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                      <PackageOpen className="h-4 w-4 text-emerald.400" />
+                      <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                        Estimated File Size:{' '}
+                        <strong className={css({ color: 'emerald.400' })}>
+                          {exportFormat === 'png' &&
+                            (exportDPI <= 150
+                              ? '~50-100 KB'
+                              : exportDPI <= 300
+                                ? '~100-200 KB'
+                                : '~200-500 KB')}
+                          {exportFormat === 'jpeg' &&
+                            (exportQuality <= 0.5
+                              ? '~20-50 KB'
+                              : exportQuality <= 0.8
+                                ? '~50-100 KB'
+                                : '~100-150 KB')}
+                          {exportFormat === 'webp' &&
+                            (exportQuality <= 0.5
+                              ? '~15-40 KB'
+                              : exportQuality <= 0.8
+                                ? '~40-80 KB'
+                                : '~80-120 KB')}
+                          {exportFormat === 'svg' && '~2-5 KB'}
+                          {exportFormat === 'pdf' &&
+                            (printTemplate === 'business-card'
+                              ? '~50-100 KB'
+                              : printTemplate === 'product-label'
+                                ? '~100-200 KB'
+                                : '~200-400 KB')}
+                        </strong>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Export Button */}
+                  <Button
+                    onClick={handleEnhancedExport}
+                    disabled={!hasValidInput}
+                    className={css({
+                      w: 'full',
+                      bg: 'linear-gradient(135deg, rgb(16, 185, 129), rgb(5, 150, 105))',
+                      _hover: {
+                        bg: 'linear-gradient(135deg, rgb(5, 150, 105), rgb(4, 120, 87))',
+                      },
+                    })}
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Export with Options
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+
           {/* History Section */}
           <div
             className={css({
@@ -2092,9 +2497,8 @@ url,https://github.com,GitHub,#000000`
                             })}
                           >
                             {/* Thumbnail */}
-                            <div
-                              role="button"
-                              tabIndex={0}
+                            <button
+                              type="button"
                               className={css({
                                 w: 'full',
                                 aspectRatio: '1',
@@ -2105,21 +2509,17 @@ url,https://github.com,GitHub,#000000`
                                 justifyContent: 'center',
                                 overflow: 'hidden',
                                 cursor: 'pointer',
+                                border: 'none',
+                                p: '0',
                               })}
                               onClick={() => handleLoadFromHistory(item)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault()
-                                  handleLoadFromHistory(item)
-                                }
-                              }}
                             >
                               <img
                                 src={item.thumbnail}
                                 alt="QR Code"
                                 className={css({ w: 'full', h: 'full', objectFit: 'contain' })}
                               />
-                            </div>
+                            </button>
 
                             {/* Info */}
                             <div
