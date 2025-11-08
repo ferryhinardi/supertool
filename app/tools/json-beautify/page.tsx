@@ -1,13 +1,34 @@
 'use client'
 
-import { Copy, Download, FileJson, Minimize2, Sparkles } from 'lucide-react'
+import Ajv from 'ajv'
+import { JSONPath } from 'jsonpath-plus'
+import {
+  AlertCircle,
+  ArrowLeftRight,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Code2,
+  Copy,
+  Download,
+  FileJson,
+  GitCompare,
+  Lightbulb,
+  ListTree,
+  Minimize2,
+  Search,
+  Settings2,
+  Sparkles,
+} from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
+import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -42,6 +63,189 @@ const faqs = [
   },
 ]
 
+// Schema templates
+const SCHEMA_TEMPLATES = {
+  user: {
+    type: 'object',
+    required: ['id', 'name', 'email'],
+    properties: {
+      id: { type: 'number' },
+      name: { type: 'string' },
+      email: { type: 'string', format: 'email' },
+      age: { type: 'number', minimum: 0 },
+      active: { type: 'boolean' },
+    },
+  },
+  apiResponse: {
+    type: 'object',
+    required: ['status', 'data'],
+    properties: {
+      status: { type: 'string', enum: ['success', 'error'] },
+      data: { type: 'object' },
+      message: { type: 'string' },
+      timestamp: { type: 'string', format: 'date-time' },
+    },
+  },
+  config: {
+    type: 'object',
+    required: ['name', 'version'],
+    properties: {
+      name: { type: 'string' },
+      version: { type: 'string' },
+      settings: {
+        type: 'object',
+        properties: {
+          debug: { type: 'boolean' },
+          timeout: { type: 'number' },
+        },
+      },
+    },
+  },
+}
+
+type ViewMode = 'editor' | 'tree' | 'schema' | 'diff' | 'typescript'
+
+// Tree node component
+function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
+  const [expanded, setExpanded] = useState(true)
+
+  if (data === null) {
+    return <span className={css({ color: 'gray.500', fontStyle: 'italic' })}>null</span>
+  }
+
+  if (typeof data !== 'object') {
+    const color =
+      typeof data === 'string'
+        ? 'green.400'
+        : typeof data === 'number'
+          ? 'blue.400'
+          : typeof data === 'boolean'
+            ? 'purple.400'
+            : 'gray.400'
+    return <span className={css({ color })}>{JSON.stringify(data)}</span>
+  }
+
+  const isArray = Array.isArray(data)
+  const entries = isArray ? data : Object.entries(data)
+  const isEmpty = isArray ? data.length === 0 : Object.keys(data).length === 0
+
+  if (isEmpty) {
+    return <span className={css({ color: 'gray.500' })}>{isArray ? '[]' : '{}'}</span>
+  }
+
+  return (
+    <div className={css({ ml: '4' })}>
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className={css({
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1',
+          cursor: 'pointer',
+          color: 'gray.300',
+          _hover: { color: 'white' },
+        })}
+      >
+        {expanded ? (
+          <ChevronDown className={css({ h: '4', w: '4' })} />
+        ) : (
+          <ChevronRight className={css({ h: '4', w: '4' })} />
+        )}
+        <span>{isArray ? `Array[${data.length}]` : 'Object'}</span>
+      </button>
+      {expanded && (
+        <div
+          className={css({ ml: '4', borderLeft: '1px solid', borderColor: 'gray.700', pl: '2' })}
+        >
+          {isArray
+            ? entries.map((item: unknown, idx: number) => (
+                <div key={`${path}-${idx}`} className={css({ my: '1' })}>
+                  <span className={css({ color: 'blue.400' })}>[{idx}]</span>:{' '}
+                  <TreeNode data={item} path={`${path}[${idx}]`} />
+                </div>
+              ))
+            : entries.map(([key, value]: [string, unknown]) => (
+                <div key={`${path}-${key}`} className={css({ my: '1' })}>
+                  <span className={css({ color: 'cyan.400' })}>{key}</span>:{' '}
+                  <TreeNode data={value} path={`${path}.${key}`} />
+                </div>
+              ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// JSON to TypeScript interface generator
+function generateTypeScriptInterface(obj: unknown, interfaceName = 'Root'): string {
+  if (typeof obj !== 'object' || obj === null) {
+    return `type ${interfaceName} = ${typeof obj}`
+  }
+
+  const lines: string[] = [`interface ${interfaceName} {`]
+
+  for (const [key, value] of Object.entries(obj)) {
+    const tsType = getTypeScriptType(value)
+    lines.push(`  ${key}: ${tsType};`)
+  }
+
+  lines.push('}')
+  return lines.join('\n')
+}
+
+function getTypeScriptType(value: unknown): string {
+  if (value === null) return 'null'
+  if (Array.isArray(value)) {
+    if (value.length === 0) return 'unknown[]'
+    const firstType = getTypeScriptType(value[0])
+    return `${firstType}[]`
+  }
+  if (typeof value === 'object') {
+    const props = Object.entries(value)
+      .map(([k, v]) => `${k}: ${getTypeScriptType(v)}`)
+      .join('; ')
+    return `{ ${props} }`
+  }
+  return typeof value
+}
+
+// Generate sample data from schema
+function generateSampleFromSchema(schema: Record<string, unknown>): unknown {
+  if (!schema || typeof schema !== 'object') return null
+
+  if (schema.type === 'object') {
+    const obj: Record<string, unknown> = {}
+    if (schema.properties && typeof schema.properties === 'object') {
+      for (const [key, prop] of Object.entries(schema.properties)) {
+        obj[key] = generateSampleFromSchema(prop as Record<string, unknown>)
+      }
+    }
+    return obj
+  }
+
+  if (schema.type === 'array') {
+    return [generateSampleFromSchema((schema.items || {}) as Record<string, unknown>)]
+  }
+
+  if (schema.type === 'string') {
+    if (schema.format === 'email') return 'user@example.com'
+    if (schema.format === 'date-time') return new Date().toISOString()
+    if (Array.isArray(schema.enum)) return schema.enum[0]
+    return 'example'
+  }
+
+  if (schema.type === 'number' || schema.type === 'integer') {
+    return typeof schema.minimum === 'number' ? schema.minimum : 0
+  }
+
+  if (schema.type === 'boolean') {
+    return true
+  }
+
+  return null
+}
+
 function JSONBeautifyContent() {
   // Find tool data for tracking
   const toolData = tools.find((t) => t.href === '/tools/json-beautify')
@@ -59,7 +263,30 @@ function JSONBeautifyContent() {
     defaultValue: '{\n  "example": true,\n  "message": "Welcome to SuperTool!"\n}',
   })
 
+  // View mode state
+  const [viewMode, setViewMode] = useState<ViewMode>('editor')
+
+  // Schema validation state
+  const [schema, setSchema] = useState('')
+  const [schemaErrors, setSchemaErrors] = useState<string[]>([])
+
+  // Diff state
+  const [compareJson, setCompareJson] = useState('')
+  const [diffResult, setDiffResult] = useState<{ added: string[]; removed: string[] } | null>(null)
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<unknown[]>([])
+
+  // Formatting options
+  const [indentSize, setIndentSize] = useState(2)
+  const [sortKeys, setSortKeys] = useState(false)
+
+  // TypeScript interface
+  const [tsInterface, setTsInterface] = useState('')
+
   // Dynamically load json extension
+  // biome-ignore lint/suspicious/noExplicitAny: CodeMirror extension type is complex
   const [jsonExtension, setJsonExtension] = useState<any>(null)
 
   useEffect(() => {
@@ -98,7 +325,10 @@ function JSONBeautifyContent() {
   const handleBeautify = () => {
     try {
       const obj = JSON.parse(value)
-      setValue(JSON.stringify(obj, null, 2))
+      const formatted = sortKeys
+        ? JSON.stringify(sortObjectKeys(obj), null, indentSize)
+        : JSON.stringify(obj, null, indentSize)
+      setValue(formatted)
       toast.success('JSON beautified successfully 🎉')
       trackToolEvent('json_beautify', {
         success: true,
@@ -159,6 +389,159 @@ function JSONBeautifyContent() {
     })
   }
 
+  // Validate schema
+  const validateSchema = () => {
+    try {
+      const jsonObj = JSON.parse(value)
+      const schemaObj = JSON.parse(schema)
+      const ajv = new Ajv({ allErrors: true })
+      const validate = ajv.compile(schemaObj)
+      const valid = validate(jsonObj)
+
+      if (valid) {
+        setSchemaErrors([])
+        toast.success('✅ JSON is valid against schema!')
+        trackToolEvent('json_schema_validate', { success: true })
+      } else {
+        const errors = validate.errors?.map((err) => `${err.instancePath} ${err.message}`) || []
+        setSchemaErrors(errors)
+        toast.error(`Schema validation failed: ${errors.length} errors`)
+        trackToolEvent('json_schema_validate', { success: false, error_count: errors.length })
+      }
+    } catch (err) {
+      toast.error('Invalid JSON or Schema')
+      setSchemaErrors(['Invalid JSON or Schema format'])
+    }
+  }
+
+  // Load schema template
+  const loadSchemaTemplate = (template: keyof typeof SCHEMA_TEMPLATES) => {
+    setSchema(JSON.stringify(SCHEMA_TEMPLATES[template], null, 2))
+    toast.success(`Loaded ${template} schema template`)
+    trackToolEvent('json_schema_template', { template })
+  }
+
+  // Generate sample data
+  const handleGenerateSample = () => {
+    try {
+      const schemaObj = JSON.parse(schema)
+      const sample = generateSampleFromSchema(schemaObj)
+      setValue(JSON.stringify(sample, null, 2))
+      toast.success('Sample data generated from schema')
+      trackToolEvent('json_generate_sample', { success: true })
+    } catch {
+      toast.error('Invalid schema format')
+    }
+  }
+
+  // Search JSON
+  const handleSearch = () => {
+    try {
+      const jsonObj = JSON.parse(value)
+      const results = JSONPath({ path: searchQuery, json: jsonObj })
+      setSearchResults(results)
+      toast.success(`Found ${results.length} matches`)
+      trackToolEvent('json_search', { query_length: searchQuery.length, results: results.length })
+    } catch (err) {
+      toast.error('Invalid JSONPath query or JSON')
+      setSearchResults([])
+    }
+  }
+
+  // Generate TypeScript interface
+  const handleGenerateTypeScript = () => {
+    try {
+      const jsonObj = JSON.parse(value)
+      const interfaceStr = generateTypeScriptInterface(jsonObj)
+      setTsInterface(interfaceStr)
+      toast.success('TypeScript interface generated')
+      trackToolEvent('json_to_typescript', { success: true })
+    } catch {
+      toast.error('Invalid JSON format')
+    }
+  }
+
+  // Copy TypeScript interface
+  const handleCopyTypeScript = async () => {
+    await navigator.clipboard.writeText(tsInterface)
+    toast.success('TypeScript interface copied')
+    trackToolEvent('json_typescript_copy', {})
+  }
+
+  // Sort object keys recursively
+  const sortObjectKeys = (obj: unknown): unknown => {
+    if (Array.isArray(obj)) {
+      return obj.map(sortObjectKeys)
+    }
+    if (obj !== null && typeof obj === 'object') {
+      return Object.keys(obj)
+        .sort()
+        .reduce(
+          (acc, key) => {
+            acc[key] = sortObjectKeys((obj as Record<string, unknown>)[key])
+            return acc
+          },
+          {} as Record<string, unknown>
+        )
+    }
+    return obj
+  }
+
+  // Compare JSONs
+  const handleCompare = () => {
+    try {
+      const json1 = JSON.parse(value) as unknown
+      const json2 = JSON.parse(compareJson) as unknown
+
+      // Simple diff implementation
+      const diff = {
+        added: findDifferences(json2, json1),
+        removed: findDifferences(json1, json2),
+      }
+
+      setDiffResult(diff)
+      toast.success('Comparison complete')
+      trackToolEvent('json_compare', { success: true })
+    } catch {
+      toast.error('Invalid JSON in one or both inputs')
+    }
+  }
+
+  const findDifferences = (obj1: unknown, obj2: unknown, path = ''): string[] => {
+    const diffs: string[] = []
+
+    if (typeof obj1 !== typeof obj2) {
+      diffs.push(`${path || 'root'}: type changed`)
+      return diffs
+    }
+
+    if (typeof obj1 !== 'object' || obj1 === null) {
+      if (obj1 !== obj2) {
+        diffs.push(`${path || 'root'}: ${JSON.stringify(obj1)} → ${JSON.stringify(obj2)}`)
+      }
+      return diffs
+    }
+
+    const record1 = obj1 as Record<string, unknown>
+    const record2 = obj2 as Record<string, unknown>
+
+    for (const key of Object.keys(record1)) {
+      if (!(key in record2)) {
+        diffs.push(`${path}.${key}: removed`)
+      } else {
+        diffs.push(...findDifferences(record1[key], record2[key], path ? `${path}.${key}` : key))
+      }
+    }
+
+    for (const key of Object.keys(record2)) {
+      if (!(key in record1)) {
+        diffs.push(`${path}.${key}: added`)
+      }
+    }
+
+    return diffs
+  }
+
   return (
     <TooltipProvider>
       <main
@@ -214,7 +597,7 @@ function JSONBeautifyContent() {
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                JSON Beautifier
+                JSON Beautifier Pro
               </h1>
               <p
                 className={css({
@@ -222,9 +605,69 @@ function JSONBeautifyContent() {
                   color: 'gray.200',
                 })}
               >
-                Format, validate, and manage JSON data
+                Advanced JSON tools: Format, validate, compare, and generate TypeScript
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* View Mode Selector */}
+        <div
+          className={css({
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
+            borderColor: 'purple.500/30',
+            bg: 'rgba(139, 92, 246, 0.05)',
+            p: { base: '3', sm: '4' },
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+            <Button
+              size="sm"
+              variant={viewMode === 'editor' ? 'default' : 'outline'}
+              onClick={() => setViewMode('editor')}
+              className={css({ gap: '2' })}
+            >
+              <Code2 className={css({ h: '4', w: '4' })} />
+              Editor
+            </Button>
+            <Button
+              size="sm"
+              variant={viewMode === 'tree' ? 'default' : 'outline'}
+              onClick={() => setViewMode('tree')}
+              className={css({ gap: '2' })}
+            >
+              <ListTree className={css({ h: '4', w: '4' })} />
+              Tree View
+            </Button>
+            <Button
+              size="sm"
+              variant={viewMode === 'schema' ? 'default' : 'outline'}
+              onClick={() => setViewMode('schema')}
+              className={css({ gap: '2' })}
+            >
+              <AlertCircle className={css({ h: '4', w: '4' })} />
+              Schema Validation
+            </Button>
+            <Button
+              size="sm"
+              variant={viewMode === 'diff' ? 'default' : 'outline'}
+              onClick={() => setViewMode('diff')}
+              className={css({ gap: '2' })}
+            >
+              <GitCompare className={css({ h: '4', w: '4' })} />
+              Compare
+            </Button>
+            <Button
+              size="sm"
+              variant={viewMode === 'typescript' ? 'default' : 'outline'}
+              onClick={() => setViewMode('typescript')}
+              className={css({ gap: '2' })}
+            >
+              <ArrowLeftRight className={css({ h: '4', w: '4' })} />
+              TypeScript
+            </Button>
           </div>
         </div>
 
@@ -323,41 +766,526 @@ function JSONBeautifyContent() {
           </div>
         </div>
 
-        {/* Editor */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'purple.500/30',
-            bg: 'rgba(139, 92, 246, 0.05)',
-            p: { base: '3', sm: '4' },
-            overflow: 'hidden',
-            shadow: '2xl',
-            boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.3)',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <div className={css({ overflowX: 'auto' })}>
-            {jsonExtension && (
-              <CodeMirror
-                value={value}
-                height="400px"
-                theme="dark"
-                extensions={[jsonExtension]}
-                onChange={(val) => setValue(val)}
-                className={css({ fontSize: { base: 'sm', sm: 'base' } })}
-                basicSetup={{
-                  lineNumbers: true,
-                  highlightActiveLineGutter: true,
-                  highlightActiveLine: true,
-                  foldGutter: true,
-                }}
-              />
+        {/* Main Content - Changes based on view mode */}
+        {viewMode === 'editor' && (
+          <>
+            {/* Search & Formatting Options */}
+            <Card
+              className={css({
+                border: '2px solid',
+                borderColor: 'cyan.500/30',
+                bg: 'rgba(6, 182, 212, 0.05)',
+                backdropFilter: 'blur(16px)',
+              })}
+            >
+              <CardHeader>
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Settings2 className={css({ h: '5', w: '5' })} />
+                  Advanced Options
+                </CardTitle>
+              </CardHeader>
+              <CardContent className={css({ spaceY: '4' })}>
+                {/* JSONPath Search */}
+                <div className={css({ spaceY: '2' })}>
+                  <label
+                    htmlFor="jsonpath-search"
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  >
+                    JSONPath Search (e.g., $.users[*].email)
+                  </label>
+                  <div className={css({ display: 'flex', gap: '2' })}>
+                    <Input
+                      id="jsonpath-search"
+                      placeholder="$.path.to.property"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className={css({ flex: '1' })}
+                    />
+                    <Button onClick={handleSearch} className={css({ gap: '2' })}>
+                      <Search className={css({ h: '4', w: '4' })} />
+                      Search
+                    </Button>
+                  </div>
+                  {searchResults.length > 0 && (
+                    <div
+                      className={css({
+                        mt: '2',
+                        p: '3',
+                        rounded: 'lg',
+                        bg: 'cyan.500/10',
+                        border: '1px solid',
+                        borderColor: 'cyan.500/30',
+                      })}
+                    >
+                      <p className={css({ fontSize: 'sm', fontWeight: 'medium', mb: '2' })}>
+                        Found {searchResults.length} result(s):
+                      </p>
+                      <pre
+                        className={css({
+                          fontSize: 'sm',
+                          color: 'gray.300',
+                          overflowX: 'auto',
+                        })}
+                      >
+                        {JSON.stringify(searchResults, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+
+                {/* Formatting Options */}
+                <div className={css({ display: 'flex', gap: '4', flexWrap: 'wrap' })}>
+                  <div className={css({ spaceY: '2' })}>
+                    <label
+                      htmlFor="indent-size"
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    >
+                      Indent Size
+                    </label>
+                    <select
+                      id="indent-size"
+                      value={indentSize}
+                      onChange={(e) => setIndentSize(Number(e.target.value))}
+                      className={css({
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                        px: '3',
+                        py: '2',
+                        fontSize: 'sm',
+                        color: 'gray.200',
+                      })}
+                    >
+                      <option value="2">2 spaces</option>
+                      <option value="4">4 spaces</option>
+                      <option value="8">8 spaces</option>
+                    </select>
+                  </div>
+
+                  <div className={css({ display: 'flex', alignItems: 'end', gap: '2' })}>
+                    <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                      <input
+                        type="checkbox"
+                        checked={sortKeys}
+                        onChange={(e) => setSortKeys(e.target.checked)}
+                        className={css({ h: '4', w: '4' })}
+                      />
+                      <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                        Sort Keys Alphabetically
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Editor */}
+            <div
+              className={css({
+                rounded: { base: 'xl', sm: '2xl' },
+                border: '2px solid',
+                borderColor: 'purple.500/30',
+                bg: 'rgba(139, 92, 246, 0.05)',
+                p: { base: '3', sm: '4' },
+                overflow: 'hidden',
+                shadow: '2xl',
+                boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.3)',
+                backdropFilter: 'blur(16px)',
+              })}
+            >
+              <div className={css({ overflowX: 'auto' })}>
+                {jsonExtension && (
+                  <CodeMirror
+                    value={value}
+                    height="500px"
+                    theme="dark"
+                    extensions={[jsonExtension]}
+                    onChange={(val) => setValue(val)}
+                    className={css({ fontSize: { base: 'sm', sm: 'base' } })}
+                    basicSetup={{
+                      lineNumbers: true,
+                      highlightActiveLineGutter: true,
+                      highlightActiveLine: true,
+                      foldGutter: true,
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        {viewMode === 'tree' && (
+          <Card
+            className={css({
+              border: '2px solid',
+              borderColor: 'purple.500/30',
+              bg: 'rgba(139, 92, 246, 0.05)',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <ListTree className={css({ h: '5', w: '5' })} />
+                Tree View
+              </CardTitle>
+              <CardDescription>Interactive hierarchical view of your JSON data</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div
+                className={css({
+                  p: '4',
+                  rounded: 'lg',
+                  bg: 'gray.900/50',
+                  maxH: '600px',
+                  overflowY: 'auto',
+                  fontFamily: 'mono',
+                  fontSize: 'sm',
+                })}
+              >
+                {stats.isValid ? (
+                  <TreeNode data={JSON.parse(value)} />
+                ) : (
+                  <p className={css({ color: 'red.400' })}>
+                    Invalid JSON - Cannot render tree view
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {viewMode === 'schema' && (
+          <div
+            className={css({
+              display: 'grid',
+              gap: '4',
+              gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
+            })}
+          >
+            <Card
+              className={css({
+                border: '2px solid',
+                borderColor: 'purple.500/30',
+                bg: 'rgba(139, 92, 246, 0.05)',
+                backdropFilter: 'blur(16px)',
+              })}
+            >
+              <CardHeader>
+                <CardTitle>JSON Data</CardTitle>
+                <CardDescription>Your JSON to validate</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {jsonExtension && (
+                  <CodeMirror
+                    value={value}
+                    height="400px"
+                    theme="dark"
+                    extensions={[jsonExtension]}
+                    onChange={(val) => setValue(val)}
+                    className={css({ fontSize: 'sm' })}
+                  />
+                )}
+              </CardContent>
+            </Card>
+
+            <Card
+              className={css({
+                border: '2px solid',
+                borderColor: 'blue.500/30',
+                bg: 'rgba(59, 130, 246, 0.05)',
+                backdropFilter: 'blur(16px)',
+              })}
+            >
+              <CardHeader>
+                <CardTitle>JSON Schema</CardTitle>
+                <CardDescription>
+                  <div className={css({ display: 'flex', gap: '2', mt: '2', flexWrap: 'wrap' })}>
+                    <Button size="sm" variant="outline" onClick={() => loadSchemaTemplate('user')}>
+                      User
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => loadSchemaTemplate('apiResponse')}
+                    >
+                      API Response
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => loadSchemaTemplate('config')}
+                    >
+                      Config
+                    </Button>
+                  </div>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className={css({ spaceY: '3' })}>
+                {jsonExtension && (
+                  <CodeMirror
+                    value={schema}
+                    height="300px"
+                    theme="dark"
+                    extensions={[jsonExtension]}
+                    onChange={(val) => setSchema(val)}
+                    className={css({ fontSize: 'sm' })}
+                  />
+                )}
+                <div className={css({ display: 'flex', gap: '2' })}>
+                  <Button onClick={validateSchema} className={css({ flex: '1', gap: '2' })}>
+                    <Check className={css({ h: '4', w: '4' })} />
+                    Validate
+                  </Button>
+                  <Button
+                    onClick={handleGenerateSample}
+                    variant="outline"
+                    className={css({ gap: '2' })}
+                  >
+                    <Lightbulb className={css({ h: '4', w: '4' })} />
+                    Generate Sample
+                  </Button>
+                </div>
+                {schemaErrors.length > 0 && (
+                  <div
+                    className={css({
+                      p: '3',
+                      rounded: 'lg',
+                      bg: 'red.500/10',
+                      border: '1px solid',
+                      borderColor: 'red.500/30',
+                    })}
+                  >
+                    <p
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        mb: '2',
+                        color: 'red.400',
+                      })}
+                    >
+                      Validation Errors:
+                    </p>
+                    {schemaErrors.map((err, idx) => (
+                      <p key={idx} className={css({ fontSize: 'sm', color: 'red.300' })}>
+                        • {err}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {viewMode === 'diff' && (
+          <div className={css({ spaceY: '4' })}>
+            <div
+              className={css({
+                display: 'grid',
+                gap: '4',
+                gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
+              })}
+            >
+              <Card
+                className={css({
+                  border: '2px solid',
+                  borderColor: 'purple.500/30',
+                  bg: 'rgba(139, 92, 246, 0.05)',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <CardTitle>JSON 1 (Original)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {jsonExtension && (
+                    <CodeMirror
+                      value={value}
+                      height="300px"
+                      theme="dark"
+                      extensions={[jsonExtension]}
+                      onChange={(val) => setValue(val)}
+                      className={css({ fontSize: 'sm' })}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card
+                className={css({
+                  border: '2px solid',
+                  borderColor: 'blue.500/30',
+                  bg: 'rgba(59, 130, 246, 0.05)',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <CardTitle>JSON 2 (Compare)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {jsonExtension && (
+                    <CodeMirror
+                      value={compareJson}
+                      height="300px"
+                      theme="dark"
+                      extensions={[jsonExtension]}
+                      onChange={(val) => setCompareJson(val)}
+                      className={css({ fontSize: 'sm' })}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            <Button onClick={handleCompare} className={css({ w: 'full', gap: '2' })}>
+              <GitCompare className={css({ h: '5', w: '5' })} />
+              Compare JSONs
+            </Button>
+
+            {diffResult && (
+              <Card
+                className={css({
+                  border: '2px solid',
+                  borderColor: 'cyan.500/30',
+                  bg: 'rgba(6, 182, 212, 0.05)',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <CardTitle>Comparison Result</CardTitle>
+                </CardHeader>
+                <CardContent className={css({ spaceY: '4' })}>
+                  {diffResult.removed.length > 0 && (
+                    <div>
+                      <h4
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'semibold',
+                          color: 'red.400',
+                          mb: '2',
+                        })}
+                      >
+                        Removed/Changed in JSON 2:
+                      </h4>
+                      {diffResult.removed.map((diff: string, idx: number) => (
+                        <p key={idx} className={css({ fontSize: 'sm', color: 'red.300' })}>
+                          - {diff}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                  {diffResult.added.length > 0 && (
+                    <div>
+                      <h4
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'semibold',
+                          color: 'green.400',
+                          mb: '2',
+                        })}
+                      >
+                        Added/Changed in JSON 2:
+                      </h4>
+                      {diffResult.added.map((diff: string, idx: number) => (
+                        <p key={idx} className={css({ fontSize: 'sm', color: 'green.300' })}>
+                          + {diff}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                  {diffResult.removed.length === 0 && diffResult.added.length === 0 && (
+                    <p className={css({ color: 'green.400' })}>✅ JSONs are identical</p>
+                  )}
+                </CardContent>
+              </Card>
             )}
           </div>
-        </div>
+        )}
 
-        {/* Action Buttons */}
+        {viewMode === 'typescript' && (
+          <div className={css({ spaceY: '4' })}>
+            <Card
+              className={css({
+                border: '2px solid',
+                borderColor: 'purple.500/30',
+                bg: 'rgba(139, 92, 246, 0.05)',
+                backdropFilter: 'blur(16px)',
+              })}
+            >
+              <CardHeader>
+                <CardTitle>JSON Input</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {jsonExtension && (
+                  <CodeMirror
+                    value={value}
+                    height="300px"
+                    theme="dark"
+                    extensions={[jsonExtension]}
+                    onChange={(val) => setValue(val)}
+                    className={css({ fontSize: 'sm' })}
+                  />
+                )}
+              </CardContent>
+            </Card>
+
+            <Button onClick={handleGenerateTypeScript} className={css({ w: 'full', gap: '2' })}>
+              <ArrowLeftRight className={css({ h: '5', w: '5' })} />
+              Generate TypeScript Interface
+            </Button>
+
+            {tsInterface && (
+              <Card
+                className={css({
+                  border: '2px solid',
+                  borderColor: 'blue.500/30',
+                  bg: 'rgba(59, 130, 246, 0.05)',
+                  backdropFilter: 'blur(16px)',
+                })}
+              >
+                <CardHeader>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    })}
+                  >
+                    <CardTitle>TypeScript Interface</CardTitle>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleCopyTypeScript}
+                      className={css({ gap: '2' })}
+                    >
+                      <Copy className={css({ h: '4', w: '4' })} />
+                      Copy
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <pre
+                    className={css({
+                      p: '4',
+                      rounded: 'lg',
+                      bg: 'gray.900/50',
+                      fontSize: 'sm',
+                      color: 'gray.300',
+                      overflowX: 'auto',
+                      fontFamily: 'mono',
+                    })}
+                  >
+                    {tsInterface}
+                  </pre>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {/* Action Buttons - Always visible */}
         <div
           className={css({
             rounded: { base: 'xl', sm: '2xl' },
