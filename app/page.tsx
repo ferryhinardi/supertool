@@ -98,21 +98,37 @@ const colorMap: Record<string, string> = {
   'fuchsia-500': '#d946ef',
 }
 
+// Cache for gradient conversions to avoid recalculating
+const gradientCache = new Map<string, string>()
+
 // Convert Tailwind gradient class to CSS gradient string
 const gradientToCss = (gradient: string): string => {
+  // Return cached result if available
+  if (gradientCache.has(gradient)) {
+    return gradientCache.get(gradient)!
+  }
+
   const match = gradient.match(/from-(\S+)\s+(?:via-(\S+)\s+)?to-(\S+)/)
-  if (!match) return gradient
+  if (!match) {
+    gradientCache.set(gradient, gradient)
+    return gradient
+  }
 
   const [, from, via, to] = match
   const fromColor = colorMap[from] || from
   const toColor = colorMap[to] || to
 
+  let result: string
   if (via) {
     const viaColor = colorMap[via] || via
-    return `linear-gradient(135deg, ${fromColor}, ${viaColor}, ${toColor})`
+    result = `linear-gradient(135deg, ${fromColor}, ${viaColor}, ${toColor})`
+  } else {
+    result = `linear-gradient(135deg, ${fromColor}, ${toColor})`
   }
 
-  return `linear-gradient(135deg, ${fromColor}, ${toColor})`
+  // Cache the result
+  gradientCache.set(gradient, result)
+  return result
 }
 
 const categories: {
@@ -576,9 +592,8 @@ export default function HomePage() {
               {/* Clear Button */}
               {searchQuery && (
                 <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={false}
+                  animate={{ opacity: 1 }}
                   onClick={() => setSearchQuery('')}
                   className={css({
                     position: 'absolute',
@@ -612,8 +627,7 @@ export default function HomePage() {
               {/* Search hint */}
               {!searchQuery && (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={false}
                   id="search-hint"
                   className={css({
                     pointerEvents: 'none',
@@ -720,9 +734,8 @@ export default function HomePage() {
         {/* Results count */}
         {searchQuery && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            initial={false}
+            animate={{ opacity: 1 }}
             className={css({ display: 'flex', alignItems: 'center', gap: '3' })}
           >
             <div
@@ -812,10 +825,8 @@ export default function HomePage() {
           {Object.values(filteredToolsByCategory).flat().length > 0 ? (
             <motion.div
               key={`${viewMode}-${searchQuery}`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              initial={false}
+              animate={{ opacity: 1 }}
               className={css({ spaceY: { base: '12', md: '16' } })}
             >
               {categories.map((category) => {
@@ -826,12 +837,7 @@ export default function HomePage() {
                 const isExpanded = expandedCategories.has(category.value)
 
                 return (
-                  <motion.section
-                    key={category.value}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
+                  <motion.section key={category.value} initial={false}>
                     {/* Category Header */}
                     <div
                       className={css({
@@ -860,8 +866,8 @@ export default function HomePage() {
                             bg: 'rgba(168, 85, 247, 0.1)',
                             p: '3',
                           })}
-                          whileHover={{ scale: 1.1, rotate: 360 }}
-                          transition={{ duration: 0.3 }}
+                          whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
+                          transition={{ duration: 0.2 }}
                         >
                           <Icon
                             className={css({
@@ -954,6 +960,10 @@ export default function HomePage() {
                                 : undefined,
                             gap: viewMode === 'grid' ? '6' : '4',
                           })}
+                          style={{
+                            contentVisibility: 'auto',
+                            containIntrinsicSize: '0 500px',
+                          }}
                         >
                           {toolsInCategory.map((tool) => (
                             <ToolCard
@@ -973,9 +983,8 @@ export default function HomePage() {
           ) : (
             <motion.div
               key="no-results"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={false}
+              animate={{ opacity: 1 }}
               className={css({
                 display: 'flex',
                 flexDirection: 'column',
