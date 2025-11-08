@@ -1,7 +1,11 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import { generateToolBreadcrumbs, generateToolMetadata } from '@/lib/metadata'
-import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-data'
+import {
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+  generateHowToSchema,
+} from '@/lib/structured-data'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'Secure Password Generator',
@@ -51,6 +55,25 @@ const faqs = [
   },
 ]
 
+const howToSteps = [
+  {
+    name: 'Set Your Password Length',
+    text: 'Choose your desired password length using the slider or input field. We recommend at least 12-16 characters for standard accounts, and 20+ characters for sensitive accounts like banking or email.',
+  },
+  {
+    name: 'Select Character Types',
+    text: 'Enable the character types you want to include: uppercase letters (A-Z), lowercase letters (a-z), numbers (0-9), and special symbols (!@#$%^&*). For maximum security, include all character types.',
+  },
+  {
+    name: 'Generate Your Password',
+    text: 'Click the "Generate Password" button to create a cryptographically secure random password. The generation happens instantly in your browser using the Web Crypto API for true randomness.',
+  },
+  {
+    name: 'Copy and Save Securely',
+    text: 'Click the copy button to copy your new password to the clipboard. Paste it into your password manager or the account signup form. Never write passwords on paper or store them in plain text files.',
+  },
+]
+
 export default function PasswordGeneratorLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -69,6 +92,22 @@ export default function PasswordGeneratorLayout({ children }: { children: React.
         // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(generateFAQSchema(faqs)),
+        }}
+      />
+      <Script
+        id="howto-schema"
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe usage for JSON-LD structured data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            generateHowToSchema(
+              'How to Generate a Secure Password',
+              'Learn how to create strong, random passwords with our secure password generator tool. Follow these simple steps to generate cryptographically secure passwords for your accounts.',
+              howToSteps,
+              baseUrl,
+              '/tools/password-generator'
+            )
+          ),
         }}
       />
     </>
