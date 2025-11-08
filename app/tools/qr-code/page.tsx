@@ -1,7 +1,11 @@
 'use client'
 
+import type { Html5Qrcode } from 'html5-qrcode'
 import JSZip from 'jszip'
 import {
+  AlertTriangle,
+  Camera,
+  CheckCircle2,
   Copy,
   Download,
   FileDown,
@@ -12,6 +16,7 @@ import {
   PackageOpen,
   Printer,
   QrCode,
+  ScanLine,
   Search,
   Settings,
   Star,
@@ -51,6 +56,15 @@ import {
   saveToHistory,
   toggleFavorite,
 } from '@/lib/qr-history-service'
+import {
+  parseQRData,
+  type ScanResult,
+  scanFromFile,
+  startWebcamScanner,
+  stopWebcamScanner,
+  type ValidationResult,
+  validateQRCode,
+} from '@/lib/qr-scanner-service'
 import { css } from '@/styled-system/css'
 
 export type QRCodeType = 'url' | 'text' | 'wifi' | 'vcard'
@@ -272,6 +286,15 @@ export default function QRCodePage() {
   const [exportDPI, setExportDPI] = useState(300)
   const [exportQuality, setExportQuality] = useState(0.95)
   const [printTemplate, setPrintTemplate] = useState<PrintTemplate>('none')
+
+  // Scanner state
+  const [showScanner, setShowScanner] = useState(false)
+  const [scannerMode, setScannerMode] = useState<'webcam' | 'file'>('webcam')
+  const [isScanning, setIsScanning] = useState(false)
+  const [scanResult, setScanResult] = useState<ScanResult | null>(null)
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
+  const scannerRef = useRef<Html5Qrcode | null>(null)
+  const scanFileInputRef = useRef<HTMLInputElement>(null)
 
   // Load history on mount
   useEffect(() => {
@@ -1066,6 +1089,111 @@ url,https://github.com,GitHub,#000000`
       toast.error('Failed to copy QR code')
     }
   }
+
+  // Scanner handlers
+  const handleStartWebcamScanner = async () => {
+    try {
+      setIsScanning(true)
+      setScanResult(null)
+      trackToolEvent('qr_scanner_webcam_start')
+
+      const scanner = await startWebcamScanner(
+        'qr-scanner-video',
+        (result) => {
+          setScanResult(result)
+          setIsScanning(false)
+          toast.success('QR code scanned successfully!')
+          trackToolEvent('qr_scanner_webcam_success', { dataType: parseQRData(result.data).type })
+
+          // Auto-stop scanner after successful scan
+          if (scannerRef.current) {
+            stopWebcamScanner(scannerRef.current)
+            scannerRef.current = null
+          }
+        },
+        (error) => {
+          console.error('Scanner error:', error)
+          toast.error(error)
+          setIsScanning(false)
+        }
+      )
+
+      scannerRef.current = scanner
+    } catch (error) {
+      console.error('Failed to start scanner:', error)
+      toast.error('Failed to start camera scanner')
+      setIsScanning(false)
+    }
+  }
+
+  const handleStopWebcamScanner = () => {
+    if (scannerRef.current) {
+      stopWebcamScanner(scannerRef.current)
+      scannerRef.current = null
+      setIsScanning(false)
+      toast.info('Scanner stopped')
+    }
+  }
+
+  const handleScanFromFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    trackToolEvent('qr_scanner_file_upload')
+
+    await scanFromFile(
+      file,
+      (result) => {
+        setScanResult(result)
+        toast.success('QR code scanned from file!')
+        trackToolEvent('qr_scanner_file_success', { dataType: parseQRData(result.data).type })
+      },
+      (error) => {
+        console.error('Failed to scan file:', error)
+        toast.error('No QR code found in image')
+      }
+    )
+  }
+
+  const handleValidateCurrentQR = () => {
+    if (!hasValidInput) {
+      toast.error('Please generate a QR code first')
+      return
+    }
+
+    try {
+      trackToolEvent('qr_validate_run')
+      const svgElement = document.getElementById('qr-code-svg') as unknown as SVGSVGElement
+      if (!svgElement) {
+        toast.error('QR code not found')
+        return
+      }
+
+      const validation = validateQRCode(svgElement)
+      setValidationResult(validation)
+      trackToolEvent('qr_validate_score', { score: validation.score })
+
+      if (validation.score >= 80) {
+        toast.success(`Great! Scannability score: ${validation.score}/100`)
+      } else if (validation.score >= 60) {
+        toast.warning(`Good, but can be improved. Score: ${validation.score}/100`)
+      } else {
+        toast.error(`Poor scannability. Score: ${validation.score}/100`)
+      }
+    } catch (error) {
+      console.error('Validation error:', error)
+      toast.error('Failed to validate QR code')
+    }
+  }
+
+  // Cleanup scanner on unmount
+  useEffect(() => {
+    return () => {
+      if (scannerRef.current) {
+        stopWebcamScanner(scannerRef.current)
+      }
+    }
+  }, [])
 
   return (
     <main
@@ -2259,6 +2387,396 @@ url,https://github.com,GitHub,#000000`
                     Export with Options
                   </Button>
                 </div>
+              </>
+            )}
+          </div>
+
+          {/* QR Scanner & Validator Section */}
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'cyan.500/20',
+              bg: 'rgba(17, 24, 39, 0.5)',
+              p: { base: '4', sm: '5', md: '6' },
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <div
+              className={css({
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              })}
+            >
+              <h2
+                className={css({
+                  fontSize: { base: 'lg', sm: 'xl' },
+                  fontWeight: 'bold',
+                  color: 'cyan.300',
+                })}
+              >
+                QR Scanner & Validator
+              </h2>
+              <Button onClick={() => setShowScanner(!showScanner)} variant="ghost" size="sm">
+                {showScanner ? 'Hide' : 'Show'}
+              </Button>
+            </div>
+
+            {showScanner && (
+              <>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  Scan QR codes using your webcam or upload an image. Validate your generated QR
+                  codes for scannability and get optimization recommendations.
+                </p>
+
+                {/* Scanner Mode Tabs */}
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: '2',
+                    borderBottom: '1px solid',
+                    borderColor: 'gray.700',
+                  })}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setScannerMode('webcam')}
+                    className={css({
+                      px: '4',
+                      py: '2',
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      bg: scannerMode === 'webcam' ? 'cyan.500/20' : 'transparent',
+                      color: scannerMode === 'webcam' ? 'cyan.300' : 'gray.400',
+                      borderBottom: scannerMode === 'webcam' ? '2px solid' : 'none',
+                      borderBottomColor: 'cyan.500',
+                      transition: 'all 0.2s',
+                      _hover: {
+                        bg: 'cyan.500/10',
+                        color: 'cyan.200',
+                      },
+                    })}
+                  >
+                    <Camera className="inline mr-2 h-4 w-4" />
+                    Webcam Scan
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setScannerMode('file')}
+                    className={css({
+                      px: '4',
+                      py: '2',
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      bg: scannerMode === 'file' ? 'cyan.500/20' : 'transparent',
+                      color: scannerMode === 'file' ? 'cyan.300' : 'gray.400',
+                      borderBottom: scannerMode === 'file' ? '2px solid' : 'none',
+                      borderBottomColor: 'cyan.500',
+                      transition: 'all 0.2s',
+                      _hover: {
+                        bg: 'cyan.500/10',
+                        color: 'cyan.200',
+                      },
+                    })}
+                  >
+                    <Upload className="inline mr-2 h-4 w-4" />
+                    Upload Image
+                  </button>
+                </div>
+
+                {/* Webcam Scanner */}
+                {scannerMode === 'webcam' && (
+                  <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                    <div
+                      id="qr-scanner-video"
+                      className={css({
+                        w: 'full',
+                        minH: '300px',
+                        bg: 'gray.900',
+                        rounded: 'lg',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'relative',
+                      })}
+                    >
+                      {!isScanning && (
+                        <div className={css({ textAlign: 'center', color: 'gray.500', p: '6' })}>
+                          <ScanLine className="mx-auto h-12 w-12 mb-3" />
+                          <p>Click Start Scanner to begin</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className={css({ display: 'flex', gap: '3' })}>
+                      {!isScanning ? (
+                        <Button
+                          onClick={handleStartWebcamScanner}
+                          className={css({ flex: '1', bg: 'cyan.600', _hover: { bg: 'cyan.700' } })}
+                        >
+                          <Camera className="mr-2 h-4 w-4" />
+                          Start Scanner
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleStopWebcamScanner}
+                          variant="outline"
+                          className={css({ flex: '1', borderColor: 'red.500', color: 'red.400' })}
+                        >
+                          <X className="mr-2 h-4 w-4" />
+                          Stop Scanner
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* File Upload Scanner */}
+                {scannerMode === 'file' && (
+                  <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                    <button
+                      type="button"
+                      onClick={() => scanFileInputRef.current?.click()}
+                      className={css({
+                        w: 'full',
+                        minH: '200px',
+                        bg: 'gray.900',
+                        border: '2px dashed',
+                        borderColor: 'cyan.500/30',
+                        rounded: 'lg',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        _hover: {
+                          borderColor: 'cyan.500/50',
+                          bg: 'gray.800',
+                        },
+                      })}
+                    >
+                      <Upload className="h-12 w-12 text-cyan.400 mb-3" />
+                      <p className={css({ color: 'gray.300', fontSize: 'sm' })}>
+                        Click to upload QR code image
+                      </p>
+                      <p className={css({ color: 'gray.500', fontSize: 'xs', mt: '2' })}>
+                        PNG, JPG, or WebP
+                      </p>
+                    </button>
+                    <input
+                      ref={scanFileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleScanFromFile}
+                      className={css({ display: 'none' })}
+                    />
+                    {/* Hidden element for file scanning */}
+                    <div id="qr-scanner-file-temp" style={{ display: 'none' }} />
+                  </div>
+                )}
+
+                {/* Scan Result Display */}
+                {scanResult && (
+                  <div
+                    className={css({
+                      p: '4',
+                      bg: 'rgba(6, 182, 212, 0.1)',
+                      border: '1px solid',
+                      borderColor: 'cyan.500/30',
+                      rounded: 'lg',
+                    })}
+                  >
+                    <div
+                      className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '3' })}
+                    >
+                      <CheckCircle2 className="h-5 w-5 text-cyan.400" />
+                      <span
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'cyan.300' })}
+                      >
+                        Scan Result
+                      </span>
+                    </div>
+                    <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
+                      <div>
+                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>Type: </span>
+                        <Badge variant="outline" className={css({ ml: '2' })}>
+                          {parseQRData(scanResult.data).type.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <div>
+                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>Data: </span>
+                        <span
+                          className={css({
+                            fontSize: 'sm',
+                            color: 'gray.200',
+                            wordBreak: 'break-all',
+                          })}
+                        >
+                          {scanResult.data.length > 100
+                            ? `${scanResult.data.substring(0, 100)}...`
+                            : scanResult.data}
+                        </span>
+                      </div>
+                      <div>
+                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>Parsed: </span>
+                        <span className={css({ fontSize: 'sm', color: 'cyan.300' })}>
+                          {parseQRData(scanResult.data).displayText}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Validation Section */}
+                <div className={css({ borderTop: '1px solid', borderColor: 'gray.700', pt: '4' })}>
+                  <h3
+                    className={css({
+                      fontSize: 'md',
+                      fontWeight: 'semibold',
+                      color: 'cyan.300',
+                      mb: '3',
+                    })}
+                  >
+                    Validate Generated QR Code
+                  </h3>
+                  <Button
+                    onClick={handleValidateCurrentQR}
+                    disabled={!hasValidInput}
+                    variant="outline"
+                    className={css({ w: 'full', borderColor: 'cyan.500', color: 'cyan.400' })}
+                  >
+                    <ScanLine className="mr-2 h-4 w-4" />
+                    Validate Current QR Code
+                  </Button>
+                </div>
+
+                {/* Validation Results */}
+                {validationResult && (
+                  <div
+                    className={css({
+                      p: '4',
+                      bg:
+                        validationResult.score >= 80
+                          ? 'rgba(16, 185, 129, 0.1)'
+                          : validationResult.score >= 60
+                            ? 'rgba(251, 191, 36, 0.1)'
+                            : 'rgba(239, 68, 68, 0.1)',
+                      border: '1px solid',
+                      borderColor:
+                        validationResult.score >= 80
+                          ? 'emerald.500/30'
+                          : validationResult.score >= 60
+                            ? 'amber.500/30'
+                            : 'red.500/30',
+                      rounded: 'lg',
+                    })}
+                  >
+                    <div
+                      className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '3' })}
+                    >
+                      {validationResult.score >= 80 ? (
+                        <CheckCircle2 className="h-5 w-5 text-emerald.400" />
+                      ) : (
+                        <AlertTriangle
+                          className={css({
+                            h: '5',
+                            w: '5',
+                            color: validationResult.score >= 60 ? 'amber.400' : 'red.400',
+                          })}
+                        />
+                      )}
+                      <span
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color:
+                            validationResult.score >= 80
+                              ? 'emerald.300'
+                              : validationResult.score >= 60
+                                ? 'amber.300'
+                                : 'red.300',
+                        })}
+                      >
+                        Scannability Score: {validationResult.score}/100
+                      </span>
+                    </div>
+
+                    {validationResult.issues.length > 0 && (
+                      <div className={css({ mb: '3' })}>
+                        <p
+                          className={css({
+                            fontSize: 'xs',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                            mb: '2',
+                          })}
+                        >
+                          Issues:
+                        </p>
+                        <ul
+                          className={css({
+                            listStyle: 'disc',
+                            pl: '5',
+                            fontSize: 'xs',
+                            color: 'gray.400',
+                          })}
+                        >
+                          {validationResult.issues.map((issue) => (
+                            <li key={issue}>{issue}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {validationResult.recommendations.length > 0 && (
+                      <div>
+                        <p
+                          className={css({
+                            fontSize: 'xs',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                            mb: '2',
+                          })}
+                        >
+                          Recommendations:
+                        </p>
+                        <ul
+                          className={css({
+                            listStyle: 'disc',
+                            pl: '5',
+                            fontSize: 'xs',
+                            color: 'gray.400',
+                          })}
+                        >
+                          {validationResult.recommendations.map((rec) => (
+                            <li key={rec}>{rec}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div
+                      className={css({
+                        mt: '3',
+                        pt: '3',
+                        borderTop: '1px solid',
+                        borderColor: 'gray.700',
+                      })}
+                    >
+                      <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                        Estimated Scan Distance:{' '}
+                        <strong className={css({ color: 'gray.200' })}>
+                          {validationResult.details.estimatedScanDistance}
+                        </strong>
+                      </p>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>

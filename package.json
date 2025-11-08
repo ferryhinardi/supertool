@@ -51,6 +51,7 @@
     "framer-motion": "^12.23.24",
     "highlight.js": "^11.11.1",
     "html-to-image": "^1.11.13",
+    "html5-qrcode": "^2.3.8",
     "idb": "^8.0.3",
     "js-yaml": "^4.1.0",
     "json-diff": "^1.0.6",
