@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
@@ -754,6 +755,7 @@ END:VCARD`
       </div>
 
       <FAQAccordion faqs={faqs} />
+      <RelatedTools currentToolPath="/tools/qr-code" category="productivity" />
     </main>
   )
 }

@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { RelatedTools } from '@/components/ui/related-tools'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -714,6 +715,7 @@ function UnitConverterContent() {
       </motion.div>
 
       <FAQAccordion faqs={faqs} />
+      <RelatedTools currentToolPath="/tools/unit-converter" category="productivity" />
     </main>
   )
 }

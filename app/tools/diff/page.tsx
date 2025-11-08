@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
+import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
 import { css } from '@/styled-system/css'
 
@@ -648,6 +649,7 @@ export default function DiffTool() {
       )}
 
       <FAQAccordion faqs={faqs} />
+      <RelatedTools currentToolPath="/tools/diff" category="development" />
     </main>
   )
 }

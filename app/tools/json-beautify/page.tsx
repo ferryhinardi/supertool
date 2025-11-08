@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
+import { RelatedTools } from '@/components/ui/related-tools'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTrackToolView } from '@/hooks/useRecentTools'
 import { trackToolEvent } from '@/lib/analytics'
@@ -544,6 +545,7 @@ function JSONBeautifyContent() {
         </div>
 
         <FAQAccordion faqs={faqs} />
+        <RelatedTools currentToolPath="/tools/json-beautify" category="data" />
       </main>
     </TooltipProvider>
   )

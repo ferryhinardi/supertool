@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
+import { RelatedTools } from '@/components/ui/related-tools'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import { calculateStrength, generatePassword } from './utils'
@@ -677,6 +678,7 @@ function PasswordGeneratorContent() {
       </Card>
 
       <FAQAccordion faqs={faqs} />
+      <RelatedTools currentToolPath="/tools/password-generator" category="security" />
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="password-generator" variant="banner" />

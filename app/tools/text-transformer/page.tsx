@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
 import { trackEvent, trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
@@ -929,6 +930,7 @@ function TextTransformerContent() {
       </div>
 
       <FAQAccordion faqs={faqs} />
+      <RelatedTools currentToolPath="/tools/text-transformer" category="productivity" />
     </main>
   )
 }
