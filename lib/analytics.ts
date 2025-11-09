@@ -387,6 +387,11 @@ type ToolEvent =
   | 'regex_tester_clear'
   | 'tool_search_open'
   | 'tool_search_select'
+  | 'signature_generator_view'
+  | 'signature_generator_download'
+  | 'signature_generator_copy'
+  | 'signature_generator_clear'
+  | 'signature_generator_randomize'
 
 // Type-safe gtag wrapper
 declare global {

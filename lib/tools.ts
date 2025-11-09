@@ -35,6 +35,7 @@ import {
   Minimize2,
   Network,
   Palette,
+  PenTool,
   Percent,
   QrCode,
   Repeat,
@@ -617,6 +618,23 @@ export const tools: Tool[] = [
   },
 
   // Design & Visual Tools
+  {
+    title: 'Digital Signature Generator',
+    description:
+      'Create beautiful digital signatures for documents, emails, and professional use. Choose from 6 elegant fonts, customize colors, size, underline and italic styles. Download as PNG, SVG, or JPG.',
+    icon: PenTool,
+    href: '/tools/signature-generator',
+    gradient: 'from-pink-500 to-rose-500',
+    features: [
+      '6 Professional Fonts',
+      'Full Customization',
+      'Multiple Formats',
+      'Copy to Clipboard',
+    ],
+    category: 'design',
+    new: true,
+    popular: true,
+  },
   {
     title: 'Gradient Generator',
     description:
