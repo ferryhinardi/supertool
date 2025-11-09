@@ -17,7 +17,7 @@ import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -547,6 +547,7 @@ export default function GradientGeneratorPage() {
 
               <div className={css({ spaceY: '3' })}>
                 {colorStops.map((stop) => (
+                  // biome-ignore lint/a11y/useSemanticElements: interactive color stop picker requires div for proper layout
                   <div
                     key={stop.id}
                     role="button"
@@ -912,11 +913,9 @@ export default function GradientGeneratorPage() {
         <ToolRating toolId="/tools/gradient-generator" toolName="Gradient Generator" />
       </div>
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

@@ -318,7 +318,7 @@ describe('Timezone Converter Page', () => {
       // Find Tokyo's delete button
       await waitFor(async () => {
         const cards = screen.getAllByText(/Tokyo/).map((el) => el.closest('article'))
-        const tokyoCard = cards.find((card) => card && card.textContent?.includes('JST'))
+        const tokyoCard = cards.find((card) => card?.textContent?.includes('JST'))
         if (tokyoCard) {
           const deleteButton = tokyoCard.querySelector('button[class*="ghost"]')
           if (deleteButton) {
@@ -408,7 +408,7 @@ describe('Timezone Converter Page', () => {
       // Remove Tokyo
       await waitFor(async () => {
         const cards = screen.getAllByText(/Tokyo/).map((el) => el.closest('article'))
-        const tokyoCard = cards.find((card) => card && card.textContent?.includes('JST'))
+        const tokyoCard = cards.find((card) => card?.textContent?.includes('JST'))
         if (tokyoCard) {
           const deleteButton = tokyoCard.querySelector('button[class*="ghost"]')
           if (deleteButton) {

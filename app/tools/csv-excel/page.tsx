@@ -13,8 +13,8 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -281,7 +281,7 @@ export default function CSVExcelConverterPage() {
     toast.success(`Switched to ${mode === 'csv-to-excel' ? 'Excel to CSV' : 'CSV to Excel'} mode`)
   }
 
-  const handleDragEnter = (e: React.DragEvent) => {
+  const _handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     if (!isProcessing) {
@@ -530,10 +530,10 @@ export default function CSVExcelConverterPage() {
         )}
 
         {/* File Upload */}
+        {/* biome-ignore lint/a11y/useSemanticElements: drag-drop functionality requires div element */}
         <div
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={handleClickUpload}
           onKeyDown={(e) => {
@@ -723,14 +723,14 @@ export default function CSVExcelConverterPage() {
                       <tbody>
                         {sheet.data.slice(0, 50).map((row, rowIndex) => (
                           <tr
-                            key={`row-${rowIndex}`}
+                            key={`${rowIndex}-${row.join('|')}`}
                             className={css({
                               _even: { bg: 'gray.800/30' },
                             })}
                           >
                             {row.map((cell, cellIndex) => (
                               <td
-                                key={`cell-${rowIndex}-${cellIndex}`}
+                                key={`${rowIndex}-${cellIndex}-${cell}`}
                                 className={css({
                                   px: '3',
                                   py: '2',
@@ -807,11 +807,9 @@ export default function CSVExcelConverterPage() {
           </CardContent>
         </Card>
 
-      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+        {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-      <ToolSearch />
-
-      
+        <ToolSearch />
       </main>
     </TooltipProvider>
   )

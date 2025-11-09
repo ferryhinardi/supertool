@@ -742,11 +742,9 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="password-strength" variant="banner" />
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

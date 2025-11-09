@@ -1118,11 +1118,9 @@ export default function PomodoroTimerPage() {
       <RelatedTools currentToolPath="/tools/pomodoro" category="productivity" />
       <ToolRating toolId="/tools/pomodoro" toolName="Pomodoro Timer" />
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

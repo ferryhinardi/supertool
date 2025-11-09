@@ -1387,11 +1387,9 @@ function ApiTesterContent() {
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="api-tester" variant="banner" />
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

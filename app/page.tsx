@@ -105,8 +105,9 @@ const gradientCache = new Map<string, string>()
 // Convert Tailwind gradient class to CSS gradient string
 const gradientToCss = (gradient: string): string => {
   // Return cached result if available
-  if (gradientCache.has(gradient)) {
-    return gradientCache.get(gradient)!
+  const cached = gradientCache.get(gradient)
+  if (cached !== undefined) {
+    return cached
   }
 
   const match = gradient.match(/from-(\S+)\s+(?:via-(\S+)\s+)?to-(\S+)/)

@@ -982,11 +982,9 @@ function RegexTesterContent() {
       <RelatedTools currentToolPath="/tools/regex-tester" category="development" />
       <ToolRating toolId="/tools/regex-tester" toolName="Regex Pattern Library & Tester" />
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

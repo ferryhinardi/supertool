@@ -439,12 +439,12 @@ export default function GrammarCheckerPage() {
                   {result.issues.map((issue, index) => {
                     const colors = issueTypeColors[issue.type] || issueTypeColors.style
                     const isSelected = selectedIssue === index
+                    const issueKey = `${issue.offset}-${issue.text}-${issue.type}`
 
                     return (
-                      <div
-                        key={index}
-                        role="button"
-                        tabIndex={0}
+                      <button
+                        key={issueKey}
+                        type="button"
                         className={css({
                           rounded: 'lg',
                           border: '1px solid',
@@ -453,15 +453,11 @@ export default function GrammarCheckerPage() {
                           p: '4',
                           transition: 'all 0.2s',
                           cursor: 'pointer',
+                          textAlign: 'left',
+                          w: 'full',
                           _hover: { bg: colors.bg, borderColor: colors.border },
                         })}
                         onClick={() => setSelectedIssue(isSelected ? null : index)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            setSelectedIssue(isSelected ? null : index)
-                          }
-                        }}
                       >
                         <div
                           className={css({
@@ -537,7 +533,7 @@ export default function GrammarCheckerPage() {
                             )}
                           </div>
                         </div>
-                      </div>
+                      </button>
                     )
                   })}
                 </CardContent>
@@ -688,11 +684,9 @@ export default function GrammarCheckerPage() {
         </Card>
       </motion.div>
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

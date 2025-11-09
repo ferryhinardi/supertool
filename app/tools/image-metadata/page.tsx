@@ -482,6 +482,7 @@ function ImageMetadataContent() {
           </CardHeader>
           <CardContent>
             {!selectedImage ? (
+              // biome-ignore lint/a11y/useSemanticElements: drag-drop functionality requires div element
               <div
                 role="button"
                 tabIndex={0}
@@ -794,11 +795,9 @@ function ImageMetadataContent() {
         </Card>
       </motion.div>
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

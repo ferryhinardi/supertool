@@ -543,7 +543,7 @@ export default function QRCodePage() {
       setTrackingUrl('')
       setTrackingCode('')
     }
-  }, [enableTracking, type, urlInput])
+  }, [enableTracking, type, urlInput, createTrackingUrl, trackingUrl])
 
   const getQRValue = () => {
     switch (type) {
@@ -4037,11 +4037,9 @@ url,https://github.com,GitHub,#000000`
       <RelatedTools currentToolPath="/tools/qr-code" category="productivity" />
       <ToolRating toolId="/tools/qr-code" toolName="QR Code Generator" />
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

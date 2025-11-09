@@ -7,8 +7,8 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -628,11 +628,9 @@ export default function JSONToMarkdownTablePage() {
           </ul>
         </div>
 
-      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+        {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-      <ToolSearch />
-
-      
+        <ToolSearch />
       </main>
     </TooltipProvider>
   )

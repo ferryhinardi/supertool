@@ -1508,11 +1508,9 @@ export default function ImageOptimizerPage() {
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="image-optimizer" variant="banner" />
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

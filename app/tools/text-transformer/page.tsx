@@ -1150,11 +1150,9 @@ function TextTransformerContent() {
         <ToolRating toolId="/tools/text-transformer" toolName="Text Transformer" />
       </motion.div>
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

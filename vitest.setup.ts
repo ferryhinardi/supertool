@@ -120,7 +120,7 @@ beforeAll(async () => {
   if (!navigator.clipboard) {
     Object.defineProperty(navigator, 'clipboard', {
       value: {
-        writeText: (text: string) => Promise.resolve(),
+        writeText: (_text: string) => Promise.resolve(),
         readText: () => Promise.resolve(''),
       },
       writable: true,

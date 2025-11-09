@@ -1,10 +1,9 @@
 'use client'
 
-import { addHours, addMinutes, parseISO, setHours, setMinutes } from 'date-fns'
-import { format, fromZonedTime, toZonedTime } from 'date-fns-tz'
+import { setHours, setMinutes } from 'date-fns'
+import { format, toZonedTime } from 'date-fns-tz'
 import { motion } from 'framer-motion'
 import { Clock, Globe, MapPin, Plus, Star, Trash2, X } from 'lucide-react'
-import { useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -557,11 +556,9 @@ function TimezoneConverterContent() {
         </motion.div>
       )}
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

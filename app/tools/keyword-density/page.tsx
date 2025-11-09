@@ -686,8 +686,8 @@ function KeywordDensityContent() {
                   </CardHeader>
                   <CardContent>
                     <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.300' })}>
-                      {analysis.warnings.map((warning, i) => (
-                        <li key={i}>• {warning}</li>
+                      {analysis.warnings.map((warning) => (
+                        <li key={warning}>• {warning}</li>
                       ))}
                     </ul>
                   </CardContent>
@@ -710,8 +710,8 @@ function KeywordDensityContent() {
                   </CardHeader>
                   <CardContent>
                     <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.300' })}>
-                      {analysis.recommendations.map((rec, i) => (
-                        <li key={i}>• {rec}</li>
+                      {analysis.recommendations.map((rec) => (
+                        <li key={rec}>• {rec}</li>
                       ))}
                     </ul>
                   </CardContent>
@@ -1026,11 +1026,9 @@ function KeywordDensityContent() {
         </Card>
       </motion.div>
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

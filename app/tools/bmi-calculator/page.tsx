@@ -1299,11 +1299,9 @@ export default function BMICalculator() {
         <ToolRating toolId="/tools/bmi-calculator" toolName="BMI & Health Calculator" />
       </motion.div>
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

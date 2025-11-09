@@ -227,7 +227,7 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
             ? entries.map((item: unknown, idx: number) => {
                 const currentPath = `${path}[${idx}]`
                 return (
-                  <div key={`${path}-${idx}`} className={css({ my: '1' })}>
+                  <div key={currentPath} className={css({ my: '1' })}>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
@@ -520,7 +520,7 @@ function JSONBeautifyContent() {
         toast.error(`Schema validation failed: ${errors.length} errors`)
         trackToolEvent('json_schema_validate', { success: false, error_count: errors.length })
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error('Invalid JSON or Schema')
       setSchemaErrors(['Invalid JSON or Schema format'])
     }
@@ -557,7 +557,7 @@ function JSONBeautifyContent() {
       setSearchResults(results)
       toast.success(`Found ${results.length} matches`)
       trackToolEvent('json_search', { query_length: searchQuery.length, results: results.length })
-    } catch (err) {
+    } catch (_err) {
       toast.error('Invalid JSONPath query or JSON')
       setSearchResults([])
     }
@@ -1344,8 +1344,8 @@ function JSONBeautifyContent() {
                     >
                       Validation Errors:
                     </p>
-                    {schemaErrors.map((err, idx) => (
-                      <p key={idx} className={css({ fontSize: 'sm', color: 'red.300' })}>
+                    {schemaErrors.map((err) => (
+                      <p key={err} className={css({ fontSize: 'sm', color: 'red.300' })}>
                         • {err}
                       </p>
                     ))}
@@ -1446,8 +1446,8 @@ function JSONBeautifyContent() {
                       >
                         Removed/Changed in JSON 2:
                       </h4>
-                      {diffResult.removed.map((diff: string, idx: number) => (
-                        <p key={idx} className={css({ fontSize: 'sm', color: 'red.300' })}>
+                      {diffResult.removed.map((diff: string) => (
+                        <p key={diff} className={css({ fontSize: 'sm', color: 'red.300' })}>
                           - {diff}
                         </p>
                       ))}
@@ -1465,8 +1465,8 @@ function JSONBeautifyContent() {
                       >
                         Added/Changed in JSON 2:
                       </h4>
-                      {diffResult.added.map((diff: string, idx: number) => (
-                        <p key={idx} className={css({ fontSize: 'sm', color: 'green.300' })}>
+                      {diffResult.added.map((diff: string) => (
+                        <p key={diff} className={css({ fontSize: 'sm', color: 'green.300' })}>
                           + {diff}
                         </p>
                       ))}

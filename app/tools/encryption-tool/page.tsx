@@ -994,11 +994,9 @@ export default function EncryptionToolPage() {
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="encryption-tool" variant="banner" />
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

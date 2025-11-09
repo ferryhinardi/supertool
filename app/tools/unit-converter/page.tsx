@@ -145,7 +145,7 @@ const chainPresets: ChainPreset[] = [
 ]
 
 // Chain Templates with Predefined Values
-const chainTemplates: ChainPreset[] = [
+const _chainTemplates: ChainPreset[] = [
   {
     id: 'marathon-distance',
     name: 'Marathon Distance',
@@ -324,8 +324,8 @@ function UnitConverterContent() {
   const [chainNameInput, setChainNameInput] = useState('')
 
   // History search/filter state
-  const [historySearchQuery, setHistorySearchQuery] = useState('')
-  const [historyFilterCategory, setHistoryFilterCategory] = useState<UnitCategory | 'all'>('all')
+  const [_historySearchQuery, _setHistorySearchQuery] = useState('')
+  const [_historyFilterCategory, _setHistoryFilterCategory] = useState<UnitCategory | 'all'>('all')
 
   // Save favorites to localStorage (client-side only)
   useEffect(() => {
@@ -632,10 +632,7 @@ function UnitConverterContent() {
     }
   }
 
-  const formulaExplanation = useMemo(
-    () => getFormulaExplanation(),
-    [fromValue, toValue, category, fromUnit, toUnit]
-  )
+  const formulaExplanation = useMemo(() => getFormulaExplanation(), [getFormulaExplanation])
 
   // Multi-Step Conversion Handlers
   const handleAddChainStep = () => {
@@ -701,7 +698,7 @@ function UnitConverterContent() {
     }
 
     setConversionChain(updatedChain)
-  }, [chainInputValue, category])
+  }, [chainInputValue, category, conversionChain])
 
   // Recalculate chain when units change
   useEffect(() => {
@@ -728,7 +725,7 @@ function UnitConverterContent() {
     }
 
     setConversionChain(updatedChain)
-  }, [conversionChain.map((s) => s.unit).join(',')])
+  }, [category, conversionChain])
 
   // Enhanced Chain Handlers
   const handleSaveChain = (name: string) => {

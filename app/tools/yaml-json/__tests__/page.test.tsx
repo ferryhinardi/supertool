@@ -463,7 +463,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
       // Now mock appendChild after rendering is complete
       const clickMock = vi.fn()
-      const appendChildSpy = vi
+      const _appendChildSpy = vi
         .spyOn(document.body, 'appendChild')
         .mockImplementation((node: Node) => {
           if (node instanceof HTMLAnchorElement) {
@@ -474,7 +474,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
           return node
         })
 
-      const removeChildSpy = vi
+      const _removeChildSpy = vi
         .spyOn(document.body, 'removeChild')
         .mockImplementation(() => null as any)
 
@@ -521,7 +521,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
       // Now mock appendChild after rendering is complete
       const clickMock = vi.fn()
-      const appendChildSpy = vi
+      const _appendChildSpy = vi
         .spyOn(document.body, 'appendChild')
         .mockImplementation((node: Node) => {
           if (node instanceof HTMLAnchorElement) {
@@ -531,7 +531,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
           return node
         })
 
-      const removeChildSpy = vi
+      const _removeChildSpy = vi
         .spyOn(document.body, 'removeChild')
         .mockImplementation(() => null as any)
 
@@ -579,7 +579,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
       // Now mock appendChild after rendering is complete
       const clickMock = vi.fn()
-      const appendChildSpy = vi
+      const _appendChildSpy = vi
         .spyOn(document.body, 'appendChild')
         .mockImplementation((node: Node) => {
           if (node instanceof HTMLAnchorElement) {
@@ -589,7 +589,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
           return node
         })
 
-      const removeChildSpy = vi
+      const _removeChildSpy = vi
         .spyOn(document.body, 'removeChild')
         .mockImplementation(() => null as any)
 

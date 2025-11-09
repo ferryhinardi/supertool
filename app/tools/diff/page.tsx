@@ -654,11 +654,9 @@ export default function DiffTool() {
       <RelatedTools currentToolPath="/tools/diff" category="development" />
       <ToolRating toolId="/tools/diff" toolName="Code Diff Viewer" />
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

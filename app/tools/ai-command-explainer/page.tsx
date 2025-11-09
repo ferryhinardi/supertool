@@ -350,9 +350,9 @@ function AICommandExplainerContent() {
                 gap: '3',
               })}
             >
-              {EXAMPLE_COMMANDS.map((example, index) => (
+              {EXAMPLE_COMMANDS.map((example) => (
                 <button
-                  key={index}
+                  key={example.command}
                   type="button"
                   onClick={() => handleLoadExample(example.command)}
                   className={css({
@@ -452,9 +452,9 @@ function AICommandExplainerContent() {
                 </CardHeader>
                 <CardContent>
                   <ul className={css({ spaceY: '2' })}>
-                    {explanation.safetyWarnings.map((warning, index) => (
+                    {explanation.safetyWarnings.map((warning) => (
                       <li
-                        key={index}
+                        key={warning}
                         className={css({
                           fontSize: 'sm',
                           color: 'red.200',
@@ -499,9 +499,9 @@ function AICommandExplainerContent() {
                 </CardHeader>
                 <CardContent>
                   <div className={css({ spaceY: '4' })}>
-                    {explanation.breakdown.map((item, index) => (
+                    {explanation.breakdown.map((item) => (
                       <div
-                        key={index}
+                        key={item.part}
                         className={css({
                           rounded: 'lg',
                           border: '1px solid',
@@ -553,9 +553,9 @@ function AICommandExplainerContent() {
                 </CardHeader>
                 <CardContent>
                   <div className={css({ spaceY: '3' })}>
-                    {explanation.parameters.map((param, index) => (
+                    {explanation.parameters.map((param) => (
                       <div
-                        key={index}
+                        key={param.parameter}
                         className={css({
                           display: 'flex',
                           gap: '3',
@@ -613,9 +613,9 @@ function AICommandExplainerContent() {
                 </CardHeader>
                 <CardContent>
                   <ul className={css({ spaceY: '2' })}>
-                    {explanation.alternatives.map((alt, index) => (
+                    {explanation.alternatives.map((alt) => (
                       <li
-                        key={index}
+                        key={alt}
                         className={css({
                           fontSize: 'sm',
                           color: 'gray.300',
@@ -673,11 +673,9 @@ function AICommandExplainerContent() {
         </Card>
       </motion.div>
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }

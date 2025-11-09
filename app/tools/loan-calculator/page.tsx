@@ -19,7 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
-import { CURRENCIES, formatCurrency as formatCurrencyUtil } from '@/lib/currency'
+import { CURRENCIES } from '@/lib/currency'
 import { css } from '@/styled-system/css'
 
 interface PaymentScheduleItem {
@@ -1001,11 +1001,9 @@ function LoanCalculatorContent() {
         </Card>
       </motion.div>
 
-    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
-    <ToolSearch />
-
-    
+      <ToolSearch />
     </main>
   )
 }
