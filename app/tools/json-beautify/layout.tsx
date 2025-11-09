@@ -27,6 +27,9 @@ export const metadata: Metadata = generateToolMetadata({
   ],
   category: 'development',
   path: '/tools/json-beautify',
+  ogTitle: 'Free JSON Beautifier & Formatter - Format, Validate & Minify JSON Online',
+  ogDescription:
+    'Transform messy JSON into beautifully formatted code instantly! ✨ Free online tool with syntax validation, TypeScript conversion, and real-time error detection. No signup required.',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

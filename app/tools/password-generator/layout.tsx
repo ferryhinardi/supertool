@@ -27,6 +27,9 @@ export const metadata: Metadata = generateToolMetadata({
   ],
   category: 'security',
   path: '/tools/password-generator',
+  ogTitle: 'Free Secure Password Generator - Create Strong Random Passwords Instantly',
+  ogDescription:
+    'Generate ultra-secure passwords in seconds! 🔐 Diceware passphrases, breach checking (HIBP), and crypto-grade randomness. Privacy-first - never stored or transmitted.',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

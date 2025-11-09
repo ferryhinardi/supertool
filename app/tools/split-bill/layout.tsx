@@ -27,6 +27,9 @@ export const metadata: Metadata = generateToolMetadata({
   ],
   category: 'finance',
   path: '/tools/split-bill',
+  ogTitle: 'Free Split Bill Calculator - Divide Restaurant Bills & Calculate Tips Instantly',
+  ogDescription:
+    'Split bills fairly in seconds! 🧾 AI-powered receipt scanner, automatic tip calculation, and easy sharing. Perfect for group dinners and shared expenses. 100% free.',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
