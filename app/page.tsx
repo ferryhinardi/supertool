@@ -52,6 +52,15 @@ const RecentTools = dynamic(
   }
 )
 
+// Virtualized tools list - must be client-side only
+const VirtualizedToolsListDynamic = dynamic(
+  () => Promise.resolve({ default: VirtualizedToolsList }),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+)
+
 const AdContainer = dynamic(
   () =>
     import('@/components/features/AdContainer').then((mod) => ({
@@ -1296,9 +1305,15 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
   categoryValue: ToolCategory
 }) {
   const parentRef = useRef<HTMLDivElement>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Determine columns based on viewport and view mode
   const [columns, setColumns] = useState(1)
+
+  // Mount check for SSR safety
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     const updateColumns = () => {
@@ -1345,7 +1360,8 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
 
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
-    getScrollElement: () => window as unknown as HTMLElement,
+    getScrollElement: () =>
+      typeof window !== 'undefined' ? (window as unknown as HTMLElement) : null,
     estimateSize: () => estimateSize,
     overscan: 2,
     measureElement:
@@ -1353,6 +1369,37 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
   })
+
+  // Fallback to non-virtualized rendering during SSR or initial mount
+  if (!isMounted) {
+    return (
+      <div
+        className={css({
+          display: viewMode === 'grid' ? 'grid' : 'flex',
+          flexDirection: viewMode === 'list' ? 'column' : undefined,
+          gridTemplateColumns:
+            viewMode === 'grid'
+              ? {
+                  base: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  lg: 'repeat(3, 1fr)',
+                  xl: 'repeat(4, 1fr)',
+                }
+              : undefined,
+          gap: viewMode === 'grid' ? '6' : '4',
+        })}
+      >
+        {tools.map((tool) => (
+          <ToolCard
+            key={tool.title}
+            tool={tool}
+            viewMode={viewMode}
+            shouldReduceMotion={shouldReduceMotion}
+          />
+        ))}
+      </div>
+    )
+  }
 
   return (
     <motion.div
