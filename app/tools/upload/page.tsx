@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { supabase } from '@/lib/supabaseClient'
 import { css } from '@/styled-system/css'
 
@@ -794,6 +795,12 @@ export default function UploadTool() {
         {/* Affiliate Suggestions */}
         <AffiliateSuggestion tool="upload" variant="banner" />
       </div>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

@@ -7,6 +7,7 @@ import {
   Download,
   FileImage,
   Image as ImageIcon,
+  Lightbulb,
   Maximize2,
   Settings,
   Sparkles,
@@ -16,9 +17,15 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/DragDropZone'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Progress } from '@/components/ui/progress'
+import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
+import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -1064,8 +1071,448 @@ export default function ImageOptimizerPage() {
         ))}
       </motion.div>
 
+      {/* How to Use Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+        })}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(4px)',
+          })}
+        >
+          <CardHeader>
+            <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+              <CardTitle
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  fontSize: '2xl',
+                })}
+              >
+                <Lightbulb className={css({ h: '6', w: '6', color: 'teal.400' })} />
+                How to Use Image Optimizer
+              </CardTitle>
+              <CardDescription>
+                Follow these simple steps to optimize and compress your images
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    flexShrink: '0',
+                    h: '6',
+                    w: '6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    color: 'teal.300',
+                  })}
+                >
+                  1
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Upload Your Images
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Drag and drop your images into the upload zone, or click to browse your files.
+                    Supports JPG, PNG, WebP, and GIF formats up to 50MB each.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    flexShrink: '0',
+                    h: '6',
+                    w: '6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    color: 'teal.300',
+                  })}
+                >
+                  2
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Configure Settings
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Select your desired output format (JPEG, PNG, or WebP), adjust quality level
+                    (10-100%), and set maximum dimensions if you want to resize your images.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    flexShrink: '0',
+                    h: '6',
+                    w: '6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    color: 'teal.300',
+                  })}
+                >
+                  3
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Optimize Images
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Click "Optimize All Images" to process your entire batch. Watch the real-time
+                    progress as each image is compressed, and see instant file size savings.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    flexShrink: '0',
+                    h: '6',
+                    w: '6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    color: 'teal.300',
+                  })}
+                >
+                  4
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Download Optimized Files
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Download individual optimized images or use "Download All" for batch downloads.
+                    Each file is renamed with "_optimized" suffix for easy identification.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* How to Use Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+        })}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(4px)',
+          })}
+        >
+          <CardHeader>
+            <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+              <CardTitle
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  fontSize: '2xl',
+                })}
+              >
+                <Lightbulb className={css({ h: '6', w: '6', color: 'teal.400' })} />
+                How to Use Image Optimizer
+              </CardTitle>
+              <CardDescription>
+                Follow these simple steps to optimize and compress your images
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    flexShrink: '0',
+                    h: '6',
+                    w: '6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    color: 'teal.300',
+                  })}
+                >
+                  1
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Upload Your Images
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Drag and drop your images into the upload zone, or click to browse your files.
+                    Supports JPG, PNG, WebP, and GIF formats up to 50MB each.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    flexShrink: '0',
+                    h: '6',
+                    w: '6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    color: 'teal.300',
+                  })}
+                >
+                  2
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Configure Settings
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Select your desired output format (JPEG, PNG, or WebP), adjust quality level
+                    (10-100%), and set maximum dimensions if you want to resize your images.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    flexShrink: '0',
+                    h: '6',
+                    w: '6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    color: 'teal.300',
+                  })}
+                >
+                  3
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Optimize Images
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Click "Optimize All Images" to process your entire batch. Watch the real-time
+                    progress as each image is compressed, and see instant file size savings.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    flexShrink: '0',
+                    h: '6',
+                    w: '6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    color: 'teal.300',
+                  })}
+                >
+                  4
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Download Optimized Files
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Download individual optimized images or use "Download All" for batch downloads.
+                    Each file is renamed with "_optimized" suffix for easy identification.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Social Share */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+        })}
+      >
+        <SocialShare
+          toolName="Image Optimizer"
+          toolUrl="/tools/image-optimizer"
+          description="Free online tool to compress and optimize images without quality loss. Batch processing, format conversion, and smart resizing"
+          hashtags={['ImageOptimizer', 'WebPerformance', 'ImageCompression', 'WebDev', 'Developer']}
+        />
+      </motion.div>
+
+      {/* FAQ Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.5 }}
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+        })}
+      >
+        <FAQAccordion
+          faqs={[
+            {
+              question: 'How does image optimization work?',
+              answer:
+                'Image optimization uses advanced compression algorithms to reduce file size while maintaining visual quality. The tool analyzes your image, removes unnecessary metadata, applies lossy or lossless compression based on your quality settings, and can convert to more efficient formats like WebP. This process can reduce file sizes by up to 80% without noticeable quality loss at recommended settings.',
+            },
+            {
+              question: 'What quality setting should I use?',
+              answer:
+                'For most web use cases, a quality setting of 75-85% provides the best balance between file size and visual quality. Higher settings (85-100%) are recommended for professional photography or print materials where maximum quality is essential. Lower settings (60-75%) work well for thumbnails, background images, or situations where faster loading is prioritized over perfect quality.',
+            },
+            {
+              question: 'Can I optimize multiple images at once?',
+              answer:
+                'Yes, our tool supports batch processing of multiple images simultaneously. Upload all your images at once, configure your desired settings, and click "Optimize All Images" to process them together. You can then download all optimized images with a single click. This feature is perfect for bulk photo processing, website migrations, or preparing multiple images for social media.',
+            },
+            {
+              question: 'What image formats are supported?',
+              answer:
+                'The tool supports all common web image formats including JPEG/JPG, PNG, WebP, and GIF. You can upload images in any of these formats and convert them to JPEG, PNG, or WebP output. WebP is recommended for web use as it offers superior compression compared to JPEG and PNG, resulting in smaller files with equivalent visual quality.',
+            },
+            {
+              question: 'Should I use WebP format?',
+              answer:
+                'WebP is highly recommended for modern web applications as it provides 25-35% better compression than JPEG and PNG while maintaining similar visual quality. All modern browsers support WebP, making it ideal for websites, web apps, and digital content. However, if you need compatibility with older systems or software, JPEG and PNG remain solid universal choices.',
+            },
+            {
+              question: 'What happens when I resize images?',
+              answer:
+                'The resize feature scales your images to fit within the specified maximum dimensions while maintaining aspect ratio (if enabled). For example, setting max dimensions to 1920x1080 will resize a 4000x3000 image down to 1440x1080, preserving the original proportions. This is useful for optimizing high-resolution photos for web use, reducing both dimensions and file size.',
+            },
+            {
+              question: 'How much file size reduction can I expect?',
+              answer:
+                'File size reduction varies based on the original image and your settings, but typically ranges from 40-80%. High-resolution photos often see the greatest savings, sometimes reducing from 5MB to under 500KB. Images already optimized may see smaller reductions. The tool displays real-time compression results so you can see exact savings for each image.',
+            },
+            {
+              question: 'Are my images stored on your servers?',
+              answer:
+                'No, all image processing happens entirely in your browser using client-side JavaScript. Your images never leave your device or get uploaded to any server. This ensures complete privacy and security for your photos. All processing is done locally, which also means faster optimization without network delays and no storage limits.',
+            },
+            {
+              question: 'Can I download my optimized images?',
+              answer:
+                'Yes, after optimization completes, you can download images individually by clicking the download button on each image, or use "Download All" to download all optimized images at once. Downloaded files are automatically renamed with "_optimized" suffix in your chosen output format, making it easy to distinguish them from originals.',
+            },
+            {
+              question: 'What is the maximum file size I can upload?',
+              answer:
+                'Each image can be up to 50MB in size, which is sufficient for even high-resolution professional photos. You can upload multiple images simultaneously with no limit on the total number. For extremely large images (20MB+), processing may take longer but will still complete successfully. If you encounter issues with very large files, try resizing them first.',
+            },
+          ]}
+        />
+      </motion.div>
+
+      {/* Related Tools */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+        })}
+      >
+        <RelatedTools currentToolPath="/tools/image-optimizer" category="media" />
+      </motion.div>
+
+      {/* Tool Rating */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9, duration: 0.5 }}
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+        })}
+      >
+        <ToolRating toolId="/tools/image-optimizer" toolName="Image Optimizer" />
+      </motion.div>
+
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="image-optimizer" variant="banner" />
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

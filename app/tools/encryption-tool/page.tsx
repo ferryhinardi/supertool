@@ -23,6 +23,7 @@ import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { css } from '@/styled-system/css'
 import {
   calculatePasswordStrength,
@@ -992,6 +993,12 @@ export default function EncryptionToolPage() {
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="encryption-tool" variant="banner" />
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

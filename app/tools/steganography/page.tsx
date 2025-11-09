@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -792,6 +793,12 @@ function SteganographyContent() {
           </CardContent>
         </Card>
       </motion.div>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

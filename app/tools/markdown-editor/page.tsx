@@ -8,6 +8,7 @@ import {
   Download,
   Eye,
   FileText,
+  Lightbulb,
   RotateCcw,
   Sparkles,
   SplitSquareHorizontal,
@@ -21,8 +22,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { css } from '@/styled-system/css'
 
 // Dynamically import ReactMarkdown with SSR disabled
@@ -55,6 +58,31 @@ const faqs = [
     question: 'Is my Markdown content saved automatically?',
     answer:
       "Your content is automatically saved to your browser's local storage as you type, so you won't lose work if you accidentally close the tab. However, this is device-specific storage. For permanent backup, use the export feature to download your Markdown file or copy it to a version control system like Git.",
+  },
+  {
+    question: 'How do I add code blocks with syntax highlighting?',
+    answer:
+      'Use triple backticks (```) followed by the language name to create code blocks. For example: ```javascript for JavaScript code. Our editor supports syntax highlighting for 50+ languages including JavaScript, Python, Java, C++, HTML, CSS, and more. The live preview shows your code with proper formatting and colors.',
+  },
+  {
+    question: 'Can I use this editor for writing documentation?',
+    answer:
+      'Absolutely! This editor is perfect for technical documentation, API docs, user guides, and README files. The GitHub-flavored Markdown support means your content will look great on GitHub, GitLab, and other platforms. Export to HTML for standalone documentation or copy markdown for version control.',
+  },
+  {
+    question: 'What view modes are available?',
+    answer:
+      "The editor offers three view modes: Editor Only (focus on writing), Split View (see markdown and preview side-by-side), and Preview Only (see final output). Switch modes instantly to match your workflow, whether you're drafting content, refining formatting, or reviewing the final result.",
+  },
+  {
+    question: 'How do I create task lists in Markdown?',
+    answer:
+      'Create task lists using - [ ] for unchecked items and - [x] for checked items. Task lists are great for tracking project progress, to-do items, and checklists. They render as interactive checkboxes in the preview, making them perfect for GitHub issues and project management.',
+  },
+  {
+    question: 'Can I load existing Markdown files into the editor?',
+    answer:
+      'Yes! Click the "Load File" button to import existing .md or .markdown files from your computer. The editor will display your content with live preview immediately. You can then edit, export, or download your modified content. This makes it easy to work with existing documentation and README files.',
   },
 ]
 
@@ -1005,17 +1033,186 @@ export default function MarkdownEditorPage() {
           </Card>
         </motion.div>
 
-        {/* FAQ Section */}
+        {/* How to Use Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'blue.500/20',
+              bg: 'blue.500/5',
+              backdropFilter: 'blur(16px)',
+              padding: '6',
+            })}
+          >
+            <CardHeader
+              className={css({
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '3',
+                padding: '0',
+                marginBottom: '4',
+              })}
+            >
+              <Lightbulb
+                className={css({
+                  h: '6',
+                  w: '6',
+                  color: 'blue.400',
+                  flexShrink: '0',
+                })}
+              />
+              <CardTitle
+                className={css({
+                  fontSize: 'xl',
+                  fontWeight: 'semibold',
+                  color: 'blue.300',
+                })}
+              >
+                How to Use Markdown Editor
+              </CardTitle>
+            </CardHeader>
+            <CardContent className={css({ padding: '0', spaceY: '4' })}>
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  className={css({
+                    bg: 'blue.500/20',
+                    color: 'blue.300',
+                    fontSize: 'sm',
+                    fontWeight: 'bold',
+                    px: '2.5',
+                    py: '1',
+                    flexShrink: '0',
+                  })}
+                >
+                  1
+                </Badge>
+                <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'gray.300' })}>Choose your view mode:</strong>{' '}
+                  Select Editor Only (focus on writing), Split View (side-by-side editing and
+                  preview), or Preview Only (see final output) based on your workflow.
+                </p>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  className={css({
+                    bg: 'blue.500/20',
+                    color: 'blue.300',
+                    fontSize: 'sm',
+                    fontWeight: 'bold',
+                    px: '2.5',
+                    py: '1',
+                    flexShrink: '0',
+                  })}
+                >
+                  2
+                </Badge>
+                <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'gray.300' })}>Write or load Markdown:</strong>{' '}
+                  Type directly in the editor using GitHub-flavored Markdown syntax, or load an
+                  existing .md file using the "Load File" button.
+                </p>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  className={css({
+                    bg: 'blue.500/20',
+                    color: 'blue.300',
+                    fontSize: 'sm',
+                    fontWeight: 'bold',
+                    px: '2.5',
+                    py: '1',
+                    flexShrink: '0',
+                  })}
+                >
+                  3
+                </Badge>
+                <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'gray.300' })}>
+                    See live preview with syntax highlighting:
+                  </strong>{' '}
+                  Watch your markdown render in real-time with proper formatting, code highlighting,
+                  tables, and task lists.
+                </p>
+              </div>
+
+              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                <Badge
+                  className={css({
+                    bg: 'blue.500/20',
+                    color: 'blue.300',
+                    fontSize: 'sm',
+                    fontWeight: 'bold',
+                    px: '2.5',
+                    py: '1',
+                    flexShrink: '0',
+                  })}
+                >
+                  4
+                </Badge>
+                <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'gray.300' })}>Export or copy your work:</strong>{' '}
+                  Use the action buttons to download as .md or .html files, copy markdown or HTML to
+                  clipboard, or reset to the default template.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Social Share */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.5 }}
+        >
+          <SocialShare
+            toolName="Markdown Editor & Preview"
+            toolUrl="https://supertool.com/tools/markdown-editor"
+            description="Write and preview GitHub-flavored Markdown in real-time with syntax highlighting, tables, and task lists. Perfect for README files and documentation!"
+            hashtags={['Markdown', 'Documentation', 'GithubMarkdown', 'Developer', 'Productivity']}
+          />
+        </motion.div>
+
+        {/* FAQ Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
           <FAQAccordion faqs={faqs} />
         </motion.div>
-        <RelatedTools currentToolPath="/tools/markdown-editor" category="productivity" />
+
+        {/* Related Tools */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.5 }}
+        >
+          <RelatedTools currentToolPath="/tools/markdown-editor" category="productivity" />
+        </motion.div>
+
+        {/* Tool Rating */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0, duration: 0.5 }}
+        >
+          <ToolRating toolId="/tools/markdown-editor" toolName="Markdown Editor" />
+        </motion.div>
+
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+      <ToolSearch />
+
+      
       </main>
-      <ToolRating toolId="/tools/markdown-editor" toolName="Markdown Editor" />
     </>
   )
 }

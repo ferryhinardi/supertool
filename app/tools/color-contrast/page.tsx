@@ -1,12 +1,25 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { AlertCircle, CheckCircle2, Copy, Eye, RefreshCw, Sparkles } from 'lucide-react'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import {
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  Copy,
+  Download,
+  Eye,
+  History,
+  RefreshCw,
+  Sparkles,
+  Star,
+  Wand2,
+} from 'lucide-react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -81,9 +94,69 @@ const presetColors = [
   { name: 'Purple', hex: '#8B5CF6' },
 ]
 
+interface ColorPair {
+  foreground: string
+  background: string
+  timestamp: number
+  ratio: number
+}
+
+// Generate accessible color suggestions
+function suggestAccessibleColors(
+  baseColor: string,
+  targetRatio: number = 4.5,
+  isForeground: boolean = true
+): string[] {
+  const suggestions: string[] = []
+  const rgb = hexToRgb(baseColor)
+  if (!rgb) return suggestions
+
+  // Try darkening and lightening the opposite color
+  for (let i = 0; i <= 255; i += 15) {
+    const testColor = `#${i.toString(16).padStart(2, '0')}${i.toString(16).padStart(2, '0')}${i.toString(16).padStart(2, '0')}`
+    const ratio = isForeground
+      ? getContrastRatio(baseColor, testColor)
+      : getContrastRatio(testColor, baseColor)
+
+    if (ratio >= targetRatio) {
+      suggestions.push(testColor)
+      if (suggestions.length >= 5) break
+    }
+  }
+
+  return suggestions.slice(0, 5)
+}
+
 function ColorContrastContent() {
   const [foreground, setForeground] = useState('#000000')
   const [background, setBackground] = useState('#FFFFFF')
+  const [history, setHistory] = useState<ColorPair[]>([])
+  const [favorites, setFavorites] = useState<ColorPair[]>([])
+  const [showHistory, setShowHistory] = useState(false)
+  const [showFavorites, setShowFavorites] = useState(false)
+  const [showSuggestions, setShowSuggestions] = useState(false)
+
+  // Load history and favorites from localStorage
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('color-contrast-history')
+    const savedFavorites = localStorage.getItem('color-contrast-favorites')
+
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory))
+      } catch (e) {
+        console.error('Failed to load history:', e)
+      }
+    }
+
+    if (savedFavorites) {
+      try {
+        setFavorites(JSON.parse(savedFavorites))
+      } catch (e) {
+        console.error('Failed to load favorites:', e)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     trackToolEvent('color_contrast_open', {})
@@ -119,6 +192,140 @@ function ColorContrastContent() {
     setBackground(randomHex())
     trackToolEvent('color_contrast_random', {})
   }
+
+  // Save to history
+  const saveToHistory = useCallback((fg: string, bg: string, ratio: number) => {
+    const newEntry: ColorPair = {
+      foreground: fg,
+      background: bg,
+      timestamp: Date.now(),
+      ratio,
+    }
+
+    setHistory((prevHistory) => {
+      const updatedHistory = [
+        newEntry,
+        ...prevHistory.filter((item) => !(item.foreground === fg && item.background === bg)),
+      ].slice(0, 20) // Keep last 20
+
+      localStorage.setItem('color-contrast-history', JSON.stringify(updatedHistory))
+      return updatedHistory
+    })
+  }, [])
+
+  // Add to favorites
+  const addToFavorites = () => {
+    const newFavorite: ColorPair = {
+      foreground,
+      background,
+      timestamp: Date.now(),
+      ratio: contrastRatio,
+    }
+
+    if (favorites.some((fav) => fav.foreground === foreground && fav.background === background)) {
+      toast.info('This color pair is already in favorites')
+      return
+    }
+
+    const updatedFavorites = [...favorites, newFavorite]
+    setFavorites(updatedFavorites)
+    localStorage.setItem('color-contrast-favorites', JSON.stringify(updatedFavorites))
+    toast.success('Added to favorites!')
+  }
+
+  // Remove from favorites
+  const removeFromFavorites = (fg: string, bg: string) => {
+    const updatedFavorites = favorites.filter(
+      (fav) => !(fav.foreground === fg && fav.background === bg)
+    )
+    setFavorites(updatedFavorites)
+    localStorage.setItem('color-contrast-favorites', JSON.stringify(updatedFavorites))
+    toast.success('Removed from favorites')
+  }
+
+  // Load from history/favorites
+  const loadColorPair = (fg: string, bg: string) => {
+    setForeground(fg)
+    setBackground(bg)
+    setShowHistory(false)
+    setShowFavorites(false)
+  }
+
+  // Export as JSON
+  const exportAsJSON = () => {
+    const data = {
+      foreground,
+      background,
+      contrastRatio: parseFloat(contrastRatio.toFixed(2)),
+      compliance: compliance.level,
+      normalText: compliance.normalText,
+      largeText: compliance.largeText,
+      timestamp: new Date().toISOString(),
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `color-contrast-${foreground.slice(1)}-${background.slice(1)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.success('Exported as JSON!')
+  }
+
+  // Export as PNG (screenshot)
+  const exportAsPNG = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = 800
+    canvas.height = 400
+    const ctx = canvas.getContext('2d')
+
+    if (!ctx) return
+
+    // Draw background
+    ctx.fillStyle = background
+    ctx.fillRect(0, 0, 800, 400)
+
+    // Draw text
+    ctx.fillStyle = foreground
+    ctx.font = 'bold 48px sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText(`Contrast Ratio: ${contrastRatio.toFixed(2)}:1`, 400, 150)
+
+    ctx.font = '32px sans-serif'
+    ctx.fillText(`WCAG ${compliance.level}`, 400, 220)
+
+    ctx.font = '24px sans-serif'
+    ctx.fillText(`${foreground} on ${background}`, 400, 280)
+
+    // Download
+    canvas.toBlob((blob) => {
+      if (!blob) return
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `color-contrast-${foreground.slice(1)}-${background.slice(1)}.png`
+      a.click()
+      URL.revokeObjectURL(url)
+    })
+
+    toast.success('Exported as PNG!')
+  }
+
+  // Save to history when colors change
+  useEffect(() => {
+    if (contrastRatio > 0) {
+      const timer = setTimeout(() => {
+        saveToHistory(foreground, background, contrastRatio)
+      }, 1000) // Debounce 1 second
+
+      return () => clearTimeout(timer)
+    }
+  }, [foreground, background, contrastRatio, saveToHistory])
+
+  const suggestions = useMemo(() => {
+    return suggestAccessibleColors(foreground, 4.5, true)
+  }, [foreground])
 
   return (
     <main
@@ -405,6 +612,7 @@ function ColorContrastContent() {
                 display: 'flex',
                 gap: '3',
                 justifyContent: 'center',
+                flexWrap: 'wrap',
               })}
             >
               <Button
@@ -419,7 +627,279 @@ function ColorContrastContent() {
                 <RefreshCw className={css({ h: '4', w: '4' })} />
                 Random Colors
               </Button>
+              <Button
+                onClick={addToFavorites}
+                className={css({
+                  gap: '2',
+                  bg: 'gray.800',
+                  color: 'yellow.400',
+                  _hover: { bg: 'gray.700' },
+                })}
+              >
+                <Star className={css({ h: '4', w: '4' })} />
+                Add to Favorites
+              </Button>
+              <Button
+                onClick={() => setShowSuggestions(!showSuggestions)}
+                className={css({
+                  gap: '2',
+                  bg: 'gray.800',
+                  color: 'purple.400',
+                  _hover: { bg: 'gray.700' },
+                })}
+              >
+                <Wand2 className={css({ h: '4', w: '4' })} />
+                Suggest Colors
+              </Button>
+              <Button
+                onClick={() => setShowHistory(!showHistory)}
+                className={css({
+                  gap: '2',
+                  bg: 'gray.800',
+                  color: 'blue.400',
+                  _hover: { bg: 'gray.700' },
+                })}
+              >
+                <History className={css({ h: '4', w: '4' })} />
+                History ({history.length})
+              </Button>
+              <Button
+                onClick={() => setShowFavorites(!showFavorites)}
+                className={css({
+                  gap: '2',
+                  bg: 'gray.800',
+                  color: 'yellow.400',
+                  _hover: { bg: 'gray.700' },
+                })}
+              >
+                <Star className={css({ h: '4', w: '4' })} />
+                Favorites ({favorites.length})
+              </Button>
             </div>
+
+            {/* Suggestions Panel */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className={css({ spaceY: '3' })}>
+                <div
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                  })}
+                >
+                  Accessible Background Suggestions (for current foreground)
+                </div>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: {
+                      base: 'repeat(2, 1fr)',
+                      sm: 'repeat(5, 1fr)',
+                    },
+                    gap: '2',
+                  })}
+                >
+                  {suggestions.map((suggestedBg) => {
+                    const ratio = getContrastRatio(foreground, suggestedBg)
+                    return (
+                      <button
+                        key={suggestedBg}
+                        type="button"
+                        onClick={() => setBackground(suggestedBg)}
+                        className={css({
+                          h: '16',
+                          rounded: 'lg',
+                          border: '2px solid',
+                          borderColor: 'gray.700',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          position: 'relative',
+                          _hover: {
+                            borderColor: 'purple.400',
+                            transform: 'scale(1.05)',
+                          },
+                        })}
+                        style={{ backgroundColor: suggestedBg }}
+                        title={`${suggestedBg} - Ratio: ${ratio.toFixed(2)}:1`}
+                      >
+                        <span
+                          className={css({
+                            position: 'absolute',
+                            bottom: '1',
+                            left: '1',
+                            right: '1',
+                            fontSize: 'xs',
+                            bg: 'black/50',
+                            px: '1',
+                            py: '0.5',
+                            rounded: 'sm',
+                            color: 'white',
+                          })}
+                        >
+                          {ratio.toFixed(1)}:1
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* History Panel */}
+            {showHistory && history.length > 0 && (
+              <div className={css({ spaceY: '3' })}>
+                <div
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                  })}
+                >
+                  Recent History
+                </div>
+                <div className={css({ spaceY: '2', maxH: '64', overflowY: 'auto' })}>
+                  {history.slice(0, 10).map((item, index) => (
+                    <button
+                      key={`${item.foreground}-${item.background}-${index}`}
+                      type="button"
+                      onClick={() => loadColorPair(item.foreground, item.background)}
+                      className={css({
+                        w: 'full',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '3',
+                        p: '3',
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        _hover: {
+                          borderColor: 'blue.400',
+                          bg: 'gray.800',
+                        },
+                      })}
+                    >
+                      <div
+                        className={css({ w: '12', h: '12', rounded: 'md', flexShrink: '0' })}
+                        style={{ backgroundColor: item.background }}
+                      >
+                        <div
+                          className={css({
+                            w: 'full',
+                            h: 'full',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          })}
+                          style={{ color: item.foreground }}
+                        >
+                          Aa
+                        </div>
+                      </div>
+                      <div className={css({ flex: '1', textAlign: 'left', fontSize: 'sm' })}>
+                        <div className={css({ color: 'gray.300', fontFamily: 'mono' })}>
+                          {item.foreground} / {item.background}
+                        </div>
+                        <div className={css({ color: 'gray.500', fontSize: 'xs' })}>
+                          Ratio: {item.ratio.toFixed(2)}:1
+                        </div>
+                      </div>
+                      <Clock className={css({ h: '4', w: '4', color: 'gray.500' })} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Favorites Panel */}
+            {showFavorites && favorites.length > 0 && (
+              <div className={css({ spaceY: '3' })}>
+                <div
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                  })}
+                >
+                  Favorite Color Pairs
+                </div>
+                <div className={css({ spaceY: '2', maxH: '64', overflowY: 'auto' })}>
+                  {favorites.map((item, index) => (
+                    <div
+                      key={`${item.foreground}-${item.background}-${index}`}
+                      className={css({
+                        w: 'full',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '3',
+                        p: '3',
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                      })}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => loadColorPair(item.foreground, item.background)}
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '3',
+                          flex: '1',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          _hover: {
+                            opacity: '0.8',
+                          },
+                        })}
+                      >
+                        <div
+                          className={css({ w: '12', h: '12', rounded: 'md', flexShrink: '0' })}
+                          style={{ backgroundColor: item.background }}
+                        >
+                          <div
+                            className={css({
+                              w: 'full',
+                              h: 'full',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            })}
+                            style={{ color: item.foreground }}
+                          >
+                            Aa
+                          </div>
+                        </div>
+                        <div className={css({ flex: '1', textAlign: 'left', fontSize: 'sm' })}>
+                          <div className={css({ color: 'gray.300', fontFamily: 'mono' })}>
+                            {item.foreground} / {item.background}
+                          </div>
+                          <div className={css({ color: 'gray.500', fontSize: 'xs' })}>
+                            Ratio: {item.ratio.toFixed(2)}:1
+                          </div>
+                        </div>
+                      </button>
+                      <Button
+                        onClick={() => removeFromFavorites(item.foreground, item.background)}
+                        className={css({
+                          gap: '2',
+                          bg: 'red.500/20',
+                          color: 'red.400',
+                          _hover: { bg: 'red.500/30' },
+                          px: '3',
+                          py: '2',
+                        })}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Color Presets */}
             <div className={css({ spaceY: '3' })}>
@@ -543,6 +1023,45 @@ function ColorContrastContent() {
                 {compliance.level === 'Fail' && <AlertCircle className={css({ h: '5', w: '5' })} />}
                 WCAG {compliance.level}
               </Badge>
+            </div>
+
+            {/* Export Actions */}
+            <div
+              className={css({
+                display: 'flex',
+                gap: '3',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+              })}
+            >
+              <Button
+                onClick={exportAsJSON}
+                className={css({
+                  gap: '2',
+                  bg: 'blue.500/20',
+                  border: '1px solid',
+                  borderColor: 'blue.500/50',
+                  color: 'blue.300',
+                  _hover: { bg: 'blue.500/30' },
+                })}
+              >
+                <Download className={css({ h: '4', w: '4' })} />
+                Export JSON
+              </Button>
+              <Button
+                onClick={exportAsPNG}
+                className={css({
+                  gap: '2',
+                  bg: 'green.500/20',
+                  border: '1px solid',
+                  borderColor: 'green.500/50',
+                  color: 'green.300',
+                  _hover: { bg: 'green.500/30' },
+                })}
+              >
+                <Download className={css({ h: '4', w: '4' })} />
+                Export PNG
+              </Button>
             </div>
 
             {/* Detailed Results */}
@@ -791,6 +1310,10 @@ function ColorContrastContent() {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+      <ToolSearch />
     </main>
   )
 }

@@ -22,11 +22,7 @@ export function SocialShare({ toolName, toolUrl, description, hashtags = [] }: S
     const hashtagString = hashtags.length > 0 ? `&hashtags=${hashtags.join(',')}` : ''
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(fullUrl)}${hashtagString}`
 
-    trackEvent({
-      action: 'social_share',
-      category: 'engagement',
-      label: `twitter_${toolName}`,
-    })
+    trackEvent({ action: 'social_share_twitter', category: 'social_share', label: toolName })
 
     window.open(twitterUrl, '_blank', 'width=600,height=400')
   }
@@ -34,11 +30,7 @@ export function SocialShare({ toolName, toolUrl, description, hashtags = [] }: S
   const handleLinkedInShare = () => {
     const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}`
 
-    trackEvent({
-      action: 'social_share',
-      category: 'engagement',
-      label: `linkedin_${toolName}`,
-    })
+    trackEvent({ action: 'social_share_linkedin', category: 'social_share', label: toolName })
 
     window.open(linkedInUrl, '_blank', 'width=600,height=600')
   }
@@ -46,11 +38,7 @@ export function SocialShare({ toolName, toolUrl, description, hashtags = [] }: S
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(fullUrl)
-      trackEvent({
-        action: 'social_share',
-        category: 'engagement',
-        label: `copy_link_${toolName}`,
-      })
+      trackEvent({ action: 'social_share_copy_link', category: 'social_share', label: toolName })
       toast.success('Link copied to clipboard!')
     } catch {
       toast.error('Failed to copy link')

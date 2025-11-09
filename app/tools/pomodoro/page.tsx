@@ -27,6 +27,7 @@ import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -1116,6 +1117,12 @@ export default function PomodoroTimerPage() {
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/pomodoro" category="productivity" />
       <ToolRating toolId="/tools/pomodoro" toolName="Pomodoro Timer" />
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

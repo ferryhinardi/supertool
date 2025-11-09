@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -740,6 +741,12 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="password-strength" variant="banner" />
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

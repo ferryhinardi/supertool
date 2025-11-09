@@ -14,6 +14,7 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { css } from '@/styled-system/css'
 
 export const dynamic = 'force-dynamic'
@@ -684,6 +685,12 @@ function Base64Content() {
       >
         <ToolRating toolId="/tools/base64" toolName="Base64 Encoder & Decoder" />
       </motion.div>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

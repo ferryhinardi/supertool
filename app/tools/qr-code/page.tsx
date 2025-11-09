@@ -38,6 +38,7 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import {
   type ExportFormat,
@@ -93,7 +94,17 @@ export type QRCodeType =
   | 'event'
   | 'appstore'
   | 'social'
-type QRStylePreset = 'classic' | 'modern' | 'branded' | 'minimalist' | 'professional' | 'vibrant'
+type QRStylePreset =
+  | 'classic'
+  | 'modern'
+  | 'branded'
+  | 'minimalist'
+  | 'professional'
+  | 'vibrant'
+  | 'ocean'
+  | 'sunset'
+  | 'forest'
+  | 'neon'
 type QRCornerStyle = 'square' | 'rounded' | 'extra-rounded' | 'dot'
 type QRDotStyle = 'square' | 'rounded' | 'dots' | 'classy'
 
@@ -306,6 +317,51 @@ const stylePresets: Record<QRStylePreset, Partial<QRStyleConfig>> = {
     eyeColor: '#DC2626',
     hasFrame: false,
   },
+  ocean: {
+    preset: 'ocean',
+    cornerStyle: 'rounded',
+    dotStyle: 'rounded',
+    hasGradient: true,
+    gradientColor1: '#0EA5E9',
+    gradientColor2: '#06B6D4',
+    hasEyeStyle: true,
+    eyeColor: '#0284C7',
+    hasFrame: false,
+  },
+  sunset: {
+    preset: 'sunset',
+    cornerStyle: 'extra-rounded',
+    dotStyle: 'rounded',
+    hasGradient: true,
+    gradientColor1: '#F97316',
+    gradientColor2: '#FB923C',
+    hasEyeStyle: true,
+    eyeColor: '#EA580C',
+    hasFrame: false,
+  },
+  forest: {
+    preset: 'forest',
+    cornerStyle: 'rounded',
+    dotStyle: 'classy',
+    hasGradient: true,
+    gradientColor1: '#10B981',
+    gradientColor2: '#059669',
+    hasEyeStyle: true,
+    eyeColor: '#047857',
+    hasFrame: false,
+  },
+  neon: {
+    preset: 'neon',
+    cornerStyle: 'extra-rounded',
+    dotStyle: 'dots',
+    hasGradient: true,
+    gradientColor1: '#A855F7',
+    gradientColor2: '#EC4899',
+    hasEyeStyle: true,
+    eyeColor: '#D946EF',
+    hasFrame: true,
+    frameColor: '#C026D3',
+  },
 }
 
 export default function QRCodePage() {
@@ -430,6 +486,12 @@ export default function QRCodePage() {
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const scanFileInputRef = useRef<HTMLInputElement>(null)
 
+  // Scan Analytics state
+  const [enableTracking, setEnableTracking] = useState(false)
+  const [trackingUrl, setTrackingUrl] = useState<string>('')
+  const [trackingCode, setTrackingCode] = useState<string>('')
+  const [isCreatingTrackingUrl, setIsCreatingTrackingUrl] = useState(false)
+
   // Load history on mount
   useEffect(() => {
     setHistory(getHistory())
@@ -438,10 +500,56 @@ export default function QRCodePage() {
   // Get filtered history
   const filteredHistory = getFilteredHistory(searchQuery, typeFilter, sortBy, showFavoritesOnly)
 
+  // Create tracking URL for scan analytics
+  const createTrackingUrl = async (originalUrl: string) => {
+    setIsCreatingTrackingUrl(true)
+    try {
+      const response = await fetch('/api/shorten', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: originalUrl }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create tracking URL')
+      }
+
+      const data = await response.json()
+      setTrackingUrl(data.shortUrl)
+      setTrackingCode(data.shortCode)
+      toast.success('Tracking URL created! View analytics after scanning.')
+      trackToolEvent('qr_tracking_enabled', { type })
+    } catch (error) {
+      console.error('Error creating tracking URL:', error)
+      toast.error('Failed to create tracking URL')
+      setEnableTracking(false)
+    } finally {
+      setIsCreatingTrackingUrl(false)
+    }
+  }
+
+  // Handle tracking toggle
+  useEffect(() => {
+    if (enableTracking && type === 'url' && urlInput && !trackingUrl) {
+      // Only create tracking URL for URL type and when URL is valid
+      if (urlInput.startsWith('http://') || urlInput.startsWith('https://')) {
+        createTrackingUrl(urlInput)
+      } else {
+        toast.error('Tracking requires a valid URL starting with http:// or https://')
+        setEnableTracking(false)
+      }
+    } else if (!enableTracking) {
+      // Clear tracking data when disabled
+      setTrackingUrl('')
+      setTrackingCode('')
+    }
+  }, [enableTracking, type, urlInput])
+
   const getQRValue = () => {
     switch (type) {
       case 'url':
-        return urlInput
+        // Use tracking URL if analytics is enabled and tracking URL is available
+        return enableTracking && trackingUrl ? trackingUrl : urlInput
       case 'text':
         return textInput
       case 'wifi':
@@ -658,15 +766,30 @@ url,https://github.com,GitHub,#000000`
       for (let i = 0; i < bulkState.items.length; i++) {
         const item = bulkState.items[i]
 
-        // Create a temporary SVG element
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-        svg.setAttribute('width', String(size))
-        svg.setAttribute('height', String(size))
-        svg.setAttribute('viewBox', `0 0 ${size} ${size}`)
+        // Create a temporary container for QR code generation
+        const tempContainer = document.createElement('div')
+        tempContainer.style.position = 'absolute'
+        tempContainer.style.left = '-9999px'
+        document.body.appendChild(tempContainer)
 
-        // Generate QR code data (simplified - in production use proper QR generation)
-        const _qrData = item.content
-        const fileName = `${item.label?.replace(/[^a-z0-9]/gi, '_') || item.id}.png`
+        // Create React root and render QR code
+        const tempSvgId = `bulk-qr-${i}`
+        tempContainer.innerHTML = `<div id="${tempSvgId}"></div>`
+
+        // Dynamically import and render QRCodeSVG
+        const { renderToString } = await import('react-dom/server')
+        const { QRCodeSVG } = await import('qrcode.react')
+
+        const qrSvgString = renderToString(
+          QRCodeSVG({
+            value: item.content,
+            size: size,
+            bgColor: bgColor,
+            fgColor: item.customColor || fgColor,
+            level: 'H',
+            includeMargin: includeMargin,
+          })
+        )
 
         // Create canvas and draw QR code
         const canvas = document.createElement('canvas')
@@ -675,16 +798,26 @@ url,https://github.com,GitHub,#000000`
         const ctx = canvas.getContext('2d')
 
         if (ctx) {
-          // Draw background
-          ctx.fillStyle = bgColor
-          ctx.fillRect(0, 0, size, size)
+          // Convert SVG string to image
+          const svgBlob = new Blob([qrSvgString], { type: 'image/svg+xml;charset=utf-8' })
+          const url = URL.createObjectURL(svgBlob)
+          const img = new Image()
 
-          // We'll need to generate the actual QR code here
-          // For now, create a placeholder
-          ctx.fillStyle = item.customColor || fgColor
-          ctx.fillRect(size / 4, size / 4, size / 2, size / 2)
+          await new Promise<void>((resolve) => {
+            img.onload = () => {
+              ctx.drawImage(img, 0, 0)
+              URL.revokeObjectURL(url)
+              resolve()
+            }
+            img.onerror = () => {
+              URL.revokeObjectURL(url)
+              resolve()
+            }
+            img.src = url
+          })
 
-          // Convert to blob and add to zip
+          // Convert canvas to blob and add to zip
+          const fileName = `${item.label?.replace(/[^a-z0-9]/gi, '_') || item.id}.png`
           await new Promise<void>((resolve) => {
             canvas.toBlob((blob) => {
               if (blob && folder) {
@@ -695,6 +828,10 @@ url,https://github.com,GitHub,#000000`
           })
         }
 
+        // Cleanup
+        document.body.removeChild(tempContainer)
+
+        // Update progress
         setBulkState({
           ...bulkState,
           isGenerating: true,
@@ -2011,6 +2148,71 @@ url,https://github.com,GitHub,#000000`
                 />
                 <span className="text-sm">Include margin</span>
               </label>
+
+              {type === 'url' && (
+                <div className={css({ mt: '2' })}>
+                  <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <input
+                      type="checkbox"
+                      checked={enableTracking}
+                      onChange={(e) => setEnableTracking(e.target.checked)}
+                      className="h-4 w-4 rounded"
+                      disabled={isCreatingTrackingUrl || !urlInput}
+                    />
+                    <span className="text-sm">
+                      Enable Scan Analytics{' '}
+                      <Badge variant="secondary" className="ml-1">
+                        Pro
+                      </Badge>
+                    </span>
+                  </label>
+                  <p
+                    className={css({
+                      mt: '1',
+                      fontSize: 'xs',
+                      color: 'gray.400',
+                    })}
+                  >
+                    Track scans with privacy-friendly analytics
+                  </p>
+                  {enableTracking && trackingUrl && (
+                    <div
+                      className={css({
+                        mt: '2',
+                        p: '2',
+                        rounded: 'md',
+                        border: '1px solid',
+                        borderColor: 'violet.500/30',
+                        bg: 'rgba(139, 92, 246, 0.1)',
+                      })}
+                    >
+                      <p className={css({ fontSize: 'xs', color: 'gray.300', mb: '1' })}>
+                        Tracking URL created:
+                      </p>
+                      <p
+                        className={css({
+                          fontSize: 'xs',
+                          color: 'violet.300',
+                          wordBreak: 'break-all',
+                        })}
+                      >
+                        {trackingUrl}
+                      </p>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="mt-2 h-7 px-2 text-xs"
+                        onClick={() => {
+                          window.open(`/api/analytics/${trackingCode}`, '_blank')
+                          trackToolEvent('qr_tracking_view_analytics', { type })
+                        }}
+                      >
+                        View Analytics
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -2043,13 +2245,24 @@ url,https://github.com,GitHub,#000000`
                 gridTemplateColumns: {
                   base: 'repeat(2, 1fr)',
                   sm: 'repeat(3, 1fr)',
-                  md: 'repeat(6, 1fr)',
+                  md: 'repeat(5, 1fr)',
                 },
                 gap: '3',
               })}
             >
               {(
-                ['classic', 'modern', 'branded', 'minimalist', 'professional', 'vibrant'] as const
+                [
+                  'classic',
+                  'modern',
+                  'branded',
+                  'minimalist',
+                  'professional',
+                  'vibrant',
+                  'ocean',
+                  'sunset',
+                  'forest',
+                  'neon',
+                ] as const
               ).map((preset) => (
                 <Button
                   key={preset}
@@ -3823,6 +4036,12 @@ url,https://github.com,GitHub,#000000`
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/qr-code" category="productivity" />
       <ToolRating toolId="/tools/qr-code" toolName="QR Code Generator" />
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

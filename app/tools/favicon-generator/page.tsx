@@ -4,6 +4,7 @@ import { Check, Copy, Download, Image as ImageIcon, Smile, Upload } from 'lucide
 import { useCallback, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -622,6 +623,12 @@ export default function FaviconGeneratorPage() {
           </p>
         </div>
       </Card>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

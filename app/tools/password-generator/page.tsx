@@ -26,6 +26,7 @@ import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import type { PasswordHistory } from './utils'
@@ -1562,6 +1563,9 @@ function PasswordGeneratorContent() {
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="password-generator" variant="banner" />
+
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      <ToolSearch />
     </main>
   )
 }

@@ -14,6 +14,20 @@ vi.mock('sonner', () => ({
 // Mock analytics
 vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
+  trackEvent: vi.fn(),
+}))
+
+// Mock SEO components that use Next.js Link
+vi.mock('@/components/ui/social-share', () => ({
+  SocialShare: () => null,
+}))
+
+vi.mock('@/components/ui/related-tools', () => ({
+  RelatedTools: () => null,
+}))
+
+vi.mock('@/components/ui/tool-rating', () => ({
+  ToolRating: () => null,
 }))
 
 // Mock Notification API
@@ -73,9 +87,15 @@ describe('Pomodoro Timer Page - Component Tests', () => {
   it('should display mode buttons', () => {
     render(<PomodoroTimerPage />)
 
-    expect(screen.getByRole('button', { name: /Work/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Short Break/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Long Break/i })).toBeInTheDocument()
+    // Use getAllByRole since "Work" appears in multiple places (mode button + FAQ)
+    const workButtons = screen.getAllByRole('button', { name: /^Work$/i })
+    expect(workButtons.length).toBeGreaterThan(0)
+
+    const shortBreakButtons = screen.getAllByRole('button', { name: /^Short Break$/i })
+    expect(shortBreakButtons.length).toBeGreaterThan(0)
+
+    const longBreakButtons = screen.getAllByRole('button', { name: /^Long Break$/i })
+    expect(longBreakButtons.length).toBeGreaterThan(0)
   })
 
   it('should display play and reset buttons', () => {

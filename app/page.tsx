@@ -29,6 +29,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput } from '@/components/ui/field'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   generateOrganizationSchema,
@@ -269,14 +270,9 @@ export default function HomePage() {
     })
   }
 
-  // Keyboard shortcut for search (Ctrl+K or Cmd+K)
+  // ESC to clear search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault()
-        searchInputRef.current?.focus()
-      }
-      // ESC to clear search
       if (e.key === 'Escape' && searchQuery) {
         // Use startTransition for non-urgent state update
         startTransition(() => {
@@ -624,7 +620,7 @@ export default function HomePage() {
                 </motion.button>
               )}
 
-              {/* Search hint */}
+              {/* Global Tool Search hint */}
               {!searchQuery && (
                 <motion.div
                   initial={false}
@@ -636,9 +632,19 @@ export default function HomePage() {
                     right: 8,
                     display: { base: 'none', sm: 'flex' },
                     alignItems: 'center',
+                    gap: '2',
                     pr: '5',
                   })}
                 >
+                  <span
+                    className={css({
+                      fontSize: 'xs',
+                      color: 'gray.600',
+                      fontWeight: 'medium',
+                    })}
+                  >
+                    Quick search
+                  </span>
                   <kbd
                     className={css({
                       rounded: 'sm',
@@ -649,10 +655,10 @@ export default function HomePage() {
                       py: '1',
                       fontSize: 'xs',
                       fontWeight: 'semibold',
-                      color: 'gray.500',
+                      color: 'gray.400',
                     })}
                   >
-                    Ctrl K
+                    ⌘K
                   </kbd>
                 </motion.div>
               )}
@@ -1295,6 +1301,9 @@ export default function HomePage() {
           ),
         }}
       />
+
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      <ToolSearch />
     </div>
   )
 }

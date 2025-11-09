@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent, trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -980,6 +981,12 @@ function RegexTesterContent() {
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/regex-tester" category="development" />
       <ToolRating toolId="/tools/regex-tester" toolName="Regex Pattern Library & Tester" />
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

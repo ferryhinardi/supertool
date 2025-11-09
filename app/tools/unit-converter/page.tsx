@@ -4,13 +4,22 @@ import { motion } from 'framer-motion'
 import {
   ArrowLeftRight,
   ArrowRight,
+  Clock,
+  Download,
+  GitBranch,
+  History,
   Info,
   Lightbulb,
+  Plus,
   Repeat,
+  RotateCcw,
+  Save,
   Sparkles,
   Star,
   Trash2,
   TrendingUp,
+  X,
+  Zap,
 } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
@@ -23,6 +32,7 @@ import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -41,6 +51,166 @@ interface Favorite {
   toUnit: string
   name?: string
 }
+
+interface ConversionHistoryItem {
+  id: string
+  timestamp: number
+  category: UnitCategory
+  fromValue: string
+  fromUnit: string
+  toValue: string
+  toUnit: string
+}
+
+interface ConversionStep {
+  id: string
+  unit: string
+  value: string
+}
+
+interface SavedChain {
+  id: string
+  name: string
+  category: UnitCategory
+  steps: { unit: string }[]
+  createdAt: number
+}
+
+interface ChainPreset {
+  id: string
+  name: string
+  description: string
+  category: UnitCategory
+  steps: string[]
+  defaultValue?: string // Optional predefined starting value
+}
+
+const chainPresets: ChainPreset[] = [
+  {
+    id: 'metric-length',
+    name: 'Metric Length Ladder',
+    description: 'From kilometers down to millimeters',
+    category: 'length',
+    steps: ['kilometer', 'meter', 'centimeter', 'millimeter'],
+  },
+  {
+    id: 'imperial-length',
+    name: 'Imperial Length Ladder',
+    description: 'From miles to inches',
+    category: 'length',
+    steps: ['mile', 'yard', 'foot', 'inch'],
+  },
+  {
+    id: 'metric-weight',
+    name: 'Metric Weight Ladder',
+    description: 'From tonnes to milligrams',
+    category: 'weight',
+    steps: ['metric_ton', 'kilogram', 'gram', 'milligram'],
+  },
+  {
+    id: 'imperial-weight',
+    name: 'Imperial Weight Ladder',
+    description: 'From tons to ounces',
+    category: 'weight',
+    steps: ['ton', 'pound', 'ounce'],
+  },
+  {
+    id: 'temperature-all',
+    name: 'Temperature Scale Tour',
+    description: 'All temperature scales',
+    category: 'temperature',
+    steps: ['celsius', 'fahrenheit', 'kelvin'],
+  },
+  {
+    id: 'metric-volume',
+    name: 'Metric Volume Ladder',
+    description: 'From liters to milliliters',
+    category: 'volume',
+    steps: ['liter', 'deciliter', 'centiliter', 'milliliter'],
+  },
+  {
+    id: 'time-cascade',
+    name: 'Time Cascade',
+    description: 'From days to seconds',
+    category: 'time',
+    steps: ['day', 'hour', 'minute', 'second'],
+  },
+  {
+    id: 'data-storage',
+    name: 'Data Storage Scale',
+    description: 'From terabytes to bytes',
+    category: 'digital',
+    steps: ['terabyte', 'gigabyte', 'megabyte', 'kilobyte', 'byte'],
+  },
+]
+
+// Chain Templates with Predefined Values
+const chainTemplates: ChainPreset[] = [
+  {
+    id: 'marathon-distance',
+    name: 'Marathon Distance',
+    description: 'Convert marathon distance (42.195 km)',
+    category: 'length',
+    steps: ['kilometer', 'meter', 'mile', 'foot'],
+    defaultValue: '42.195',
+  },
+  {
+    id: '5k-run',
+    name: '5K Run Distance',
+    description: 'Convert 5K run distance',
+    category: 'length',
+    steps: ['meter', 'kilometer', 'mile', 'yard'],
+    defaultValue: '5000',
+  },
+  {
+    id: 'human-body-temp',
+    name: 'Human Body Temperature',
+    description: 'Normal body temperature (37°C)',
+    category: 'temperature',
+    steps: ['celsius', 'fahrenheit', 'kelvin'],
+    defaultValue: '37',
+  },
+  {
+    id: 'water-boiling',
+    name: 'Water Boiling Point',
+    description: 'Water boiling temperature at sea level',
+    category: 'temperature',
+    steps: ['celsius', 'fahrenheit', 'kelvin'],
+    defaultValue: '100',
+  },
+  {
+    id: 'gallon-conversion',
+    name: 'One Gallon Conversion',
+    description: 'Convert one gallon to metric',
+    category: 'volume',
+    steps: ['gallon', 'liter', 'milliliter', 'cup'],
+    defaultValue: '1',
+  },
+  {
+    id: 'pound-weight',
+    name: 'One Pound Weight',
+    description: 'Convert one pound to metric weights',
+    category: 'weight',
+    steps: ['pound', 'kilogram', 'gram', 'ounce'],
+    defaultValue: '1',
+  },
+  {
+    id: 'movie-length',
+    name: 'Average Movie Length',
+    description: 'Convert 2 hour movie duration',
+    category: 'time',
+    steps: ['hour', 'minute', 'second'],
+    defaultValue: '2',
+  },
+  {
+    id: 'usb-drive',
+    name: '32GB USB Drive',
+    description: 'Convert 32GB storage capacity',
+    category: 'digital',
+    steps: ['gigabyte', 'megabyte', 'kilobyte', 'byte'],
+    defaultValue: '32',
+  },
+]
 
 const faqs = [
   {
@@ -119,6 +289,44 @@ function UnitConverterContent() {
     return []
   })
 
+  const [history, setHistory] = useState<ConversionHistoryItem[]>(() => {
+    if (typeof window === 'undefined') return []
+
+    const stored = localStorage.getItem('unitConverterHistory')
+    if (stored) {
+      try {
+        return JSON.parse(stored)
+      } catch (error) {
+        console.error('Failed to load history:', error)
+        return []
+      }
+    }
+    return []
+  })
+
+  const [showFormulaDetails, setShowFormulaDetails] = useState(false)
+  const [conversionChain, setConversionChain] = useState<ConversionStep[]>([])
+  const [chainInputValue, setChainInputValue] = useState('100')
+  const [savedChains, setSavedChains] = useState<SavedChain[]>(() => {
+    if (typeof window === 'undefined') return []
+    const stored = localStorage.getItem('unitConverterSavedChains')
+    if (stored) {
+      try {
+        return JSON.parse(stored)
+      } catch (error) {
+        console.error('Failed to load saved chains:', error)
+        return []
+      }
+    }
+    return []
+  })
+  const [showSaveChainDialog, setShowSaveChainDialog] = useState(false)
+  const [chainNameInput, setChainNameInput] = useState('')
+
+  // History search/filter state
+  const [historySearchQuery, setHistorySearchQuery] = useState('')
+  const [historyFilterCategory, setHistoryFilterCategory] = useState<UnitCategory | 'all'>('all')
+
   // Save favorites to localStorage (client-side only)
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -134,6 +342,17 @@ function UnitConverterContent() {
   useEffect(() => {
     trackToolEvent('unit_converter_open', {})
   }, [])
+
+  // Save history to localStorage (client-side only)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (history.length > 0) {
+        localStorage.setItem('unitConverterHistory', JSON.stringify(history))
+      } else {
+        localStorage.removeItem('unitConverterHistory')
+      }
+    }
+  }, [history])
 
   // Compute conversion result (derived value, not state)
   const toValue = useMemo(() => {
@@ -219,6 +438,392 @@ function UnitConverterContent() {
 
   const categories = getAllCategories()
   const categoryInfo = unitDefinitions[category]
+
+  // Save history to localStorage (client-side only)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (history.length > 0) {
+        localStorage.setItem('unitConverterHistory', JSON.stringify(history))
+      } else {
+        localStorage.removeItem('unitConverterHistory')
+      }
+    }
+  }, [history])
+
+  // Save savedChains to localStorage (client-side only)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (savedChains.length > 0) {
+        localStorage.setItem('unitConverterSavedChains', JSON.stringify(savedChains))
+      } else {
+        localStorage.removeItem('unitConverterSavedChains')
+      }
+    }
+  }, [savedChains])
+
+  // Add conversion to history when values change
+  useEffect(() => {
+    if (fromValue && toValue && toValue !== 'Error' && toValue !== '') {
+      const newHistoryItem: ConversionHistoryItem = {
+        id: Date.now().toString(),
+        timestamp: Date.now(),
+        category,
+        fromValue,
+        fromUnit,
+        toValue,
+        toUnit,
+      }
+
+      setHistory((prev) => {
+        // Avoid duplicate consecutive entries
+        if (prev.length > 0) {
+          const last = prev[0]
+          if (
+            last.category === category &&
+            last.fromUnit === fromUnit &&
+            last.toUnit === toUnit &&
+            last.fromValue === fromValue
+          ) {
+            return prev
+          }
+        }
+
+        // Keep only last 50 items
+        const updated = [newHistoryItem, ...prev].slice(0, 50)
+        return updated
+      })
+    }
+  }, [fromValue, toValue, category, fromUnit, toUnit])
+
+  const handleClearHistory = () => {
+    setHistory([])
+    toast.success('History cleared')
+    trackToolEvent('unit_converter_history_clear', {})
+  }
+
+  const handleExportHistory = () => {
+    const csv = [
+      ['Timestamp', 'Category', 'From Value', 'From Unit', 'To Value', 'To Unit'].join(','),
+      ...history.map((item) =>
+        [
+          new Date(item.timestamp).toISOString(),
+          item.category,
+          item.fromValue,
+          getUnitInfo(item.category, item.fromUnit)?.symbol || item.fromUnit,
+          item.toValue,
+          getUnitInfo(item.category, item.toUnit)?.symbol || item.toUnit,
+        ].join(',')
+      ),
+    ].join('\n')
+
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `unit-converter-history-${new Date().toISOString().split('T')[0]}.csv`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    toast.success('History exported!')
+    trackToolEvent('unit_converter_history_export', {})
+  }
+
+  const handleReplayHistory = (item: ConversionHistoryItem) => {
+    setCategory(item.category)
+    setFromUnit(item.fromUnit)
+    setToUnit(item.toUnit)
+    setFromValue(item.fromValue)
+    toast.success('Conversion loaded from history')
+    trackToolEvent('unit_converter_history_replay', { category: item.category })
+  }
+
+  // Generate detailed formula explanation
+  const getFormulaExplanation = () => {
+    if (!fromValue || !toValue || toValue === 'Error') return null
+
+    const baseUnit = Object.entries(categoryInfo.units).find(
+      ([, unit]) => unit.toBase.toString().includes('=> v') && !unit.toBase.toString().includes('*')
+    )?.[0]
+
+    // Special handling for temperature
+    if (category === 'temperature') {
+      if (fromUnit === 'celsius' && toUnit === 'fahrenheit') {
+        return {
+          formula: '°F = (°C × 9/5) + 32',
+          steps: [
+            `Multiply ${fromValue}°C by 9/5: ${fromValue} × 1.8 = ${(Number(fromValue) * 1.8).toFixed(4)}`,
+            `Add 32: ${(Number(fromValue) * 1.8).toFixed(4)} + 32 = ${toValue}°F`,
+          ],
+          explanation:
+            'Fahrenheit and Celsius scales have different zero points and degree sizes. This formula accounts for both the scaling factor (9/5) and the offset (32).',
+        }
+      }
+      if (fromUnit === 'fahrenheit' && toUnit === 'celsius') {
+        return {
+          formula: '°C = (°F - 32) × 5/9',
+          steps: [
+            `Subtract 32 from ${fromValue}°F: ${fromValue} - 32 = ${(Number(fromValue) - 32).toFixed(4)}`,
+            `Multiply by 5/9: ${(Number(fromValue) - 32).toFixed(4)} × 0.5556 = ${toValue}°C`,
+          ],
+          explanation:
+            'Converting from Fahrenheit requires first removing the 32-degree offset, then scaling by 5/9 to account for different degree sizes.',
+        }
+      }
+      if (fromUnit === 'celsius' && toUnit === 'kelvin') {
+        return {
+          formula: 'K = °C + 273.15',
+          steps: [`Add 273.15 to ${fromValue}°C: ${fromValue} + 273.15 = ${toValue}K`],
+          explanation:
+            'Kelvin and Celsius have the same degree size but different zero points. Absolute zero (0K) equals -273.15°C.',
+        }
+      }
+      if (fromUnit === 'kelvin' && toUnit === 'celsius') {
+        return {
+          formula: '°C = K - 273.15',
+          steps: [`Subtract 273.15 from ${fromValue}K: ${fromValue} - 273.15 = ${toValue}°C`],
+          explanation:
+            'Converting from Kelvin to Celsius simply requires subtracting the offset of 273.15 degrees.',
+        }
+      }
+    }
+
+    // For other conversions via base unit
+    const fromInfo = getUnitInfo(category, fromUnit)
+    const toInfo = getUnitInfo(category, toUnit)
+
+    if (!fromInfo || !toInfo) return null
+
+    const baseValue = fromInfo.toBase(Number(fromValue))
+    const factor1 = fromInfo.toBase(1)
+    const factor2 = toInfo.fromBase(1)
+
+    if (factor1 === 1 && factor2 !== 1) {
+      // From base to target
+      return {
+        formula: `${toInfo.symbol} = ${fromInfo.symbol} × ${factor2.toFixed(6)}`,
+        steps: [
+          `Multiply ${fromValue} ${fromInfo.symbol} by conversion factor: ${fromValue} × ${factor2.toFixed(6)} = ${toValue} ${toInfo.symbol}`,
+        ],
+        explanation: `1 ${fromInfo.symbol} equals ${factor2.toFixed(6)} ${toInfo.symbol}. This direct conversion multiplies your value by this factor.`,
+      }
+    }
+
+    if (factor1 !== 1 && factor2 === 1) {
+      // From source to base
+      return {
+        formula: `${toInfo.symbol} = ${fromInfo.symbol} × ${factor1.toFixed(6)}`,
+        steps: [
+          `Multiply ${fromValue} ${fromInfo.symbol} by conversion factor: ${fromValue} × ${factor1.toFixed(6)} = ${toValue} ${toInfo.symbol}`,
+        ],
+        explanation: `1 ${fromInfo.symbol} equals ${factor1.toFixed(6)} ${toInfo.symbol}. This direct conversion multiplies your value by this factor.`,
+      }
+    }
+
+    // Two-step conversion via base unit
+    return {
+      formula: `${toInfo.symbol} = (${fromInfo.symbol} × ${factor1.toFixed(6)}) × ${factor2.toFixed(6)}`,
+      steps: [
+        `Step 1: Convert ${fromValue} ${fromInfo.symbol} to base unit: ${fromValue} × ${factor1.toFixed(6)} = ${baseValue.toFixed(6)}`,
+        `Step 2: Convert base unit to ${toInfo.symbol}: ${baseValue.toFixed(6)} × ${factor2.toFixed(6)} = ${toValue} ${toInfo.symbol}`,
+      ],
+      explanation: `This conversion uses a two-step process through the base unit (${baseUnit || 'base'}). First, convert from ${fromInfo.name} to the base unit, then from base to ${toInfo.name}.`,
+    }
+  }
+
+  const formulaExplanation = useMemo(
+    () => getFormulaExplanation(),
+    [fromValue, toValue, category, fromUnit, toUnit]
+  )
+
+  // Multi-Step Conversion Handlers
+  const handleAddChainStep = () => {
+    if (conversionChain.length === 0) {
+      // Initialize chain with current from and to units
+      setConversionChain([
+        { id: Date.now().toString(), unit: fromUnit, value: chainInputValue },
+        { id: (Date.now() + 1).toString(), unit: toUnit, value: '' },
+      ])
+    } else {
+      // Add a new step with the last unit from the chain
+      const lastUnit = conversionChain[conversionChain.length - 1].unit
+      const availableUnits = getUnitsForCategory(category)
+      const nextUnit = availableUnits.find((u) => u !== lastUnit) || availableUnits[0]
+      setConversionChain([
+        ...conversionChain,
+        { id: Date.now().toString(), unit: nextUnit, value: '' },
+      ])
+    }
+    trackToolEvent('unit_converter_chain_add_step', { category })
+  }
+
+  const handleRemoveChainStep = (id: string) => {
+    setConversionChain(conversionChain.filter((step) => step.id !== id))
+    trackToolEvent('unit_converter_chain_remove_step', { category })
+  }
+
+  const handleClearChain = () => {
+    setConversionChain([])
+    setChainInputValue('100')
+    trackToolEvent('unit_converter_chain_clear', { category })
+  }
+
+  const handleChainUnitChange = (id: string, newUnit: string) => {
+    setConversionChain(
+      conversionChain.map((step) => (step.id === id ? { ...step, unit: newUnit } : step))
+    )
+  }
+
+  // Calculate chain values
+  useEffect(() => {
+    if (conversionChain.length === 0) return
+
+    const updatedChain = [...conversionChain]
+    updatedChain[0].value = chainInputValue
+
+    for (let i = 1; i < updatedChain.length; i++) {
+      const prevStep = updatedChain[i - 1]
+      const currentStep = updatedChain[i]
+
+      try {
+        const result = convertUnit(
+          Number(prevStep.value),
+          prevStep.unit,
+          currentStep.unit,
+          category
+        )
+        currentStep.value = result.toFixed(8).replace(/\.?0+$/, '')
+      } catch (error) {
+        console.error('Chain conversion error:', error)
+        currentStep.value = 'Error'
+      }
+    }
+
+    setConversionChain(updatedChain)
+  }, [chainInputValue, category])
+
+  // Recalculate chain when units change
+  useEffect(() => {
+    if (conversionChain.length === 0) return
+
+    const updatedChain = [...conversionChain]
+
+    for (let i = 1; i < updatedChain.length; i++) {
+      const prevStep = updatedChain[i - 1]
+      const currentStep = updatedChain[i]
+
+      try {
+        const result = convertUnit(
+          Number(prevStep.value),
+          prevStep.unit,
+          currentStep.unit,
+          category
+        )
+        currentStep.value = result.toFixed(8).replace(/\.?0+$/, '')
+      } catch (error) {
+        console.error('Chain conversion error:', error)
+        currentStep.value = 'Error'
+      }
+    }
+
+    setConversionChain(updatedChain)
+  }, [conversionChain.map((s) => s.unit).join(',')])
+
+  // Enhanced Chain Handlers
+  const handleSaveChain = (name: string) => {
+    if (conversionChain.length < 2) {
+      toast.error('Chain must have at least 2 steps to save')
+      return
+    }
+
+    const newSavedChain: SavedChain = {
+      id: Date.now().toString(),
+      name,
+      category,
+      steps: conversionChain.map((step) => ({ unit: step.unit })),
+      createdAt: Date.now(),
+    }
+
+    setSavedChains([...savedChains, newSavedChain])
+    toast.success(`Chain "${name}" saved!`)
+    trackToolEvent('unit_converter_chain_save', { category, steps: conversionChain.length })
+  }
+
+  const handleLoadSavedChain = (chain: SavedChain) => {
+    setCategory(chain.category)
+    setConversionChain(
+      chain.steps.map((step, index) => ({
+        id: `${Date.now()}-${index}`,
+        unit: step.unit,
+        value: index === 0 ? chainInputValue : '',
+      }))
+    )
+    toast.success(`Loaded chain: ${chain.name}`)
+    trackToolEvent('unit_converter_chain_load', { category: chain.category })
+  }
+
+  const handleDeleteSavedChain = (id: string) => {
+    setSavedChains(savedChains.filter((c) => c.id !== id))
+    toast.success('Chain deleted')
+    trackToolEvent('unit_converter_chain_delete', {})
+  }
+
+  const handleLoadPreset = (preset: ChainPreset) => {
+    setCategory(preset.category)
+
+    // If preset has a default value, use it and update the input
+    if (preset.defaultValue) {
+      setChainInputValue(preset.defaultValue)
+    }
+
+    setConversionChain(
+      preset.steps.map((unit, index) => ({
+        id: `${Date.now()}-${index}`,
+        unit,
+        value: index === 0 ? preset.defaultValue || chainInputValue : '',
+      }))
+    )
+
+    const toastMessage = preset.defaultValue
+      ? `Loaded template: ${preset.name} (${preset.defaultValue})`
+      : `Loaded preset: ${preset.name}`
+    toast.success(toastMessage)
+    trackToolEvent('unit_converter_preset_load', {
+      category: preset.category,
+      hasDefaultValue: !!preset.defaultValue,
+    })
+  }
+
+  const handleExportChainResults = () => {
+    if (conversionChain.length === 0) {
+      toast.error('No chain to export')
+      return
+    }
+
+    const csv = [
+      ['Step', 'Unit', 'Value', 'Symbol'].join(','),
+      ...conversionChain.map((step, index) => {
+        const unitInfo = getUnitInfo(category, step.unit)
+        return [index + 1, unitInfo?.name || step.unit, step.value, unitInfo?.symbol || ''].join(
+          ','
+        )
+      }),
+    ].join('\n')
+
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `unit-converter-chain-${new Date().toISOString().split('T')[0]}.csv`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    toast.success('Chain results exported!')
+    trackToolEvent('unit_converter_chain_export', { category })
+  }
 
   return (
     <main
@@ -410,11 +1015,6 @@ function UnitConverterContent() {
                   value={fromValue}
                   onChange={(e) => {
                     setFromValue(e.target.value)
-                    trackToolEvent('unit_converter_convert', {
-                      category,
-                      from_unit: fromUnit,
-                      to_unit: toUnit,
-                    })
                   }}
                   placeholder="Enter value"
                   className={css({
@@ -563,8 +1163,8 @@ function UnitConverterContent() {
               )}
             </div>
 
-            {/* Quick Conversion Info */}
-            {fromValue && toValue && toValue !== 'Error' && (
+            {/* Enhanced Formula Display */}
+            {fromValue && toValue && toValue !== 'Error' && formulaExplanation && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -574,21 +1174,885 @@ function UnitConverterContent() {
                   borderColor: 'blue.500/20',
                   bg: 'blue.500/5',
                   p: '4',
+                  spaceY: '3',
                 })}
               >
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
-                  <TrendingUp className={css({ h: '4', w: '4', color: 'blue.400' })} />
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'blue.300' })}
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  })}
+                >
+                  <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <TrendingUp className={css({ h: '4', w: '4', color: 'blue.400' })} />
+                    <span
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'blue.300' })}
+                    >
+                      Conversion Formula
+                    </span>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      setShowFormulaDetails(!showFormulaDetails)
+                      trackToolEvent('unit_converter_convert', { action: 'toggle_formula' })
+                    }}
+                    size="sm"
+                    className={css({
+                      gap: '2',
+                      bg: 'transparent',
+                      color: 'blue.400',
+                      fontSize: 'xs',
+                      h: 'auto',
+                      p: '1',
+                      _hover: { bg: 'blue.500/10' },
+                    })}
                   >
-                    Conversion Formula
-                  </span>
+                    <Info className={css({ h: '3', w: '3' })} />
+                    {showFormulaDetails ? 'Hide Details' : 'Show Details'}
+                  </Button>
                 </div>
+
+                <div
+                  className={css({
+                    fontFamily: 'mono',
+                    fontSize: 'sm',
+                    color: 'gray.300',
+                    bg: 'gray.800/50',
+                    p: '3',
+                    rounded: 'md',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                  })}
+                >
+                  {formulaExplanation.formula}
+                </div>
+
                 <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
-                  1 {fromUnitInfo?.symbol} = {convertUnit(1, fromUnit, toUnit, category).toFixed(6)}{' '}
-                  {toUnitInfo?.symbol}
+                  Quick reference: 1 {fromUnitInfo?.symbol} ={' '}
+                  {convertUnit(1, fromUnit, toUnit, category).toFixed(6)} {toUnitInfo?.symbol}
                 </p>
+
+                {showFormulaDetails && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className={css({
+                      spaceY: '3',
+                      pt: '2',
+                      borderTop: '1px solid',
+                      borderColor: 'blue.500/20',
+                    })}
+                  >
+                    <div>
+                      <h4
+                        className={css({
+                          fontSize: 'xs',
+                          fontWeight: 'semibold',
+                          color: 'blue.300',
+                          mb: '2',
+                          textTransform: 'uppercase',
+                        })}
+                      >
+                        Step-by-Step Calculation
+                      </h4>
+                      <div className={css({ spaceY: '2' })}>
+                        {formulaExplanation.steps.map((step, index) => (
+                          <div
+                            key={index}
+                            className={css({ display: 'flex', gap: '2', alignItems: 'start' })}
+                          >
+                            <Badge
+                              className={css({
+                                bg: 'blue.500/20',
+                                color: 'blue.300',
+                                border: '1px solid',
+                                borderColor: 'blue.500/30',
+                                fontSize: 'xs',
+                                h: '5',
+                                w: '5',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: '0',
+                              })}
+                            >
+                              {index + 1}
+                            </Badge>
+                            <p className={css({ fontSize: 'xs', color: 'gray.400', flex: '1' })}>
+                              {step}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div
+                      className={css({
+                        bg: 'cyan.500/10',
+                        border: '1px solid',
+                        borderColor: 'cyan.500/20',
+                        rounded: 'md',
+                        p: '3',
+                      })}
+                    >
+                      <div className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
+                        <Lightbulb
+                          className={css({
+                            h: '4',
+                            w: '4',
+                            color: 'cyan.400',
+                            flexShrink: '0',
+                            mt: '0.5',
+                          })}
+                        />
+                        <div>
+                          <h4
+                            className={css({
+                              fontSize: 'xs',
+                              fontWeight: 'semibold',
+                              color: 'cyan.300',
+                              mb: '1',
+                            })}
+                          >
+                            How This Works
+                          </h4>
+                          <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                            {formulaExplanation.explanation}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
               </motion.div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Multi-Step Conversions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'teal.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              })}
+            >
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <GitBranch className={css({ h: '5', w: '5', color: 'teal.400' })} />
+                <div>
+                  <CardTitle>Multi-Step Conversions</CardTitle>
+                  <CardDescription>
+                    Chain multiple conversions to see how values transform through different units
+                  </CardDescription>
+                </div>
+              </div>
+              <div className={css({ display: 'flex', gap: '2' })}>
+                {conversionChain.length === 0 ? (
+                  <Button
+                    onClick={handleAddChainStep}
+                    size="sm"
+                    className={css({
+                      gap: '2',
+                      bg: 'teal.500/20',
+                      color: 'teal.300',
+                      border: '1px solid',
+                      borderColor: 'teal.500/30',
+                      _hover: { bg: 'teal.500/30' },
+                    })}
+                  >
+                    <Plus className={css({ h: '4', w: '4' })} />
+                    Start Chain
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      onClick={handleAddChainStep}
+                      size="sm"
+                      className={css({
+                        gap: '2',
+                        bg: 'teal.500/20',
+                        color: 'teal.300',
+                        border: '1px solid',
+                        borderColor: 'teal.500/30',
+                        _hover: { bg: 'teal.500/30' },
+                      })}
+                    >
+                      <Plus className={css({ h: '4', w: '4' })} />
+                      Add Step
+                    </Button>
+                    <Button
+                      onClick={handleClearChain}
+                      size="sm"
+                      className={css({
+                        gap: '2',
+                        bg: 'gray.800',
+                        color: 'gray.400',
+                        _hover: { bg: 'red.500/20', color: 'red.400' },
+                      })}
+                    >
+                      <Trash2 className={css({ h: '4', w: '4' })} />
+                      Clear Chain
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {conversionChain.length === 0 ? (
+              <div
+                className={css({
+                  textAlign: 'center',
+                  py: '8',
+                  px: '4',
+                  rounded: 'lg',
+                  border: '2px dashed',
+                  borderColor: 'gray.700',
+                  bg: 'gray.800/30',
+                })}
+              >
+                <GitBranch
+                  className={css({
+                    h: '12',
+                    w: '12',
+                    color: 'gray.600',
+                    mx: 'auto',
+                    mb: '3',
+                  })}
+                />
+                <h3
+                  className={css({
+                    fontSize: 'lg',
+                    fontWeight: 'semibold',
+                    color: 'gray.300',
+                    mb: '2',
+                  })}
+                >
+                  Create a Conversion Chain
+                </h3>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.500',
+                    mb: '4',
+                    maxW: 'md',
+                    mx: 'auto',
+                  })}
+                >
+                  Chain multiple unit conversions together to see step-by-step transformations. For
+                  example: Miles → Kilometers → Meters → Centimeters
+                </p>
+                <Button
+                  onClick={handleAddChainStep}
+                  className={css({
+                    gap: '2',
+                    bg: 'teal.500/20',
+                    color: 'teal.300',
+                    border: '1px solid',
+                    borderColor: 'teal.500/30',
+                    _hover: { bg: 'teal.500/30' },
+                  })}
+                >
+                  <Plus className={css({ h: '4', w: '4' })} />
+                  Start Chain
+                </Button>
+              </div>
+            ) : (
+              <div className={css({ spaceY: '4' })}>
+                {/* Input Value */}
+                <div className={css({ spaceY: '2' })}>
+                  <label
+                    htmlFor="chain-input"
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  >
+                    Starting Value
+                  </label>
+                  <Input
+                    id="chain-input"
+                    type="text"
+                    inputMode="decimal"
+                    value={chainInputValue}
+                    onChange={(e) => setChainInputValue(e.target.value)}
+                    placeholder="Enter value"
+                    className={css({
+                      h: '12',
+                      fontSize: 'lg',
+                      bg: 'gray.800/50',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      _focus: { borderColor: 'teal.500', ring: '2px', ringColor: 'teal.500/20' },
+                    })}
+                  />
+                </div>
+
+                {/* Conversion Chain Flow */}
+                <div className={css({ position: 'relative', spaceY: '0' })}>
+                  {conversionChain.map((step, index) => {
+                    const unitInfo = getUnitInfo(category, step.unit)
+                    const isFirst = index === 0
+                    const isLast = index === conversionChain.length - 1
+
+                    return (
+                      <div key={step.id}>
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className={css({
+                            position: 'relative',
+                            rounded: 'lg',
+                            border: '1px solid',
+                            borderColor: isFirst
+                              ? 'teal.500/40'
+                              : isLast
+                                ? 'cyan.500/40'
+                                : 'gray.700',
+                            bg: isFirst ? 'teal.500/10' : isLast ? 'cyan.500/10' : 'gray.800/50',
+                            p: '4',
+                          })}
+                        >
+                          <div
+                            className={css({
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '3',
+                              justifyContent: 'space-between',
+                            })}
+                          >
+                            <div className={css({ flex: '1', spaceY: '2' })}>
+                              <div
+                                className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
+                              >
+                                <Badge
+                                  className={css({
+                                    bg: isFirst
+                                      ? 'teal.500/30'
+                                      : isLast
+                                        ? 'cyan.500/30'
+                                        : 'gray.700',
+                                    color: isFirst ? 'teal.200' : isLast ? 'cyan.200' : 'gray.300',
+                                    border: '1px solid',
+                                    borderColor: isFirst
+                                      ? 'teal.500/40'
+                                      : isLast
+                                        ? 'cyan.500/40'
+                                        : 'gray.600',
+                                  })}
+                                >
+                                  {isFirst ? 'Start' : isLast ? 'Result' : `Step ${index}`}
+                                </Badge>
+                              </div>
+
+                              <div
+                                className={css({ display: 'flex', alignItems: 'center', gap: '3' })}
+                              >
+                                <select
+                                  value={step.unit}
+                                  onChange={(e) => handleChainUnitChange(step.id, e.target.value)}
+                                  className={css({
+                                    flex: '1',
+                                    h: '10',
+                                    rounded: 'md',
+                                    border: '1px solid',
+                                    borderColor: 'gray.600',
+                                    bg: 'gray.800',
+                                    px: '3',
+                                    fontSize: 'sm',
+                                    color: 'gray.200',
+                                    cursor: 'pointer',
+                                    _hover: { bg: 'gray.750', borderColor: 'gray.500' },
+                                    _focus: {
+                                      outline: 'none',
+                                      borderColor: 'teal.500',
+                                      ring: '1px',
+                                      ringColor: 'teal.500/20',
+                                    },
+                                  })}
+                                >
+                                  {availableUnits.map((unit) => {
+                                    const info = getUnitInfo(category, unit)
+                                    return (
+                                      <option key={unit} value={unit}>
+                                        {info?.name} ({info?.symbol})
+                                      </option>
+                                    )
+                                  })}
+                                </select>
+
+                                <div
+                                  className={css({
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '2',
+                                    minW: '32',
+                                  })}
+                                >
+                                  <span
+                                    className={css({
+                                      fontSize: 'lg',
+                                      fontWeight: 'bold',
+                                      color: isFirst
+                                        ? 'teal.300'
+                                        : isLast
+                                          ? 'cyan.300'
+                                          : 'gray.300',
+                                    })}
+                                  >
+                                    {step.value || '—'}
+                                  </span>
+                                  <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                                    {unitInfo?.symbol}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {!isFirst && (
+                              <Button
+                                onClick={() => handleRemoveChainStep(step.id)}
+                                size="sm"
+                                className={css({
+                                  bg: 'transparent',
+                                  color: 'gray.500',
+                                  p: '2',
+                                  h: 'auto',
+                                  _hover: { bg: 'red.500/20', color: 'red.400' },
+                                })}
+                              >
+                                <X className={css({ h: '4', w: '4' })} />
+                              </Button>
+                            )}
+                          </div>
+                        </motion.div>
+
+                        {/* Arrow between steps */}
+                        {!isLast && (
+                          <div
+                            className={css({ display: 'flex', justifyContent: 'center', py: '2' })}
+                          >
+                            <ArrowRight className={css({ h: '5', w: '5', color: 'teal.500/50' })} />
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+
+                {/* Summary */}
+                {conversionChain.length >= 2 &&
+                  conversionChain[conversionChain.length - 1].value && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className={css({
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'teal.500/30',
+                        bg: 'teal.500/5',
+                        p: '4',
+                        spaceY: '3',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2',
+                        })}
+                      >
+                        <Info className={css({ h: '4', w: '4', color: 'teal.400' })} />
+                        <span
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'semibold',
+                            color: 'teal.300',
+                          })}
+                        >
+                          Chain Summary
+                        </span>
+                      </div>
+                      <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                        {chainInputValue} {getUnitInfo(category, conversionChain[0].unit)?.symbol} →{' '}
+                        {conversionChain.length - 1} step{conversionChain.length > 2 ? 's' : ''} →{' '}
+                        <span className={css({ fontWeight: 'bold', color: 'cyan.300' })}>
+                          {conversionChain[conversionChain.length - 1].value}{' '}
+                          {
+                            getUnitInfo(category, conversionChain[conversionChain.length - 1].unit)
+                              ?.symbol
+                          }
+                        </span>
+                      </p>
+                      {/* Chain Actions */}
+                      <div className={css({ display: 'flex', gap: '2', pt: '2' })}>
+                        <Button
+                          onClick={() => setShowSaveChainDialog(true)}
+                          size="sm"
+                          className={css({
+                            gap: '2',
+                            bg: 'teal.500/20',
+                            color: 'teal.300',
+                            border: '1px solid',
+                            borderColor: 'teal.500/30',
+                            _hover: { bg: 'teal.500/30' },
+                          })}
+                        >
+                          <Save className={css({ h: '4', w: '4' })} />
+                          Save Chain
+                        </Button>
+                        <Button
+                          onClick={handleExportChainResults}
+                          size="sm"
+                          className={css({
+                            gap: '2',
+                            bg: 'gray.800',
+                            color: 'gray.400',
+                            _hover: { bg: 'gray.700', color: 'cyan.400' },
+                          })}
+                        >
+                          <Download className={css({ h: '4', w: '4' })} />
+                          Export CSV
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
+
+                {/* Save Chain Dialog */}
+                {showSaveChainDialog && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className={css({
+                      position: 'fixed',
+                      inset: '0',
+                      bg: 'black/60',
+                      backdropFilter: 'blur(4px)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      zIndex: '50',
+                      px: '4',
+                    })}
+                    onClick={() => setShowSaveChainDialog(false)}
+                  >
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className={css({
+                        bg: 'gray.900',
+                        rounded: 'xl',
+                        border: '1px solid',
+                        borderColor: 'teal.500/30',
+                        p: '6',
+                        maxW: 'md',
+                        w: 'full',
+                        spaceY: '4',
+                      })}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div>
+                        <h3
+                          className={css({
+                            fontSize: 'lg',
+                            fontWeight: 'semibold',
+                            color: 'teal.300',
+                            mb: '2',
+                          })}
+                        >
+                          Save Conversion Chain
+                        </h3>
+                        <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                          Give your chain a name to save it for later use
+                        </p>
+                      </div>
+                      <Input
+                        value={chainNameInput}
+                        onChange={(e) => setChainNameInput(e.target.value)}
+                        placeholder="e.g., My Length Conversion"
+                        className={css({
+                          h: '12',
+                          bg: 'gray.800/50',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          _focus: {
+                            borderColor: 'teal.500',
+                            ring: '2px',
+                            ringColor: 'teal.500/20',
+                          },
+                        })}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && chainNameInput.trim()) {
+                            handleSaveChain(chainNameInput.trim())
+                            setShowSaveChainDialog(false)
+                            setChainNameInput('')
+                          }
+                        }}
+                      />
+                      <div
+                        className={css({ display: 'flex', gap: '2', justifyContent: 'flex-end' })}
+                      >
+                        <Button
+                          onClick={() => {
+                            setShowSaveChainDialog(false)
+                            setChainNameInput('')
+                          }}
+                          className={css({
+                            bg: 'gray.800',
+                            color: 'gray.400',
+                            _hover: { bg: 'gray.700' },
+                          })}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            if (chainNameInput.trim()) {
+                              handleSaveChain(chainNameInput.trim())
+                              setShowSaveChainDialog(false)
+                              setChainNameInput('')
+                            }
+                          }}
+                          disabled={!chainNameInput.trim()}
+                          className={css({
+                            gap: '2',
+                            bg: 'teal.500/20',
+                            color: 'teal.300',
+                            border: '1px solid',
+                            borderColor: 'teal.500/30',
+                            _hover: { bg: 'teal.500/30' },
+                            _disabled: { opacity: '0.5', cursor: 'not-allowed' },
+                          })}
+                        >
+                          <Save className={css({ h: '4', w: '4' })} />
+                          Save Chain
+                        </Button>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {/* Preset Chains Section */}
+                <div
+                  className={css({
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: 'yellow.500/20',
+                    bg: 'yellow.500/5',
+                    p: '4',
+                    spaceY: '3',
+                  })}
+                >
+                  <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <Zap className={css({ h: '4', w: '4', color: 'yellow.400' })} />
+                    <span
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'semibold',
+                        color: 'yellow.300',
+                      })}
+                    >
+                      Quick Start Presets
+                    </span>
+                  </div>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Load common conversion chains instantly
+                  </p>
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+                      gap: '2',
+                    })}
+                  >
+                    {chainPresets.map((preset) => (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => handleLoadPreset(preset)}
+                        className={css({
+                          textAlign: 'left',
+                          rounded: 'md',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'gray.800/50',
+                          p: '3',
+                          transition: 'all 0.2s',
+                          cursor: 'pointer',
+                          _hover: { bg: 'gray.800', borderColor: 'yellow.500/50' },
+                        })}
+                      >
+                        <div
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '2',
+                            mb: '1',
+                          })}
+                        >
+                          <Badge
+                            className={css({
+                              bg: 'yellow.500/20',
+                              color: 'yellow.300',
+                              border: '1px solid',
+                              borderColor: 'yellow.500/30',
+                              fontSize: 'xs',
+                            })}
+                          >
+                            {unitDefinitions[preset.category].name}
+                          </Badge>
+                          <span
+                            className={css({
+                              fontSize: 'sm',
+                              fontWeight: 'semibold',
+                              color: 'gray.200',
+                            })}
+                          >
+                            {preset.name}
+                          </span>
+                        </div>
+                        <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                          {preset.description}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Saved Chains Section */}
+                {savedChains.length > 0 && (
+                  <div
+                    className={css({
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: 'purple.500/20',
+                      bg: 'purple.500/5',
+                      p: '4',
+                      spaceY: '3',
+                    })}
+                  >
+                    <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                      <Star className={css({ h: '4', w: '4', color: 'purple.400' })} />
+                      <span
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'semibold',
+                          color: 'purple.300',
+                        })}
+                      >
+                        Your Saved Chains
+                      </span>
+                      <Badge
+                        className={css({
+                          bg: 'purple.500/20',
+                          color: 'purple.300',
+                          border: '1px solid',
+                          borderColor: 'purple.500/30',
+                        })}
+                      >
+                        {savedChains.length}
+                      </Badge>
+                    </div>
+                    <div className={css({ spaceY: '2' })}>
+                      {savedChains.map((chain) => (
+                        <div
+                          key={chain.id}
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            rounded: 'md',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            bg: 'gray.800/50',
+                            p: '3',
+                            transition: 'all 0.2s',
+                            _hover: { bg: 'gray.800', borderColor: 'purple.500/50' },
+                          })}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => handleLoadSavedChain(chain)}
+                            className={css({
+                              flex: '1',
+                              textAlign: 'left',
+                              bg: 'transparent',
+                              border: 'none',
+                              cursor: 'pointer',
+                              p: '0',
+                            })}
+                          >
+                            <div
+                              className={css({
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '2',
+                                mb: '1',
+                              })}
+                            >
+                              <Badge
+                                className={css({
+                                  bg: 'purple.500/20',
+                                  color: 'purple.300',
+                                  border: '1px solid',
+                                  borderColor: 'purple.500/30',
+                                  fontSize: 'xs',
+                                })}
+                              >
+                                {unitDefinitions[chain.category].name}
+                              </Badge>
+                              <span
+                                className={css({
+                                  fontSize: 'sm',
+                                  fontWeight: 'semibold',
+                                  color: 'gray.200',
+                                })}
+                              >
+                                {chain.name}
+                              </span>
+                            </div>
+                            <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                              {chain.steps.length} steps •{' '}
+                              {new Date(chain.createdAt).toLocaleDateString()}
+                            </p>
+                          </button>
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDeleteSavedChain(chain.id)
+                            }}
+                            size="sm"
+                            className={css({
+                              bg: 'transparent',
+                              color: 'gray.500',
+                              p: '2',
+                              h: 'auto',
+                              _hover: { bg: 'red.500/20', color: 'red.400' },
+                            })}
+                          >
+                            <Trash2 className={css({ h: '4', w: '4' })} />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </CardContent>
         </Card>
@@ -704,6 +2168,191 @@ function UnitConverterContent() {
                   )
                 })}
               </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Conversion History */}
+      {history.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.5 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'purple.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                })}
+              >
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <History className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                  <CardTitle>Conversion History</CardTitle>
+                  <Badge
+                    className={css({
+                      bg: 'purple.500/20',
+                      color: 'purple.300',
+                      border: '1px solid',
+                      borderColor: 'purple.500/30',
+                    })}
+                  >
+                    {history.length}
+                  </Badge>
+                </div>
+                <div className={css({ display: 'flex', gap: '2' })}>
+                  <Button
+                    onClick={handleExportHistory}
+                    size="sm"
+                    className={css({
+                      gap: '2',
+                      bg: 'gray.800',
+                      color: 'gray.400',
+                      _hover: { bg: 'gray.700', color: 'purple.400' },
+                    })}
+                  >
+                    <Download className={css({ h: '4', w: '4' })} />
+                    Export CSV
+                  </Button>
+                  <Button
+                    onClick={handleClearHistory}
+                    size="sm"
+                    className={css({
+                      gap: '2',
+                      bg: 'gray.800',
+                      color: 'gray.400',
+                      _hover: { bg: 'red.500/20', color: 'red.400' },
+                    })}
+                  >
+                    <Trash2 className={css({ h: '4', w: '4' })} />
+                    Clear
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={css({ spaceY: '2', maxH: '96', overflowY: 'auto' })}>
+                {history.slice(0, 20).map((item) => {
+                  const catDef = unitDefinitions[item.category]
+                  const fromInfo = catDef?.units[item.fromUnit]
+                  const toInfo = catDef?.units[item.toUnit]
+                  const timeAgo = new Date(item.timestamp).toLocaleString()
+
+                  return (
+                    <div
+                      key={item.id}
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                        p: '3',
+                        transition: 'all 0.2s',
+                        _hover: { bg: 'gray.800', borderColor: 'purple.500/50' },
+                      })}
+                    >
+                      <button
+                        type="button"
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '3',
+                          flex: '1',
+                          bg: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          p: '0',
+                        })}
+                        onClick={() => handleReplayHistory(item)}
+                      >
+                        <Clock
+                          className={css({ h: '4', w: '4', color: 'gray.500', flexShrink: '0' })}
+                        />
+                        <div className={css({ flex: '1', minW: '0' })}>
+                          <div
+                            className={css({
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2',
+                              flexWrap: 'wrap',
+                            })}
+                          >
+                            <Badge
+                              className={css({
+                                bg: 'purple.500/20',
+                                color: 'purple.300',
+                                border: '1px solid',
+                                borderColor: 'purple.500/30',
+                                fontSize: 'xs',
+                              })}
+                            >
+                              {catDef?.name}
+                            </Badge>
+                            <span
+                              className={css({
+                                fontSize: 'sm',
+                                color: 'gray.300',
+                                fontWeight: 'semibold',
+                              })}
+                            >
+                              {item.fromValue} {fromInfo?.symbol}
+                            </span>
+                            <ArrowRight className={css({ h: '3', w: '3', color: 'gray.500' })} />
+                            <span
+                              className={css({
+                                fontSize: 'sm',
+                                color: 'gray.300',
+                                fontWeight: 'semibold',
+                              })}
+                            >
+                              {item.toValue} {toInfo?.symbol}
+                            </span>
+                          </div>
+                          <span
+                            className={css({
+                              fontSize: 'xs',
+                              color: 'gray.500',
+                              display: 'block',
+                              mt: '1',
+                            })}
+                          >
+                            {timeAgo}
+                          </span>
+                        </div>
+                        <RotateCcw
+                          className={css({ h: '4', w: '4', color: 'gray.500', flexShrink: '0' })}
+                        />
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+              {history.length > 20 && (
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.500',
+                    textAlign: 'center',
+                    mt: '3',
+                  })}
+                >
+                  Showing 20 of {history.length} conversions
+                </p>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -903,6 +2552,9 @@ function UnitConverterContent() {
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/unit-converter" category="productivity" />
       <ToolRating toolId="/tools/unit-converter" toolName="Unit Converter" />
+
+      {/* Global Tool Search - Cmd+K */}
+      <ToolSearch />
     </main>
   )
 }

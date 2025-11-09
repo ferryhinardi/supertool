@@ -30,6 +30,7 @@ import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTrackToolView } from '@/hooks/useRecentTools'
 import { trackToolEvent } from '@/lib/analytics'
@@ -124,12 +125,38 @@ const SCHEMA_TEMPLATES = {
 
 type ViewMode = 'editor' | 'tree' | 'schema' | 'diff' | 'typescript'
 
-// Tree node component
+// Tree node component with JSON Path extraction
 function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
   const [expanded, setExpanded] = useState(true)
 
+  const handleCopyPath = async (jsonPath: string) => {
+    await navigator.clipboard.writeText(jsonPath)
+    toast.success(`Copied: ${jsonPath}`)
+    trackToolEvent('json_path_copy', { path: jsonPath })
+  }
+
   if (data === null) {
-    return <span className={css({ color: 'gray.500', fontStyle: 'italic' })}>null</span>
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            onClick={() => handleCopyPath(path)}
+            className={css({
+              color: 'gray.500',
+              fontStyle: 'italic',
+              cursor: 'pointer',
+              _hover: { color: 'gray.300', textDecoration: 'underline' },
+            })}
+          >
+            null
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className={css({ color: 'foreground' })}>Click to copy path: {path}</p>
+        </TooltipContent>
+      </Tooltip>
+    )
   }
 
   if (typeof data !== 'object') {
@@ -141,7 +168,26 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
           : typeof data === 'boolean'
             ? 'purple.400'
             : 'gray.400'
-    return <span className={css({ color })}>{JSON.stringify(data)}</span>
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            onClick={() => handleCopyPath(path)}
+            className={css({
+              color,
+              cursor: 'pointer',
+              _hover: { opacity: 0.8, textDecoration: 'underline' },
+            })}
+          >
+            {JSON.stringify(data)}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className={css({ color: 'foreground' })}>Click to copy path: {path}</p>
+        </TooltipContent>
+      </Tooltip>
+    )
   }
 
   const isArray = Array.isArray(data)
@@ -178,18 +224,62 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
           className={css({ ml: '4', borderLeft: '1px solid', borderColor: 'gray.700', pl: '2' })}
         >
           {isArray
-            ? entries.map((item: unknown, idx: number) => (
-                <div key={`${path}-${idx}`} className={css({ my: '1' })}>
-                  <span className={css({ color: 'blue.400' })}>[{idx}]</span>:{' '}
-                  <TreeNode data={item} path={`${path}[${idx}]`} />
-                </div>
-              ))
-            : entries.map(([key, value]: [string, unknown]) => (
-                <div key={`${path}-${key}`} className={css({ my: '1' })}>
-                  <span className={css({ color: 'cyan.400' })}>{key}</span>:{' '}
-                  <TreeNode data={value} path={`${path}.${key}`} />
-                </div>
-              ))}
+            ? entries.map((item: unknown, idx: number) => {
+                const currentPath = `${path}[${idx}]`
+                return (
+                  <div key={`${path}-${idx}`} className={css({ my: '1' })}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyPath(currentPath)}
+                          className={css({
+                            color: 'blue.400',
+                            cursor: 'pointer',
+                            _hover: { textDecoration: 'underline', color: 'blue.300' },
+                          })}
+                        >
+                          [{idx}]
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className={css({ color: 'foreground' })}>
+                          Click to copy path: {currentPath}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                    : <TreeNode data={item} path={currentPath} />
+                  </div>
+                )
+              })
+            : entries.map(([key, value]: [string, unknown]) => {
+                const currentPath = `${path}.${key}`
+                return (
+                  <div key={`${path}-${key}`} className={css({ my: '1' })}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyPath(currentPath)}
+                          className={css({
+                            color: 'cyan.400',
+                            cursor: 'pointer',
+                            _hover: { textDecoration: 'underline', color: 'cyan.300' },
+                          })}
+                        >
+                          {key}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className={css({ color: 'foreground' })}>
+                          Click to copy path: {currentPath}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                    : <TreeNode data={value} path={currentPath} />
+                  </div>
+                )
+              })}
         </div>
       )}
     </div>
@@ -769,8 +859,11 @@ function JSONBeautifyContent() {
               </h3>
               <ul className={css({ spaceY: '1', fontSize: 'sm', color: 'gray.300' })}>
                 <li>
-                  <strong className={css({ color: 'gray.100' })}>Tree View:</strong> Visualize JSON
-                  structure in an interactive hierarchical tree
+                  <strong className={css({ color: 'gray.100' })}>
+                    Tree View + Path Extractor:
+                  </strong>{' '}
+                  Visualize JSON structure in an interactive tree. Click any value, key, or index to
+                  copy its JSONPath
                 </li>
                 <li>
                   <strong className={css({ color: 'gray.100' })}>Schema Validation:</strong>{' '}
@@ -1110,9 +1203,11 @@ function JSONBeautifyContent() {
             <CardHeader>
               <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <ListTree className={css({ h: '5', w: '5' })} />
-                Tree View
+                Tree View with JSON Path Extractor
               </CardTitle>
-              <CardDescription>Interactive hierarchical view of your JSON data</CardDescription>
+              <CardDescription>
+                Interactive hierarchical view - Click any value or key to copy its JSON path
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div
@@ -1665,6 +1760,9 @@ function JSONBeautifyContent() {
         <FAQAccordion faqs={faqs} />
         <RelatedTools currentToolPath="/tools/json-beautify" category="data" />
         <ToolRating toolId="/tools/json-beautify" toolName="JSON Beautifier" />
+
+        {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+        <ToolSearch />
       </main>
     </TooltipProvider>
   )

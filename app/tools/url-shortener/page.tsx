@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { css } from '@/styled-system/css'
 
 const faqs = [
@@ -1035,6 +1036,7 @@ export default function URLShortenerPage() {
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/url-shortener" category="productivity" />
       <ToolRating toolId="/tools/url-shortener" toolName="URL Shortener" />
+      <ToolSearch />
     </div>
   )
 }

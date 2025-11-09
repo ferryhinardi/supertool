@@ -4,6 +4,7 @@ import {
   Check,
   Copy,
   Download,
+  Lightbulb,
   Moon,
   Plus,
   RotateCcw,
@@ -14,10 +15,16 @@ import {
 } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
+import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -724,6 +731,192 @@ export default function GradientGeneratorPage() {
 
       {/* Hidden canvas for download */}
       <canvas ref={canvasRef} className={css({ display: 'none' })} />
+
+      {/* How to Use Section */}
+      <Card
+        className={css({
+          border: '1px solid',
+          borderColor: 'gray.800',
+          bg: 'gray.900/50',
+          p: { base: '6', md: '8' },
+          animation: 'fadeIn 0.5s ease-in',
+          animationDelay: '0.4s',
+          animationFillMode: 'both',
+        })}
+      >
+        <div className={css({ display: 'flex', alignItems: 'center', gap: '3', mb: '6' })}>
+          <Lightbulb className={css({ h: '6', w: '6', color: 'purple.400' })} />
+          <h2 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
+            How to Use
+          </h2>
+        </div>
+
+        <div className={css({ spaceY: '4' })}>
+          <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+            <Badge className={css({ flexShrink: 0, mt: '1' })}>1</Badge>
+            <div>
+              <h3 className={css({ fontWeight: '600', color: 'gray.200', mb: '1' })}>
+                Select Gradient Type
+              </h3>
+              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
+                Choose from linear, radial, or conic gradient types. Linear gradients flow in a
+                straight line, radial gradients spread from a center point, and conic gradients
+                rotate around a center point.
+              </p>
+            </div>
+          </div>
+
+          <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+            <Badge className={css({ flexShrink: 0, mt: '1' })}>2</Badge>
+            <div>
+              <h3 className={css({ fontWeight: '600', color: 'gray.200', mb: '1' })}>
+                Add and Customize Colors
+              </h3>
+              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
+                Add multiple color stops using the &quot;Add&quot; button. Click on any color picker
+                to select colors, enter hex codes manually, or adjust the position slider to control
+                where each color appears in the gradient.
+              </p>
+            </div>
+          </div>
+
+          <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+            <Badge className={css({ flexShrink: 0, mt: '1' })}>3</Badge>
+            <div>
+              <h3 className={css({ fontWeight: '600', color: 'gray.200', mb: '1' })}>
+                Adjust Angle and Settings
+              </h3>
+              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
+                For linear and conic gradients, use the angle slider to control the direction of the
+                gradient. Try different angles to achieve the perfect visual effect. Use the shuffle
+                button for random gradients or the reverse button to flip your gradient.
+              </p>
+            </div>
+          </div>
+
+          <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+            <Badge className={css({ flexShrink: 0, mt: '1' })}>4</Badge>
+            <div>
+              <h3 className={css({ fontWeight: '600', color: 'gray.200', mb: '1' })}>
+                Copy CSS or Download
+              </h3>
+              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
+                Click &quot;Copy CSS&quot; to copy the gradient code directly to your clipboard for
+                use in your stylesheets. Alternatively, download the gradient as a high-quality PNG
+                image (1200x675px) for use in design mockups or presentations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Social Share */}
+      <div
+        className={css({
+          animation: 'fadeIn 0.5s ease-in',
+          animationDelay: '0.5s',
+          animationFillMode: 'both',
+        })}
+      >
+        <SocialShare
+          toolName="Gradient Generator"
+          toolUrl="/tools/gradient-generator"
+          description="Create stunning CSS gradients visually with unlimited color stops and export options"
+          hashtags={['CSS', 'Gradient', 'WebDesign', 'CSSTools', 'FrontendDev']}
+        />
+      </div>
+
+      {/* FAQ Section */}
+      <div
+        className={css({
+          animation: 'fadeIn 0.5s ease-in',
+          animationDelay: '0.6s',
+          animationFillMode: 'both',
+        })}
+      >
+        <FAQAccordion
+          faqs={[
+            {
+              question: 'What are the different types of CSS gradients?',
+              answer:
+                'CSS supports three types of gradients: Linear gradients (flow in a straight line from one direction to another), Radial gradients (spread from a center point outward in a circular pattern), and Conic gradients (rotate around a center point like a color wheel). Each type creates unique visual effects suitable for different design needs.',
+            },
+            {
+              question: 'How do I use the generated CSS gradient in my project?',
+              answer:
+                'Click the "Copy CSS" button to copy the gradient code to your clipboard. Then paste it into your CSS file as a background property (e.g., background: linear-gradient(90deg, #667eea 0%, #764ba2 100%)). You can apply it to any HTML element\'s background. The gradient code is compatible with all modern browsers.',
+            },
+            {
+              question: 'What are color stops and how do they work?',
+              answer:
+                'Color stops define the colors in your gradient and where they appear. Each stop has a color value (hex code) and a position (0-100%). The gradient smoothly blends between these stops. For example, a stop at 0% appears at the start, 50% in the middle, and 100% at the end. Add multiple stops to create complex, multi-color gradients with precise color transitions.',
+            },
+            {
+              question: 'Can I export gradients in different formats?',
+              answer:
+                "Yes! You can export in two formats: 1) CSS code - Copy the gradient as ready-to-use CSS code for direct use in your stylesheets, or 2) PNG image - Download as a high-quality 1200x675px PNG image perfect for presentations, mockups, or backgrounds where CSS isn't suitable. The PNG export maintains the exact appearance of your gradient.",
+            },
+            {
+              question: 'How do I use the gradient presets?',
+              answer:
+                'Click any preset thumbnail in the sidebar to instantly apply that gradient. Presets are organized by category (sunset, ocean, forest, fire, neon, pastel, special) and include professionally designed color combinations. After applying a preset, you can further customize it by adjusting colors, positions, angles, or adding more color stops.',
+            },
+            {
+              question: 'What does the angle control do?',
+              answer:
+                'For linear gradients, the angle (0-360°) controls the direction the gradient flows. 0° flows upward, 90° flows right, 180° flows down, and 270° flows left. For conic gradients, the angle sets the starting rotation point. The angle control is not available for radial gradients as they always spread from the center outward.',
+            },
+            {
+              question: 'Are the generated gradients compatible with all browsers?',
+              answer:
+                'Yes! The generated CSS gradients use standard syntax supported by all modern browsers including Chrome, Firefox, Safari, Edge, and Opera. Linear and radial gradients have been supported since 2011+. Conic gradients are supported in all browsers from 2020+. For older browser support, consider using a fallback solid background color.',
+            },
+            {
+              question: 'Can I create gradients with more than two colors?',
+              answer:
+                'Absolutely! Click the "Add" button to add as many color stops as you need. Multi-color gradients create richer, more complex effects. Each stop can be independently positioned and colored. Try adding 3-5 stops for vibrant, eye-catching gradients. Use the position sliders to control spacing between colors and create unique color transitions.',
+            },
+            {
+              question: 'What is the difference between radial and linear gradients?',
+              answer:
+                'Linear gradients transition colors in a straight line along a specific angle or direction, creating a flowing effect from one side to another. Radial gradients transition colors from a center point outward in a circular pattern, creating a spotlight or burst effect. Linear gradients are ideal for backgrounds and headers, while radial gradients work well for buttons, badges, and focal points.',
+            },
+            {
+              question: 'What are conic gradients and when should I use them?',
+              answer:
+                "Conic gradients rotate colors around a center point like a color wheel or pie chart. They create unique circular color transitions perfect for loading spinners, progress indicators, color wheels, or creative backgrounds. Conic gradients support multiple color stops and rotation angles. They're particularly effective for creating rainbow effects and retro-style designs.",
+            },
+          ]}
+        />
+      </div>
+
+      {/* Related Tools */}
+      <div
+        className={css({
+          animation: 'fadeIn 0.5s ease-in',
+          animationDelay: '0.7s',
+          animationFillMode: 'both',
+        })}
+      >
+        <RelatedTools currentToolPath="/tools/gradient-generator" category="design" />
+      </div>
+
+      {/* Tool Rating */}
+      <div
+        className={css({
+          animation: 'fadeIn 0.5s ease-in',
+          animationDelay: '0.8s',
+          animationFillMode: 'both',
+        })}
+      >
+        <ToolRating toolId="/tools/gradient-generator" toolName="Gradient Generator" />
+      </div>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

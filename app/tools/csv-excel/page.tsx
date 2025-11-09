@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -805,6 +806,12 @@ export default function CSVExcelConverterPage() {
             </ul>
           </CardContent>
         </Card>
+
+      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+      <ToolSearch />
+
+      
       </main>
     </TooltipProvider>
   )

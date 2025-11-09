@@ -5,6 +5,25 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import UnitConverterPage from '../page'
 
+// Mock analytics
+vi.mock('@/lib/analytics', () => ({
+  trackToolEvent: vi.fn(),
+  trackEvent: vi.fn(),
+}))
+
+// Mock SEO components that use Next.js Link
+vi.mock('@/components/ui/social-share', () => ({
+  SocialShare: () => null,
+}))
+
+vi.mock('@/components/ui/related-tools', () => ({
+  RelatedTools: () => null,
+}))
+
+vi.mock('@/components/ui/tool-rating', () => ({
+  ToolRating: () => null,
+}))
+
 // Mock nuqs
 vi.mock('nuqs', () => ({
   parseAsString: {
@@ -392,8 +411,11 @@ describe('Unit Converter Page', () => {
     it('displays pro tips', () => {
       render(<UnitConverterPage />)
       expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(screen.getByText(/swap button/)).toBeInTheDocument()
-      expect(screen.getByText(/favorites/)).toBeInTheDocument()
+      // Use getAllByText since text appears in multiple places (Pro Tips + FAQ)
+      const swapTexts = screen.getAllByText(/swap button/)
+      expect(swapTexts.length).toBeGreaterThan(0)
+      const favoritesTexts = screen.getAllByText(/favorites/)
+      expect(favoritesTexts.length).toBeGreaterThan(0)
     })
   })
 

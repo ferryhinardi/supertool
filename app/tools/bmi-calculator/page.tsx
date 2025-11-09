@@ -1,13 +1,18 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Activity, Info, Ruler, Scale, Sparkles, TrendingUp } from 'lucide-react'
+import { Activity, Info, Lightbulb, Ruler, Scale, Sparkles, TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
+import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -1046,6 +1051,259 @@ export default function BMICalculator() {
           </div>
         </Card>
       </motion.div>
+
+      {/* How to Use Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'blue.500/20',
+            bg: 'blue.500/5',
+            backdropFilter: 'blur(16px)',
+            padding: '6',
+          })}
+        >
+          <CardHeader
+            className={css({
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '3',
+              padding: '0',
+              marginBottom: '4',
+            })}
+          >
+            <Lightbulb
+              className={css({
+                h: '6',
+                w: '6',
+                color: 'blue.400',
+                flexShrink: '0',
+              })}
+            />
+            <CardTitle
+              className={css({
+                fontSize: 'xl',
+                fontWeight: 'semibold',
+                color: 'blue.300',
+              })}
+            >
+              How to Use BMI Calculator
+            </CardTitle>
+          </CardHeader>
+          <CardContent className={css({ padding: '0', spaceY: '4' })}>
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  bg: 'blue.500/20',
+                  color: 'blue.300',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                  px: '2.5',
+                  py: '1',
+                  flexShrink: '0',
+                })}
+              >
+                1
+              </Badge>
+              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'gray.300' })}>Choose your unit system:</strong>{' '}
+                Toggle between Metric (kg/cm) or Imperial (lbs/feet-inches) using the unit button at
+                the top.
+              </p>
+            </div>
+
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  bg: 'blue.500/20',
+                  color: 'blue.300',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                  px: '2.5',
+                  py: '1',
+                  flexShrink: '0',
+                })}
+              >
+                2
+              </Badge>
+              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'gray.300' })}>Enter your measurements:</strong>{' '}
+                Input your weight and height accurately. For Imperial units, enter feet and inches
+                separately.
+              </p>
+            </div>
+
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  bg: 'blue.500/20',
+                  color: 'blue.300',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                  px: '2.5',
+                  py: '1',
+                  flexShrink: '0',
+                })}
+              >
+                3
+              </Badge>
+              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'gray.300' })}>Calculate and view results:</strong>{' '}
+                Click "Calculate BMI" to see your BMI score, category, and position on the visual
+                BMI chart.
+              </p>
+            </div>
+
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  bg: 'blue.500/20',
+                  color: 'blue.300',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                  px: '2.5',
+                  py: '1',
+                  flexShrink: '0',
+                })}
+              >
+                4
+              </Badge>
+              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'gray.300' })}>
+                  Review health recommendations:
+                </strong>{' '}
+                Read the personalized health tips and ideal weight range based on your BMI category.
+              </p>
+            </div>
+
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  bg: 'blue.500/20',
+                  color: 'blue.300',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                  px: '2.5',
+                  py: '1',
+                  flexShrink: '0',
+                })}
+              >
+                5
+              </Badge>
+              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'gray.300' })}>Track your progress:</strong> Your
+                calculation history is automatically saved. Export results as JSON to track changes
+                over time.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Social Share */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+      >
+        <SocialShare
+          toolName="BMI & Health Calculator"
+          toolUrl="https://supertool.com/tools/bmi-calculator"
+          description="Calculate your Body Mass Index and get personalized health insights with this comprehensive BMI calculator. Track your progress over time!"
+          hashtags={['BMI', 'HealthCalculator', 'Fitness', 'Wellness', 'HealthTracking']}
+        />
+      </motion.div>
+
+      {/* FAQs */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9, duration: 0.5 }}
+      >
+        <FAQAccordion
+          faqs={[
+            {
+              question: 'What is BMI and how is it calculated?',
+              answer:
+                'BMI (Body Mass Index) is a measure of body fat based on height and weight. For metric units, BMI = weight(kg) / height(m)². For imperial units, BMI = (weight(lbs) / height(in)²) × 703. It provides a quick screening tool to categorize weight status.',
+            },
+            {
+              question: 'How accurate is BMI for assessing health?',
+              answer:
+                "BMI is a useful screening tool but has limitations. It doesn't account for muscle mass, bone density, age, sex, or body composition. Athletes with high muscle mass may have high BMI but low body fat. Always consult healthcare professionals for comprehensive health assessment.",
+            },
+            {
+              question: 'What do the different BMI categories mean?',
+              answer:
+                'BMI categories are: Underweight (<18.5), Normal Weight (18.5-24.9), Overweight (25-29.9), and Obese (≥30). These ranges correlate with health risks, but individual health depends on many factors beyond BMI alone.',
+            },
+            {
+              question: 'Can I use this calculator for children and teenagers?',
+              answer:
+                'This calculator is designed for adults (18+ years). Children and teenagers require BMI-for-age percentile charts that account for age and sex-specific growth patterns. Consult a pediatrician for accurate BMI assessment for minors.',
+            },
+            {
+              question: 'Is BMI accurate for athletes and bodybuilders?',
+              answer:
+                "BMI has limited accuracy for athletes and bodybuilders because it doesn't distinguish between muscle and fat. Someone with high muscle mass may be classified as overweight or obese despite having low body fat. Consider body composition analysis for more accurate assessment.",
+            },
+            {
+              question: 'What is a healthy weight range for my height?',
+              answer:
+                'The calculator shows your ideal weight range based on a BMI of 18.5-24.9 for your height. This range represents the weight associated with lowest health risks for most adults, though individual healthy weights may vary based on body composition and other factors.',
+            },
+            {
+              question: 'Should I be concerned if my BMI is outside the normal range?',
+              answer:
+                "BMI outside the normal range may indicate increased health risks, but it's not a definitive diagnosis. Factors like muscle mass, age, genetics, and overall health matter. If concerned, consult a healthcare provider for comprehensive evaluation and personalized advice.",
+            },
+            {
+              question: 'How does BMI relate to body fat percentage?',
+              answer:
+                'BMI and body fat percentage are related but different. BMI is calculated from height and weight, while body fat percentage measures actual fat tissue. Two people with the same BMI can have very different body fat percentages depending on muscle mass and composition.',
+            },
+            {
+              question: 'Can I track my BMI changes over time?',
+              answer:
+                'Yes! This calculator automatically saves your last 10 calculations in your browser. You can also export results as JSON files to track changes over time. Regular monitoring helps you see trends and progress toward health goals.',
+            },
+            {
+              question: 'What should I do if I want to change my BMI?',
+              answer:
+                'To change BMI safely: 1) Consult healthcare providers for personalized plans, 2) Focus on balanced nutrition with appropriate calorie intake, 3) Include regular physical activity, 4) Set realistic goals (1-2 lbs/week for weight loss), and 5) Make sustainable lifestyle changes, not quick fixes.',
+            },
+          ]}
+        />
+      </motion.div>
+
+      {/* Related Tools */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.0, duration: 0.5 }}
+      >
+        <RelatedTools currentToolPath="/tools/bmi-calculator" category="calculator" />
+      </motion.div>
+
+      {/* Tool Rating */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.1, duration: 0.5 }}
+      >
+        <ToolRating toolId="/tools/bmi-calculator" toolName="BMI & Health Calculator" />
+      </motion.div>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -786,6 +787,12 @@ export default function DailyTaskSummary() {
           </div>
         </div>
       </div>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

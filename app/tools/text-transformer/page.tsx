@@ -12,6 +12,7 @@ import {
   Download,
   Eraser,
   Hash,
+  Lightbulb,
   Minus,
   RemoveFormatting,
   Replace,
@@ -22,13 +23,16 @@ import {
 } from 'lucide-react'
 import { parseAsBoolean, parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent, trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -223,6 +227,31 @@ const faqs = [
     question: 'Can I see word count and character count for my text?',
     answer:
       'Absolutely! The tool displays real-time statistics including total characters, characters without spaces, word count, line count, and sentence count. This is helpful for writers checking content length, students meeting assignment requirements, or developers analyzing text data before processing.',
+  },
+  {
+    question: 'How do I use the batch text processing features?',
+    answer:
+      'All transformations work instantly on your entire text input. Simply paste multi-line text, select a transformation category (Case, Clean, Sort, Modify), and click any transformation button. The tool processes all lines simultaneously, making it perfect for batch converting variable names, cleaning data exports, or formatting large text files efficiently.',
+  },
+  {
+    question: 'What programming case formats can I convert between?',
+    answer:
+      'The tool supports all major programming naming conventions: camelCase (myVariable), PascalCase (MyClass), snake_case (my_variable), and kebab-case (my-variable). These conversions are essential for developers working across different programming languages and frameworks. The tool intelligently handles existing formatting and special characters during conversion.',
+  },
+  {
+    question: 'Can I sort lines alphabetically or reverse order?',
+    answer:
+      'Yes! Use "Sort A→Z" for ascending alphabetical order or "Sort Z→A" for descending order. This is useful for organizing lists, sorting CSV data, arranging config files, or preparing data for comparison. The sorting preserves line integrity and handles special characters appropriately.',
+  },
+  {
+    question: 'How do line manipulation features work?',
+    answer:
+      'Our line manipulation tools include: Remove Empty Lines (deletes blank lines), Trim Lines (removes leading/trailing spaces per line), Add Line Numbers (prefixes each line with numbers), and Remove Line Numbers (strips numeric prefixes). These features are ideal for code formatting, log file cleanup, and document preparation.',
+  },
+  {
+    question: 'How can I export or save my transformed text?',
+    answer:
+      'Click the "Download" button to save your transformed text as a .txt file, or use the "Copy" button to copy all text to your clipboard instantly. The download preserves all formatting including line breaks and special characters. You can also keep transforming and downloading different versions of your text as needed.',
   },
 ]
 
@@ -930,9 +959,202 @@ function TextTransformerContent() {
         </motion.div>
       </div>
 
-      <FAQAccordion faqs={faqs} />
-      <RelatedTools currentToolPath="/tools/text-transformer" category="productivity" />
-      <ToolRating toolId="/tools/text-transformer" toolName="Text Transformer" />
+      {/* How to Use Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(4px)',
+          })}
+        >
+          <CardHeader>
+            <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
+              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <Lightbulb className={css({ h: '5', w: '5', color: 'yellow.400' })} />
+                How to Use Text Transformer
+              </CardTitle>
+              <CardDescription>
+                Follow these simple steps to transform your text instantly
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+                <Badge
+                  className={css({
+                    flexShrink: '0',
+                    bg: 'yellow.500/20',
+                    color: 'yellow.300',
+                    border: '1px solid',
+                    borderColor: 'yellow.500/30',
+                  })}
+                >
+                  1
+                </Badge>
+                <div className={css({ flex: '1' })}>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Paste Your Text
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Enter or paste your text into the input area. The tool will automatically
+                    calculate statistics like character count, word count, and line count in
+                    real-time.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+                <Badge
+                  className={css({
+                    flexShrink: '0',
+                    bg: 'yellow.500/20',
+                    color: 'yellow.300',
+                    border: '1px solid',
+                    borderColor: 'yellow.500/30',
+                  })}
+                >
+                  2
+                </Badge>
+                <div className={css({ flex: '1' })}>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Choose a Transformation
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Select from 20+ transformations organized by category: Case conversions, Clean
+                    operations, Sort functions, or Modify tools. Use the category filters to quickly
+                    find the transformation you need.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+                <Badge
+                  className={css({
+                    flexShrink: '0',
+                    bg: 'yellow.500/20',
+                    color: 'yellow.300',
+                    border: '1px solid',
+                    borderColor: 'yellow.500/30',
+                  })}
+                >
+                  3
+                </Badge>
+                <div className={css({ flex: '1' })}>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Apply and Preview
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Click any transformation button to instantly apply it to your text. The result
+                    appears immediately in the text area. You can apply multiple transformations in
+                    sequence.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+                <Badge
+                  className={css({
+                    flexShrink: '0',
+                    bg: 'yellow.500/20',
+                    color: 'yellow.300',
+                    border: '1px solid',
+                    borderColor: 'yellow.500/30',
+                  })}
+                >
+                  4
+                </Badge>
+                <div className={css({ flex: '1' })}>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Use Find & Replace (Optional)
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    For advanced text manipulation, use the Find & Replace feature with regex
+                    support. Enable "Use Regex" for pattern matching and "Case Sensitive" for
+                    precise matching. Click "Replace All" to apply changes.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+                <Badge
+                  className={css({
+                    flexShrink: '0',
+                    bg: 'yellow.500/20',
+                    color: 'yellow.300',
+                    border: '1px solid',
+                    borderColor: 'yellow.500/30',
+                  })}
+                >
+                  5
+                </Badge>
+                <div className={css({ flex: '1' })}>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                    Copy or Download Result
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Once satisfied with your transformed text, click "Copy" to copy to clipboard or
+                    "Download" to save as a .txt file. Use "Clear" to start fresh with new text.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Social Share */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <SocialShare
+          toolName="Text Transformer"
+          toolUrl="/tools/text-transformer"
+          description="Free online text transformer with case conversion, duplicate removal, word counting, sorting, and find-replace with regex support"
+          hashtags={['TextTools', 'Programming', 'TextProcessing', 'Developer', 'Productivity']}
+        />
+      </motion.div>
+
+      {/* FAQ Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+      >
+        <FAQAccordion faqs={faqs} />
+      </motion.div>
+
+      {/* Related Tools */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.5 }}
+      >
+        <RelatedTools currentToolPath="/tools/text-transformer" category="productivity" />
+      </motion.div>
+
+      {/* Tool Rating */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+      >
+        <ToolRating toolId="/tools/text-transformer" toolName="Text Transformer" />
+      </motion.div>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

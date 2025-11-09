@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { formatCurrency as formatCurrencyUtil, getCurrencySymbol } from '@/lib/currency'
 import { getAllBills } from '@/lib/split-bill-service'
@@ -567,6 +568,12 @@ export default function BillHistoryPage() {
           })
         )}
       </div>
+
+    {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+
+    <ToolSearch />
+
+    
     </main>
   )
 }

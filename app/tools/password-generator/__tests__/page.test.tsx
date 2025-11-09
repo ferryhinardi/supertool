@@ -15,6 +15,20 @@ vi.mock('sonner', () => ({
 // Mock analytics
 vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
+  trackEvent: vi.fn(),
+}))
+
+// Mock SEO components that use Next.js Link
+vi.mock('@/components/ui/social-share', () => ({
+  SocialShare: () => null,
+}))
+
+vi.mock('@/components/ui/related-tools', () => ({
+  RelatedTools: () => null,
+}))
+
+vi.mock('@/components/ui/tool-rating', () => ({
+  ToolRating: () => null,
 }))
 
 // Mock nuqs
@@ -29,6 +43,12 @@ vi.mock('nuqs', () => ({
     withDefault: (defaultValue: number) => ({
       defaultValue,
       parse: (value: string) => Number.parseInt(value, 10),
+    }),
+  },
+  parseAsString: {
+    withDefault: (defaultValue: string) => ({
+      defaultValue,
+      parse: (value: string) => value,
     }),
   },
   useQueryState: (_key: string, parser: { defaultValue: unknown }) => {
@@ -206,16 +226,20 @@ describe('Password Generator Page - Component Tests', () => {
     await userEvent.click(bulkGenerateButton)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Clear/i })).toBeInTheDocument()
+      // Use "Clear All" to be more specific since there are multiple Clear buttons
+      expect(screen.getByRole('button', { name: /Clear All/i })).toBeInTheDocument()
     })
   })
 
   it('should display security notice', () => {
     render(<PasswordGeneratorPage />)
 
-    expect(screen.getByText('Security Notice')).toBeInTheDocument()
-    expect(screen.getByText(/cryptographically secure random numbers/i)).toBeInTheDocument()
-    expect(screen.getByText(/no data is sent to any server/i)).toBeInTheDocument()
+    expect(screen.getByText('Security & Privacy Notice')).toBeInTheDocument()
+    // Use getAllByText since the text appears in multiple places (bullet points + FAQ)
+    const cryptoTexts = screen.getAllByText(/cryptographically secure random number/i)
+    expect(cryptoTexts.length).toBeGreaterThan(0)
+    const browserTexts = screen.getAllByText(/happens entirely in your browser/i)
+    expect(browserTexts.length).toBeGreaterThan(0)
   })
 
   it('should show download button after bulk generation', async () => {
