@@ -139,6 +139,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
       </head>
       <body
+        suppressHydrationWarning
         className={css({
           display: 'flex',
           flexDirection: { base: 'column', md: 'row' },
