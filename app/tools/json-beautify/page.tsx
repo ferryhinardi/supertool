@@ -30,6 +30,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTrackToolView } from '@/hooks/useRecentTools'
@@ -1649,6 +1650,13 @@ function JSONBeautifyContent() {
             </Tooltip>
           </div>
         </div>
+
+        <SocialShare
+          toolName="JSON Beautifier"
+          toolUrl="/tools/json-beautify"
+          description="Format and validate JSON with this free online JSON beautifier - minify, compare, and convert JSON to TypeScript"
+          hashtags={['JSON', 'WebDev', 'Developer', 'Productivity']}
+        />
 
         <FAQAccordion faqs={faqs} />
         <RelatedTools currentToolPath="/tools/json-beautify" category="data" />

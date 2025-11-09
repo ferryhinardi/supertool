@@ -24,6 +24,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
@@ -1547,6 +1548,13 @@ function PasswordGeneratorContent() {
           </div>
         </CardContent>
       </Card>
+
+      <SocialShare
+        toolName="Password Generator"
+        toolUrl="/tools/password-generator"
+        description="Generate secure passwords with our free password generator - supports Diceware, pronounceable passwords, and HIBP breach checking"
+        hashtags={['Password', 'Security', 'CyberSecurity', 'WebSecurity']}
+      />
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/password-generator" category="security" />
