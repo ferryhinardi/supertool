@@ -1,7 +1,5 @@
 'use client'
 
-import Ajv from 'ajv'
-import { JSONPath } from 'jsonpath-plus'
 import {
   AlertCircle,
   ArrowLeftRight,
@@ -411,10 +409,13 @@ function JSONBeautifyContent() {
   }
 
   // Validate schema
-  const validateSchema = () => {
+  const validateSchema = async () => {
     try {
       const jsonObj = JSON.parse(value)
       const schemaObj = JSON.parse(schema)
+
+      // Lazy load Ajv only when schema validation is needed (~50KB)
+      const Ajv = (await import('ajv')).default
       const ajv = new Ajv({ allErrors: true })
       const validate = ajv.compile(schemaObj)
       const valid = validate(jsonObj)
@@ -456,9 +457,12 @@ function JSONBeautifyContent() {
   }
 
   // Search JSON
-  const handleSearch = () => {
+  const handleSearch = async () => {
     try {
       const jsonObj = JSON.parse(value)
+
+      // Lazy load JSONPath only when search is used (~30KB)
+      const { JSONPath } = await import('jsonpath-plus')
       const results = JSONPath({ path: searchQuery, json: jsonObj })
       setSearchResults(results)
       toast.success(`Found ${results.length} matches`)

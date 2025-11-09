@@ -19,11 +19,11 @@ import {
   Users,
   X,
 } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { ReceiptScanner } from '@/components/features/ReceiptScanner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
@@ -42,6 +42,13 @@ import {
 import { createBill } from '@/lib/split-bill-service'
 import type { CreateParticipantData } from '@/lib/split-bill-types'
 import { css } from '@/styled-system/css'
+
+// Dynamic import for ReceiptScanner to avoid loading Tesseract.js (~2-3MB) on initial page load
+const ReceiptScanner = dynamic(
+  () =>
+    import('@/components/features/ReceiptScanner').then((mod) => ({ default: mod.ReceiptScanner })),
+  { ssr: false }
+)
 
 interface Person {
   id: string
