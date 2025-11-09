@@ -52,15 +52,6 @@ const RecentTools = dynamic(
   }
 )
 
-// Virtualized tools list - must be client-side only
-const VirtualizedToolsListDynamic = dynamic(
-  () => Promise.resolve({ default: VirtualizedToolsList }),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-)
-
 const AdContainer = dynamic(
   () =>
     import('@/components/features/AdContainer').then((mod) => ({
