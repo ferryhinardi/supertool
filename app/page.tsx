@@ -1,5 +1,6 @@
 'use client'
 
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
@@ -945,42 +946,15 @@ export default function HomePage() {
                       </Button>
                     </div>
 
-                    {/* Tools Grid/List */}
+                    {/* Tools Grid/List with Virtualization */}
                     <AnimatePresence>
                       {isExpanded && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className={css({
-                            display: viewMode === 'grid' ? 'grid' : 'flex',
-                            flexDirection: viewMode === 'list' ? 'column' : undefined,
-                            gridTemplateColumns:
-                              viewMode === 'grid'
-                                ? {
-                                    base: 'repeat(1, 1fr)',
-                                    sm: 'repeat(2, 1fr)',
-                                    lg: 'repeat(3, 1fr)',
-                                    xl: 'repeat(4, 1fr)',
-                                  }
-                                : undefined,
-                            gap: viewMode === 'grid' ? '6' : '4',
-                          })}
-                          style={{
-                            contentVisibility: 'auto',
-                            containIntrinsicSize: '0 500px',
-                          }}
-                        >
-                          {toolsInCategory.map((tool) => (
-                            <ToolCard
-                              key={tool.title}
-                              tool={tool}
-                              viewMode={viewMode}
-                              shouldReduceMotion={shouldReduceMotion}
-                            />
-                          ))}
-                        </motion.div>
+                        <VirtualizedToolsList
+                          tools={toolsInCategory}
+                          viewMode={viewMode}
+                          shouldReduceMotion={shouldReduceMotion}
+                          categoryValue={category.value}
+                        />
                       )}
                     </AnimatePresence>
                   </motion.section>
@@ -1308,6 +1282,145 @@ export default function HomePage() {
     </div>
   )
 }
+
+// Virtualized Tools List Component - Optimized for large lists
+const VirtualizedToolsList = memo(function VirtualizedToolsList({
+  tools,
+  viewMode,
+  shouldReduceMotion,
+  categoryValue,
+}: {
+  tools: Tool[]
+  viewMode: 'grid' | 'list'
+  shouldReduceMotion: boolean | null
+  categoryValue: ToolCategory
+}) {
+  const parentRef = useRef<HTMLDivElement>(null)
+
+  // Determine columns based on viewport and view mode
+  const [columns, setColumns] = useState(1)
+
+  useEffect(() => {
+    const updateColumns = () => {
+      if (viewMode === 'list') {
+        setColumns(1)
+        return
+      }
+
+      const width = window.innerWidth
+      if (width >= 1280) {
+        // xl
+        setColumns(4)
+      } else if (width >= 1024) {
+        // lg
+        setColumns(3)
+      } else if (width >= 640) {
+        // sm
+        setColumns(2)
+      } else {
+        setColumns(1)
+      }
+    }
+
+    updateColumns()
+    window.addEventListener('resize', updateColumns)
+    return () => window.removeEventListener('resize', updateColumns)
+  }, [viewMode])
+
+  // Estimate item size based on view mode
+  const estimateSize = viewMode === 'grid' ? 350 : 200
+
+  // Create rows for grid view (group tools by columns)
+  const rows = useMemo(() => {
+    if (viewMode === 'list') {
+      return tools.map((tool) => [tool])
+    }
+
+    const result: Tool[][] = []
+    for (let i = 0; i < tools.length; i += columns) {
+      result.push(tools.slice(i, i + columns))
+    }
+    return result
+  }, [tools, columns, viewMode])
+
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => window as unknown as HTMLElement,
+    estimateSize: () => estimateSize,
+    overscan: 2,
+    measureElement:
+      typeof window !== 'undefined' && navigator.userAgent.indexOf('Firefox') === -1
+        ? (element) => element?.getBoundingClientRect().height
+        : undefined,
+  })
+
+  return (
+    <motion.div
+      ref={parentRef}
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.3 }}
+      className={css({
+        position: 'relative',
+        w: 'full',
+      })}
+    >
+      <div
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          const rowTools = rows[virtualRow.index]
+
+          return (
+            <div
+              key={`${categoryValue}-row-${virtualRow.index}`}
+              data-index={virtualRow.index}
+              ref={rowVirtualizer.measureElement}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            >
+              <div
+                className={css({
+                  display: viewMode === 'grid' ? 'grid' : 'flex',
+                  flexDirection: viewMode === 'list' ? 'column' : undefined,
+                  gridTemplateColumns:
+                    viewMode === 'grid'
+                      ? {
+                          base: 'repeat(1, 1fr)',
+                          sm: 'repeat(2, 1fr)',
+                          lg: 'repeat(3, 1fr)',
+                          xl: 'repeat(4, 1fr)',
+                        }
+                      : undefined,
+                  gap: viewMode === 'grid' ? '6' : '4',
+                })}
+              >
+                {rowTools.map((tool) => (
+                  <ToolCard
+                    key={tool.title}
+                    tool={tool}
+                    viewMode={viewMode}
+                    shouldReduceMotion={shouldReduceMotion}
+                  />
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </motion.div>
+  )
+})
 
 // Tool Card Component - Memoized to prevent unnecessary re-renders
 const ToolCard = memo(function ToolCard({
