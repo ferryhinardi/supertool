@@ -1349,16 +1349,16 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
     return result
   }, [tools, columns, viewMode])
 
+  // Only create virtualizer after mount to prevent ResizeObserver errors
+  // We use estimated sizes only (no measureElement) to avoid ResizeObserver issues
   const rowVirtualizer = useVirtualizer({
-    count: rows.length,
+    count: isMounted ? rows.length : 0,
     getScrollElement: () =>
-      typeof window !== 'undefined' ? (window as unknown as HTMLElement) : null,
+      isMounted && typeof window !== 'undefined' ? (window as unknown as HTMLElement) : null,
     estimateSize: () => estimateSize,
     overscan: 2,
-    measureElement:
-      typeof window !== 'undefined' && navigator.userAgent.indexOf('Firefox') === -1
-        ? (element) => element?.getBoundingClientRect().height
-        : undefined,
+    // Removed measureElement to prevent ResizeObserver errors
+    // Using estimated sizes provides good enough performance
   })
 
   // Fallback to non-virtualized rendering during SSR or initial mount
@@ -1418,7 +1418,6 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
             <div
               key={`${categoryValue}-row-${virtualRow.index}`}
               data-index={virtualRow.index}
-              ref={rowVirtualizer.measureElement}
               style={{
                 position: 'absolute',
                 top: 0,
