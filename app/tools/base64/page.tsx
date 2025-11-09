@@ -1,19 +1,77 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Copy, Download, ImageIcon, Lock, Unlock, Upload } from 'lucide-react'
+import { Copy, Download, ImageIcon, Lightbulb, Lock, Unlock, Upload } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
+import { ToolRating } from '@/components/ui/tool-rating'
 import { css } from '@/styled-system/css'
 
 export const dynamic = 'force-dynamic'
 
 type Mode = 'encode' | 'decode'
+
+const faqs = [
+  {
+    question: 'What is Base64 encoding and why is it used?',
+    answer:
+      "Base64 is a binary-to-text encoding scheme that converts binary data into ASCII characters using 64 printable characters (A-Z, a-z, 0-9, +, /). It's widely used for transmitting data over text-based protocols like email and JSON, embedding images in HTML/CSS, storing credentials safely, and encoding binary files for APIs. Base64 ensures binary data remains intact during transmission without modification.",
+  },
+  {
+    question: 'Can I encode files other than text with this tool?',
+    answer:
+      'Yes! Our Base64 encoder supports any file type - images (PNG, JPG, GIF), documents (PDF, DOCX), audio files (MP3, WAV), videos, and more. Simply upload your file using the file picker in encode mode. The tool converts the entire file into a Base64 string that you can embed in code, transmit via API, or store in databases.',
+  },
+  {
+    question: 'How do I decode a Base64 string back to its original format?',
+    answer:
+      'Switch to "Decode" mode, paste your Base64 string into the input field, and click "Decode from Base64". The original text will appear in the output. For images, the tool automatically detects image data and displays a preview. You can download decoded content as a text file or copy it to your clipboard.',
+  },
+  {
+    question: 'Is Base64 encoding secure for sensitive data?',
+    answer:
+      "No, Base64 is NOT encryption and provides no security. It's simply an encoding format that makes binary data text-safe. Anyone can easily decode Base64 strings. Never use Base64 alone for passwords, API keys, or sensitive information. For security, use proper encryption algorithms like AES-256 first, then optionally Base64 encode the encrypted output for transmission.",
+  },
+  {
+    question: 'Why is my Base64 string so much longer than the original?',
+    answer:
+      'Base64 encoding increases data size by approximately 33% because it converts every 3 bytes of binary data into 4 ASCII characters. This overhead is the trade-off for text-safe transmission. For example, a 100KB image becomes ~133KB when Base64 encoded. This is normal and expected behavior for Base64 encoding.',
+  },
+  {
+    question: 'Can I embed Base64-encoded images directly in HTML and CSS?',
+    answer:
+      'Yes! Base64-encoded images can be embedded directly using data URIs. In HTML: <img src="data:image/png;base64,YOUR_BASE64_STRING" />. In CSS: background-image: url(data:image/png;base64,YOUR_BASE64_STRING);. This eliminates HTTP requests but increases page size. Best for small images, icons, and logos under 10KB.',
+  },
+  {
+    question: 'What does "Invalid Base64 string" error mean?',
+    answer:
+      'This error occurs when the input string contains invalid characters (not A-Z, a-z, 0-9, +, /, or =), incorrect padding (Base64 strings should be divisible by 4 with = padding), or corrupted data. Ensure you copied the entire Base64 string, including any = padding at the end. Remove any extra whitespace or line breaks.',
+  },
+  {
+    question: 'How do I encode images for use in JSON APIs?',
+    answer:
+      'Upload your image file in encode mode. The tool generates a Base64 string starting with "data:image/[type];base64,". Copy this entire string (including the data URI prefix) and use it in your JSON payload. Most APIs accept Base64 images in request bodies. For large images, consider using direct file uploads instead to avoid large JSON payloads.',
+  },
+  {
+    question: 'Can I decode Base64 images and preview them?',
+    answer:
+      'Yes! When decoding Base64 strings that contain image data (starting with "data:image/"), the tool automatically detects and displays an image preview. You can visually verify the decoded image before downloading or using it. This works for PNG, JPEG, GIF, WebP, and SVG formats.',
+  },
+  {
+    question: 'What are common use cases for Base64 encoding?',
+    answer:
+      'Common uses include: embedding small images/fonts in CSS to reduce HTTP requests, transmitting binary files through JSON APIs, storing images in databases as text, email attachments (MIME encoding), data URIs in HTML, OAuth tokens and JWT payloads, encoding binary data for XML, and ensuring data integrity during text-based transmission. Base64 is essential for web development and API integration.',
+  },
+]
 
 function Base64Content() {
   const [mode, setMode] = useQueryState(
@@ -431,6 +489,200 @@ function Base64Content() {
             </CardContent>
           </Card>
         ))}
+      </motion.div>
+
+      {/* How to Use Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className={css({ w: 'full', maxW: '1400px' })}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'blue.500/20',
+            bg: 'blue.900/10',
+            overflow: 'hidden',
+          })}
+        >
+          <CardHeader>
+            <CardTitle
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+                fontSize: 'xl',
+                fontWeight: 'bold',
+              })}
+            >
+              <Lightbulb className={css({ h: '5', w: '5', color: 'blue.400' })} />
+              How to Use Base64 Encoder/Decoder
+            </CardTitle>
+          </CardHeader>
+          <CardContent className={css({ spaceY: '4' })}>
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  flexShrink: '0',
+                  minW: '6',
+                  h: '6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  rounded: 'full',
+                  bg: 'blue.500',
+                  color: 'white',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                })}
+              >
+                1
+              </Badge>
+              <div className={css({ flex: '1' })}>
+                <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+                  Choose Encode or Decode Mode
+                </p>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                  Select "Encode" to convert text or files to Base64 format, or "Decode" to convert
+                  Base64 strings back to their original format.
+                </p>
+              </div>
+            </div>
+
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  flexShrink: '0',
+                  minW: '6',
+                  h: '6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  rounded: 'full',
+                  bg: 'blue.500',
+                  color: 'white',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                })}
+              >
+                2
+              </Badge>
+              <div className={css({ flex: '1' })}>
+                <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+                  Enter Text or Upload File
+                </p>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                  Type or paste your text directly, or upload any file (images, documents, audio,
+                  etc.) to encode. For decoding, paste the Base64 string.
+                </p>
+              </div>
+            </div>
+
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  flexShrink: '0',
+                  minW: '6',
+                  h: '6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  rounded: 'full',
+                  bg: 'blue.500',
+                  color: 'white',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                })}
+              >
+                3
+              </Badge>
+              <div className={css({ flex: '1' })}>
+                <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+                  Convert and View Results
+                </p>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                  Click the encode/decode button to convert. The result appears instantly in the
+                  output panel. Images are automatically previewed when decoding.
+                </p>
+              </div>
+            </div>
+
+            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+              <Badge
+                className={css({
+                  flexShrink: '0',
+                  minW: '6',
+                  h: '6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  rounded: 'full',
+                  bg: 'blue.500',
+                  color: 'white',
+                  fontSize: 'sm',
+                  fontWeight: 'bold',
+                })}
+              >
+                4
+              </Badge>
+              <div className={css({ flex: '1' })}>
+                <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+                  Copy or Download Output
+                </p>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                  Use the "Copy" button to copy the result to clipboard, or "Download" to save as a
+                  text file. Perfect for embedding in code, APIs, or data transmission.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Social Share */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className={css({ w: 'full', maxW: '1400px' })}
+      >
+        <SocialShare
+          toolName="Base64 Encoder & Decoder"
+          toolUrl="https://supertool.id/tools/base64"
+          description="Convert text and files to Base64 encoding or decode Base64 strings with instant image preview - perfect for web development, APIs, and data transmission!"
+          hashtags={['Base64', 'Encoding', 'WebDev', 'DataConversion']}
+        />
+      </motion.div>
+
+      {/* FAQs */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className={css({ w: 'full', maxW: '1400px' })}
+      >
+        <FAQAccordion faqs={faqs} />
+      </motion.div>
+
+      {/* Related Tools */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className={css({ w: 'full', maxW: '1400px' })}
+      >
+        <RelatedTools currentToolPath="/tools/base64" category="converter" />
+      </motion.div>
+
+      {/* Tool Rating */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+        className={css({ w: 'full', maxW: '1400px' })}
+      >
+        <ToolRating toolId="/tools/base64" toolName="Base64 Encoder & Decoder" />
       </motion.div>
     </main>
   )

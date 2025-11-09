@@ -8,6 +8,7 @@ import {
   Copy,
   Download,
   ExternalLink,
+  Lightbulb,
   Link as LinkIcon,
   QrCode,
   Sparkles,
@@ -19,10 +20,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { css } from '@/styled-system/css'
 
@@ -51,6 +53,31 @@ const faqs = [
     question: 'Is it safe to use shortened URLs for sensitive links?',
     answer:
       "While our URL shortener uses secure HTTPS connections and doesn't expose original URLs publicly, we recommend caution with sensitive links. Shortened URLs can mask the destination, which may be flagged by security systems. For highly sensitive content, consider password-protecting the destination or using direct links in secure channels.",
+  },
+  {
+    question: 'Can I generate QR codes for my shortened URLs?',
+    answer:
+      'Yes! Every shortened URL can generate a scannable QR code instantly. Simply click the QR icon next to your short link to view the QR code. You can download it as a PNG image for printing on marketing materials, business cards, posters, or digital displays. QR codes make sharing physical-to-digital seamless and are perfect for events, retail, and offline marketing.',
+  },
+  {
+    question: 'How can I track link performance and analytics?',
+    answer:
+      'Each shortened URL includes built-in analytics tracking. View total clicks, unique visitors, geographic locations, referrer sources, device types, and click timestamps on your dashboard. Analytics help you measure campaign effectiveness, understand your audience, and optimize marketing strategies. All tracking is privacy-focused and complies with data protection standards.',
+  },
+  {
+    question: 'What makes a good custom alias for URL shortening?',
+    answer:
+      'Effective custom aliases are short, memorable, and relevant to the content. Use lowercase letters, numbers, and hyphens only. Avoid special characters or spaces. Examples: "sale-2025", "webinar-signup", or "product-launch". Keep it under 20 characters for best results. Good aliases improve brand recognition, click-through rates, and are easier to type manually.',
+  },
+  {
+    question: 'Can I edit or update a shortened URL after creation?',
+    answer:
+      'Once a shortened URL is created, the short code or alias cannot be changed to maintain link integrity and prevent broken links. However, you can delete the shortened URL and create a new one with a different alias. If you need to update the destination URL, consider creating a new short link and updating references to point to the new link.',
+  },
+  {
+    question: 'Are shortened URLs good for SEO and social media sharing?',
+    answer:
+      'Shortened URLs are excellent for social media where character limits matter (Twitter, SMS, etc.). They look cleaner and are easier to share verbally or in print. For SEO, search engines follow redirects properly, so link equity passes through. Custom aliases with keywords can improve click-through rates. However, for SEO-critical content, direct URLs with descriptive paths may be preferable.',
   },
 ]
 
@@ -854,6 +881,156 @@ export default function URLShortenerPage() {
           </div>
         </div>
       </Card>
+
+      {/* How to Use Section */}
+      <Card
+        className={css({
+          border: '1px solid',
+          borderColor: 'blue.500/20',
+          bg: 'blue.900/10',
+          overflow: 'hidden',
+        })}
+      >
+        <CardHeader>
+          <CardTitle
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2',
+              fontSize: 'xl',
+              fontWeight: 'bold',
+            })}
+          >
+            <Lightbulb className={css({ h: '5', w: '5', color: 'blue.400' })} />
+            How to Use URL Shortener
+          </CardTitle>
+        </CardHeader>
+        <CardContent className={css({ spaceY: '4' })}>
+          <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+            <Badge
+              className={css({
+                flexShrink: '0',
+                minW: '6',
+                h: '6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                rounded: 'full',
+                bg: 'blue.500',
+                color: 'white',
+                fontSize: 'sm',
+                fontWeight: 'bold',
+              })}
+            >
+              1
+            </Badge>
+            <div className={css({ flex: '1' })}>
+              <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+                Enter Your Long URL
+              </p>
+              <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                Paste the long URL you want to shorten into the input field. The tool validates the
+                URL format automatically and shows a green checkmark when ready.
+              </p>
+            </div>
+          </div>
+
+          <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+            <Badge
+              className={css({
+                flexShrink: '0',
+                minW: '6',
+                h: '6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                rounded: 'full',
+                bg: 'blue.500',
+                color: 'white',
+                fontSize: 'sm',
+                fontWeight: 'bold',
+              })}
+            >
+              2
+            </Badge>
+            <div className={css({ flex: '1' })}>
+              <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+                Customize Your Link (Optional)
+              </p>
+              <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                Add a custom alias for branded, memorable links (e.g., "summer-sale-2025"). Leave
+                blank for auto-generated short codes. Use only lowercase, numbers, and hyphens.
+              </p>
+            </div>
+          </div>
+
+          <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+            <Badge
+              className={css({
+                flexShrink: '0',
+                minW: '6',
+                h: '6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                rounded: 'full',
+                bg: 'blue.500',
+                color: 'white',
+                fontSize: 'sm',
+                fontWeight: 'bold',
+              })}
+            >
+              3
+            </Badge>
+            <div className={css({ flex: '1' })}>
+              <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+                Generate and Copy Your Short Link
+              </p>
+              <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                Click "Shorten URL" to instantly create your short link. Copy it to clipboard with
+                one click, or generate a QR code for physical sharing and print materials.
+              </p>
+            </div>
+          </div>
+
+          <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+            <Badge
+              className={css({
+                flexShrink: '0',
+                minW: '6',
+                h: '6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                rounded: 'full',
+                bg: 'blue.500',
+                color: 'white',
+                fontSize: 'sm',
+                fontWeight: 'bold',
+              })}
+            >
+              4
+            </Badge>
+            <div className={css({ flex: '1' })}>
+              <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+                Share and Track Performance
+              </p>
+              <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                Share your short link on social media, emails, or print. Track clicks, locations,
+                devices, and referrers through the built-in analytics dashboard. Monitor performance
+                in real-time.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <SocialShare
+        toolName="URL Shortener"
+        toolUrl="https://supertool.id/tools/url-shortener"
+        description="Create short, memorable links with custom aliases, QR codes, and real-time analytics tracking - perfect for marketing campaigns and social media sharing!"
+        hashtags={['URLShortener', 'LinkManagement', 'Marketing', 'Analytics']}
+      />
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/url-shortener" category="productivity" />

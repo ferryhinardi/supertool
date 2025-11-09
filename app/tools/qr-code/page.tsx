@@ -13,6 +13,7 @@ import {
   FileUp,
   History,
   Image as ImageIcon,
+  Lightbulb,
   PackageOpen,
   Printer,
   QrCode,
@@ -29,10 +30,12 @@ import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
@@ -201,7 +204,7 @@ const faqs = [
   {
     question: 'What types of QR codes can I generate?',
     answer:
-      'Our generator supports multiple QR code types including URLs/links, plain text, WiFi credentials, contact information (vCard), email addresses, phone numbers, SMS messages, and location coordinates. Each type is optimized for its specific use case with appropriate data formatting.',
+      'Our generator supports multiple QR code types including URLs/links, plain text, WiFi credentials, contact information (vCard), email addresses, phone numbers, SMS messages, WhatsApp messages, location coordinates (geo), calendar events, app store links, and social media profiles. Each type is optimized for its specific use case with appropriate data formatting.',
   },
   {
     question: 'Can I customize the QR code design and colors?',
@@ -217,6 +220,31 @@ const faqs = [
     question: 'What is the best size and resolution for QR codes?',
     answer:
       'For digital use, 300x300 to 500x500 pixels is sufficient. For print materials, we recommend at least 1000x1000 pixels or using SVG format which scales infinitely without quality loss. The minimum recommended print size is 2cm x 2cm (0.8" x 0.8") to ensure reliable scanning on mobile devices.',
+  },
+  {
+    question: "Why won't my QR code scan properly?",
+    answer:
+      'Common scanning issues include poor contrast between colors, QR codes that are too small, damaged or low-quality prints, insufficient lighting, or camera focus problems. Ensure your QR code has high contrast (dark on light background works best), adequate size (minimum 2cm x 2cm), and sufficient error correction level. Test your QR code with multiple scanner apps and devices before deploying it.',
+  },
+  {
+    question: 'Can I generate multiple QR codes at once in bulk?',
+    answer:
+      'Yes! Our tool includes a bulk generation feature that allows you to create multiple QR codes simultaneously. You can upload a CSV file with your data or manually add items. This is perfect for event tickets, product labels, inventory management, or marketing campaigns. All codes can be downloaded together as a ZIP file for convenient distribution.',
+  },
+  {
+    question: 'How can I use QR codes for my business?',
+    answer:
+      'Businesses use QR codes for contactless menus, product packaging with detailed information, marketing materials linking to promotions, business cards with vCard data, event check-ins, payment processing, WiFi access sharing, customer feedback collection, and inventory tracking. QR codes bridge physical and digital marketing, enabling instant customer engagement with measurable analytics.',
+  },
+  {
+    question: 'Are QR codes secure and safe to use?',
+    answer:
+      "QR codes themselves are just data containers and aren't inherently secure or insecure. However, they can be exploited if they link to malicious websites or content. Always verify the source before scanning unknown QR codes. For businesses creating QR codes, use HTTPS URLs, avoid embedding sensitive data directly, consider using dynamic QR codes with tracking, and regularly audit where your codes are deployed.",
+  },
+  {
+    question: 'What devices and apps can scan QR codes?',
+    answer:
+      'Most modern smartphones (iOS 11+, Android 8+) have built-in QR code scanning in their camera apps - just point and tap the notification. Dedicated QR scanner apps offer additional features like scan history and batch scanning. Our generator also includes a scanner tool that works directly in your browser, supporting both webcam and image file uploads for instant QR code reading.',
   },
 ]
 
@@ -3616,6 +3644,181 @@ url,https://github.com,GitHub,#000000`
           </div>
         </div>
       </div>
+
+      {/* How to Use Section */}
+      <Card
+        className={css({
+          border: '2px solid',
+          borderColor: 'blue.500/30',
+          bg: 'rgba(59, 130, 246, 0.05)',
+          backdropFilter: 'blur(16px)',
+        })}
+      >
+        <CardHeader>
+          <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+            <Lightbulb className={css({ h: '5', w: '5' })} />
+            How to Use QR Code Generator
+          </CardTitle>
+          <CardDescription>
+            Follow these simple steps to create, customize, and share your QR codes
+          </CardDescription>
+        </CardHeader>
+        <CardContent className={css({ spaceY: '4' })}>
+          <div className={css({ spaceY: '3' })}>
+            <div className={css({ display: 'flex', gap: '3' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  h: '6',
+                  w: '6',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'purple.500/20',
+                  borderColor: 'purple.500/50',
+                  flexShrink: 0,
+                })}
+              >
+                1
+              </Badge>
+              <div>
+                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                  Choose QR Code Type
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  Select from URL, Text, WiFi, vCard, Email, Phone, SMS, WhatsApp, Location, Event,
+                  App Store, or Social Media. Each type is optimized for its specific use case with
+                  smart data formatting.
+                </p>
+              </div>
+            </div>
+
+            <div className={css({ display: 'flex', gap: '3' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  h: '6',
+                  w: '6',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'pink.500/20',
+                  borderColor: 'pink.500/50',
+                  flexShrink: 0,
+                })}
+              >
+                2
+              </Badge>
+              <div>
+                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                  Enter Your Content
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  Input your data in the provided fields. For URLs, paste the link. For WiFi, enter
+                  network credentials. For vCards, fill in contact details. The QR code updates
+                  instantly as you type.
+                </p>
+              </div>
+            </div>
+
+            <div className={css({ display: 'flex', gap: '3' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  h: '6',
+                  w: '6',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'blue.500/20',
+                  borderColor: 'blue.500/50',
+                  flexShrink: 0,
+                })}
+              >
+                3
+              </Badge>
+              <div>
+                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                  Customize Design (Optional)
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  Personalize colors, add your logo, apply style presets, adjust corner and dot
+                  styles, or create gradients. All customizations maintain scannability. Increase
+                  error correction if adding a logo.
+                </p>
+              </div>
+            </div>
+
+            <div className={css({ display: 'flex', gap: '3' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  h: '6',
+                  w: '6',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'green.500/20',
+                  borderColor: 'green.500/50',
+                  flexShrink: 0,
+                })}
+              >
+                4
+              </Badge>
+              <div>
+                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                  Download or Print
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  Download as PNG (raster), SVG (vector), JPEG, WebP, or PDF. Use SVG for print
+                  materials that need to scale. Save to history, print with templates, or generate
+                  multiple codes in bulk.
+                </p>
+              </div>
+            </div>
+
+            <div className={css({ display: 'flex', gap: '3' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  h: '6',
+                  w: '6',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'violet.500/20',
+                  borderColor: 'violet.500/50',
+                  flexShrink: 0,
+                })}
+              >
+                5
+              </Badge>
+              <div>
+                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                  Test Before Deploying
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  Always test your QR code with multiple devices and scanner apps before printing or
+                  sharing. Use our built-in scanner to verify the encoded data. Ensure adequate size
+                  (min 2cm x 2cm) for reliable scanning.
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <SocialShare
+        toolName="QR Code Generator"
+        toolUrl="/tools/qr-code"
+        description="Create custom QR codes for free - URLs, WiFi, vCards, and more with instant generation and high-resolution downloads"
+        hashtags={['QRCode', 'Marketing', 'Business', 'WebDev']}
+      />
 
       <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/qr-code" category="productivity" />

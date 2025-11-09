@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   ArrowRight,
   Info,
+  Lightbulb,
   Repeat,
   Sparkles,
   Star,
@@ -20,6 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
+import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
@@ -65,6 +67,31 @@ const faqs = [
     question: 'Can I save my favorite unit conversions?',
     answer:
       'Yes! You can mark frequently used conversions as favorites for quick access. Simply click the star icon next to any conversion pair (e.g., kg to lbs, miles to km) and it will appear in your favorites list. Favorites are saved locally in your browser for instant loading on future visits.',
+  },
+  {
+    question: 'Does this unit converter work offline?',
+    answer:
+      'Once the page loads, all conversions happen locally in your browser using JavaScript - no internet connection required for calculations. The conversion formulas are built into the application, so you can use it on flights, in areas with poor connectivity, or completely offline after the initial page load. Your favorites are also stored locally and accessible offline.',
+  },
+  {
+    question: 'What is the difference between weight and mass units?',
+    answer:
+      'Mass (kilograms, grams) measures the amount of matter in an object and remains constant regardless of location. Weight (newtons, pounds-force) measures the force of gravity on that mass and varies with gravitational field strength. In everyday usage, pounds and kilograms are often used interchangeably for "weight," though technically they measure different properties. Our converter handles both mass and force units appropriately.',
+  },
+  {
+    question: 'Can I convert cooking measurements like cups, tablespoons, and teaspoons?',
+    answer:
+      'Yes! The volume category includes cooking and baking measurements: cups, tablespoons, teaspoons, fluid ounces, milliliters, and liters. This is perfect for converting recipes between US and metric measurements. Note that dry ingredients (flour, sugar) have different densities, so volume conversions work best for liquids. For dry goods, use weight measurements (grams, ounces) for accuracy.',
+  },
+  {
+    question: 'How do I convert data storage units like GB, TB, and MB?',
+    answer:
+      'Select "Data Storage" or "Digital Storage" from categories, then choose your units: bytes, kilobytes (KB), megabytes (MB), gigabytes (GB), terabytes (TB), petabytes (PB), or bits. The converter handles both decimal (1 KB = 1000 bytes) and binary (1 KiB = 1024 bytes) standards. This is useful for understanding file sizes, storage capacity, internet speeds, and data transfer calculations.',
+  },
+  {
+    question: 'Why do I need a unit converter when I can calculate manually?',
+    answer:
+      'While simple conversions like meters to centimeters are easy, complex conversions (e.g., acre-feet to cubic meters, BTU to joules, knots to meters per second) require memorizing specific formulas and factors. Our converter eliminates calculation errors, saves time, provides instant results, handles precision automatically, and supports dozens of units you might not encounter regularly. It is especially valuable for professionals, students, travelers, and anyone working with international standards.',
   },
 ]
 
@@ -713,6 +740,164 @@ function UnitConverterContent() {
             </div>
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* How to Use Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+      >
+        <Card
+          className={css({
+            border: '2px solid',
+            borderColor: 'blue.500/30',
+            bg: 'rgba(59, 130, 246, 0.05)',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <Lightbulb className={css({ h: '5', w: '5' })} />
+              How to Use Unit Converter
+            </CardTitle>
+            <CardDescription>
+              Follow these simple steps to convert between any units instantly
+            </CardDescription>
+          </CardHeader>
+          <CardContent className={css({ spaceY: '4' })}>
+            <div className={css({ spaceY: '3' })}>
+              <div className={css({ display: 'flex', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    h: '6',
+                    w: '6',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'purple.500/20',
+                    borderColor: 'purple.500/50',
+                    flexShrink: 0,
+                  })}
+                >
+                  1
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                    Select Unit Category
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    Choose from 30+ categories including Length, Weight, Temperature, Volume, Area,
+                    Speed, Time, Pressure, Energy, Power, and Data Storage. Each category contains
+                    relevant measurement units for that type.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    h: '6',
+                    w: '6',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'pink.500/20',
+                    borderColor: 'pink.500/50',
+                    flexShrink: 0,
+                  })}
+                >
+                  2
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                    Enter Value and Choose Units
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    Type your number in the input field, select the source unit (what you have), and
+                    choose the target unit (what you want). The conversion happens instantly as you
+                    type with up to 10 decimal places of precision.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    h: '6',
+                    w: '6',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'blue.500/20',
+                    borderColor: 'blue.500/50',
+                    flexShrink: 0,
+                  })}
+                >
+                  3
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                    View Results and Formula
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    The converted value appears immediately below. Click the info icon to see the
+                    conversion formula and learn how the calculation works. Use the swap button to
+                    reverse the conversion direction quickly.
+                  </p>
+                </div>
+              </div>
+
+              <div className={css({ display: 'flex', gap: '3' })}>
+                <Badge
+                  variant="outline"
+                  className={css({
+                    h: '6',
+                    w: '6',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'green.500/20',
+                    borderColor: 'green.500/50',
+                    flexShrink: 0,
+                  })}
+                >
+                  4
+                </Badge>
+                <div>
+                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+                    Save Favorites (Optional)
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    Click the star icon to save frequently used conversions like kg to lbs, miles to
+                    km, or Celsius to Fahrenheit. Your favorites appear at the top for instant
+                    access on future visits. All data is stored locally in your browser.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+      >
+        <SocialShare
+          toolName="Unit Converter"
+          toolUrl="/tools/unit-converter"
+          description="Convert between 30+ unit types instantly - length, weight, temperature, volume, and more with high precision"
+          hashtags={['UnitConverter', 'Productivity', 'Tools', 'Conversion']}
+        />
       </motion.div>
 
       <FAQAccordion faqs={faqs} />
