@@ -9,7 +9,14 @@ import { Progress } from '@/components/ui/progress'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
+export interface LineItem {
+  name: string
+  price: number
+  quantity: number
+}
+
 interface ReceiptData {
+  items?: LineItem[]
   subtotal?: number
   tax?: number
   tip?: number
@@ -91,6 +98,65 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
     })
   }
 
+  const extractLineItems = (lines: string[]): LineItem[] => {
+    const items: LineItem[] = []
+    const excludeKeywords =
+      /TOTAL|SUBTOTAL|TAX|TIP|GRATUITY|SERVICE|DISCOUNT|CHANGE|CASH|CARD|PAYMENT/i
+
+    for (const line of lines) {
+      // Skip lines with summary keywords
+      if (excludeKeywords.test(line)) continue
+
+      // Look for item patterns: "Item Name ... $Price" or "Item Name Qty Price"
+      // Pattern 1: Item name followed by price at end of line
+      const pattern1 = /^(.+?)\s+.*?(\d{1,6}[.,]\d{2})\s*$/
+      // Pattern 2: Item name, quantity (x2, 2x), and price
+      const pattern2 = /^(.+?)\s+(?:x|×)?\s*(\d+)\s+.*?(\d{1,6}[.,]\d{2})\s*$/i
+      // Pattern 3: Quantity at start followed by item name and price
+      const pattern3 = /^(\d+)\s+(?:x|×)?\s*(.+?)\s+.*?(\d{1,6}[.,]\d{2})\s*$/i
+
+      let match = pattern2.exec(line)
+      if (match) {
+        const name = match[1].trim()
+        const quantity = parseInt(match[2])
+        const price = parseFloat(match[3].replace(',', '.'))
+        if (name.length >= 2 && !Number.isNaN(price) && price > 0 && price < 999999) {
+          items.push({ name, quantity, price })
+          continue
+        }
+      }
+
+      match = pattern3.exec(line)
+      if (match) {
+        const quantity = parseInt(match[1])
+        const name = match[2].trim()
+        const price = parseFloat(match[3].replace(',', '.'))
+        if (name.length >= 2 && !Number.isNaN(price) && price > 0 && price < 999999) {
+          items.push({ name, quantity, price })
+          continue
+        }
+      }
+
+      match = pattern1.exec(line)
+      if (match) {
+        const name = match[1].trim()
+        const price = parseFloat(match[2].replace(',', '.'))
+        // Only add if name is reasonable length and not just numbers
+        if (
+          name.length >= 2 &&
+          !/^\d+$/.test(name) &&
+          !Number.isNaN(price) &&
+          price > 0 &&
+          price < 999999
+        ) {
+          items.push({ name, quantity: 1, price })
+        }
+      }
+    }
+
+    return items
+  }
+
   const extractAmountsFromText = (text: string): ReceiptData => {
     const data: ReceiptData = {}
 
@@ -99,6 +165,14 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
       .replace(/\s+/g, ' ')
       .replace(/[\r\n]+/g, '\n')
       .toUpperCase()
+
+    const lines = cleanText.split('\n').filter((line) => line.trim())
+
+    // First, try to extract line items
+    const extractedItems = extractLineItems(lines)
+    if (extractedItems.length > 0) {
+      data.items = extractedItems
+    }
 
     // Enhanced amount patterns with more variations
     const amountPatterns = [
@@ -146,17 +220,16 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
         if (match?.[1]) {
           const amount = parseFloat(match[1].replace(',', '.'))
           if (!Number.isNaN(amount) && amount > 0 && amount < 999999) {
-            data[key as keyof ReceiptData] = amount
+            if (key === 'subtotal' || key === 'tax' || key === 'tip' || key === 'total') {
+              data[key] = amount
+            }
             found = true
           }
         }
       }
     }
 
-    // Advanced fallback strategies
-    const lines = cleanText.split('\n').filter((line) => line.trim())
-
-    // Strategy 1: Line-by-line analysis for context
+    // Strategy 1: Line-by-line analysis for context (reuse lines variable)
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
 
@@ -374,13 +447,20 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
         })
       } else {
         const fieldsFound = Object.keys(bestExtractedData)
-        toast.success(`Receipt scanned successfully! Found: ${fieldsFound.join(', ')} 🎉`, {
+        const itemCount = bestExtractedData.items?.length || 0
+        const message =
+          itemCount > 0
+            ? `Receipt scanned! Found ${itemCount} items + ${fieldsFound.filter((f) => f !== 'items').join(', ')} 🎉`
+            : `Receipt scanned successfully! Found: ${fieldsFound.join(', ')} 🎉`
+
+        toast.success(message, {
           description: 'Review the extracted values and adjust if needed',
         })
         onDataExtracted(bestExtractedData)
         trackToolEvent('split_bill_ocr_success', {
           fields_extracted: fieldsFound.length,
           fields: fieldsFound,
+          items_count: itemCount,
           ocr_attempts: ocrResults.length,
         })
       }
@@ -639,7 +719,8 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
             📸 <strong>Best Results:</strong> Good lighting, flat surface, clear text
           </p>
           <p>
-            🔍 <strong>Auto-detects:</strong> Subtotal, Tax, Tip, Total + mathematical validation
+            🔍 <strong>Auto-detects:</strong> Line items (name, price, qty) + Subtotal, Tax, Tip,
+            Total
           </p>
           <p>
             🎯 <strong>Enhanced OCR:</strong> Multiple recognition passes for higher accuracy

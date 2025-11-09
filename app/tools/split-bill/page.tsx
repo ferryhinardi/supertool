@@ -58,8 +58,16 @@ interface Person {
   percentage?: number
 }
 
+interface BillItem {
+  id: string
+  name: string
+  price: number
+  quantity: number
+  assignedTo: string[] // Person IDs who share this item
+}
+
 type PageMode = 'calculator' | 'create'
-type SplitType = 'equal' | 'percentage'
+type SplitType = 'equal' | 'percentage' | 'items'
 
 const faqs = [
   {
@@ -70,7 +78,7 @@ const faqs = [
   {
     question: 'Can I split bills unequally among people?',
     answer:
-      'Yes! Our advanced percentage split mode allows you to assign custom percentages to different people. This is perfect when some people ordered more expensive items or when splitting by what each person actually consumed. You can set any percentage for each participant, as long as the total equals 100%.',
+      'Yes! We offer three split options: 1) Equal Split - divides equally among all participants, 2) Percentage Split - assign custom percentages to each person, and 3) Item-Based Split - add individual items and assign who ordered what. The item-based split is perfect for restaurant bills where each person ordered different dishes.',
   },
   {
     question: 'How does the tip calculation work?',
@@ -116,6 +124,12 @@ export default function SplitBillPage() {
     { id: '1', name: 'Person 1', hasPaid: false, percentage: 50 },
     { id: '2', name: 'Person 2', hasPaid: false, percentage: 50 },
   ])
+  const [items, setItems] = useState<BillItem[]>([])
+
+  // New item form state
+  const [newItemName, setNewItemName] = useState('')
+  const [newItemPrice, setNewItemPrice] = useState('')
+  const [newItemQuantity, setNewItemQuantity] = useState('1')
 
   // Create Shareable Bill fields
   const [billTitle, setBillTitle] = useState('')
@@ -145,12 +159,41 @@ export default function SplitBillPage() {
     return formatCurrencyUtil(amount, currency.code)
   }
 
+  // Calculate item-based amounts (must be before calculations)
+  const calculateItemBasedAmounts = useMemo(() => {
+    if (splitType !== 'items') return {}
+
+    const personAmounts: Record<string, number> = {}
+    people.forEach((p) => {
+      personAmounts[p.id] = 0
+    })
+
+    items.forEach((item) => {
+      const totalItemPrice = item.price * item.quantity
+      const shareCount = item.assignedTo.length
+
+      if (shareCount > 0) {
+        const pricePerPerson = totalItemPrice / shareCount
+        item.assignedTo.forEach((personId) => {
+          personAmounts[personId] = (personAmounts[personId] || 0) + pricePerPerson
+        })
+      }
+    })
+
+    return personAmounts
+  }, [items, people, splitType])
+
   // Calculate totals
   const calculations = useMemo(() => {
-    const bill = parseFloat(billAmount) || 0
+    let bill = parseFloat(billAmount) || 0
     const tip = parseFloat(tipPercent) || 0
     const tax = parseFloat(taxPercent) || 0
     const numPeople = people.length
+
+    // For items mode, calculate bill from items
+    if (splitType === 'items') {
+      bill = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    }
 
     const tipAmount = (bill * tip) / 100
     const taxAmount = (bill * tax) / 100
@@ -163,6 +206,17 @@ export default function SplitBillPage() {
     if (splitType === 'equal') {
       perPerson = numPeople > 0 ? total / numPeople : 0
       peopleWithAmounts = people.map((p) => ({ id: p.id, amount: perPerson }))
+    } else if (splitType === 'items') {
+      // Item-based split
+      const itemAmounts = calculateItemBasedAmounts
+      const itemsSubtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      const multiplier = itemsSubtotal > 0 ? total / itemsSubtotal : 0
+
+      peopleWithAmounts = people.map((p) => ({
+        id: p.id,
+        amount: (itemAmounts[p.id] || 0) * multiplier,
+      }))
+      perPerson = numPeople > 0 ? total / numPeople : 0
     } else {
       // Percentage split
       peopleWithAmounts = people.map((p) => ({
@@ -200,7 +254,7 @@ export default function SplitBillPage() {
       totalUnpaid,
       peopleWithAmounts,
     }
-  }, [billAmount, tipPercent, taxPercent, people, splitType])
+  }, [billAmount, tipPercent, taxPercent, people, splitType, items, calculateItemBasedAmounts])
 
   // Add person
   const addPerson = () => {
@@ -262,6 +316,9 @@ export default function SplitBillPage() {
       const equalPercentage = people.length > 0 ? 100 / people.length : 0
       setPeople(people.map((p) => ({ ...p, percentage: equalPercentage })))
       toast.success('Switched to percentage split')
+    } else if (newSplitType === 'items') {
+      setPeople(people.map((p) => ({ ...p, percentage: undefined })))
+      toast.success('Switched to item-based split')
     } else {
       // Clear percentages
       setPeople(people.map((p) => ({ ...p, percentage: undefined })))
@@ -269,6 +326,62 @@ export default function SplitBillPage() {
     }
   }
 
+  // Item management functions
+  const addItem = () => {
+    if (!newItemName.trim()) {
+      toast.error('Please enter item name')
+      return
+    }
+    const price = parseFloat(newItemPrice)
+    if (isNaN(price) || price <= 0) {
+      toast.error('Please enter a valid price')
+      return
+    }
+    const quantity = parseInt(newItemQuantity)
+    if (isNaN(quantity) || quantity <= 0) {
+      toast.error('Please enter a valid quantity')
+      return
+    }
+
+    const newItem: BillItem = {
+      id: String(Date.now()),
+      name: newItemName.trim(),
+      price,
+      quantity,
+      assignedTo: [],
+    }
+
+    setItems([...items, newItem])
+    setNewItemName('')
+    setNewItemPrice('')
+    setNewItemQuantity('1')
+    toast.success(`Added "${newItem.name}"`)
+  }
+
+  const removeItem = (itemId: string) => {
+    const item = items.find((i) => i.id === itemId)
+    setItems(items.filter((i) => i.id !== itemId))
+    toast.success(`Removed "${item?.name}"`)
+  }
+
+  const toggleItemAssignment = (itemId: string, personId: string) => {
+    setItems(
+      items.map((item) => {
+        if (item.id === itemId) {
+          const isAssigned = item.assignedTo.includes(personId)
+          return {
+            ...item,
+            assignedTo: isAssigned
+              ? item.assignedTo.filter((id) => id !== personId)
+              : [...item.assignedTo, personId],
+          }
+        }
+        return item
+      })
+    )
+  }
+
+  // Calculate item-based totals
   // Quick tip presets
   const setQuickTip = (percent: number) => {
     setTipPercent(String(percent))
@@ -286,6 +399,10 @@ export default function SplitBillPage() {
       { id: '1', name: 'Person 1', hasPaid: false, percentage: undefined },
       { id: '2', name: 'Person 2', hasPaid: false, percentage: undefined },
     ])
+    setItems([])
+    setNewItemName('')
+    setNewItemPrice('')
+    setNewItemQuantity('1')
     toast.success('Reset to defaults')
     trackToolEvent('split_bill_reset', {})
   }
@@ -328,6 +445,7 @@ Generated by SuperTool Split Bill Calculator
 
   // Handle receipt data extraction
   const handleReceiptData = (data: {
+    items?: Array<{ name: string; price: number; quantity: number }>
     subtotal?: number
     tax?: number
     tip?: number
@@ -335,14 +453,32 @@ Generated by SuperTool Split Bill Calculator
   }) => {
     const appliedFields: string[] = []
 
-    // If we have a subtotal, use it as the bill amount
-    if (data.subtotal !== undefined) {
-      setBillAmount(String(data.subtotal))
-      appliedFields.push('subtotal')
-    } else if (data.total !== undefined) {
-      // If no subtotal but we have total, use it
-      setBillAmount(String(data.total))
-      appliedFields.push('total as subtotal')
+    // If we have line items, switch to items mode and populate them
+    if (data.items && data.items.length > 0) {
+      setSplitType('items')
+      const newItems: BillItem[] = data.items.map((item, index) => ({
+        id: String(Date.now() + index),
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        assignedTo: [],
+      }))
+      setItems(newItems)
+      appliedFields.push(`${data.items.length} items`)
+
+      // Clear bill amount since it will be calculated from items
+      setBillAmount('')
+    } else {
+      // Original logic for non-item mode
+      // If we have a subtotal, use it as the bill amount
+      if (data.subtotal !== undefined) {
+        setBillAmount(String(data.subtotal))
+        appliedFields.push('subtotal')
+      } else if (data.total !== undefined) {
+        // If no subtotal but we have total, use it
+        setBillAmount(String(data.total))
+        appliedFields.push('total as subtotal')
+      }
     }
 
     // If we have tax amount, calculate percentage from subtotal
@@ -1163,7 +1299,242 @@ Generated by SuperTool Split Bill Calculator
             >
               Percentage Split
             </button>
+            <button
+              type="button"
+              onClick={() => handleSplitTypeChange('items')}
+              className={css({
+                flex: '1',
+                py: '2',
+                px: '3',
+                rounded: 'md',
+                fontSize: 'sm',
+                fontWeight: 'medium',
+                transition: 'all 0.2s',
+                bg: splitType === 'items' ? 'emerald.600' : 'transparent',
+                color: splitType === 'items' ? 'white' : 'gray.400',
+                _hover: {
+                  bg: splitType === 'items' ? 'emerald.500' : 'rgba(16, 185, 129, 0.1)',
+                },
+              })}
+            >
+              <span
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1',
+                  justifyContent: 'center',
+                })}
+              >
+                <Sparkles className="h-3 w-3" />
+                Item-Based
+              </span>
+            </button>
           </div>
+
+          {/* Item-Based Split UI */}
+          {splitType === 'items' && (
+            <div
+              className={css({
+                rounded: 'lg',
+                border: '1px solid',
+                borderColor: 'purple.500/30',
+                bg: 'rgba(147, 51, 234, 0.05)',
+                p: '4',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '3',
+              })}
+            >
+              <div className="flex items-center gap-2 text-sm font-medium text-purple-300">
+                <Sparkles className="h-4 w-4" />
+                Add Bill Items
+              </div>
+
+              {/* Add Item Form */}
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: '2fr 1fr 1fr auto' },
+                  gap: '2',
+                  alignItems: 'end',
+                })}
+              >
+                <Field>
+                  <FieldLabel className="text-xs text-gray-400">Item Name</FieldLabel>
+                  <FieldInput
+                    type="text"
+                    value={newItemName}
+                    onChange={(e) => setNewItemName(e.target.value)}
+                    placeholder="e.g., Burger"
+                    className={css({
+                      rounded: 'md',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      bg: 'rgba(17, 24, 39, 0.7)',
+                      px: '3',
+                      py: '2',
+                      color: 'white',
+                      fontSize: 'sm',
+                      _focus: {
+                        borderColor: 'purple.500',
+                        outline: 'none',
+                        ring: '1px',
+                        ringColor: 'rgba(147, 51, 234, 0.3)',
+                      },
+                    })}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel className="text-xs text-gray-400">Price</FieldLabel>
+                  <FieldInput
+                    type="number"
+                    value={newItemPrice}
+                    onChange={(e) => setNewItemPrice(e.target.value)}
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0"
+                    className={css({
+                      rounded: 'md',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      bg: 'rgba(17, 24, 39, 0.7)',
+                      px: '3',
+                      py: '2',
+                      color: 'white',
+                      fontSize: 'sm',
+                      _focus: {
+                        borderColor: 'purple.500',
+                        outline: 'none',
+                        ring: '1px',
+                        ringColor: 'rgba(147, 51, 234, 0.3)',
+                      },
+                    })}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel className="text-xs text-gray-400">Qty</FieldLabel>
+                  <FieldInput
+                    type="number"
+                    value={newItemQuantity}
+                    onChange={(e) => setNewItemQuantity(e.target.value)}
+                    min="1"
+                    className={css({
+                      rounded: 'md',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      bg: 'rgba(17, 24, 39, 0.7)',
+                      px: '3',
+                      py: '2',
+                      color: 'white',
+                      fontSize: 'sm',
+                      _focus: {
+                        borderColor: 'purple.500',
+                        outline: 'none',
+                        ring: '1px',
+                        ringColor: 'rgba(147, 51, 234, 0.3)',
+                      },
+                    })}
+                  />
+                </Field>
+                <Button
+                  onClick={addItem}
+                  size="sm"
+                  className={css({
+                    bg: 'purple.600',
+                    _hover: { bg: 'purple.500' },
+                  })}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Items List */}
+              {items.length > 0 && (
+                <div
+                  className={css({ display: 'flex', flexDirection: 'column', gap: '2', mt: '2' })}
+                >
+                  {items.map((item) => (
+                    <div
+                      key={item.id}
+                      className={css({
+                        rounded: 'md',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'rgba(17, 24, 39, 0.5)',
+                        p: '3',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '2',
+                      })}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="text-sm font-medium text-white">
+                            {item.name} × {item.quantity}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {currency.symbol}
+                            {formatCurrency(item.price)} each = {currency.symbol}
+                            {formatCurrency(item.price * item.quantity)}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeItem(item.id)}
+                          className={css({
+                            color: 'red.400',
+                            _hover: { color: 'red.300' },
+                          })}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+
+                      {/* Assign to people */}
+                      <div>
+                        <div className="text-xs text-gray-400 mb-1">Assigned to:</div>
+                        <div className="flex flex-wrap gap-1">
+                          {people.map((person) => {
+                            const isAssigned = item.assignedTo.includes(person.id)
+                            return (
+                              <button
+                                key={person.id}
+                                type="button"
+                                onClick={() => toggleItemAssignment(item.id, person.id)}
+                                className={css({
+                                  px: '2',
+                                  py: '1',
+                                  rounded: 'md',
+                                  fontSize: 'xs',
+                                  fontWeight: 'medium',
+                                  transition: 'all 0.2s',
+                                  bg: isAssigned ? 'purple.600' : 'gray.700',
+                                  color: isAssigned ? 'white' : 'gray.400',
+                                  border: '1px solid',
+                                  borderColor: isAssigned ? 'purple.500' : 'gray.600',
+                                  _hover: {
+                                    bg: isAssigned ? 'purple.500' : 'gray.600',
+                                  },
+                                })}
+                              >
+                                {person.name} {isAssigned && '✓'}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {items.length === 0 && (
+                <div className="text-xs text-gray-500 text-center py-2">
+                  No items added yet. Add items from your bill above.
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Percentage Validation Warning */}
           {splitType === 'percentage' && Math.abs(totalPercentage - 100) > 0.01 && (
