@@ -194,6 +194,13 @@ export default function HomePage() {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const hasRestoredScroll = useRef(false)
 
+  // Disable browser's native scroll restoration to prevent conflicts
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+  }, [])
+
   // Scroll restoration - save and restore scroll position
   useEffect(() => {
     const scrollKey = 'homepage-scroll-y'
@@ -202,12 +209,34 @@ export default function HomePage() {
     if (!hasRestoredScroll.current) {
       const savedScroll = sessionStorage.getItem(scrollKey)
       if (savedScroll) {
-        // Delay restoration to ensure content is rendered
-        const timeoutId = setTimeout(() => {
-          window.scrollTo(0, Number.parseInt(savedScroll, 10))
-        }, 100)
+        // Use multiple checks to ensure content is fully rendered before restoring
+        const restore = () => {
+          const scrollY = Number.parseInt(savedScroll, 10)
+          window.scrollTo(0, scrollY)
+
+          // Verify scroll was applied (sometimes first attempt fails if content not ready)
+          requestAnimationFrame(() => {
+            if (Math.abs(window.scrollY - scrollY) > 10) {
+              window.scrollTo(0, scrollY)
+            }
+          })
+        }
+
+        // Wait for content to render and images to load
+        if (document.readyState === 'complete') {
+          restore()
+        } else {
+          window.addEventListener('load', restore, { once: true })
+        }
+
+        // Also try after a delay as backup
+        const timeoutId = setTimeout(restore, 100)
         hasRestoredScroll.current = true
-        return () => clearTimeout(timeoutId)
+
+        return () => {
+          clearTimeout(timeoutId)
+          window.removeEventListener('load', restore)
+        }
       }
       hasRestoredScroll.current = true
     }
@@ -1084,7 +1113,10 @@ export default function HomePage() {
         style={{
           position: 'relative',
           zIndex: 10,
-          margin: '20px auto',
+          marginTop: '80px',
+          marginBottom: '20px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
           width: '100%',
           maxWidth: '1400px',
           overflow: 'hidden',
@@ -1353,8 +1385,7 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
   // We use estimated sizes only (no measureElement) to avoid ResizeObserver issues
   const rowVirtualizer = useVirtualizer({
     count: isMounted ? rows.length : 0,
-    getScrollElement: () =>
-      isMounted && typeof window !== 'undefined' ? (window as unknown as HTMLElement) : null,
+    getScrollElement: () => parentRef.current,
     estimateSize: () => estimateSize,
     overscan: 2,
     // Removed measureElement to prevent ResizeObserver errors
@@ -1473,11 +1504,19 @@ const ToolCard = memo(function ToolCard({
   const isComingSoon = tool.comingSoon
   const noMotion = shouldReduceMotion ?? false
 
+  // Save scroll position when clicking on tool links
+  const handleToolClick = () => {
+    if (!isComingSoon) {
+      sessionStorage.setItem('homepage-scroll-y', window.scrollY.toString())
+    }
+  }
+
   if (viewMode === 'list') {
     return (
       <motion.div initial={false} whileHover={noMotion ? {} : { x: 4 }}>
         <Link
           href={isComingSoon ? '#' : tool.href}
+          onClick={handleToolClick}
           className={css({
             display: 'block',
             pointerEvents: isComingSoon ? 'none' : 'auto',
@@ -1680,6 +1719,7 @@ const ToolCard = memo(function ToolCard({
     >
       <Link
         href={isComingSoon ? '#' : tool.href}
+        onClick={handleToolClick}
         className={css({
           display: 'block',
           h: 'full',

@@ -12,9 +12,12 @@ export default defineConfig({
     globals: true,
     setupFiles: './vitest.setup.ts',
     testTimeout: 60000,
-    // Browser mode configuration for screenshot tests with CSS styling
+    // Browser mode is only enabled for specific tests that need it (e.g., screenshot tests)
+    // Most tests will use jsdom environment for better performance and compatibility
+    // To use browser mode in a test file, add: // @vitest-environment browser
+    environment: 'jsdom',
     browser: {
-      enabled: true,
+      enabled: false, // Disabled by default, only enabled when test file specifies @vitest-environment browser
       provider: playwright(),
       instances: [
         {
