@@ -592,8 +592,8 @@ export default function PDFToolsPage() {
       const pdfDoc = await PDFDocument.load(arrayBuffer)
       const pages = pdfDoc.getPages()
 
+      // biome-ignore lint/suspicious/noExplicitAny: pdf-lib types compatibility
       pages.forEach((page: any, index: number) => {
-        // biome-ignore lint/suspicious/noExplicitAny: pdf-lib types compatibility
         page.setRotation(degrees(rotationAngle))
 
         updatePdfStatus(pdf.id, {

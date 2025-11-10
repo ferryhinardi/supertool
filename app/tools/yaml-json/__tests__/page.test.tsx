@@ -6,6 +6,21 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { trackToolEvent } from '@/lib/analytics'
 
 // Mock modules inline - must NOT reference external variables
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+  }),
+  useSearchParams: () => ({
+    get: vi.fn(),
+  }),
+  usePathname: () => '/tools/yaml-json',
+}))
+
 vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),

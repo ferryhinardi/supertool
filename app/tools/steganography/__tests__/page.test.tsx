@@ -61,8 +61,9 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -73,8 +74,9 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(
@@ -88,8 +90,9 @@ describe('Steganography Page', () => {
 
       // Switch to decode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -97,8 +100,9 @@ describe('Steganography Page', () => {
 
       // Switch back to encode
       const encodeButtons = screen.getAllByText(/Encode Message/i)
-      const encodeButton = encodeButtons.find((el) => el.textContent === 'Encode Message')
-      await userEvent.click(encodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const encodeButton = encodeButtons.find((el) => el.textContent === 'Encode Message')!
+      await userEvent.click(encodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Encode Secret Message')).toBeInTheDocument()
@@ -196,8 +200,9 @@ describe('Steganography Page', () => {
 
       // Switch to decode mode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -216,8 +221,9 @@ describe('Steganography Page', () => {
 
       // Switch to decode mode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -260,8 +266,9 @@ describe('Steganography Page', () => {
 
       // Switch to decode mode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -306,8 +313,9 @@ describe('Steganography Page', () => {
 
       // Switch to decode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -384,8 +392,9 @@ describe('Steganography Page', () => {
 
       // Decode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -447,8 +456,9 @@ describe('Steganography Page', () => {
 
       // Switch to decode mode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
-      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
+      const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
+      await userEvent.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()

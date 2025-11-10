@@ -157,8 +157,11 @@ export default function MarkdownEditorPage() {
   const [value, setValue] = useState(defaultMarkdown)
   const [viewMode, setViewMode] = useState<ViewMode>('split')
   const [markdownPlugins, setMarkdownPlugins] = useState<{
+    // biome-ignore lint/suspicious/noExplicitAny: remark/rehype plugins are dynamically loaded with complex types
     remarkGfm: any
+    // biome-ignore lint/suspicious/noExplicitAny: remark/rehype plugins are dynamically loaded with complex types
     rehypeHighlight: any
+    // biome-ignore lint/suspicious/noExplicitAny: remark/rehype plugins are dynamically loaded with complex types
     rehypeRaw: any
   } | null>(null)
 

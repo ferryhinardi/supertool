@@ -25,6 +25,7 @@ export default function JSONToMarkdownTablePage() {
   const [customHeaders, setCustomHeaders] = useState('')
 
   // Dynamically load json extension
+  // biome-ignore lint/suspicious/noExplicitAny: Extension type is complex and dynamically loaded
   const [jsonExtension, setJsonExtension] = useState<any>(null)
 
   useEffect(() => {

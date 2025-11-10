@@ -23,6 +23,7 @@ export default function JSONToCSVPage() {
   const [flattenNested, setFlattenNested] = useState(true)
 
   // Dynamically load json extension
+  // biome-ignore lint/suspicious/noExplicitAny: CodeMirror extension is dynamically loaded and has complex types
   const [jsonExtension, setJsonExtension] = useState<any>(null)
 
   useEffect(() => {

@@ -414,6 +414,7 @@ vi.mock('@/styled-system/recipes', () => ({
 vi.mock('@tanstack/react-virtual', () => ({
   useVirtualizer: ({
     count,
+    estimateSize,
   }: {
     count: number
     getScrollElement: () => HTMLElement | null

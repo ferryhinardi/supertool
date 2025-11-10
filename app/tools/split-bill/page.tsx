@@ -333,12 +333,12 @@ export default function SplitBillPage() {
       return
     }
     const price = parseFloat(newItemPrice)
-    if (isNaN(price) || price <= 0) {
+    if (Number.isNaN(price) || price <= 0) {
       toast.error('Please enter a valid price')
       return
     }
-    const quantity = parseInt(newItemQuantity)
-    if (isNaN(quantity) || quantity <= 0) {
+    const quantity = parseInt(newItemQuantity, 10)
+    if (Number.isNaN(quantity) || quantity <= 0) {
       toast.error('Please enter a valid quantity')
       return
     }

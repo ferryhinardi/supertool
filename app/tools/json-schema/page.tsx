@@ -58,6 +58,7 @@ function JSONSchemaContent() {
   const [detectFormats, setDetectFormats] = useState(true)
 
   // Dynamically load json extension
+  // biome-ignore lint/suspicious/noExplicitAny: Extension type is complex and dynamically loaded
   const [jsonExtension, setJsonExtension] = useState<any>(null)
 
   useEffect(() => {

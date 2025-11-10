@@ -118,7 +118,7 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
       let match = pattern2.exec(line)
       if (match) {
         const name = match[1].trim()
-        const quantity = parseInt(match[2])
+        const quantity = parseInt(match[2], 10)
         const price = parseFloat(match[3].replace(',', '.'))
         if (name.length >= 2 && !Number.isNaN(price) && price > 0 && price < 999999) {
           items.push({ name, quantity, price })
@@ -128,7 +128,7 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
 
       match = pattern3.exec(line)
       if (match) {
-        const quantity = parseInt(match[1])
+        const quantity = parseInt(match[1], 10)
         const name = match[2].trim()
         const price = parseFloat(match[3].replace(',', '.'))
         if (name.length >= 2 && !Number.isNaN(price) && price > 0 && price < 999999) {
