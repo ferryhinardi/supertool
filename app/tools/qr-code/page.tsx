@@ -26,7 +26,7 @@ import {
   X,
 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -501,32 +501,35 @@ export default function QRCodePage() {
   const filteredHistory = getFilteredHistory(searchQuery, typeFilter, sortBy, showFavoritesOnly)
 
   // Create tracking URL for scan analytics
-  const createTrackingUrl = async (originalUrl: string) => {
-    setIsCreatingTrackingUrl(true)
-    try {
-      const response = await fetch('/api/shorten', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: originalUrl }),
-      })
+  const createTrackingUrl = useCallback(
+    async (originalUrl: string) => {
+      setIsCreatingTrackingUrl(true)
+      try {
+        const response = await fetch('/api/shorten', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: originalUrl }),
+        })
 
-      if (!response.ok) {
-        throw new Error('Failed to create tracking URL')
+        if (!response.ok) {
+          throw new Error('Failed to create tracking URL')
+        }
+
+        const data = await response.json()
+        setTrackingUrl(data.shortUrl)
+        setTrackingCode(data.shortCode)
+        toast.success('Tracking URL created! View analytics after scanning.')
+        trackToolEvent('qr_tracking_enabled', { type })
+      } catch (error) {
+        console.error('Error creating tracking URL:', error)
+        toast.error('Failed to create tracking URL')
+        setEnableTracking(false)
+      } finally {
+        setIsCreatingTrackingUrl(false)
       }
-
-      const data = await response.json()
-      setTrackingUrl(data.shortUrl)
-      setTrackingCode(data.shortCode)
-      toast.success('Tracking URL created! View analytics after scanning.')
-      trackToolEvent('qr_tracking_enabled', { type })
-    } catch (error) {
-      console.error('Error creating tracking URL:', error)
-      toast.error('Failed to create tracking URL')
-      setEnableTracking(false)
-    } finally {
-      setIsCreatingTrackingUrl(false)
-    }
-  }
+    },
+    [type]
+  )
 
   // Handle tracking toggle
   useEffect(() => {
@@ -543,7 +546,7 @@ export default function QRCodePage() {
       setTrackingUrl('')
       setTrackingCode('')
     }
-  }, [enableTracking, type, urlInput, createTrackingUrl, trackingUrl])
+  }, [enableTracking, type, urlInput, trackingUrl, createTrackingUrl])
 
   const getQRValue = () => {
     switch (type) {

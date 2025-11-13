@@ -22,7 +22,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -540,7 +540,7 @@ function UnitConverterContent() {
   }
 
   // Generate detailed formula explanation
-  const getFormulaExplanation = () => {
+  const getFormulaExplanation = useCallback(() => {
     if (!fromValue || !toValue || toValue === 'Error') return null
 
     const baseUnit = Object.entries(categoryInfo.units).find(
@@ -630,7 +630,7 @@ function UnitConverterContent() {
       ],
       explanation: `This conversion uses a two-step process through the base unit (${baseUnit || 'base'}). First, convert from ${fromInfo.name} to the base unit, then from base to ${toInfo.name}.`,
     }
-  }
+  }, [fromValue, toValue, categoryInfo, category, fromUnit, toUnit])
 
   const formulaExplanation = useMemo(() => getFormulaExplanation(), [getFormulaExplanation])
 

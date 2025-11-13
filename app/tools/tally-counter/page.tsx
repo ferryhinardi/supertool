@@ -173,7 +173,13 @@ export default function TallyCounterPage() {
           })}
         >
           <Star className={css({ h: '5', w: '5', color: 'yellow.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'yellow.300' })}>
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'yellow.300',
+            })}
+          >
             Track Counts Simply & Effectively
           </span>
         </div>
@@ -188,12 +194,22 @@ export default function TallyCounterPage() {
             gradientTo: 'amber.400',
             bgClip: 'text',
           })}
-          style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+          style={{
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
         >
           Tally Counter
         </h1>
 
-        <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'gray.400' })}>
+        <p
+          className={css({
+            mx: 'auto',
+            maxW: '2xl',
+            fontSize: 'lg',
+            color: 'gray.400',
+          })}
+        >
           Simple and effective tally counter with multiple counters, custom step values, and
           keyboard shortcuts. Perfect for counting inventory, tracking events, or managing any
           numeric data.
@@ -234,7 +250,13 @@ export default function TallyCounterPage() {
               })}
             >
               <CardHeader>
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   <CardTitle className={css({ flex: 1, fontSize: 'lg' })}>{counter.name}</CardTitle>
                   {counters.length > 1 && (
                     <button
@@ -267,38 +289,51 @@ export default function TallyCounterPage() {
                       gradientTo: 'orange.400',
                       bgClip: 'text',
                     })}
-                    style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+                    style={{
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
                   >
                     {counter.count}
                   </div>
                 </div>
 
                 {/* Controls */}
-                <div className={css({ display: 'flex', gap: '3', justifyContent: 'center' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: '3',
+                    justifyContent: 'center',
+                  })}
+                >
                   <Button
-                    size="lg"
                     onClick={() => decrement(counter.id)}
                     className={css({
+                      minH: '11',
+                      minW: '11',
                       bg: 'red.500/20',
                       borderColor: 'red.500/40',
                       color: 'red.300',
-                      px: '8',
+                      px: { base: '6', sm: '8' },
                       _hover: { bg: 'red.500/30' },
                     })}
+                    aria-label="Decrement counter"
                   >
                     <Minus className={css({ h: '5', w: '5' })} />
                   </Button>
 
                   <Button
-                    size="lg"
                     onClick={() => increment(counter.id)}
                     className={css({
+                      minH: '11',
+                      minW: '11',
                       bg: 'green.500/20',
                       borderColor: 'green.500/40',
                       color: 'green.300',
-                      px: '8',
+                      px: { base: '6', sm: '8' },
                       _hover: { bg: 'green.500/30' },
                     })}
+                    aria-label="Increment counter"
                   >
                     <Plus className={css({ h: '5', w: '5' })} />
                   </Button>
@@ -308,6 +343,7 @@ export default function TallyCounterPage() {
                 <div
                   className={css({
                     display: 'flex',
+                    flexDirection: { base: 'column', sm: 'row' },
                     gap: '2',
                     pt: '4',
                     borderTop: '1px solid',
@@ -316,16 +352,35 @@ export default function TallyCounterPage() {
                 >
                   <Button
                     variant="outline"
-                    size="sm"
                     onClick={() => reset(counter.id)}
-                    className={css({ flex: 1 })}
+                    className={css({
+                      flex: 1,
+                      minH: '10',
+                      fontSize: { base: 'sm', sm: 'xs' },
+                    })}
+                    aria-label="Reset counter"
                   >
                     <RotateCcw className={css({ h: '4', w: '4', mr: '2' })} />
                     Reset
                   </Button>
 
-                  <div className={css({ display: 'flex', gap: '2', alignItems: 'center' })}>
-                    <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Step:</span>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      gap: '2',
+                      alignItems: 'center',
+                      flex: 1,
+                    })}
+                  >
+                    <span
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                        flexShrink: '0',
+                      })}
+                    >
+                      Step:
+                    </span>
                     <input
                       type="number"
                       min="1"
@@ -337,20 +392,22 @@ export default function TallyCounterPage() {
                         }
                       }}
                       className={css({
-                        w: '16',
+                        flex: 1,
+                        h: { base: '10', sm: 'auto' },
                         px: '2',
-                        py: '1',
+                        py: { base: '2', sm: '1' },
                         rounded: 'md',
                         border: '1px solid',
                         borderColor: 'gray.700',
                         bg: 'gray.800',
                         color: 'gray.200',
-                        fontSize: 'sm',
+                        fontSize: { base: 'base', sm: 'sm' },
                         _focus: {
                           outline: 'none',
                           borderColor: 'yellow.500',
                         },
                       })}
+                      aria-label="Step value"
                     />
                   </div>
                 </div>
@@ -369,7 +426,13 @@ export default function TallyCounterPage() {
           })}
         >
           <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+            <CardTitle
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+              })}
+            >
               <Plus className={css({ h: '5', w: '5' })} />
               Add Counter
             </CardTitle>
@@ -389,6 +452,10 @@ export default function TallyCounterPage() {
                 onKeyDown={(e: React.KeyboardEvent) => {
                   if (e.key === 'Enter') addCounter()
                 }}
+                className={css({
+                  minH: '11',
+                  fontSize: { base: 'base', sm: 'sm' },
+                })}
               />
             </Field>
 
@@ -402,10 +469,18 @@ export default function TallyCounterPage() {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setNewCounterStep(e.target.value)
                 }
+                className={css({
+                  minH: '11',
+                  fontSize: { base: 'base', sm: 'sm' },
+                })}
               />
             </Field>
 
-            <Button onClick={addCounter} size="sm" className={css({ w: 'full' })}>
+            <Button
+              onClick={addCounter}
+              className={css({ w: 'full', minH: '11' })}
+              aria-label="Add Counter"
+            >
               <Plus className={css({ h: '4', w: '4', mr: '2' })} />
               Add Counter
             </Button>
@@ -430,7 +505,10 @@ export default function TallyCounterPage() {
                   gradientTo: 'orange.400',
                   bgClip: 'text',
                 })}
-                style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
               >
                 {totalCount}
               </div>
@@ -460,28 +538,58 @@ export default function TallyCounterPage() {
             <CardTitle className={css({ fontSize: 'lg' })}>Features</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'gray.300' })}>
-              <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
+            <ul
+              className={css({
+                spaceY: '3',
+                fontSize: 'sm',
+                color: 'gray.300',
+              })}
+            >
+              <li
+                className={css({
+                  display: 'flex',
+                  alignItems: 'start',
+                  gap: '2',
+                })}
+              >
                 <span className={css({ color: 'yellow.400', mt: '1' })}>✓</span>
                 <span>
                   <strong>Multiple Counters:</strong> Create and manage multiple counters
                   simultaneously
                 </span>
               </li>
-              <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
+              <li
+                className={css({
+                  display: 'flex',
+                  alignItems: 'start',
+                  gap: '2',
+                })}
+              >
                 <span className={css({ color: 'yellow.400', mt: '1' })}>✓</span>
                 <span>
                   <strong>Custom Steps:</strong> Set custom increment/decrement values for each
                   counter
                 </span>
               </li>
-              <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
+              <li
+                className={css({
+                  display: 'flex',
+                  alignItems: 'start',
+                  gap: '2',
+                })}
+              >
                 <span className={css({ color: 'yellow.400', mt: '1' })}>✓</span>
                 <span>
                   <strong>Persistence:</strong> All counters are automatically saved to your browser
                 </span>
               </li>
-              <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
+              <li
+                className={css({
+                  display: 'flex',
+                  alignItems: 'start',
+                  gap: '2',
+                })}
+              >
                 <span className={css({ color: 'yellow.400', mt: '1' })}>✓</span>
                 <span>
                   <strong>Total Count:</strong> View the sum of all counters at a glance
@@ -505,7 +613,12 @@ export default function TallyCounterPage() {
           </CardHeader>
           <CardContent>
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                })}
+              >
                 <div className={css({ display: 'flex', gap: '2' })}>
                   <kbd
                     className={css({
@@ -536,7 +649,12 @@ export default function TallyCounterPage() {
                 <span className={css({ fontSize: 'sm', color: 'gray.300' })}>Increment</span>
               </div>
 
-              <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                })}
+              >
                 <kbd
                   className={css({
                     px: '2',
@@ -552,7 +670,12 @@ export default function TallyCounterPage() {
                 <span className={css({ fontSize: 'sm', color: 'gray.300' })}>Decrement</span>
               </div>
 
-              <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                })}
+              >
                 <kbd
                   className={css({
                     px: '2',
@@ -587,13 +710,23 @@ export default function TallyCounterPage() {
           <div
             className={css({
               display: 'grid',
-              gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+              gridTemplateColumns: {
+                base: '1',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(4, 1fr)',
+              },
               gap: '4',
             })}
           >
             <div>
               <div className={css({ fontSize: 'xl', mb: '1' })}>📊</div>
-              <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
+              <h3
+                className={css({
+                  mb: '1',
+                  fontSize: 'sm',
+                  fontWeight: 'semibold',
+                })}
+              >
                 Event Tracking
               </h3>
               <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
@@ -602,7 +735,13 @@ export default function TallyCounterPage() {
             </div>
             <div>
               <div className={css({ fontSize: 'xl', mb: '1' })}>📦</div>
-              <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
+              <h3
+                className={css({
+                  mb: '1',
+                  fontSize: 'sm',
+                  fontWeight: 'semibold',
+                })}
+              >
                 Inventory Management
               </h3>
               <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
@@ -611,7 +750,13 @@ export default function TallyCounterPage() {
             </div>
             <div>
               <div className={css({ fontSize: 'xl', mb: '1' })}>🎯</div>
-              <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
+              <h3
+                className={css({
+                  mb: '1',
+                  fontSize: 'sm',
+                  fontWeight: 'semibold',
+                })}
+              >
                 Goal Tracking
               </h3>
               <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
@@ -620,7 +765,13 @@ export default function TallyCounterPage() {
             </div>
             <div>
               <div className={css({ fontSize: 'xl', mb: '1' })}>🔢</div>
-              <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
+              <h3
+                className={css({
+                  mb: '1',
+                  fontSize: 'sm',
+                  fontWeight: 'semibold',
+                })}
+              >
                 General Counting
               </h3>
               <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
