@@ -1,11 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Copy, Download, ImageIcon, Lightbulb, Lock, Unlock, Upload } from 'lucide-react'
+import { Copy, Download, ImageIcon, Lightbulb, Lock, Sparkles, Unlock, Upload } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
@@ -239,11 +238,83 @@ function Base64Content() {
         </p>
       </motion.div>
 
-      {/* Mode Toggle */}
+      {/* Pro Tips Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
+        className={css({ w: 'full', maxW: '1400px' })}
+      >
+        <Card
+          className={css({
+            border: '2px solid',
+            borderColor: 'cyan.500/30',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
+              Pro Tips
+            </CardTitle>
+          </CardHeader>
+          <CardContent className={css({ spaceY: '3' })}>
+            <ul className={css({ spaceY: '3', pl: '0', fontSize: 'sm', color: 'gray.300' })}>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Text & File Encoding:</strong> Convert
+                  any text or file to Base64 format. Supports images, documents, audio, video, and
+                  any file type up to browser memory limits - perfect for API payloads and data
+                  URIs.
+                </span>
+              </li>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Binary-to-Text Conversion:</strong>{' '}
+                  Base64 encoding converts binary data into ASCII text using 64 printable characters
+                  (A-Z, a-z, 0-9, +, /), making it safe for text-based transmission protocols like
+                  JSON and email.
+                </span>
+              </li>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Image Preview:</strong> Automatically
+                  detects and displays image previews when decoding Base64 strings with data URI
+                  format (data:image/...), supporting PNG, JPEG, GIF, WebP, and SVG formats.
+                </span>
+              </li>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Data URI Support:</strong> Generate
+                  complete data URIs for direct embedding in HTML (img src) and CSS
+                  (background-image). Eliminates HTTP requests for small assets like icons and
+                  logos.
+                </span>
+              </li>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Browser-Only Processing:</strong> All
+                  encoding and decoding happens locally in your browser using native JavaScript APIs
+                  - your files and data never leave your device, ensuring complete privacy and
+                  security.
+                </span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Mode Toggle */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
         className={css({
           display: 'flex',
           justifyContent: 'center',
@@ -258,7 +329,13 @@ function Base64Content() {
             setMode('encode')
             handleClear()
           }}
-          className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2',
+            minH: '11',
+            py: { base: '3', sm: '3.5', md: '4' },
+          })}
         >
           <Lock className={css({ h: '4', w: '4' })} />
           Encode
@@ -269,7 +346,13 @@ function Base64Content() {
             setMode('decode')
             handleClear()
           }}
-          className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2',
+            minH: '11',
+            py: { base: '3', sm: '3.5', md: '4' },
+          })}
         >
           <Unlock className={css({ h: '4', w: '4' })} />
           Decode
@@ -280,7 +363,7 @@ function Base64Content() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.3 }}
         className={css({
           display: 'grid',
           gap: '6',
@@ -338,7 +421,12 @@ function Base64Content() {
 
               <Button
                 onClick={mode === 'encode' ? handleEncode : handleDecode}
-                className={css({ w: 'full', gap: '2' })}
+                className={css({
+                  w: 'full',
+                  gap: '2',
+                  minH: '11',
+                  py: { base: '3', sm: '3.5', md: '4' },
+                })}
                 disabled={!input}
               >
                 {mode === 'encode' ? (
@@ -418,7 +506,12 @@ function Base64Content() {
                 <Button
                   onClick={handleCopy}
                   variant="outline"
-                  className={css({ flex: '1', gap: '2' })}
+                  className={css({
+                    flex: '1',
+                    gap: '2',
+                    minH: '11',
+                    py: { base: '3', sm: '3.5', md: '4' },
+                  })}
                   disabled={!output}
                 >
                   <Copy className={css({ h: '4', w: '4' })} />
@@ -427,7 +520,12 @@ function Base64Content() {
                 <Button
                   onClick={handleDownload}
                   variant="outline"
-                  className={css({ flex: '1', gap: '2' })}
+                  className={css({
+                    flex: '1',
+                    gap: '2',
+                    minH: '11',
+                    py: { base: '3', sm: '3.5', md: '4' },
+                  })}
                   disabled={!output}
                 >
                   <Download className={css({ h: '4', w: '4' })} />
@@ -443,7 +541,7 @@ function Base64Content() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.4 }}
         className={css({
           display: 'grid',
           gap: '4',
@@ -496,144 +594,144 @@ function Base64Content() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.5 }}
         className={css({ w: 'full', maxW: '1400px' })}
       >
         <Card
           className={css({
-            border: '1px solid',
-            borderColor: 'blue.500/20',
-            bg: 'blue.900/10',
-            overflow: 'hidden',
+            border: '2px solid',
+            borderColor: 'blue.500/30',
+            bg: 'rgba(59, 130, 246, 0.05)',
+            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
-            <CardTitle
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2',
-                fontSize: 'xl',
-                fontWeight: 'bold',
-              })}
-            >
-              <Lightbulb className={css({ h: '5', w: '5', color: 'blue.400' })} />
+            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <Lightbulb className={css({ h: '5', w: '5' })} />
               How to Use Base64 Encoder/Decoder
             </CardTitle>
+            <CardDescription>
+              Follow these simple steps to encode and decode Base64 data
+            </CardDescription>
           </CardHeader>
-          <CardContent className={css({ spaceY: '4' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-              <Badge
-                className={css({
-                  flexShrink: '0',
-                  minW: '6',
-                  h: '6',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'full',
-                  bg: 'blue.500',
-                  color: 'white',
-                  fontSize: 'sm',
-                  fontWeight: 'bold',
-                })}
-              >
-                1
-              </Badge>
-              <div className={css({ flex: '1' })}>
-                <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+          <CardContent className={css({ spaceY: '6' })}>
+            <div
+              className={css({
+                display: 'grid',
+                gap: '4',
+                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+              })}
+            >
+              <div className={css({ spaceY: '3' })}>
+                <div
+                  className={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    w: '10',
+                    h: '10',
+                    rounded: 'full',
+                    bg: 'purple.500/20',
+                    border: '2px solid',
+                    borderColor: 'purple.500',
+                  })}
+                >
+                  <span
+                    className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'purple.400' })}
+                  >
+                    1
+                  </span>
+                </div>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Choose Encode or Decode Mode
-                </p>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
                   Select "Encode" to convert text or files to Base64 format, or "Decode" to convert
-                  Base64 strings back to their original format.
+                  Base64 strings back to their original format. The mode toggle switches between
+                  both operations.
                 </p>
               </div>
-            </div>
 
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-              <Badge
-                className={css({
-                  flexShrink: '0',
-                  minW: '6',
-                  h: '6',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'full',
-                  bg: 'blue.500',
-                  color: 'white',
-                  fontSize: 'sm',
-                  fontWeight: 'bold',
-                })}
-              >
-                2
-              </Badge>
-              <div className={css({ flex: '1' })}>
-                <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+              <div className={css({ spaceY: '3' })}>
+                <div
+                  className={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    w: '10',
+                    h: '10',
+                    rounded: 'full',
+                    bg: 'pink.500/20',
+                    border: '2px solid',
+                    borderColor: 'pink.500',
+                  })}
+                >
+                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'pink.400' })}>
+                    2
+                  </span>
+                </div>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Enter Text or Upload File
-                </p>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
                   Type or paste your text directly, or upload any file (images, documents, audio,
-                  etc.) to encode. For decoding, paste the Base64 string.
+                  etc.) to encode. For decoding, paste the Base64 string including data URI prefix
+                  if present.
                 </p>
               </div>
-            </div>
 
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-              <Badge
-                className={css({
-                  flexShrink: '0',
-                  minW: '6',
-                  h: '6',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'full',
-                  bg: 'blue.500',
-                  color: 'white',
-                  fontSize: 'sm',
-                  fontWeight: 'bold',
-                })}
-              >
-                3
-              </Badge>
-              <div className={css({ flex: '1' })}>
-                <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+              <div className={css({ spaceY: '3' })}>
+                <div
+                  className={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    w: '10',
+                    h: '10',
+                    rounded: 'full',
+                    bg: 'blue.500/20',
+                    border: '2px solid',
+                    borderColor: 'blue.500',
+                  })}
+                >
+                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}>
+                    3
+                  </span>
+                </div>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Convert and View Results
-                </p>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
                   Click the encode/decode button to convert. The result appears instantly in the
-                  output panel. Images are automatically previewed when decoding.
+                  output panel. Images are automatically detected and previewed when decoding data
+                  URIs.
                 </p>
               </div>
-            </div>
 
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-              <Badge
-                className={css({
-                  flexShrink: '0',
-                  minW: '6',
-                  h: '6',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'full',
-                  bg: 'blue.500',
-                  color: 'white',
-                  fontSize: 'sm',
-                  fontWeight: 'bold',
-                })}
-              >
-                4
-              </Badge>
-              <div className={css({ flex: '1' })}>
-                <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
+              <div className={css({ spaceY: '3' })}>
+                <div
+                  className={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    w: '10',
+                    h: '10',
+                    rounded: 'full',
+                    bg: 'green.500/20',
+                    border: '2px solid',
+                    borderColor: 'green.500',
+                  })}
+                >
+                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'green.400' })}>
+                    4
+                  </span>
+                </div>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Copy or Download Output
-                </p>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
                   Use the "Copy" button to copy the result to clipboard, or "Download" to save as a
-                  text file. Perfect for embedding in code, APIs, or data transmission.
+                  text file. Perfect for embedding in code, APIs, data URIs, or data transmission.
                 </p>
               </div>
             </div>
@@ -645,7 +743,7 @@ function Base64Content() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.6 }}
         className={css({ w: 'full', maxW: '1400px' })}
       >
         <SocialShare
@@ -660,7 +758,7 @@ function Base64Content() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
+        transition={{ delay: 0.7 }}
         className={css({ w: 'full', maxW: '1400px' })}
       >
         <FAQAccordion faqs={faqs} />
@@ -670,7 +768,7 @@ function Base64Content() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+        transition={{ delay: 0.8 }}
         className={css({ w: 'full', maxW: '1400px' })}
       >
         <RelatedTools currentToolPath="/tools/base64" category="converter" />
@@ -680,7 +778,7 @@ function Base64Content() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 0.9 }}
         className={css({ w: 'full', maxW: '1400px' })}
       >
         <ToolRating toolId="/tools/base64" toolName="Base64 Encoder & Decoder" />

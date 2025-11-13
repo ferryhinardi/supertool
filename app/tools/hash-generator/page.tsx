@@ -1,10 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { CheckCircle, Copy, Hash, Lightbulb, Upload, XCircle } from 'lucide-react'
+import { CheckCircle, Copy, Hash, Lightbulb, Sparkles, Upload, XCircle } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
@@ -288,11 +287,80 @@ export default function HashGeneratorPage() {
         </p>
       </motion.div>
 
-      {/* Input Section */}
+      {/* Pro Tips Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
+      >
+        <Card
+          className={css({
+            border: '2px solid',
+            borderColor: 'cyan.500/30',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
+              Pro Tips
+            </CardTitle>
+          </CardHeader>
+          <CardContent className={css({ spaceY: '3' })}>
+            <ul className={css({ spaceY: '3', pl: '0', fontSize: 'sm', color: 'gray.300' })}>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Multiple Algorithms:</strong> Generate
+                  MD5, SHA-1, SHA-256, SHA-384, and SHA-512 hashes simultaneously. SHA-256 is the
+                  industry standard, while SHA-384/512 offer even stronger security for critical
+                  applications.
+                </span>
+              </li>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>File Hashing Support:</strong> Upload
+                  any file type to generate cryptographic hashes. Perfect for software verification,
+                  integrity checking, and detecting file tampering or corruption.
+                </span>
+              </li>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Hash Verification:</strong> Compare
+                  generated hashes against expected values to verify file integrity. A single byte
+                  difference produces completely different hashes, instantly revealing
+                  modifications.
+                </span>
+              </li>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Browser-Based Processing:</strong> All
+                  hashing happens locally using the Web Crypto API - your data never leaves your
+                  device, ensuring complete privacy and security.
+                </span>
+              </li>
+              <li className={css({ display: 'flex', gap: '2' })}>
+                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
+                <span>
+                  <strong className={css({ color: 'white' })}>Common Use Cases:</strong> Verify
+                  software downloads, create file fingerprints, check data integrity, generate
+                  checksums, and ensure secure password storage (with proper salting).
+                </span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Input Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
       >
         <Card
           className={css({
@@ -346,7 +414,7 @@ export default function HashGeneratorPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.3 }}
         className={css({ spaceY: '4' })}
       >
         {(Object.keys(hashes) as HashAlgorithm[]).map((algorithm) => (
@@ -374,6 +442,10 @@ export default function HashGeneratorPage() {
                   variant="outline"
                   size="icon"
                   disabled={!hashes[algorithm]}
+                  className={css({
+                    minH: '11',
+                    minW: '11',
+                  })}
                 >
                   <Copy className={css({ h: '4', w: '4' })} />
                 </Button>
@@ -387,7 +459,7 @@ export default function HashGeneratorPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.4 }}
       >
         <Card
           className={css({
@@ -414,6 +486,10 @@ export default function HashGeneratorPage() {
               <Button
                 onClick={handleCompare}
                 disabled={!compareHash || !Object.values(hashes).some((h) => h)}
+                className={css({
+                  minH: '11',
+                  py: { base: '3', sm: '3.5', md: '4' },
+                })}
               >
                 Compare
               </Button>
@@ -458,7 +534,7 @@ export default function HashGeneratorPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.5 }}
         className={css({
           display: 'grid',
           gap: '4',
@@ -517,7 +593,7 @@ export default function HashGeneratorPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.6 }}
       >
         <Card
           className={css({
@@ -536,122 +612,126 @@ export default function HashGeneratorPage() {
               Follow these simple steps to generate and verify cryptographic hashes
             </CardDescription>
           </CardHeader>
-          <CardContent className={css({ spaceY: '4' })}>
-            <div className={css({ spaceY: '3' })}>
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
+          <CardContent className={css({ spaceY: '6' })}>
+            <div
+              className={css({
+                display: 'grid',
+                gap: '4',
+                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+              })}
+            >
+              <div className={css({ spaceY: '3' })}>
+                <div
                   className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    w: '10',
+                    h: '10',
+                    rounded: 'full',
                     bg: 'purple.500/20',
-                    borderColor: 'purple.500/50',
-                    flexShrink: 0,
+                    border: '2px solid',
+                    borderColor: 'purple.500',
                   })}
                 >
-                  1
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Enter Text or Upload File
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                    Type or paste your text into the input field, or click the upload button to hash
-                    a file. The tool supports any file type and processes data locally in your
-                    browser for complete privacy.
-                  </p>
+                  <span
+                    className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'purple.400' })}
+                  >
+                    1
+                  </span>
                 </div>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
+                  Enter Text or Upload File
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                  Type or paste your text into the input field, or click the upload button to hash a
+                  file. The tool supports any file type and processes data locally in your browser
+                  for complete privacy.
+                </p>
               </div>
 
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
+              <div className={css({ spaceY: '3' })}>
+                <div
                   className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    w: '10',
+                    h: '10',
+                    rounded: 'full',
                     bg: 'pink.500/20',
-                    borderColor: 'pink.500/50',
-                    flexShrink: 0,
+                    border: '2px solid',
+                    borderColor: 'pink.500',
                   })}
                 >
-                  2
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Generate Hashes
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                    Click the "Generate Hashes" button to create cryptographic hashes using multiple
-                    algorithms simultaneously: MD5, SHA-1, SHA-256, SHA-384, and SHA-512. Each
-                    algorithm produces a unique hash signature.
-                  </p>
+                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'pink.400' })}>
+                    2
+                  </span>
                 </div>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
+                  Generate Hashes
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                  Click the "Generate Hashes" button to create cryptographic hashes using multiple
+                  algorithms simultaneously: MD5, SHA-1, SHA-256, SHA-384, and SHA-512. Each
+                  algorithm produces a unique hash signature.
+                </p>
               </div>
 
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
+              <div className={css({ spaceY: '3' })}>
+                <div
                   className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    w: '10',
+                    h: '10',
+                    rounded: 'full',
                     bg: 'blue.500/20',
-                    borderColor: 'blue.500/50',
-                    flexShrink: 0,
+                    border: '2px solid',
+                    borderColor: 'blue.500',
                   })}
                 >
-                  3
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Copy Hash Values
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                    Click the copy button next to any hash to copy it to your clipboard. The hash
-                    remains available for use in verification, documentation, or integration with
-                    your applications and workflows.
-                  </p>
+                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}>
+                    3
+                  </span>
                 </div>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
+                  Copy Hash Values
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                  Click the copy button next to any hash to copy it to your clipboard. The hash
+                  remains available for use in verification, documentation, or integration with your
+                  applications and workflows.
+                </p>
               </div>
 
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
+              <div className={css({ spaceY: '3' })}>
+                <div
                   className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    w: '10',
+                    h: '10',
+                    rounded: 'full',
                     bg: 'green.500/20',
-                    borderColor: 'green.500/50',
-                    flexShrink: 0,
+                    border: '2px solid',
+                    borderColor: 'green.500',
                   })}
                 >
-                  4
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Verify Hashes (Optional)
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                    To verify data integrity, paste a reference hash into the comparison field. The
-                    tool will automatically check if it matches any generated hash and display
-                    whether the data is identical or has been modified.
-                  </p>
+                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'green.400' })}>
+                    4
+                  </span>
                 </div>
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
+                  Verify Hashes (Optional)
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                  To verify data integrity, paste a reference hash into the comparison field. The
+                  tool will automatically check if it matches any generated hash and display whether
+                  the data is identical or has been modified.
+                </p>
               </div>
             </div>
           </CardContent>
@@ -661,7 +741,7 @@ export default function HashGeneratorPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
+        transition={{ delay: 0.7 }}
       >
         <SocialShare
           toolName="Hash Generator"
@@ -674,7 +754,7 @@ export default function HashGeneratorPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+        transition={{ delay: 0.8 }}
       >
         <FAQAccordion faqs={faqs} />
       </motion.div>
@@ -682,7 +762,7 @@ export default function HashGeneratorPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 0.9 }}
       >
         <RelatedTools currentToolPath="/tools/hash-generator" category="security" />
       </motion.div>
@@ -690,7 +770,7 @@ export default function HashGeneratorPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
+        transition={{ delay: 1.0 }}
       >
         <ToolRating toolId="/tools/hash-generator" toolName="Hash Generator" />
       </motion.div>

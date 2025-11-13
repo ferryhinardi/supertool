@@ -8,7 +8,6 @@ import {
   Coins,
   DollarSign,
   Euro,
-  Lightbulb,
   Link2,
   Plus,
   PoundSterling,
