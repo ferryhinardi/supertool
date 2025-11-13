@@ -1,7 +1,7 @@
 'use client'
 'use no memo'
 
-import { Minus, Plus, RotateCcw, Star, Trash2 } from 'lucide-react'
+import { Minus, Plus, RotateCcw, Sparkles, Star, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -516,6 +516,291 @@ export default function TallyCounterPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Pro Tips */}
+      <Card
+        className={css({
+          border: '2px solid',
+          borderColor: 'cyan.500/20',
+          bg: 'cyan.500/5',
+          animation: 'fadeInUp 0.4s ease-out 0.1s both',
+        })}
+      >
+        <CardHeader>
+          <CardTitle
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2',
+              fontSize: 'xl',
+            })}
+          >
+            <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
+            Pro Tips
+          </CardTitle>
+          <CardDescription>Expert techniques for effective counting</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className={css({ spaceY: '3' })}>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'md',
+                border: '1px solid',
+                borderColor: 'gray.800',
+                borderLeft: '3px solid',
+                borderLeftColor: 'cyan.500',
+                bg: 'gray.900/50',
+              })}
+            >
+              <strong className={css({ color: 'cyan.400' })}>Custom Step Values:</strong>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+                Set step values to 5 or 10 for faster counting of large quantities like inventory or
+                attendance
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'md',
+                border: '1px solid',
+                borderColor: 'gray.800',
+                borderLeft: '3px solid',
+                borderLeftColor: 'cyan.500',
+                bg: 'gray.900/50',
+              })}
+            >
+              <strong className={css({ color: 'cyan.400' })}>Multiple Counters:</strong>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+                Create separate counters for different categories to track multiple metrics
+                simultaneously
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'md',
+                border: '1px solid',
+                borderColor: 'gray.800',
+                borderLeft: '3px solid',
+                borderLeftColor: 'cyan.500',
+                bg: 'gray.900/50',
+              })}
+            >
+              <strong className={css({ color: 'cyan.400' })}>Keyboard Shortcuts:</strong>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+                Use arrow keys and spacebar for hands-free counting when using a single counter
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'md',
+                border: '1px solid',
+                borderColor: 'gray.800',
+                borderLeft: '3px solid',
+                borderLeftColor: 'cyan.500',
+                bg: 'gray.900/50',
+              })}
+            >
+              <strong className={css({ color: 'cyan.400' })}>Total Count Feature:</strong>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+                Monitor the combined total of all counters to track overall progress at a glance
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'md',
+                border: '1px solid',
+                borderColor: 'gray.800',
+                borderLeft: '3px solid',
+                borderLeftColor: 'cyan.500',
+                bg: 'gray.900/50',
+              })}
+            >
+              <strong className={css({ color: 'cyan.400' })}>Persistent Storage:</strong>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+                Your counters are saved automatically - close and reopen the page without losing
+                data
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* How to Use */}
+      <Card
+        className={css({
+          border: '2px solid',
+          borderColor: 'gray.800',
+          bg: 'gray.900/50',
+          animation: 'fadeInUp 0.4s ease-out 0.2s both',
+        })}
+      >
+        <CardHeader>
+          <CardTitle className={css({ fontSize: 'xl' })}>How to Use</CardTitle>
+          <CardDescription>Get started with the Tally Counter in 4 simple steps</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div
+            className={css({
+              display: 'grid',
+              gap: '4',
+              gridTemplateColumns: { base: '1fr', md: '1fr 1fr' },
+            })}
+          >
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  h: '10',
+                  w: '10',
+                  minH: '10',
+                  minW: '10',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  rounded: 'full',
+                  border: '2px solid',
+                  borderColor: 'purple.500',
+                  bg: 'purple.500/10',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'purple.400',
+                  flexShrink: 0,
+                })}
+              >
+                1
+              </div>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    mb: '1',
+                    fontSize: 'sm',
+                    fontWeight: 'semibold',
+                  })}
+                >
+                  Create Counters
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  Add new counters with custom names and set your desired step values
+                </p>
+              </div>
+            </div>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  h: '10',
+                  w: '10',
+                  minH: '10',
+                  minW: '10',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  rounded: 'full',
+                  border: '2px solid',
+                  borderColor: 'pink.500',
+                  bg: 'pink.500/10',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'pink.400',
+                  flexShrink: 0,
+                })}
+              >
+                2
+              </div>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    mb: '1',
+                    fontSize: 'sm',
+                    fontWeight: 'semibold',
+                  })}
+                >
+                  Increment & Decrement
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  Use the + and - buttons or keyboard shortcuts to adjust your counts
+                </p>
+              </div>
+            </div>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  h: '10',
+                  w: '10',
+                  minH: '10',
+                  minW: '10',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  rounded: 'full',
+                  border: '2px solid',
+                  borderColor: 'blue.500',
+                  bg: 'blue.500/10',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'blue.400',
+                  flexShrink: 0,
+                })}
+              >
+                3
+              </div>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    mb: '1',
+                    fontSize: 'sm',
+                    fontWeight: 'semibold',
+                  })}
+                >
+                  Monitor Total
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  View the combined total of all counters in the sidebar at any time
+                </p>
+              </div>
+            </div>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  h: '10',
+                  w: '10',
+                  minH: '10',
+                  minW: '10',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  rounded: 'full',
+                  border: '2px solid',
+                  borderColor: 'green.500',
+                  bg: 'green.500/10',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'green.400',
+                  flexShrink: 0,
+                })}
+              >
+                4
+              </div>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    mb: '1',
+                    fontSize: 'sm',
+                    fontWeight: 'semibold',
+                  })}
+                >
+                  Reset as Needed
+                </h3>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  Reset individual counters or start fresh while maintaining your setup
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Features & Keyboard Shortcuts */}
       <div
