@@ -58,9 +58,10 @@ describe('Unit Converter Page', () => {
 
     it('renders all 11 category buttons', () => {
       render(<UnitConverterPage />)
-      expect(screen.getByText('Length')).toBeInTheDocument()
+      // Use getAllByText to handle multiple instances of category names
+      expect(screen.getAllByText('Length')[0]).toBeInTheDocument()
       expect(screen.getByText('Weight / Mass')).toBeInTheDocument()
-      expect(screen.getByText('Temperature')).toBeInTheDocument()
+      expect(screen.getAllByText('Temperature')[0]).toBeInTheDocument()
       expect(screen.getByText('Volume')).toBeInTheDocument()
       expect(screen.getByText('Area')).toBeInTheDocument()
       expect(screen.getByText('Speed')).toBeInTheDocument()
@@ -116,13 +117,23 @@ describe('Unit Converter Page', () => {
     it('displays correct number of units per category', () => {
       render(<UnitConverterPage />)
 
-      // Length should show "11 units"
-      const lengthButton = screen.getByText('Length').closest('button')
-      expect(lengthButton).toHaveTextContent('11 units')
+      // Length should show "11 units" - use getAllByText and find the one in a button
+      const lengthButtons = screen
+        .getAllByRole('button')
+        .filter(
+          (btn) => btn.textContent?.includes('Length') && btn.textContent?.includes('11 units')
+        )
+      expect(lengthButtons.length).toBeGreaterThan(0)
+      expect(lengthButtons[0]).toHaveTextContent('11 units')
 
       // Temperature should show "3 units"
-      const tempButton = screen.getByText('Temperature').closest('button')
-      expect(tempButton).toHaveTextContent('3 units')
+      const tempButtons = screen
+        .getAllByRole('button')
+        .filter(
+          (btn) => btn.textContent?.includes('Temperature') && btn.textContent?.includes('3 units')
+        )
+      expect(tempButtons.length).toBeGreaterThan(0)
+      expect(tempButtons[0]).toHaveTextContent('3 units')
     })
   })
 
@@ -296,25 +307,32 @@ describe('Unit Converter Page', () => {
       const addButton = screen.getByText('Add to Favorites')
       await userEvent.click(addButton)
 
-      // Switch back to Length
-      const lengthButton = screen.getByText('Length')
-      await userEvent.click(lengthButton)
+      await waitFor(() => {
+        expect(screen.getByText('Favorite Conversions')).toBeInTheDocument()
+      })
+
+      // Switch back to Length - use getAllByText since "Length" appears in multiple places
+      const lengthButtons = screen
+        .getAllByRole('button')
+        .filter((btn) => btn.textContent?.includes('Length') && btn.textContent?.includes('units'))
+      expect(lengthButtons.length).toBeGreaterThan(0)
+      await userEvent.click(lengthButtons[0])
 
       await waitFor(() => {
         expect(screen.getByText('Convert Length')).toBeInTheDocument()
       })
 
-      // Click on favorite to load it
-      await waitFor(() => {
-        const temperatureBadges = screen.getAllByText('Temperature')
-        // Find the Temperature badge in the favorites section (not the category button)
-        const favoriteBadge = temperatureBadges.find((badge) =>
-          badge.closest('article')?.textContent?.includes('Favorite Conversions')
-        )
-        if (favoriteBadge) {
-          userEvent.click(favoriteBadge)
-        }
-      })
+      // Click on the favorite card to load it
+      const favoriteCard = screen.getByText('Favorite Conversions').closest('article')
+      expect(favoriteCard).toBeInTheDocument()
+
+      // Find and click the favorite item (not the delete button)
+      const favoriteButton = favoriteCard?.querySelector('button:not(:has(svg.lucide-trash))')
+      expect(favoriteButton).toBeInTheDocument()
+
+      if (favoriteButton) {
+        await userEvent.click(favoriteButton)
+      }
 
       await waitFor(
         () => {
