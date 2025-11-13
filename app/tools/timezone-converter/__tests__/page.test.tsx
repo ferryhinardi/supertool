@@ -172,12 +172,15 @@ describe('Timezone Converter Page', () => {
     it('displays timezone offset', async () => {
       render(<TimezoneConverterPage />)
 
-      await waitFor(() => {
-        // Should display offsets in format like "+00:00", "+07:00", etc.
-        // Use regex to match any valid offset format
-        const offset = screen.getByText(/^[+-]\d{2}:\d{2}$/)
-        expect(offset).toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          // Should display offsets in format like "+00:00", "+07:00", etc.
+          // Use getAllByText since there are multiple offsets (one per timezone)
+          const offsets = screen.getAllByText(/^[+-]\d{2}:\d{2}$/)
+          expect(offsets.length).toBeGreaterThan(0)
+        },
+        { timeout: 5000 }
+      )
     })
 
     it('shows remove button for each timezone', async () => {
