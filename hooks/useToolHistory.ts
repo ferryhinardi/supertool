@@ -216,6 +216,8 @@ export function useToolHistory<T>({
           })
           break
         case 'newest':
+          filtered.sort((a, b) => b.timestamp - a.timestamp)
+          break
         default:
           filtered.sort((a, b) => b.timestamp - a.timestamp)
           break
