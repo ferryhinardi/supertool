@@ -534,6 +534,17 @@ export const tools: Tool[] = [
     category: 'development',
     new: true,
   },
+  {
+    title: 'JWT Debugger & Decoder',
+    description:
+      'Decode, verify, and debug JSON Web Tokens (JWT) with full support for multiple algorithms. Generate new tokens, validate signatures, check expiration, and inspect claims. Perfect for API debugging and authentication troubleshooting.',
+    icon: ShieldCheck,
+    href: '/tools/jwt-debugger',
+    gradient: 'from-blue-500 to-cyan-500',
+    features: ['Decode JWT', 'Verify Signature', 'Generate Tokens', 'Validate Claims'],
+    category: 'development',
+    new: true,
+  },
 
   // Data & Conversion Utilities (Coming Soon)
   {
