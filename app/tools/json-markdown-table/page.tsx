@@ -209,16 +209,50 @@ export default function JSONToMarkdownTablePage() {
             className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
           >
             <div
-              className="animate-pulse rounded-xl bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 p-2.5 shadow-2xl shadow-purple-500/60 sm:rounded-2xl sm:p-4"
+              className={css({
+                animation: 'pulse',
+                rounded: { base: 'xl', sm: '2xl' },
+                bgGradient: 'to-br',
+                gradientFrom: 'purple.600',
+                gradientVia: 'pink.600',
+                gradientTo: 'purple.700',
+                p: { base: '2.5', sm: '4' },
+                shadow: '2xl',
+                boxShadow: '0 25px 50px -12px rgba(168, 85, 247, 0.6)',
+              })}
               style={{ animationDuration: '2s' }}
             >
-              <Table className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+              <Table
+                className={css({
+                  h: { base: '6', sm: '8' },
+                  w: { base: '6', sm: '8' },
+                  color: 'white',
+                })}
+              />
             </div>
             <div>
-              <h1 className="bg-gradient-to-r from-purple-300 via-pink-400 to-purple-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
+              <h1
+                className={css({
+                  bgGradient: 'to-r',
+                  gradientFrom: 'purple.300',
+                  gradientVia: 'pink.400',
+                  gradientTo: 'purple.300',
+                  bgClip: 'text',
+                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
+                  fontWeight: 'extrabold',
+                  color: 'transparent',
+                  filter:
+                    'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))',
+                })}
+              >
                 JSON to Markdown Table
               </h1>
-              <p className="text-sm text-gray-200 sm:text-base md:text-lg">
+              <p
+                className={css({
+                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
+                  color: 'gray.200',
+                })}
+              >
                 Convert JSON arrays to beautifully formatted Markdown tables
               </p>
             </div>
@@ -262,21 +296,45 @@ export default function JSONToMarkdownTablePage() {
                   <Badge
                     variant="outline"
                     size="sm"
-                    className="border-purple-500/50 bg-purple-500/10 px-2.5 py-1.5 text-xs text-purple-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                    className={css({
+                      border: '1px solid',
+                      borderColor: 'purple.500/50',
+                      bg: 'purple.500/10',
+                      px: { base: '2.5', sm: '3', md: '4' },
+                      py: { base: '1.5', sm: '1.5', md: '2' },
+                      fontSize: { base: 'xs', sm: 'sm' },
+                      color: 'purple.200',
+                    })}
                   >
                     {stats.rows} rows
                   </Badge>
                   <Badge
                     variant="outline"
                     size="sm"
-                    className="border-pink-500/50 bg-pink-500/10 px-2.5 py-1.5 text-xs text-pink-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                    className={css({
+                      border: '1px solid',
+                      borderColor: 'pink.500/50',
+                      bg: 'pink.500/10',
+                      px: { base: '2.5', sm: '3', md: '4' },
+                      py: { base: '1.5', sm: '1.5', md: '2' },
+                      fontSize: { base: 'xs', sm: 'sm' },
+                      color: 'pink.200',
+                    })}
                   >
                     {stats.columns} columns
                   </Badge>
                   <Badge
                     variant="outline"
                     size="sm"
-                    className="border-purple-400/50 bg-purple-400/10 px-2.5 py-1.5 text-xs text-purple-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                    className={css({
+                      border: '1px solid',
+                      borderColor: 'purple.400/50',
+                      bg: 'purple.400/10',
+                      px: { base: '2.5', sm: '3', md: '4' },
+                      py: { base: '1.5', sm: '1.5', md: '2' },
+                      fontSize: { base: 'xs', sm: 'sm' },
+                      color: 'purple.200',
+                    })}
                   >
                     {stats.chars.toLocaleString()} chars
                   </Badge>
@@ -285,15 +343,27 @@ export default function JSONToMarkdownTablePage() {
                 <Badge
                   variant="success"
                   size="sm"
-                  className="animate-pulse bg-gradient-to-r from-purple-500 to-pink-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg shadow-purple-500/50 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                  className={css({
+                    animation: 'pulse',
+                    bgGradient: 'to-r',
+                    gradientFrom: 'purple.500',
+                    gradientTo: 'pink.600',
+                    px: { base: '2.5', sm: '3', md: '4' },
+                    py: { base: '1.5', sm: '1.5', md: '2' },
+                    fontSize: { base: 'xs', sm: 'sm' },
+                    fontWeight: 'semibold',
+                    color: 'white',
+                    shadow: 'lg',
+                    boxShadow: '0 10px 15px -3px rgba(168, 85, 247, 0.5)',
+                  })}
                 >
                   Valid
                 </Badge>
               </>
             ) : (
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <AlertCircle className="h-5 w-5 text-red-400" />
-                <span className="text-sm text-red-300">{error}</span>
+                <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
+                <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
               </div>
             )}
           </div>
@@ -329,7 +399,9 @@ export default function JSONToMarkdownTablePage() {
             })}
           >
             <Field>
-              <FieldLabel className="text-sm font-medium text-gray-300">
+              <FieldLabel
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+              >
                 Column Alignment
               </FieldLabel>
               <select
@@ -360,7 +432,9 @@ export default function JSONToMarkdownTablePage() {
             </Field>
 
             <Field>
-              <FieldLabel className="text-sm font-medium text-gray-300">
+              <FieldLabel
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+              >
                 Custom Headers (comma-separated, optional)
               </FieldLabel>
               <input
@@ -418,7 +492,7 @@ export default function JSONToMarkdownTablePage() {
                   },
                 })}
               >
-                <Copy className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Copy className={css({ h: { base: '4', sm: '5' }, w: { base: '4', sm: '5' } })} />
                 Copy Markdown
               </Button>
             </TooltipTrigger>
@@ -443,7 +517,9 @@ export default function JSONToMarkdownTablePage() {
                   },
                 })}
               >
-                <Download className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Download
+                  className={css({ h: { base: '4', sm: '5' }, w: { base: '4', sm: '5' } })}
+                />
                 Download .md
               </Button>
             </TooltipTrigger>
@@ -463,7 +539,9 @@ export default function JSONToMarkdownTablePage() {
                   fontSize: { base: 'sm', sm: 'base' },
                 })}
               >
-                <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5" />
+                <RefreshCw
+                  className={css({ h: { base: '4', sm: '5' }, w: { base: '4', sm: '5' } })}
+                />
                 Reset
               </Button>
             </TooltipTrigger>
@@ -494,7 +572,15 @@ export default function JSONToMarkdownTablePage() {
               py: '3',
             })}
           >
-            <h3 className="text-sm font-semibold text-purple-300 sm:text-base">JSON Input</h3>
+            <h3
+              className={css({
+                fontSize: { base: 'sm', sm: 'base' },
+                fontWeight: 'semibold',
+                color: 'purple.300',
+              })}
+            >
+              JSON Input
+            </h3>
           </div>
           {jsonExtension && (
             <CodeMirror
@@ -525,7 +611,7 @@ export default function JSONToMarkdownTablePage() {
                 completionKeymap: true,
                 lintKeymap: true,
               }}
-              className="text-sm sm:text-base"
+              className={css({ fontSize: { base: 'sm', sm: 'base' } })}
             />
           )}
         </div>
@@ -553,7 +639,13 @@ export default function JSONToMarkdownTablePage() {
               py: '3',
             })}
           >
-            <h3 className="text-sm font-semibold text-pink-300 sm:text-base">
+            <h3
+              className={css({
+                fontSize: { base: 'sm', sm: 'base' },
+                fontWeight: 'semibold',
+                color: 'pink.300',
+              })}
+            >
               Markdown Output Preview
             </h3>
           </div>
@@ -614,16 +706,22 @@ export default function JSONToMarkdownTablePage() {
             How to Use
           </h3>
           <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
-            <li className="text-sm sm:text-base">Paste your JSON array in the editor above</li>
-            <li className="text-sm sm:text-base">
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Paste your JSON array in the editor above
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Choose column alignment (left, center, or right)
             </li>
-            <li className="text-sm sm:text-base">
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Optionally provide custom header names (comma-separated)
             </li>
-            <li className="text-sm sm:text-base">Preview the Markdown table in real-time</li>
-            <li className="text-sm sm:text-base">Copy to clipboard or download as a .md file</li>
-            <li className="text-sm sm:text-base">
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Preview the Markdown table in real-time
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Copy to clipboard or download as a .md file
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Perfect for documentation, README files, and GitHub issues
             </li>
           </ul>

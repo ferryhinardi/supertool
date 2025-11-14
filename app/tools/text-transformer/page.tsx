@@ -258,7 +258,9 @@ const faqs = [
 function TextTransformerContent() {
   const [inputText, setInputText] = useQueryState('text', { defaultValue: '' })
   const [findText, setFindText] = useQueryState('find', { defaultValue: '' })
-  const [replaceText, setReplaceText] = useQueryState('replace', { defaultValue: '' })
+  const [replaceText, setReplaceText] = useQueryState('replace', {
+    defaultValue: '',
+  })
   const [useRegex, setUseRegex] = useQueryState('regex', parseAsBoolean.withDefault(false))
   const [caseSensitive, setCaseSensitive] = useQueryState('case', parseAsBoolean.withDefault(false))
   const [selectedCategory, setSelectedCategory] = useQueryState(
@@ -504,7 +506,13 @@ function TextTransformerContent() {
           })}
         >
           <Type className={css({ h: '5', w: '5', color: 'yellow.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'yellow.300' })}>
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'yellow.300',
+            })}
+          >
             20+ Text Transformations
           </span>
         </div>
@@ -558,16 +566,36 @@ function TextTransformerContent() {
         })}
       >
         {[
-          { label: 'Characters', value: stats.chars, from: 'purple.500', to: 'pink.500' },
+          {
+            label: 'Characters',
+            value: stats.chars,
+            from: 'purple.500',
+            to: 'pink.500',
+          },
           {
             label: 'No Spaces',
             value: stats.charsNoSpaces,
             from: 'pink.500',
             to: 'rose.500',
           },
-          { label: 'Words', value: stats.words, from: 'blue.500', to: 'cyan.500' },
-          { label: 'Lines', value: stats.lines, from: 'green.500', to: 'emerald.500' },
-          { label: 'Sentences', value: stats.sentences, from: 'orange.500', to: 'red.500' },
+          {
+            label: 'Words',
+            value: stats.words,
+            from: 'blue.500',
+            to: 'cyan.500',
+          },
+          {
+            label: 'Lines',
+            value: stats.lines,
+            from: 'green.500',
+            to: 'emerald.500',
+          },
+          {
+            label: 'Sentences',
+            value: stats.sentences,
+            from: 'orange.500',
+            to: 'red.500',
+          },
           {
             label: 'Paragraphs',
             value: stats.paragraphs,
@@ -657,19 +685,31 @@ function TextTransformerContent() {
                   })}
                 >
                   <div>
-                    <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <CardTitle
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                      })}
+                    >
                       <Type className={css({ h: '5', w: '5', color: 'yellow.400' })} />
                       Text Input
                     </CardTitle>
                     <CardDescription>Enter or paste your text below</CardDescription>
                   </div>
-                  <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      gap: '2',
+                      flexWrap: 'wrap',
+                    })}
+                  >
                     <Button
                       variant="outline"
-                      size="sm"
                       onClick={handleCopy}
                       disabled={!inputText}
-                      className={css({ gap: '2' })}
+                      className={css({ gap: '2', minH: '11' })}
+                      aria-label="Copy text"
                     >
                       {copied ? (
                         <>
@@ -685,20 +725,20 @@ function TextTransformerContent() {
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
                       onClick={handleDownload}
                       disabled={!inputText}
-                      className={css({ gap: '2' })}
+                      className={css({ gap: '2', minH: '11' })}
+                      aria-label="Download text"
                     >
                       <Download className={css({ h: '4', w: '4' })} />
                       Download
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
                       onClick={handleReset}
                       disabled={!inputText}
-                      className={css({ gap: '2' })}
+                      className={css({ gap: '2', minH: '11' })}
+                      aria-label="Clear text"
                     >
                       <RotateCcw className={css({ h: '4', w: '4' })} />
                       Clear
@@ -735,7 +775,13 @@ function TextTransformerContent() {
           >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   <Search className={css({ h: '5', w: '5', color: 'blue.400' })} />
                   Find & Replace
                 </CardTitle>
@@ -743,7 +789,12 @@ function TextTransformerContent() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+              <div
+                className={css({
+                  p: { base: '4', sm: '5', md: '6' },
+                  spaceY: '4',
+                })}
+              >
                 <div
                   className={css({
                     display: 'grid',
@@ -755,7 +806,11 @@ function TextTransformerContent() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="find-text"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Find
                     </label>
@@ -770,7 +825,11 @@ function TextTransformerContent() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="replace-text"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Replace with
                     </label>
@@ -888,7 +947,13 @@ function TextTransformerContent() {
           >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   <Sparkles className={css({ h: '5', w: '5', color: 'yellow.400' })} />
                   Transformations
                 </CardTitle>
@@ -896,9 +961,20 @@ function TextTransformerContent() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
+              <div
+                className={css({
+                  p: { base: '4', sm: '5', md: '6' },
+                  spaceY: '4',
+                })}
+              >
                 {/* Category Filter */}
-                <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '2',
+                  })}
+                >
                   {categories.map((cat) => {
                     const Icon = cat.icon
                     const isSelected = selectedCategory === cat.id
@@ -959,50 +1035,200 @@ function TextTransformerContent() {
         </motion.div>
       </div>
 
+      {/* Pro Tips Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+      >
+        <Card
+          className={css({
+            border: '2px solid',
+            borderColor: 'cyan.500/20',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardHeader>
+            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
+              Pro Tips
+            </CardTitle>
+            <CardDescription>
+              Expert techniques for efficient text transformation and manipulation
+            </CardDescription>
+          </CardHeader>
+          <CardContent className={css({ spaceY: '3' })}>
+            <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+              <div
+                className={css({
+                  p: '3',
+                  rounded: 'lg',
+                  bg: 'cyan.500/5',
+                  borderLeft: '3px solid',
+                  borderColor: 'cyan.500',
+                })}
+              >
+                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'cyan.300' })}>
+                    Chain Multiple Transformations:
+                  </strong>{' '}
+                  Apply transformations sequentially for complex text processing. For example:
+                  "Remove Duplicates" → "Sort A-Z" → "Title Case" creates a clean, alphabetized list
+                  with proper capitalization.
+                </p>
+              </div>
+              <div
+                className={css({
+                  p: '3',
+                  rounded: 'lg',
+                  bg: 'cyan.500/5',
+                  borderLeft: '3px solid',
+                  borderColor: 'cyan.500',
+                })}
+              >
+                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'cyan.300' })}>
+                    Master Regex Find & Replace:
+                  </strong>{' '}
+                  Use regex patterns for advanced text manipulation. Common patterns: \d+ (numbers),
+                  \s+ (whitespace), ^(.+)$ (entire lines), [A-Z] (uppercase letters). Enable "Use
+                  Regex" to unlock powerful pattern matching.
+                </p>
+              </div>
+              <div
+                className={css({
+                  p: '3',
+                  rounded: 'lg',
+                  bg: 'cyan.500/5',
+                  borderLeft: '3px solid',
+                  borderColor: 'cyan.500',
+                })}
+              >
+                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'cyan.300' })}>Data Cleaning Workflow:</strong>{' '}
+                  For CSV or list data: Use "Trim Lines" to remove extra spaces, "Remove Empty
+                  Lines" to eliminate gaps, "Remove Duplicates" for unique values, then sort or
+                  format as needed. Perfect for preparing data imports.
+                </p>
+              </div>
+              <div
+                className={css({
+                  p: '3',
+                  rounded: 'lg',
+                  bg: 'cyan.500/5',
+                  borderLeft: '3px solid',
+                  borderColor: 'cyan.500',
+                })}
+              >
+                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'cyan.300' })}>Quick Case Conversions:</strong>{' '}
+                  "Sentence case" for paragraphs, "Title Case" for headings and titles, "camelCase"
+                  for variables, "snake_case" for database fields, "CONSTANT_CASE" for constants.
+                  Choose the right case for your context.
+                </p>
+              </div>
+              <div
+                className={css({
+                  p: '3',
+                  rounded: 'lg',
+                  bg: 'cyan.500/5',
+                  borderLeft: '3px solid',
+                  borderColor: 'cyan.500',
+                })}
+              >
+                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <strong className={css({ color: 'cyan.300' })}>
+                    Keyboard Shortcuts for Speed:
+                  </strong>{' '}
+                  Use Ctrl+A (Cmd+A) to select all text, Ctrl+C to copy results instantly, and the
+                  transformation category filters to quickly find the tool you need. Undo (Ctrl+Z)
+                  works in the text area.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* How to Use Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
       >
         <Card
           className={css({
-            border: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(4px)',
+            border: '2px solid',
+            borderColor: 'blue.500/30',
+            bg: 'rgba(59, 130, 246, 0.05)',
+            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
-            <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <Lightbulb className={css({ h: '5', w: '5', color: 'yellow.400' })} />
-                How to Use Text Transformer
-              </CardTitle>
-              <CardDescription>
-                Follow these simple steps to transform your text instantly
-              </CardDescription>
-            </div>
+            <CardTitle
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+              })}
+            >
+              <Lightbulb className={css({ h: '6', w: '6', color: 'blue.400' })} />
+              How to Use Text Transformer
+            </CardTitle>
+            <CardDescription>
+              Follow these simple steps to transform your text instantly
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
-              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '1fr', md: '1fr 1fr' },
+                gap: { base: '4', md: '6' },
+              })}
+            >
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
                 <Badge
+                  variant="outline"
                   className={css({
-                    flexShrink: '0',
-                    bg: 'yellow.500/20',
-                    color: 'yellow.300',
-                    border: '1px solid',
-                    borderColor: 'yellow.500/30',
+                    minH: '10',
+                    minW: '10',
+                    h: '10',
+                    w: '10',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'purple.500/10',
+                    borderColor: 'purple.500',
+                    borderWidth: '2px',
+                    fontSize: 'lg',
+                    fontWeight: 'bold',
+                    color: 'purple.300',
+                    flexShrink: 0,
                   })}
                 >
                   1
                 </Badge>
-                <div className={css({ flex: '1' })}>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                <div className={css({ flex: '1', minW: '0' })}>
+                  <h3
+                    className={css({
+                      fontWeight: 'semibold',
+                      color: 'gray.100',
+                      mb: '2',
+                      fontSize: { base: 'sm', sm: 'base' },
+                    })}
+                  >
                     Paste Your Text
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p
+                    className={css({
+                      fontSize: 'sm',
+                      color: 'gray.400',
+                      lineHeight: '1.6',
+                    })}
+                  >
                     Enter or paste your text into the input area. The tool will automatically
                     calculate statistics like character count, word count, and line count in
                     real-time.
@@ -1010,23 +1236,47 @@ function TextTransformerContent() {
                 </div>
               </div>
 
-              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
                 <Badge
+                  variant="outline"
                   className={css({
-                    flexShrink: '0',
-                    bg: 'yellow.500/20',
-                    color: 'yellow.300',
-                    border: '1px solid',
-                    borderColor: 'yellow.500/30',
+                    minH: '10',
+                    minW: '10',
+                    h: '10',
+                    w: '10',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'pink.500/10',
+                    borderColor: 'pink.500',
+                    borderWidth: '2px',
+                    fontSize: 'lg',
+                    fontWeight: 'bold',
+                    color: 'pink.300',
+                    flexShrink: 0,
                   })}
                 >
                   2
                 </Badge>
-                <div className={css({ flex: '1' })}>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                <div className={css({ flex: '1', minW: '0' })}>
+                  <h3
+                    className={css({
+                      fontWeight: 'semibold',
+                      color: 'gray.100',
+                      mb: '2',
+                      fontSize: { base: 'sm', sm: 'base' },
+                    })}
+                  >
                     Choose a Transformation
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p
+                    className={css({
+                      fontSize: 'sm',
+                      color: 'gray.400',
+                      lineHeight: '1.6',
+                    })}
+                  >
                     Select from 20+ transformations organized by category: Case conversions, Clean
                     operations, Sort functions, or Modify tools. Use the category filters to quickly
                     find the transformation you need.
@@ -1034,23 +1284,47 @@ function TextTransformerContent() {
                 </div>
               </div>
 
-              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
                 <Badge
+                  variant="outline"
                   className={css({
-                    flexShrink: '0',
-                    bg: 'yellow.500/20',
-                    color: 'yellow.300',
-                    border: '1px solid',
-                    borderColor: 'yellow.500/30',
+                    minH: '10',
+                    minW: '10',
+                    h: '10',
+                    w: '10',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'blue.500/10',
+                    borderColor: 'blue.500',
+                    borderWidth: '2px',
+                    fontSize: 'lg',
+                    fontWeight: 'bold',
+                    color: 'blue.300',
+                    flexShrink: 0,
                   })}
                 >
                   3
                 </Badge>
-                <div className={css({ flex: '1' })}>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                <div className={css({ flex: '1', minW: '0' })}>
+                  <h3
+                    className={css({
+                      fontWeight: 'semibold',
+                      color: 'gray.100',
+                      mb: '2',
+                      fontSize: { base: 'sm', sm: 'base' },
+                    })}
+                  >
                     Apply and Preview
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p
+                    className={css({
+                      fontSize: 'sm',
+                      color: 'gray.400',
+                      lineHeight: '1.6',
+                    })}
+                  >
                     Click any transformation button to instantly apply it to your text. The result
                     appears immediately in the text area. You can apply multiple transformations in
                     sequence.
@@ -1058,23 +1332,47 @@ function TextTransformerContent() {
                 </div>
               </div>
 
-              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
                 <Badge
+                  variant="outline"
                   className={css({
-                    flexShrink: '0',
-                    bg: 'yellow.500/20',
-                    color: 'yellow.300',
-                    border: '1px solid',
-                    borderColor: 'yellow.500/30',
+                    minH: '10',
+                    minW: '10',
+                    h: '10',
+                    w: '10',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'green.500/10',
+                    borderColor: 'green.500',
+                    borderWidth: '2px',
+                    fontSize: 'lg',
+                    fontWeight: 'bold',
+                    color: 'green.300',
+                    flexShrink: 0,
                   })}
                 >
                   4
                 </Badge>
-                <div className={css({ flex: '1' })}>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                <div className={css({ flex: '1', minW: '0' })}>
+                  <h3
+                    className={css({
+                      fontWeight: 'semibold',
+                      color: 'gray.100',
+                      mb: '2',
+                      fontSize: { base: 'sm', sm: 'base' },
+                    })}
+                  >
                     Use Find & Replace (Optional)
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p
+                    className={css({
+                      fontSize: 'sm',
+                      color: 'gray.400',
+                      lineHeight: '1.6',
+                    })}
+                  >
                     For advanced text manipulation, use the Find & Replace feature with regex
                     support. Enable "Use Regex" for pattern matching and "Case Sensitive" for
                     precise matching. Click "Replace All" to apply changes.
@@ -1082,23 +1380,47 @@ function TextTransformerContent() {
                 </div>
               </div>
 
-              <div className={css({ display: 'flex', gap: '3', alignItems: 'start' })}>
+              <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
                 <Badge
+                  variant="outline"
                   className={css({
-                    flexShrink: '0',
-                    bg: 'yellow.500/20',
-                    color: 'yellow.300',
-                    border: '1px solid',
-                    borderColor: 'yellow.500/30',
+                    minH: '10',
+                    minW: '10',
+                    h: '10',
+                    w: '10',
+                    rounded: 'full',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bg: 'violet.500/10',
+                    borderColor: 'violet.500',
+                    borderWidth: '2px',
+                    fontSize: 'lg',
+                    fontWeight: 'bold',
+                    color: 'violet.300',
+                    flexShrink: 0,
                   })}
                 >
                   5
                 </Badge>
-                <div className={css({ flex: '1' })}>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
+                <div className={css({ flex: '1', minW: '0' })}>
+                  <h3
+                    className={css({
+                      fontWeight: 'semibold',
+                      color: 'gray.100',
+                      mb: '2',
+                      fontSize: { base: 'sm', sm: 'base' },
+                    })}
+                  >
                     Copy or Download Result
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p
+                    className={css({
+                      fontSize: 'sm',
+                      color: 'gray.400',
+                      lineHeight: '1.6',
+                    })}
+                  >
                     Once satisfied with your transformed text, click "Copy" to copy to clipboard or
                     "Download" to save as a .txt file. Use "Clear" to start fresh with new text.
                   </p>

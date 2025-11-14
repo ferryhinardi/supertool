@@ -1,22 +1,26 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import {
   AlertCircle,
   ArrowLeftRight,
   Check,
   ChevronDown,
   ChevronRight,
+  Clock,
   Code2,
   Copy,
   Download,
   FileJson,
   GitCompare,
+  Heart,
   Lightbulb,
   ListTree,
   Minimize2,
   Search,
   Settings2,
   Sparkles,
+  Trash2,
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
@@ -33,12 +37,15 @@ import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTrackToolView } from '@/hooks/useRecentTools'
+import { useToolHistory } from '@/hooks/useToolHistory'
 import { trackToolEvent } from '@/lib/analytics'
 import { tools } from '@/lib/tools'
 import { css } from '@/styled-system/css'
 
 // Dynamically import CodeMirror to reduce initial bundle size (~200KB)
-const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), { ssr: false })
+const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), {
+  ssr: false,
+})
 
 const faqs = [
   {
@@ -124,6 +131,16 @@ const SCHEMA_TEMPLATES = {
 }
 
 type ViewMode = 'editor' | 'tree' | 'schema' | 'diff' | 'typescript'
+
+// JSON History Item Interface
+interface JSONHistoryItem {
+  jsonContent: string
+  action: 'beautify' | 'minify'
+  viewMode?: ViewMode
+  indentSize?: number
+  sortKeys?: boolean
+  preview?: string // Truncated preview for list display
+}
 
 // Tree node component with JSON Path extraction
 function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
@@ -221,7 +238,12 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
       </button>
       {expanded && (
         <div
-          className={css({ ml: '4', borderLeft: '1px solid', borderColor: 'gray.700', pl: '2' })}
+          className={css({
+            ml: '4',
+            borderLeft: '1px solid',
+            borderColor: 'gray.700',
+            pl: '2',
+          })}
         >
           {isArray
             ? entries.map((item: unknown, idx: number) => {
@@ -236,7 +258,10 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
                           className={css({
                             color: 'blue.400',
                             cursor: 'pointer',
-                            _hover: { textDecoration: 'underline', color: 'blue.300' },
+                            _hover: {
+                              textDecoration: 'underline',
+                              color: 'blue.300',
+                            },
                           })}
                         >
                           [{idx}]
@@ -264,7 +289,10 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
                           className={css({
                             color: 'cyan.400',
                             cursor: 'pointer',
-                            _hover: { textDecoration: 'underline', color: 'cyan.300' },
+                            _hover: {
+                              textDecoration: 'underline',
+                              color: 'cyan.300',
+                            },
                           })}
                         >
                           {key}
@@ -381,7 +409,10 @@ function JSONBeautifyContent() {
 
   // Diff state
   const [compareJson, setCompareJson] = useState('')
-  const [diffResult, setDiffResult] = useState<{ added: string[]; removed: string[] } | null>(null)
+  const [diffResult, setDiffResult] = useState<{
+    added: string[]
+    removed: string[]
+  } | null>(null)
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -393,6 +424,17 @@ function JSONBeautifyContent() {
 
   // TypeScript interface
   const [tsInterface, setTsInterface] = useState('')
+
+  // History management
+  const history = useToolHistory<JSONHistoryItem>({
+    storageKey: 'json_beautifier_history',
+    maxItems: 50,
+  })
+
+  // History filter state
+  const [historySearchQuery, setHistorySearchQuery] = useState('')
+  const [historySortBy, setHistorySortBy] = useState<'newest' | 'oldest' | 'favorites'>('newest')
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
 
   // Dynamically load json extension
   // biome-ignore lint/suspicious/noExplicitAny: CodeMirror extension type is complex
@@ -431,6 +473,16 @@ function JSONBeautifyContent() {
     return { lines, chars, isValid, objDepth }
   }, [value])
 
+  // Get filtered history items
+  const filteredHistory = useMemo(() => {
+    return history.getFilteredItems({
+      searchQuery: historySearchQuery,
+      searchFields: ['preview', 'action'],
+      sortBy: historySortBy,
+      showFavoritesOnly,
+    })
+  }, [history.getFilteredItems, historySearchQuery, historySortBy, showFavoritesOnly])
+
   const handleBeautify = () => {
     try {
       const obj = JSON.parse(value)
@@ -438,6 +490,18 @@ function JSONBeautifyContent() {
         ? JSON.stringify(sortObjectKeys(obj), null, indentSize)
         : JSON.stringify(obj, null, indentSize)
       setValue(formatted)
+
+      // Add to history
+      const preview = formatted.length > 100 ? `${formatted.substring(0, 100)}...` : formatted
+      history.addItem({
+        jsonContent: formatted,
+        action: 'beautify',
+        viewMode,
+        indentSize,
+        sortKeys,
+        preview,
+      })
+
       toast.success('JSON beautified successfully 🎉')
       trackToolEvent('json_beautify', {
         success: true,
@@ -455,7 +519,18 @@ function JSONBeautifyContent() {
   const handleMinify = () => {
     try {
       const obj = JSON.parse(value)
-      setValue(JSON.stringify(obj))
+      const minified = JSON.stringify(obj)
+      setValue(minified)
+
+      // Add to history
+      const preview = minified.length > 100 ? `${minified.substring(0, 100)}...` : minified
+      history.addItem({
+        jsonContent: minified,
+        action: 'minify',
+        viewMode,
+        preview,
+      })
+
       toast.success('JSON minified ✅')
       trackToolEvent('json_minify', {
         success: true,
@@ -518,7 +593,10 @@ function JSONBeautifyContent() {
         const errors = validate.errors?.map((err) => `${err.instancePath} ${err.message}`) || []
         setSchemaErrors(errors)
         toast.error(`Schema validation failed: ${errors.length} errors`)
-        trackToolEvent('json_schema_validate', { success: false, error_count: errors.length })
+        trackToolEvent('json_schema_validate', {
+          success: false,
+          error_count: errors.length,
+        })
       }
     } catch (_err) {
       toast.error('Invalid JSON or Schema')
@@ -556,7 +634,10 @@ function JSONBeautifyContent() {
       const results = JSONPath({ path: searchQuery, json: jsonObj })
       setSearchResults(results)
       toast.success(`Found ${results.length} matches`)
-      trackToolEvent('json_search', { query_length: searchQuery.length, results: results.length })
+      trackToolEvent('json_search', {
+        query_length: searchQuery.length,
+        results: results.length,
+      })
     } catch (_err) {
       toast.error('Invalid JSONPath query or JSON')
       setSearchResults([])
@@ -657,6 +738,22 @@ function JSONBeautifyContent() {
     return diffs
   }
 
+  // Load history item
+  const loadHistoryItem = (item: JSONHistoryItem) => {
+    setValue(item.jsonContent)
+    if (item.viewMode) {
+      setViewMode(item.viewMode)
+    }
+    if (item.indentSize !== undefined) {
+      setIndentSize(item.indentSize)
+    }
+    if (item.sortKeys !== undefined) {
+      setSortKeys(item.sortKeys)
+    }
+    toast.success('History item loaded')
+    trackToolEvent('json_history_load', { action: item.action })
+  }
+
   return (
     <TooltipProvider>
       <main
@@ -670,9 +767,18 @@ function JSONBeautifyContent() {
         })}
       >
         {/* Header */}
-        <div className={css({ spaceY: '3' })}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className={css({ spaceY: '3' })}
+        >
           <div
-            className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: { base: '3', sm: '4' },
+            })}
           >
             <div
               className={css({
@@ -724,227 +830,349 @@ function JSONBeautifyContent() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Pro Tips Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'cyan.500/20',
+              bg: 'cyan.500/5',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardContent className={css({ py: '6' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'start',
+                  gap: '4',
+                })}
+              >
+                <Sparkles
+                  className={css({
+                    h: '6',
+                    w: '6',
+                    color: 'cyan.400',
+                    flexShrink: '0',
+                  })}
+                />
+                <div className={css({ spaceY: '2' })}>
+                  <h3
+                    className={css({
+                      fontSize: 'lg',
+                      fontWeight: 'semibold',
+                      color: 'cyan.300',
+                    })}
+                  >
+                    Pro Tips
+                  </h3>
+                  <ul
+                    className={css({
+                      spaceY: '2',
+                      fontSize: 'sm',
+                      color: 'gray.400',
+                    })}
+                  >
+                    <li>• Click any value or key in Tree View to instantly copy its JSON path</li>
+                    <li>
+                      • Use keyboard shortcuts: Ctrl+B to beautify, Ctrl+M to minify, Ctrl+C to copy
+                    </li>
+                    <li>
+                      • All processing happens in your browser - your data never leaves your device
+                    </li>
+                    <li>• Switch to TypeScript view to auto-generate interfaces from your JSON</li>
+                    <li>
+                      • Validate JSON against schemas or compare two JSON objects side-by-side
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* How to Use Section */}
-        <Card
-          className={css({
-            border: '2px solid',
-            borderColor: 'blue.500/30',
-            bg: 'rgba(59, 130, 246, 0.05)',
-            backdropFilter: 'blur(16px)',
-          })}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Lightbulb className={css({ h: '5', w: '5' })} />
-              How to Use JSON Beautifier
-            </CardTitle>
-            <CardDescription>
-              Follow these simple steps to format, validate, and work with your JSON data
-            </CardDescription>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '4' })}>
-            <div className={css({ spaceY: '3' })}>
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bg: 'purple.500/20',
-                    borderColor: 'purple.500/50',
-                    flexShrink: 0,
-                  })}
-                >
-                  1
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Paste Your JSON
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                    Copy your JSON data from API responses, config files, or any source and paste it
-                    into the editor below. Works with minified or formatted JSON.
-                  </p>
-                </div>
-              </div>
-
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bg: 'pink.500/20',
-                    borderColor: 'pink.500/50',
-                    flexShrink: 0,
-                  })}
-                >
-                  2
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Choose Your Action
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                    Click <strong>Beautify</strong> to format with indentation,{' '}
-                    <strong>Minify</strong> to compress, or explore advanced features like schema
-                    validation, comparison, and TypeScript generation.
-                  </p>
-                </div>
-              </div>
-
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bg: 'blue.500/20',
-                    borderColor: 'blue.500/50',
-                    flexShrink: 0,
-                  })}
-                >
-                  3
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Copy or Download
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                    Use the <strong>Copy</strong> button to copy formatted JSON to your clipboard,
-                    or <strong>Download</strong> as a .json file. All processing happens in your
-                    browser - your data never leaves your device.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Pro Features */}
-            <div
-              className={css({
-                mt: '4',
-                p: '4',
-                rounded: 'lg',
-                bg: 'purple.500/10',
-                border: '1px solid',
-                borderColor: 'purple.500/30',
-              })}
-            >
-              <h3
+          <Card
+            className={css({
+              border: '2px solid',
+              borderColor: 'blue.500/30',
+              bg: 'rgba(59, 130, 246, 0.05)',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <CardTitle
                 className={css({
-                  fontWeight: 'semibold',
-                  color: 'purple.200',
-                  mb: '2',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '2',
                 })}
               >
-                <Sparkles className={css({ h: '4', w: '4' })} />
-                Pro Features
-              </h3>
-              <ul className={css({ spaceY: '1', fontSize: 'sm', color: 'gray.300' })}>
-                <li>
-                  <strong className={css({ color: 'gray.100' })}>
-                    Tree View + Path Extractor:
-                  </strong>{' '}
-                  Visualize JSON structure in an interactive tree. Click any value, key, or index to
-                  copy its JSONPath
-                </li>
-                <li>
-                  <strong className={css({ color: 'gray.100' })}>Schema Validation:</strong>{' '}
-                  Validate JSON against JSON Schema with detailed error messages
-                </li>
-                <li>
-                  <strong className={css({ color: 'gray.100' })}>JSON Diff:</strong> Compare two
-                  JSON objects and see differences highlighted
-                </li>
-                <li>
-                  <strong className={css({ color: 'gray.100' })}>TypeScript Generator:</strong>{' '}
-                  Automatically generate TypeScript interfaces from JSON
-                </li>
-                <li>
-                  <strong className={css({ color: 'gray.100' })}>JSONPath Search:</strong> Query
-                  JSON data using JSONPath expressions
-                </li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+                <Lightbulb className={css({ h: '5', w: '5' })} />
+                How to Use JSON Beautifier
+              </CardTitle>
+              <CardDescription>
+                Follow these simple steps to format, validate, and work with your JSON data
+              </CardDescription>
+            </CardHeader>
+            <CardContent className={css({ spaceY: '4' })}>
+              <div className={css({ spaceY: '3' })}>
+                <div className={css({ display: 'flex', gap: '3' })}>
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      h: '6',
+                      w: '6',
+                      rounded: 'full',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bg: 'purple.500/20',
+                      borderColor: 'purple.500/50',
+                      flexShrink: 0,
+                    })}
+                  >
+                    1
+                  </Badge>
+                  <div>
+                    <h3
+                      className={css({
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                        mb: '1',
+                      })}
+                    >
+                      Paste Your JSON
+                    </h3>
+                    <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                      Copy your JSON data from API responses, config files, or any source and paste
+                      it into the editor below. Works with minified or formatted JSON.
+                    </p>
+                  </div>
+                </div>
+
+                <div className={css({ display: 'flex', gap: '3' })}>
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      h: '6',
+                      w: '6',
+                      rounded: 'full',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bg: 'pink.500/20',
+                      borderColor: 'pink.500/50',
+                      flexShrink: 0,
+                    })}
+                  >
+                    2
+                  </Badge>
+                  <div>
+                    <h3
+                      className={css({
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                        mb: '1',
+                      })}
+                    >
+                      Choose Your Action
+                    </h3>
+                    <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                      Click <strong>Beautify</strong> to format with indentation,{' '}
+                      <strong>Minify</strong> to compress, or explore advanced features like schema
+                      validation, comparison, and TypeScript generation.
+                    </p>
+                  </div>
+                </div>
+
+                <div className={css({ display: 'flex', gap: '3' })}>
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      h: '6',
+                      w: '6',
+                      rounded: 'full',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bg: 'blue.500/20',
+                      borderColor: 'blue.500/50',
+                      flexShrink: 0,
+                    })}
+                  >
+                    3
+                  </Badge>
+                  <div>
+                    <h3
+                      className={css({
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                        mb: '1',
+                      })}
+                    >
+                      Copy or Download
+                    </h3>
+                    <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                      Use the <strong>Copy</strong> button to copy formatted JSON to your clipboard,
+                      or <strong>Download</strong> as a .json file. All processing happens in your
+                      browser - your data never leaves your device.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pro Features */}
+              <div
+                className={css({
+                  mt: '4',
+                  p: '4',
+                  rounded: 'lg',
+                  bg: 'purple.500/10',
+                  border: '1px solid',
+                  borderColor: 'purple.500/30',
+                })}
+              >
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'purple.200',
+                    mb: '2',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <Sparkles className={css({ h: '4', w: '4' })} />
+                  Pro Features
+                </h3>
+                <ul
+                  className={css({
+                    spaceY: '1',
+                    fontSize: 'sm',
+                    color: 'gray.300',
+                  })}
+                >
+                  <li>
+                    <strong className={css({ color: 'gray.100' })}>
+                      Tree View + Path Extractor:
+                    </strong>{' '}
+                    Visualize JSON structure in an interactive tree. Click any value, key, or index
+                    to copy its JSONPath
+                  </li>
+                  <li>
+                    <strong className={css({ color: 'gray.100' })}>Schema Validation:</strong>{' '}
+                    Validate JSON against JSON Schema with detailed error messages
+                  </li>
+                  <li>
+                    <strong className={css({ color: 'gray.100' })}>JSON Diff:</strong> Compare two
+                    JSON objects and see differences highlighted
+                  </li>
+                  <li>
+                    <strong className={css({ color: 'gray.100' })}>TypeScript Generator:</strong>{' '}
+                    Automatically generate TypeScript interfaces from JSON
+                  </li>
+                  <li>
+                    <strong className={css({ color: 'gray.100' })}>JSONPath Search:</strong> Query
+                    JSON data using JSONPath expressions
+                  </li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* View Mode Selector */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'purple.500/30',
-            bg: 'rgba(139, 92, 246, 0.05)',
-            p: { base: '3', sm: '4' },
-            backdropFilter: 'blur(16px)',
-          })}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
         >
-          <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-            <Button
-              size="sm"
-              variant={viewMode === 'editor' ? 'default' : 'outline'}
-              onClick={() => setViewMode('editor')}
-              className={css({ gap: '2' })}
-            >
-              <Code2 className={css({ h: '4', w: '4' })} />
-              Editor
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === 'tree' ? 'default' : 'outline'}
-              onClick={() => setViewMode('tree')}
-              className={css({ gap: '2' })}
-            >
-              <ListTree className={css({ h: '4', w: '4' })} />
-              Tree View
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === 'schema' ? 'default' : 'outline'}
-              onClick={() => setViewMode('schema')}
-              className={css({ gap: '2' })}
-            >
-              <AlertCircle className={css({ h: '4', w: '4' })} />
-              Schema Validation
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === 'diff' ? 'default' : 'outline'}
-              onClick={() => setViewMode('diff')}
-              className={css({ gap: '2' })}
-            >
-              <GitCompare className={css({ h: '4', w: '4' })} />
-              Compare
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === 'typescript' ? 'default' : 'outline'}
-              onClick={() => setViewMode('typescript')}
-              className={css({ gap: '2' })}
-            >
-              <ArrowLeftRight className={css({ h: '4', w: '4' })} />
-              TypeScript
-            </Button>
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'purple.500/30',
+              bg: 'rgba(139, 92, 246, 0.05)',
+              p: { base: '3', sm: '4' },
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+              <Button
+                variant={viewMode === 'editor' ? 'default' : 'outline'}
+                onClick={() => setViewMode('editor')}
+                className={css({
+                  gap: '2',
+                  minH: '11',
+                  py: { base: '3', sm: '2.5' },
+                })}
+              >
+                <Code2 className={css({ h: '4', w: '4' })} />
+                Editor
+              </Button>
+              <Button
+                variant={viewMode === 'tree' ? 'default' : 'outline'}
+                onClick={() => setViewMode('tree')}
+                className={css({
+                  gap: '2',
+                  minH: '11',
+                  py: { base: '3', sm: '2.5' },
+                })}
+              >
+                <ListTree className={css({ h: '4', w: '4' })} />
+                Tree View
+              </Button>
+              <Button
+                variant={viewMode === 'schema' ? 'default' : 'outline'}
+                onClick={() => setViewMode('schema')}
+                className={css({
+                  gap: '2',
+                  minH: '11',
+                  py: { base: '3', sm: '2.5' },
+                })}
+              >
+                <AlertCircle className={css({ h: '4', w: '4' })} />
+                Schema Validation
+              </Button>
+              <Button
+                variant={viewMode === 'diff' ? 'default' : 'outline'}
+                onClick={() => setViewMode('diff')}
+                className={css({
+                  gap: '2',
+                  minH: '11',
+                  py: { base: '3', sm: '2.5' },
+                })}
+              >
+                <GitCompare className={css({ h: '4', w: '4' })} />
+                Compare
+              </Button>
+              <Button
+                variant={viewMode === 'typescript' ? 'default' : 'outline'}
+                onClick={() => setViewMode('typescript')}
+                className={css({
+                  gap: '2',
+                  minH: '11',
+                  py: { base: '3', sm: '2.5' },
+                })}
+              >
+                <ArrowLeftRight className={css({ h: '4', w: '4' })} />
+                TypeScript
+              </Button>
+            </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Stats Bar */}
         <div
@@ -969,7 +1197,12 @@ function JSONBeautifyContent() {
             })}
           >
             <div
-              className={css({ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2' })}
+              className={css({
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: '2',
+              })}
             >
               <Badge
                 variant="outline"
@@ -1054,7 +1287,13 @@ function JSONBeautifyContent() {
               })}
             >
               <CardHeader>
-                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   <Settings2 className={css({ h: '5', w: '5' })} />
                   Advanced Options
                 </CardTitle>
@@ -1064,7 +1303,11 @@ function JSONBeautifyContent() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="jsonpath-search"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: 'gray.300',
+                    })}
                   >
                     JSONPath Search (e.g., $.users[*].email)
                   </label>
@@ -1076,7 +1319,14 @@ function JSONBeautifyContent() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className={css({ flex: '1' })}
                     />
-                    <Button onClick={handleSearch} className={css({ gap: '2' })}>
+                    <Button
+                      onClick={handleSearch}
+                      className={css({
+                        gap: '2',
+                        minH: '11',
+                        py: { base: '3', sm: '3.5', md: '4' },
+                      })}
+                    >
                       <Search className={css({ h: '4', w: '4' })} />
                       Search
                     </Button>
@@ -1092,7 +1342,13 @@ function JSONBeautifyContent() {
                         borderColor: 'cyan.500/30',
                       })}
                     >
-                      <p className={css({ fontSize: 'sm', fontWeight: 'medium', mb: '2' })}>
+                      <p
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          mb: '2',
+                        })}
+                      >
                         Found {searchResults.length} result(s):
                       </p>
                       <pre
@@ -1109,11 +1365,21 @@ function JSONBeautifyContent() {
                 </div>
 
                 {/* Formatting Options */}
-                <div className={css({ display: 'flex', gap: '4', flexWrap: 'wrap' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: '4',
+                    flexWrap: 'wrap',
+                  })}
+                >
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="indent-size"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
                     >
                       Indent Size
                     </label>
@@ -1138,8 +1404,20 @@ function JSONBeautifyContent() {
                     </select>
                   </div>
 
-                  <div className={css({ display: 'flex', alignItems: 'end', gap: '2' })}>
-                    <label className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'end',
+                      gap: '2',
+                    })}
+                  >
+                    <label
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                      })}
+                    >
                       <input
                         type="checkbox"
                         checked={sortKeys}
@@ -1201,7 +1479,13 @@ function JSONBeautifyContent() {
             })}
           >
             <CardHeader>
-              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <CardTitle
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                })}
+              >
                 <ListTree className={css({ h: '5', w: '5' })} />
                 Tree View with JSON Path Extractor
               </CardTitle>
@@ -1278,21 +1562,41 @@ function JSONBeautifyContent() {
               <CardHeader>
                 <CardTitle>JSON Schema</CardTitle>
                 <CardDescription>
-                  <div className={css({ display: 'flex', gap: '2', mt: '2', flexWrap: 'wrap' })}>
-                    <Button size="sm" variant="outline" onClick={() => loadSchemaTemplate('user')}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      gap: '2',
+                      mt: '2',
+                      flexWrap: 'wrap',
+                    })}
+                  >
+                    <Button
+                      variant="outline"
+                      onClick={() => loadSchemaTemplate('user')}
+                      className={css({
+                        minH: '11',
+                        py: { base: '3', sm: '2.5' },
+                      })}
+                    >
                       User
                     </Button>
                     <Button
-                      size="sm"
                       variant="outline"
                       onClick={() => loadSchemaTemplate('apiResponse')}
+                      className={css({
+                        minH: '11',
+                        py: { base: '3', sm: '2.5' },
+                      })}
                     >
                       API Response
                     </Button>
                     <Button
-                      size="sm"
                       variant="outline"
                       onClick={() => loadSchemaTemplate('config')}
+                      className={css({
+                        minH: '11',
+                        py: { base: '3', sm: '2.5' },
+                      })}
                     >
                       Config
                     </Button>
@@ -1311,14 +1615,26 @@ function JSONBeautifyContent() {
                   />
                 )}
                 <div className={css({ display: 'flex', gap: '2' })}>
-                  <Button onClick={validateSchema} className={css({ flex: '1', gap: '2' })}>
+                  <Button
+                    onClick={validateSchema}
+                    className={css({
+                      flex: '1',
+                      gap: '2',
+                      minH: '11',
+                      py: { base: '3', sm: '3.5', md: '4' },
+                    })}
+                  >
                     <Check className={css({ h: '4', w: '4' })} />
                     Validate
                   </Button>
                   <Button
                     onClick={handleGenerateSample}
                     variant="outline"
-                    className={css({ gap: '2' })}
+                    className={css({
+                      gap: '2',
+                      minH: '11',
+                      py: { base: '3', sm: '3.5', md: '4' },
+                    })}
                   >
                     <Lightbulb className={css({ h: '4', w: '4' })} />
                     Generate Sample
@@ -1416,7 +1732,15 @@ function JSONBeautifyContent() {
               </Card>
             </div>
 
-            <Button onClick={handleCompare} className={css({ w: 'full', gap: '2' })}>
+            <Button
+              onClick={handleCompare}
+              className={css({
+                w: 'full',
+                gap: '2',
+                minH: '11',
+                py: { base: '3', sm: '3.5', md: '4' },
+              })}
+            >
               <GitCompare className={css({ h: '5', w: '5' })} />
               Compare JSONs
             </Button>
@@ -1466,7 +1790,13 @@ function JSONBeautifyContent() {
                         Added/Changed in JSON 2:
                       </h4>
                       {diffResult.added.map((diff: string) => (
-                        <p key={diff} className={css({ fontSize: 'sm', color: 'green.300' })}>
+                        <p
+                          key={diff}
+                          className={css({
+                            fontSize: 'sm',
+                            color: 'green.300',
+                          })}
+                        >
                           + {diff}
                         </p>
                       ))}
@@ -1508,7 +1838,15 @@ function JSONBeautifyContent() {
               </CardContent>
             </Card>
 
-            <Button onClick={handleGenerateTypeScript} className={css({ w: 'full', gap: '2' })}>
+            <Button
+              onClick={handleGenerateTypeScript}
+              className={css({
+                w: 'full',
+                gap: '2',
+                minH: '11',
+                py: { base: '3', sm: '3.5', md: '4' },
+              })}
+            >
               <ArrowLeftRight className={css({ h: '5', w: '5' })} />
               Generate TypeScript Interface
             </Button>
@@ -1532,10 +1870,13 @@ function JSONBeautifyContent() {
                   >
                     <CardTitle>TypeScript Interface</CardTitle>
                     <Button
-                      size="sm"
                       variant="outline"
                       onClick={handleCopyTypeScript}
-                      className={css({ gap: '2' })}
+                      className={css({
+                        gap: '2',
+                        minH: '11',
+                        py: { base: '3', sm: '2.5' },
+                      })}
                     >
                       <Copy className={css({ h: '4', w: '4' })} />
                       Copy
@@ -1594,8 +1935,9 @@ function JSONBeautifyContent() {
                     gradientFrom: 'purple.600',
                     gradientVia: 'pink.600',
                     gradientTo: 'blue.600',
-                    px: { base: '3', sm: '4', md: '6' },
-                    py: { base: '2', sm: '2.5', md: '3' },
+                    px: { base: '4', sm: '5', md: '6' },
+                    py: { base: '3', sm: '3.5', md: '4' },
+                    minH: '11',
                     fontSize: { base: 'sm', md: 'base' },
                     fontWeight: 'semibold',
                     color: 'white',
@@ -1640,7 +1982,8 @@ function JSONBeautifyContent() {
                     gradientFrom: 'blue.500/20',
                     gradientTo: 'cyan.500/20',
                     px: { base: '3', sm: '4', md: '6' },
-                    py: { base: '2', sm: '2.5', md: '3' },
+                    py: { base: '3', sm: '3.5', md: '4' },
+                    minH: '11',
                     fontSize: { base: 'sm', md: 'base' },
                     fontWeight: 'semibold',
                     color: 'blue.100',
@@ -1680,7 +2023,8 @@ function JSONBeautifyContent() {
                     borderColor: 'purple.500/50',
                     bg: 'purple.500/10',
                     px: { base: '3', sm: '4', md: '6' },
-                    py: { base: '2', sm: '2.5', md: '3' },
+                    py: { base: '3', sm: '3.5', md: '4' },
+                    minH: '11',
                     fontSize: { base: 'sm', md: 'base' },
                     fontWeight: 'semibold',
                     color: 'purple.100',
@@ -1718,7 +2062,8 @@ function JSONBeautifyContent() {
                     borderColor: 'pink.500/50',
                     bg: 'pink.500/10',
                     px: { base: '3', sm: '4', md: '6' },
-                    py: { base: '2', sm: '2.5', md: '3' },
+                    py: { base: '3', sm: '3.5', md: '4' },
+                    minH: '11',
                     fontSize: { base: 'sm', md: 'base' },
                     fontWeight: 'semibold',
                     color: 'pink.100',
@@ -1749,6 +2094,455 @@ function JSONBeautifyContent() {
             </Tooltip>
           </div>
         </div>
+
+        {/* Keyboard Shortcuts Display */}
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'gray.700/50',
+            bg: 'gray.800/30',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <CardContent className={css({ py: '4' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexDirection: { base: 'column', sm: 'row' },
+                alignItems: { base: 'start', sm: 'center' },
+                gap: '3',
+                justifyContent: 'space-between',
+              })}
+            >
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                })}
+              >
+                <Settings2 className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                <span
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'medium',
+                    color: 'gray.300',
+                  })}
+                >
+                  Keyboard Shortcuts
+                </span>
+              </div>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '2',
+                  alignItems: 'center',
+                })}
+              >
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <kbd
+                    className={css({
+                      px: '2',
+                      py: '1',
+                      rounded: 'md',
+                      bg: 'gray.700/50',
+                      border: '1px solid',
+                      borderColor: 'gray.600',
+                      fontSize: 'xs',
+                      fontWeight: 'semibold',
+                      color: 'gray.300',
+                      fontFamily: 'mono',
+                    })}
+                  >
+                    Ctrl+B
+                  </kbd>
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Beautify</span>
+                </div>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <kbd
+                    className={css({
+                      px: '2',
+                      py: '1',
+                      rounded: 'md',
+                      bg: 'gray.700/50',
+                      border: '1px solid',
+                      borderColor: 'gray.600',
+                      fontSize: 'xs',
+                      fontWeight: 'semibold',
+                      color: 'gray.300',
+                      fontFamily: 'mono',
+                    })}
+                  >
+                    Ctrl+M
+                  </kbd>
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Minify</span>
+                </div>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
+                  <kbd
+                    className={css({
+                      px: '2',
+                      py: '1',
+                      rounded: 'md',
+                      bg: 'gray.700/50',
+                      border: '1px solid',
+                      borderColor: 'gray.600',
+                      fontSize: 'xs',
+                      fontWeight: 'semibold',
+                      color: 'gray.300',
+                      fontFamily: 'mono',
+                    })}
+                  >
+                    Ctrl+C
+                  </kbd>
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Copy</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* History Card */}
+        {filteredHistory.length > 0 && (
+          <Card
+            className={css({
+              border: '2px solid',
+              borderColor: 'purple.500/30',
+              bg: 'rgba(139, 92, 246, 0.05)',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '4',
+                })}
+              >
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Clock className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                  <CardTitle
+                    className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'white' })}
+                  >
+                    History
+                  </CardTitle>
+                  <Badge
+                    variant="secondary"
+                    className={css({
+                      bg: 'purple.500/20',
+                      color: 'purple.300',
+                      border: '1px solid',
+                      borderColor: 'purple.500/30',
+                    })}
+                  >
+                    {history.items.length}
+                  </Badge>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    if (confirm('Clear all history? This cannot be undone.')) {
+                      history.clearAll()
+                      toast.success('History cleared')
+                      trackToolEvent('json_history_clear', {})
+                    }
+                  }}
+                  className={css({
+                    color: 'gray.400',
+                    _hover: { color: 'red.400', bg: 'red.500/10' },
+                  })}
+                >
+                  <Trash2 className={css({ h: '4', w: '4', mr: '2' })} />
+                  Clear All
+                </Button>
+              </div>
+              <CardDescription className={css({ color: 'gray.400', mt: '2' })}>
+                Your recent JSON operations are saved here
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Filter Controls */}
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: { base: 'column', md: 'row' },
+                  gap: '3',
+                  mb: '4',
+                  pb: '4',
+                  borderBottom: '1px solid',
+                  borderColor: 'gray.700/50',
+                })}
+              >
+                <div className={css({ flex: '1' })}>
+                  <Input
+                    placeholder="Search history..."
+                    value={historySearchQuery}
+                    onChange={(e) => setHistorySearchQuery(e.target.value)}
+                    className={css({
+                      bg: 'gray.800/50',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      color: 'white',
+                      _focus: {
+                        borderColor: 'purple.500',
+                        ring: '2',
+                        ringColor: 'purple.500/20',
+                      },
+                    })}
+                  />
+                </div>
+                <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
+                  <Button
+                    variant={historySortBy === 'newest' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setHistorySortBy('newest')}
+                    className={css({
+                      fontSize: 'xs',
+                      bg: historySortBy === 'newest' ? 'purple.500/20' : 'transparent',
+                      borderColor: 'purple.500/30',
+                      color: historySortBy === 'newest' ? 'purple.300' : 'gray.400',
+                    })}
+                  >
+                    Newest
+                  </Button>
+                  <Button
+                    variant={historySortBy === 'oldest' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setHistorySortBy('oldest')}
+                    className={css({
+                      fontSize: 'xs',
+                      bg: historySortBy === 'oldest' ? 'purple.500/20' : 'transparent',
+                      borderColor: 'purple.500/30',
+                      color: historySortBy === 'oldest' ? 'purple.300' : 'gray.400',
+                    })}
+                  >
+                    Oldest
+                  </Button>
+                  <Button
+                    variant={showFavoritesOnly ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                    className={css({
+                      fontSize: 'xs',
+                      bg: showFavoritesOnly ? 'purple.500/20' : 'transparent',
+                      borderColor: 'purple.500/30',
+                      color: showFavoritesOnly ? 'purple.300' : 'gray.400',
+                    })}
+                  >
+                    <Heart
+                      className={css({
+                        h: '3.5',
+                        w: '3.5',
+                        mr: '1.5',
+                        fill: showFavoritesOnly ? 'currentColor' : 'transparent',
+                      })}
+                    />
+                    Favorites
+                  </Button>
+                </div>
+              </div>
+
+              {/* History Items List */}
+              <div className={css({ spaceY: '3', maxH: '96', overflowY: 'auto' })}>
+                {filteredHistory.length === 0 ? (
+                  <div
+                    className={css({
+                      textAlign: 'center',
+                      py: '8',
+                      color: 'gray.500',
+                    })}
+                  >
+                    <Clock
+                      className={css({ h: '12', w: '12', mx: 'auto', mb: '3', opacity: '0.5' })}
+                    />
+                    <p className={css({ fontSize: 'sm' })}>
+                      {showFavoritesOnly
+                        ? 'No favorite items yet'
+                        : historySearchQuery
+                          ? 'No matching history items'
+                          : 'No history items yet'}
+                    </p>
+                  </div>
+                ) : (
+                  filteredHistory.map((item) => (
+                    <div
+                      key={item.id}
+                      className={css({
+                        p: '3',
+                        border: '1px solid',
+                        borderColor: 'gray.700/50',
+                        rounded: 'lg',
+                        bg: 'gray.800/30',
+                        _hover: { bg: 'gray.800/50', borderColor: 'purple.500/30' },
+                        transition: 'all 0.2s',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          justifyContent: 'space-between',
+                          gap: '3',
+                        })}
+                      >
+                        <div className={css({ flex: '1', minW: '0' })}>
+                          <div
+                            className={css({
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2',
+                              mb: '2',
+                            })}
+                          >
+                            <Badge
+                              variant={item.data.action === 'beautify' ? 'default' : 'secondary'}
+                              className={css({
+                                fontSize: 'xs',
+                                bg:
+                                  item.data.action === 'beautify' ? 'purple.500/20' : 'pink.500/20',
+                                color: item.data.action === 'beautify' ? 'purple.300' : 'pink.300',
+                                border: '1px solid',
+                                borderColor:
+                                  item.data.action === 'beautify' ? 'purple.500/30' : 'pink.500/30',
+                              })}
+                            >
+                              {item.data.action === 'beautify' ? 'Beautified' : 'Minified'}
+                            </Badge>
+                            <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                              {new Date(item.timestamp).toLocaleString('en-US', {
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </span>
+                          </div>
+                          <pre
+                            className={css({
+                              fontSize: 'xs',
+                              color: 'gray.400',
+                              fontFamily: 'mono',
+                              whiteSpace: 'pre-wrap',
+                              wordBreak: 'break-all',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              maxH: '10',
+                            })}
+                          >
+                            {item.data.preview}
+                          </pre>
+                        </div>
+                        <div className={css({ display: 'flex', gap: '1', flexShrink: '0' })}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  history.toggleFavorite(item.id)
+                                  trackToolEvent('json_history_favorite', {
+                                    is_favorite: !item.isFavorite,
+                                  })
+                                }}
+                                className={css({
+                                  h: '8',
+                                  w: '8',
+                                  p: '0',
+                                  color: item.isFavorite ? 'yellow.400' : 'gray.500',
+                                  _hover: { color: 'yellow.400', bg: 'yellow.500/10' },
+                                })}
+                              >
+                                <Heart
+                                  className={css({
+                                    h: '4',
+                                    w: '4',
+                                    fill: item.isFavorite ? 'currentColor' : 'transparent',
+                                  })}
+                                />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className={css({ color: 'foreground' })}>
+                                {item.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => loadHistoryItem(item.data)}
+                                className={css({
+                                  h: '8',
+                                  px: '2',
+                                  fontSize: 'xs',
+                                  color: 'purple.400',
+                                  _hover: { color: 'purple.300', bg: 'purple.500/10' },
+                                })}
+                              >
+                                Load
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className={css({ color: 'foreground' })}>Load this JSON</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  history.deleteItem(item.id)
+                                  toast.success('History item deleted')
+                                  trackToolEvent('json_history_delete', {})
+                                }}
+                                className={css({
+                                  h: '8',
+                                  w: '8',
+                                  p: '0',
+                                  color: 'gray.500',
+                                  _hover: { color: 'red.400', bg: 'red.500/10' },
+                                })}
+                              >
+                                <Trash2 className={css({ h: '4', w: '4' })} />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className={css({ color: 'foreground' })}>Delete</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <SocialShare
           toolName="JSON Beautifier"

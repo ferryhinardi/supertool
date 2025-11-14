@@ -348,7 +348,13 @@ export default function MarkdownEditorPage() {
             })}
           >
             <FileText className={css({ h: '5', w: '5', color: 'green.400' })} />
-            <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'green.300' })}>
+            <span
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'semibold',
+                color: 'green.300',
+              })}
+            >
               GitHub-Flavored Markdown • Live Preview
             </span>
           </div>
@@ -675,7 +681,6 @@ export default function MarkdownEditorPage() {
                 <label htmlFor="file-upload">
                   <Button
                     variant="outline"
-                    size="sm"
                     asChild
                     className={css({
                       h: 'auto',
@@ -702,7 +707,6 @@ export default function MarkdownEditorPage() {
                 </label>
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={handleCopyMarkdown}
                   className={css({
                     h: 'auto',
@@ -717,7 +721,6 @@ export default function MarkdownEditorPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={handleCopyHTML}
                   className={css({
                     h: 'auto',
@@ -732,7 +735,6 @@ export default function MarkdownEditorPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={handleDownloadMarkdown}
                   className={css({
                     h: 'auto',
@@ -747,7 +749,6 @@ export default function MarkdownEditorPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={handleDownloadHTML}
                   className={css({
                     h: 'auto',
@@ -762,7 +763,6 @@ export default function MarkdownEditorPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={handleReset}
                   className={css({
                     h: 'auto',
@@ -807,7 +807,13 @@ export default function MarkdownEditorPage() {
               })}
             >
               <CardHeader>
-                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   <Code2 className={css({ h: '5', w: '5', color: 'green.500' })} />
                   Markdown Editor
                 </CardTitle>
@@ -850,7 +856,13 @@ export default function MarkdownEditorPage() {
               })}
             >
               <CardHeader>
-                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <CardTitle
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                  })}
+                >
                   <Eye className={css({ h: '5', w: '5', color: 'emerald.500' })} />
                   Live Preview
                 </CardTitle>
@@ -872,7 +884,12 @@ export default function MarkdownEditorPage() {
                     p: '6',
                   })}
                 >
-                  <div className="markdown-preview prose prose-invert w-full max-w-none">
+                  <div
+                    className={`markdown-preview prose prose-invert ${css({
+                      w: 'full',
+                      maxW: 'none',
+                    })}`}
+                  >
                     {markdownPlugins ? (
                       <ReactMarkdown
                         remarkPlugins={[markdownPlugins.remarkGfm]}
@@ -881,22 +898,51 @@ export default function MarkdownEditorPage() {
                           // Custom component styling
                           h1: ({ ...props }) => (
                             <h1
-                              className="mb-4 border-b border-gray-700 pb-2 text-3xl font-bold"
+                              className={css({
+                                mb: '4',
+                                borderBottom: '1px solid',
+                                borderColor: 'gray.700',
+                                pb: '2',
+                                fontSize: '3xl',
+                                fontWeight: 'bold',
+                              })}
                               {...props}
                             />
                           ),
                           h2: ({ ...props }) => (
                             <h2
-                              className="mt-6 mb-3 border-b border-gray-800 pb-2 text-2xl font-bold"
+                              className={css({
+                                mt: '6',
+                                mb: '3',
+                                borderBottom: '1px solid',
+                                borderColor: 'gray.800',
+                                pb: '2',
+                                fontSize: '2xl',
+                                fontWeight: 'bold',
+                              })}
                               {...props}
                             />
                           ),
                           h3: ({ ...props }) => (
-                            <h3 className="mt-5 mb-2 text-xl font-bold" {...props} />
+                            <h3
+                              className={css({
+                                mt: '5',
+                                mb: '2',
+                                fontSize: 'xl',
+                                fontWeight: 'bold',
+                              })}
+                              {...props}
+                            />
                           ),
                           a: ({ ...props }) => (
                             <a
-                              className="text-blue-400 hover:text-blue-300 hover:underline"
+                              className={css({
+                                color: 'blue.400',
+                                _hover: {
+                                  color: 'blue.300',
+                                  textDecoration: 'underline',
+                                },
+                              })}
                               {...props}
                             />
                           ),
@@ -908,7 +954,14 @@ export default function MarkdownEditorPage() {
                               </code>
                             ) : (
                               <code
-                                className="rounded bg-gray-800 px-1.5 py-0.5 text-sm text-pink-400"
+                                className={css({
+                                  rounded: 'md',
+                                  bg: 'gray.800',
+                                  px: '1.5',
+                                  py: '0.5',
+                                  fontSize: 'sm',
+                                  color: 'pink.400',
+                                })}
                                 {...props}
                               >
                                 {children}
@@ -917,35 +970,85 @@ export default function MarkdownEditorPage() {
                           },
                           pre: ({ ...props }) => (
                             <pre
-                              className="overflow-x-auto rounded-lg border border-gray-700 bg-gray-900 p-4"
+                              className={css({
+                                overflowX: 'auto',
+                                rounded: 'lg',
+                                border: '1px solid',
+                                borderColor: 'gray.700',
+                                bg: 'gray.900',
+                                p: '4',
+                              })}
                               {...props}
                             />
                           ),
                           table: ({ ...props }) => (
-                            <div className="overflow-x-auto">
+                            <div className={css({ overflowX: 'auto' })}>
                               <table
-                                className="min-w-full border-collapse border border-gray-700"
+                                className={css({
+                                  minW: 'full',
+                                  borderCollapse: 'collapse',
+                                  border: '1px solid',
+                                  borderColor: 'gray.700',
+                                })}
                                 {...props}
                               />
                             </div>
                           ),
                           th: ({ ...props }) => (
                             <th
-                              className="border border-gray-700 bg-gray-800 px-4 py-2 text-left font-bold"
+                              className={css({
+                                border: '1px solid',
+                                borderColor: 'gray.700',
+                                bg: 'gray.800',
+                                px: '4',
+                                py: '2',
+                                textAlign: 'left',
+                                fontWeight: 'bold',
+                              })}
                               {...props}
                             />
                           ),
                           td: ({ ...props }) => (
-                            <td className="border border-gray-700 px-4 py-2" {...props} />
-                          ),
-                          blockquote: ({ ...props }) => (
-                            <blockquote
-                              className="border-l-4 border-gray-600 pl-4 text-gray-400 italic"
+                            <td
+                              className={css({
+                                border: '1px solid',
+                                borderColor: 'gray.700',
+                                px: '4',
+                                py: '2',
+                              })}
                               {...props}
                             />
                           ),
-                          ul: ({ ...props }) => <ul className="list-disc pl-6" {...props} />,
-                          ol: ({ ...props }) => <ol className="list-decimal pl-6" {...props} />,
+                          blockquote: ({ ...props }) => (
+                            <blockquote
+                              className={css({
+                                borderLeft: '4px solid',
+                                borderColor: 'gray.600',
+                                pl: '4',
+                                color: 'gray.400',
+                                fontStyle: 'italic',
+                              })}
+                              {...props}
+                            />
+                          ),
+                          ul: ({ ...props }) => (
+                            <ul
+                              className={css({
+                                listStyleType: 'disc',
+                                pl: '6',
+                              })}
+                              {...props}
+                            />
+                          ),
+                          ol: ({ ...props }) => (
+                            <ol
+                              className={css({
+                                listStyleType: 'decimal',
+                                pl: '6',
+                              })}
+                              {...props}
+                            />
+                          ),
                           li: ({ children, ...props }) => {
                             // Check if this is a task list item
                             const firstChild = Array.isArray(children) ? children[0] : null
@@ -957,12 +1060,26 @@ export default function MarkdownEditorPage() {
                               const input = firstChild.props?.children?.[0]
                               if (input?.type === 'input' && input?.props?.type === 'checkbox') {
                                 return (
-                                  <li className="flex list-none items-center gap-2" {...props}>
+                                  <li
+                                    className={css({
+                                      display: 'flex',
+                                      listStyleType: 'none',
+                                      alignItems: 'center',
+                                      gap: '2',
+                                    })}
+                                    {...props}
+                                  >
                                     <input
                                       type="checkbox"
                                       checked={input.props.checked}
                                       disabled
-                                      className="h-4 w-4 rounded border-gray-600 bg-gray-800"
+                                      className={css({
+                                        h: '4',
+                                        w: '4',
+                                        rounded: 'md',
+                                        borderColor: 'gray.600',
+                                        bg: 'gray.800',
+                                      })}
                                     />
                                     <span>{firstChild.props.children.slice(1)}</span>
                                   </li>
@@ -971,7 +1088,15 @@ export default function MarkdownEditorPage() {
                             }
                             return <li {...props}>{children}</li>
                           },
-                          hr: ({ ...props }) => <hr className="my-4 border-gray-700" {...props} />,
+                          hr: ({ ...props }) => (
+                            <hr
+                              className={css({
+                                my: '4',
+                                borderColor: 'gray.700',
+                              })}
+                              {...props}
+                            />
+                          ),
                         }}
                       >
                         {value}
@@ -999,37 +1124,110 @@ export default function MarkdownEditorPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
         >
           <Card
             className={css({
-              border: '1px solid',
-              borderColor: 'green.500/20',
-              bg: 'green.500/5',
+              border: '2px solid',
+              borderColor: 'cyan.500/20',
+              bg: 'rgba(6, 182, 212, 0.05)',
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ py: '6' })}>
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-                <Sparkles
-                  className={css({ h: '6', w: '6', color: 'green.400', flexShrink: '0' })}
-                />
-                <div className={css({ spaceY: '2' })}>
-                  <h3
-                    className={css({
-                      fontSize: 'lg',
-                      fontWeight: 'semibold',
-                      color: 'green.300',
-                    })}
-                  >
-                    Pro Tips
-                  </h3>
-                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
-                    <li>• Supports GitHub-flavored markdown with tables and task lists</li>
-                    <li>• Use the view mode switcher to focus on editing or previewing</li>
-                    <li>• Export your work as HTML with styling or plain markdown</li>
-                    <li>• Perfect for README files, documentation, and PR descriptions</li>
-                  </ul>
+            <CardHeader>
+              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
+                Pro Tips
+              </CardTitle>
+              <CardDescription>
+                Expert techniques for writing better Markdown content faster
+              </CardDescription>
+            </CardHeader>
+            <CardContent className={css({ spaceY: '3' })}>
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+                <div
+                  className={css({
+                    p: '3',
+                    rounded: 'lg',
+                    bg: 'cyan.500/5',
+                    borderLeft: '3px solid',
+                    borderColor: 'cyan.500',
+                  })}
+                >
+                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                    <strong className={css({ color: 'cyan.300' })}>
+                      Master GitHub-Flavored Markdown:
+                    </strong>{' '}
+                    Take advantage of advanced features like tables (| Header | Header |), task
+                    lists (- [ ] Todo), strikethrough (~~text~~), and auto-linked URLs for
+                    documentation that looks professional on GitHub.
+                  </p>
+                </div>
+                <div
+                  className={css({
+                    p: '3',
+                    rounded: 'lg',
+                    bg: 'cyan.500/5',
+                    borderLeft: '3px solid',
+                    borderColor: 'cyan.500',
+                  })}
+                >
+                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                    <strong className={css({ color: 'cyan.300' })}>Optimize Your Workflow:</strong>{' '}
+                    Use Editor Only mode for distraction-free writing, Split View for simultaneous
+                    editing and verification, or Preview Only mode for final review and
+                    presentation. Switch modes based on your current task.
+                  </p>
+                </div>
+                <div
+                  className={css({
+                    p: '3',
+                    rounded: 'lg',
+                    bg: 'cyan.500/5',
+                    borderLeft: '3px solid',
+                    borderColor: 'cyan.500',
+                  })}
+                >
+                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                    <strong className={css({ color: 'cyan.300' })}>Code Blocks Done Right:</strong>{' '}
+                    Use fenced code blocks with language identifiers (```javascript) for automatic
+                    syntax highlighting. Supports 180+ languages. Add line numbers or highlights for
+                    technical documentation and tutorials.
+                  </p>
+                </div>
+                <div
+                  className={css({
+                    p: '3',
+                    rounded: 'lg',
+                    bg: 'cyan.500/5',
+                    borderLeft: '3px solid',
+                    borderColor: 'cyan.500',
+                  })}
+                >
+                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                    <strong className={css({ color: 'cyan.300' })}>Export Flexibility:</strong>{' '}
+                    Download as .md for version control and collaboration, or export as styled HTML
+                    for embedding in websites, blogs, or documentation sites. HTML exports include
+                    syntax highlighting and responsive styling.
+                  </p>
+                </div>
+                <div
+                  className={css({
+                    p: '3',
+                    rounded: 'lg',
+                    bg: 'cyan.500/5',
+                    borderLeft: '3px solid',
+                    borderColor: 'cyan.500',
+                  })}
+                >
+                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                    <strong className={css({ color: 'cyan.300' })}>
+                      Documentation Best Practices:
+                    </strong>{' '}
+                    Structure content with clear headings (# ## ###), use bullet points for
+                    scannability, add code examples liberally, and include a table of contents for
+                    long documents. Preview regularly to ensure formatting consistency.
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -1040,13 +1238,13 @@ export default function MarkdownEditorPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
         >
           <Card
             className={css({
-              border: '1px solid',
-              borderColor: 'blue.500/20',
-              bg: 'blue.500/5',
+              border: '2px solid',
+              borderColor: 'blue.500/30',
+              bg: 'rgba(59, 130, 246, 0.05)',
               backdropFilter: 'blur(16px)',
               padding: '6',
             })}
@@ -1079,91 +1277,203 @@ export default function MarkdownEditorPage() {
                 How to Use Markdown Editor
               </CardTitle>
             </CardHeader>
-            <CardContent className={css({ padding: '0', spaceY: '4' })}>
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                <Badge
-                  className={css({
-                    bg: 'blue.500/20',
-                    color: 'blue.300',
-                    fontSize: 'sm',
-                    fontWeight: 'bold',
-                    px: '2.5',
-                    py: '1',
-                    flexShrink: '0',
-                  })}
-                >
-                  1
-                </Badge>
-                <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'gray.300' })}>Choose your view mode:</strong>{' '}
-                  Select Editor Only (focus on writing), Split View (side-by-side editing and
-                  preview), or Preview Only (see final output) based on your workflow.
-                </p>
-              </div>
+            <CardContent className={css({ padding: '0' })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', md: '1fr 1fr' },
+                  gap: { base: '4', md: '6' },
+                })}
+              >
+                <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      minH: '10',
+                      minW: '10',
+                      h: '10',
+                      w: '10',
+                      rounded: 'full',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bg: 'purple.500/10',
+                      borderColor: 'purple.500',
+                      borderWidth: '2px',
+                      fontSize: 'lg',
+                      fontWeight: 'bold',
+                      color: 'purple.300',
+                      flexShrink: 0,
+                    })}
+                  >
+                    1
+                  </Badge>
+                  <div className={css({ flex: '1', minW: '0' })}>
+                    <h3
+                      className={css({
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                        mb: '2',
+                        fontSize: { base: 'sm', sm: 'base' },
+                      })}
+                    >
+                      Choose Your View Mode
+                    </h3>
+                    <p
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                        lineHeight: '1.6',
+                      })}
+                    >
+                      Select Editor Only (focus on writing), Split View (side-by-side editing and
+                      preview), or Preview Only (see final output) based on your workflow and screen
+                      size.
+                    </p>
+                  </div>
+                </div>
 
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                <Badge
-                  className={css({
-                    bg: 'blue.500/20',
-                    color: 'blue.300',
-                    fontSize: 'sm',
-                    fontWeight: 'bold',
-                    px: '2.5',
-                    py: '1',
-                    flexShrink: '0',
-                  })}
-                >
-                  2
-                </Badge>
-                <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'gray.300' })}>Write or load Markdown:</strong>{' '}
-                  Type directly in the editor using GitHub-flavored Markdown syntax, or load an
-                  existing .md file using the "Load File" button.
-                </p>
-              </div>
+                <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      minH: '10',
+                      minW: '10',
+                      h: '10',
+                      w: '10',
+                      rounded: 'full',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bg: 'pink.500/10',
+                      borderColor: 'pink.500',
+                      borderWidth: '2px',
+                      fontSize: 'lg',
+                      fontWeight: 'bold',
+                      color: 'pink.300',
+                      flexShrink: 0,
+                    })}
+                  >
+                    2
+                  </Badge>
+                  <div className={css({ flex: '1', minW: '0' })}>
+                    <h3
+                      className={css({
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                        mb: '2',
+                        fontSize: { base: 'sm', sm: 'base' },
+                      })}
+                    >
+                      Write or Load Markdown
+                    </h3>
+                    <p
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                        lineHeight: '1.6',
+                      })}
+                    >
+                      Type directly in the editor using GitHub-flavored Markdown syntax, or load an
+                      existing .md file using the "Load File" button. Start with the provided
+                      template or reset anytime.
+                    </p>
+                  </div>
+                </div>
 
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                <Badge
-                  className={css({
-                    bg: 'blue.500/20',
-                    color: 'blue.300',
-                    fontSize: 'sm',
-                    fontWeight: 'bold',
-                    px: '2.5',
-                    py: '1',
-                    flexShrink: '0',
-                  })}
-                >
-                  3
-                </Badge>
-                <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'gray.300' })}>
-                    See live preview with syntax highlighting:
-                  </strong>{' '}
-                  Watch your markdown render in real-time with proper formatting, code highlighting,
-                  tables, and task lists.
-                </p>
-              </div>
+                <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      minH: '10',
+                      minW: '10',
+                      h: '10',
+                      w: '10',
+                      rounded: 'full',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bg: 'blue.500/10',
+                      borderColor: 'blue.500',
+                      borderWidth: '2px',
+                      fontSize: 'lg',
+                      fontWeight: 'bold',
+                      color: 'blue.300',
+                      flexShrink: 0,
+                    })}
+                  >
+                    3
+                  </Badge>
+                  <div className={css({ flex: '1', minW: '0' })}>
+                    <h3
+                      className={css({
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                        mb: '2',
+                        fontSize: { base: 'sm', sm: 'base' },
+                      })}
+                    >
+                      See Live Preview with Syntax Highlighting
+                    </h3>
+                    <p
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                        lineHeight: '1.6',
+                      })}
+                    >
+                      Watch your markdown render in real-time with proper formatting, code
+                      highlighting for 180+ languages, tables, task lists, and emoji support.
+                    </p>
+                  </div>
+                </div>
 
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                <Badge
-                  className={css({
-                    bg: 'blue.500/20',
-                    color: 'blue.300',
-                    fontSize: 'sm',
-                    fontWeight: 'bold',
-                    px: '2.5',
-                    py: '1',
-                    flexShrink: '0',
-                  })}
-                >
-                  4
-                </Badge>
-                <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'gray.300' })}>Export or copy your work:</strong>{' '}
-                  Use the action buttons to download as .md or .html files, copy markdown or HTML to
-                  clipboard, or reset to the default template.
-                </p>
+                <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+                  <Badge
+                    variant="outline"
+                    className={css({
+                      minH: '10',
+                      minW: '10',
+                      h: '10',
+                      w: '10',
+                      rounded: 'full',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bg: 'green.500/10',
+                      borderColor: 'green.500',
+                      borderWidth: '2px',
+                      fontSize: 'lg',
+                      fontWeight: 'bold',
+                      color: 'green.300',
+                      flexShrink: 0,
+                    })}
+                  >
+                    4
+                  </Badge>
+                  <div className={css({ flex: '1', minW: '0' })}>
+                    <h3
+                      className={css({
+                        fontWeight: 'semibold',
+                        color: 'gray.100',
+                        mb: '2',
+                        fontSize: { base: 'sm', sm: 'base' },
+                      })}
+                    >
+                      Export or Copy Your Work
+                    </h3>
+                    <p
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                        lineHeight: '1.6',
+                      })}
+                    >
+                      Use the action buttons to download as .md or .html files, copy markdown or
+                      HTML to clipboard, or reset to the default template.
+                    </p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

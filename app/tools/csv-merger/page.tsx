@@ -370,16 +370,48 @@ export default function CSVMergerPage() {
             className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
           >
             <div
-              className="animate-pulse rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 p-2.5 shadow-2xl shadow-teal-500/60 sm:rounded-2xl sm:p-4"
-              style={{ animationDuration: '2s' }}
+              className={css({
+                animation: 'pulse',
+                animationDuration: '2s',
+                rounded: { base: 'xl', sm: '2xl' },
+                bgGradient: 'to-br',
+                gradientFrom: 'teal.500',
+                gradientTo: 'emerald.500',
+                p: { base: '2.5', sm: '4' },
+                shadow: '2xl',
+                boxShadow: '0 25px 50px -12px rgb(20 184 166 / 0.6)',
+              })}
             >
-              <FileSpreadsheet className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+              <FileSpreadsheet
+                className={css({
+                  h: { base: '6', sm: '8' },
+                  w: { base: '6', sm: '8' },
+                  color: 'white',
+                })}
+              />
             </div>
             <div>
-              <h1 className="bg-gradient-to-r from-teal-300 via-emerald-400 to-green-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
+              <h1
+                className={css({
+                  bgGradient: 'to-r',
+                  gradientFrom: 'teal.300',
+                  gradientVia: 'emerald.400',
+                  gradientTo: 'green.300',
+                  bgClip: 'text',
+                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
+                  fontWeight: 'extrabold',
+                  color: 'transparent',
+                  dropShadow: 'lg',
+                })}
+              >
                 CSV Merger & Splitter
               </h1>
-              <p className="text-sm text-gray-200 sm:text-base md:text-lg">
+              <p
+                className={css({
+                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
+                  color: 'gray.200',
+                })}
+              >
                 Merge multiple CSV files or split large CSVs by rules
               </p>
             </div>
@@ -477,8 +509,8 @@ export default function CSVMergerPage() {
           >
             {error ? (
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <AlertCircle className="h-5 w-5 text-red-400" />
-                <span className="text-sm text-red-300">{error}</span>
+                <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
+                <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
               </div>
             ) : (
               <div
@@ -492,21 +524,47 @@ export default function CSVMergerPage() {
                 <Badge
                   variant="outline"
                   size="sm"
-                  className="border-teal-500/50 bg-teal-500/10 px-2.5 py-1.5 text-xs text-teal-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                  className={css({
+                    borderColor: 'teal.500/50',
+                    bg: 'teal.500/10',
+                    px: { base: '2.5', sm: '3', md: '4' },
+                    py: { base: '1.5', sm: '1.5', md: '2' },
+                    fontSize: { base: 'xs', sm: 'sm' },
+                    color: 'teal.200',
+                  })}
                 >
                   📄 {files.length} file{files.length > 1 ? 's' : ''}
                 </Badge>
                 <Badge
                   variant="outline"
                   size="sm"
-                  className="border-emerald-500/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs text-emerald-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                  className={css({
+                    borderColor: 'emerald.500/50',
+                    bg: 'emerald.500/10',
+                    px: { base: '2.5', sm: '3', md: '4' },
+                    py: { base: '1.5', sm: '1.5', md: '2' },
+                    fontSize: { base: 'xs', sm: 'sm' },
+                    color: 'emerald.200',
+                  })}
                 >
                   📊 {files.reduce((sum, f) => sum + f.rowCount, 0)} total rows
                 </Badge>
                 <Badge
                   variant="success"
                   size="sm"
-                  className="animate-pulse bg-gradient-to-r from-teal-500 to-emerald-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg shadow-teal-500/50 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                  className={css({
+                    animation: 'pulse',
+                    bgGradient: 'to-r',
+                    gradientFrom: 'teal.500',
+                    gradientTo: 'emerald.600',
+                    px: { base: '2.5', sm: '3', md: '4' },
+                    py: { base: '1.5', sm: '1.5', md: '2' },
+                    fontSize: { base: 'xs', sm: 'sm' },
+                    fontWeight: 'semibold',
+                    color: 'white',
+                    shadow: 'lg',
+                    boxShadow: '0 10px 15px -3px rgb(20 184 166 / 0.5)',
+                  })}
                 >
                   ✅ Loaded
                 </Badge>
@@ -713,7 +771,7 @@ export default function CSVMergerPage() {
                   _hover: { bg: 'teal.600' },
                 })}
               >
-                <Layers className="h-5 w-5" />
+                <Layers className={css({ h: '5', w: '5' })} />
                 Merge Files
               </Button>
             </CardContent>
@@ -845,7 +903,7 @@ export default function CSVMergerPage() {
                   _hover: { bg: 'emerald.600' },
                 })}
               >
-                <Scissors className="h-5 w-5" />
+                <Scissors className={css({ h: '5', w: '5' })} />
                 Split File
               </Button>
             </CardContent>
@@ -960,10 +1018,16 @@ export default function CSVMergerPage() {
                   Merge Mode
                 </h3>
                 <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
-                  <li className="text-sm">Upload 2 or more CSV files to merge</li>
-                  <li className="text-sm">Columns will be automatically aligned by header names</li>
-                  <li className="text-sm">Enable deduplication to remove duplicate rows</li>
-                  <li className="text-sm">Download the merged result as a single CSV file</li>
+                  <li className={css({ fontSize: 'sm' })}>Upload 2 or more CSV files to merge</li>
+                  <li className={css({ fontSize: 'sm' })}>
+                    Columns will be automatically aligned by header names
+                  </li>
+                  <li className={css({ fontSize: 'sm' })}>
+                    Enable deduplication to remove duplicate rows
+                  </li>
+                  <li className={css({ fontSize: 'sm' })}>
+                    Download the merged result as a single CSV file
+                  </li>
                 </ul>
               </div>
               <div>
@@ -978,14 +1042,16 @@ export default function CSVMergerPage() {
                   Split Mode
                 </h3>
                 <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
-                  <li className="text-sm">Upload 1 CSV file to split</li>
-                  <li className="text-sm">
+                  <li className={css({ fontSize: 'sm' })}>Upload 1 CSV file to split</li>
+                  <li className={css({ fontSize: 'sm' })}>
                     Split by row count: Divides file into chunks of specified size
                   </li>
-                  <li className="text-sm">
+                  <li className={css({ fontSize: 'sm' })}>
                     Split by filter: Creates separate files based on unique values in a column
                   </li>
-                  <li className="text-sm">All split files will be downloaded automatically</li>
+                  <li className={css({ fontSize: 'sm' })}>
+                    All split files will be downloaded automatically
+                  </li>
                 </ul>
               </div>
             </div>

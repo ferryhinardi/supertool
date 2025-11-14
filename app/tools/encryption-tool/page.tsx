@@ -296,7 +296,13 @@ export default function EncryptionToolPage() {
           })}
         >
           <Shield className={css({ h: '5', w: '5', color: 'indigo.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'indigo.300' })}>
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'indigo.300',
+            })}
+          >
             AES-256-GCM Encryption
           </span>
         </div>
@@ -408,7 +414,13 @@ export default function EncryptionToolPage() {
             <CardContent className={css({ pt: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 {/* Action Selection */}
-                <div className={css({ display: 'flex', gap: 2, justifyContent: 'center' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: 2,
+                    justifyContent: 'center',
+                  })}
+                >
                   <Button
                     size="sm"
                     variant={action === 'encrypt' ? 'default' : 'ghost'}
@@ -417,10 +429,10 @@ export default function EncryptionToolPage() {
                     Encrypt
                   </Button>
                   <Button
-                    size="sm"
                     variant={action === 'decrypt' ? 'default' : 'ghost'}
                     onClick={() => setAction('decrypt')}
                     disabled={!encryptedData}
+                    className={css({ minH: '11' })}
                   >
                     Decrypt
                   </Button>
@@ -473,9 +485,18 @@ export default function EncryptionToolPage() {
                 {password && (
                   <div>
                     <div
-                      className={css({ display: 'flex', justifyContent: 'space-between', mb: 2 })}
+                      className={css({
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mb: 2,
+                      })}
                     >
-                      <span className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
+                      <span
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                        })}
+                      >
                         Password Strength:
                       </span>
                       <span
@@ -494,7 +515,10 @@ export default function EncryptionToolPage() {
                         {passwordStrength.suggestions.map((suggestion) => (
                           <p
                             key={suggestion}
-                            className={css({ fontSize: 'xs', color: 'gray.400' })}
+                            className={css({
+                              fontSize: 'xs',
+                              color: 'gray.400',
+                            })}
                           >
                             • {suggestion}
                           </p>
@@ -515,7 +539,13 @@ export default function EncryptionToolPage() {
                       borderColor: 'red.200',
                     })}
                   >
-                    <div className={css({ display: 'flex', gap: 2, alignItems: 'center' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        gap: 2,
+                        alignItems: 'center',
+                      })}
+                    >
                       <AlertCircle className={css({ w: 4, h: 4, color: 'red.500' })} />
                       <span className={css({ fontSize: 'sm', color: 'red.700' })}>{error}</span>
                     </div>
@@ -523,7 +553,13 @@ export default function EncryptionToolPage() {
                 )}
 
                 {/* Action Buttons */}
-                <div className={css({ display: 'flex', gap: 2, justifyContent: 'center' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: 2,
+                    justifyContent: 'center',
+                  })}
+                >
                   {action === 'encrypt' ? (
                     <Button onClick={handleEncryptText} disabled={loading}>
                       <Lock className={css({ w: 4, h: 4, mr: 2 })} />
@@ -551,21 +587,42 @@ export default function EncryptionToolPage() {
                       borderColor: 'green.200',
                     })}
                   >
-                    <p className={css({ fontWeight: 'bold', mb: 2, color: 'green.700' })}>
+                    <p
+                      className={css({
+                        fontWeight: 'bold',
+                        mb: 2,
+                        color: 'green.700',
+                      })}
+                    >
                       ✓ Text Encrypted Successfully
                     </p>
-                    <p className={css({ fontSize: 'sm', color: 'gray.600', mb: 3 })}>
+                    <p
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.600',
+                        mb: 3,
+                      })}
+                    >
                       Keep this password safe. You&apos;ll need it to decrypt your data.
                     </p>
-                    <div className={css({ display: 'flex', gap: 2, flexWrap: 'wrap' })}>
-                      <Button size="sm" onClick={() => handleCopy(JSON.stringify(encryptedData))}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        gap: 2,
+                        flexWrap: 'wrap',
+                      })}
+                    >
+                      <Button
+                        onClick={() => handleCopy(JSON.stringify(encryptedData))}
+                        className={css({ minH: '11' })}
+                      >
                         <Copy className={css({ w: 3, h: 3, mr: 2 })} />
                         {copied ? 'Copied!' : 'Copy Encrypted Data'}
                       </Button>
                       <Button
-                        size="sm"
                         variant="outline"
                         onClick={() => handleCopy(createEncryptedLink(encryptedData))}
+                        className={css({ minH: '11' })}
                       >
                         <LinkIcon className={css({ w: 3, h: 3, mr: 2 })} />
                         Copy Shareable Link
@@ -585,7 +642,13 @@ export default function EncryptionToolPage() {
                       borderColor: 'blue.200',
                     })}
                   >
-                    <p className={css({ fontWeight: 'bold', mb: 2, color: 'blue.700' })}>
+                    <p
+                      className={css({
+                        fontWeight: 'bold',
+                        mb: 2,
+                        color: 'blue.700',
+                      })}
+                    >
                       ✓ Text Decrypted Successfully
                     </p>
                     <Textarea value={decryptedText} rows={6} readOnly />
@@ -623,7 +686,13 @@ export default function EncryptionToolPage() {
             <CardContent className={css({ pt: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 {/* Action Selection */}
-                <div className={css({ display: 'flex', gap: 2, justifyContent: 'center' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: 2,
+                    justifyContent: 'center',
+                  })}
+                >
                   <Button
                     size="sm"
                     variant={action === 'encrypt' ? 'default' : 'ghost'}
@@ -698,9 +767,18 @@ export default function EncryptionToolPage() {
                 {password && (
                   <div>
                     <div
-                      className={css({ display: 'flex', justifyContent: 'space-between', mb: 2 })}
+                      className={css({
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mb: 2,
+                      })}
                     >
-                      <span className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
+                      <span
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                        })}
+                      >
                         Password Strength:
                       </span>
                       <span
@@ -728,7 +806,13 @@ export default function EncryptionToolPage() {
                       borderColor: 'red.200',
                     })}
                   >
-                    <div className={css({ display: 'flex', gap: 2, alignItems: 'center' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        gap: 2,
+                        alignItems: 'center',
+                      })}
+                    >
                       <AlertCircle className={css({ w: 4, h: 4, color: 'red.500' })} />
                       <span className={css({ fontSize: 'sm', color: 'red.700' })}>{error}</span>
                     </div>
@@ -736,7 +820,13 @@ export default function EncryptionToolPage() {
                 )}
 
                 {/* Action Buttons */}
-                <div className={css({ display: 'flex', gap: 2, justifyContent: 'center' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: 2,
+                    justifyContent: 'center',
+                  })}
+                >
                   {action === 'encrypt' ? (
                     <Button onClick={handleEncryptFile} disabled={loading}>
                       <Lock className={css({ w: 4, h: 4, mr: 2 })} />
@@ -764,10 +854,22 @@ export default function EncryptionToolPage() {
                       borderColor: 'green.200',
                     })}
                   >
-                    <p className={css({ fontWeight: 'bold', mb: 2, color: 'green.700' })}>
+                    <p
+                      className={css({
+                        fontWeight: 'bold',
+                        mb: 2,
+                        color: 'green.700',
+                      })}
+                    >
                       ✓ File Encrypted Successfully
                     </p>
-                    <p className={css({ fontSize: 'sm', color: 'gray.600', mb: 3 })}>
+                    <p
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.600',
+                        mb: 3,
+                      })}
+                    >
                       Download the encrypted file and keep your password safe.
                     </p>
                     <Button size="sm" onClick={handleDownloadEncrypted}>
@@ -788,7 +890,13 @@ export default function EncryptionToolPage() {
                       borderColor: 'blue.200',
                     })}
                   >
-                    <p className={css({ fontWeight: 'bold', mb: 2, color: 'blue.700' })}>
+                    <p
+                      className={css({
+                        fontWeight: 'bold',
+                        mb: 2,
+                        color: 'blue.700',
+                      })}
+                    >
                       ✓ File Decrypted Successfully
                     </p>
                     <Button size="sm" onClick={handleDownloadDecrypted}>
@@ -870,14 +978,26 @@ export default function EncryptionToolPage() {
                       borderColor: 'red.200',
                     })}
                   >
-                    <div className={css({ display: 'flex', gap: 2, alignItems: 'center' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        gap: 2,
+                        alignItems: 'center',
+                      })}
+                    >
                       <AlertCircle className={css({ w: 4, h: 4, color: 'red.500' })} />
                       <span className={css({ fontSize: 'sm', color: 'red.700' })}>{error}</span>
                     </div>
                   </div>
                 )}
 
-                <div className={css({ display: 'flex', gap: 2, justifyContent: 'center' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: 2,
+                    justifyContent: 'center',
+                  })}
+                >
                   <Button onClick={handleDecryptFromLink} disabled={loading}>
                     <Unlock className={css({ w: 4, h: 4, mr: 2 })} />
                     Decrypt Link
@@ -898,7 +1018,13 @@ export default function EncryptionToolPage() {
                       borderColor: 'blue.200',
                     })}
                   >
-                    <p className={css({ fontWeight: 'bold', mb: 2, color: 'blue.700' })}>
+                    <p
+                      className={css({
+                        fontWeight: 'bold',
+                        mb: 2,
+                        color: 'blue.700',
+                      })}
+                    >
                       ✓ Link Decrypted Successfully
                     </p>
                     <Textarea value={decryptedText} rows={6} readOnly />
@@ -972,13 +1098,38 @@ export default function EncryptionToolPage() {
           })}
         >
           <CardContent className={css({ py: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'amber.400', flexShrink: '0' })} />
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'start',
+                gap: '4',
+              })}
+            >
+              <Sparkles
+                className={css({
+                  h: '6',
+                  w: '6',
+                  color: 'amber.400',
+                  flexShrink: '0',
+                })}
+              />
               <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'amber.300' })}>
+                <h3
+                  className={css({
+                    fontSize: 'lg',
+                    fontWeight: 'semibold',
+                    color: 'amber.300',
+                  })}
+                >
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul
+                  className={css({
+                    spaceY: '2',
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                  })}
+                >
                   <li>• Use long, complex passwords with mixed characters for maximum security</li>
                   <li>• Never share your password in the same channel as your encrypted data</li>
                   <li>• Save encrypted data and password separately for better security</li>

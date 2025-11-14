@@ -202,7 +202,13 @@ export default function DiffTool() {
           })}
         >
           <GitCompare className={css({ h: '5', w: '5', color: 'orange.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'orange.300' })}>
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'orange.300',
+            })}
+          >
             Side-by-Side Comparison
           </span>
         </div>
@@ -254,24 +260,35 @@ export default function DiffTool() {
         <CardContent className={css({ spaceY: '4' })}>
           {/* View Type */}
           <div>
-            <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+            <div
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'medium',
+                color: 'gray.300',
+              })}
+            >
               View Type
             </div>
-            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2', mt: '2' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '2',
+                mt: '2',
+              })}
+            >
               <Button
                 variant={viewType === 'split' ? 'default' : 'outline'}
-                size="sm"
                 onClick={() => setViewType('split')}
-                className={css({ gap: '2' })}
+                className={css({ gap: '2', minH: '11' })}
               >
                 <SplitSquareHorizontal className={css({ h: '4', w: '4' })} />
                 Split View
               </Button>
               <Button
                 variant={viewType === 'unified' ? 'default' : 'outline'}
-                size="sm"
                 onClick={() => setViewType('unified')}
-                className={css({ gap: '2' })}
+                className={css({ gap: '2', minH: '11' })}
               >
                 <AlignJustify className={css({ h: '4', w: '4' })} />
                 Unified View
@@ -281,24 +298,35 @@ export default function DiffTool() {
 
           {/* Content Type */}
           <div>
-            <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+            <div
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'medium',
+                color: 'gray.300',
+              })}
+            >
               Content Type
             </div>
-            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2', mt: '2' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '2',
+                mt: '2',
+              })}
+            >
               <Button
                 variant={contentType === 'text' ? 'default' : 'outline'}
-                size="sm"
                 onClick={() => setContentType('text')}
-                className={css({ gap: '2' })}
+                className={css({ gap: '2', minH: '11' })}
               >
                 <FileText className={css({ h: '4', w: '4' })} />
                 Plain Text
               </Button>
               <Button
                 variant={contentType === 'json' ? 'default' : 'outline'}
-                size="sm"
                 onClick={() => setContentType('json')}
-                className={css({ gap: '2' })}
+                className={css({ gap: '2', minH: '11' })}
               >
                 <Code2 className={css({ h: '4', w: '4' })} />
                 JSON
@@ -308,15 +336,28 @@ export default function DiffTool() {
 
           {/* Actions */}
           <div>
-            <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+            <div
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'medium',
+                color: 'gray.300',
+              })}
+            >
               Actions
             </div>
-            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2', mt: '2' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '2',
+                mt: '2',
+              })}
+            >
               <Button
                 variant="outline"
-                size="sm"
                 onClick={handleSwap}
-                className={css({ gap: '2' })}
+                aria-label="Swap left and right sides"
+                className={css({ gap: '2', minH: '11' })}
               >
                 <RotateCcw className={css({ h: '4', w: '4' })} />
                 Swap Sides
@@ -325,17 +366,21 @@ export default function DiffTool() {
                 <>
                   <Button
                     variant="outline"
-                    size="sm"
                     onClick={() => handleFormatJSON('old')}
-                    className={css({ gap: '2' })}
+                    className={css({
+                      gap: '2',
+                      minH: '11',
+                    })}
                   >
                     Format Old
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
                     onClick={() => handleFormatJSON('new')}
-                    className={css({ gap: '2' })}
+                    className={css({
+                      gap: '2',
+                      minH: '11',
+                    })}
                   >
                     Format New
                   </Button>
@@ -343,27 +388,27 @@ export default function DiffTool() {
               )}
               <Button
                 variant="outline"
-                size="sm"
                 onClick={handleCopyDiff}
-                className={css({ gap: '2' })}
+                aria-label="Copy diff to clipboard"
+                className={css({ gap: '2', minH: '11' })}
               >
                 <Copy className={css({ h: '4', w: '4' })} />
                 Copy
               </Button>
               <Button
                 variant="outline"
-                size="sm"
                 onClick={handleDownload}
-                className={css({ gap: '2' })}
+                aria-label="Download diff as text file"
+                className={css({ gap: '2', minH: '11' })}
               >
                 <Download className={css({ h: '4', w: '4' })} />
                 Download
               </Button>
               <Button
                 variant="outline"
-                size="sm"
                 onClick={handleReset}
-                className={css({ gap: '2' })}
+                aria-label="Clear all content"
+                className={css({ gap: '2', minH: '11' })}
               >
                 <RotateCcw className={css({ h: '4', w: '4' })} />
                 Clear
@@ -527,12 +572,22 @@ export default function DiffTool() {
               className={css({
                 display: 'grid',
                 gap: '3',
-                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+                gridTemplateColumns: {
+                  base: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  lg: 'repeat(4, 1fr)',
+                },
                 w: 'full',
               })}
             >
               <div className={css({ rounded: 'lg', bg: 'gray.800/50', p: '4' })}>
-                <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>
+                <div
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    mb: '1',
+                  })}
+                >
                   Lines Changed
                 </div>
                 <div
@@ -552,7 +607,13 @@ export default function DiffTool() {
                 </div>
               </div>
               <div className={css({ rounded: 'lg', bg: 'gray.800/50', p: '4' })}>
-                <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>
+                <div
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    mb: '1',
+                  })}
+                >
                   Characters Changed
                 </div>
                 <div
@@ -572,18 +633,42 @@ export default function DiffTool() {
                 </div>
               </div>
               <div className={css({ rounded: 'lg', bg: 'gray.800/50', p: '4' })}>
-                <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>
+                <div
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    mb: '1',
+                  })}
+                >
                   Old Content
                 </div>
-                <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'red.400' })}>
+                <div
+                  className={css({
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'red.400',
+                  })}
+                >
                   {stats.oldLines} lines
                 </div>
               </div>
               <div className={css({ rounded: 'lg', bg: 'gray.800/50', p: '4' })}>
-                <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>
+                <div
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    mb: '1',
+                  })}
+                >
                   New Content
                 </div>
-                <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.400' })}>
+                <div
+                  className={css({
+                    fontSize: '2xl',
+                    fontWeight: 'bold',
+                    color: 'green.400',
+                  })}
+                >
                   {stats.newLines} lines
                 </div>
               </div>

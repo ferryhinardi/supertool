@@ -546,16 +546,40 @@ export default function DailyNotePage() {
 
         {/* Stats */}
         <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-          <Badge variant="outline" className="gap-1.5 border-green-500/30 text-green-400">
-            <FileText className="h-3 w-3" />
+          <Badge
+            variant="outline"
+            className={css({
+              gap: '1.5',
+              border: '1px solid',
+              borderColor: 'green.500/30',
+              color: 'green.400',
+            })}
+          >
+            <FileText className={css({ h: '3', w: '3' })} />
             {stats.totalNotes} notes
           </Badge>
-          <Badge variant="outline" className="gap-1.5 border-blue-500/30 text-blue-400">
-            <Calendar className="h-3 w-3" />
+          <Badge
+            variant="outline"
+            className={css({
+              gap: '1.5',
+              border: '1px solid',
+              borderColor: 'blue.500/30',
+              color: 'blue.400',
+            })}
+          >
+            <Calendar className={css({ h: '3', w: '3' })} />
             {stats.currentMonthNotes} this month
           </Badge>
           {stats.avgWordCount > 0 && (
-            <Badge variant="outline" className="gap-1.5 border-purple-500/30 text-purple-400">
+            <Badge
+              variant="outline"
+              className={css({
+                gap: '1.5',
+                border: '1px solid',
+                borderColor: 'purple.500/30',
+                color: 'purple.400',
+              })}
+            >
               ~{stats.avgWordCount} words avg
             </Badge>
           )}
@@ -589,7 +613,7 @@ export default function DailyNotePage() {
                   {formatDisplayDate(selectedDate)}
                 </h2>
                 <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
-                  <Clock className="inline h-3 w-3 mr-1" />
+                  <Clock className={css({ display: 'inline', h: '3', w: '3', mr: '1' })} />
                   {formatTime()}
                 </p>
               </div>
@@ -600,16 +624,16 @@ export default function DailyNotePage() {
                 variant="outline"
                 size="sm"
                 onClick={() => handleDateChange('prev')}
-                className="gap-2"
+                className={css({ gap: '2' })}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className={css({ h: '4', w: '4' })} />
                 Previous
               </Button>
               <Button
                 variant="default"
                 size="sm"
                 onClick={() => handleDateChange('today')}
-                className="gap-2"
+                className={css({ gap: '2' })}
               >
                 Today
               </Button>
@@ -617,10 +641,10 @@ export default function DailyNotePage() {
                 variant="outline"
                 size="sm"
                 onClick={() => handleDateChange('next')}
-                className="gap-2"
+                className={css({ gap: '2' })}
               >
                 Next
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className={css({ h: '4', w: '4' })} />
               </Button>
             </div>
           </div>
@@ -726,9 +750,9 @@ export default function DailyNotePage() {
                     variant="outline"
                     size="sm"
                     onClick={() => setShowTemplateCreator(true)}
-                    className="w-full gap-2 mt-4"
+                    className={css({ w: 'full', gap: '2', mt: '4' })}
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className={css({ h: '4', w: '4' })} />
                     Create Custom Template
                   </Button>
                 )}
@@ -739,14 +763,18 @@ export default function DailyNotePage() {
                       placeholder="Template name..."
                       value={newTemplateName}
                       onChange={(e) => setNewTemplateName(e.target.value)}
-                      className="bg-gray-950 border-gray-700"
+                      className={css({
+                        bg: 'gray.950',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                      })}
                     />
                     <div className={css({ display: 'flex', gap: '2' })}>
                       <Button
                         variant="default"
                         size="sm"
                         onClick={handleCreateCustomTemplate}
-                        className="flex-1"
+                        className={css({ flex: '1' })}
                       >
                         Save
                       </Button>
@@ -757,7 +785,7 @@ export default function DailyNotePage() {
                           setShowTemplateCreator(false)
                           setNewTemplateName('')
                         }}
-                        className="flex-1"
+                        className={css({ flex: '1' })}
                       >
                         Cancel
                       </Button>
@@ -847,16 +875,31 @@ export default function DailyNotePage() {
         <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
           {/* Action Buttons */}
           <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-            <Button variant="default" size="sm" onClick={handleSaveNote} className="gap-2">
-              <Save className="h-4 w-4" />
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleSaveNote}
+              className={css({ gap: '2' })}
+            >
+              <Save className={css({ h: '4', w: '4' })} />
               Save Note
             </Button>
-            <Button variant="outline" size="sm" onClick={handleCopyToClipboard} className="gap-2">
-              <Copy className="h-4 w-4" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCopyToClipboard}
+              className={css({ gap: '2' })}
+            >
+              <Copy className={css({ h: '4', w: '4' })} />
               Copy
             </Button>
-            <Button variant="outline" size="sm" onClick={handleDownloadMarkdown} className="gap-2">
-              <Download className="h-4 w-4" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadMarkdown}
+              className={css({ gap: '2' })}
+            >
+              <Download className={css({ h: '4', w: '4' })} />
               Download .md
             </Button>
           </div>
@@ -888,7 +931,16 @@ export default function DailyNotePage() {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Start writing your note here..."
-                  className="min-h-[600px] resize-none border-gray-700 bg-gray-950 font-mono text-gray-100 focus:ring-green-500"
+                  className={css({
+                    minH: '[600px]',
+                    resize: 'none',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    bg: 'gray.950',
+                    fontFamily: 'mono',
+                    color: 'gray.100',
+                    _focus: { ring: '2px', ringColor: 'green.500' },
+                  })}
                 />
                 <div
                   className={css({

@@ -347,16 +347,54 @@ export default function CSVExcelConverterPage() {
             className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
           >
             <div
-              className="animate-pulse rounded-xl bg-gradient-to-br from-green-600 via-teal-600 to-emerald-700 p-2.5 shadow-2xl shadow-green-500/60 sm:rounded-2xl sm:p-4"
-              style={{ animationDuration: '2s' }}
+              className={css({
+                animation: 'pulse',
+                animationDuration: '2s',
+                rounded: { base: 'xl', sm: '2xl' },
+                bgGradient: 'to-br',
+                gradientFrom: 'green.600',
+                gradientVia: 'teal.600',
+                gradientTo: 'emerald.700',
+                p: { base: '2.5', sm: '4' },
+                shadow: '2xl',
+                boxShadow: '0 25px 50px -12px rgba(16, 185, 129, 0.6)',
+              })}
             >
-              <FileSpreadsheet className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+              <FileSpreadsheet
+                className={css({
+                  h: { base: '6', sm: '8' },
+                  w: { base: '6', sm: '8' },
+                  color: 'white',
+                })}
+              />
             </div>
             <div>
-              <h1 className="bg-gradient-to-r from-green-300 via-teal-400 to-emerald-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
+              <h1
+                className={css({
+                  bgGradient: 'to-r',
+                  gradientFrom: 'green.300',
+                  gradientVia: 'teal.400',
+                  gradientTo: 'emerald.300',
+                  bgClip: 'text',
+                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
+                  fontWeight: 'extrabold',
+                  color: 'transparent',
+                  filter:
+                    'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
+                })}
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 CSV ↔ Excel Converter
               </h1>
-              <p className="text-sm text-gray-200 sm:text-base md:text-lg">
+              <p
+                className={css({
+                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
+                  color: 'gray.200',
+                })}
+              >
                 Convert between CSV and Excel formats instantly in your browser
               </p>
             </div>
@@ -480,8 +518,8 @@ export default function CSVExcelConverterPage() {
             >
               {error ? (
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <AlertCircle className="h-5 w-5 text-red-400" />
-                  <span className="text-sm text-red-300">{error}</span>
+                  <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
+                  <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
                 </div>
               ) : result ? (
                 <>
@@ -496,21 +534,42 @@ export default function CSVExcelConverterPage() {
                     <Badge
                       variant="outline"
                       size="sm"
-                      className="border-green-500/50 bg-green-500/10 px-2.5 py-1.5 text-xs text-green-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                      className={css({
+                        borderColor: 'green.500/50',
+                        bg: 'green.500/10',
+                        px: { base: '2.5', sm: '3', md: '4' },
+                        py: { base: '1.5', sm: '1.5', md: '2' },
+                        fontSize: { base: 'xs', sm: 'sm' },
+                        color: 'green.200',
+                      })}
                     >
                       📄 {result.sheets.length} sheet{result.sheets.length > 1 ? 's' : ''}
                     </Badge>
                     <Badge
                       variant="outline"
                       size="sm"
-                      className="border-teal-500/50 bg-teal-500/10 px-2.5 py-1.5 text-xs text-teal-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                      className={css({
+                        borderColor: 'teal.500/50',
+                        bg: 'teal.500/10',
+                        px: { base: '2.5', sm: '3', md: '4' },
+                        py: { base: '1.5', sm: '1.5', md: '2' },
+                        fontSize: { base: 'xs', sm: 'sm' },
+                        color: 'teal.200',
+                      })}
                     >
                       📊 {result.sheets.reduce((sum, s) => sum + s.rowCount, 0)} total rows
                     </Badge>
                     <Badge
                       variant="outline"
                       size="sm"
-                      className="border-emerald-500/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs text-emerald-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                      className={css({
+                        borderColor: 'emerald.500/50',
+                        bg: 'emerald.500/10',
+                        px: { base: '2.5', sm: '3', md: '4' },
+                        py: { base: '1.5', sm: '1.5', md: '2' },
+                        fontSize: { base: 'xs', sm: 'sm' },
+                        color: 'emerald.200',
+                      })}
                     >
                       💾 {Math.round(result.fileInfo.size / 1024)} KB
                     </Badge>
@@ -519,7 +578,19 @@ export default function CSVExcelConverterPage() {
                   <Badge
                     variant="success"
                     size="sm"
-                    className="animate-pulse bg-gradient-to-r from-green-500 to-emerald-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg shadow-green-500/50 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                    className={css({
+                      animation: 'pulse',
+                      bgGradient: 'to-r',
+                      gradientFrom: 'green.500',
+                      gradientTo: 'emerald.600',
+                      px: { base: '2.5', sm: '3', md: '4' },
+                      py: { base: '1.5', sm: '1.5', md: '2' },
+                      fontSize: { base: 'xs', sm: 'sm' },
+                      fontWeight: 'semibold',
+                      color: 'white',
+                      shadow: 'lg',
+                      boxShadow: '0 10px 15px -3px rgba(16, 185, 129, 0.5)',
+                    })}
                   >
                     ✅ Converted
                   </Badge>
@@ -643,7 +714,9 @@ export default function CSVExcelConverterPage() {
                       fontSize: { base: 'sm', sm: 'base' },
                     })}
                   >
-                    <Download className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <Download
+                      className={css({ h: { base: '4', sm: '5' }, w: { base: '4', sm: '5' } })}
+                    />
                     Download{' '}
                     {result.sheets.length > 1
                       ? `${sheet.name}`
@@ -671,7 +744,9 @@ export default function CSVExcelConverterPage() {
                     fontSize: { base: 'sm', sm: 'base' },
                   })}
                 >
-                  <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <RefreshCw
+                    className={css({ h: { base: '4', sm: '5' }, w: { base: '4', sm: '5' } })}
+                  />
                   Convert Another File
                 </Button>
               </TooltipTrigger>
@@ -786,21 +861,23 @@ export default function CSVExcelConverterPage() {
           </CardHeader>
           <CardContent>
             <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
-              <li className="text-sm sm:text-base">
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
                 Select conversion mode (CSV to Excel or Excel to CSV)
               </li>
-              <li className="text-sm sm:text-base">Drag and drop your file or click to browse</li>
-              <li className="text-sm sm:text-base">
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Drag and drop your file or click to browse
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
                 Preview the converted data in the table below
               </li>
-              <li className="text-sm sm:text-base">
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
                 Download the converted file - multiple sheets are supported for Excel files
               </li>
-              <li className="text-sm sm:text-base">
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
                 All processing happens locally in your browser - files are never uploaded to a
                 server
               </li>
-              <li className="text-sm sm:text-base">
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
                 Supports files up to 50MB with proper handling of special characters and formatting
               </li>
             </ul>

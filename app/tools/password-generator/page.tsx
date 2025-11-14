@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import {
   AlertTriangle,
   Clock,
@@ -297,7 +298,12 @@ function PasswordGeneratorContent() {
       })}
     >
       {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.0 }}
+        className={css({ textAlign: 'center', spaceY: '4' })}
+      >
         <div
           className={css({
             display: 'inline-flex',
@@ -353,374 +359,455 @@ function PasswordGeneratorContent() {
           Generate cryptographically secure passwords with advanced strength analysis, pattern-based
           generation, breach checking, and password history management.
         </p>
-      </div>
+      </motion.div>
 
-      {/* How to Use Section */}
-      <Card
-        className={css({
-          border: '1px solid',
-          borderColor: 'blue.500/20',
-          bg: 'gray.900/50',
-          backdropFilter: 'blur(16px)',
-          w: 'full',
-        })}
+      {/* Pro Tips Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <CardContent className={css({ py: '6' })}>
-          <div className={css({ spaceY: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-              <Lightbulb className={css({ h: '6', w: '6', color: 'blue.400' })} />
-              <h2
-                className={css({
-                  fontSize: { base: 'xl', md: '2xl' },
-                  fontWeight: 'bold',
-                  color: 'white',
-                })}
-              >
-                How to Use the Password Generator
-              </h2>
-            </div>
-
-            <div
-              className={css({
-                display: 'grid',
-                gap: '4',
-                gridTemplateColumns: { base: '1fr', md: 'repeat(3, 1fr)' },
-              })}
-            >
-              <div className={css({ spaceY: '3' })}>
-                <div
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'cyan.500/20',
+            bg: 'cyan.500/5',
+            backdropFilter: 'blur(16px)',
+            w: 'full',
+          })}
+        >
+          <CardContent className={css({ py: '6' })}>
+            <div className={css({ spaceY: '4' })}>
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400' })} />
+                <h2
                   className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'blue.500/20',
-                    border: '2px solid',
-                    borderColor: 'blue.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}>
-                    1
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Choose Generation Mode
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
-                  Select from Random (traditional), Diceware (word-based), Pronounceable (easy to
-                  say), or Template (pre-configured for specific use cases like banking or WiFi).
-                  Each mode offers different security and memorability tradeoffs.
-                </p>
-              </div>
-
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'blue.500/20',
-                    border: '2px solid',
-                    borderColor: 'blue.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}>
-                    2
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Customize Settings
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
-                  Adjust password length (8-64 characters), select character types (uppercase,
-                  lowercase, numbers, symbols), or configure mode-specific options like word count
-                  for Diceware or template selection for specific platforms.
-                </p>
-              </div>
-
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'blue.500/20',
-                    border: '2px solid',
-                    borderColor: 'blue.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}>
-                    3
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Generate & Verify
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
-                  Click "Generate Password" to create your secure password. Check the strength meter
-                  showing entropy and crack time. Use "Check if Pwned" to verify it hasn't been
-                  exposed in data breaches. Copy or save to history for later use.
-                </p>
-              </div>
-            </div>
-
-            {/* Pro Features */}
-            <div
-              className={css({
-                mt: '6',
-                pt: '6',
-                borderTop: '1px solid',
-                borderColor: 'gray.700',
-                spaceY: '4',
-              })}
-            >
-              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <Sparkles className={css({ h: '5', w: '5', color: 'purple.400' })} />
-                <h3
-                  className={css({
-                    fontSize: 'lg',
-                    fontWeight: 'semibold',
+                    fontSize: { base: 'xl', md: '2xl' },
+                    fontWeight: 'bold',
                     color: 'white',
                   })}
                 >
-                  Pro Features
-                </h3>
+                  Pro Tips
+                </h2>
               </div>
+              <ul className={css({ spaceY: '3', pl: '4', fontSize: 'sm', color: 'gray.300' })}>
+                <li>
+                  • <strong className={css({ color: 'white' })}>Cryptographic Security:</strong> All
+                  passwords use Web Crypto API's crypto.getRandomValues() for cryptographically
+                  secure random number generation - no predictable patterns.
+                </li>
+                <li>
+                  • <strong className={css({ color: 'white' })}>Multiple Generation Modes:</strong>{' '}
+                  Choose from Random (traditional), Diceware (word-based passphrases), Pronounceable
+                  (easy to type), or Template (optimized for specific use cases like banking or
+                  WiFi).
+                </li>
+                <li>
+                  • <strong className={css({ color: 'white' })}>HIBP Breach Checking:</strong>{' '}
+                  Verify your password hasn't been exposed in data breaches using Have I Been Pwned
+                  with k-anonymity (only first 5 hash characters sent).
+                </li>
+                <li>
+                  • <strong className={css({ color: 'white' })}>Bulk Generation:</strong> Generate
+                  up to 100 unique passwords at once with CSV export - perfect for provisioning
+                  multiple accounts or API keys.
+                </li>
+                <li>
+                  • <strong className={css({ color: 'white' })}>Browser-Only Processing:</strong>{' '}
+                  All generation and analysis happens locally in your browser - passwords are never
+                  transmitted to any server for maximum privacy.
+                </li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* How to Use Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'blue.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+            w: 'full',
+          })}
+        >
+          <CardContent className={css({ py: '6' })}>
+            <div className={css({ spaceY: '6' })}>
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                <Lightbulb className={css({ h: '6', w: '6', color: 'blue.400' })} />
+                <h2
+                  className={css({
+                    fontSize: { base: 'xl', md: '2xl' },
+                    fontWeight: 'bold',
+                    color: 'white',
+                  })}
+                >
+                  How to Use the Password Generator
+                </h2>
+              </div>
+
+              <div
+                className={css({
+                  display: 'grid',
+                  gap: '4',
+                  gridTemplateColumns: { base: '1fr', md: 'repeat(3, 1fr)' },
+                })}
+              >
+                <div className={css({ spaceY: '3' })}>
+                  <div
+                    className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      w: '10',
+                      h: '10',
+                      rounded: 'full',
+                      bg: 'blue.500/20',
+                      border: '2px solid',
+                      borderColor: 'blue.500',
+                    })}
+                  >
+                    <span
+                      className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}
+                    >
+                      1
+                    </span>
+                  </div>
+                  <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
+                    Choose Generation Mode
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                    Select from Random (traditional), Diceware (word-based), Pronounceable (easy to
+                    say), or Template (pre-configured for specific use cases like banking or WiFi).
+                    Each mode offers different security and memorability tradeoffs.
+                  </p>
+                </div>
+
+                <div className={css({ spaceY: '3' })}>
+                  <div
+                    className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      w: '10',
+                      h: '10',
+                      rounded: 'full',
+                      bg: 'blue.500/20',
+                      border: '2px solid',
+                      borderColor: 'blue.500',
+                    })}
+                  >
+                    <span
+                      className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}
+                    >
+                      2
+                    </span>
+                  </div>
+                  <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
+                    Customize Settings
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                    Adjust password length (8-64 characters), select character types (uppercase,
+                    lowercase, numbers, symbols), or configure mode-specific options like word count
+                    for Diceware or template selection for specific platforms.
+                  </p>
+                </div>
+
+                <div className={css({ spaceY: '3' })}>
+                  <div
+                    className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      w: '10',
+                      h: '10',
+                      rounded: 'full',
+                      bg: 'blue.500/20',
+                      border: '2px solid',
+                      borderColor: 'blue.500',
+                    })}
+                  >
+                    <span
+                      className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}
+                    >
+                      3
+                    </span>
+                  </div>
+                  <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
+                    Generate & Verify
+                  </h3>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                    Click "Generate Password" to create your secure password. Check the strength
+                    meter showing entropy and crack time. Use "Check if Pwned" to verify it hasn't
+                    been exposed in data breaches. Copy or save to history for later use.
+                  </p>
+                </div>
+              </div>
+
+              {/* Pro Features */}
+              <div
+                className={css({
+                  mt: '6',
+                  pt: '6',
+                  borderTop: '1px solid',
+                  borderColor: 'gray.700',
+                  spaceY: '4',
+                })}
+              >
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Sparkles className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                  <h3
+                    className={css({
+                      fontSize: 'lg',
+                      fontWeight: 'semibold',
+                      color: 'white',
+                    })}
+                  >
+                    Pro Features
+                  </h3>
+                </div>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gap: '3',
+                    gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+                  })}
+                >
+                  <div className={css({ display: 'flex', gap: '3' })}>
+                    <div
+                      className={css({
+                        flexShrink: '0',
+                        w: '2',
+                        h: '2',
+                        mt: '2',
+                        rounded: 'full',
+                        bg: 'purple.400',
+                      })}
+                    />
+                    <div>
+                      <span className={css({ fontWeight: 'semibold', color: 'white' })}>
+                        Diceware Passphrases:
+                      </span>
+                      <span className={css({ color: 'gray.400' })}>
+                        {' '}
+                        Generate memorable word-based passwords with 77+ bits of entropy
+                      </span>
+                    </div>
+                  </div>
+                  <div className={css({ display: 'flex', gap: '3' })}>
+                    <div
+                      className={css({
+                        flexShrink: '0',
+                        w: '2',
+                        h: '2',
+                        mt: '2',
+                        rounded: 'full',
+                        bg: 'purple.400',
+                      })}
+                    />
+                    <div>
+                      <span className={css({ fontWeight: 'semibold', color: 'white' })}>
+                        Bulk Generation:
+                      </span>
+                      <span className={css({ color: 'gray.400' })}>
+                        {' '}
+                        Create up to 100 unique passwords at once with CSV export
+                      </span>
+                    </div>
+                  </div>
+                  <div className={css({ display: 'flex', gap: '3' })}>
+                    <div
+                      className={css({
+                        flexShrink: '0',
+                        w: '2',
+                        h: '2',
+                        mt: '2',
+                        rounded: 'full',
+                        bg: 'purple.400',
+                      })}
+                    />
+                    <div>
+                      <span className={css({ fontWeight: 'semibold', color: 'white' })}>
+                        Password Templates:
+                      </span>
+                      <span className={css({ color: 'gray.400' })}>
+                        {' '}
+                        Pre-configured patterns for banking, email, WiFi, and more
+                      </span>
+                    </div>
+                  </div>
+                  <div className={css({ display: 'flex', gap: '3' })}>
+                    <div
+                      className={css({
+                        flexShrink: '0',
+                        w: '2',
+                        h: '2',
+                        mt: '2',
+                        rounded: 'full',
+                        bg: 'purple.400',
+                      })}
+                    />
+                    <div>
+                      <span className={css({ fontWeight: 'semibold', color: 'white' })}>
+                        HIBP Breach Check:
+                      </span>
+                      <span className={css({ color: 'gray.400' })}>
+                        {' '}
+                        Verify passwords against billions of leaked credentials
+                      </span>
+                    </div>
+                  </div>
+                  <div className={css({ display: 'flex', gap: '3' })}>
+                    <div
+                      className={css({
+                        flexShrink: '0',
+                        w: '2',
+                        h: '2',
+                        mt: '2',
+                        rounded: 'full',
+                        bg: 'purple.400',
+                      })}
+                    />
+                    <div>
+                      <span className={css({ fontWeight: 'semibold', color: 'white' })}>
+                        Password History:
+                      </span>
+                      <span className={css({ color: 'gray.400' })}>
+                        {' '}
+                        Local storage with favorites, strength metrics, and export
+                      </span>
+                    </div>
+                  </div>
+                  <div className={css({ display: 'flex', gap: '3' })}>
+                    <div
+                      className={css({
+                        flexShrink: '0',
+                        w: '2',
+                        h: '2',
+                        mt: '2',
+                        rounded: 'full',
+                        bg: 'purple.400',
+                      })}
+                    />
+                    <div>
+                      <span className={css({ fontWeight: 'semibold', color: 'white' })}>
+                        Strength Analysis:
+                      </span>
+                      <span className={css({ color: 'gray.400' })}>
+                        {' '}
+                        Real-time entropy calculation and crack time estimation
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Generation Mode Selector */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <Card
+          className={css({
+            border: '1px solid',
+            borderColor: 'purple.500/20',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+            w: 'full',
+          })}
+        >
+          <CardContent className={css({ py: '6' })}>
+            <div className={css({ spaceY: '4' })}>
+              <FieldLabel>Generation Mode</FieldLabel>
               <div
                 className={css({
                   display: 'grid',
                   gap: '3',
-                  gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
                 })}
               >
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <div
+                {[
+                  { id: 'random' as const, label: 'Random', icon: Key, desc: 'Traditional random' },
+                  {
+                    id: 'diceware' as const,
+                    label: 'Diceware',
+                    icon: Sparkles,
+                    desc: 'Word-based',
+                  },
+                  {
+                    id: 'pronounceable' as const,
+                    label: 'Pronounceable',
+                    icon: Zap,
+                    desc: 'Easy to say',
+                  },
+                  {
+                    id: 'template' as const,
+                    label: 'Template',
+                    icon: Shield,
+                    desc: 'Pre-defined',
+                  },
+                ].map(({ id, label, icon: Icon, desc }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setMode(id)}
                     className={css({
-                      flexShrink: '0',
-                      w: '2',
-                      h: '2',
-                      mt: '2',
-                      rounded: 'full',
-                      bg: 'purple.400',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '2',
+                      rounded: 'lg',
+                      border: '2px solid',
+                      borderColor: mode === id ? 'purple.500' : 'gray.700',
+                      bg: mode === id ? 'purple.500/20' : 'gray.900/30',
+                      p: '4',
+                      minH: '24',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      _hover: {
+                        borderColor: 'purple.500',
+                        bg: 'purple.500/15',
+                      },
                     })}
-                  />
-                  <div>
-                    <span className={css({ fontWeight: 'semibold', color: 'white' })}>
-                      Diceware Passphrases:
-                    </span>
-                    <span className={css({ color: 'gray.400' })}>
-                      {' '}
-                      Generate memorable word-based passwords with 77+ bits of entropy
-                    </span>
-                  </div>
-                </div>
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <div
-                    className={css({
-                      flexShrink: '0',
-                      w: '2',
-                      h: '2',
-                      mt: '2',
-                      rounded: 'full',
-                      bg: 'purple.400',
-                    })}
-                  />
-                  <div>
-                    <span className={css({ fontWeight: 'semibold', color: 'white' })}>
-                      Bulk Generation:
-                    </span>
-                    <span className={css({ color: 'gray.400' })}>
-                      {' '}
-                      Create up to 100 unique passwords at once with CSV export
-                    </span>
-                  </div>
-                </div>
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <div
-                    className={css({
-                      flexShrink: '0',
-                      w: '2',
-                      h: '2',
-                      mt: '2',
-                      rounded: 'full',
-                      bg: 'purple.400',
-                    })}
-                  />
-                  <div>
-                    <span className={css({ fontWeight: 'semibold', color: 'white' })}>
-                      Password Templates:
-                    </span>
-                    <span className={css({ color: 'gray.400' })}>
-                      {' '}
-                      Pre-configured patterns for banking, email, WiFi, and more
-                    </span>
-                  </div>
-                </div>
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <div
-                    className={css({
-                      flexShrink: '0',
-                      w: '2',
-                      h: '2',
-                      mt: '2',
-                      rounded: 'full',
-                      bg: 'purple.400',
-                    })}
-                  />
-                  <div>
-                    <span className={css({ fontWeight: 'semibold', color: 'white' })}>
-                      HIBP Breach Check:
-                    </span>
-                    <span className={css({ color: 'gray.400' })}>
-                      {' '}
-                      Verify passwords against billions of leaked credentials
-                    </span>
-                  </div>
-                </div>
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <div
-                    className={css({
-                      flexShrink: '0',
-                      w: '2',
-                      h: '2',
-                      mt: '2',
-                      rounded: 'full',
-                      bg: 'purple.400',
-                    })}
-                  />
-                  <div>
-                    <span className={css({ fontWeight: 'semibold', color: 'white' })}>
-                      Password History:
-                    </span>
-                    <span className={css({ color: 'gray.400' })}>
-                      {' '}
-                      Local storage with favorites, strength metrics, and export
-                    </span>
-                  </div>
-                </div>
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <div
-                    className={css({
-                      flexShrink: '0',
-                      w: '2',
-                      h: '2',
-                      mt: '2',
-                      rounded: 'full',
-                      bg: 'purple.400',
-                    })}
-                  />
-                  <div>
-                    <span className={css({ fontWeight: 'semibold', color: 'white' })}>
-                      Strength Analysis:
-                    </span>
-                    <span className={css({ color: 'gray.400' })}>
-                      {' '}
-                      Real-time entropy calculation and crack time estimation
-                    </span>
-                  </div>
-                </div>
+                  >
+                    <Icon
+                      className={css({
+                        h: '6',
+                        w: '6',
+                        color: mode === id ? 'purple.400' : 'gray.400',
+                      })}
+                    />
+                    <div className={css({ textAlign: 'center' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'semibold',
+                          color: 'white',
+                        })}
+                      >
+                        {label}
+                      </div>
+                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>{desc}</div>
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Generation Mode Selector */}
-      <Card
-        className={css({
-          border: '1px solid',
-          borderColor: 'purple.500/20',
-          bg: 'gray.900/50',
-          backdropFilter: 'blur(16px)',
-          w: 'full',
-        })}
-      >
-        <CardContent className={css({ py: '6' })}>
-          <div className={css({ spaceY: '4' })}>
-            <FieldLabel>Generation Mode</FieldLabel>
-            <div
-              className={css({
-                display: 'grid',
-                gap: '3',
-                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
-              })}
-            >
-              {[
-                { id: 'random' as const, label: 'Random', icon: Key, desc: 'Traditional random' },
-                {
-                  id: 'diceware' as const,
-                  label: 'Diceware',
-                  icon: Sparkles,
-                  desc: 'Word-based',
-                },
-                {
-                  id: 'pronounceable' as const,
-                  label: 'Pronounceable',
-                  icon: Zap,
-                  desc: 'Easy to say',
-                },
-                {
-                  id: 'template' as const,
-                  label: 'Template',
-                  icon: Shield,
-                  desc: 'Pre-defined',
-                },
-              ].map(({ id, label, icon: Icon, desc }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setMode(id)}
-                  className={css({
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '2',
-                    rounded: 'lg',
-                    border: '2px solid',
-                    borderColor: mode === id ? 'purple.500' : 'gray.700',
-                    bg: mode === id ? 'purple.500/20' : 'gray.900/30',
-                    p: '4',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    _hover: {
-                      borderColor: 'purple.500',
-                      bg: 'purple.500/15',
-                    },
-                  })}
-                >
-                  <Icon
-                    className={css({
-                      h: '6',
-                      w: '6',
-                      color: mode === id ? 'purple.400' : 'gray.400',
-                    })}
-                  />
-                  <div className={css({ textAlign: 'center' })}>
-                    <div
-                      className={css({
-                        fontSize: 'sm',
-                        fontWeight: 'semibold',
-                        color: 'white',
-                      })}
-                    >
-                      {label}
-                    </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>{desc}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       <div
         className={css({
@@ -782,11 +869,14 @@ function PasswordGeneratorContent() {
                   <Button
                     onClick={() => handleCopy(password)}
                     variant="ghost"
-                    size="sm"
+                    aria-label="Copy password to clipboard"
                     className={css({
                       position: 'absolute',
                       top: '2',
                       right: '2',
+                      minH: '11',
+                      minW: '11',
+                      p: '2',
                     })}
                   >
                     <Copy className={css({ h: '4', w: '4' })} />
@@ -924,8 +1014,11 @@ function PasswordGeneratorContent() {
                       onClick={handleCheckPwned}
                       disabled={checkingPwned}
                       variant="outline"
-                      size="sm"
-                      className={css({ w: 'full' })}
+                      className={css({
+                        w: 'full',
+                        minH: '11',
+                        py: { base: '3', sm: '3.5', md: '4' },
+                      })}
                     >
                       {checkingPwned ? (
                         <>
@@ -1299,8 +1392,11 @@ function PasswordGeneratorContent() {
                   <Button
                     onClick={() => setBulkPasswords([])}
                     variant="ghost"
-                    size="sm"
-                    className={css({ fontSize: 'xs' })}
+                    className={css({
+                      fontSize: 'xs',
+                      minH: '11',
+                      py: { base: '3', sm: '3.5', md: '4' },
+                    })}
                   >
                     Clear
                   </Button>
@@ -1340,7 +1436,15 @@ function PasswordGeneratorContent() {
                         >
                           {pwd}
                         </span>
-                        <Button onClick={() => handleCopy(pwd)} variant="ghost" size="sm">
+                        <Button
+                          onClick={() => handleCopy(pwd)}
+                          variant="ghost"
+                          className={css({
+                            minH: '11',
+                            minW: '11',
+                            p: '2',
+                          })}
+                        >
                           <Copy className={css({ h: '3', w: '3' })} />
                         </Button>
                       </div>
@@ -1381,16 +1485,37 @@ function PasswordGeneratorContent() {
             <div className={css({ display: 'flex', gap: '2' })}>
               {passwordHistory.length > 0 && (
                 <>
-                  <Button onClick={handleExportHistory} variant="outline" size="sm">
+                  <Button
+                    onClick={handleExportHistory}
+                    variant="outline"
+                    className={css({
+                      minH: '11',
+                      py: { base: '3', sm: '3.5', md: '4' },
+                    })}
+                  >
                     <Download className={css({ h: '4', w: '4' })} />
                     Export
                   </Button>
-                  <Button onClick={handleClearHistory} variant="outline" size="sm">
+                  <Button
+                    onClick={handleClearHistory}
+                    variant="outline"
+                    className={css({
+                      minH: '11',
+                      py: { base: '3', sm: '3.5', md: '4' },
+                    })}
+                  >
                     Clear All
                   </Button>
                 </>
               )}
-              <Button onClick={() => setShowHistory(!showHistory)} variant="ghost" size="sm">
+              <Button
+                onClick={() => setShowHistory(!showHistory)}
+                variant="ghost"
+                className={css({
+                  minH: '11',
+                  py: { base: '3', sm: '3.5', md: '4' },
+                })}
+              >
                 {showHistory ? 'Hide' : 'Show'}
               </Button>
             </div>
@@ -1419,6 +1544,11 @@ function PasswordGeneratorContent() {
                     onClick={() => handleFavorite(entry.password)}
                     className={css({
                       flexShrink: '0',
+                      minH: '11',
+                      minW: '11',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       color: entry.favorite ? 'yellow.400' : 'gray.600',
                       _hover: { color: 'yellow.400' },
                     })}
@@ -1459,13 +1589,25 @@ function PasswordGeneratorContent() {
                       <span>{new Date(entry.timestamp).toLocaleTimeString()}</span>
                     </div>
                   </div>
-                  <Button onClick={() => handleCopy(entry.password)} variant="ghost" size="sm">
+                  <Button
+                    onClick={() => handleCopy(entry.password)}
+                    variant="ghost"
+                    className={css({
+                      minH: '11',
+                      minW: '11',
+                      p: '2',
+                    })}
+                  >
                     <Copy className={css({ h: '4', w: '4' })} />
                   </Button>
                   <Button
                     onClick={() => handleDeleteHistory(entry.password)}
                     variant="ghost"
-                    size="sm"
+                    className={css({
+                      minH: '11',
+                      minW: '11',
+                      p: '2',
+                    })}
                   >
                     <Trash2 className={css({ h: '4', w: '4', color: 'red.400' })} />
                   </Button>

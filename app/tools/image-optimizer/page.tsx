@@ -795,7 +795,7 @@ export default function ImageOptimizerPage() {
                       accept="image/*"
                       maxSize={50 * 1024 * 1024}
                       multiple
-                      className="!py-8"
+                      className={css({ py: '8' })}
                     />
 
                     <div

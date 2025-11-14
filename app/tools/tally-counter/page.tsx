@@ -355,7 +355,7 @@ export default function TallyCounterPage() {
                     onClick={() => reset(counter.id)}
                     className={css({
                       flex: 1,
-                      minH: '10',
+                      minH: '11',
                       fontSize: { base: 'sm', sm: 'xs' },
                     })}
                     aria-label="Reset counter"

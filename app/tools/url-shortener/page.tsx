@@ -20,7 +20,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -275,7 +275,13 @@ export default function URLShortenerPage() {
           })}
         >
           <Sparkles className={css({ h: '4', w: '4', color: 'cyan.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'cyan.300' })}>
+          <span
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'semibold',
+              color: 'cyan.300',
+            })}
+          >
             Free URL Shortener
           </span>
         </div>
@@ -342,7 +348,13 @@ export default function URLShortenerPage() {
           >
             <div>
               <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Total URLs</p>
-              <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'cyan.400' })}>
+              <p
+                className={css({
+                  fontSize: '3xl',
+                  fontWeight: 'bold',
+                  color: 'cyan.400',
+                })}
+              >
                 {stats.total}
               </p>
             </div>
@@ -368,7 +380,13 @@ export default function URLShortenerPage() {
           >
             <div>
               <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Clicks</p>
-              <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'blue.400' })}>
+              <p
+                className={css({
+                  fontSize: '3xl',
+                  fontWeight: 'bold',
+                  color: 'blue.400',
+                })}
+              >
                 {stats.totalClicks}
               </p>
             </div>
@@ -394,7 +412,13 @@ export default function URLShortenerPage() {
           >
             <div>
               <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Avg. Clicks</p>
-              <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'purple.400' })}>
+              <p
+                className={css({
+                  fontSize: '3xl',
+                  fontWeight: 'bold',
+                  color: 'purple.400',
+                })}
+              >
                 {stats.avgClicks}
               </p>
             </div>
@@ -417,7 +441,11 @@ export default function URLShortenerPage() {
           <div className={css({ spaceY: '2' })}>
             <label
               htmlFor="url-input"
-              className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'medium',
+                color: 'gray.200',
+              })}
             >
               Enter URL to shorten
             </label>
@@ -493,7 +521,11 @@ export default function URLShortenerPage() {
           <div className={css({ spaceY: '2' })}>
             <label
               htmlFor="custom-alias"
-              className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'medium',
+                color: 'gray.200',
+              })}
             >
               Custom alias <span className={css({ color: 'gray.500' })}>(optional)</span>
             </label>
@@ -541,7 +573,13 @@ export default function URLShortenerPage() {
                 justifyContent: 'space-between',
               })}
             >
-              <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
+              <h3
+                className={css({
+                  fontSize: 'lg',
+                  fontWeight: 'semibold',
+                  color: 'cyan.300',
+                })}
+              >
                 Your Shortened URL
               </h3>
               <Badge className={css({ bg: 'green.500/20', color: 'green.300' })}>Active</Badge>
@@ -549,7 +587,13 @@ export default function URLShortenerPage() {
 
             <div className={css({ spaceY: '3' })}>
               <div>
-                <div className={css({ fontSize: 'xs', fontWeight: 'medium', color: 'gray.400' })}>
+                <div
+                  className={css({
+                    fontSize: 'xs',
+                    fontWeight: 'medium',
+                    color: 'gray.400',
+                  })}
+                >
                   Short URL
                 </div>
                 <div
@@ -586,10 +630,12 @@ export default function URLShortenerPage() {
                     {selectedUrl.shortUrl}
                   </a>
                   <Button
-                    size="sm"
                     variant="ghost"
                     onClick={() => handleCopy(selectedUrl.shortUrl, 'Short URL')}
+                    aria-label="Copy short URL to clipboard"
                     className={css({
+                      minH: '11',
+                      minW: '11',
                       _hover: {
                         bg: 'cyan.500/20',
                       },
@@ -598,12 +644,14 @@ export default function URLShortenerPage() {
                     <Copy className={css({ h: '4', w: '4' })} />
                   </Button>
                   <Button
-                    size="sm"
                     variant="ghost"
                     onClick={() =>
                       setShowQR(showQR === selectedUrl.shortCode ? null : selectedUrl.shortCode)
                     }
+                    aria-label="Show QR code"
                     className={css({
+                      minH: '11',
+                      minW: '11',
                       _hover: {
                         bg: 'cyan.500/20',
                       },
@@ -615,7 +663,13 @@ export default function URLShortenerPage() {
               </div>
 
               <div>
-                <div className={css({ fontSize: 'xs', fontWeight: 'medium', color: 'gray.400' })}>
+                <div
+                  className={css({
+                    fontSize: 'xs',
+                    fontWeight: 'medium',
+                    color: 'gray.400',
+                  })}
+                >
                   Original URL
                 </div>
                 <div
@@ -718,7 +772,13 @@ export default function URLShortenerPage() {
               justifyContent: 'space-between',
             })}
           >
-            <h2 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.200' })}>
+            <h2
+              className={css({
+                fontSize: '2xl',
+                fontWeight: 'bold',
+                color: 'gray.200',
+              })}
+            >
               Your Shortened URLs
             </h2>
             <Badge variant="secondary" className={css({ bg: 'cyan.500/20', color: 'cyan.300' })}>
@@ -753,7 +813,13 @@ export default function URLShortenerPage() {
                   })}
                 >
                   <div className={css({ flex: '1', spaceY: '2' })}>
-                    <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                      })}
+                    >
                       <a
                         href={item.shortUrl}
                         target="_blank"
@@ -771,13 +837,15 @@ export default function URLShortenerPage() {
                         {item.shortUrl}
                       </a>
                       <Button
-                        size="sm"
                         variant="ghost"
                         onClick={() => handleCopy(item.shortUrl, 'Short URL')}
+                        aria-label="Copy short URL"
                         className={css({
-                          h: '8',
-                          w: '8',
+                          h: '11',
+                          w: '11',
                           p: '0',
+                          minH: '11',
+                          minW: '11',
                           _hover: {
                             bg: 'cyan.500/20',
                           },
@@ -806,24 +874,43 @@ export default function URLShortenerPage() {
                         color: 'gray.500',
                       })}
                     >
-                      <span className={css({ display: 'flex', alignItems: 'center', gap: '1' })}>
+                      <span
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1',
+                        })}
+                      >
                         <Calendar className={css({ h: '3', w: '3' })} />
                         {new Date(item.createdAt).toLocaleDateString()}
                       </span>
-                      <span className={css({ display: 'flex', alignItems: 'center', gap: '1' })}>
+                      <span
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1',
+                        })}
+                      >
                         <TrendingUp className={css({ h: '3', w: '3' })} />
                         {item.totalClicks} clicks
                       </span>
                     </div>
                   </div>
 
-                  <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2',
+                    })}
+                  >
                     <Button
-                      size="sm"
                       variant="outline"
                       onClick={() => setSelectedUrl(item)}
+                      aria-label="Show QR code"
                       className={css({
                         gap: '2',
+                        minH: '11',
                         border: '1px solid',
                         borderColor: 'cyan.500/30',
                         _hover: {
@@ -835,10 +922,11 @@ export default function URLShortenerPage() {
                       QR Code
                     </Button>
                     <Button
-                      size="sm"
                       variant="outline"
                       onClick={() => handleDelete(item.shortCode)}
+                      aria-label="Delete shortened URL"
                       className={css({
+                        minH: '11',
                         gap: '2',
                         border: '1px solid',
                         borderColor: 'red.500/30',
@@ -869,9 +957,22 @@ export default function URLShortenerPage() {
         })}
       >
         <div className={css({ display: 'flex', gap: '3' })}>
-          <CheckCircle2 className={css({ h: '5', w: '5', flexShrink: '0', color: 'green.400' })} />
+          <CheckCircle2
+            className={css({
+              h: '5',
+              w: '5',
+              flexShrink: '0',
+              color: 'green.400',
+            })}
+          />
           <div className={css({ spaceY: '1' })}>
-            <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'green.300' })}>
+            <p
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'medium',
+                color: 'green.300',
+              })}
+            >
               Cloud Storage Enabled
             </p>
             <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
@@ -883,12 +984,126 @@ export default function URLShortenerPage() {
         </div>
       </Card>
 
+      {/* Pro Tips Section */}
+      <Card
+        className={css({
+          border: '2px solid',
+          borderColor: 'cyan.500/20',
+          bg: 'rgba(6, 182, 212, 0.05)',
+          backdropFilter: 'blur(16px)',
+        })}
+      >
+        <CardHeader>
+          <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+            <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
+            Pro Tips
+          </CardTitle>
+          <CardDescription>
+            Expert strategies for creating effective short links that drive results
+          </CardDescription>
+        </CardHeader>
+        <CardContent className={css({ spaceY: '3' })}>
+          <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>
+                  Custom Aliases for Brand Recognition:
+                </strong>{' '}
+                Use memorable, descriptive aliases that match your campaign (e.g.,
+                "spring-promo-2025" instead of random codes). Keep it short (8-15 characters), use
+                hyphens for readability, and include relevant keywords for better recall and
+                click-through rates.
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>
+                  Track and Analyze Performance:
+                </strong>{' '}
+                Monitor your link analytics to understand audience behavior. Track click patterns,
+                geographic distribution, device types, and traffic sources. Use this data to
+                optimize timing, targeting, and content for future campaigns.
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>
+                  QR Codes for Physical Marketing:
+                </strong>{' '}
+                Generate QR codes for print materials, product packaging, business cards, and event
+                signage. Test scannability at actual size, ensure adequate contrast, and position
+                codes at eye level. Include a shortened URL underneath as a fallback.
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>
+                  Link Management Best Practices:
+                </strong>{' '}
+                Organize links by campaign or category in the history dashboard. Delete expired
+                promotional links to keep your workspace clean. Review analytics regularly to
+                identify top-performing content and distribution channels.
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>Social Media Optimization:</strong>{' '}
+                Short links save character count on Twitter, look cleaner on Instagram, and improve
+                click-through rates across all platforms. Test links before posting, use link
+                preview cards when available, and track which platforms drive the most engagement.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* How to Use Section */}
       <Card
         className={css({
-          border: '1px solid',
-          borderColor: 'blue.500/20',
-          bg: 'blue.900/10',
+          border: '2px solid',
+          borderColor: 'blue.500/30',
+          bg: 'rgba(59, 130, 246, 0.05)',
+          backdropFilter: 'blur(16px)',
           overflow: 'hidden',
         })}
       >
@@ -902,125 +1117,208 @@ export default function URLShortenerPage() {
               fontWeight: 'bold',
             })}
           >
-            <Lightbulb className={css({ h: '5', w: '5', color: 'blue.400' })} />
+            <Lightbulb className={css({ h: '6', w: '6', color: 'blue.400' })} />
             How to Use URL Shortener
           </CardTitle>
+          <CardDescription>
+            Follow these simple steps to create and share your short links
+          </CardDescription>
         </CardHeader>
-        <CardContent className={css({ spaceY: '4' })}>
-          <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-            <Badge
-              className={css({
-                flexShrink: '0',
-                minW: '6',
-                h: '6',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                rounded: 'full',
-                bg: 'blue.500',
-                color: 'white',
-                fontSize: 'sm',
-                fontWeight: 'bold',
-              })}
-            >
-              1
-            </Badge>
-            <div className={css({ flex: '1' })}>
-              <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
-                Enter Your Long URL
-              </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
-                Paste the long URL you want to shorten into the input field. The tool validates the
-                URL format automatically and shows a green checkmark when ready.
-              </p>
+        <CardContent>
+          <div
+            className={css({
+              display: 'grid',
+              gridTemplateColumns: { base: '1fr', md: '1fr 1fr' },
+              gap: { base: '4', md: '6' },
+            })}
+          >
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'purple.500/10',
+                  borderColor: 'purple.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'purple.300',
+                  flexShrink: 0,
+                })}
+              >
+                1
+              </Badge>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
+                  Enter Your Long URL
+                </h3>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
+                  Paste the long URL you want to shorten into the input field. The tool validates
+                  the URL format automatically and shows a green checkmark when ready.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-            <Badge
-              className={css({
-                flexShrink: '0',
-                minW: '6',
-                h: '6',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                rounded: 'full',
-                bg: 'blue.500',
-                color: 'white',
-                fontSize: 'sm',
-                fontWeight: 'bold',
-              })}
-            >
-              2
-            </Badge>
-            <div className={css({ flex: '1' })}>
-              <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
-                Customize Your Link (Optional)
-              </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
-                Add a custom alias for branded, memorable links (e.g., "summer-sale-2025"). Leave
-                blank for auto-generated short codes. Use only lowercase, numbers, and hyphens.
-              </p>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'pink.500/10',
+                  borderColor: 'pink.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'pink.300',
+                  flexShrink: 0,
+                })}
+              >
+                2
+              </Badge>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
+                  Customize Your Link (Optional)
+                </h3>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
+                  Add a custom alias for branded, memorable links (e.g., "summer-sale-2025"). Leave
+                  blank for auto-generated short codes. Use only lowercase, numbers, and hyphens.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-            <Badge
-              className={css({
-                flexShrink: '0',
-                minW: '6',
-                h: '6',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                rounded: 'full',
-                bg: 'blue.500',
-                color: 'white',
-                fontSize: 'sm',
-                fontWeight: 'bold',
-              })}
-            >
-              3
-            </Badge>
-            <div className={css({ flex: '1' })}>
-              <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
-                Generate and Copy Your Short Link
-              </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
-                Click "Shorten URL" to instantly create your short link. Copy it to clipboard with
-                one click, or generate a QR code for physical sharing and print materials.
-              </p>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'blue.500/10',
+                  borderColor: 'blue.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'blue.300',
+                  flexShrink: 0,
+                })}
+              >
+                3
+              </Badge>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
+                  Generate and Copy Your Short Link
+                </h3>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
+                  Click "Shorten URL" to instantly create your short link. Copy it to clipboard with
+                  one click, or generate a QR code for physical sharing and print materials.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-            <Badge
-              className={css({
-                flexShrink: '0',
-                minW: '6',
-                h: '6',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                rounded: 'full',
-                bg: 'blue.500',
-                color: 'white',
-                fontSize: 'sm',
-                fontWeight: 'bold',
-              })}
-            >
-              4
-            </Badge>
-            <div className={css({ flex: '1' })}>
-              <p className={css({ fontWeight: 'medium', color: 'gray.200' })}>
-                Share and Track Performance
-              </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
-                Share your short link on social media, emails, or print. Track clicks, locations,
-                devices, and referrers through the built-in analytics dashboard. Monitor performance
-                in real-time.
-              </p>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
+              <Badge
+                variant="outline"
+                className={css({
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
+                  rounded: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bg: 'green.500/10',
+                  borderColor: 'green.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'green.300',
+                  flexShrink: 0,
+                })}
+              >
+                4
+              </Badge>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
+                  Share and Track Performance
+                </h3>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
+                  Share your short link on social media, emails, or print. Track clicks, locations,
+                  devices, and referrers through the built-in analytics dashboard. Monitor
+                  performance in real-time.
+                </p>
+              </div>
             </div>
           </div>
         </CardContent>

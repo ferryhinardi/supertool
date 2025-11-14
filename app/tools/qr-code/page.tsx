@@ -20,6 +20,7 @@ import {
   ScanLine,
   Search,
   Settings,
+  Sparkles,
   Star,
   Trash2,
   Upload,
@@ -3861,6 +3862,114 @@ url,https://github.com,GitHub,#000000`
         </div>
       </div>
 
+      {/* Pro Tips Section */}
+      <Card
+        className={css({
+          border: '2px solid',
+          borderColor: 'cyan.500/20',
+          bg: 'rgba(6, 182, 212, 0.05)',
+          backdropFilter: 'blur(16px)',
+          animation: 'slideInFromBottom 0.5s ease-out 0.1s both',
+        })}
+      >
+        <CardHeader>
+          <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+            <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
+            Pro Tips
+          </CardTitle>
+          <CardDescription>
+            Expert advice for creating effective QR codes that scan perfectly every time
+          </CardDescription>
+        </CardHeader>
+        <CardContent className={css({ spaceY: '3' })}>
+          <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>Optimize for Print:</strong> Always
+                use SVG format for printed materials (business cards, posters, packaging) as they
+                scale infinitely without pixelation. For best results, ensure minimum 2cm × 2cm size
+                and test scannability at the actual print size before mass production.
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>Logo Integration Done Right:</strong>{' '}
+                When adding a logo, increase error correction to H (highest) and keep logo size
+                under 20% of the QR code area. Ensure your logo has good contrast with the QR code
+                background and test scanning from multiple angles and distances.
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>Color Contrast Matters:</strong> Dark
+                foreground on light background works best (70% contrast minimum). Avoid low contrast
+                combinations, inverted colors on glossy surfaces, or gradient foregrounds that
+                reduce scannability. Test your color scheme with the validation tool before
+                deployment.
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>
+                  Dynamic QR Codes for Campaigns:
+                </strong>{' '}
+                Use URL shorteners with tracking for marketing campaigns instead of encoding long
+                URLs directly. This lets you update the destination without reprinting, track scan
+                analytics, A/B test landing pages, and gather geographic data on user engagement.
+              </p>
+            </div>
+            <div
+              className={css({
+                p: '3',
+                rounded: 'lg',
+                bg: 'cyan.500/5',
+                borderLeft: '3px solid',
+                borderColor: 'cyan.500',
+              })}
+            >
+              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'cyan.300' })}>Strategic Placement Tips:</strong>{' '}
+                Position QR codes at eye level (4-5 feet), ensure adequate lighting, provide
+                scanning distance guidance (arm's length for 2cm codes), avoid curved surfaces that
+                distort the pattern, and always include a text fallback URL for accessibility.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* How to Use Section */}
       <Card
         className={css({
@@ -3868,6 +3977,7 @@ url,https://github.com,GitHub,#000000`
           borderColor: 'blue.500/30',
           bg: 'rgba(59, 130, 246, 0.05)',
           backdropFilter: 'blur(16px)',
+          animation: 'slideInFromBottom 0.5s ease-out 0.2s both',
         })}
       >
         <CardHeader>
@@ -3879,30 +3989,55 @@ url,https://github.com,GitHub,#000000`
             Follow these simple steps to create, customize, and share your QR codes
           </CardDescription>
         </CardHeader>
-        <CardContent className={css({ spaceY: '4' })}>
-          <div className={css({ spaceY: '3' })}>
-            <div className={css({ display: 'flex', gap: '3' })}>
+        <CardContent>
+          <div
+            className={css({
+              display: 'grid',
+              gridTemplateColumns: { base: '1fr', md: '1fr 1fr' },
+              gap: { base: '4', md: '6' },
+            })}
+          >
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
               <Badge
                 variant="outline"
                 className={css({
-                  h: '6',
-                  w: '6',
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
                   rounded: 'full',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  bg: 'purple.500/20',
-                  borderColor: 'purple.500/50',
+                  bg: 'purple.500/10',
+                  borderColor: 'purple.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'purple.300',
                   flexShrink: 0,
                 })}
               >
                 1
               </Badge>
-              <div>
-                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
                   Choose QR Code Type
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
                   Select from URL, Text, WiFi, vCard, Email, Phone, SMS, WhatsApp, Location, Event,
                   App Store, or Social Media. Each type is optimized for its specific use case with
                   smart data formatting.
@@ -3910,28 +4045,47 @@ url,https://github.com,GitHub,#000000`
               </div>
             </div>
 
-            <div className={css({ display: 'flex', gap: '3' })}>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
               <Badge
                 variant="outline"
                 className={css({
-                  h: '6',
-                  w: '6',
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
                   rounded: 'full',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  bg: 'pink.500/20',
-                  borderColor: 'pink.500/50',
+                  bg: 'pink.500/10',
+                  borderColor: 'pink.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'pink.300',
                   flexShrink: 0,
                 })}
               >
                 2
               </Badge>
-              <div>
-                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
                   Enter Your Content
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
                   Input your data in the provided fields. For URLs, paste the link. For WiFi, enter
                   network credentials. For vCards, fill in contact details. The QR code updates
                   instantly as you type.
@@ -3939,28 +4093,47 @@ url,https://github.com,GitHub,#000000`
               </div>
             </div>
 
-            <div className={css({ display: 'flex', gap: '3' })}>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
               <Badge
                 variant="outline"
                 className={css({
-                  h: '6',
-                  w: '6',
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
                   rounded: 'full',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  bg: 'blue.500/20',
-                  borderColor: 'blue.500/50',
+                  bg: 'blue.500/10',
+                  borderColor: 'blue.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'blue.300',
                   flexShrink: 0,
                 })}
               >
                 3
               </Badge>
-              <div>
-                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
                   Customize Design (Optional)
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
                   Personalize colors, add your logo, apply style presets, adjust corner and dot
                   styles, or create gradients. All customizations maintain scannability. Increase
                   error correction if adding a logo.
@@ -3968,28 +4141,47 @@ url,https://github.com,GitHub,#000000`
               </div>
             </div>
 
-            <div className={css({ display: 'flex', gap: '3' })}>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
               <Badge
                 variant="outline"
                 className={css({
-                  h: '6',
-                  w: '6',
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
                   rounded: 'full',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  bg: 'green.500/20',
-                  borderColor: 'green.500/50',
+                  bg: 'green.500/10',
+                  borderColor: 'green.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'green.300',
                   flexShrink: 0,
                 })}
               >
                 4
               </Badge>
-              <div>
-                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
                   Download or Print
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
                   Download as PNG (raster), SVG (vector), JPEG, WebP, or PDF. Use SVG for print
                   materials that need to scale. Save to history, print with templates, or generate
                   multiple codes in bulk.
@@ -3997,28 +4189,47 @@ url,https://github.com,GitHub,#000000`
               </div>
             </div>
 
-            <div className={css({ display: 'flex', gap: '3' })}>
+            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
               <Badge
                 variant="outline"
                 className={css({
-                  h: '6',
-                  w: '6',
+                  minH: '10',
+                  minW: '10',
+                  h: '10',
+                  w: '10',
                   rounded: 'full',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  bg: 'violet.500/20',
-                  borderColor: 'violet.500/50',
+                  bg: 'violet.500/10',
+                  borderColor: 'violet.500',
+                  borderWidth: '2px',
+                  fontSize: 'lg',
+                  fontWeight: 'bold',
+                  color: 'violet.300',
                   flexShrink: 0,
                 })}
               >
                 5
               </Badge>
-              <div>
-                <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
+              <div className={css({ flex: '1', minW: '0' })}>
+                <h3
+                  className={css({
+                    fontWeight: 'semibold',
+                    color: 'gray.100',
+                    mb: '2',
+                    fontSize: { base: 'sm', sm: 'base' },
+                  })}
+                >
                   Test Before Deploying
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    lineHeight: '1.6',
+                  })}
+                >
                   Always test your QR code with multiple devices and scanner apps before printing or
                   sharing. Use our built-in scanner to verify the encoded data. Ensure adequate size
                   (min 2cm x 2cm) for reliable scanning.

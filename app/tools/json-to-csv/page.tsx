@@ -196,16 +196,53 @@ export default function JSONToCSVPage() {
             className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
           >
             <div
-              className="animate-pulse rounded-xl bg-gradient-to-br from-teal-600 via-green-600 to-emerald-700 p-2.5 shadow-2xl shadow-teal-500/60 sm:rounded-2xl sm:p-4"
+              className={css({
+                animation: 'pulse',
+                rounded: { base: 'xl', sm: '2xl' },
+                bgGradient: 'to-br',
+                gradientFrom: 'teal.600',
+                gradientVia: 'green.600',
+                gradientTo: 'emerald.700',
+                p: { base: '2.5', sm: '4' },
+                shadow: '2xl',
+                boxShadow: '0 25px 50px -12px rgba(20, 184, 166, 0.6)',
+              })}
               style={{ animationDuration: '2s' }}
             >
-              <FileSpreadsheet className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+              <FileSpreadsheet
+                className={css({
+                  h: { base: '6', sm: '8' },
+                  w: { base: '6', sm: '8' },
+                  color: 'white',
+                })}
+              />
             </div>
             <div>
-              <h1 className="bg-gradient-to-r from-teal-300 via-green-400 to-emerald-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
+              <h1
+                className={css({
+                  bgGradient: 'to-r',
+                  gradientFrom: 'teal.300',
+                  gradientVia: 'green.400',
+                  gradientTo: 'emerald.300',
+                  bgClip: 'text',
+                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
+                  fontWeight: 'extrabold',
+                  color: 'transparent',
+                  filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
+                })}
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 JSON to CSV Converter
               </h1>
-              <p className="text-sm text-gray-200 sm:text-base md:text-lg">
+              <p
+                className={css({
+                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
+                  color: 'gray.200',
+                })}
+              >
                 Convert JSON data to CSV with nested object support
               </p>
             </div>
@@ -249,21 +286,42 @@ export default function JSONToCSVPage() {
                   <Badge
                     variant="outline"
                     size="sm"
-                    className="border-teal-500/50 bg-teal-500/10 px-2.5 py-1.5 text-xs text-teal-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                    className={css({
+                      borderColor: 'teal.500/50',
+                      bg: 'teal.500/10',
+                      px: { base: '2.5', sm: '3', md: '4' },
+                      py: { base: '1.5', sm: '1.5', md: '2' },
+                      fontSize: { base: 'xs', sm: 'sm' },
+                      color: 'teal.200',
+                    })}
                   >
                     📊 {stats.rows} rows
                   </Badge>
                   <Badge
                     variant="outline"
                     size="sm"
-                    className="border-green-500/50 bg-green-500/10 px-2.5 py-1.5 text-xs text-green-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                    className={css({
+                      borderColor: 'green.500/50',
+                      bg: 'green.500/10',
+                      px: { base: '2.5', sm: '3', md: '4' },
+                      py: { base: '1.5', sm: '1.5', md: '2' },
+                      fontSize: { base: 'xs', sm: 'sm' },
+                      color: 'green.200',
+                    })}
                   >
                     📋 {stats.columns} columns
                   </Badge>
                   <Badge
                     variant="outline"
                     size="sm"
-                    className="border-emerald-500/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs text-emerald-200 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                    className={css({
+                      borderColor: 'emerald.500/50',
+                      bg: 'emerald.500/10',
+                      px: { base: '2.5', sm: '3', md: '4' },
+                      py: { base: '1.5', sm: '1.5', md: '2' },
+                      fontSize: { base: 'xs', sm: 'sm' },
+                      color: 'emerald.200',
+                    })}
                   >
                     📝 {stats.chars.toLocaleString()} chars
                   </Badge>
@@ -272,15 +330,27 @@ export default function JSONToCSVPage() {
                 <Badge
                   variant="success"
                   size="sm"
-                  className="animate-pulse bg-gradient-to-r from-green-500 to-emerald-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg shadow-green-500/50 sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2"
+                  className={css({
+                    animation: 'pulse',
+                    bgGradient: 'to-r',
+                    gradientFrom: 'green.500',
+                    gradientTo: 'emerald.600',
+                    px: { base: '2.5', sm: '3', md: '4' },
+                    py: { base: '1.5', sm: '1.5', md: '2' },
+                    fontSize: { base: 'xs', sm: 'sm' },
+                    fontWeight: 'semibold',
+                    color: 'white',
+                    shadow: 'lg',
+                    boxShadow: '0 10px 15px -3px rgba(34, 197, 94, 0.5)',
+                  })}
                 >
                   ✅ Valid
                 </Badge>
               </>
             ) : (
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <AlertCircle className="h-5 w-5 text-red-400" />
-                <span className="text-sm text-red-300">{error}</span>
+                <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
+                <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
               </div>
             )}
           </div>
@@ -316,7 +386,15 @@ export default function JSONToCSVPage() {
             })}
           >
             <Field>
-              <FieldLabel className="text-sm font-medium text-gray-300">Delimiter</FieldLabel>
+              <FieldLabel
+                className={css({
+                  fontSize: 'sm',
+                  fontWeight: 'medium',
+                  color: 'gray.300',
+                })}
+              >
+                Delimiter
+              </FieldLabel>
               <FieldInput
                 type="text"
                 value={delimiter}
@@ -360,7 +438,9 @@ export default function JSONToCSVPage() {
                     cursor: 'pointer',
                   })}
                 />
-                <span className="text-sm font-medium text-gray-300">Flatten nested objects</span>
+                <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  Flatten nested objects
+                </span>
               </label>
             </div>
           </div>
@@ -392,7 +472,12 @@ export default function JSONToCSVPage() {
                   },
                 })}
               >
-                <Copy className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Copy
+                  className={css({
+                    h: { base: '4', sm: '5' },
+                    w: { base: '4', sm: '5' },
+                  })}
+                />
                 Copy CSV
               </Button>
             </TooltipTrigger>
@@ -417,7 +502,12 @@ export default function JSONToCSVPage() {
                   },
                 })}
               >
-                <Download className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Download
+                  className={css({
+                    h: { base: '4', sm: '5' },
+                    w: { base: '4', sm: '5' },
+                  })}
+                />
                 Download CSV
               </Button>
             </TooltipTrigger>
@@ -437,7 +527,12 @@ export default function JSONToCSVPage() {
                   fontSize: { base: 'sm', sm: 'base' },
                 })}
               >
-                <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5" />
+                <RefreshCw
+                  className={css({
+                    h: { base: '4', sm: '5' },
+                    w: { base: '4', sm: '5' },
+                  })}
+                />
                 Reset
               </Button>
             </TooltipTrigger>
@@ -468,7 +563,15 @@ export default function JSONToCSVPage() {
               py: '3',
             })}
           >
-            <h3 className="text-sm font-semibold text-teal-300 sm:text-base">JSON Input</h3>
+            <h3
+              className={css({
+                fontSize: { base: 'sm', sm: 'base' },
+                fontWeight: 'semibold',
+                color: 'teal.300',
+              })}
+            >
+              JSON Input
+            </h3>
           </div>
           {jsonExtension && (
             <CodeMirror
@@ -499,7 +602,7 @@ export default function JSONToCSVPage() {
                 completionKeymap: true,
                 lintKeymap: true,
               }}
-              className="text-sm sm:text-base"
+              className={css({ fontSize: { base: 'sm', sm: 'base' } })}
             />
           )}
         </div>
@@ -527,7 +630,13 @@ export default function JSONToCSVPage() {
               py: '3',
             })}
           >
-            <h3 className="text-sm font-semibold text-green-300 sm:text-base">
+            <h3
+              className={css({
+                fontSize: { base: 'sm', sm: 'base' },
+                fontWeight: 'semibold',
+                color: 'green.300',
+              })}
+            >
               CSV Output Preview
             </h3>
           </div>
@@ -588,13 +697,19 @@ export default function JSONToCSVPage() {
             How to Use
           </h3>
           <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
-            <li className="text-sm sm:text-base">Paste your JSON array in the editor above</li>
-            <li className="text-sm sm:text-base">
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Paste your JSON array in the editor above
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Configure delimiter (default: comma) and flattening options
             </li>
-            <li className="text-sm sm:text-base">Preview the CSV output in real-time</li>
-            <li className="text-sm sm:text-base">Copy to clipboard or download as a CSV file</li>
-            <li className="text-sm sm:text-base">
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Preview the CSV output in real-time
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Copy to clipboard or download as a CSV file
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Nested objects are flattened using dot notation (e.g., &ldquo;address.city&rdquo;)
             </li>
           </ul>
