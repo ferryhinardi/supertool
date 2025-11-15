@@ -8,11 +8,16 @@ import {
   BookmarkPlus,
   Copy,
   Download,
+  Eye,
+  EyeOff,
+  Globe,
   History,
   Info,
   Loader2,
   Play,
+  Plus,
   Save,
+  Settings,
   Terminal,
   Trash2,
   X,
@@ -100,6 +105,21 @@ interface HistoryItem extends RequestConfig {
   response?: ResponseData
 }
 
+interface EnvVariable {
+  id: string
+  key: string
+  value: string
+  enabled: boolean
+  secret: boolean
+}
+
+interface Environment {
+  id: string
+  name: string
+  variables: EnvVariable[]
+  createdAt: number
+}
+
 function ApiTesterContent() {
   // Request Configuration
   const [method, setMethod] = useState<HttpMethod>('GET')
@@ -160,7 +180,29 @@ function ApiTesterContent() {
     'params'
   )
 
-  // Save presets and history
+  // Environments
+  const [environments, setEnvironments] = useState<Environment[]>(() => {
+    if (typeof window === 'undefined') return []
+    const stored = localStorage.getItem('apiTesterEnvironments')
+    if (stored) {
+      try {
+        return JSON.parse(stored)
+      } catch {
+        return []
+      }
+    }
+    return []
+  })
+
+  const [activeEnvironmentId, setActiveEnvironmentId] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    return localStorage.getItem('apiTesterActiveEnvironment')
+  })
+
+  const [showEnvironments, setShowEnvironments] = useState(false)
+  const [editingEnvironment, setEditingEnvironment] = useState<Environment | null>(null)
+
+  // Save presets, history, and environments
   useEffect(() => {
     if (typeof window !== 'undefined' && presets.length > 0) {
       localStorage.setItem('apiTesterPresets', JSON.stringify(presets))
@@ -172,6 +214,20 @@ function ApiTesterContent() {
       localStorage.setItem('apiTesterHistory', JSON.stringify(history.slice(0, 50))) // Keep last 50
     }
   }, [history])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify(environments))
+    }
+  }, [environments])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && activeEnvironmentId) {
+      localStorage.setItem('apiTesterActiveEnvironment', activeEnvironmentId)
+    } else if (typeof window !== 'undefined') {
+      localStorage.removeItem('apiTesterActiveEnvironment')
+    }
+  }, [activeEnvironmentId])
 
   // Track page visit
   useEffect(() => {
@@ -228,6 +284,71 @@ function ApiTesterContent() {
     setFormData(config.formData)
   }
 
+  // Get active environment
+  const activeEnvironment = useMemo(() => {
+    return environments.find((env) => env.id === activeEnvironmentId) || null
+  }, [environments, activeEnvironmentId])
+
+  // Variable substitution function
+  const substituteVariables = (text: string): string => {
+    if (!activeEnvironment) return text
+
+    let result = text
+    activeEnvironment.variables
+      .filter((v) => v.enabled && v.key.trim())
+      .forEach((v) => {
+        const regex = new RegExp(`{{\\s*${v.key.trim()}\\s*}}`, 'g')
+        result = result.replace(regex, v.value)
+      })
+
+    return result
+  }
+
+  // Environment management functions
+  const createEnvironment = (name: string) => {
+    const newEnv: Environment = {
+      id: nanoid(),
+      name,
+      variables: [{ id: nanoid(), key: '', value: '', enabled: true, secret: false }],
+      createdAt: Date.now(),
+    }
+    setEnvironments([...environments, newEnv])
+    setActiveEnvironmentId(newEnv.id)
+    trackToolEvent('api_tester_environment_created', { environmentName: name })
+    toast.success(`Environment "${name}" created`)
+  }
+
+  const updateEnvironment = (id: string, updates: Partial<Environment>) => {
+    setEnvironments(environments.map((env) => (env.id === id ? { ...env, ...updates } : env)))
+    trackToolEvent('api_tester_environment_updated', { environmentId: id })
+  }
+
+  const deleteEnvironment = (id: string) => {
+    const env = environments.find((e) => e.id === id)
+    setEnvironments(environments.filter((e) => e.id !== id))
+    if (activeEnvironmentId === id) {
+      setActiveEnvironmentId(null)
+    }
+    trackToolEvent('api_tester_environment_deleted', { environmentName: env?.name || '' })
+    toast.success('Environment deleted')
+  }
+
+  const duplicateEnvironment = (id: string) => {
+    const env = environments.find((e) => e.id === id)
+    if (env) {
+      const newEnv: Environment = {
+        ...env,
+        id: nanoid(),
+        name: `${env.name} (Copy)`,
+        variables: env.variables.map((v) => ({ ...v, id: nanoid() })),
+        createdAt: Date.now(),
+      }
+      setEnvironments([...environments, newEnv])
+      trackToolEvent('api_tester_environment_duplicated', { environmentName: env.name })
+      toast.success(`Environment duplicated: ${newEnv.name}`)
+    }
+  }
+
   const handleSendRequest = async () => {
     if (!url.trim()) {
       toast.error('Please enter a URL')
@@ -241,59 +362,68 @@ function ApiTesterContent() {
     const startTime = performance.now()
 
     try {
-      // Build headers
+      // Build headers with variable substitution
       const requestHeaders: HeadersInit = {}
 
       // Add custom headers
       headers
         .filter((h) => h.enabled && h.key.trim())
         .forEach((h) => {
-          requestHeaders[h.key.trim()] = h.value.trim()
+          requestHeaders[substituteVariables(h.key.trim())] = substituteVariables(h.value.trim())
         })
 
-      // Add auth headers
+      // Add auth headers with variable substitution
       if (authType === 'bearer' && authToken.trim()) {
-        requestHeaders.Authorization = `Bearer ${authToken.trim()}`
+        requestHeaders.Authorization = `Bearer ${substituteVariables(authToken.trim())}`
       } else if (authType === 'basic' && authUsername.trim()) {
-        const encoded = btoa(`${authUsername.trim()}:${authPassword.trim()}`)
+        const username = substituteVariables(authUsername.trim())
+        const password = substituteVariables(authPassword.trim())
+        const encoded = btoa(`${username}:${password}`)
         requestHeaders.Authorization = `Basic ${encoded}`
       } else if (authType === 'api-key' && authApiKey.trim()) {
-        requestHeaders['X-API-Key'] = authApiKey.trim()
+        requestHeaders['X-API-Key'] = substituteVariables(authApiKey.trim())
       }
 
-      // Build body
+      // Build body with variable substitution
       let requestBody: BodyInit | undefined
 
       if (['POST', 'PUT', 'PATCH'].includes(method)) {
         if (bodyType === 'json' && bodyJson.trim()) {
           try {
-            JSON.parse(bodyJson) // Validate
-            requestBody = bodyJson
+            const substitutedJson = substituteVariables(bodyJson)
+            JSON.parse(substitutedJson) // Validate
+            requestBody = substitutedJson
             requestHeaders['Content-Type'] = 'application/json'
           } catch {
             throw new Error('Invalid JSON in request body')
           }
         } else if (bodyType === 'text' && bodyText.trim()) {
-          requestBody = bodyText
+          requestBody = substituteVariables(bodyText)
           requestHeaders['Content-Type'] = 'text/plain'
         } else if (bodyType === 'form-data') {
           const formDataObj = new FormData()
           formData
             .filter((f) => f.enabled && f.key.trim())
             .forEach((f) => {
-              formDataObj.append(f.key.trim(), f.value.trim())
+              formDataObj.append(
+                substituteVariables(f.key.trim()),
+                substituteVariables(f.value.trim())
+              )
             })
           requestBody = formDataObj
         }
       }
 
-      // Build URL with query parameters
-      let requestUrl = url.trim()
+      // Build URL with query parameters and variable substitution
+      let requestUrl = substituteVariables(url.trim())
       const enabledParams = queryParams.filter((p) => p.enabled && p.key.trim())
       if (enabledParams.length > 0) {
         const urlObj = new URL(requestUrl)
         enabledParams.forEach((p) => {
-          urlObj.searchParams.append(p.key.trim(), p.value.trim())
+          urlObj.searchParams.append(
+            substituteVariables(p.key.trim()),
+            substituteVariables(p.value.trim())
+          )
         })
         requestUrl = urlObj.toString()
       }
@@ -607,6 +737,20 @@ function ApiTesterContent() {
           <History className={css({ h: '4', w: '4' })} />
           History ({history.length})
         </Button>
+        <Button
+          onClick={() => setShowEnvironments(!showEnvironments)}
+          className={css({
+            gap: '2',
+            bg: activeEnvironmentId ? 'green.900/40' : 'gray.800',
+            color: activeEnvironmentId ? 'green.300' : 'gray.300',
+            border: activeEnvironmentId ? '1px solid' : 'none',
+            borderColor: activeEnvironmentId ? 'green.500/30' : 'transparent',
+            _hover: { bg: activeEnvironmentId ? 'green.900/60' : 'gray.700' },
+          })}
+        >
+          <Globe className={css({ h: '4', w: '4' })} />
+          {activeEnvironment ? activeEnvironment.name : `Environments (${environments.length})`}
+        </Button>
       </motion.div>
 
       {/* Presets Panel */}
@@ -837,6 +981,430 @@ function ApiTesterContent() {
                   ))}
                 </div>
               )}
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Environments Panel */}
+      {showEnvironments && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+        >
+          <Card
+            className={css({
+              border: '1px solid',
+              borderColor: 'green.500/20',
+              bg: 'gray.900/50',
+              backdropFilter: 'blur(16px)',
+            })}
+          >
+            <CardHeader>
+              <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                <div>
+                  <CardTitle>Environments</CardTitle>
+                  <CardDescription>
+                    Manage environment variables. Use {'{{'} variableName {'}}'} syntax in requests.
+                  </CardDescription>
+                </div>
+                <Button
+                  onClick={() => setShowEnvironments(false)}
+                  size="sm"
+                  className={css({
+                    bg: 'transparent',
+                    color: 'gray.400',
+                    _hover: { bg: 'gray.800' },
+                  })}
+                >
+                  <X className={css({ h: '4', w: '4' })} />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={css({ spaceY: '4' })}>
+                {/* Environment List */}
+                <div className={css({ spaceY: '3' })}>
+                  {environments.length === 0 ? (
+                    <p className={css({ textAlign: 'center', color: 'gray.500', py: '8' })}>
+                      No environments yet. Create one to get started.
+                    </p>
+                  ) : (
+                    <div className={css({ display: 'grid', gap: '3' })}>
+                      {environments.map((env) => (
+                        <div
+                          key={env.id}
+                          className={css({
+                            rounded: 'lg',
+                            border: '1px solid',
+                            borderColor:
+                              activeEnvironmentId === env.id ? 'green.500/50' : 'gray.700',
+                            bg: activeEnvironmentId === env.id ? 'green.900/20' : 'gray.800/50',
+                            p: '4',
+                          })}
+                        >
+                          <div
+                            className={css({
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              mb: editingEnvironment?.id === env.id ? '4' : '0',
+                            })}
+                          >
+                            <div
+                              className={css({ display: 'flex', alignItems: 'center', gap: '3' })}
+                            >
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActiveEnvironmentId(
+                                    activeEnvironmentId === env.id ? null : env.id
+                                  )
+                                  trackToolEvent('api_tester_environment_activated', {
+                                    environmentName: env.name,
+                                  })
+                                }}
+                                className={css({
+                                  p: '2',
+                                  rounded: 'md',
+                                  _hover: { bg: 'gray.700' },
+                                })}
+                              >
+                                {activeEnvironmentId === env.id ? (
+                                  <Globe className={css({ h: '5', w: '5', color: 'green.400' })} />
+                                ) : (
+                                  <Globe className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                                )}
+                              </button>
+                              <div>
+                                <h3
+                                  className={css({
+                                    fontWeight: 'semibold',
+                                    color:
+                                      activeEnvironmentId === env.id ? 'green.300' : 'gray.300',
+                                  })}
+                                >
+                                  {env.name}
+                                </h3>
+                                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                                  {env.variables.filter((v) => v.enabled && v.key.trim()).length}{' '}
+                                  variables
+                                </p>
+                              </div>
+                            </div>
+                            <div className={css({ display: 'flex', gap: '2' })}>
+                              <Button
+                                onClick={() => {
+                                  setEditingEnvironment(
+                                    editingEnvironment?.id === env.id ? null : env
+                                  )
+                                }}
+                                size="sm"
+                                className={css({
+                                  gap: '2',
+                                  bg: 'transparent',
+                                  color: 'gray.400',
+                                  _hover: { bg: 'blue.500/20', color: 'blue.400' },
+                                })}
+                              >
+                                <Settings className={css({ h: '4', w: '4' })} />
+                                {editingEnvironment?.id === env.id ? 'Hide' : 'Edit'}
+                              </Button>
+                              <Button
+                                onClick={() => duplicateEnvironment(env.id)}
+                                size="sm"
+                                className={css({
+                                  bg: 'transparent',
+                                  color: 'gray.400',
+                                  _hover: { bg: 'cyan.500/20', color: 'cyan.400' },
+                                })}
+                              >
+                                <Copy className={css({ h: '4', w: '4' })} />
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  if (
+                                    confirm(
+                                      `Delete environment "${env.name}"? This cannot be undone.`
+                                    )
+                                  ) {
+                                    deleteEnvironment(env.id)
+                                  }
+                                }}
+                                size="sm"
+                                className={css({
+                                  bg: 'transparent',
+                                  color: 'gray.400',
+                                  _hover: { bg: 'red.500/20', color: 'red.400' },
+                                })}
+                              >
+                                <Trash2 className={css({ h: '4', w: '4' })} />
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Variables Editor */}
+                          {editingEnvironment?.id === env.id && (
+                            <div
+                              className={css({
+                                spaceY: '3',
+                                pt: '4',
+                                borderTop: '1px solid',
+                                borderColor: 'gray.700',
+                              })}
+                            >
+                              {/* Environment Name */}
+                              <div>
+                                <label
+                                  htmlFor="env-name"
+                                  className={css({
+                                    display: 'block',
+                                    fontSize: 'sm',
+                                    fontWeight: 'medium',
+                                    color: 'gray.300',
+                                    mb: '2',
+                                  })}
+                                >
+                                  Environment Name
+                                </label>
+                                <Input
+                                  id="env-name"
+                                  value={env.name}
+                                  onChange={(e) => {
+                                    updateEnvironment(env.id, { name: e.target.value })
+                                  }}
+                                  placeholder="e.g., Production, Staging, Development"
+                                  className={css({
+                                    bg: 'gray.900/50',
+                                    border: '1px solid',
+                                    borderColor: 'gray.700',
+                                    color: 'gray.100',
+                                    _focus: { borderColor: 'green.500' },
+                                  })}
+                                />
+                              </div>
+
+                              {/* Variables List */}
+                              <div>
+                                <div
+                                  className={css({
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    mb: '2',
+                                  })}
+                                >
+                                  <div
+                                    className={css({
+                                      fontSize: 'sm',
+                                      fontWeight: 'medium',
+                                      color: 'gray.300',
+                                    })}
+                                  >
+                                    Variables
+                                  </div>
+                                  <Button
+                                    onClick={() => {
+                                      const newVar: EnvVariable = {
+                                        id: nanoid(),
+                                        key: '',
+                                        value: '',
+                                        enabled: true,
+                                        secret: false,
+                                      }
+                                      updateEnvironment(env.id, {
+                                        variables: [...env.variables, newVar],
+                                      })
+                                      trackToolEvent('api_tester_environment_variable_added', {})
+                                    }}
+                                    size="sm"
+                                    className={css({
+                                      gap: '2',
+                                      bg: 'green.500/20',
+                                      color: 'green.300',
+                                      _hover: { bg: 'green.500/30' },
+                                    })}
+                                  >
+                                    <Plus className={css({ h: '4', w: '4' })} />
+                                    Add Variable
+                                  </Button>
+                                </div>
+
+                                <div className={css({ spaceY: '2' })}>
+                                  {env.variables.map((variable, index) => (
+                                    <div
+                                      key={variable.id}
+                                      className={css({
+                                        display: 'grid',
+                                        gridTemplateColumns: 'auto 1fr 1fr auto auto auto',
+                                        gap: '2',
+                                        alignItems: 'center',
+                                        p: '2',
+                                        rounded: 'md',
+                                        bg: 'gray.800/50',
+                                      })}
+                                    >
+                                      {/* Enabled checkbox */}
+                                      <input
+                                        type="checkbox"
+                                        checked={variable.enabled}
+                                        onChange={(e) => {
+                                          const updated = [...env.variables]
+                                          updated[index] = {
+                                            ...variable,
+                                            enabled: e.target.checked,
+                                          }
+                                          updateEnvironment(env.id, { variables: updated })
+                                        }}
+                                        className={css({
+                                          h: '4',
+                                          w: '4',
+                                          cursor: 'pointer',
+                                        })}
+                                      />
+
+                                      {/* Key input */}
+                                      <Input
+                                        value={variable.key}
+                                        onChange={(e) => {
+                                          const updated = [...env.variables]
+                                          updated[index] = {
+                                            ...variable,
+                                            key: e.target.value,
+                                          }
+                                          updateEnvironment(env.id, { variables: updated })
+                                        }}
+                                        placeholder="Variable name (e.g., API_KEY)"
+                                        className={css({
+                                          h: '8',
+                                          fontSize: 'sm',
+                                          bg: 'gray.900/50',
+                                          border: '1px solid',
+                                          borderColor: 'gray.700',
+                                          color: 'gray.100',
+                                          _focus: { borderColor: 'green.500' },
+                                        })}
+                                      />
+
+                                      {/* Value input */}
+                                      <div className={css({ position: 'relative' })}>
+                                        <Input
+                                          type={variable.secret ? 'password' : 'text'}
+                                          value={variable.value}
+                                          onChange={(e) => {
+                                            const updated = [...env.variables]
+                                            updated[index] = {
+                                              ...variable,
+                                              value: e.target.value,
+                                            }
+                                            updateEnvironment(env.id, { variables: updated })
+                                          }}
+                                          placeholder="Value"
+                                          className={css({
+                                            h: '8',
+                                            fontSize: 'sm',
+                                            bg: 'gray.900/50',
+                                            border: '1px solid',
+                                            borderColor: 'gray.700',
+                                            color: 'gray.100',
+                                            _focus: { borderColor: 'green.500' },
+                                          })}
+                                        />
+                                      </div>
+
+                                      {/* Secret toggle */}
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = [...env.variables]
+                                          updated[index] = {
+                                            ...variable,
+                                            secret: !variable.secret,
+                                          }
+                                          updateEnvironment(env.id, { variables: updated })
+                                        }}
+                                        className={css({
+                                          p: '2',
+                                          rounded: 'md',
+                                          color: variable.secret ? 'green.400' : 'gray.500',
+                                          _hover: { bg: 'gray.700' },
+                                        })}
+                                        title={variable.secret ? 'Hide value' : 'Show value'}
+                                      >
+                                        {variable.secret ? (
+                                          <EyeOff className={css({ h: '4', w: '4' })} />
+                                        ) : (
+                                          <Eye className={css({ h: '4', w: '4' })} />
+                                        )}
+                                      </button>
+
+                                      {/* Info button */}
+                                      <button
+                                        type="button"
+                                        className={css({
+                                          p: '2',
+                                          rounded: 'md',
+                                          color: 'gray.500',
+                                          _hover: { bg: 'gray.700', color: 'blue.400' },
+                                        })}
+                                        title={`Use {{${variable.key}}} in your requests`}
+                                      >
+                                        <Info className={css({ h: '4', w: '4' })} />
+                                      </button>
+
+                                      {/* Delete button */}
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = env.variables.filter(
+                                            (v) => v.id !== variable.id
+                                          )
+                                          updateEnvironment(env.id, { variables: updated })
+                                        }}
+                                        className={css({
+                                          p: '2',
+                                          rounded: 'md',
+                                          color: 'gray.500',
+                                          _hover: { bg: 'red.500/20', color: 'red.400' },
+                                        })}
+                                      >
+                                        <X className={css({ h: '4', w: '4' })} />
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Create New Environment */}
+                <Button
+                  onClick={() => {
+                    const name = prompt('Enter environment name:')
+                    if (name?.trim()) {
+                      createEnvironment(name.trim())
+                    }
+                  }}
+                  className={css({
+                    gap: '2',
+                    w: 'full',
+                    bg: 'green.500/20',
+                    color: 'green.300',
+                    border: '1px solid',
+                    borderColor: 'green.500/30',
+                    _hover: { bg: 'green.500/30' },
+                  })}
+                >
+                  <Plus className={css({ h: '4', w: '4' })} />
+                  Create New Environment
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </motion.div>

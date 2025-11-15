@@ -784,4 +784,518 @@ describe('API Tester Page - Component Tests', () => {
     expect(screen.getByText(/Tip:/i)).toBeInTheDocument()
     expect(screen.getByText(/to send/i)).toBeInTheDocument()
   })
+
+  // Environment Variables Tests
+  describe('Environment Variables', () => {
+    it('should display Environments button', () => {
+      render(<ApiTesterPage />)
+
+      expect(screen.getByRole('button', { name: /Environments \(0\)/i })).toBeInTheDocument()
+    })
+
+    it('should open environments panel when clicked', async () => {
+      render(<ApiTesterPage />)
+
+      const environmentsButton = screen.getByRole('button', { name: /Environments \(0\)/i })
+      await userEvent.click(environmentsButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Environments')).toBeInTheDocument()
+        expect(screen.getByText(/Manage environment variables. Use {{/i)).toBeInTheDocument()
+      })
+    })
+
+    it('should create a new environment', async () => {
+      // Mock prompt
+      global.prompt = vi.fn(() => 'TestEnv123')
+
+      render(<ApiTesterPage />)
+
+      const environmentsButton = screen.getByRole('button', { name: /Environments \(0\)/i })
+      await userEvent.click(environmentsButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Create New Environment')).toBeInTheDocument()
+      })
+
+      const createButton = screen.getByRole('button', { name: /Create New Environment/i })
+      await userEvent.click(createButton)
+
+      await waitFor(() => {
+        // Check if stored in localStorage
+        const stored = JSON.parse(localStorage.getItem('apiTesterEnvironments') || '[]')
+        expect(stored).toHaveLength(1)
+        expect(stored[0].name).toBe('TestEnv123')
+      })
+    })
+
+    it('should activate an environment', async () => {
+      // Pre-populate with an environment
+      const env = {
+        id: 'env-1',
+        name: 'Production',
+        variables: [
+          {
+            id: 'var-1',
+            key: 'API_URL',
+            value: 'https://api.prod.com',
+            enabled: true,
+            secret: false,
+          },
+        ],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+
+      render(<ApiTesterPage />)
+
+      // Should show environment name on button
+      const environmentsButton = screen.getByRole('button', { name: /Environments \(1\)/i })
+      await userEvent.click(environmentsButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Production')).toBeInTheDocument()
+      })
+
+      // Find and click the globe icon to activate
+      const globeButtons = screen.getAllByRole('button')
+      const activateButton = globeButtons.find((btn) => {
+        const parent = btn.closest('div')
+        return parent?.textContent?.includes('Production')
+      })
+
+      if (activateButton) {
+        await userEvent.click(activateButton)
+      }
+
+      // Check if stored in localStorage
+      await waitFor(() => {
+        const storedActiveId = localStorage.getItem('apiTesterActiveEnvironment')
+        expect(storedActiveId).toBe('env-1')
+      })
+    })
+
+    it('should add variable to environment', async () => {
+      // Pre-populate with an environment
+      const env = {
+        id: 'env-1',
+        name: 'Development',
+        variables: [],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+
+      render(<ApiTesterPage />)
+
+      const environmentsButton = screen.getByRole('button', { name: /Environments \(1\)/i })
+      await userEvent.click(environmentsButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Development')).toBeInTheDocument()
+      })
+
+      // Click Edit button
+      const editButton = screen.getByRole('button', { name: /Edit/i })
+      await userEvent.click(editButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Add Variable/i })).toBeInTheDocument()
+      })
+
+      // Click Add Variable
+      const addVariableButton = screen.getByRole('button', { name: /Add Variable/i })
+      await userEvent.click(addVariableButton)
+
+      await waitFor(() => {
+        // Should have input fields for key and value
+        const inputs = screen.getAllByPlaceholderText(/Variable name/i)
+        expect(inputs.length).toBeGreaterThan(0)
+      })
+    })
+
+    it('should substitute variables in URL', async () => {
+      // Pre-populate with an active environment
+      const env = {
+        id: 'env-1',
+        name: 'Production',
+        variables: [
+          {
+            id: 'var-1',
+            key: 'BASE_URL',
+            value: 'https://api.prod.com',
+            enabled: true,
+            secret: false,
+          },
+          { id: 'var-2', key: 'VERSION', value: 'v1', enabled: true, secret: false },
+        ],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+      localStorage.setItem('apiTesterActiveEnvironment', 'env-1')
+
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => ({ message: 'Success' }),
+        text: async () => JSON.stringify({ message: 'Success' }),
+      }
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockResponse)
+
+      render(<ApiTesterPage />)
+
+      // Wait for component to mount and load environment
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Production/i })).toBeInTheDocument()
+      })
+
+      const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
+      fireEvent.change(urlInput, { target: { value: '{{BASE_URL}}/{{VERSION}}/users' } })
+
+      const sendButton = screen.getByRole('button', { name: /Send/i })
+      await userEvent.click(sendButton)
+
+      await waitFor(() => {
+        expect(globalThis.fetch).toHaveBeenCalled()
+        const callArgs = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0]
+        expect(callArgs[0]).toBe('https://api.prod.com/v1/users')
+      })
+    })
+
+    it('should substitute variables in headers', async () => {
+      // Pre-populate with an active environment
+      const env = {
+        id: 'env-1',
+        name: 'ProdEnv',
+        variables: [
+          { id: 'var-1', key: 'API_KEY', value: 'secret-key-123', enabled: true, secret: true },
+        ],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+      localStorage.setItem('apiTesterActiveEnvironment', 'env-1')
+
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => ({ message: 'Success' }),
+        text: async () => JSON.stringify({ message: 'Success' }),
+      }
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockResponse)
+
+      render(<ApiTesterPage />)
+
+      // Wait for environment to load
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /ProdEnv/i })).toBeInTheDocument()
+      })
+
+      const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
+      fireEvent.change(urlInput, { target: { value: 'https://api.example.com/test' } })
+
+      // Click on Headers tab
+      const headersTab = screen.getByRole('button', { name: 'Headers' })
+      await userEvent.click(headersTab)
+
+      await waitFor(() => {
+        const headerKeys = screen.getAllByPlaceholderText(/Header name/i)
+        expect(headerKeys.length).toBeGreaterThan(0)
+      })
+
+      const headerKeys = screen.getAllByPlaceholderText(/Header name/i)
+      const headerValues = screen.getAllByPlaceholderText(/Header value/i)
+
+      fireEvent.change(headerKeys[0], { target: { value: 'Authorization' } })
+      fireEvent.change(headerValues[0], { target: { value: 'Bearer {{API_KEY}}' } })
+
+      const sendButton = screen.getByRole('button', { name: /Send/i })
+      await userEvent.click(sendButton)
+
+      await waitFor(() => {
+        expect(globalThis.fetch).toHaveBeenCalled()
+        const callArgs = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0]
+        expect(callArgs[1].headers.Authorization).toBe('Bearer secret-key-123')
+      })
+    })
+
+    it('should substitute variables in bearer token', async () => {
+      // Pre-populate with an active environment
+      const env = {
+        id: 'env-1',
+        name: 'TokenEnv',
+        variables: [
+          { id: 'var-1', key: 'TOKEN', value: 'bearer-token-xyz', enabled: true, secret: true },
+        ],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+      localStorage.setItem('apiTesterActiveEnvironment', 'env-1')
+
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => ({ message: 'Success' }),
+        text: async () => JSON.stringify({ message: 'Success' }),
+      }
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockResponse)
+
+      render(<ApiTesterPage />)
+
+      // Wait for environment to load
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /TokenEnv/i })).toBeInTheDocument()
+      })
+
+      const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
+      fireEvent.change(urlInput, { target: { value: 'https://api.example.com/test' } })
+
+      // Click on Auth tab
+      const authTab = screen.getByRole('button', { name: 'Auth' })
+      await userEvent.click(authTab)
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('No Authentication')).toBeInTheDocument()
+      })
+
+      const authSelect = screen.getByDisplayValue('No Authentication')
+      fireEvent.change(authSelect, { target: { value: 'bearer' } })
+
+      const tokenInput = await screen.findByPlaceholderText(/Enter bearer token/i)
+      fireEvent.change(tokenInput, { target: { value: '{{TOKEN}}' } })
+
+      const sendButton = screen.getByRole('button', { name: /Send/i })
+      await userEvent.click(sendButton)
+
+      await waitFor(() => {
+        expect(globalThis.fetch).toHaveBeenCalled()
+        const callArgs = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0]
+        expect(callArgs[1].headers.Authorization).toBe('Bearer bearer-token-xyz')
+      })
+    })
+
+    it('should substitute variables in JSON body', async () => {
+      // Pre-populate with an active environment
+      const env = {
+        id: 'env-1',
+        name: 'Production',
+        variables: [{ id: 'var-1', key: 'USER_ID', value: '12345', enabled: true, secret: false }],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+      localStorage.setItem('apiTesterActiveEnvironment', 'env-1')
+
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => ({ message: 'Success' }),
+      }
+      ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockResponse)
+
+      render(<ApiTesterPage />)
+
+      const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
+      fireEvent.change(urlInput, { target: { value: 'https://api.example.com/test' } })
+
+      const methodSelect = screen.getByDisplayValue('GET')
+      fireEvent.change(methodSelect, { target: { value: 'POST' } })
+
+      // Wait a bit for state to update
+      await waitFor(() => {
+        expect(methodSelect).toHaveValue('POST')
+      })
+
+      // Click on Body tab
+      const bodyTab = screen.getByRole('button', { name: 'Body' })
+      await userEvent.click(bodyTab)
+
+      // Wait for body type selector to appear
+      const bodyTypeSelect = await screen.findByDisplayValue('No Body')
+      fireEvent.change(bodyTypeSelect, { target: { value: 'json' } })
+
+      // Wait for JSON textarea to appear - the placeholder is '{"key": "value"}'
+      const jsonTextarea = await screen.findByPlaceholderText(
+        '{"key": "value"}',
+        {},
+        { timeout: 3000 }
+      )
+      fireEvent.change(jsonTextarea, { target: { value: '{"userId": "{{USER_ID}}"}' } })
+
+      const sendButton = screen.getByRole('button', { name: /Send/i })
+      await userEvent.click(sendButton)
+
+      await waitFor(() => {
+        expect(globalThis.fetch).toHaveBeenCalledWith(
+          expect.any(String),
+          expect.objectContaining({
+            body: '{"userId": "12345"}',
+          })
+        )
+      })
+    })
+
+    it('should delete environment', async () => {
+      // Mock confirm to return true
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true)
+
+      // Pre-populate with an environment
+      const env = {
+        id: 'env-1',
+        name: 'Development',
+        variables: [],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+
+      render(<ApiTesterPage />)
+
+      const environmentsButton = screen.getByRole('button', { name: /Environments \(1\)/i })
+      await userEvent.click(environmentsButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Development')).toBeInTheDocument()
+      })
+
+      // Find all buttons, filter for those with SVG containing polyline (Trash2 icon has polyline)
+      const buttons = screen.getAllByRole('button')
+      const deleteButton = buttons.find((btn) => {
+        const svg = btn.querySelector('svg.lucide-trash-2')
+        if (svg) return true
+        // Fallback: check for polyline which is part of Trash2 icon
+        const polyline = btn.querySelector('polyline')
+        return polyline !== null
+      })
+
+      expect(deleteButton).toBeTruthy()
+      if (deleteButton) {
+        fireEvent.click(deleteButton)
+
+        // Verify confirm was called
+        await waitFor(() => {
+          expect(confirmSpy).toHaveBeenCalled()
+        })
+
+        // Verify environment was deleted
+        await waitFor(() => {
+          const stored = JSON.parse(localStorage.getItem('apiTesterEnvironments') || '[]')
+          expect(stored).toHaveLength(0)
+        })
+      }
+
+      confirmSpy.mockRestore()
+    })
+
+    it('should toggle secret visibility for variables', async () => {
+      // Pre-populate with an environment
+      const env = {
+        id: 'env-1',
+        name: 'Development',
+        variables: [
+          { id: 'var-1', key: 'SECRET', value: 'my-secret', enabled: true, secret: false },
+        ],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+
+      render(<ApiTesterPage />)
+
+      const environmentsButton = screen.getByRole('button', { name: /Environments \(1\)/i })
+      await userEvent.click(environmentsButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Development')).toBeInTheDocument()
+      })
+
+      // Click Edit button
+      const editButton = screen.getByRole('button', { name: /Edit/i })
+      await userEvent.click(editButton)
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('my-secret')).toBeInTheDocument()
+      })
+
+      // The value should be visible (type="text")
+      const valueInput = screen.getByDisplayValue('my-secret') as HTMLInputElement
+      expect(valueInput.type).toBe('text')
+
+      // Find and click the eye icon to toggle secret
+      const buttons = screen.getAllByRole('button')
+      const eyeButton = buttons.find((btn) => btn.getAttribute('title')?.includes('value'))
+
+      if (eyeButton) {
+        await userEvent.click(eyeButton)
+
+        await waitFor(() => {
+          // After toggling, the input should be type="password"
+          const valueInputAfter = screen.getByDisplayValue('my-secret') as HTMLInputElement
+          expect(valueInputAfter.type).toBe('password')
+        })
+      }
+    })
+
+    it('should duplicate environment', async () => {
+      // Pre-populate with an environment
+      const env = {
+        id: 'env-1',
+        name: 'Production',
+        variables: [
+          {
+            id: 'var-1',
+            key: 'API_URL',
+            value: 'https://api.prod.com',
+            enabled: true,
+            secret: false,
+          },
+        ],
+        createdAt: Date.now(),
+      }
+      localStorage.setItem('apiTesterEnvironments', JSON.stringify([env]))
+
+      render(<ApiTesterPage />)
+
+      const environmentsButton = screen.getByRole('button', { name: /Environments \(1\)/i })
+      await userEvent.click(environmentsButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Production')).toBeInTheDocument()
+      })
+
+      // Find and click Copy button - it's the button with Copy icon (no text, just icon)
+      const buttons = screen.getAllByRole('button')
+      const copyButton = buttons.find((btn) => {
+        const svg = btn.querySelector('svg')
+        // Look for the rect element which is specific to Copy icon
+        const rect = svg?.querySelector('rect')
+        const hasRect = rect !== null
+        // Ensure it doesn't have text content (to avoid confusion with other buttons)
+        const hasNoText = !btn.textContent || btn.textContent.trim() === ''
+        return hasRect && hasNoText
+      })
+
+      expect(copyButton).toBeTruthy()
+      if (copyButton) {
+        await userEvent.click(copyButton)
+      }
+
+      await waitFor(
+        () => {
+          // Should see "Production (Copy)"
+          expect(screen.getByText('Production (Copy)')).toBeInTheDocument()
+
+          // Check localStorage
+          const stored = JSON.parse(localStorage.getItem('apiTesterEnvironments') || '[]')
+          expect(stored).toHaveLength(2)
+          expect(stored[1].name).toBe('Production (Copy)')
+          expect(stored[1].variables[0].key).toBe('API_URL')
+        },
+        { timeout: 3000 }
+      )
+    })
+  })
 })
