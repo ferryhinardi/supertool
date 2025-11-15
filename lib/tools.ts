@@ -257,7 +257,6 @@ export const tools: Tool[] = [
     features: ['Quick Presets', 'Split Bill', 'Round Options', 'Total Summary'],
     category: 'finance',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Currency Converter',
@@ -303,7 +302,6 @@ export const tools: Tool[] = [
     features: ['Exact Age', 'Next Birthday', 'Multiple Units', 'Life Events'],
     category: 'productivity',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Invoice Generator',
@@ -462,7 +460,6 @@ export const tools: Tool[] = [
     gradient: 'from-emerald-500 to-green-500',
     features: ['Hash Comparison', 'Multiple Algorithms', 'Tamper Detection', 'No Upload to Server'],
     category: 'security',
-    comingSoon: true,
   },
 
   // Developer Tools (Advanced)
@@ -487,7 +484,6 @@ export const tools: Tool[] = [
     features: ['Decode JWT', 'Verify Signature', 'Expiry Check', 'Secure & Local'],
     category: 'development',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'YAML ↔ JSON Converter',
@@ -510,7 +506,6 @@ export const tools: Tool[] = [
     features: ['Auto Format', 'Best Practices', 'Security Checks', 'Layer Optimization'],
     category: 'development',
     new: true,
-    comingSoon: true,
   },
   {
     title: 'Cron Expression Builder',
@@ -696,7 +691,6 @@ export const tools: Tool[] = [
     gradient: 'from-green-500 to-emerald-500',
     features: ['Minify SVG', 'Live Preview', 'Color Editor', 'Size Reduction'],
     category: 'design',
-    comingSoon: true,
   },
   {
     title: 'Image Metadata Viewer',
