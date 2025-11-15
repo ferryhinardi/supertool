@@ -77,17 +77,29 @@ describe('API Tester Page - Component Tests', () => {
     expect(screen.getByRole('button', { name: /History \(0\)/i })).toBeInTheDocument()
   })
 
-  it('should display authentication selector', () => {
+  it('should display authentication selector', async () => {
     render(<ApiTesterPage />)
 
-    expect(screen.getByText('Authentication')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('No Authentication')).toBeInTheDocument()
+    // Click on Auth tab to access authentication section
+    const authTab = screen.getByRole('button', { name: 'Auth' })
+    await userEvent.click(authTab)
+
+    await waitFor(() => {
+      expect(screen.getByText('Authentication')).toBeInTheDocument()
+      expect(screen.getByDisplayValue('No Authentication')).toBeInTheDocument()
+    })
   })
 
-  it('should display add header button', () => {
+  it('should display add header button', async () => {
     render(<ApiTesterPage />)
 
-    expect(screen.getByRole('button', { name: /Add Header/i })).toBeInTheDocument()
+    // Click on Headers tab to access headers section
+    const headersTab = screen.getByRole('button', { name: 'Headers' })
+    await userEvent.click(headersTab)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Add Header/i })).toBeInTheDocument()
+    })
   })
 
   it('should change HTTP method', async () => {
@@ -121,6 +133,14 @@ describe('API Tester Page - Component Tests', () => {
   it('should add a new header', async () => {
     render(<ApiTesterPage />)
 
+    // Click on Headers tab to access headers section
+    const headersTab = screen.getByRole('button', { name: 'Headers' })
+    await userEvent.click(headersTab)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Add Header/i })).toBeInTheDocument()
+    })
+
     const addHeaderButton = screen.getByRole('button', { name: /Add Header/i })
     await userEvent.click(addHeaderButton)
 
@@ -130,6 +150,14 @@ describe('API Tester Page - Component Tests', () => {
 
   it('should enter header key and value', async () => {
     render(<ApiTesterPage />)
+
+    // Click on Headers tab to access headers section
+    const headersTab = screen.getByRole('button', { name: 'Headers' })
+    await userEvent.click(headersTab)
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText(/Header name/i)).toBeInTheDocument()
+    })
 
     const headerKeyInput = screen.getByPlaceholderText(/Header name/i)
     const headerValueInput = screen.getByPlaceholderText(/Header value/i)
@@ -144,6 +172,14 @@ describe('API Tester Page - Component Tests', () => {
   it('should show bearer token input when authentication type is bearer', async () => {
     render(<ApiTesterPage />)
 
+    // Click on Auth tab to access authentication section
+    const authTab = screen.getByRole('button', { name: 'Auth' })
+    await userEvent.click(authTab)
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('No Authentication')).toBeInTheDocument()
+    })
+
     const authSelect = screen.getByDisplayValue('No Authentication')
     fireEvent.change(authSelect, { target: { value: 'bearer' } })
 
@@ -154,6 +190,14 @@ describe('API Tester Page - Component Tests', () => {
 
   it('should show basic auth inputs when authentication type is basic', async () => {
     render(<ApiTesterPage />)
+
+    // Click on Auth tab to access authentication section
+    const authTab = screen.getByRole('button', { name: 'Auth' })
+    await userEvent.click(authTab)
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('No Authentication')).toBeInTheDocument()
+    })
 
     const authSelect = screen.getByDisplayValue('No Authentication')
     fireEvent.change(authSelect, { target: { value: 'basic' } })
@@ -170,6 +214,14 @@ describe('API Tester Page - Component Tests', () => {
     const methodSelect = screen.getByDisplayValue('GET')
     fireEvent.change(methodSelect, { target: { value: 'POST' } })
 
+    // Click on Body tab to access body section
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Body' })).toBeInTheDocument()
+    })
+
+    const bodyTab = screen.getByRole('button', { name: 'Body' })
+    await userEvent.click(bodyTab)
+
     await waitFor(() => {
       expect(screen.getByText('Request Body')).toBeInTheDocument()
       expect(screen.getByDisplayValue('No Body')).toBeInTheDocument()
@@ -181,6 +233,14 @@ describe('API Tester Page - Component Tests', () => {
 
     const methodSelect = screen.getByDisplayValue('GET')
     fireEvent.change(methodSelect, { target: { value: 'POST' } })
+
+    // Click on Body tab to access body section
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Body' })).toBeInTheDocument()
+    })
+
+    const bodyTab = screen.getByRole('button', { name: 'Body' })
+    await userEvent.click(bodyTab)
 
     await waitFor(() => {
       const bodyTypeSelect = screen.getByDisplayValue('No Body')
@@ -197,6 +257,14 @@ describe('API Tester Page - Component Tests', () => {
 
     const methodSelect = screen.getByDisplayValue('GET')
     fireEvent.change(methodSelect, { target: { value: 'POST' } })
+
+    // Click on Body tab to access body section
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Body' })).toBeInTheDocument()
+    })
+
+    const bodyTab = screen.getByRole('button', { name: 'Body' })
+    await userEvent.click(bodyTab)
 
     await waitFor(() => {
       const bodyTypeSelect = screen.getByDisplayValue('No Body')
@@ -534,6 +602,14 @@ describe('API Tester Page - Component Tests', () => {
     const methodSelect = screen.getByDisplayValue('GET')
     fireEvent.change(methodSelect, { target: { value: 'POST' } })
 
+    // Click on Body tab to access body section
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Body' })).toBeInTheDocument()
+    })
+
+    const bodyTab = screen.getByRole('button', { name: 'Body' })
+    await userEvent.click(bodyTab)
+
     await waitFor(() => {
       const bodyTypeSelect = screen.getByDisplayValue('No Body')
       fireEvent.change(bodyTypeSelect, { target: { value: 'json' } })
@@ -553,5 +629,159 @@ describe('API Tester Page - Component Tests', () => {
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Invalid JSON in request body')
     })
+  })
+
+  it('should display query parameters section', async () => {
+    render(<ApiTesterPage />)
+
+    // Params tab should be active by default, but let's click it to be sure
+    const paramsTab = screen.getByRole('button', { name: 'Params' })
+    await userEvent.click(paramsTab)
+
+    await waitFor(() => {
+      expect(screen.getByText('Query Parameters')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Add Parameter/i })).toBeInTheDocument()
+    })
+  })
+
+  it('should add a new query parameter', async () => {
+    render(<ApiTesterPage />)
+
+    // Params tab should be active by default
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Add Parameter/i })).toBeInTheDocument()
+    })
+
+    const addButton = screen.getByRole('button', { name: /Add Parameter/i })
+    await userEvent.click(addButton)
+
+    await waitFor(() => {
+      const paramInputs = screen.getAllByPlaceholderText(/Parameter name/i)
+      expect(paramInputs.length).toBeGreaterThan(1)
+    })
+  })
+
+  it('should display API key authentication option', async () => {
+    render(<ApiTesterPage />)
+
+    // Click on Auth tab to access authentication section
+    const authTab = screen.getByRole('button', { name: 'Auth' })
+    await userEvent.click(authTab)
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('No Authentication')).toBeInTheDocument()
+    })
+
+    const authSelect = screen.getByDisplayValue('No Authentication')
+    fireEvent.change(authSelect, { target: { value: 'api-key' } })
+
+    expect(authSelect).toHaveValue('api-key')
+  })
+
+  it('should show API key input when API key auth is selected', async () => {
+    render(<ApiTesterPage />)
+
+    // Click on Auth tab to access authentication section
+    const authTab = screen.getByRole('button', { name: 'Auth' })
+    await userEvent.click(authTab)
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('No Authentication')).toBeInTheDocument()
+    })
+
+    const authSelect = screen.getByDisplayValue('No Authentication')
+    fireEvent.change(authSelect, { target: { value: 'api-key' } })
+
+    await waitFor(() => {
+      expect(
+        screen.getByPlaceholderText(/Enter API key \(will be sent as X-API-Key header\)/i)
+      ).toBeInTheDocument()
+    })
+  })
+
+  it('should send request with query parameters', async () => {
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      json: async () => ({ message: 'Success' }),
+    }
+    ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockResponse)
+
+    render(<ApiTesterPage />)
+
+    const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
+    await userEvent.type(urlInput, 'https://api.example.com/test')
+
+    // Add query parameter
+    const paramInputs = screen.getAllByPlaceholderText(/Parameter name/i)
+    await userEvent.type(paramInputs[0], 'key')
+
+    const paramValueInputs = screen.getAllByPlaceholderText(/Parameter value/i)
+    await userEvent.type(paramValueInputs[0], 'value')
+
+    const sendButton = screen.getByRole('button', { name: /Send/i })
+    await userEvent.click(sendButton)
+
+    await waitFor(() => {
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('key=value'),
+        expect.any(Object)
+      )
+    })
+  })
+
+  it('should send request with API key header', async () => {
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      json: async () => ({ message: 'Success' }),
+    }
+    ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockResponse)
+
+    render(<ApiTesterPage />)
+
+    const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
+    await userEvent.type(urlInput, 'https://api.example.com/test')
+
+    // Click on Auth tab to access authentication section
+    const authTab = screen.getByRole('button', { name: 'Auth' })
+    await userEvent.click(authTab)
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('No Authentication')).toBeInTheDocument()
+    })
+
+    const authSelect = screen.getByDisplayValue('No Authentication')
+    fireEvent.change(authSelect, { target: { value: 'api-key' } })
+
+    const apiKeyInput = await screen.findByPlaceholderText(
+      /Enter API key \(will be sent as X-API-Key header\)/i
+    )
+    await userEvent.type(apiKeyInput, 'test-api-key')
+
+    const sendButton = screen.getByRole('button', { name: /Send/i })
+    await userEvent.click(sendButton)
+
+    await waitFor(() => {
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'X-API-Key': 'test-api-key',
+          }),
+        })
+      )
+    })
+  })
+
+  it('should display keyboard shortcut hint', () => {
+    render(<ApiTesterPage />)
+
+    expect(screen.getByText(/Tip:/i)).toBeInTheDocument()
+    expect(screen.getByText(/to send/i)).toBeInTheDocument()
   })
 })

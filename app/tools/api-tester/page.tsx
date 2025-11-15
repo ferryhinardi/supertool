@@ -1,6 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import hljs from 'highlight.js/lib/core'
+import json from 'highlight.js/lib/languages/json'
+import 'highlight.js/styles/github-dark.css'
 import {
   BookmarkPlus,
   Copy,
@@ -27,16 +30,26 @@ import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
+// Register JSON language for syntax highlighting
+hljs.registerLanguage('json', json)
+
 const HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'] as const
 type HttpMethod = (typeof HTTP_METHODS)[number]
 
-const AUTH_TYPES = ['none', 'bearer', 'basic'] as const
+const AUTH_TYPES = ['none', 'bearer', 'basic', 'api-key'] as const
 type AuthType = (typeof AUTH_TYPES)[number]
 
 const BODY_TYPES = ['none', 'json', 'text', 'form-data'] as const
 type BodyType = (typeof BODY_TYPES)[number]
 
 interface Header {
+  id: string
+  key: string
+  value: string
+  enabled: boolean
+}
+
+interface QueryParam {
   id: string
   key: string
   value: string
@@ -53,11 +66,13 @@ interface FormDataItem {
 interface RequestConfig {
   method: HttpMethod
   url: string
+  queryParams: QueryParam[]
   headers: Header[]
   authType: AuthType
   authToken: string
   authUsername: string
   authPassword: string
+  authApiKey: string
   bodyType: BodyType
   bodyJson: string
   bodyText: string
@@ -89,6 +104,9 @@ function ApiTesterContent() {
   // Request Configuration
   const [method, setMethod] = useState<HttpMethod>('GET')
   const [url, setUrl] = useState('')
+  const [queryParams, setQueryParams] = useState<QueryParam[]>([
+    { id: nanoid(), key: '', value: '', enabled: true },
+  ])
   const [headers, setHeaders] = useState<Header[]>([
     { id: nanoid(), key: '', value: '', enabled: true },
   ])
@@ -96,6 +114,7 @@ function ApiTesterContent() {
   const [authToken, setAuthToken] = useState('')
   const [authUsername, setAuthUsername] = useState('')
   const [authPassword, setAuthPassword] = useState('')
+  const [authApiKey, setAuthApiKey] = useState('')
   const [bodyType, setBodyType] = useState<BodyType>('none')
   const [bodyJson, setBodyJson] = useState('{\n  \n}')
   const [bodyText, setBodyText] = useState('')
@@ -137,6 +156,9 @@ function ApiTesterContent() {
 
   const [showPresets, setShowPresets] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
+  const [activeRequestTab, setActiveRequestTab] = useState<'params' | 'auth' | 'headers' | 'body'>(
+    'params'
+  )
 
   // Save presets and history
   useEffect(() => {
@@ -156,14 +178,34 @@ function ApiTesterContent() {
     trackToolEvent('api_tester_open', {})
   }, [])
 
+  // Keyboard shortcuts
+  // biome-ignore lint/correctness/useExhaustiveDependencies: handleSendRequest is stable and doesn't need to be in deps
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd/Ctrl+Enter to send request
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault()
+        if (url.trim() && !loading) {
+          trackToolEvent('api_tester_keyboard_shortcut_used', { shortcut: 'cmd_enter' })
+          handleSendRequest()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [url, loading])
+
   const getCurrentConfig = (): RequestConfig => ({
     method,
     url,
+    queryParams,
     headers,
     authType,
     authToken,
     authUsername,
     authPassword,
+    authApiKey,
     bodyType,
     bodyJson,
     bodyText,
@@ -173,11 +215,13 @@ function ApiTesterContent() {
   const loadConfig = (config: RequestConfig) => {
     setMethod(config.method)
     setUrl(config.url)
+    setQueryParams(config.queryParams)
     setHeaders(config.headers)
     setAuthType(config.authType)
     setAuthToken(config.authToken)
     setAuthUsername(config.authUsername)
     setAuthPassword(config.authPassword)
+    setAuthApiKey(config.authApiKey || '')
     setBodyType(config.bodyType)
     setBodyJson(config.bodyJson)
     setBodyText(config.bodyText)
@@ -213,6 +257,8 @@ function ApiTesterContent() {
       } else if (authType === 'basic' && authUsername.trim()) {
         const encoded = btoa(`${authUsername.trim()}:${authPassword.trim()}`)
         requestHeaders.Authorization = `Basic ${encoded}`
+      } else if (authType === 'api-key' && authApiKey.trim()) {
+        requestHeaders['X-API-Key'] = authApiKey.trim()
       }
 
       // Build body
@@ -241,8 +287,19 @@ function ApiTesterContent() {
         }
       }
 
+      // Build URL with query parameters
+      let requestUrl = url.trim()
+      const enabledParams = queryParams.filter((p) => p.enabled && p.key.trim())
+      if (enabledParams.length > 0) {
+        const urlObj = new URL(requestUrl)
+        enabledParams.forEach((p) => {
+          urlObj.searchParams.append(p.key.trim(), p.value.trim())
+        })
+        requestUrl = urlObj.toString()
+      }
+
       // Make request
-      const res = await fetch(url.trim(), {
+      const res = await fetch(requestUrl, {
         method,
         headers: requestHeaders,
         body: requestBody,
@@ -393,6 +450,19 @@ function ApiTesterContent() {
     setHeaders(headers.filter((h) => h.id !== id))
   }
 
+  const addQueryParam = () => {
+    trackToolEvent('api_tester_add_query_param', {})
+    setQueryParams([...queryParams, { id: nanoid(), key: '', value: '', enabled: true }])
+  }
+
+  const updateQueryParam = (id: string, field: keyof QueryParam, value: string | boolean) => {
+    setQueryParams(queryParams.map((q) => (q.id === id ? { ...q, [field]: value } : q)))
+  }
+
+  const removeQueryParam = (id: string) => {
+    setQueryParams(queryParams.filter((q) => q.id !== id))
+  }
+
   const addFormDataItem = () => {
     setFormData([...formData, { id: nanoid(), key: '', value: '', enabled: true }])
   }
@@ -411,6 +481,18 @@ function ApiTesterContent() {
     if (response.status >= 300 && response.status < 400) return 'blue'
     if (response.status >= 400 && response.status < 500) return 'orange'
     return 'red'
+  }, [response])
+
+  const highlightedResponseBody = useMemo(() => {
+    if (!response) return ''
+    try {
+      // Try to parse and highlight as JSON
+      JSON.parse(response.body)
+      return hljs.highlight(response.body, { language: 'json' }).value
+    } catch {
+      // If not JSON, return as is
+      return response.body
+    }
   }, [response])
 
   return (
@@ -781,8 +863,45 @@ function ApiTesterContent() {
           <CardContent className={css({ spaceY: '6' })}>
             {/* URL & Method */}
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
-                Request URL
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                })}
+              >
+                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  Request URL
+                </div>
+                <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  Tip: Press{' '}
+                  <kbd
+                    className={css({
+                      px: '1.5',
+                      py: '0.5',
+                      rounded: 'sm',
+                      bg: 'gray.700',
+                      fontSize: 'xs',
+                      fontWeight: 'semibold',
+                    })}
+                  >
+                    ⌘
+                  </kbd>
+                  +
+                  <kbd
+                    className={css({
+                      px: '1.5',
+                      py: '0.5',
+                      rounded: 'sm',
+                      bg: 'gray.700',
+                      fontSize: 'xs',
+                      fontWeight: 'semibold',
+                    })}
+                  >
+                    Enter
+                  </kbd>{' '}
+                  to send
+                </div>
               </div>
               <div className={css({ display: 'flex', gap: '3' })}>
                 <select
@@ -861,239 +980,92 @@ function ApiTesterContent() {
               </div>
             </div>
 
-            {/* Authentication */}
-            <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
-                Authentication
-              </div>
-              <select
-                value={authType}
-                onChange={(e) => setAuthType(e.target.value as AuthType)}
-                className={css({
-                  h: '10',
-                  w: 'full',
-                  rounded: 'lg',
-                  border: '1px solid',
-                  borderColor: 'gray.700',
-                  bg: 'gray.800/50',
-                  px: '4',
-                  fontSize: 'base',
-                  color: 'gray.200',
-                  _hover: { bg: 'gray.800', borderColor: 'gray.600' },
-                  _focus: {
-                    outline: 'none',
-                    borderColor: 'blue.500',
-                    ring: '2px',
-                    ringColor: 'blue.500/20',
-                  },
-                })}
-              >
-                <option value="none">No Authentication</option>
-                <option value="bearer">Bearer Token</option>
-                <option value="basic">Basic Auth</option>
-              </select>
-
-              {authType === 'bearer' && (
-                <Input
-                  type="text"
-                  value={authToken}
-                  onChange={(e) => setAuthToken(e.target.value)}
-                  placeholder="Enter bearer token"
-                  className={css({
-                    h: '10',
-                    bg: 'gray.800/50',
-                    border: '1px solid',
-                    borderColor: 'gray.700',
-                    _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
-                  })}
-                />
-              )}
-
-              {authType === 'basic' && (
-                <div className={css({ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3' })}>
-                  <Input
-                    type="text"
-                    value={authUsername}
-                    onChange={(e) => setAuthUsername(e.target.value)}
-                    placeholder="Username"
-                    className={css({
-                      h: '10',
-                      bg: 'gray.800/50',
-                      border: '1px solid',
-                      borderColor: 'gray.700',
-                      _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
-                    })}
-                  />
-                  <Input
-                    type="password"
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                    placeholder="Password"
-                    className={css({
-                      h: '10',
-                      bg: 'gray.800/50',
-                      border: '1px solid',
-                      borderColor: 'gray.700',
-                      _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
-                    })}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Headers */}
-            <div className={css({ spaceY: '3' })}>
+            {/* Request Configuration Tabs */}
+            <div className={css({ borderTop: '1px solid', borderColor: 'gray.800', pt: '4' })}>
               <div
                 className={css({
                   display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  gap: '2',
+                  borderBottom: '1px solid',
+                  borderColor: 'gray.800',
+                  mb: '4',
                 })}
               >
-                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
-                  Headers
-                </div>
-                <Button
-                  onClick={addHeader}
-                  size="sm"
-                  className={css({
-                    gap: '2',
-                    bg: 'gray.800',
-                    color: 'gray.400',
-                    _hover: { bg: 'gray.700' },
-                  })}
-                >
-                  + Add Header
-                </Button>
-              </div>
-              <div className={css({ spaceY: '2' })}>
-                {headers.map((header) => (
-                  <div
-                    key={header.id}
-                    className={css({ display: 'flex', gap: '2', alignItems: 'center' })}
+                {[
+                  {
+                    id: 'params',
+                    label: 'Params',
+                    count: queryParams.filter((p) => p.enabled && p.key).length,
+                  },
+                  { id: 'auth', label: 'Auth', count: authType !== 'none' ? 1 : 0 },
+                  {
+                    id: 'headers',
+                    label: 'Headers',
+                    count: headers.filter((h) => h.enabled && h.key).length,
+                  },
+                  {
+                    id: 'body',
+                    label: 'Body',
+                    count: ['POST', 'PUT', 'PATCH'].includes(method) && bodyType !== 'none' ? 1 : 0,
+                  },
+                ].map((tab) => (
+                  <button
+                    type="button"
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveRequestTab(tab.id as typeof activeRequestTab)
+                      trackToolEvent('api_tester_tab_change', { tab: tab.id })
+                    }}
+                    className={css({
+                      px: '4',
+                      py: '2',
+                      fontSize: 'sm',
+                      fontWeight: 'medium',
+                      color: activeRequestTab === tab.id ? 'blue.400' : 'gray.400',
+                      borderBottom: '2px solid',
+                      borderColor: activeRequestTab === tab.id ? 'blue.500' : 'transparent',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      _hover: { color: activeRequestTab === tab.id ? 'blue.300' : 'gray.300' },
+                    })}
                   >
-                    <input
-                      type="checkbox"
-                      checked={header.enabled}
-                      onChange={(e) => updateHeader(header.id, 'enabled', e.target.checked)}
-                      className={css({ w: '4', h: '4', cursor: 'pointer' })}
-                    />
-                    <Input
-                      type="text"
-                      value={header.key}
-                      onChange={(e) => updateHeader(header.id, 'key', e.target.value)}
-                      placeholder="Header name"
-                      className={css({
-                        h: '10',
-                        flex: '1',
-                        bg: 'gray.800/50',
-                        border: '1px solid',
-                        borderColor: 'gray.700',
-                        _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
-                      })}
-                    />
-                    <Input
-                      type="text"
-                      value={header.value}
-                      onChange={(e) => updateHeader(header.id, 'value', e.target.value)}
-                      placeholder="Header value"
-                      className={css({
-                        h: '10',
-                        flex: '1',
-                        bg: 'gray.800/50',
-                        border: '1px solid',
-                        borderColor: 'gray.700',
-                        _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
-                      })}
-                    />
-                    <Button
-                      onClick={() => removeHeader(header.id)}
-                      size="sm"
-                      className={css({
-                        bg: 'transparent',
-                        color: 'gray.500',
-                        _hover: { bg: 'red.500/20', color: 'red.400' },
-                      })}
-                    >
-                      <X className={css({ h: '4', w: '4' })} />
-                    </Button>
-                  </div>
+                    {tab.label}
+                    {tab.count > 0 && (
+                      <span
+                        className={css({
+                          ml: '2',
+                          px: '2',
+                          py: '0.5',
+                          fontSize: 'xs',
+                          rounded: 'full',
+                          bg: activeRequestTab === tab.id ? 'blue.500/20' : 'gray.800',
+                          color: activeRequestTab === tab.id ? 'blue.300' : 'gray.500',
+                        })}
+                      >
+                        {tab.count}
+                      </span>
+                    )}
+                  </button>
                 ))}
               </div>
-            </div>
 
-            {/* Body */}
-            {['POST', 'PUT', 'PATCH'].includes(method) && (
-              <div className={css({ spaceY: '3' })}>
-                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
-                  Request Body
-                </div>
-                <select
-                  value={bodyType}
-                  onChange={(e) => setBodyType(e.target.value as BodyType)}
-                  className={css({
-                    h: '10',
-                    w: 'full',
-                    rounded: 'lg',
-                    border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
-                    px: '4',
-                    fontSize: 'base',
-                    color: 'gray.200',
-                    _hover: { bg: 'gray.800', borderColor: 'gray.600' },
-                    _focus: {
-                      outline: 'none',
-                      borderColor: 'blue.500',
-                      ring: '2px',
-                      ringColor: 'blue.500/20',
-                    },
-                  })}
-                >
-                  <option value="none">No Body</option>
-                  <option value="json">JSON</option>
-                  <option value="text">Plain Text</option>
-                  <option value="form-data">Form Data</option>
-                </select>
-
-                {bodyType === 'json' && (
-                  <Textarea
-                    value={bodyJson}
-                    onChange={(e) => setBodyJson(e.target.value)}
-                    placeholder='{"key": "value"}'
-                    rows={8}
+              {/* Tab Content */}
+              {activeRequestTab === 'params' && (
+                <div className={css({ spaceY: '3' })}>
+                  <div
                     className={css({
-                      fontFamily: 'mono',
-                      fontSize: 'sm',
-                      bg: 'gray.800/50',
-                      border: '1px solid',
-                      borderColor: 'gray.700',
-                      _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                     })}
-                  />
-                )}
-
-                {bodyType === 'text' && (
-                  <Textarea
-                    value={bodyText}
-                    onChange={(e) => setBodyText(e.target.value)}
-                    placeholder="Enter text content"
-                    rows={8}
-                    className={css({
-                      fontFamily: 'mono',
-                      fontSize: 'sm',
-                      bg: 'gray.800/50',
-                      border: '1px solid',
-                      borderColor: 'gray.700',
-                      _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
-                    })}
-                  />
-                )}
-
-                {bodyType === 'form-data' && (
-                  <div className={css({ spaceY: '2' })}>
+                  >
+                    <div
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    >
+                      Query Parameters
+                    </div>
                     <Button
-                      onClick={addFormDataItem}
+                      onClick={addQueryParam}
                       size="sm"
                       className={css({
                         gap: '2',
@@ -1102,24 +1074,26 @@ function ApiTesterContent() {
                         _hover: { bg: 'gray.700' },
                       })}
                     >
-                      + Add Field
+                      + Add Parameter
                     </Button>
-                    {formData.map((item) => (
+                  </div>
+                  <div className={css({ spaceY: '2' })}>
+                    {queryParams.map((param) => (
                       <div
-                        key={item.id}
+                        key={param.id}
                         className={css({ display: 'flex', gap: '2', alignItems: 'center' })}
                       >
                         <input
                           type="checkbox"
-                          checked={item.enabled}
-                          onChange={(e) => updateFormDataItem(item.id, 'enabled', e.target.checked)}
+                          checked={param.enabled}
+                          onChange={(e) => updateQueryParam(param.id, 'enabled', e.target.checked)}
                           className={css({ w: '4', h: '4', cursor: 'pointer' })}
                         />
                         <Input
                           type="text"
-                          value={item.key}
-                          onChange={(e) => updateFormDataItem(item.id, 'key', e.target.value)}
-                          placeholder="Field name"
+                          value={param.key}
+                          onChange={(e) => updateQueryParam(param.id, 'key', e.target.value)}
+                          placeholder="Parameter name"
                           className={css({
                             h: '10',
                             flex: '1',
@@ -1135,9 +1109,9 @@ function ApiTesterContent() {
                         />
                         <Input
                           type="text"
-                          value={item.value}
-                          onChange={(e) => updateFormDataItem(item.id, 'value', e.target.value)}
-                          placeholder="Field value"
+                          value={param.value}
+                          onChange={(e) => updateQueryParam(param.id, 'value', e.target.value)}
+                          placeholder="Parameter value"
                           className={css({
                             h: '10',
                             flex: '1',
@@ -1152,7 +1126,7 @@ function ApiTesterContent() {
                           })}
                         />
                         <Button
-                          onClick={() => removeFormDataItem(item.id)}
+                          onClick={() => removeQueryParam(param.id)}
                           size="sm"
                           className={css({
                             bg: 'transparent',
@@ -1165,9 +1139,383 @@ function ApiTesterContent() {
                       </div>
                     ))}
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+
+              {activeRequestTab === 'auth' && (
+                <div className={css({ spaceY: '3' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                    Authentication
+                  </div>
+                  <select
+                    value={authType}
+                    onChange={(e) => {
+                      const newAuthType = e.target.value as AuthType
+                      if (newAuthType === 'api-key') {
+                        trackToolEvent('api_tester_use_api_key_auth', {})
+                      }
+                      setAuthType(newAuthType)
+                    }}
+                    className={css({
+                      h: '10',
+                      w: 'full',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      bg: 'gray.800/50',
+                      px: '4',
+                      fontSize: 'base',
+                      color: 'gray.200',
+                      _hover: { bg: 'gray.800', borderColor: 'gray.600' },
+                      _focus: {
+                        outline: 'none',
+                        borderColor: 'blue.500',
+                        ring: '2px',
+                        ringColor: 'blue.500/20',
+                      },
+                    })}
+                  >
+                    <option value="none">No Authentication</option>
+                    <option value="bearer">Bearer Token</option>
+                    <option value="basic">Basic Auth</option>
+                    <option value="api-key">API Key</option>
+                  </select>
+
+                  {authType === 'bearer' && (
+                    <Input
+                      type="text"
+                      value={authToken}
+                      onChange={(e) => setAuthToken(e.target.value)}
+                      placeholder="Enter bearer token"
+                      className={css({
+                        h: '10',
+                        bg: 'gray.800/50',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
+                      })}
+                    />
+                  )}
+
+                  {authType === 'basic' && (
+                    <div
+                      className={css({ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3' })}
+                    >
+                      <Input
+                        type="text"
+                        value={authUsername}
+                        onChange={(e) => setAuthUsername(e.target.value)}
+                        placeholder="Username"
+                        className={css({
+                          h: '10',
+                          bg: 'gray.800/50',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          _focus: {
+                            borderColor: 'blue.500',
+                            ring: '2px',
+                            ringColor: 'blue.500/20',
+                          },
+                        })}
+                      />
+                      <Input
+                        type="password"
+                        value={authPassword}
+                        onChange={(e) => setAuthPassword(e.target.value)}
+                        placeholder="Password"
+                        className={css({
+                          h: '10',
+                          bg: 'gray.800/50',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          _focus: {
+                            borderColor: 'blue.500',
+                            ring: '2px',
+                            ringColor: 'blue.500/20',
+                          },
+                        })}
+                      />
+                    </div>
+                  )}
+
+                  {authType === 'api-key' && (
+                    <Input
+                      type="text"
+                      value={authApiKey}
+                      onChange={(e) => setAuthApiKey(e.target.value)}
+                      placeholder="Enter API key (will be sent as X-API-Key header)"
+                      className={css({
+                        h: '10',
+                        bg: 'gray.800/50',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
+                      })}
+                    />
+                  )}
+                </div>
+              )}
+
+              {activeRequestTab === 'headers' && (
+                <div className={css({ spaceY: '3' })}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    })}
+                  >
+                    <div
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    >
+                      Headers
+                    </div>
+                    <Button
+                      onClick={addHeader}
+                      size="sm"
+                      className={css({
+                        gap: '2',
+                        bg: 'gray.800',
+                        color: 'gray.400',
+                        _hover: { bg: 'gray.700' },
+                      })}
+                    >
+                      + Add Header
+                    </Button>
+                  </div>
+                  <div className={css({ spaceY: '2' })}>
+                    {headers.map((header) => (
+                      <div
+                        key={header.id}
+                        className={css({ display: 'flex', gap: '2', alignItems: 'center' })}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={header.enabled}
+                          onChange={(e) => updateHeader(header.id, 'enabled', e.target.checked)}
+                          className={css({ w: '4', h: '4', cursor: 'pointer' })}
+                        />
+                        <Input
+                          type="text"
+                          value={header.key}
+                          onChange={(e) => updateHeader(header.id, 'key', e.target.value)}
+                          placeholder="Header name"
+                          className={css({
+                            h: '10',
+                            flex: '1',
+                            bg: 'gray.800/50',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            _focus: {
+                              borderColor: 'blue.500',
+                              ring: '2px',
+                              ringColor: 'blue.500/20',
+                            },
+                          })}
+                        />
+                        <Input
+                          type="text"
+                          value={header.value}
+                          onChange={(e) => updateHeader(header.id, 'value', e.target.value)}
+                          placeholder="Header value"
+                          className={css({
+                            h: '10',
+                            flex: '1',
+                            bg: 'gray.800/50',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            _focus: {
+                              borderColor: 'blue.500',
+                              ring: '2px',
+                              ringColor: 'blue.500/20',
+                            },
+                          })}
+                        />
+                        <Button
+                          onClick={() => removeHeader(header.id)}
+                          size="sm"
+                          className={css({
+                            bg: 'transparent',
+                            color: 'gray.500',
+                            _hover: { bg: 'red.500/20', color: 'red.400' },
+                          })}
+                        >
+                          <X className={css({ h: '4', w: '4' })} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeRequestTab === 'body' && ['POST', 'PUT', 'PATCH'].includes(method) && (
+                <div className={css({ spaceY: '3' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                    Request Body
+                  </div>
+                  <select
+                    value={bodyType}
+                    onChange={(e) => setBodyType(e.target.value as BodyType)}
+                    className={css({
+                      h: '10',
+                      w: 'full',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                      bg: 'gray.800/50',
+                      px: '4',
+                      fontSize: 'base',
+                      color: 'gray.200',
+                      _hover: { bg: 'gray.800', borderColor: 'gray.600' },
+                      _focus: {
+                        outline: 'none',
+                        borderColor: 'blue.500',
+                        ring: '2px',
+                        ringColor: 'blue.500/20',
+                      },
+                    })}
+                  >
+                    <option value="none">No Body</option>
+                    <option value="json">JSON</option>
+                    <option value="text">Plain Text</option>
+                    <option value="form-data">Form Data</option>
+                  </select>
+
+                  {bodyType === 'json' && (
+                    <Textarea
+                      value={bodyJson}
+                      onChange={(e) => setBodyJson(e.target.value)}
+                      placeholder='{"key": "value"}'
+                      rows={8}
+                      className={css({
+                        fontFamily: 'mono',
+                        fontSize: 'sm',
+                        bg: 'gray.800/50',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
+                      })}
+                    />
+                  )}
+
+                  {bodyType === 'text' && (
+                    <Textarea
+                      value={bodyText}
+                      onChange={(e) => setBodyText(e.target.value)}
+                      placeholder="Enter text content"
+                      rows={8}
+                      className={css({
+                        fontFamily: 'mono',
+                        fontSize: 'sm',
+                        bg: 'gray.800/50',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        _focus: { borderColor: 'blue.500', ring: '2px', ringColor: 'blue.500/20' },
+                      })}
+                    />
+                  )}
+
+                  {bodyType === 'form-data' && (
+                    <div className={css({ spaceY: '2' })}>
+                      <Button
+                        onClick={addFormDataItem}
+                        size="sm"
+                        className={css({
+                          gap: '2',
+                          bg: 'gray.800',
+                          color: 'gray.400',
+                          _hover: { bg: 'gray.700' },
+                        })}
+                      >
+                        + Add Field
+                      </Button>
+                      {formData.map((item) => (
+                        <div
+                          key={item.id}
+                          className={css({ display: 'flex', gap: '2', alignItems: 'center' })}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={item.enabled}
+                            onChange={(e) =>
+                              updateFormDataItem(item.id, 'enabled', e.target.checked)
+                            }
+                            className={css({ w: '4', h: '4', cursor: 'pointer' })}
+                          />
+                          <Input
+                            type="text"
+                            value={item.key}
+                            onChange={(e) => updateFormDataItem(item.id, 'key', e.target.value)}
+                            placeholder="Field name"
+                            className={css({
+                              h: '10',
+                              flex: '1',
+                              bg: 'gray.800/50',
+                              border: '1px solid',
+                              borderColor: 'gray.700',
+                              _focus: {
+                                borderColor: 'blue.500',
+                                ring: '2px',
+                                ringColor: 'blue.500/20',
+                              },
+                            })}
+                          />
+                          <Input
+                            type="text"
+                            value={item.value}
+                            onChange={(e) => updateFormDataItem(item.id, 'value', e.target.value)}
+                            placeholder="Field value"
+                            className={css({
+                              h: '10',
+                              flex: '1',
+                              bg: 'gray.800/50',
+                              border: '1px solid',
+                              borderColor: 'gray.700',
+                              _focus: {
+                                borderColor: 'blue.500',
+                                ring: '2px',
+                                ringColor: 'blue.500/20',
+                              },
+                            })}
+                          />
+                          <Button
+                            onClick={() => removeFormDataItem(item.id)}
+                            size="sm"
+                            className={css({
+                              bg: 'transparent',
+                              color: 'gray.500',
+                              _hover: { bg: 'red.500/20', color: 'red.400' },
+                            })}
+                          >
+                            <X className={css({ h: '4', w: '4' })} />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeRequestTab === 'body' && !['POST', 'PUT', 'PATCH'].includes(method) && (
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                    p: '4',
+                    rounded: 'lg',
+                    bg: 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                  })}
+                >
+                  <Info className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Request body is only available for POST, PUT, and PATCH requests
+                  </span>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
       </motion.div>
@@ -1331,13 +1679,12 @@ function ApiTesterContent() {
                         className={css({
                           fontSize: 'xs',
                           fontFamily: 'mono',
-                          color: 'gray.300',
                           whiteSpace: 'pre-wrap',
                           wordBreak: 'break-word',
                         })}
-                      >
-                        {response.body}
-                      </pre>
+                        // biome-ignore lint/security/noDangerouslySetInnerHtml: Sanitized by highlight.js
+                        dangerouslySetInnerHTML={{ __html: highlightedResponseBody }}
+                      />
                     </div>
                   </div>
                 </>
