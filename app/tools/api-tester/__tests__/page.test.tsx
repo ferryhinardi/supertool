@@ -1298,4 +1298,80 @@ describe('API Tester Page - Component Tests', () => {
       )
     })
   })
+
+  describe('UX Enhancements', () => {
+    it('should display count badges on tabs with content', async () => {
+      render(<ApiTesterPage />)
+
+      // Verify initially no badges (there's one empty param but no key, so count = 0)
+      let paramsTab = screen.getByRole('button', { name: 'Params' })
+      expect(paramsTab.textContent).toBe('Params')
+
+      // Click on params tab and type into the existing empty parameter field
+      await userEvent.click(paramsTab)
+
+      // There should already be one empty parameter field from initial state
+      const keyInputs = screen.getAllByPlaceholderText(/Parameter name/i)
+      expect(keyInputs.length).toBeGreaterThan(0)
+
+      // Type into the first (existing) parameter field
+      await userEvent.type(keyInputs[0], 'testkey')
+
+      // Params tab should now show count badge with 1
+      await waitFor(
+        () => {
+          paramsTab = screen.getByRole('button', { name: /Params/i })
+          // Match "Params" followed by whitespace and "1", accounting for the badge
+          const match = paramsTab.textContent?.match(/Params/)
+          expect(match).toBeTruthy()
+          expect(paramsTab.textContent).toContain('1')
+        },
+        { timeout: 3000 }
+      )
+
+      // Switch to Headers tab - it should have one empty header from initial state
+      const headersTab = screen.getByRole('button', { name: /Headers/i })
+      await userEvent.click(headersTab)
+
+      const headerInputs = screen.getAllByPlaceholderText(/Header name/i)
+      await userEvent.type(headerInputs[0], 'Authorization')
+
+      // Headers tab should show count badge with 1
+      await waitFor(
+        () => {
+          const headers = screen.getByRole('button', { name: /Headers/i })
+          expect(headers.textContent).toContain('1')
+        },
+        { timeout: 3000 }
+      )
+
+      // Auth tab should show count when auth type is not none
+      const authTab = screen.getByRole('button', { name: /Auth/i })
+      await userEvent.click(authTab)
+
+      const authSelect = screen.getByDisplayValue('No Authentication')
+      fireEvent.change(authSelect, { target: { value: 'bearer' } })
+
+      await waitFor(
+        () => {
+          const auth = screen.getByRole('button', { name: /Auth/i })
+          expect(auth.textContent).toContain('1')
+        },
+        { timeout: 3000 }
+      )
+    })
+
+    it('should not show count badge when no content exists', async () => {
+      render(<ApiTesterPage />)
+
+      const paramsTab = screen.getByRole('button', { name: 'Params' })
+      const authTab = screen.getByRole('button', { name: 'Auth' })
+      const headersTab = screen.getByRole('button', { name: 'Headers' })
+
+      // Initially, no badges should be shown (only tab names)
+      expect(paramsTab.textContent).toBe('Params')
+      expect(authTab.textContent).toBe('Auth')
+      expect(headersTab.textContent).toBe('Headers')
+    })
+  })
 })
