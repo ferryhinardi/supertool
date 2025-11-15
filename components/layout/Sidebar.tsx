@@ -22,6 +22,8 @@ import {
   Hash,
   Home,
   Key,
+  LogIn,
+  LogOut,
   Menu,
   MessageSquare,
   QrCode,
@@ -32,6 +34,7 @@ import {
   Terminal,
   Timer,
   Upload,
+  User,
   Users,
   Wand2,
   X,
@@ -39,6 +42,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { useAuthStore } from '@/lib/auth-store'
 import { css, cva } from '@/styled-system/css'
 
 const navigation = [
@@ -410,6 +414,9 @@ export function Sidebar() {
             })}
           </nav>
 
+          {/* Auth Section */}
+          <AuthSection />
+
           {/* Footer */}
           <div
             className={css({
@@ -503,5 +510,185 @@ export function Sidebar() {
         </div>
       </aside>
     </>
+  )
+}
+
+// Auth Section Component
+function AuthSection() {
+  const { user, profile, isLoading, openAuthModal, signOut } = useAuthStore()
+
+  if (isLoading) {
+    return (
+      <div
+        className={css({
+          px: '3',
+          py: '3',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        })}
+      >
+        <div
+          className={css({
+            w: '5',
+            h: '5',
+            border: '2px solid rgba(139, 92, 246, 0.3)',
+            borderTopColor: 'purple.400',
+            rounded: 'full',
+            animation: 'spin 1s linear infinite',
+          })}
+        />
+      </div>
+    )
+  }
+
+  if (user && profile) {
+    return (
+      <div
+        className={css({
+          px: '3',
+          py: '3',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '2',
+          borderTop: '2px solid rgba(139, 92, 246, 0.2)',
+          pt: '4',
+        })}
+      >
+        {/* User Info */}
+        <div
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '3',
+            px: '3',
+            py: '2',
+            rounded: 'lg',
+            bg: 'rgba(139, 92, 246, 0.1)',
+          })}
+        >
+          <div
+            className={css({
+              w: '10',
+              h: '10',
+              rounded: 'full',
+              bg: 'purple.600',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 'sm',
+              fontWeight: 'bold',
+              color: 'white',
+            })}
+          >
+            {profile.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt={profile.display_name || 'User'}
+                className={css({ w: '10', h: '10', rounded: 'full' })}
+              />
+            ) : (
+              <User className={css({ w: '5', h: '5' })} />
+            )}
+          </div>
+          <div className={css({ flex: '1', minW: '0' })}>
+            <p
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'semibold',
+                color: 'white',
+                truncate: true,
+              })}
+            >
+              {profile.display_name || 'User'}
+            </p>
+            <p
+              className={css({
+                fontSize: 'xs',
+                color: 'gray.400',
+                truncate: true,
+              })}
+            >
+              {profile.email}
+            </p>
+          </div>
+        </div>
+
+        {/* Sign Out Button */}
+        <button
+          type="button"
+          onClick={() => signOut()}
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '3',
+            px: '3',
+            py: '2',
+            rounded: 'lg',
+            fontSize: 'sm',
+            color: 'gray.400',
+            transition: 'all 0.3s',
+            cursor: 'pointer',
+            _hover: {
+              bg: 'rgba(239, 68, 68, 0.1)',
+              color: 'red.400',
+            },
+          })}
+        >
+          <LogOut className={css({ w: '5', h: '5' })} />
+          <span className={css({ fontWeight: 'medium' })}>Sign Out</span>
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className={css({
+        px: '3',
+        py: '3',
+        borderTop: '2px solid rgba(139, 92, 246, 0.2)',
+        pt: '4',
+      })}
+    >
+      <button
+        type="button"
+        onClick={() => openAuthModal('sign-in')}
+        className={css({
+          w: 'full',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '3',
+          px: '4',
+          py: '3',
+          rounded: 'lg',
+          fontSize: 'sm',
+          fontWeight: 'medium',
+          color: 'white',
+          cursor: 'pointer',
+          transition: 'all 0.3s',
+          position: 'relative',
+          overflow: 'hidden',
+          _hover: {
+            transform: 'translateY(-2px)',
+          },
+        })}
+        style={{
+          background: 'linear-gradient(to right, rgba(139, 92, 246, 0.8), rgba(236, 72, 153, 0.8))',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background =
+            'linear-gradient(to right, rgba(139, 92, 246, 1), rgba(236, 72, 153, 1))'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background =
+            'linear-gradient(to right, rgba(139, 92, 246, 0.8), rgba(236, 72, 153, 0.8))'
+        }}
+      >
+        <LogIn className={css({ w: '5', h: '5' })} />
+        <span>Sign In</span>
+      </button>
+    </div>
   )
 }
