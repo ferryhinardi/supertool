@@ -1,7 +1,19 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Bell, Clock, Pause, Play, Plus, RotateCcw, Save, Sparkles, Trash2, X } from 'lucide-react'
+import {
+  Bell,
+  Clock,
+  Download,
+  Pause,
+  Play,
+  Plus,
+  RotateCcw,
+  Save,
+  Sparkles,
+  Trash2,
+  X,
+} from 'lucide-react'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -9,14 +21,16 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useToolHistory } from '@/hooks/useToolHistory'
 import { trackToolEvent } from '@/lib/analytics'
+import {
+  downloadFile,
+  exportLapsAsCSV,
+  exportLapsAsJSON,
+  type LapTime,
+  playBeepSound,
+} from '@/lib/stopwatch-utils'
 import { css } from '@/styled-system/css'
-
-interface LapTime {
-  id: string
-  time: number
-  lapDuration: number
-}
 
 interface Timer {
   id: string
@@ -84,6 +98,12 @@ function StopwatchTimerContent() {
     typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'default'
   )
 
+  // History for stopwatch sessions
+  const history = useToolHistory<{ time: number; laps: LapTime[]; name?: string }>({
+    storageKey: 'stopwatch_history',
+    maxItems: 20,
+  })
+
   // Track page visit
   useEffect(() => {
     trackToolEvent('stopwatch_timer_open', {})
@@ -120,8 +140,8 @@ function StopwatchTimerContent() {
       if (typeof window !== 'undefined') {
         const audio = new Audio('/notification.mp3')
         audio.play().catch(() => {
-          // Fallback to system beep if audio fails
-          console.log('Audio playback failed')
+          // Fallback to Web Audio API beep if audio file fails
+          playBeepSound()
         })
       }
 
@@ -167,6 +187,59 @@ function StopwatchTimerContent() {
       }
     }
   }, [timers, handleTimerComplete])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      // Only handle shortcuts in stopwatch mode
+      if (mode === 'stopwatch') {
+        switch (e.key.toLowerCase()) {
+          case ' ': // Space - Start/Pause
+            e.preventDefault()
+            setStopwatchRunning((prev) => !prev)
+            trackToolEvent(stopwatchRunning ? 'stopwatch_pause' : 'stopwatch_start', {
+              source: 'keyboard',
+            })
+            break
+          case 'r': // R - Reset
+            e.preventDefault()
+            setStopwatchTime(0)
+            setStopwatchRunning(false)
+            setLaps([])
+            trackToolEvent('stopwatch_reset', { source: 'keyboard' })
+            toast.success('Stopwatch reset')
+            break
+          case 'l': // L - Lap (only if running)
+            if (stopwatchRunning) {
+              e.preventDefault()
+              const lapDuration = laps.length > 0 ? stopwatchTime - laps[0].time : stopwatchTime
+              const newLap: LapTime = {
+                id: Date.now().toString(),
+                time: stopwatchTime,
+                lapDuration,
+              }
+              setLaps([newLap, ...laps])
+              trackToolEvent('stopwatch_lap', { lap_count: laps.length + 1, source: 'keyboard' })
+              toast.success(`Lap ${laps.length + 1} recorded`)
+            }
+            break
+          case 'escape': // Escape - Exit fullscreen (browser default)
+            if (document.fullscreenElement) {
+              document.exitFullscreen()
+            }
+            break
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [mode, stopwatchRunning, stopwatchTime, laps])
 
   const handleStopwatchToggle = () => {
     setStopwatchRunning(!stopwatchRunning)
@@ -294,6 +367,44 @@ function StopwatchTimerContent() {
       toast.success('Notifications enabled!')
     }
     trackToolEvent('notification_permission_request', { granted: permission === 'granted' })
+  }
+
+  const handleExportCSV = () => {
+    if (laps.length === 0) {
+      toast.error('No lap times to export')
+      return
+    }
+    const csv = exportLapsAsCSV(laps, stopwatchTime)
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+    downloadFile(csv, `stopwatch-laps-${timestamp}.csv`, 'text/csv')
+    toast.success('Lap times exported as CSV')
+    trackToolEvent('stopwatch_export_csv', { lap_count: laps.length })
+  }
+
+  const handleExportJSON = () => {
+    if (laps.length === 0) {
+      toast.error('No lap times to export')
+      return
+    }
+    const json = exportLapsAsJSON(laps, stopwatchTime)
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+    downloadFile(json, `stopwatch-laps-${timestamp}.json`, 'application/json')
+    toast.success('Lap times exported as JSON')
+    trackToolEvent('stopwatch_export_json', { lap_count: laps.length })
+  }
+
+  const handleSaveSession = () => {
+    if (stopwatchTime === 0) {
+      toast.error('No session to save')
+      return
+    }
+    history.addItem({
+      time: stopwatchTime,
+      laps: laps,
+      name: `Session ${new Date().toLocaleString()}`,
+    })
+    toast.success('Session saved to history')
+    trackToolEvent('stopwatch_save_session', { lap_count: laps.length, time: stopwatchTime })
   }
 
   const fastestLap = useMemo(() => {
@@ -543,6 +654,26 @@ function StopwatchTimerContent() {
                     <RotateCcw className={css({ h: '5', w: '5' })} />
                     Reset
                   </Button>
+
+                  {stopwatchTime > 0 && !stopwatchRunning && (
+                    <Button
+                      onClick={handleSaveSession}
+                      className={css({
+                        gap: '2',
+                        h: '14',
+                        px: '8',
+                        fontSize: 'lg',
+                        bg: 'green.500/20',
+                        border: '1px solid',
+                        borderColor: 'green.500/50',
+                        color: 'green.300',
+                        _hover: { bg: 'green.500/30' },
+                      })}
+                    >
+                      <Save className={css({ h: '5', w: '5' })} />
+                      Save Session
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -564,18 +695,68 @@ function StopwatchTimerContent() {
                 })}
               >
                 <CardHeader>
-                  <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-                    <CardTitle>Lap Times</CardTitle>
-                    <Badge
-                      className={css({
-                        bg: 'orange.500/20',
-                        color: 'orange.300',
-                        border: '1px solid',
-                        borderColor: 'orange.500/30',
-                      })}
-                    >
-                      {laps.length}
-                    </Badge>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    })}
+                  >
+                    <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                      <CardTitle>Lap Times</CardTitle>
+                      <Badge
+                        className={css({
+                          bg: 'orange.500/20',
+                          color: 'orange.300',
+                          border: '1px solid',
+                          borderColor: 'orange.500/30',
+                        })}
+                      >
+                        {laps.length}
+                      </Badge>
+                    </div>
+                    <div className={css({ display: 'flex', gap: '2' })}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleExportCSV}
+                        className={css({
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'gray.800/50',
+                          color: 'gray.300',
+                          fontSize: 'xs',
+                          _hover: {
+                            bg: 'gray.700',
+                            borderColor: 'orange.500/50',
+                            color: 'orange.300',
+                          },
+                        })}
+                      >
+                        <Download className={css({ w: '3', h: '3', mr: '1' })} />
+                        CSV
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleExportJSON}
+                        className={css({
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'gray.800/50',
+                          color: 'gray.300',
+                          fontSize: 'xs',
+                          _hover: {
+                            bg: 'gray.700',
+                            borderColor: 'orange.500/50',
+                            color: 'orange.300',
+                          },
+                        })}
+                      >
+                        <Download className={css({ w: '3', h: '3', mr: '1' })} />
+                        JSON
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
