@@ -3,10 +3,11 @@
 import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { css } from '@/styled-system/css'
 import { vstack } from '@/styled-system/patterns'
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
   const errorDescription = searchParams.get('error_description')
@@ -72,5 +73,26 @@ export default function AuthErrorPage() {
         </Link>
       </div>
     </div>
+  )
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className={css({
+            minH: 'screen',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          })}
+        >
+          <div className={css({ color: 'gray.600' })}>Loading...</div>
+        </div>
+      }
+    >
+      <AuthErrorContent />
+    </Suspense>
   )
 }

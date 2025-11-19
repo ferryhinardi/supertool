@@ -6,7 +6,7 @@ import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-da
 export const metadata: Metadata = generateToolMetadata({
   title: 'PDF Tools Suite - Free PDF Merger, Splitter & Compressor',
   description:
-    'Professional PDF tools to merge, split, compress, watermark, and convert PDFs. Extract pages, rotate, and optimize file size. 100% secure browser-based processing with no uploads.',
+    'Professional PDF tools to merge, split, compress, watermark, and convert PDFs. Extract pages, rotate, convert to grayscale, and optimize file size. 100% secure browser-based processing with no uploads.',
   keywords: [
     'pdf tools',
     'pdf merger',
@@ -22,6 +22,9 @@ export const metadata: Metadata = generateToolMetadata({
     'pdf watermark',
     'extract pdf pages',
     'rotate pdf',
+    'pdf grayscale converter',
+    'convert pdf to grayscale',
+    'pdf black and white',
   ],
   category: 'productivity',
   path: '/tools/pdf-tools',
@@ -45,6 +48,11 @@ const faqs = [
     question: 'Does PDF compression reduce quality?',
     answer:
       'The compression feature optimizes PDF structure and removes redundant data without significantly affecting visual quality. It works best for PDFs with complex structures and can reduce file size by 10-30% in most cases.',
+  },
+  {
+    question: 'How does the grayscale conversion work?',
+    answer:
+      'The grayscale converter transforms all colored content in your PDF to shades of gray using standard luminance calculations. This is useful for printing, reducing file size, or creating professional black-and-white documents. Each page is converted while maintaining image quality and layout.',
   },
   {
     question: 'Are my PDF files uploaded to a server?',

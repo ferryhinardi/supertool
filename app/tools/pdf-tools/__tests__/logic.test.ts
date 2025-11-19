@@ -320,6 +320,12 @@ describe('PDF Tools Utilities', () => {
       expect(getOutputExtension('merge')).toBe('pdf')
       expect(generateOutputFilename('document.pdf', '', 'docx')).toBe('document_.docx')
     })
+
+    it('should validate complete grayscale conversion operation', () => {
+      expect(getOutputExtension('grayscale')).toBe('pdf')
+      expect(generateOutputFilename('document.pdf', 'grayscale')).toBe('document_grayscale.pdf')
+      expect(shouldConvertToDocx('grayscale')).toBe(false)
+    })
   })
 
   describe('getOutputExtension', () => {
@@ -334,6 +340,7 @@ describe('PDF Tools Utilities', () => {
       expect(getOutputExtension('watermark')).toBe('pdf')
       expect(getOutputExtension('extract')).toBe('pdf')
       expect(getOutputExtension('rotate')).toBe('pdf')
+      expect(getOutputExtension('grayscale')).toBe('pdf')
     })
   })
 
@@ -350,6 +357,7 @@ describe('PDF Tools Utilities', () => {
       expect(shouldConvertToDocx('watermark')).toBe(false)
       expect(shouldConvertToDocx('extract')).toBe(false)
       expect(shouldConvertToDocx('rotate')).toBe(false)
+      expect(shouldConvertToDocx('grayscale')).toBe(false)
     })
   })
 

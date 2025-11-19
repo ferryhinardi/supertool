@@ -106,6 +106,7 @@ type OperationType =
   | 'rotate'
   | 'toWord'
   | 'edit'
+  | 'grayscale'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -454,6 +455,109 @@ export default function PDFToolsPage() {
 
       trackEvent({
         action: 'to_images_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    }
+  }
+
+  const convertToGrayscale = async (pdf: PDFFile) => {
+    const startTime = Date.now()
+    updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      // Initialize both libraries
+      const pdfjs = await initPdfjs()
+      const { PDFDocument } = await loadPdfLib()
+
+      // Load PDF with pdfjs for rendering
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+      const pdfjsDoc = await loadingTask.promise
+
+      // Create new PDF document
+      const pdfDoc = await PDFDocument.create()
+
+      for (let pageNum = 1; pageNum <= pdfjsDoc.numPages; pageNum++) {
+        const page = await pdfjsDoc.getPage(pageNum)
+        const viewport = page.getViewport({ scale: 2.0 })
+
+        const canvas = document.createElement('canvas')
+        const context = canvas.getContext('2d')
+        if (!context) throw new Error('Could not get canvas context')
+        canvas.height = viewport.height
+        canvas.width = viewport.width
+
+        // Render page to canvas
+        await page.render({
+          canvasContext: context,
+          viewport: viewport,
+          canvas: canvas,
+        }).promise
+
+        // Convert to grayscale
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+        const data = imageData.data
+        for (let i = 0; i < data.length; i += 4) {
+          // Calculate luminance using standard formula
+          const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2])
+          data[i] = gray // Red
+          data[i + 1] = gray // Green
+          data[i + 2] = gray // Blue
+          // Alpha channel (data[i + 3]) remains unchanged
+        }
+        context.putImageData(imageData, 0, 0)
+
+        // Convert canvas to PNG blob
+        const blob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob)
+            else reject(new Error('Failed to create blob'))
+          }, 'image/png')
+        })
+
+        // Embed image in new PDF
+        const pngImage = await pdfDoc.embedPng(await blob.arrayBuffer())
+        const newPage = pdfDoc.addPage([viewport.width, viewport.height])
+        newPage.drawImage(pngImage, {
+          x: 0,
+          y: 0,
+          width: viewport.width,
+          height: viewport.height,
+        })
+
+        updatePdfStatus(pdf.id, {
+          status: 'processing',
+          progress: (pageNum / pdfjsDoc.numPages) * 100,
+        })
+      }
+
+      const grayscaleBytes = await pdfDoc.save()
+      const finalBlob = new Blob([new Uint8Array(grayscaleBytes)], { type: 'application/pdf' })
+
+      updatePdfStatus(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        processedBlob: finalBlob,
+        processedSize: finalBlob.size,
+      })
+
+      const processingTime = Date.now() - startTime
+      trackEvent({
+        action: 'grayscale_converted',
+        category: 'pdf_tools',
+        label: 'grayscale',
+        value: Math.round(processingTime / 1000),
+      })
+    } catch (error) {
+      console.error('Error converting to grayscale:', error)
+      updatePdfStatus(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to convert to grayscale',
+      })
+
+      trackEvent({
+        action: 'grayscale_error',
         category: 'pdf_tools',
         label: error instanceof Error ? error.message : 'unknown_error',
       })
@@ -979,6 +1083,9 @@ export default function PDFToolsPage() {
           case 'toWord':
             await convertToWord(pdf)
             break
+          case 'grayscale':
+            await convertToGrayscale(pdf)
+            break
         }
       }
     }
@@ -1078,6 +1185,9 @@ export default function PDFToolsPage() {
         case 'edit':
           suffix = '_edited'
           break
+        case 'grayscale':
+          suffix = '_grayscale'
+          break
       }
 
       a.download = pdf.name.replace('.pdf', `${suffix}${extension}`)
@@ -1125,6 +1235,7 @@ export default function PDFToolsPage() {
     { value: 'rotate', label: 'Rotate', icon: RotateCw },
     { value: 'toWord', label: 'PDF to Word', icon: FileOutput },
     { value: 'edit', label: 'Edit PDF', icon: Edit3 },
+    { value: 'grayscale', label: 'Grayscale', icon: Settings },
   ]
 
   return (
