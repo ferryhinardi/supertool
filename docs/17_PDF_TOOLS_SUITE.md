@@ -83,7 +83,7 @@ secondPages.forEach((page) => secondPart.addPage(page))
 
 ### 3. **Compress PDF**
 
-Optimize PDF file size using pdf-lib's built-in compression algorithms.
+Optimize PDF file size using advanced image-based rasterization with three compression levels.
 
 **Use Cases:**
 
@@ -94,26 +94,71 @@ Optimize PDF file size using pdf-lib's built-in compression algorithms.
 
 **Technical Details:**
 
-- Uses DEFLATE compression
-- Removes unused objects
-- Optimizes object streams
-- Preserves visual quality
+- Renders each page to canvas with configurable scale and quality
+- Converts pages to JPEG with compression
+- Embeds compressed images into new PDF document
+- Three-tier compression system for flexibility
 
-**Compression Options:**
+**Compression Levels:**
 
 ```typescript
+// Low Compression (~10% reduction)
+{ quality: 0.9, scale: 2.0 }  // Preserves quality, minimal reduction
+
+// Medium Compression (~50% reduction)  
+{ quality: 0.5, scale: 1.5 }  // Balanced quality and size
+
+// High Compression (~80% reduction)
+{ quality: 0.2, scale: 1.0 }  // Maximum reduction, converts to JPEG
+```
+
+**How it works:**
+
+```typescript
+// Load PDF with pdfjs for rendering
+const pdfjsDoc = await pdfjs.getDocument({ data: arrayBuffer }).promise
+const pdfDoc = await PDFDocument.create()
+
+// Process each page
+for (let pageNum = 1; pageNum <= pdfjsDoc.numPages; pageNum++) {
+  const page = await pdfjsDoc.getPage(pageNum)
+  const viewport = page.getViewport({ scale })
+  
+  // Render to canvas
+  const canvas = document.createElement('canvas')
+  canvas.width = viewport.width
+  canvas.height = viewport.height
+  await page.render({ canvasContext: context, viewport }).promise
+  
+  // Convert to compressed JPEG
+  const blob = await new Promise((resolve) => {
+    canvas.toBlob(resolve, 'image/jpeg', imageQuality)
+  })
+  
+  // Embed in new PDF
+  const jpegImage = await pdfDoc.embedJpg(await blob.arrayBuffer())
+  const newPage = pdfDoc.addPage([viewport.width, viewport.height])
+  newPage.drawImage(jpegImage, { x: 0, y: 0, width, height })
+}
+
+// Save with additional optimizations
 const compressedBytes = await pdfDoc.save({
-  useObjectStreams: true, // Better compression
-  addDefaultPage: false, // Skip empty pages
-  objectsPerTick: 50, // Processing speed
+  useObjectStreams: true,
+  addDefaultPage: false,
 })
 ```
 
-**Typical Results:**
+**Compression Results:**
 
-- Text-heavy PDFs: 30-60% size reduction
-- Image-heavy PDFs: 10-30% size reduction
-- Already compressed: 5-15% size reduction
+- **Low (~10%)**: Preserves quality, best for documents requiring high fidelity
+- **Medium (~50%)**: Good balance for general use, slight quality reduction
+- **High (~80%)**: Maximum reduction for image-heavy documents, converts pages to JPEG
+
+**Trade-offs:**
+
+- High compression converts vector content and text to rasterized images
+- Best for: Image-heavy documents, presentations, scans
+- Less suitable for: Text-only documents requiring searchability or copy-paste
 
 **Output:** Original filename with `-compressed` suffix
 
@@ -449,12 +494,19 @@ Result: report-part1.pdf (pages 1-3), report-part2.pdf (pages 4-10)
 Steps:
   1. Upload PDF file(s)
   2. Select "Compress PDF" operation
-  3. Click "Process PDFs"
-  4. Downloads: document-compressed.pdf
-  5. View compression ratio in status
+  3. Choose compression level:
+     - Low (~10%): Minimal compression, preserves quality
+     - Medium (~50%): Balanced compression
+     - High (~80%): Maximum compression (default)
+  4. Click "Process PDFs"
+  5. Downloads: document-compressed.pdf
+  6. View compression ratio in console log
 
-Example: 5MB presentation.pdf
-Result: presentation-compressed.pdf (2.5MB, 50% reduction)
+Example: 5MB presentation.pdf with High compression
+Result: presentation-compressed.pdf (1MB, 80% reduction)
+
+Note: High compression converts pages to JPEG images for maximum 
+      size reduction. Best for image-heavy documents.
 ```
 
 #### Convert to Images
