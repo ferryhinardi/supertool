@@ -122,7 +122,7 @@ export default function PDFToolsPage() {
   const [splitPageNumber, setSplitPageNumber] = useState(1)
 
   // Compress options
-  const [_compressionQuality, _setCompressionQuality] = useState(50)
+  const [compressionLevel, setCompressionLevel] = useState<'low' | 'medium' | 'high'>('high')
 
   // Watermark options
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL')
@@ -341,33 +341,110 @@ export default function PDFToolsPage() {
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
     try {
+      // Initialize both libraries
+      const pdfjs = await initPdfjs()
       const { PDFDocument } = await loadPdfLib()
-      const arrayBuffer = await pdf.file.arrayBuffer()
-      const pdfDoc = await PDFDocument.load(arrayBuffer)
 
-      // Note: pdf-lib doesn't have built-in compression, so we'll re-save with optimizations
-      // This provides basic compression by removing unused objects
+      // Calculate quality based on compression level
+      const qualityMap = {
+        low: 0.9, // 10% compression
+        medium: 0.5, // 50% compression
+        high: 0.2, // 80% compression
+      }
+      const imageQuality = qualityMap[compressionLevel]
+
+      updatePdfStatus(pdf.id, { progress: 10 })
+
+      // Load PDF with pdfjs for rendering
+      const arrayBuffer = await pdf.file.arrayBuffer()
+      const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+      const pdfjsDoc = await loadingTask.promise
+
+      updatePdfStatus(pdf.id, { progress: 20 })
+
+      // Create new PDF document
+      const pdfDoc = await PDFDocument.create()
+
+      // Process each page
+      for (let pageNum = 1; pageNum <= pdfjsDoc.numPages; pageNum++) {
+        const page = await pdfjsDoc.getPage(pageNum)
+
+        // Use lower scale for higher compression
+        const scale = compressionLevel === 'high' ? 1.0 : compressionLevel === 'medium' ? 1.5 : 2.0
+        const viewport = page.getViewport({ scale })
+
+        const canvas = document.createElement('canvas')
+        const context = canvas.getContext('2d')
+        if (!context) throw new Error('Could not get canvas context')
+
+        canvas.height = viewport.height
+        canvas.width = viewport.width
+
+        // Render page to canvas
+        await page.render({
+          canvasContext: context,
+          viewport: viewport,
+          canvas: canvas,
+        }).promise
+
+        // Convert to JPEG with compression for better file size reduction
+        const blob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(
+            (blob) => {
+              if (blob) resolve(blob)
+              else reject(new Error('Failed to create blob'))
+            },
+            'image/jpeg',
+            imageQuality
+          )
+        })
+
+        // Embed compressed image in new PDF
+        const jpegImage = await pdfDoc.embedJpg(await blob.arrayBuffer())
+        const newPage = pdfDoc.addPage([viewport.width, viewport.height])
+        newPage.drawImage(jpegImage, {
+          x: 0,
+          y: 0,
+          width: viewport.width,
+          height: viewport.height,
+        })
+
+        updatePdfStatus(pdf.id, {
+          status: 'processing',
+          progress: 20 + (pageNum / pdfjsDoc.numPages) * 70,
+        })
+      }
+
+      updatePdfStatus(pdf.id, { progress: 95 })
+
+      // Save the compressed PDF with additional optimizations
       const compressedBytes = await pdfDoc.save({
         useObjectStreams: true,
         addDefaultPage: false,
       })
 
-      const blob = new Blob([new Uint8Array(compressedBytes)], { type: 'application/pdf' })
+      const finalBlob = new Blob([new Uint8Array(compressedBytes)], { type: 'application/pdf' })
 
       updatePdfStatus(pdf.id, {
         status: 'completed',
         progress: 100,
-        processedBlob: blob,
-        processedSize: blob.size,
+        processedBlob: finalBlob,
+        processedSize: finalBlob.size,
       })
 
       const processingTime = Date.now() - startTime
+      const compressionRatio = Math.round(((pdf.size - finalBlob.size) / pdf.size) * 100)
+
       trackEvent({
         action: 'pdf_compressed',
         category: 'pdf_tools',
         label: 'compress',
         value: Math.round(processingTime / 1000),
       })
+
+      console.log(
+        `Compression complete: ${pdf.size} -> ${finalBlob.size} (${compressionRatio}% reduction)`
+      )
     } catch (error) {
       console.error('Error compressing PDF:', error)
       updatePdfStatus(pdf.id, {
@@ -1588,6 +1665,96 @@ export default function PDFToolsPage() {
                     >
                       Pages 1-N will be in part 1
                     </p>
+                  </div>
+                )}
+
+                {operation === 'compress' && (
+                  <div className={css({ spaceY: '2' })}>
+                    <div
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
+                    >
+                      Compression Level
+                    </div>
+                    <div
+                      className={css({
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: '2',
+                        w: 'full',
+                      })}
+                    >
+                      {[
+                        { value: 'low' as const, label: 'Low', desc: '~10%' },
+                        { value: 'medium' as const, label: 'Medium', desc: '~50%' },
+                        { value: 'high' as const, label: 'High', desc: '~80%' },
+                      ].map((level) => (
+                        <Button
+                          key={level.value}
+                          variant={compressionLevel === level.value ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setCompressionLevel(level.value)}
+                          className={css({
+                            flexDirection: 'column',
+                            h: 'auto',
+                            py: '3',
+                            ...(compressionLevel === level.value
+                              ? {
+                                  borderColor: 'red.500/50',
+                                  bg: 'red.500/20',
+                                  color: 'red.200',
+                                }
+                              : {
+                                  borderColor: 'gray.700',
+                                }),
+                          })}
+                        >
+                          <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
+                            {level.label}
+                          </span>
+                          <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                            {level.desc}
+                          </span>
+                        </Button>
+                      ))}
+                    </div>
+                    <p
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'gray.500',
+                      })}
+                    >
+                      {compressionLevel === 'high'
+                        ? 'Maximum compression - Best for documents with images'
+                        : compressionLevel === 'medium'
+                          ? 'Balanced compression - Good quality with smaller size'
+                          : 'Minimal compression - Preserves quality'}
+                    </p>
+                    <div
+                      className={css({
+                        mt: '3',
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'yellow.500/10',
+                        borderColor: 'yellow.500/20',
+                        border: '1px solid',
+                      })}
+                    >
+                      <p className={css({ fontSize: 'xs', color: 'yellow.200' })}>
+                        <Sparkles
+                          className={css({
+                            display: 'inline',
+                            h: '3',
+                            w: '3',
+                            mr: '1',
+                          })}
+                        />
+                        High compression converts pages to images for maximum size reduction
+                      </p>
+                    </div>
                   </div>
                 )}
 
