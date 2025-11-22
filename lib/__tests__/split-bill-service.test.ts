@@ -133,7 +133,7 @@ describe('Split Bill Service', () => {
       }
     })
 
-    vi.mocked(supabase.from).mockImplementation(mockFrom)
+    vi.mocked(supabase.from).mockImplementation(mockFrom as unknown as (relation: string) => any)
   })
 
   describe('createBill', () => {
