@@ -32,6 +32,7 @@ import { Progress } from '@/components/ui/progress'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
+import PDFPageEditFlow from './PDFPageEditFlow'
 
 // Dynamic import for pdf-lib (client-side only)
 let pdfLib: typeof PdfLibTypes | null = null
@@ -877,8 +878,7 @@ export default function PDFToolsPage() {
           // Sort items in line by X coordinate (left to right)
           lineItems.sort((a, b) => a.transform[4] - b.transform[4])
 
-          const textRuns: any[] = []
-          // biome-ignore lint/suspicious/noExplicitAny: pdfjs text run structure
+          const textRuns: InstanceType<typeof TextRun>[] = []
           let previousX = -1
           let previousFontSize = -1
 
@@ -1409,7 +1409,6 @@ export default function PDFToolsPage() {
           100% secure - all processing happens on your device.
         </p>
       </motion.div>
-
       {/* Stats Summary */}
       {pdfs.length > 0 && (
         <motion.div
@@ -1519,7 +1518,6 @@ export default function PDFToolsPage() {
           </Card>
         </motion.div>
       )}
-
       <div
         className={css({
           display: 'grid',
@@ -2302,7 +2300,6 @@ export default function PDFToolsPage() {
           </Card>
         </motion.div>
       </div>
-
       {/* Features Info */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -2384,8 +2381,36 @@ export default function PDFToolsPage() {
           </Card>
         ))}
       </motion.div>
-
-      {editingPdf && (
+      {editingPdf && operation === 'edit' ? (
+        <PDFPageEditFlow
+          pdfFile={editingPdf.file}
+          onApply={async (newOrder: number[]) => {
+            // Use pdf-lib to reorder/remove pages and update the PDF
+            const { PDFDocument } = await loadPdfLib()
+            const arrayBuffer = await editingPdf.file.arrayBuffer()
+            const pdfDoc = await PDFDocument.load(arrayBuffer)
+            const newPdf = await PDFDocument.create()
+            const copiedPages = await newPdf.copyPages(pdfDoc, newOrder)
+            copiedPages.forEach((page) => {
+              newPdf.addPage(page)
+            })
+            const pdfBytes = await newPdf.save()
+            const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+            updatePdfStatus(editingPdf.id, {
+              status: 'completed',
+              progress: 100,
+              processedBlob: blob,
+              processedSize: blob.size,
+            })
+            setEditingPdf(null)
+          }}
+          onCancel={() => {
+            setEditingPdf(null)
+          }}
+        />
+      ) : null}
+      {/* PDFEditor for annotation-based editing (legacy) */}
+      {editingPdf && operation !== 'edit' && (
         <PDFEditor
           pdfFile={editingPdf.file}
           onSave={async (annotations) => {
@@ -2401,9 +2426,7 @@ export default function PDFToolsPage() {
           }}
         />
       )}
-
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
-
       <ToolSearch />
     </main>
   )
