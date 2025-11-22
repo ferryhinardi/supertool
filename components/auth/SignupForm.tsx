@@ -78,7 +78,14 @@ export function SignupForm() {
       {/* Email/Password Form */}
       <form onSubmit={handleEmailSignup} className={vstack({ gap: 3 })}>
         <div className={vstack({ gap: 2, alignItems: 'stretch' })}>
-          <label htmlFor="signup-email" className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
+          <label
+            htmlFor="signup-email"
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'medium',
+              color: { base: 'gray.800', _dark: 'gray.100' },
+            })}
+          >
             Email
           </label>
           <input
@@ -92,13 +99,15 @@ export function SignupForm() {
               px: 3,
               py: 2,
               border: '1px solid',
-              borderColor: 'gray.300',
+              borderColor: { base: 'gray.300', _dark: 'gray.700' },
+              bg: { base: 'white', _dark: 'gray.900' },
+              color: { base: 'gray.900', _dark: 'gray.100' },
               rounded: 'md',
               _focus: {
                 outline: 'none',
                 borderColor: 'blue.500',
                 ring: '2px',
-                ringColor: 'blue.200',
+                ringColor: { base: 'blue.200', _dark: 'blue.800' },
               },
             })}
           />
@@ -107,7 +116,11 @@ export function SignupForm() {
         <div className={vstack({ gap: 2, alignItems: 'stretch' })}>
           <label
             htmlFor="signup-password"
-            className={css({ fontSize: 'sm', fontWeight: 'medium' })}
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'medium',
+              color: { base: 'gray.800', _dark: 'gray.100' },
+            })}
           >
             Password
           </label>
@@ -123,13 +136,15 @@ export function SignupForm() {
               px: 3,
               py: 2,
               border: '1px solid',
-              borderColor: 'gray.300',
+              borderColor: { base: 'gray.300', _dark: 'gray.700' },
+              bg: { base: 'white', _dark: 'gray.900' },
+              color: { base: 'gray.900', _dark: 'gray.100' },
               rounded: 'md',
               _focus: {
                 outline: 'none',
                 borderColor: 'blue.500',
                 ring: '2px',
-                ringColor: 'blue.200',
+                ringColor: { base: 'blue.200', _dark: 'blue.800' },
               },
             })}
           />
@@ -138,7 +153,11 @@ export function SignupForm() {
         <div className={vstack({ gap: 2, alignItems: 'stretch' })}>
           <label
             htmlFor="confirm-password"
-            className={css({ fontSize: 'sm', fontWeight: 'medium' })}
+            className={css({
+              fontSize: 'sm',
+              fontWeight: 'medium',
+              color: { base: 'gray.800', _dark: 'gray.100' },
+            })}
           >
             Confirm Password
           </label>
@@ -154,13 +173,15 @@ export function SignupForm() {
               px: 3,
               py: 2,
               border: '1px solid',
-              borderColor: 'gray.300',
+              borderColor: { base: 'gray.300', _dark: 'gray.700' },
+              bg: { base: 'white', _dark: 'gray.900' },
+              color: { base: 'gray.900', _dark: 'gray.100' },
               rounded: 'md',
               _focus: {
                 outline: 'none',
                 borderColor: 'blue.500',
                 ring: '2px',
-                ringColor: 'blue.200',
+                ringColor: { base: 'blue.200', _dark: 'blue.800' },
               },
             })}
           />

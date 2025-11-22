@@ -87,3 +87,21 @@ button {
     transform: rotate(360deg);
   }
 }
+
+/* High-contrast input placeholder for light and dark mode */
+input::placeholder {
+  color: #6b7280; /* gray-500 for light */
+  opacity: 1;
+}
+input:-webkit-input-placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+@media (prefers-color-scheme: dark) {
+  input::placeholder {
+    color: #a3a3a3; /* gray-400 for dark */
+  }
+  input:-webkit-input-placeholder {
+    color: #a3a3a3;
+  }
+}
