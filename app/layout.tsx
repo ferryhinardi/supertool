@@ -11,6 +11,7 @@ import { AuthModal } from '@/components/auth/AuthModal'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { ReactQueryProvider } from '@/components/providers/ReactQueryProvider'
+import { SpeculationRules } from '@/components/SpeculationRules'
 import { getAdsConfig } from '@/lib/ads-config'
 import { css } from '@/styled-system/css/css.mjs'
 
@@ -158,6 +159,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReactQueryProvider>
           <AuthProvider>
             <NuqsAdapter>
+              {/* Speculation Rules for intelligent prefetching/prerendering */}
+              <SpeculationRules />
+
               {/* Sidebar */}
               <Sidebar />
 
