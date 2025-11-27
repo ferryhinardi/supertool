@@ -12,3 +12,12 @@ declare module '*.sass' {
   const content: { [className: string]: string }
   export default content
 }
+
+// Speculation Rules API type declarations
+interface Document {
+  prerendering: boolean
+}
+
+interface HTMLScriptElement {
+  supports?: (feature: string) => boolean
+}

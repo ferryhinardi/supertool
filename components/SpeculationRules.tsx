@@ -75,9 +75,6 @@ export function SpeculationRules() {
               { not: { href_matches: '/tools/image-metadata' } },
               // Exclude AI tools (may have API costs)
               { not: { href_matches: '/tools/ai-*' } },
-              // Exclude elements marked as no-prerender
-              { not: { selector_matches: '.no-prerender' } },
-              { not: { selector_matches: '[rel~=nofollow]' } },
             ],
           },
           // Prerender when link becomes visible (moderate eagerness)
@@ -88,7 +85,7 @@ export function SpeculationRules() {
       // Prefetch all safe pages for fast loading
       prefetch: [
         {
-          // Prefetch all tool pages
+          // Prefetch all internal links on hover
           source: 'document',
           where: {
             and: [
@@ -100,30 +97,9 @@ export function SpeculationRules() {
               { not: { href_matches: '/auth*' } },
               { not: { href_matches: '/login*' } },
               { not: { href_matches: '/logout*' } },
-              // Exclude no-prefetch markers
-              { not: { selector_matches: '.no-prefetch' } },
-              { not: { selector_matches: '[rel~=nofollow]' } },
             ],
           },
           // Prefetch on hover (conservative approach)
-          eagerness: 'moderate',
-          // Privacy: no referrer for cross-origin
-          referrer_policy: 'no-referrer-when-downgrade',
-        },
-        {
-          // Aggressive prefetch for navigation links
-          source: 'document',
-          where: {
-            and: [
-              // Target sidebar navigation links
-              { selector_matches: 'nav a' },
-              { selector_matches: 'a[href^="/"]' },
-              // Exclude external links
-              { not: { href_matches: 'http://*' } },
-              { not: { href_matches: 'https://*' } },
-            ],
-          },
-          // Prefetch when link is visible in viewport
           eagerness: 'moderate',
         },
       ],
@@ -156,10 +132,11 @@ export function useSpeculationStatus() {
     return { wasPrefetched: false, wasPrerendered: false }
   }
 
-  const wasPrefetched = document.prerendering === false
-  const wasPrerendered = document.prerendering === true
+  // Check if page was prerendered (currently being prerendered = true, was prerendered in past = false but had the property)
+  const wasPrerendered = 'prerendering' in document && document.prerendering === false
+  const isPrerendering = 'prerendering' in document && document.prerendering === true
 
-  return { wasPrefetched, wasPrerendered }
+  return { wasPrefetched: wasPrerendered, wasPrerendered, isPrerendering }
 }
 
 /**
