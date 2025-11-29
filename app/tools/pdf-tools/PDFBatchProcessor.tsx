@@ -1,0 +1,620 @@
+'use client'
+
+export interface PDFFile {
+  id: string
+  file: File
+  name: string
+  size: number
+  pages: number
+  status: 'pending' | 'processing' | 'completed' | 'error'
+  progress: number
+  error?: string
+  processedBlob?: Blob
+  processedSize?: number
+  splitBlob2?: Blob
+  imageBlobs?: Blob[]
+}
+
+export type CompressionLevel = 'low' | 'medium' | 'high'
+export type OperationType =
+  | 'merge'
+  | 'split'
+  | 'compress'
+  | 'toImages'
+  | 'watermark'
+  | 'extract'
+  | 'rotate'
+  | 'toWord'
+  | 'edit'
+  | 'grayscale'
+
+interface ProcessOptions {
+  compressionLevel?: CompressionLevel
+  splitPageNumber?: number
+  watermarkText?: string
+  watermarkOpacity?: number
+  extractStartPage?: number
+  extractEndPage?: number
+  rotationAngle?: number
+}
+
+/**
+ * Batch processor for PDF operations with parallel processing
+ */
+export class PDFBatchProcessor {
+  private updateCallback: (id: string, updates: Partial<PDFFile>) => void
+
+  constructor(updateCallback: (id: string, updates: Partial<PDFFile>) => void) {
+    this.updateCallback = updateCallback
+  }
+
+  /**
+   * Process multiple PDFs in parallel with Promise.allSettled
+   */
+  async processBatch(
+    pdfs: PDFFile[],
+    operation: OperationType,
+    options: ProcessOptions = {}
+  ): Promise<void> {
+    const pendingPdfs = pdfs.filter((p) => p.status === 'pending')
+
+    if (pendingPdfs.length === 0) return
+
+    // Process in parallel
+    const results = await Promise.allSettled(
+      pendingPdfs.map((pdf) => this.processSingle(pdf, operation, options))
+    )
+
+    // Log any failures for debugging
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        console.error(`Failed to process ${pendingPdfs[index].name}:`, result.reason)
+      }
+    })
+  }
+
+  /**
+   * Process a single PDF file
+   */
+  private async processSingle(
+    pdf: PDFFile,
+    operation: OperationType,
+    options: ProcessOptions
+  ): Promise<void> {
+    this.updateCallback(pdf.id, { status: 'processing', progress: 0 })
+
+    try {
+      switch (operation) {
+        case 'split':
+          await this.splitPDF(pdf, options.splitPageNumber || 1)
+          break
+        case 'compress':
+          await this.compressPDF(pdf, options.compressionLevel || 'high')
+          break
+        case 'toImages':
+          await this.convertToImages(pdf)
+          break
+        case 'watermark':
+          await this.addWatermark(
+            pdf,
+            options.watermarkText || 'CONFIDENTIAL',
+            options.watermarkOpacity || 0.3
+          )
+          break
+        case 'extract':
+          await this.extractPages(pdf, options.extractStartPage || 1, options.extractEndPage || 1)
+          break
+        case 'rotate':
+          await this.rotatePDF(pdf, options.rotationAngle || 90)
+          break
+        case 'toWord':
+          await this.convertToWord(pdf)
+          break
+        case 'grayscale':
+          await this.convertToGrayscale(pdf)
+          break
+      }
+    } catch (error) {
+      console.error(`Error processing ${pdf.name}:`, error)
+      this.updateCallback(pdf.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Processing failed',
+      })
+    }
+  }
+
+  /**
+   * Smart compression that detects document type
+   */
+  private async compressPDF(pdf: PDFFile, level: CompressionLevel): Promise<void> {
+    const pdfjs = await import('pdfjs-dist')
+    const { PDFDocument } = await import('pdf-lib')
+
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+    }
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+    const pdfjsDoc = await loadingTask.promise
+
+    // Detect if document is text-heavy or image-heavy
+    const isTextHeavy = await this.detectTextHeavyDocument(pdfjsDoc)
+
+    this.updateCallback(pdf.id, { progress: 20 })
+
+    const pdfDoc = await PDFDocument.create()
+
+    // Adjust quality based on document type
+    let imageQuality: number
+    let scale: number
+
+    if (isTextHeavy) {
+      // Text documents - preserve quality, focus on structure optimization
+      imageQuality = level === 'high' ? 0.6 : level === 'medium' ? 0.8 : 0.9
+      scale = level === 'high' ? 1.5 : level === 'medium' ? 2.0 : 2.5
+    } else {
+      // Image-heavy documents - aggressive compression
+      imageQuality = level === 'high' ? 0.2 : level === 'medium' ? 0.5 : 0.7
+      scale = level === 'high' ? 1.0 : level === 'medium' ? 1.5 : 2.0
+    }
+
+    for (let pageNum = 1; pageNum <= pdfjsDoc.numPages; pageNum++) {
+      const page = await pdfjsDoc.getPage(pageNum)
+      const viewport = page.getViewport({ scale })
+
+      const canvas = document.createElement('canvas')
+      const context = canvas.getContext('2d')
+      if (!context) throw new Error('Could not get canvas context')
+
+      canvas.height = viewport.height
+      canvas.width = viewport.width
+
+      await page.render({
+        canvasContext: context,
+        viewport: viewport,
+        canvas: canvas,
+      }).promise
+
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (blob) => {
+            if (blob) resolve(blob)
+            else reject(new Error('Failed to create blob'))
+          },
+          'image/jpeg',
+          imageQuality
+        )
+      })
+
+      const jpegImage = await pdfDoc.embedJpg(await blob.arrayBuffer())
+      const newPage = pdfDoc.addPage([viewport.width, viewport.height])
+      newPage.drawImage(jpegImage, {
+        x: 0,
+        y: 0,
+        width: viewport.width,
+        height: viewport.height,
+      })
+
+      this.updateCallback(pdf.id, {
+        progress: 20 + (pageNum / pdfjsDoc.numPages) * 70,
+      })
+    }
+
+    const compressedBytes = await pdfDoc.save({
+      useObjectStreams: true,
+      addDefaultPage: false,
+    })
+
+    const finalBlob = new Blob([new Uint8Array(compressedBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: finalBlob,
+      processedSize: finalBlob.size,
+    })
+  }
+
+  /**
+   * Detect if document is text-heavy by analyzing text content
+   */
+  // biome-ignore lint/suspicious/noExplicitAny: pdfjs document types
+  private async detectTextHeavyDocument(pdfDoc: any): Promise<boolean> {
+    try {
+      // Sample first 3 pages
+      const pagesToSample = Math.min(3, pdfDoc.numPages)
+      let totalTextLength = 0
+
+      for (let i = 1; i <= pagesToSample; i++) {
+        const page = await pdfDoc.getPage(i)
+        const textContent = await page.getTextContent()
+        // biome-ignore lint/suspicious/noExplicitAny: pdfjs text content structure
+        const text = textContent.items.map((item: any) => item.str || '').join(' ')
+        totalTextLength += text.length
+      }
+
+      // If average text length > 500 chars per page, consider it text-heavy
+      return totalTextLength / pagesToSample > 500
+    } catch {
+      return false
+    }
+  }
+
+  private async splitPDF(pdf: PDFFile, splitPageNumber: number): Promise<void> {
+    const { PDFDocument } = await import('pdf-lib')
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const totalPages = pdfDoc.getPageCount()
+
+    if (splitPageNumber < 1 || splitPageNumber > totalPages) {
+      throw new Error('Invalid page number')
+    }
+
+    const pdf1 = await PDFDocument.create()
+    const pages1 = await pdf1.copyPages(
+      pdfDoc,
+      Array.from({ length: splitPageNumber }, (_, i) => i)
+    )
+    for (const page of pages1) {
+      pdf1.addPage(page)
+    }
+
+    const pdf2 = await PDFDocument.create()
+    const pages2 = await pdf2.copyPages(
+      pdfDoc,
+      Array.from({ length: totalPages - splitPageNumber }, (_, i) => i + splitPageNumber)
+    )
+    for (const page of pages2) {
+      pdf2.addPage(page)
+    }
+
+    const bytes1 = await pdf1.save()
+    const bytes2 = await pdf2.save()
+
+    const blob1 = new Blob([new Uint8Array(bytes1)], { type: 'application/pdf' })
+    const blob2 = new Blob([new Uint8Array(bytes2)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob1,
+      processedSize: blob1.size + blob2.size,
+      splitBlob2: blob2,
+    })
+  }
+
+  private async convertToImages(pdf: PDFFile): Promise<void> {
+    const pdfjs = await import('pdfjs-dist')
+
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+    }
+
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+    const pdfDoc = await loadingTask.promise
+
+    const images: Blob[] = []
+
+    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+      const page = await pdfDoc.getPage(pageNum)
+      const viewport = page.getViewport({ scale: 2.0 })
+
+      const canvas = document.createElement('canvas')
+      const context = canvas.getContext('2d')
+      if (!context) throw new Error('Could not get canvas context')
+      canvas.height = viewport.height
+      canvas.width = viewport.width
+
+      await page.render({
+        canvasContext: context,
+        viewport: viewport,
+        canvas: canvas,
+      }).promise
+
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob)
+          else reject(new Error('Failed to create blob'))
+        }, 'image/png')
+      })
+
+      images.push(blob)
+
+      this.updateCallback(pdf.id, {
+        progress: (pageNum / pdfDoc.numPages) * 100,
+      })
+    }
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      imageBlobs: images,
+    })
+  }
+
+  private async addWatermark(pdf: PDFFile, text: string, opacity: number): Promise<void> {
+    const { PDFDocument, rgb, degrees } = await import('pdf-lib')
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const pages = pdfDoc.getPages()
+
+    // biome-ignore lint/suspicious/noExplicitAny: pdf-lib page types
+    pages.forEach((page: any, index: number) => {
+      const { width, height } = page.getSize()
+
+      page.drawText(text, {
+        x: width / 2 - text.length * 10,
+        y: height / 2,
+        size: 50,
+        color: rgb(0.7, 0.7, 0.7),
+        opacity: opacity,
+        rotate: degrees(-45),
+      })
+
+      this.updateCallback(pdf.id, {
+        progress: ((index + 1) / pages.length) * 100,
+      })
+    })
+
+    const watermarkedBytes = await pdfDoc.save()
+    const blob = new Blob([new Uint8Array(watermarkedBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  private async extractPages(pdf: PDFFile, startPage: number, endPage: number): Promise<void> {
+    const { PDFDocument } = await import('pdf-lib')
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const totalPages = pdfDoc.getPageCount()
+
+    if (startPage < 1 || endPage > totalPages || startPage > endPage) {
+      throw new Error('Invalid page range')
+    }
+
+    const newPdf = await PDFDocument.create()
+    const pageIndices = Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage - 1)
+
+    const pages = await newPdf.copyPages(pdfDoc, pageIndices)
+    for (const page of pages) {
+      newPdf.addPage(page)
+    }
+
+    const extractedBytes = await newPdf.save()
+    const blob = new Blob([new Uint8Array(extractedBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  private async rotatePDF(pdf: PDFFile, angle: number): Promise<void> {
+    const { PDFDocument, degrees } = await import('pdf-lib')
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const pages = pdfDoc.getPages()
+
+    // biome-ignore lint/suspicious/noExplicitAny: pdf-lib page types
+    pages.forEach((page: any, index: number) => {
+      page.setRotation(degrees(angle))
+
+      this.updateCallback(pdf.id, {
+        progress: ((index + 1) / pages.length) * 100,
+      })
+    })
+
+    const rotatedBytes = await pdfDoc.save()
+    const blob = new Blob([new Uint8Array(rotatedBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  private async convertToWord(pdf: PDFFile): Promise<void> {
+    const pdfjs = await import('pdfjs-dist')
+    const { Document, Paragraph, TextRun, HeadingLevel, Packer } = await import('docx')
+
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+    }
+
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+    const pdfDoc = await loadingTask.promise
+
+    // biome-ignore lint/suspicious/noExplicitAny: docx library types
+    const paragraphs: any[] = []
+
+    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+      const page = await pdfDoc.getPage(pageNum)
+      const textContent = await page.getTextContent()
+
+      this.updateCallback(pdf.id, {
+        progress: (pageNum / pdfDoc.numPages) * 80,
+      })
+
+      // biome-ignore lint/suspicious/noExplicitAny: pdfjs text content items
+      const lines: Map<number, any[]> = new Map()
+      const tolerance = 2
+
+      for (const item of textContent.items) {
+        if ('str' in item && item.str.trim()) {
+          const y = Math.round(item.transform[5] / tolerance) * tolerance
+          if (!lines.has(y)) {
+            lines.set(y, [])
+          }
+          lines.get(y)?.push(item)
+        }
+      }
+
+      const sortedLines = Array.from(lines.entries()).sort((a, b) => b[0] - a[0])
+
+      if (pdfDoc.numPages > 1) {
+        paragraphs.push(
+          new Paragraph({
+            text: `--- Page ${pageNum} ---`,
+            heading: HeadingLevel.HEADING_2,
+            spacing: { before: 240, after: 120 },
+          })
+        )
+      }
+
+      for (const [, lineItems] of sortedLines) {
+        lineItems.sort((a, b) => a.transform[4] - b.transform[4])
+
+        const textRuns: InstanceType<typeof TextRun>[] = []
+        let previousX = -1
+        let previousFontSize = -1
+
+        for (const item of lineItems) {
+          const text = item.str
+          const x = item.transform[4]
+          const fontSize = item.transform[0]
+
+          const isLarger = previousFontSize > 0 && fontSize > previousFontSize * 1.2
+
+          if (previousX !== -1 && x - previousX > fontSize * 0.3) {
+            textRuns.push(new TextRun(' '))
+          }
+
+          textRuns.push(
+            new TextRun({
+              text: text,
+              bold: isLarger,
+              size: Math.round(fontSize * 2),
+            })
+          )
+
+          previousX = x + text.length * fontSize * 0.5
+          previousFontSize = fontSize
+        }
+
+        if (textRuns.length > 0) {
+          paragraphs.push(
+            new Paragraph({
+              children: textRuns,
+              spacing: { after: 120 },
+            })
+          )
+        }
+      }
+
+      if (pageNum < pdfDoc.numPages) {
+        paragraphs.push(
+          new Paragraph({
+            text: '',
+            pageBreakBefore: true,
+          })
+        )
+      }
+    }
+
+    this.updateCallback(pdf.id, { progress: 90 })
+
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: paragraphs,
+        },
+      ],
+    })
+
+    const blob = await Packer.toBlob(doc)
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  private async convertToGrayscale(pdf: PDFFile): Promise<void> {
+    const pdfjs = await import('pdfjs-dist')
+    const { PDFDocument } = await import('pdf-lib')
+
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+    }
+
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+    const pdfjsDoc = await loadingTask.promise
+
+    const pdfDoc = await PDFDocument.create()
+
+    for (let pageNum = 1; pageNum <= pdfjsDoc.numPages; pageNum++) {
+      const page = await pdfjsDoc.getPage(pageNum)
+      const viewport = page.getViewport({ scale: 2.0 })
+
+      const canvas = document.createElement('canvas')
+      const context = canvas.getContext('2d')
+      if (!context) throw new Error('Could not get canvas context')
+      canvas.height = viewport.height
+      canvas.width = viewport.width
+
+      await page.render({
+        canvasContext: context,
+        viewport: viewport,
+        canvas: canvas,
+      }).promise
+
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+      const data = imageData.data
+      for (let i = 0; i < data.length; i += 4) {
+        const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2])
+        data[i] = gray
+        data[i + 1] = gray
+        data[i + 2] = gray
+      }
+      context.putImageData(imageData, 0, 0)
+
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob)
+          else reject(new Error('Failed to create blob'))
+        }, 'image/png')
+      })
+
+      const pngImage = await pdfDoc.embedPng(await blob.arrayBuffer())
+      const newPage = pdfDoc.addPage([viewport.width, viewport.height])
+      newPage.drawImage(pngImage, {
+        x: 0,
+        y: 0,
+        width: viewport.width,
+        height: viewport.height,
+      })
+
+      this.updateCallback(pdf.id, {
+        progress: (pageNum / pdfjsDoc.numPages) * 100,
+      })
+    }
+
+    const grayscaleBytes = await pdfDoc.save()
+    const finalBlob = new Blob([new Uint8Array(grayscaleBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: finalBlob,
+      processedSize: finalBlob.size,
+    })
+  }
+}

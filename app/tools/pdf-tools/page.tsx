@@ -13,17 +13,22 @@ import {
   FileOutput,
   FileText,
   Image as ImageIcon,
+  Info,
   Merge,
+  Redo2,
   RotateCw,
   Settings,
+  Sliders,
   Sparkles,
   Split,
   Trash2,
+  Undo2,
   Zap,
 } from 'lucide-react'
 import type * as PdfLibTypes from 'pdf-lib'
 import type * as PdfjsTypes from 'pdfjs-dist'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { PDFEditor } from '@/components/features/PDFEditor'
 import { Button } from '@/components/ui/button'
@@ -32,7 +37,13 @@ import { Progress } from '@/components/ui/progress'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
+import { ComparisonView } from './components/ComparisonView'
+import { PresetsDialog } from './components/PresetsDialog'
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { useOperationHistory } from './hooks/useOperationHistory'
+import { PDFBatchProcessor } from './PDFBatchProcessor'
 import PDFPageEditFlow from './PDFPageEditFlow'
+import { PDFThumbnail } from './PDFThumbnail'
 
 // Dynamic import for pdf-lib (client-side only)
 let pdfLib: typeof PdfLibTypes | null = null
@@ -136,6 +147,60 @@ export default function PDFToolsPage() {
   // Rotate options
   const [rotationAngle, setRotationAngle] = useState(90)
 
+  // New enhancements
+  const [showPresets, setShowPresets] = useState(false)
+  const [showComparison, setShowComparison] = useState(false)
+  const [comparisonPdf, setComparisonPdf] = useState<PDFFile | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const batchProcessorRef = useRef<PDFBatchProcessor | null>(null)
+
+  // Initialize batch processor
+  useEffect(() => {
+    batchProcessorRef.current = new PDFBatchProcessor((id, updates) => {
+      setPdfs((prev) => prev.map((pdf) => (pdf.id === id ? { ...pdf, ...updates } : pdf)))
+    })
+  }, [])
+
+  // Operation history for undo/redo
+  const { addSnapshot, undo, redo, canUndo, canRedo } = useOperationHistory<PDFFile[]>()
+
+  // Save snapshot before each operation
+  const saveSnapshot = useCallback(
+    (operation: string) => {
+      addSnapshot(operation, pdfs)
+    },
+    [pdfs, addSnapshot]
+  )
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onUpload: () => fileInputRef.current?.click(),
+    onProcess: () => !isProcessing && pdfs.length > 0 && handleProcess(),
+    onDownloadAll: () => handleDownloadAll(),
+    onClear: () => handleClearAll(),
+    onCancel: () => {
+      if (editingPdf) {
+        setEditingPdf(null)
+        setIsEditorOpen(false)
+      }
+    },
+    onUndo: () => {
+      const snapshot = undo()
+      if (snapshot) {
+        setPdfs(snapshot.data)
+        toast.success('Undid last operation')
+      }
+    },
+    onRedo: () => {
+      const snapshot = redo()
+      if (snapshot) {
+        setPdfs(snapshot.data)
+        toast.success('Redid operation')
+      }
+    },
+    enabled: !isProcessing,
+  })
+
   // Track page visit
   useEffect(() => {
     trackEvent({
@@ -200,6 +265,8 @@ export default function PDFToolsPage() {
     )
   }
 
+  // Legacy processing functions kept for merge operation and as fallback
+  // All other operations now use PDFBatchProcessor for parallel processing
   const mergePDFs = async () => {
     if (pdfs.length < 2) return
 
@@ -259,7 +326,7 @@ export default function PDFToolsPage() {
     setIsProcessing(false)
   }
 
-  const splitPDF = async (pdf: PDFFile) => {
+  const _splitPDF = async (pdf: PDFFile) => {
     const startTime = Date.now()
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
@@ -337,7 +404,7 @@ export default function PDFToolsPage() {
     }
   }
 
-  const compressPDF = async (pdf: PDFFile) => {
+  const _compressPDF = async (pdf: PDFFile) => {
     const startTime = Date.now()
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
@@ -461,7 +528,7 @@ export default function PDFToolsPage() {
     }
   }
 
-  const convertToImages = async (pdf: PDFFile) => {
+  const _convertToImages = async (pdf: PDFFile) => {
     const startTime = Date.now()
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
@@ -540,7 +607,7 @@ export default function PDFToolsPage() {
     }
   }
 
-  const convertToGrayscale = async (pdf: PDFFile) => {
+  const _convertToGrayscale = async (pdf: PDFFile) => {
     const startTime = Date.now()
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
@@ -643,7 +710,7 @@ export default function PDFToolsPage() {
     }
   }
 
-  const addWatermark = async (pdf: PDFFile) => {
+  const _addWatermark = async (pdf: PDFFile) => {
     const startTime = Date.now()
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
@@ -704,7 +771,7 @@ export default function PDFToolsPage() {
     }
   }
 
-  const extractPages = async (pdf: PDFFile) => {
+  const _extractPages = async (pdf: PDFFile) => {
     const startTime = Date.now()
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
@@ -765,7 +832,7 @@ export default function PDFToolsPage() {
     }
   }
 
-  const rotatePDF = async (pdf: PDFFile) => {
+  const _rotatePDF = async (pdf: PDFFile) => {
     const startTime = Date.now()
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
@@ -817,7 +884,7 @@ export default function PDFToolsPage() {
     }
   }
 
-  const convertToWord = async (pdf: PDFFile) => {
+  const _convertToWord = async (pdf: PDFFile) => {
     const startTime = Date.now()
     updatePdfStatus(pdf.id, { status: 'processing', progress: 0 })
 
@@ -1124,51 +1191,64 @@ export default function PDFToolsPage() {
     }
   }
   const handleProcess = async () => {
+    saveSnapshot(`process_${operation}`)
     setIsProcessing(true)
 
-    if (operation === 'merge') {
-      await mergePDFs()
-    } else if (operation === 'edit') {
-      const pendingPdfs = pdfs.filter((p) => p.status === 'pending')
-      if (pendingPdfs.length > 0) {
-        setEditingPdf(pendingPdfs[0])
-        setIsEditorOpen(true)
-      }
-      setIsProcessing(false)
-      return
-    } else {
-      const pendingPdfs = pdfs.filter((p) => p.status === 'pending')
-      for (const pdf of pendingPdfs) {
-        switch (operation) {
-          case 'split':
-            await splitPDF(pdf)
-            break
-          case 'compress':
-            await compressPDF(pdf)
-            break
-          case 'toImages':
-            await convertToImages(pdf)
-            break
-          case 'watermark':
-            await addWatermark(pdf)
-            break
-          case 'extract':
-            await extractPages(pdf)
-            break
-          case 'rotate':
-            await rotatePDF(pdf)
-            break
-          case 'toWord':
-            await convertToWord(pdf)
-            break
-          case 'grayscale':
-            await convertToGrayscale(pdf)
-            break
+    try {
+      if (operation === 'merge') {
+        await mergePDFs()
+      } else if (operation === 'edit') {
+        const pendingPdfs = pdfs.filter((p) => p.status === 'pending')
+        if (pendingPdfs.length > 0) {
+          setEditingPdf(pendingPdfs[0])
+          setIsEditorOpen(true)
+        }
+        setIsProcessing(false)
+        return
+      } else {
+        // Use batch processor for parallel processing
+        if (batchProcessorRef.current) {
+          await batchProcessorRef.current.processBatch(pdfs, operation, {
+            compressionLevel,
+            splitPageNumber,
+            watermarkText,
+            watermarkOpacity,
+            extractStartPage,
+            extractEndPage,
+            rotationAngle,
+          })
+
+          toast.success(
+            `Successfully processed ${pdfs.filter((p) => p.status === 'completed').length} PDFs`
+          )
         }
       }
+    } catch (error) {
+      console.error('Processing error:', error)
+      toast.error('Failed to process PDFs')
     }
 
     setIsProcessing(false)
+  }
+
+  const handleDownloadAll = () => {
+    const completed = pdfs.filter((p) => p.status === 'completed')
+    if (completed.length === 0) {
+      toast.error('No completed PDFs to download')
+      return
+    }
+
+    for (const pdf of completed) {
+      handleDownload(pdf)
+    }
+    toast.success(`Downloaded ${completed.length} files`)
+
+    trackEvent({
+      action: 'download_all',
+      category: 'pdf_tools',
+      label: operation,
+      value: completed.length,
+    })
   }
 
   const handleDownload = (pdf: PDFFile) => {
@@ -1995,6 +2075,80 @@ export default function PDFToolsPage() {
                     />
                     Process PDFs
                   </Button>
+
+                  {/* Undo/Redo buttons */}
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: '2',
+                    })}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const snapshot = undo()
+                        if (snapshot) {
+                          setPdfs(snapshot.data)
+                          toast.success('Undid operation')
+                        }
+                      }}
+                      disabled={!canUndo}
+                      className={css({
+                        gap: '2',
+                        fontSize: 'xs',
+                      })}
+                    >
+                      <Undo2 className={css({ h: '3', w: '3' })} />
+                      Undo
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const snapshot = redo()
+                        if (snapshot) {
+                          setPdfs(snapshot.data)
+                          toast.success('Redid operation')
+                        }
+                      }}
+                      disabled={!canRedo}
+                      className={css({
+                        gap: '2',
+                        fontSize: 'xs',
+                      })}
+                    >
+                      <Redo2 className={css({ h: '3', w: '3' })} />
+                      Redo
+                    </Button>
+                  </div>
+
+                  {/* Presets button for compression */}
+                  {operation === 'compress' && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowPresets(true)}
+                      className={css({
+                        w: 'full',
+                        gap: '2',
+                        borderColor: 'purple.500/30',
+                        color: 'purple.400',
+                        _hover: {
+                          bg: 'purple.500/10',
+                        },
+                      })}
+                    >
+                      <Sliders
+                        className={css({
+                          h: '4',
+                          w: '4',
+                        })}
+                      />
+                      Use Preset
+                    </Button>
+                  )}
+
                   <Button
                     variant="outline"
                     onClick={handleClearAll}
@@ -2113,37 +2267,33 @@ export default function PDFToolsPage() {
                             <div
                               className={css({ display: 'flex', alignItems: 'start', gap: '4' })}
                             >
-                              {/* PDF Icon */}
-                              <div
+                              {/* PDF Thumbnail Preview */}
+                              <PDFThumbnail
+                                file={pdf.file}
                                 className={css({
-                                  h: '20',
-                                  w: '20',
-                                  flexShrink: '0',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  rounded: 'lg',
-                                  bg: 'gray.800',
+                                  position: 'relative',
                                 })}
-                              >
-                                {pdf.status === 'completed' ? (
+                              />
+                              {pdf.status === 'completed' && (
+                                <div
+                                  className={css({
+                                    position: 'absolute',
+                                    top: '1',
+                                    right: '1',
+                                    p: '1',
+                                    rounded: 'full',
+                                    bg: 'green.500',
+                                  })}
+                                >
                                   <CheckCircle
                                     className={css({
-                                      h: '8',
-                                      w: '8',
-                                      color: 'red.400',
+                                      h: '3',
+                                      w: '3',
+                                      color: 'white',
                                     })}
                                   />
-                                ) : (
-                                  <FileText
-                                    className={css({
-                                      h: '8',
-                                      w: '8',
-                                      color: 'gray.400',
-                                    })}
-                                  />
-                                )}
-                              </div>
+                                </div>
+                              )}
 
                               {/* PDF Info */}
                               <div className={css({ minW: '0', flex: '1' })}>
@@ -2197,28 +2347,55 @@ export default function PDFToolsPage() {
 
                                   {/* Action Buttons */}
                                   <div className={css({ display: 'flex', gap: '1' })}>
-                                    {pdf.status === 'completed' && (
-                                      <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() => handleDownload(pdf)}
-                                        className={css({
-                                          h: '8',
-                                          w: '8',
-                                          p: '0',
-                                          color: 'red.400',
-                                          _hover: {
-                                            bg: 'red.500/20',
-                                          },
-                                        })}
-                                      >
-                                        <Download
+                                    {pdf.status === 'completed' && pdf.processedBlob && (
+                                      <>
+                                        <Button
+                                          size="sm"
+                                          variant="ghost"
+                                          onClick={() => {
+                                            setComparisonPdf(pdf)
+                                            setShowComparison(true)
+                                          }}
                                           className={css({
-                                            h: '4',
-                                            w: '4',
+                                            h: '8',
+                                            w: '8',
+                                            p: '0',
+                                            color: 'blue.400',
+                                            _hover: {
+                                              bg: 'blue.500/20',
+                                            },
                                           })}
-                                        />
-                                      </Button>
+                                          title="Compare before/after"
+                                        >
+                                          <Info
+                                            className={css({
+                                              h: '4',
+                                              w: '4',
+                                            })}
+                                          />
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="ghost"
+                                          onClick={() => handleDownload(pdf)}
+                                          className={css({
+                                            h: '8',
+                                            w: '8',
+                                            p: '0',
+                                            color: 'red.400',
+                                            _hover: {
+                                              bg: 'red.500/20',
+                                            },
+                                          })}
+                                        >
+                                          <Download
+                                            className={css({
+                                              h: '4',
+                                              w: '4',
+                                            })}
+                                          />
+                                        </Button>
+                                      </>
                                     )}
                                     <Button
                                       size="sm"
@@ -2426,6 +2603,44 @@ export default function PDFToolsPage() {
           }}
         />
       )}
+      {/* Presets Dialog */}
+      {showPresets && (
+        <PresetsDialog
+          onSelect={(preset) => {
+            setCompressionLevel(preset.level)
+            toast.success(`Applied ${preset.name} preset`)
+          }}
+          onClose={() => setShowPresets(false)}
+        />
+      )}
+
+      {/* Comparison View */}
+      {showComparison && comparisonPdf && comparisonPdf.processedBlob && (
+        <ComparisonView
+          originalFile={comparisonPdf.file}
+          processedBlob={comparisonPdf.processedBlob}
+          operation={operation}
+          onClose={() => {
+            setShowComparison(false)
+            setComparisonPdf(null)
+          }}
+        />
+      )}
+
+      {/* Hidden file input for keyboard shortcut */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf"
+        multiple
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          if (e.target.files) {
+            handleFilesSelected(e.target.files)
+          }
+        }}
+      />
+
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
       <ToolSearch />
     </main>
