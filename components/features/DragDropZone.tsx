@@ -73,7 +73,9 @@ export function DragDropZone({
   )
 
   const handleClick = () => {
-    document.getElementById(inputId)?.click()
+    if (!disabled) {
+      document.getElementById(inputId)?.click()
+    }
   }
 
   return (
@@ -98,7 +100,7 @@ export function DragDropZone({
         isDragOver
           ? 'scale-[1.02] border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20'
           : 'border-gray-700 bg-gray-900/30',
-        disabled && 'cursor-not-allowed opacity-50',
+        disabled && 'cursor-not-allowed opacity-50 pointer-events-none',
         className
       )}
     >
@@ -108,7 +110,7 @@ export function DragDropZone({
         multiple={multiple}
         onChange={handleFileInput}
         disabled={disabled}
-        className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+        className="hidden"
         id={inputId}
       />
       <label
