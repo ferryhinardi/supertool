@@ -1,7 +1,7 @@
 'use client'
 
 import { FileCheck, Upload } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useId, useState } from 'react'
 import { cx } from '@/lib/utils'
 
 interface DragDropZoneProps {
@@ -22,6 +22,7 @@ export function DragDropZone({
   className,
 }: DragDropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false)
+  const inputId = useId()
 
   const handleDragEnter = useCallback(
     (e: React.DragEvent) => {
@@ -72,7 +73,7 @@ export function DragDropZone({
   )
 
   const handleClick = () => {
-    document.getElementById('file-upload')?.click()
+    document.getElementById(inputId)?.click()
   }
 
   return (
@@ -108,10 +109,10 @@ export function DragDropZone({
         onChange={handleFileInput}
         disabled={disabled}
         className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
-        id="file-upload"
+        id={inputId}
       />
       <label
-        htmlFor="file-upload"
+        htmlFor={inputId}
         className="flex cursor-pointer flex-col items-center justify-center px-6 py-12 text-center"
       >
         <div
