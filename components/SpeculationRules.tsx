@@ -129,14 +129,21 @@ export function SpeculationRules() {
  */
 export function useSpeculationStatus() {
   if (typeof document === 'undefined') {
-    return { wasPrefetched: false, wasPrerendered: false }
+    return { wasPrefetched: false, wasPrerendered: false, isPrerendering: false }
   }
 
-  // Check if page was prerendered (currently being prerendered = true, was prerendered in past = false but had the property)
-  const wasPrerendered = 'prerendering' in document && document.prerendering === false
+  // Check if page is currently being prerendered
   const isPrerendering = 'prerendering' in document && document.prerendering === true
 
-  return { wasPrefetched: wasPrerendered, wasPrerendered, isPrerendering }
+  // Check if page was prerendered (has the property but is no longer prerendering)
+  const wasPrerendered = 'prerendering' in document && document.prerendering === false
+
+  // Note: There's no direct API to detect if a page was prefetched
+  // We can only detect prerender status. Prefetch detection would require
+  // checking navigation timing API or other heuristics.
+  const wasPrefetched = false
+
+  return { wasPrefetched, wasPrerendered, isPrerendering }
 }
 
 /**

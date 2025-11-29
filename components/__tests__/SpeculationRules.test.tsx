@@ -246,11 +246,12 @@ describe('useSpeculationStatus', () => {
     expect(status).toEqual({
       wasPrefetched: false,
       wasPrerendered: false,
+      isPrerendering: false,
     })
   })
 
-  it('should detect if page was not prerendered', () => {
-    // Mock document.prerendering
+  it('should detect if page was prerendered (completed)', () => {
+    // Mock document.prerendering = false means it was prerendered but activation is complete
     Object.defineProperty(document, 'prerendering', {
       value: false,
       writable: true,
@@ -259,8 +260,9 @@ describe('useSpeculationStatus', () => {
 
     const status = useSpeculationStatus()
 
-    expect(status.wasPrefetched).toBe(true)
-    expect(status.wasPrerendered).toBe(false)
+    expect(status.wasPrefetched).toBe(false)
+    expect(status.wasPrerendered).toBe(true)
+    expect(status.isPrerendering).toBe(false)
   })
 
   it('should detect if page is being prerendered', () => {
@@ -273,6 +275,7 @@ describe('useSpeculationStatus', () => {
     const status = useSpeculationStatus()
 
     expect(status.wasPrefetched).toBe(false)
-    expect(status.wasPrerendered).toBe(true)
+    expect(status.wasPrerendered).toBe(false)
+    expect(status.isPrerendering).toBe(true)
   })
 })
