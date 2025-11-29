@@ -162,6 +162,17 @@ export const tools: Tool[] = [
     category: 'media',
     new: true,
   },
+  {
+    title: 'Video Subtitle Combiner',
+    description:
+      'Merge SRT subtitle files with your videos directly in the browser. Burn subtitles permanently into video files with customizable fonts, colors, and positioning using FFmpeg.',
+    icon: FileText,
+    href: '/tools/video-subtitle-combiner',
+    gradient: 'from-blue-500 via-indigo-500 to-purple-500',
+    features: ['SRT Support', 'Custom Styling', 'Burn Subtitles', 'Browser Processing'],
+    category: 'media',
+    new: true,
+  },
 
   // Active tools (not popular or new)
   {

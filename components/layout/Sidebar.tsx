@@ -31,6 +31,7 @@ import {
   Shield,
   ShieldAlert,
   Star,
+  Subtitles,
   Terminal,
   Timer,
   Upload,
@@ -90,6 +91,7 @@ const navigation = [
   { name: 'AI Command Explainer', href: '/tools/ai-command-explainer', icon: MessageSquare },
   { name: 'File Inspector', href: '/tools/file-inspector', icon: FileSearch },
   { name: 'File Upload', href: '/tools/upload', icon: Upload },
+  { name: 'Video Subtitle Combiner', href: '/tools/video-subtitle-combiner', icon: Subtitles },
 ]
 const showAccessToGithub = false
 
