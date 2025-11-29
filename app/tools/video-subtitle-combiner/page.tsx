@@ -501,135 +501,139 @@ export default function VideoSubtitleCombinerPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className={css({ lg: { gridColumn: 'span 2 / span 2' } })}
+          className={css({ lg: { gridColumn: 'span 2 / span 2' }, spaceY: '6' })}
         >
-          <Card
-            className={css({
-              border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(8px)',
-            })}
-          >
-            <CardHeader>
-              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <UploadIcon className={css({ h: '5', w: '5', color: 'blue.400' })} />
-                Upload Files
-              </CardTitle>
-              <CardDescription>Upload a video file and an SRT subtitle file</CardDescription>
-            </CardHeader>
-            <CardContent className={css({ spaceY: '6' })}>
-              {/* Video Upload */}
-              <div className={css({ spaceY: '2' })}>
-                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
-                  Video File
-                </div>
-                <DragDropZone
-                  onFilesSelected={handleVideoSelect}
-                  accept="video/*"
-                  maxSize={MAX_VIDEO_SIZE}
-                  disabled={!ffmpegLoaded}
-                />
-                {videoFile && (
-                  <div
-                    className={css({
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '2',
-                      rounded: 'md',
-                      border: '1px solid',
-                      borderColor: 'green.500/30',
-                      bg: 'green.500/10',
-                      p: '3',
-                    })}
-                  >
-                    <CheckCircle className={css({ h: '5', w: '5', color: 'green.400' })} />
-                    <div className={css({ minW: '0', flex: '1' })}>
-                      <p
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}
-                      >
-                        {videoFile.name}
-                      </p>
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
-                        {formatBytes(videoFile.size)}
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setVideoFile(null)}
-                      className={css({ color: 'red.400', _hover: { bg: 'red.500/20' } })}
-                    >
-                      <Trash2 className={css({ h: '4', w: '4' })} />
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              {/* Subtitle Upload */}
-              <div className={css({ spaceY: '2' })}>
-                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
-                  Subtitle File (.srt)
-                </div>
-                <DragDropZone
-                  onFilesSelected={handleSubtitleSelect}
-                  accept=".srt,text/plain"
-                  maxSize={10 * 1024 * 1024}
-                  disabled={!ffmpegLoaded}
-                />
-                {subtitleFile && (
-                  <div
-                    className={css({
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '2',
-                      rounded: 'md',
-                      border: '1px solid',
-                      borderColor: 'green.500/30',
-                      bg: 'green.500/10',
-                      p: '3',
-                    })}
-                  >
-                    <CheckCircle className={css({ h: '5', w: '5', color: 'green.400' })} />
-                    <div className={css({ minW: '0', flex: '1' })}>
-                      <p
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}
-                      >
-                        {subtitleFile.name}
-                      </p>
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
-                        {formatBytes(subtitleFile.size)}
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setSubtitleFile(null)}
-                      className={css({ color: 'red.400', _hover: { bg: 'red.500/20' } })}
-                    >
-                      <Trash2 className={css({ h: '4', w: '4' })} />
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              {/* Process Button */}
-              <Button
-                onClick={processVideo}
-                disabled={!videoFile || !subtitleFile || isProcessing || !ffmpegLoaded}
+          {/* Video Upload */}
+          <div className={css({ spaceY: '3' })}>
+            <h3
+              className={css({
+                fontSize: 'lg',
+                fontWeight: 'semibold',
+                color: 'gray.200',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+              })}
+            >
+              <FileVideo className={css({ h: '5', w: '5', color: 'blue.400' })} />
+              Video File
+            </h3>
+            <DragDropZone
+              onFilesSelected={handleVideoSelect}
+              accept="video/*"
+              maxSize={MAX_VIDEO_SIZE}
+              disabled={!ffmpegLoaded}
+            />
+            {videoFile && (
+              <div
                 className={css({
-                  w: 'full',
-                  gap: '2',
-                  bg: 'blue.600',
-                  _hover: { bg: 'blue.700' },
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3',
+                  rounded: 'xl',
+                  border: '1px solid',
+                  borderColor: 'green.500/30',
+                  bg: 'green.500/10',
+                  p: '4',
                 })}
-                size="lg"
               >
-                <Zap className={css({ h: '5', w: '5' })} />
-                {isProcessing ? 'Processing...' : 'Combine Video & Subtitles'}
-              </Button>
-            </CardContent>
-          </Card>
+                <CheckCircle className={css({ h: '5', w: '5', color: 'green.400' })} />
+                <div className={css({ minW: '0', flex: '1' })}>
+                  <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}>
+                    {videoFile.name}
+                  </p>
+                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    {formatBytes(videoFile.size)}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setVideoFile(null)}
+                  className={css({ color: 'red.400', _hover: { bg: 'red.500/20' } })}
+                >
+                  <Trash2 className={css({ h: '4', w: '4' })} />
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Subtitle Upload */}
+          <div className={css({ spaceY: '3' })}>
+            <h3
+              className={css({
+                fontSize: 'lg',
+                fontWeight: 'semibold',
+                color: 'gray.200',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+              })}
+            >
+              <FileText className={css({ h: '5', w: '5', color: 'blue.400' })} />
+              Subtitle File (.srt)
+            </h3>
+            <DragDropZone
+              onFilesSelected={handleSubtitleSelect}
+              accept=".srt,text/plain"
+              maxSize={10 * 1024 * 1024}
+              disabled={!ffmpegLoaded}
+            />
+            {subtitleFile && (
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3',
+                  rounded: 'xl',
+                  border: '1px solid',
+                  borderColor: 'green.500/30',
+                  bg: 'green.500/10',
+                  p: '4',
+                })}
+              >
+                <CheckCircle className={css({ h: '5', w: '5', color: 'green.400' })} />
+                <div className={css({ minW: '0', flex: '1' })}>
+                  <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}>
+                    {subtitleFile.name}
+                  </p>
+                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    {formatBytes(subtitleFile.size)}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setSubtitleFile(null)}
+                  className={css({ color: 'red.400', _hover: { bg: 'red.500/20' } })}
+                >
+                  <Trash2 className={css({ h: '4', w: '4' })} />
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Process Button */}
+          <Button
+            onClick={processVideo}
+            disabled={!videoFile || !subtitleFile || isProcessing || !ffmpegLoaded}
+            className={css({
+              w: 'full',
+              gap: '2',
+              bgGradient: 'to-r',
+              gradientFrom: 'blue.600',
+              gradientTo: 'purple.600',
+              _hover: { gradientFrom: 'blue.700', gradientTo: 'purple.700' },
+              rounded: 'xl',
+              h: '12',
+              fontSize: 'md',
+              fontWeight: 'semibold',
+            })}
+            size="lg"
+          >
+            <Zap className={css({ h: '5', w: '5' })} />
+            {isProcessing ? 'Processing...' : 'Combine Video & Subtitles'}
+          </Button>
         </motion.div>
 
         {/* Settings Panel */}
