@@ -38,9 +38,11 @@ export function AuthModal() {
         >
           <Dialog.Content
             className={css({
-              bg: 'white',
+              bg: 'gray.900',
               rounded: 'lg',
               shadow: 'xl',
+              border: '2px solid',
+              borderColor: 'purple.500/30',
               maxW: 'md',
               w: 'full',
               p: 6,
@@ -56,8 +58,9 @@ export function AuthModal() {
                 p: 2,
                 rounded: 'md',
                 cursor: 'pointer',
-                _hover: { bg: 'gray.100' },
-                transition: 'background 0.2s',
+                color: 'gray.400',
+                _hover: { bg: 'gray.800', color: 'white' },
+                transition: 'all 0.2s',
               })}
             >
               <XIcon className={css({ w: 5, h: 5 })} />
@@ -70,6 +73,7 @@ export function AuthModal() {
                   fontSize: '2xl',
                   fontWeight: 'bold',
                   textAlign: 'center',
+                  color: 'white',
                 })}
               >
                 {authView === 'sign-in' && 'Sign In'}
@@ -81,7 +85,7 @@ export function AuthModal() {
               <Dialog.Description
                 className={css({
                   fontSize: 'sm',
-                  color: 'gray.600',
+                  color: 'gray.400',
                   textAlign: 'center',
                 })}
               >
@@ -111,21 +115,22 @@ export function AuthModal() {
                     type="button"
                     onClick={() => setAuthView('forgot-password')}
                     className={css({
-                      color: 'blue.600',
-                      _hover: { textDecoration: 'underline' },
+                      color: 'purple.400',
+                      fontWeight: 'medium',
+                      _hover: { textDecoration: 'underline', color: 'purple.300' },
                     })}
                   >
                     Forgot password?
                   </button>
                   <div className={hstack({ gap: 1, justifyContent: 'center' })}>
-                    <span className={css({ color: 'gray.600' })}>Don't have an account?</span>
+                    <span className={css({ color: 'gray.400' })}>Don't have an account?</span>
                     <button
                       type="button"
                       onClick={() => setAuthView('sign-up')}
                       className={css({
-                        color: 'blue.600',
-                        fontWeight: 'medium',
-                        _hover: { textDecoration: 'underline' },
+                        color: 'purple.400',
+                        fontWeight: 'semibold',
+                        _hover: { textDecoration: 'underline', color: 'purple.300' },
                       })}
                     >
                       Sign up
@@ -139,7 +144,7 @@ export function AuthModal() {
                   className={css({
                     fontSize: 'sm',
                     textAlign: 'center',
-                    color: 'gray.600',
+                    color: 'gray.400',
                   })}
                 >
                   Already have an account?{' '}
@@ -147,9 +152,9 @@ export function AuthModal() {
                     type="button"
                     onClick={() => setAuthView('sign-in')}
                     className={css({
-                      color: 'blue.600',
-                      fontWeight: 'medium',
-                      _hover: { textDecoration: 'underline' },
+                      color: 'purple.400',
+                      fontWeight: 'semibold',
+                      _hover: { textDecoration: 'underline', color: 'purple.300' },
                     })}
                   >
                     Sign in
@@ -162,7 +167,7 @@ export function AuthModal() {
                   className={css({
                     fontSize: 'sm',
                     textAlign: 'center',
-                    color: 'gray.600',
+                    color: 'gray.400',
                   })}
                 >
                   Remember your password?{' '}
@@ -170,9 +175,9 @@ export function AuthModal() {
                     type="button"
                     onClick={() => setAuthView('sign-in')}
                     className={css({
-                      color: 'blue.600',
-                      fontWeight: 'medium',
-                      _hover: { textDecoration: 'underline' },
+                      color: 'purple.400',
+                      fontWeight: 'semibold',
+                      _hover: { textDecoration: 'underline', color: 'purple.300' },
                     })}
                   >
                     Sign in

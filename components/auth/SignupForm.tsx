@@ -67,12 +67,12 @@ export function SignupForm() {
           alignItems: 'center',
           gap: 4,
           fontSize: 'sm',
-          color: 'gray.500',
+          color: 'gray.400',
         })}
       >
-        <div className={css({ flex: 1, h: '1px', bg: 'gray.300' })} />
+        <div className={css({ flex: 1, h: '1px', bg: 'gray.700' })} />
         <span>or</span>
-        <div className={css({ flex: 1, h: '1px', bg: 'gray.300' })} />
+        <div className={css({ flex: 1, h: '1px', bg: 'gray.700' })} />
       </div>
 
       {/* Email/Password Form */}
@@ -83,7 +83,7 @@ export function SignupForm() {
             className={css({
               fontSize: 'sm',
               fontWeight: 'medium',
-              color: { base: 'gray.800', _dark: 'gray.100' },
+              color: 'gray.200',
             })}
           >
             Email
@@ -99,15 +99,15 @@ export function SignupForm() {
               px: 3,
               py: 2,
               border: '1px solid',
-              borderColor: { base: 'gray.300', _dark: 'gray.700' },
-              bg: { base: 'white', _dark: 'gray.900' },
-              color: { base: 'gray.900', _dark: 'gray.100' },
+              borderColor: 'gray.700',
+              bg: 'gray.800',
+              color: 'gray.100',
               rounded: 'md',
               _focus: {
                 outline: 'none',
-                borderColor: 'blue.500',
+                borderColor: 'purple.500',
                 ring: '2px',
-                ringColor: { base: 'blue.200', _dark: 'blue.800' },
+                ringColor: 'purple.500/30',
               },
             })}
           />
@@ -119,7 +119,7 @@ export function SignupForm() {
             className={css({
               fontSize: 'sm',
               fontWeight: 'medium',
-              color: { base: 'gray.800', _dark: 'gray.100' },
+              color: 'gray.200',
             })}
           >
             Password
@@ -136,15 +136,15 @@ export function SignupForm() {
               px: 3,
               py: 2,
               border: '1px solid',
-              borderColor: { base: 'gray.300', _dark: 'gray.700' },
-              bg: { base: 'white', _dark: 'gray.900' },
-              color: { base: 'gray.900', _dark: 'gray.100' },
+              borderColor: 'gray.700',
+              bg: 'gray.800',
+              color: 'gray.100',
               rounded: 'md',
               _focus: {
                 outline: 'none',
-                borderColor: 'blue.500',
+                borderColor: 'purple.500',
                 ring: '2px',
-                ringColor: { base: 'blue.200', _dark: 'blue.800' },
+                ringColor: 'purple.500/30',
               },
             })}
           />
@@ -156,7 +156,7 @@ export function SignupForm() {
             className={css({
               fontSize: 'sm',
               fontWeight: 'medium',
-              color: { base: 'gray.800', _dark: 'gray.100' },
+              color: 'gray.200',
             })}
           >
             Confirm Password
@@ -173,15 +173,15 @@ export function SignupForm() {
               px: 3,
               py: 2,
               border: '1px solid',
-              borderColor: { base: 'gray.300', _dark: 'gray.700' },
-              bg: { base: 'white', _dark: 'gray.900' },
-              color: { base: 'gray.900', _dark: 'gray.100' },
+              borderColor: 'gray.700',
+              bg: 'gray.800',
+              color: 'gray.100',
               rounded: 'md',
               _focus: {
                 outline: 'none',
-                borderColor: 'blue.500',
+                borderColor: 'purple.500',
                 ring: '2px',
-                ringColor: { base: 'blue.200', _dark: 'blue.800' },
+                ringColor: 'purple.500/30',
               },
             })}
           />
@@ -194,15 +194,18 @@ export function SignupForm() {
             w: 'full',
             px: 4,
             py: 3,
-            bg: 'blue.600',
+            bg: 'purple.600',
             color: 'white',
-            fontWeight: 'medium',
+            fontWeight: 'semibold',
             rounded: 'lg',
             cursor: 'pointer',
-            transition: 'background 0.2s',
-            _hover: { bg: 'blue.700' },
+            border: '1px solid',
+            borderColor: 'purple.500',
+            shadow: 'md',
+            transition: 'all 0.2s',
+            _hover: { bg: 'purple.700', shadow: 'lg' },
             _disabled: {
-              opacity: 0.6,
+              opacity: 0.5,
               cursor: 'not-allowed',
             },
           })}

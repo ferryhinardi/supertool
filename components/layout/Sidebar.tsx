@@ -666,26 +666,31 @@ function AuthSection() {
           py: '3',
           rounded: 'lg',
           fontSize: 'sm',
-          fontWeight: 'medium',
+          fontWeight: 'semibold',
           color: 'white',
           cursor: 'pointer',
           transition: 'all 0.3s',
           position: 'relative',
           overflow: 'hidden',
+          border: '2px solid rgba(168, 85, 247, 0.5)',
+          shadow: 'lg',
+          boxShadow: '0 4px 14px rgba(168, 85, 247, 0.4)',
           _hover: {
             transform: 'translateY(-2px)',
+            shadow: 'xl',
+            boxShadow: '0 8px 20px rgba(168, 85, 247, 0.5)',
           },
         })}
         style={{
-          background: 'linear-gradient(to right, rgba(139, 92, 246, 0.8), rgba(236, 72, 153, 0.8))',
+          background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(236, 72, 153, 0.8))',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.background =
-            'linear-gradient(to right, rgba(139, 92, 246, 1), rgba(236, 72, 153, 1))'
+            'linear-gradient(135deg, rgb(168, 85, 247), rgb(236, 72, 153))'
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background =
-            'linear-gradient(to right, rgba(139, 92, 246, 0.8), rgba(236, 72, 153, 0.8))'
+            'linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(236, 72, 153, 0.8))'
         }}
       >
         <LogIn className={css({ w: '5', h: '5' })} />

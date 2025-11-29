@@ -40,7 +40,7 @@ interface ProcessingFile {
   outputSize?: number
 }
 
-const MAX_VIDEO_SIZE = 500 * 1024 * 1024 // 500MB
+const MAX_VIDEO_SIZE = 1000 * 1024 * 1024 // 1000MB (1GB)
 
 export default function VideoSubtitleCombinerPage() {
   const [videoFile, setVideoFile] = useState<File | null>(null)
