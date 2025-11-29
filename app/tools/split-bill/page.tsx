@@ -6,8 +6,12 @@ import {
   CircleDollarSign,
   Clock,
   Coins,
+  Command,
+  Copy,
   DollarSign,
+  Download,
   Euro,
+  FileText,
   Link2,
   Plus,
   PoundSterling,
@@ -16,19 +20,24 @@ import {
   Share2,
   Sparkles,
   Users,
+  Wallet,
   X,
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { CurrencyConverter } from '@/components/features/CurrencyConverter'
+import { ShortcutsHelp } from '@/components/features/ShortcutsHelp'
+import { TemplatesSelector } from '@/components/features/TemplatesSelector'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
+import { SwipeableItem, SwipeHint } from '@/components/ui/swipeable-item'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -39,7 +48,27 @@ import {
   formatCurrency as formatCurrencyUtil,
   getDefaultCurrency,
 } from '@/lib/currency'
+import {
+  announceToScreenReader,
+  formatCurrencyForScreenReader,
+  getPaymentStatusMessage,
+  getSplitTypeDescription,
+} from '@/lib/split-bill-a11y'
+import {
+  copyToClipboard,
+  downloadCSV,
+  exportAsText,
+  generatePaymentRequest,
+} from '@/lib/split-bill-export'
 import { createBill } from '@/lib/split-bill-service'
+import { useKeyboardShortcuts } from '@/lib/split-bill-shortcuts'
+import {
+  clearBillDraft,
+  hasUnsavedDraft,
+  loadBillDraft,
+  saveBillDraft,
+  saveBillTemplate,
+} from '@/lib/split-bill-storage'
 import type { CreateParticipantData } from '@/lib/split-bill-types'
 import { css } from '@/styled-system/css'
 
@@ -119,11 +148,40 @@ export default function SplitBillPage() {
   const [tipPercent, setTipPercent] = useState('15')
   const [taxPercent, setTaxPercent] = useState('10')
   const [currency, setCurrency] = useState<Currency>(getDefaultCurrency())
+  const [targetCurrency, setTargetCurrency] = useState<string>('USD')
+  const [showCurrencyConverter, setShowCurrencyConverter] = useState(false)
   const [people, setPeople] = useState<Person[]>([
     { id: '1', name: 'Person 1', hasPaid: false, percentage: 50 },
     { id: '2', name: 'Person 2', hasPaid: false, percentage: 50 },
   ])
   const [items, setItems] = useState<BillItem[]>([])
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+
+  // Mobile/touch detection
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const [showSwipeHint, setShowSwipeHint] = useState(false)
+
+  // Detect touch device
+  useEffect(() => {
+    const hasTouchScreen =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      // @ts-expect-error - legacy check
+      navigator.msMaxTouchPoints > 0
+
+    setIsTouchDevice(hasTouchScreen)
+
+    // Show swipe hint on first visit for touch devices
+    if (hasTouchScreen && !localStorage.getItem('supertool_split_bill_swipe_hint_shown')) {
+      setShowSwipeHint(true)
+      localStorage.setItem('supertool_split_bill_swipe_hint_shown', 'true')
+
+      // Auto-hide hint after 5 seconds
+      setTimeout(() => {
+        setShowSwipeHint(false)
+      }, 5000)
+    }
+  }, [])
 
   // New item form state
   const [newItemName, setNewItemName] = useState('')
@@ -137,6 +195,62 @@ export default function SplitBillPage() {
   const [organizerBankAccount, setOrganizerBankAccount] = useState('')
   const [organizerBankName, setOrganizerBankName] = useState('')
   const [isCreating, setIsCreating] = useState(false)
+
+  // Load saved draft on mount
+  useEffect(() => {
+    const draft = loadBillDraft()
+    if (draft && hasUnsavedDraft()) {
+      const shouldRestore = window.confirm(
+        'Found an unsaved bill draft. Would you like to restore it?'
+      )
+      if (shouldRestore) {
+        setBillAmount(draft.billAmount)
+        setTipPercent(draft.tipPercent)
+        setTaxPercent(draft.taxPercent)
+        setCurrency(CURRENCIES.find((c) => c.code === draft.currency) || getDefaultCurrency())
+        setPeople(draft.people)
+        setItems(draft.items || [])
+        setSplitType(draft.splitType)
+        toast.success('Draft restored successfully! 📋')
+        trackToolEvent('split_bill_draft_restored', {})
+      } else {
+        clearBillDraft()
+      }
+    }
+  }, [])
+
+  // Auto-save draft whenever data changes (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      saveBillDraft({
+        billAmount,
+        tipPercent,
+        taxPercent,
+        currency: currency.code,
+        people,
+        items,
+        splitType,
+      })
+      setHasUnsavedChanges(false)
+    }, 2000) // Auto-save after 2 seconds of inactivity
+
+    setHasUnsavedChanges(true)
+
+    return () => clearTimeout(timeoutId)
+  }, [billAmount, tipPercent, taxPercent, currency, people, items, splitType])
+
+  // Warn before leaving with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [hasUnsavedChanges])
 
   // Get currency icon component based on currency
   const getCurrencyIcon = () => {
@@ -259,29 +373,79 @@ export default function SplitBillPage() {
   const addPerson = () => {
     const newId = String(Date.now())
     const defaultPercentage = splitType === 'percentage' ? 0 : undefined
+    const newPersonName = `Person ${people.length + 1}`
     setPeople([
       ...people,
       {
         id: newId,
-        name: `Person ${people.length + 1}`,
+        name: newPersonName,
         hasPaid: false,
         percentage: defaultPercentage,
       },
     ])
     toast.success('Person added')
+    announceToScreenReader(`${newPersonName} added to the bill. Total ${people.length + 1} people.`)
     trackToolEvent('split_bill_add_person', {
       total_people: people.length + 1,
     })
+  }
+
+  // Bulk select all items for a person
+  const handleSelectAllItems = (personId: string) => {
+    const person = people.find((p) => p.id === personId)
+    setItems(
+      items.map((item) => ({
+        ...item,
+        assignedTo: item.assignedTo.includes(personId)
+          ? item.assignedTo
+          : [...item.assignedTo, personId],
+      }))
+    )
+    toast.success('All items assigned!')
+    announceToScreenReader(`All ${items.length} items assigned to ${person?.name || 'person'}.`)
+  }
+
+  // Bulk deselect all items for a person
+  const handleDeselectAllItems = (personId: string) => {
+    const person = people.find((p) => p.id === personId)
+    setItems(
+      items.map((item) => ({
+        ...item,
+        assignedTo: item.assignedTo.filter((id) => id !== personId),
+      }))
+    )
+    toast.success('All items unassigned!')
+    announceToScreenReader(`All items removed from ${person?.name || 'person'}.`)
+  }
+
+  // Duplicate an item
+  const handleDuplicateItem = (itemId: string) => {
+    const item = items.find((i) => i.id === itemId)
+    if (!item) return
+
+    const duplicated: BillItem = {
+      ...item,
+      id: String(Date.now()),
+      name: `${item.name} (Copy)`,
+    }
+    setItems([...items, duplicated])
+    toast.success('Item duplicated!')
+    announceToScreenReader(`${item.name} duplicated. Total ${items.length + 1} items.`)
   }
 
   // Remove person
   const removePerson = (id: string) => {
     if (people.length <= 2) {
       toast.error('Minimum 2 people required')
+      announceToScreenReader('Cannot remove person. Minimum 2 people required.', 'assertive')
       return
     }
+    const person = people.find((p) => p.id === id)
     setPeople(people.filter((p) => p.id !== id))
     toast.success('Person removed')
+    announceToScreenReader(
+      `${person?.name || 'Person'} removed from bill. ${people.length - 1} people remaining.`
+    )
     trackToolEvent('split_bill_remove_person', {
       total_people: people.length - 1,
     })
@@ -304,7 +468,12 @@ export default function SplitBillPage() {
 
   // Toggle payment status
   const togglePaid = (id: string) => {
-    setPeople(people.map((p) => (p.id === id ? { ...p, hasPaid: !p.hasPaid } : p)))
+    const person = people.find((p) => p.id === id)
+    const newStatus = !person?.hasPaid
+    setPeople(people.map((p) => (p.id === id ? { ...p, hasPaid: newStatus } : p)))
+    if (person) {
+      announceToScreenReader(getPaymentStatusMessage(newStatus, person.name))
+    }
   }
 
   // Handle split type change
@@ -315,13 +484,18 @@ export default function SplitBillPage() {
       const equalPercentage = people.length > 0 ? 100 / people.length : 0
       setPeople(people.map((p) => ({ ...p, percentage: equalPercentage })))
       toast.success('Switched to percentage split')
+      announceToScreenReader(
+        `${getSplitTypeDescription('percentage')}. Each person starts with ${equalPercentage.toFixed(1)}%.`
+      )
     } else if (newSplitType === 'items') {
       setPeople(people.map((p) => ({ ...p, percentage: undefined })))
       toast.success('Switched to item-based split')
+      announceToScreenReader(getSplitTypeDescription('items'))
     } else {
       // Clear percentages
       setPeople(people.map((p) => ({ ...p, percentage: undefined })))
       toast.success('Switched to equal split')
+      announceToScreenReader(getSplitTypeDescription('equal'))
     }
   }
 
@@ -355,12 +529,16 @@ export default function SplitBillPage() {
     setNewItemPrice('')
     setNewItemQuantity('1')
     toast.success(`Added "${newItem.name}"`)
+    announceToScreenReader(
+      `Added ${newItem.name}, quantity ${newItem.quantity}, price ${formatCurrencyForScreenReader(newItem.price, currency.code, currency.symbol)}. Total ${items.length + 1} items.`
+    )
   }
 
   const removeItem = (itemId: string) => {
     const item = items.find((i) => i.id === itemId)
     setItems(items.filter((i) => i.id !== itemId))
     toast.success(`Removed "${item?.name}"`)
+    announceToScreenReader(`Removed ${item?.name || 'item'}. ${items.length - 1} items remaining.`)
   }
 
   const toggleItemAssignment = (itemId: string, personId: string) => {
@@ -408,39 +586,195 @@ export default function SplitBillPage() {
 
   // Generate shareable summary
   const generateSummary = () => {
-    const splitTypeText = splitType === 'percentage' ? 'Custom Percentage' : 'Equal Split'
-    const summary = `
-💰 Bill Split Summary
-
-📋 Bill Details:
-- Subtotal: ${currency.symbol}${formatCurrency(calculations.bill)}
-- Tip (${tipPercent}%): ${currency.symbol}${formatCurrency(calculations.tipAmount)}
-- Tax (${taxPercent}%): ${currency.symbol}${formatCurrency(calculations.taxAmount)}
-- Total: ${currency.symbol}${formatCurrency(calculations.total)}
-
-👥 Split Among ${people.length} People (${splitTypeText}):
-${people
-  .map((p) => {
-    const personAmount = calculations.peopleWithAmounts.find((pa) => pa.id === p.id)?.amount || 0
-    const percentageText = splitType === 'percentage' ? ` (${p.percentage?.toFixed(1)}%)` : ''
-    return `- ${p.name}: ${currency.symbol}${formatCurrency(
-      personAmount
-    )}${percentageText} ${p.hasPaid ? '✅ Paid' : '⏳ Pending'}`
-  })
-  .join('\n')}
-
-💵 Per Person (Average): ${currency.symbol}${formatCurrency(calculations.perPerson)}
-✅ Paid: ${calculations.paidCount} (${currency.symbol}${formatCurrency(calculations.totalPaid)})
-⏳ Unpaid: ${calculations.unpaidCount} (${currency.symbol}${formatCurrency(
-      calculations.totalUnpaid
-    )})
-
-Currency: ${currency.code} (${currency.name})
-Generated by SuperTool Split Bill Calculator
-    `.trim()
-
-    return summary
+    return exportAsText({
+      title: billTitle || undefined,
+      billAmount: calculations.bill,
+      tipAmount: calculations.tipAmount,
+      tipPercent,
+      taxAmount: calculations.taxAmount,
+      taxPercent,
+      total: calculations.total,
+      currency,
+      people: people.map((p) => ({
+        name: p.name,
+        amount: calculations.peopleWithAmounts.find((pa) => pa.id === p.id)?.amount || 0,
+        hasPaid: p.hasPaid,
+        percentage: p.percentage,
+      })),
+      splitType,
+      items: splitType === 'items' ? items : undefined,
+    })
   }
+
+  // Export bill as CSV
+  const handleExportCSV = () => {
+    downloadCSV(
+      {
+        title: billTitle || 'Split Bill',
+        billAmount: calculations.bill,
+        tipAmount: calculations.tipAmount,
+        tipPercent,
+        taxAmount: calculations.taxAmount,
+        taxPercent,
+        total: calculations.total,
+        currency,
+        people: people.map((p) => ({
+          name: p.name,
+          amount: calculations.peopleWithAmounts.find((pa) => pa.id === p.id)?.amount || 0,
+          hasPaid: p.hasPaid,
+          percentage: p.percentage,
+        })),
+        splitType,
+        items: splitType === 'items' ? items : undefined,
+        createdAt: new Date().toISOString(),
+      },
+      `split-bill-${new Date().toISOString().split('T')[0]}.csv`
+    )
+    toast.success('Bill exported as CSV! 📊')
+    announceToScreenReader(
+      `Bill exported as CSV file with ${people.length} people and ${calculations.total.toFixed(2)} ${currency.code} total.`
+    )
+    trackToolEvent('split_bill_export', { format: 'csv' })
+  }
+
+  // Copy payment request for a specific person
+  const handleCopyPaymentRequest = async (personId: string) => {
+    const person = people.find((p) => p.id === personId)
+    if (!person) return
+
+    const amount = calculations.peopleWithAmounts.find((pa) => pa.id === personId)?.amount || 0
+    const request = generatePaymentRequest(
+      person.name,
+      amount,
+      currency,
+      organizerName || undefined,
+      organizerBankAccount || undefined,
+      organizerBankName || undefined
+    )
+
+    const success = await copyToClipboard(request)
+    if (success) {
+      toast.success(`Payment request for ${person.name} copied! 💸`)
+      announceToScreenReader(
+        `Payment request for ${person.name} copied to clipboard. Amount: ${formatCurrencyForScreenReader(amount, currency.code, currency.symbol)}`
+      )
+      trackToolEvent('split_bill_payment_request', { person: personId })
+    }
+  }
+
+  // Save current bill as template
+  const handleSaveTemplate = () => {
+    const templateName = prompt('Enter a name for this template:')
+    if (!templateName) return
+
+    const templateId = saveBillTemplate({
+      name: templateName,
+      description: `${people.length} people, ${currency.code}`,
+      billAmount,
+      tipPercent,
+      taxPercent,
+      currency: currency.code,
+      people: people.map((p) => ({ name: p.name, percentage: p.percentage })),
+      splitType,
+    })
+
+    if (templateId) {
+      toast.success(`Template "${templateName}" saved! 💾`)
+      announceToScreenReader(
+        `Template ${templateName} saved with ${people.length} people and ${splitType} split type.`
+      )
+      trackToolEvent('split_bill_template_saved', { template_id: templateId })
+    }
+  }
+
+  // Load template
+  const handleLoadTemplate = (template: {
+    id: string
+    name: string
+    billAmount: string
+    tipPercent: string
+    taxPercent: string
+    currency: string
+    people: Array<{ name: string; percentage?: number }>
+    splitType: 'equal' | 'percentage' | 'items'
+  }) => {
+    // Apply template data
+    setBillAmount(template.billAmount)
+    setTipPercent(template.tipPercent)
+    setTaxPercent(template.taxPercent)
+    setSplitType(template.splitType)
+
+    // Find and set currency
+    const templateCurrency = CURRENCIES.find((c) => c.code === template.currency)
+    if (templateCurrency) {
+      setCurrency(templateCurrency)
+    }
+
+    // Set people
+    const loadedPeople: Person[] = template.people.map((p, index) => ({
+      id: `person-${Date.now()}-${index}`,
+      name: p.name,
+      hasPaid: false,
+      percentage: p.percentage,
+    }))
+    setPeople(loadedPeople)
+
+    // Clear items when loading template
+    setItems([])
+
+    setHasUnsavedChanges(true)
+    announceToScreenReader(
+      `Template ${template.name} loaded with ${template.people.length} people and ${template.splitType} split type.`
+    )
+    trackToolEvent('split_bill_template_loaded', { template_id: template.id })
+  }
+
+  // Clear form
+  const handleClearForm = () => {
+    setNewItemName('')
+    setNewItemPrice('')
+    setNewItemQuantity('1')
+  }
+
+  // Share summary
+  const handleShare = async () => {
+    const summary = generateSummary()
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Bill Split Summary',
+          text: summary,
+        })
+        toast.success('Shared successfully 📤')
+        trackToolEvent('split_bill_share', { total_people: people.length })
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          await navigator.clipboard.writeText(summary)
+          toast.success('Copied to clipboard 📋')
+          trackToolEvent('split_bill_copy', { total_people: people.length })
+        }
+      }
+    } else {
+      await navigator.clipboard.writeText(summary)
+      toast.success('Summary copied to clipboard 📋')
+      trackToolEvent('split_bill_copy', { total_people: people.length })
+    }
+  }
+
+  // Initialize keyboard shortcuts
+  useKeyboardShortcuts({
+    onAddPerson: addPerson,
+    onAddItem: splitType === 'items' ? addItem : undefined,
+    onReset: handleReset,
+    onShare: handleShare,
+    onSwitchToEqual: () => handleSplitTypeChange('equal'),
+    onSwitchToPercentage: () => handleSplitTypeChange('percentage'),
+    onSwitchToItems: () => handleSplitTypeChange('items'),
+    onClearForm: handleClearForm,
+    onExport: handleExportCSV,
+    enabled: true,
+  })
 
   // Handle receipt data extraction
   const handleReceiptData = (data: {
@@ -531,32 +865,6 @@ Generated by SuperTool Split Bill Calculator
     }
   }
 
-  // Share summary
-  const handleShare = async () => {
-    const summary = generateSummary()
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Bill Split Summary',
-          text: summary,
-        })
-        toast.success('Shared successfully 📤')
-        trackToolEvent('split_bill_share', { total_people: people.length })
-      } catch (err) {
-        if ((err as Error).name !== 'AbortError') {
-          await navigator.clipboard.writeText(summary)
-          toast.success('Copied to clipboard 📋')
-          trackToolEvent('split_bill_copy', { total_people: people.length })
-        }
-      }
-    } else {
-      await navigator.clipboard.writeText(summary)
-      toast.success('Summary copied to clipboard 📋')
-      trackToolEvent('split_bill_copy', { total_people: people.length })
-    }
-  }
-
   // Create shareable bill
   const handleCreateShareableBill = async () => {
     // Validation
@@ -630,7 +938,29 @@ Generated by SuperTool Split Bill Calculator
 
   return (
     <TooltipProvider>
+      {/* Skip to main content link for keyboard users */}
+      <a
+        href="#split-calculator"
+        className={css({
+          position: 'absolute',
+          left: '-9999px',
+          zIndex: '999',
+          padding: '4',
+          bg: 'emerald.600',
+          color: 'white',
+          fontWeight: 'bold',
+          rounded: 'md',
+          _focus: {
+            left: '4',
+            top: '4',
+          },
+        })}
+      >
+        Skip to calculator
+      </a>
       <main
+        id="split-calculator"
+        aria-label="Split bill calculator"
         className={css({
           mx: 'auto',
           maxW: '1400px',
@@ -1077,6 +1407,70 @@ Generated by SuperTool Split Bill Calculator
             </select>
           </Field>
 
+          {/* Currency Converter Toggle */}
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2',
+              p: '3',
+              rounded: 'lg',
+              bg: 'blue.500/10',
+              border: '1px solid',
+              borderColor: 'blue.500/30',
+            })}
+          >
+            <input
+              type="checkbox"
+              id="currency-converter-toggle"
+              checked={showCurrencyConverter}
+              onChange={(e) => {
+                setShowCurrencyConverter(e.target.checked)
+                trackToolEvent('split_bill_currency_converter_toggled', {
+                  enabled: e.target.checked,
+                })
+              }}
+              className={css({
+                h: '4',
+                w: '4',
+                rounded: 'sm',
+                border: '2px solid',
+                borderColor: 'blue.500',
+                bg: 'transparent',
+                cursor: 'pointer',
+                _checked: { bg: 'blue.500' },
+              })}
+            />
+            <label
+              htmlFor="currency-converter-toggle"
+              className={css({
+                fontSize: 'sm',
+                color: 'blue.300',
+                cursor: 'pointer',
+                fontWeight: 'medium',
+              })}
+            >
+              💱 Show Currency Converter
+            </label>
+          </div>
+
+          {/* Currency Converter */}
+          {showCurrencyConverter && (
+            <CurrencyConverter
+              baseCurrency={currency.code}
+              targetCurrency={targetCurrency}
+              onBaseCurrencyChange={(newCurrency) => {
+                const curr = CURRENCIES.find((c) => c.code === newCurrency)
+                if (curr) setCurrency(curr)
+              }}
+              onTargetCurrencyChange={setTargetCurrency}
+              amounts={[
+                { label: 'Bill Amount', value: parseFloat(billAmount) || 0 },
+                { label: 'Total with Tax & Tip', value: totalAfterTax },
+              ]}
+            />
+          )}
+
           <Field>
             <FieldLabel
               className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
@@ -1331,6 +1725,7 @@ Generated by SuperTool Split Bill Calculator
             })}
           >
             <h2
+              id="people-section"
               className={css({
                 fontSize: { base: 'lg', sm: 'xl' },
                 fontWeight: 'bold',
@@ -1342,19 +1737,21 @@ Generated by SuperTool Split Bill Calculator
             <Button
               onClick={addPerson}
               size="sm"
+              aria-label={`Add person to bill. Currently ${people.length} people.`}
               className={css({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '1',
               })}
             >
-              <Plus className={css({ h: '4', w: '4' })} />
+              <Plus className={css({ h: '4', w: '4' })} aria-hidden="true" />
               Add Person
             </Button>
           </div>
 
           {/* Split Type Toggle */}
-          <div
+          <fieldset
+            aria-label="Split type selection"
             className={css({
               display: 'flex',
               gap: '2',
@@ -1368,6 +1765,8 @@ Generated by SuperTool Split Bill Calculator
             <button
               type="button"
               onClick={() => handleSplitTypeChange('equal')}
+              aria-pressed={splitType === 'equal'}
+              aria-label={getSplitTypeDescription('equal')}
               className={css({
                 flex: '1',
                 py: '2',
@@ -1388,6 +1787,8 @@ Generated by SuperTool Split Bill Calculator
             <button
               type="button"
               onClick={() => handleSplitTypeChange('percentage')}
+              aria-pressed={splitType === 'percentage'}
+              aria-label={getSplitTypeDescription('percentage')}
               className={css({
                 flex: '1',
                 py: '2',
@@ -1408,6 +1809,8 @@ Generated by SuperTool Split Bill Calculator
             <button
               type="button"
               onClick={() => handleSplitTypeChange('items')}
+              aria-pressed={splitType === 'items'}
+              aria-label={getSplitTypeDescription('items')}
               className={css({
                 flex: '1',
                 py: '2',
@@ -1431,11 +1834,11 @@ Generated by SuperTool Split Bill Calculator
                   justifyContent: 'center',
                 })}
               >
-                <Sparkles className={css({ h: '3', w: '3' })} />
+                <Sparkles className={css({ h: '3', w: '3' })} aria-hidden="true" />
                 Item-Based
               </span>
             </button>
-          </div>
+          </fieldset>
 
           {/* Item-Based Split UI */}
           {splitType === 'items' && (
@@ -1475,14 +1878,20 @@ Generated by SuperTool Split Bill Calculator
                 })}
               >
                 <Field>
-                  <FieldLabel className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                  <FieldLabel
+                    htmlFor="item-name-input"
+                    className={css({ fontSize: 'xs', color: 'gray.400' })}
+                  >
                     Item Name
                   </FieldLabel>
                   <FieldInput
+                    id="item-name-input"
                     type="text"
                     value={newItemName}
                     onChange={(e) => setNewItemName(e.target.value)}
                     placeholder="e.g., Burger"
+                    aria-label="Item name"
+                    aria-required="true"
                     className={css({
                       rounded: 'md',
                       border: '1px solid',
@@ -1502,16 +1911,22 @@ Generated by SuperTool Split Bill Calculator
                   />
                 </Field>
                 <Field>
-                  <FieldLabel className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                  <FieldLabel
+                    htmlFor="item-price-input"
+                    className={css({ fontSize: 'xs', color: 'gray.400' })}
+                  >
                     Price
                   </FieldLabel>
                   <FieldInput
+                    id="item-price-input"
                     type="number"
                     value={newItemPrice}
                     onChange={(e) => setNewItemPrice(e.target.value)}
                     placeholder="0.00"
                     step="0.01"
                     min="0"
+                    aria-label="Item price"
+                    aria-required="true"
                     className={css({
                       rounded: 'md',
                       border: '1px solid',
@@ -1531,14 +1946,20 @@ Generated by SuperTool Split Bill Calculator
                   />
                 </Field>
                 <Field>
-                  <FieldLabel className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                  <FieldLabel
+                    htmlFor="item-quantity-input"
+                    className={css({ fontSize: 'xs', color: 'gray.400' })}
+                  >
                     Qty
                   </FieldLabel>
                   <FieldInput
+                    id="item-quantity-input"
                     type="number"
                     value={newItemQuantity}
                     onChange={(e) => setNewItemQuantity(e.target.value)}
                     min="1"
+                    aria-label="Item quantity"
+                    aria-required="true"
                     className={css({
                       rounded: 'md',
                       border: '1px solid',
@@ -1571,96 +1992,184 @@ Generated by SuperTool Split Bill Calculator
 
               {/* Items List */}
               {items.length > 0 && (
-                <div
-                  className={css({ display: 'flex', flexDirection: 'column', gap: '2', mt: '2' })}
-                >
-                  {items.map((item) => (
-                    <div
-                      key={item.id}
-                      className={css({
-                        rounded: 'md',
-                        border: '1px solid',
-                        borderColor: 'gray.700',
-                        bg: 'rgba(17, 24, 39, 0.5)',
-                        p: '3',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '2',
-                      })}
-                    >
-                      <div
+                <>
+                  {/* Bulk Operations for Items */}
+                  <div
+                    className={css({
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '2',
+                      mt: '2',
+                      p: '2',
+                      bg: 'gray.800/30',
+                      rounded: 'md',
+                      border: '1px solid',
+                      borderColor: 'gray.700',
+                    })}
+                  >
+                    <span className={css({ fontSize: 'xs', color: 'gray.400', mr: 'auto' })}>
+                      Bulk assign:
+                    </span>
+                    {people.map((person) => (
+                      <div key={person.id} className={css({ display: 'flex', gap: '1' })}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              onClick={() => handleSelectAllItems(person.id)}
+                              size="sm"
+                              variant="ghost"
+                              className={css({
+                                h: '6',
+                                px: '2',
+                                fontSize: 'xs',
+                                color: 'purple.400',
+                                _hover: { bg: 'purple.500/20' },
+                              })}
+                            >
+                              {person.name} ✓
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Assign all items to {person.name}</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              onClick={() => handleDeselectAllItems(person.id)}
+                              size="sm"
+                              variant="ghost"
+                              className={css({
+                                h: '6',
+                                px: '2',
+                                fontSize: 'xs',
+                                color: 'gray.500',
+                                _hover: { bg: 'gray.700' },
+                              })}
+                            >
+                              ✗
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Unassign all items from {person.name}</TooltipContent>
+                        </Tooltip>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div
+                    className={css({
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '2',
+                      mt: '2',
+                    })}
+                  >
+                    {items.map((item) => (
+                      <SwipeableItem
+                        key={item.id}
+                        onDelete={() => removeItem(item.id)}
+                        disabled={!isTouchDevice}
+                        deleteLabel={`Remove ${item.name}`}
                         className={css({
+                          rounded: 'md',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          bg: 'rgba(17, 24, 39, 0.5)',
+                          p: '3',
                           display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
+                          flexDirection: 'column',
+                          gap: '2',
                         })}
                       >
-                        <div className={css({ flex: '1' })}>
-                          <div
-                            className={css({
-                              fontSize: 'sm',
-                              fontWeight: 'medium',
-                              color: 'white',
-                            })}
-                          >
-                            {item.name} × {item.quantity}
-                          </div>
-                          <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
-                            {currency.symbol}
-                            {formatCurrency(item.price)} each = {currency.symbol}
-                            {formatCurrency(item.price * item.quantity)}
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => removeItem(item.id)}
+                        <div
                           className={css({
-                            color: 'red.400',
-                            _hover: { color: 'red.300' },
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
                           })}
                         >
-                          <X className={css({ h: '4', w: '4' })} />
-                        </button>
-                      </div>
+                          <div className={css({ flex: '1' })}>
+                            <div
+                              className={css({
+                                fontSize: 'sm',
+                                fontWeight: 'medium',
+                                color: 'white',
+                              })}
+                            >
+                              {item.name} × {item.quantity}
+                            </div>
+                            <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                              {currency.symbol}
+                              {formatCurrency(item.price)} each = {currency.symbol}
+                              {formatCurrency(item.price * item.quantity)}
+                            </div>
+                          </div>
+                          <div className={css({ display: 'flex', gap: '1' })}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDuplicateItem(item.id)}
+                                  className={css({
+                                    color: 'blue.400',
+                                    _hover: { color: 'blue.300' },
+                                  })}
+                                >
+                                  <Copy className={css({ h: '4', w: '4' })} />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>Duplicate item</TooltipContent>
+                            </Tooltip>
+                            <button
+                              type="button"
+                              onClick={() => removeItem(item.id)}
+                              className={css({
+                                color: 'red.400',
+                                _hover: { color: 'red.300' },
+                              })}
+                            >
+                              <X className={css({ h: '4', w: '4' })} />
+                            </button>
+                          </div>
+                        </div>
 
-                      {/* Assign to people */}
-                      <div>
-                        <div className={css({ fontSize: 'xs', color: 'gray.400', mb: '1' })}>
-                          Assigned to:
+                        {/* Assign to people */}
+                        <div>
+                          <div className={css({ fontSize: 'xs', color: 'gray.400', mb: '1' })}>
+                            Assigned to:
+                          </div>
+                          <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '1' })}>
+                            {people.map((person) => {
+                              const isAssigned = item.assignedTo.includes(person.id)
+                              return (
+                                <button
+                                  key={person.id}
+                                  type="button"
+                                  onClick={() => toggleItemAssignment(item.id, person.id)}
+                                  className={css({
+                                    px: '2',
+                                    py: '1',
+                                    rounded: 'md',
+                                    fontSize: 'xs',
+                                    fontWeight: 'medium',
+                                    transition: 'all 0.2s',
+                                    bg: isAssigned ? 'purple.600' : 'gray.700',
+                                    color: isAssigned ? 'white' : 'gray.400',
+                                    border: '1px solid',
+                                    borderColor: isAssigned ? 'purple.500' : 'gray.600',
+                                    _hover: {
+                                      bg: isAssigned ? 'purple.500' : 'gray.600',
+                                    },
+                                  })}
+                                >
+                                  {person.name} {isAssigned && '✓'}
+                                </button>
+                              )
+                            })}
+                          </div>
                         </div>
-                        <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '1' })}>
-                          {people.map((person) => {
-                            const isAssigned = item.assignedTo.includes(person.id)
-                            return (
-                              <button
-                                key={person.id}
-                                type="button"
-                                onClick={() => toggleItemAssignment(item.id, person.id)}
-                                className={css({
-                                  px: '2',
-                                  py: '1',
-                                  rounded: 'md',
-                                  fontSize: 'xs',
-                                  fontWeight: 'medium',
-                                  transition: 'all 0.2s',
-                                  bg: isAssigned ? 'purple.600' : 'gray.700',
-                                  color: isAssigned ? 'white' : 'gray.400',
-                                  border: '1px solid',
-                                  borderColor: isAssigned ? 'purple.500' : 'gray.600',
-                                  _hover: {
-                                    bg: isAssigned ? 'purple.500' : 'gray.600',
-                                  },
-                                })}
-                              >
-                                {person.name} {isAssigned && '✓'}
-                              </button>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                      </SwipeableItem>
+                    ))}
+                  </div>
+                </>
               )}
 
               {items.length === 0 && (
@@ -1732,6 +2241,13 @@ Generated by SuperTool Split Bill Calculator
             </div>
           )}
 
+          {/* Swipe hint for mobile users */}
+          {isTouchDevice && showSwipeHint && (
+            <div className={css({ display: 'flex', justifyContent: 'center', mb: '2' })}>
+              <SwipeHint />
+            </div>
+          )}
+
           <div
             className={css({
               display: 'flex',
@@ -1743,8 +2259,11 @@ Generated by SuperTool Split Bill Calculator
             })}
           >
             {people.map((person) => (
-              <div
+              <SwipeableItem
                 key={person.id}
+                onDelete={() => removePerson(person.id)}
+                disabled={!isTouchDevice || people.length <= 2}
+                deleteLabel={`Remove ${person.name}`}
                 className={css({
                   rounded: 'lg',
                   border: '1px solid',
@@ -1765,6 +2284,7 @@ Generated by SuperTool Split Bill Calculator
                     type="text"
                     value={person.name}
                     onChange={(e) => updatePersonName(person.id, e.target.value)}
+                    aria-label={`Person name: ${person.name}`}
                     className={css({
                       flex: '1',
                       rounded: 'md',
@@ -1788,6 +2308,12 @@ Generated by SuperTool Split Bill Calculator
                       <button
                         type="button"
                         onClick={() => togglePaid(person.id)}
+                        aria-label={
+                          person.hasPaid
+                            ? `Mark ${person.name} as unpaid`
+                            : `Mark ${person.name} as paid`
+                        }
+                        aria-pressed={person.hasPaid}
                         className={css({
                           display: 'flex',
                           alignItems: 'center',
@@ -1804,9 +2330,9 @@ Generated by SuperTool Split Bill Calculator
                         })}
                       >
                         {person.hasPaid ? (
-                          <Check className={css({ h: '4', w: '4' })} />
+                          <Check className={css({ h: '4', w: '4' })} aria-hidden="true" />
                         ) : (
-                          <CurrencyIcon className={css({ h: '4', w: '4' })} />
+                          <CurrencyIcon className={css({ h: '4', w: '4' })} aria-hidden="true" />
                         )}
                       </button>
                     </TooltipTrigger>
@@ -1820,6 +2346,8 @@ Generated by SuperTool Split Bill Calculator
                         type="button"
                         onClick={() => removePerson(person.id)}
                         disabled={people.length <= 2}
+                        aria-label={`Remove ${person.name} from bill`}
+                        aria-disabled={people.length <= 2}
                         className={css({
                           display: 'flex',
                           alignItems: 'center',
@@ -1837,7 +2365,7 @@ Generated by SuperTool Split Bill Calculator
                           },
                         })}
                       >
-                        <X className={css({ h: '4', w: '4' })} />
+                        <X className={css({ h: '4', w: '4' })} aria-hidden="true" />
                       </button>
                     </TooltipTrigger>
                     <TooltipContent>Remove person (min 2 required)</TooltipContent>
@@ -1932,6 +2460,32 @@ Generated by SuperTool Split Bill Calculator
                     )}
                   </span>
                 </div>
+
+                {/* Payment Request Button */}
+                {!person.hasPaid && mode === 'create' && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => handleCopyPaymentRequest(person.id)}
+                        size="sm"
+                        variant="outline"
+                        className={css({
+                          mt: '2',
+                          w: 'full',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2',
+                          fontSize: 'xs',
+                        })}
+                      >
+                        <Wallet className={css({ h: '3', w: '3' })} />
+                        Copy Payment Request
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Copy payment request message for {person.name}</TooltipContent>
+                  </Tooltip>
+                )}
+
                 {person.hasPaid && (
                   <Badge
                     size="sm"
@@ -1944,7 +2498,7 @@ Generated by SuperTool Split Bill Calculator
                     ✅ Paid
                   </Badge>
                 )}
-              </div>
+              </SwipeableItem>
             ))}
           </div>
 
@@ -2050,7 +2604,60 @@ Generated by SuperTool Split Bill Calculator
                     Share Summary
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Share or copy summary to clipboard</TooltipContent>
+                <TooltipContent>Share or copy summary (Ctrl+S)</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handleExportCSV}
+                    size="lg"
+                    variant="outline"
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2',
+                      fontSize: { base: 'sm', sm: 'base' },
+                    })}
+                  >
+                    <Download
+                      className={css({
+                        h: { base: '4', sm: '5' },
+                        w: { base: '4', sm: '5' },
+                      })}
+                    />
+                    Export CSV
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Export as CSV file (Ctrl+E)</TooltipContent>
+              </Tooltip>
+
+              {/* Template Management */}
+              <TemplatesSelector onSelectTemplate={handleLoadTemplate} />
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handleSaveTemplate}
+                    size="lg"
+                    variant="outline"
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2',
+                      fontSize: { base: 'sm', sm: 'base' },
+                    })}
+                  >
+                    <FileText
+                      className={css({
+                        h: { base: '4', sm: '5' },
+                        w: { base: '4', sm: '5' },
+                      })}
+                    />
+                    Save Template
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Save current setup as template</TooltipContent>
               </Tooltip>
 
               <Tooltip>
@@ -2075,7 +2682,32 @@ Generated by SuperTool Split Bill Calculator
                     Reset
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Reset to default values</TooltipContent>
+                <TooltipContent>Reset to default values (Ctrl+R)</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => window.dispatchEvent(new CustomEvent('show-shortcuts-help'))}
+                    size="lg"
+                    variant="ghost"
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2',
+                      fontSize: { base: 'sm', sm: 'base' },
+                    })}
+                  >
+                    <Command
+                      className={css({
+                        h: { base: '4', sm: '5' },
+                        w: { base: '4', sm: '5' },
+                      })}
+                    />
+                    Shortcuts
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>View keyboard shortcuts (?)</TooltipContent>
               </Tooltip>
             </>
           )}
@@ -2407,6 +3039,9 @@ Generated by SuperTool Split Bill Calculator
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
         <ToolSearch />
+
+        {/* Keyboard Shortcuts Help Modal */}
+        <ShortcutsHelp />
       </main>
     </TooltipProvider>
   )

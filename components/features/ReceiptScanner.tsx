@@ -7,7 +7,9 @@ import { createWorker, PSM } from 'tesseract.js'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { trackToolEvent } from '@/lib/analytics'
+import { parseReceiptText } from '@/lib/receipt-parser'
 import { css } from '@/styled-system/css'
+import { type ExtractedItem, ItemPreviewModal } from './ItemPreviewModal'
 
 export interface LineItem {
   name: string
@@ -21,6 +23,8 @@ interface ReceiptData {
   tax?: number
   tip?: number
   total?: number
+  merchant?: string
+  date?: string
 }
 
 interface ReceiptScannerProps {
@@ -31,6 +35,8 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [progress, setProgress] = useState(0)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [showItemPreview, setShowItemPreview] = useState(false)
+  const [extractedData, setExtractedData] = useState<ReceiptData | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
 
@@ -98,66 +104,38 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
     })
   }
 
-  const extractLineItems = (lines: string[]): LineItem[] => {
-    const items: LineItem[] = []
-    const excludeKeywords =
-      /TOTAL|SUBTOTAL|TAX|TIP|GRATUITY|SERVICE|DISCOUNT|CHANGE|CASH|CARD|PAYMENT/i
+  // Handle item preview modal confirmation
+  const handleItemsConfirmed = (items: ExtractedItem[]) => {
+    if (!extractedData) return
 
-    for (const line of lines) {
-      // Skip lines with summary keywords
-      if (excludeKeywords.test(line)) continue
+    // Convert ExtractedItems back to LineItems
+    const confirmedItems: LineItem[] = items.map((item) => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }))
 
-      // Look for item patterns: "Item Name ... $Price" or "Item Name Qty Price"
-      // Pattern 1: Item name followed by price at end of line
-      const pattern1 = /^(.+?)\s+.*?(\d{1,6}[.,]\d{2})\s*$/
-      // Pattern 2: Item name, quantity (x2, 2x), and price
-      const pattern2 = /^(.+?)\s+(?:x|×)?\s*(\d+)\s+.*?(\d{1,6}[.,]\d{2})\s*$/i
-      // Pattern 3: Quantity at start followed by item name and price
-      const pattern3 = /^(\d+)\s+(?:x|×)?\s*(.+?)\s+.*?(\d{1,6}[.,]\d{2})\s*$/i
-
-      let match = pattern2.exec(line)
-      if (match) {
-        const name = match[1].trim()
-        const quantity = parseInt(match[2], 10)
-        const price = parseFloat(match[3].replace(',', '.'))
-        if (name.length >= 2 && !Number.isNaN(price) && price > 0 && price < 999999) {
-          items.push({ name, quantity, price })
-          continue
-        }
-      }
-
-      match = pattern3.exec(line)
-      if (match) {
-        const quantity = parseInt(match[1], 10)
-        const name = match[2].trim()
-        const price = parseFloat(match[3].replace(',', '.'))
-        if (name.length >= 2 && !Number.isNaN(price) && price > 0 && price < 999999) {
-          items.push({ name, quantity, price })
-          continue
-        }
-      }
-
-      match = pattern1.exec(line)
-      if (match) {
-        const name = match[1].trim()
-        const price = parseFloat(match[2].replace(',', '.'))
-        // Only add if name is reasonable length and not just numbers
-        if (
-          name.length >= 2 &&
-          !/^\d+$/.test(name) &&
-          !Number.isNaN(price) &&
-          price > 0 &&
-          price < 999999
-        ) {
-          items.push({ name, quantity: 1, price })
-        }
-      }
+    // Update extracted data with confirmed items
+    const finalData: ReceiptData = {
+      ...extractedData,
+      items: confirmedItems,
     }
 
-    return items
+    // Pass to parent component
+    onDataExtracted(finalData)
+
+    // Show success message
+    toast.success(`${confirmedItems.length} items imported successfully! 🎉`, {
+      description: 'Review and assign items to people',
+    })
+
+    // Reset state
+    setShowItemPreview(false)
+    setExtractedData(null)
+    clearPreview()
   }
 
-  const extractAmountsFromText = (text: string): ReceiptData => {
+  const _extractAmountsFromText = (text: string): ReceiptData => {
     const data: ReceiptData = {}
 
     // Clean up text: remove extra spaces, normalize line breaks
@@ -407,62 +385,105 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
       await worker.terminate()
       setProgress(90)
 
-      // Process all OCR results and combine findings
-      let bestExtractedData: ReceiptData = {}
-      let maxFieldsFound = 0
+      // Use enhanced parser for all OCR results
+      let bestParsedReceipt = null
+      let highestConfidence = 0
 
       for (const text of ocrResults) {
-        const extractedData = extractAmountsFromText(text)
-        const fieldsCount = Object.keys(extractedData).length
+        const parsedReceipt = parseReceiptText(text)
 
-        if (fieldsCount > maxFieldsFound) {
-          maxFieldsFound = fieldsCount
-          bestExtractedData = extractedData
-        } else if (fieldsCount === maxFieldsFound && fieldsCount > 0) {
-          // Merge results, preferring non-zero values
-          for (const [key, value] of Object.entries(extractedData)) {
-            if (
-              value &&
-              (!bestExtractedData[key as keyof ReceiptData] ||
-                bestExtractedData[key as keyof ReceiptData] === 0)
-            ) {
-              bestExtractedData[key as keyof ReceiptData] = value
-            }
-          }
+        // Calculate confidence score (high=3, medium=2, low=1)
+        const confidenceScore =
+          parsedReceipt.confidence.overall === 'high'
+            ? 3
+            : parsedReceipt.confidence.overall === 'medium'
+              ? 2
+              : 1
+
+        if (confidenceScore > highestConfidence) {
+          highestConfidence = confidenceScore
+          bestParsedReceipt = parsedReceipt
         }
       }
 
       setProgress(100)
 
-      // Validate and improve extracted data
-      bestExtractedData = validateAndCorrectData(bestExtractedData)
-
-      if (Object.keys(bestExtractedData).length === 0) {
-        toast.error('Could not extract amounts from receipt. Please try again or enter manually.', {
+      if (
+        !bestParsedReceipt ||
+        (bestParsedReceipt.items.length === 0 && !bestParsedReceipt.total)
+      ) {
+        toast.error('Could not extract data from receipt. Please try again or enter manually.', {
           description: 'Tip: Ensure the receipt is well-lit and text is clearly visible',
         })
         trackToolEvent('split_bill_ocr_error', {
-          reason: 'no_amounts_found',
+          reason: 'no_data_found',
           ocr_attempts: ocrResults.length,
         })
       } else {
-        const fieldsFound = Object.keys(bestExtractedData)
-        const itemCount = bestExtractedData.items?.length || 0
-        const message =
-          itemCount > 0
-            ? `Receipt scanned! Found ${itemCount} items + ${fieldsFound.filter((f) => f !== 'items').join(', ')} 🎉`
-            : `Receipt scanned successfully! Found: ${fieldsFound.join(', ')} 🎉`
+        const { items, subtotal, tax, tip, total, merchant, date, confidence } = bestParsedReceipt
+        const itemCount = items.length
 
-        toast.success(message, {
-          description: 'Review the extracted values and adjust if needed',
-        })
-        onDataExtracted(bestExtractedData)
-        trackToolEvent('split_bill_ocr_success', {
-          fields_extracted: fieldsFound.length,
-          fields: fieldsFound,
-          items_count: itemCount,
-          ocr_attempts: ocrResults.length,
-        })
+        // Store extracted data for modal
+        const receiptData: ReceiptData = {
+          items: items.map((item) => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          subtotal,
+          tax,
+          tip,
+          total,
+          merchant,
+          date,
+        }
+
+        // If items were found, show preview modal for review
+        if (itemCount > 0) {
+          setExtractedData(receiptData)
+          setShowItemPreview(true)
+
+          // Show initial success toast
+          toast.success(
+            `Receipt scanned! Found ${itemCount} items (${confidence.items} confidence) 🎉`,
+            {
+              description: `${merchant ? `From ${merchant} • ` : ''}Review items before importing`,
+              duration: 4000,
+            }
+          )
+
+          trackToolEvent('split_bill_ocr_success', {
+            items_count: itemCount,
+            confidence_overall: confidence.overall,
+            confidence_items: confidence.items,
+            confidence_amounts: confidence.amounts,
+            ocr_attempts: ocrResults.length,
+            has_merchant: !!merchant,
+            has_date: !!date,
+          })
+        } else {
+          // No items, just amounts - apply directly
+          const fieldsFound = Object.keys(receiptData).filter(
+            (k) => k !== 'merchant' && k !== 'date' && receiptData[k as keyof ReceiptData]
+          )
+
+          toast.success(
+            `Receipt scanned! Found: ${fieldsFound.join(', ')} (${confidence.amounts} confidence) 🎉`,
+            {
+              description: 'Review the extracted values and adjust if needed',
+            }
+          )
+
+          onDataExtracted(receiptData)
+
+          trackToolEvent('split_bill_ocr_success', {
+            fields_extracted: fieldsFound.length,
+            fields: fieldsFound,
+            confidence_overall: confidence.overall,
+            confidence_amounts: confidence.amounts,
+            ocr_attempts: ocrResults.length,
+          })
+        }
       }
     } catch (error) {
       console.error('OCR Error:', error)
@@ -480,10 +501,8 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
   }
 
   // Validate and correct extracted data
-  const validateAndCorrectData = (data: ReceiptData): ReceiptData => {
-    const validated = { ...data }
-
-    // Remove obviously incorrect values (too large or negative)
+  const _validateAndCorrectData = (data: ReceiptData): ReceiptData => {
+    const validated = { ...data } // Remove obviously incorrect values (too large or negative)
     for (const [key, value] of Object.entries(validated)) {
       if (typeof value === 'number' && (value <= 0 || value > 999999 || !Number.isFinite(value))) {
         delete validated[key as keyof ReceiptData]
@@ -728,8 +747,34 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
           <p>
             ✨ <strong>Privacy-first:</strong> All processing happens locally in your browser
           </p>
+          <p>
+            ⚡ <strong>Smart Confidence Scoring:</strong> High/Medium/Low ratings for uncertain
+            items - review before importing
+          </p>
         </div>
       </div>
+
+      {/* Item Preview Modal */}
+      {showItemPreview && extractedData?.items && (
+        <ItemPreviewModal
+          isOpen={showItemPreview}
+          onClose={() => {
+            setShowItemPreview(false)
+            setExtractedData(null)
+          }}
+          items={
+            extractedData.items.map((item, index) => ({
+              id: `${Date.now()}_${index}`,
+              name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+              confidence: 'medium' as const, // Default fallback if confidence not provided
+              rawText: item.name, // Use name as rawText fallback
+            })) as ExtractedItem[]
+          }
+          onConfirm={handleItemsConfirmed}
+        />
+      )}
     </div>
   )
 }

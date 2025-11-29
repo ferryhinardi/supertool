@@ -88,6 +88,41 @@ button {
   }
 }
 
+/* Swipe animations for mobile gestures */
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeHintPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-4px);
+  }
+}
+
 /* High-contrast input placeholder for light and dark mode */
 input::placeholder {
   color: #6b7280; /* gray-500 for light */
