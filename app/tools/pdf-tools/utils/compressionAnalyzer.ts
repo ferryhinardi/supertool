@@ -2,7 +2,7 @@
  * Analyzes PDF content to determine optimal compression strategy
  */
 export async function analyzeDocumentContent(
-  pdfDoc: Awaited<ReturnType<typeof import('pdfjs-dist').getDocument>>
+  pdfDoc: Awaited<Awaited<ReturnType<typeof import('pdfjs-dist').getDocument>>['promise']>
 ): Promise<{
   isTextHeavy: boolean
   hasImages: boolean

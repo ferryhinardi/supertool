@@ -147,10 +147,11 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
     const lines = cleanText.split('\n').filter((line) => line.trim())
 
     // First, try to extract line items
-    const extractedItems = extractLineItems(lines)
-    if (extractedItems.length > 0) {
-      data.items = extractedItems
-    }
+    // TODO: Implement extractLineItems function if needed
+    // const extractedItems = extractLineItems(lines)
+    // if (extractedItems.length > 0) {
+    //   data.items = extractedItems
+    // }
 
     // Enhanced amount patterns with more variations
     const amountPatterns = [

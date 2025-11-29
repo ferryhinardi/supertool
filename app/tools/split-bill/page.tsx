@@ -59,7 +59,7 @@ import {
   downloadCSV,
   exportAsText,
   generatePaymentRequest,
-} from '@/lib/split-bill-export'
+} from '@/lib/split-bill-export-legacy'
 import { createBill } from '@/lib/split-bill-service'
 import { useKeyboardShortcuts } from '@/lib/split-bill-shortcuts'
 import {
@@ -1466,7 +1466,7 @@ export default function SplitBillPage() {
               onTargetCurrencyChange={setTargetCurrency}
               amounts={[
                 { label: 'Bill Amount', value: parseFloat(billAmount) || 0 },
-                { label: 'Total with Tax & Tip', value: totalAfterTax },
+                { label: 'Total with Tax & Tip', value: calculations.total },
               ]}
             />
           )}

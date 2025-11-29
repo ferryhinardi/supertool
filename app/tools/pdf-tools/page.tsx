@@ -2268,12 +2268,7 @@ export default function PDFToolsPage() {
                               className={css({ display: 'flex', alignItems: 'start', gap: '4' })}
                             >
                               {/* PDF Thumbnail Preview */}
-                              <PDFThumbnail
-                                file={pdf.file}
-                                className={css({
-                                  position: 'relative',
-                                })}
-                              />
+                              <PDFThumbnail file={pdf.file} />
                               {pdf.status === 'completed' && (
                                 <div
                                   className={css({
@@ -2619,7 +2614,16 @@ export default function PDFToolsPage() {
         <ComparisonView
           originalFile={comparisonPdf.file}
           processedBlob={comparisonPdf.processedBlob}
-          operation={operation}
+          originalSize={comparisonPdf.size}
+          processedSize={comparisonPdf.processedSize || comparisonPdf.size}
+          onDownload={() => {
+            const url = URL.createObjectURL(comparisonPdf.processedBlob!)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `${comparisonPdf.name.replace('.pdf', '')}-${operation}.pdf`
+            a.click()
+            URL.revokeObjectURL(url)
+          }}
           onClose={() => {
             setShowComparison(false)
             setComparisonPdf(null)
