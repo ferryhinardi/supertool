@@ -18,7 +18,7 @@ import {
   Video,
   Zap,
 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -59,17 +59,8 @@ export default function VideoSubtitleCombinerPage() {
 
   const ffmpegRef = useRef<FFmpeg | null>(null)
 
-  // Track page visit
-  useEffect(() => {
-    trackEvent({
-      action: 'page_view',
-      category: 'video_subtitle_combiner',
-      label: 'tool_opened',
-    })
-  }, [])
-
   // Load FFmpeg
-  const loadFFmpeg = async () => {
+  const loadFFmpeg = useCallback(async () => {
     if (ffmpegLoaded || loadingFFmpeg) return
 
     setLoadingFFmpeg(true)
@@ -116,7 +107,18 @@ export default function VideoSubtitleCombinerPage() {
     } finally {
       setLoadingFFmpeg(false)
     }
-  }
+  }, [ffmpegLoaded, loadingFFmpeg])
+
+  // Track page visit and auto-load FFmpeg
+  useEffect(() => {
+    trackEvent({
+      action: 'page_view',
+      category: 'video_subtitle_combiner',
+      label: 'tool_opened',
+    })
+    // Auto-load FFmpeg on page load
+    loadFFmpeg()
+  }, [loadFFmpeg])
 
   const handleVideoSelect = async (files: FileList) => {
     const file = files[0]

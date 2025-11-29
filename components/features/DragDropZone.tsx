@@ -75,10 +75,18 @@ export function DragDropZone({
 
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
+      console.log('🔵 DragDropZone clicked!', {
+        disabled,
+        hasInputRef: !!inputRef.current,
+        inputElement: inputRef.current,
+      })
       e.preventDefault()
       e.stopPropagation()
       if (!disabled && inputRef.current) {
+        console.log('🟢 Triggering input click...')
         inputRef.current.click()
+      } else {
+        console.log('🔴 Click blocked:', { disabled, hasRef: !!inputRef.current })
       }
     },
     [disabled]
