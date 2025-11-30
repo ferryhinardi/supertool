@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Subtitle API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        h1 {
+            color: #a855f7;
+        }
+        .file-input {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #d1d5db;
+        }
+        input[type="file"] {
+            display: block;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #a855f7;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #9333ea;
+        }
+        button:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        #status.success {
+            background: #10b981;
+            display: block;
+        }
+        #status.error {
+            background: #ef4444;
+            display: block;
+        }
+        #status.processing {
+            background: #3b82f6;
+            display: block;
+        }
+        #log {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1f2937;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #4b5563;
+        }
+        .log-entry.error {
+            border-left-color: #ef4444;
+            color: #fca5a5;
+        }
+        .log-entry.success {
+            border-left-color: #10b981;
+            color: #6ee7b7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Video Subtitle API Tester</h1>
+        <p>Test the video subtitle API directly from your browser.</p>
+
+        <div class="file-input">
+            <label for="videoFile">Video File:</label>
+            <input type="file" id="videoFile" accept="video/*">
+        </div>
+
+        <div class="file-input">
+            <label for="subtitleFile">Subtitle File (SRT, VTT, ASS, SSA):</label>
+            <input type="file" id="subtitleFile" accept=".srt,.vtt,.ass,.ssa">
+        </div>
+
+        <button id="testButton" onclick="testAPI()">Test API</button>
+
+        <div id="status"></div>
+        
+        <div id="log">
+            <div class="log-entry">Console log will appear here...</div>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = type;
+        }
+
+        async function testAPI() {
+            const videoInput = document.getElementById('videoFile');
+            const subtitleInput = document.getElementById('subtitleFile');
+            const button = document.getElementById('testButton');
+
+            // Validate files
+            if (!videoInput.files[0]) {
+                alert('Please select a video file');
+                return;
+            }
+            if (!subtitleInput.files[0]) {
+                alert('Please select a subtitle file');
+                return;
+            }
+
+            const videoFile = videoInput.files[0];
+            const subtitleFile = subtitleInput.files[0];
+
+            log(`Video: ${videoFile.name} (${(videoFile.size / 1024 / 1024).toFixed(2)} MB)`);
+            log(`Subtitle: ${subtitleFile.name}`);
+
+            button.disabled = true;
+            showStatus('Processing...', 'processing');
+
+            try {
+                // Create FormData
+                log('Creating FormData...');
+                const formData = new FormData();
+                formData.append('video', videoFile);
+                formData.append('subtitle', subtitleFile);
+                formData.append('options', JSON.stringify({
+                    fontSize: 24,
+                    fontColor: '#ffffff',
+                    backgroundColor: '#000000',
+                    backgroundOpacity: 0.5,
+                    position: 'bottom'
+                }));
+
+                log('Sending request to /api/video-subtitle...');
+                const response = await fetch('/api/video-subtitle', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                log(`Response status: ${response.status} ${response.statusText}`);
+
+                if (!response.ok) {
+                    // Try to parse error message
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                // Get the video blob
+                log('Downloading processed video...');
+                const blob = await response.blob();
+                log(`Received blob: ${(blob.size / 1024 / 1024).toFixed(2)} MB`, 'success');
+
+                // Create download link
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'video-with-subtitles.mp4';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showStatus('✅ Success! Video downloaded.', 'success');
+                log('Video downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error');
+                log(`ERROR: ${error.message}`, 'error');
+                
+                // Log full error details
+                if (error.stack) {
+                    log(`Stack trace: ${error.stack}`, 'error');
+                }
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // Check server status on load
+        window.addEventListener('load', async () => {
+            log('Checking server status...');
+            try {
+                const response = await fetch('/api/video-subtitle');
+                const data = await response.json();
+                log(`Server status: ${JSON.stringify(data)}`, data.status === 'ok' ? 'success' : 'error');
+            } catch (error) {
+                log(`Server check failed: ${error.message}`, 'error');
+            }
+        });
+    </script>
+</body>
+</html>

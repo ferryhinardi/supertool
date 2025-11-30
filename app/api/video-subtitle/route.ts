@@ -1,0 +1,215 @@
+import { exec } from 'node:child_process'
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { promisify } from 'node:util'
+import { type NextRequest, NextResponse } from 'next/server'
+
+const execAsync = promisify(exec)
+
+// Maximum file size: 500MB
+const MAX_FILE_SIZE = 500 * 1024 * 1024
+
+interface SubtitleOptions {
+  fontSize?: number
+  fontColor?: string
+  backgroundColor?: string
+  backgroundOpacity?: number
+  position?: 'bottom' | 'top' | 'center'
+}
+
+export async function POST(request: NextRequest) {
+  let tempDir: string | null = null
+
+  try {
+    console.log('🔵 Video subtitle API called')
+
+    // Parse multipart form data
+    const formData = await request.formData()
+    const videoFile = formData.get('video') as File
+    const subtitleFile = formData.get('subtitle') as File
+    const optionsJson = formData.get('options') as string
+
+    console.log('🔵 Files received:', {
+      video: videoFile?.name,
+      videoSize: videoFile?.size,
+      subtitle: subtitleFile?.name,
+      subtitleSize: subtitleFile?.size,
+    })
+
+    // Validate inputs
+    if (!videoFile || !subtitleFile) {
+      return NextResponse.json({ error: 'Missing video or subtitle file' }, { status: 400 })
+    }
+
+    // Validate file sizes
+    if (videoFile.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: `Video file too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB` },
+        { status: 400 }
+      )
+    }
+
+    // Validate subtitle file extension
+    const subtitleExt = subtitleFile.name.split('.').pop()?.toLowerCase()
+    if (!['srt', 'vtt', 'ass', 'ssa'].includes(subtitleExt || '')) {
+      return NextResponse.json(
+        { error: 'Invalid subtitle format. Supported: SRT, VTT, ASS, SSA' },
+        { status: 400 }
+      )
+    }
+
+    // Parse options
+    const options: SubtitleOptions = optionsJson ? JSON.parse(optionsJson) : {}
+
+    // Create temporary directory for processing
+    tempDir = join(tmpdir(), `video-subtitle-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+    await mkdir(tempDir, { recursive: true })
+
+    // Save uploaded files to temp directory
+    const videoExt = videoFile.name.split('.').pop()?.toLowerCase() || 'mp4'
+    const inputVideoPath = join(tempDir, `input.${videoExt}`)
+    const inputSubtitlePath = join(tempDir, `subtitle.${subtitleExt}`)
+    const outputVideoPath = join(tempDir, `output.${videoExt}`)
+
+    const videoBuffer = Buffer.from(await videoFile.arrayBuffer())
+    const subtitleBuffer = Buffer.from(await subtitleFile.arrayBuffer())
+
+    await writeFile(inputVideoPath, videoBuffer)
+    await writeFile(inputSubtitlePath, subtitleBuffer)
+
+    // Check if FFmpeg is installed
+    try {
+      await execAsync('ffmpeg -version')
+    } catch (_error) {
+      return NextResponse.json(
+        {
+          error:
+            'FFmpeg is not installed on the server. Please install FFmpeg to use this feature.',
+        },
+        { status: 500 }
+      )
+    }
+
+    // Build FFmpeg command to burn subtitles into video
+    // Note: We need to escape the subtitle path for FFmpeg's subtitles filter
+    const escapedSubtitlePath = inputSubtitlePath.replace(/\\/g, '/').replace(/:/g, '\\\\:')
+    const ffmpegFilters = buildFFmpegFilters(escapedSubtitlePath, options)
+
+    // Build command as array to avoid shell escaping issues
+    const ffmpegArgs = [
+      '-i',
+      inputVideoPath,
+      '-vf',
+      ffmpegFilters,
+      '-c:v',
+      'libx264',
+      '-preset',
+      'medium',
+      '-crf',
+      '23',
+      '-c:a',
+      'copy',
+      '-y', // Overwrite output file
+      outputVideoPath,
+    ]
+
+    // Execute FFmpeg command
+    console.log('Executing FFmpeg with args:', ['ffmpeg', ...ffmpegArgs].join(' '))
+
+    // Use spawn instead of exec for better control
+    const { execFile } = await import('node:child_process')
+    const execFileAsync = promisify(execFile)
+
+    const { stdout, stderr } = await execFileAsync('ffmpeg', ffmpegArgs, {
+      maxBuffer: 10 * 1024 * 1024, // 10MB buffer for output
+    })
+
+    console.log('FFmpeg stdout:', stdout)
+    if (stderr) console.log('FFmpeg stderr:', stderr)
+
+    // Read the output file
+    const outputBuffer = await readFile(outputVideoPath)
+
+    // Clean up temp directory
+    await rm(tempDir, { recursive: true, force: true })
+    tempDir = null
+
+    // Return the processed video
+    return new NextResponse(outputBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'video/mp4',
+        'Content-Disposition': `attachment; filename="video-with-subtitles.${videoExt}"`,
+        'Content-Length': outputBuffer.length.toString(),
+      },
+    })
+  } catch (error) {
+    // Clean up temp directory on error
+    if (tempDir) {
+      try {
+        await rm(tempDir, { recursive: true, force: true })
+      } catch (cleanupError) {
+        console.error('Failed to clean up temp directory:', cleanupError)
+      }
+    }
+
+    console.error('🔴 Error processing video:', error)
+
+    // Log detailed error information
+    if (error instanceof Error) {
+      console.error('Error name:', error.name)
+      console.error('Error message:', error.message)
+      console.error('Error stack:', error.stack)
+    }
+
+    const errorMessage =
+      error instanceof Error ? error.message : 'An error occurred while processing the video'
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
+  }
+}
+
+function buildFFmpegFilters(subtitlePath: string, options: SubtitleOptions): string {
+  const {
+    fontSize = 24,
+    fontColor = '#ffffff',
+    backgroundColor = '#000000',
+    backgroundOpacity = 0.5,
+    position = 'bottom',
+  } = options
+
+  // Convert hex colors to FFmpeg format (without #)
+  const primaryColor = `${fontColor.replace('#', '&H')}FF` // Add alpha
+  const bgColor = backgroundColor.replace('#', '&H')
+  const bgOpacity = Math.round(backgroundOpacity * 255)
+    .toString(16)
+    .padStart(2, '0')
+  const bgColorWithAlpha = bgColor + bgOpacity
+
+  // Calculate vertical position
+  let marginV = 20
+  if (position === 'top') {
+    marginV = 20
+  } else if (position === 'center') {
+    marginV = 0
+  } else {
+    marginV = 20 // bottom
+  }
+
+  // Build subtitles filter with styling
+  // Note: subtitlePath should already be escaped by caller
+  const subtitleFilter = `subtitles=${subtitlePath}:force_style='FontSize=${fontSize},PrimaryColour=${primaryColor},BackColour=${bgColorWithAlpha},MarginV=${marginV}'`
+
+  return subtitleFilter
+}
+
+// Health check endpoint
+export async function GET() {
+  try {
+    await execAsync('ffmpeg -version')
+    return NextResponse.json({ status: 'ok', ffmpeg: 'installed' })
+  } catch (_error) {
+    return NextResponse.json({ status: 'error', ffmpeg: 'not installed' }, { status: 500 })
+  }
+}
