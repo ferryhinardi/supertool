@@ -89,6 +89,18 @@ export default function VideoSubtitleCombinerPage() {
   const [contrast, setContrast] = useState(1.0) // 0.0 to 2.0
   const [saturation, setSaturation] = useState(1.0) // 0.0 to 3.0
 
+  // Advanced filter options
+  const [enableAdvancedFilters, setEnableAdvancedFilters] = useState(false)
+  const [blur, setBlur] = useState(0) // 0 to 20
+  const [sharpen, setSharpen] = useState(0) // 0 to 5
+  const [vignette, setVignette] = useState(0) // 0.0 to 1.0
+  const [temperature, setTemperature] = useState(6500) // 1000 to 40000 (Kelvin)
+
+  // Export preset options
+  const [exportPreset, setExportPreset] = useState<
+    'none' | 'instagram' | 'tiktok' | 'youtube' | 'twitter'
+  >('none')
+
   // Preview options
   const [showPreview, _setShowPreview] = useState(true)
   const [previewWithFilters, setPreviewWithFilters] = useState(true)
@@ -353,6 +365,19 @@ export default function VideoSubtitleCombinerPage() {
         formData.append('saturation', saturation.toString())
       }
 
+      // Add advanced filter parameters if enabled
+      if (enableAdvancedFilters) {
+        formData.append('blur', blur.toString())
+        formData.append('sharpen', sharpen.toString())
+        formData.append('vignette', vignette.toString())
+        formData.append('temperature', temperature.toString())
+      }
+
+      // Add export preset
+      if (exportPreset !== 'none') {
+        formData.append('exportPreset', exportPreset)
+      }
+
       const response = await fetch('/api/video-subtitle', {
         method: 'POST',
         body: formData,
@@ -437,6 +462,65 @@ export default function VideoSubtitleCombinerPage() {
     })
   }
 
+  const handleBatchDownload = async () => {
+    const completedFiles = processingFiles.filter((f) => f.status === 'completed' && f.outputBlob)
+
+    if (completedFiles.length === 0) {
+      toast.error('No completed videos to download')
+      return
+    }
+
+    if (completedFiles.length === 1) {
+      // Just download the single file
+      handleDownload(completedFiles[0])
+      return
+    }
+
+    try {
+      toast.info('Creating ZIP archive...')
+
+      // Dynamically import JSZip
+      const JSZip = (await import('jszip')).default
+
+      const zip = new JSZip()
+
+      // Add each video to the ZIP
+      for (const file of completedFiles) {
+        if (file.outputBlob) {
+          const originalName = file.videoFile.name.split('.').slice(0, -1).join('.')
+          const extension = file.videoFile.name.split('.').pop()
+          const filename = `${originalName}_subtitled.${extension}`
+
+          zip.file(filename, file.outputBlob)
+        }
+      }
+
+      // Generate ZIP blob
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+
+      // Download ZIP
+      const url = URL.createObjectURL(zipBlob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `subtitled_videos_${Date.now()}.zip`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      toast.success(`Downloaded ${completedFiles.length} videos as ZIP!`)
+      trackEvent({
+        action: 'batch_downloaded',
+        category: 'video_subtitle_combiner',
+        label: 'zip_download',
+        value: completedFiles.length,
+      })
+    } catch (error) {
+      console.error('Error creating ZIP:', error)
+      toast.error('Failed to create ZIP archive')
+    }
+  }
+
   const handleRemove = (id: string) => {
     setProcessingFiles((prev) => {
       const file = prev.find((f) => f.id === id)
@@ -475,11 +559,25 @@ export default function VideoSubtitleCombinerPage() {
   }
 
   const getFilterStyles = () => {
-    if (!enableFilters || !previewWithFilters) return {}
+    const filters: string[] = []
 
-    return {
-      filter: `brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`,
+    // Basic filters
+    if (enableFilters && previewWithFilters) {
+      filters.push(`brightness(${brightness})`)
+      filters.push(`contrast(${contrast})`)
+      filters.push(`saturate(${saturation})`)
     }
+
+    // Advanced filters
+    if (enableAdvancedFilters && previewWithFilters) {
+      if (blur > 0) {
+        filters.push(`blur(${blur}px)`)
+      }
+      // Note: CSS doesn't support sharpen, vignette, or color temperature directly
+      // These will only be visible in the final processed video
+    }
+
+    return filters.length > 0 ? { filter: filters.join(' ') } : {}
   }
 
   const canProcess = videoFile && subtitleFile && !isProcessing && serverStatus.status === 'ready'
@@ -944,6 +1042,293 @@ export default function VideoSubtitleCombinerPage() {
             </Card>
           )}
 
+          {/* Advanced Filters */}
+          {videoFile && (
+            <Card>
+              <CardHeader>
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Sparkles className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                  Advanced Filters
+                </CardTitle>
+                <CardDescription>Apply professional-grade effects to your video</CardDescription>
+              </CardHeader>
+              <CardContent className={css({ spaceY: '4' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  })}
+                >
+                  {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent checkbox */}
+                  <label className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
+                    Enable Advanced Filters
+                  </label>
+                  <input
+                    type="checkbox"
+                    checked={enableAdvancedFilters}
+                    onChange={(e) => setEnableAdvancedFilters(e.target.checked)}
+                    className={css({ w: '4', h: '4', cursor: 'pointer' })}
+                  />
+                </div>
+
+                {enableAdvancedFilters && (
+                  <>
+                    {/* Blur */}
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        Blur: {blur}
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="20"
+                        step="1"
+                        value={blur}
+                        onChange={(e) => setBlur(parseInt(e.target.value, 10))}
+                        className={css({ w: 'full' })}
+                      />
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        Add motion blur or soften the image
+                      </p>
+                    </div>
+
+                    {/* Sharpen */}
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        Sharpen: {sharpen}
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="5"
+                        step="0.5"
+                        value={sharpen}
+                        onChange={(e) => setSharpen(parseFloat(e.target.value))}
+                        className={css({ w: 'full' })}
+                      />
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        Enhance edges and details
+                      </p>
+                    </div>
+
+                    {/* Vignette */}
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        Vignette: {vignette.toFixed(2)}
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.05"
+                        value={vignette}
+                        onChange={(e) => setVignette(parseFloat(e.target.value))}
+                        className={css({ w: 'full' })}
+                      />
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        Darken corners for cinematic look
+                      </p>
+                    </div>
+
+                    {/* Color Temperature */}
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        Temperature: {temperature}K
+                      </label>
+                      <input
+                        type="range"
+                        min="2000"
+                        max="12000"
+                        step="100"
+                        value={temperature}
+                        onChange={(e) => setTemperature(parseInt(e.target.value, 10))}
+                        className={css({ w: 'full' })}
+                      />
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        {temperature < 6500
+                          ? '❄️ Cool (blue)'
+                          : temperature > 6500
+                            ? '🔥 Warm (orange)'
+                            : '☀️ Neutral'}
+                      </p>
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setBlur(0)
+                        setSharpen(0)
+                        setVignette(0)
+                        setTemperature(6500)
+                      }}
+                      className={css({ w: 'full', fontSize: 'xs' })}
+                    >
+                      Reset Advanced Filters
+                    </Button>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Export Presets */}
+          {videoFile && (
+            <Card>
+              <CardHeader>
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Zap className={css({ h: '5', w: '5', color: 'yellow.400' })} />
+                  Export Presets
+                </CardTitle>
+                <CardDescription>
+                  Optimize video for specific social media platforms
+                </CardDescription>
+              </CardHeader>
+              <CardContent className={css({ spaceY: '4' })}>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gap: '3',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                  })}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setExportPreset('none')}
+                    className={css({
+                      p: '3',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: exportPreset === 'none' ? 'blue.500' : 'gray.700',
+                      bg: exportPreset === 'none' ? 'rgba(59, 130, 246, 0.1)' : 'gray.800',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      _hover: { borderColor: 'blue.500' },
+                    })}
+                  >
+                    <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>Original</p>
+                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                      No optimization
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setExportPreset('youtube')}
+                    className={css({
+                      p: '3',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: exportPreset === 'youtube' ? 'red.500' : 'gray.700',
+                      bg: exportPreset === 'youtube' ? 'rgba(239, 68, 68, 0.1)' : 'gray.800',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      _hover: { borderColor: 'red.500' },
+                    })}
+                  >
+                    <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>YouTube</p>
+                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                      1920x1080 • 30fps
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setExportPreset('instagram')}
+                    className={css({
+                      p: '3',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: exportPreset === 'instagram' ? 'pink.500' : 'gray.700',
+                      bg: exportPreset === 'instagram' ? 'rgba(236, 72, 153, 0.1)' : 'gray.800',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      _hover: { borderColor: 'pink.500' },
+                    })}
+                  >
+                    <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>Instagram</p>
+                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                      1080x1350 • 4:5
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setExportPreset('tiktok')}
+                    className={css({
+                      p: '3',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: exportPreset === 'tiktok' ? 'cyan.500' : 'gray.700',
+                      bg: exportPreset === 'tiktok' ? 'rgba(6, 182, 212, 0.1)' : 'gray.800',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      _hover: { borderColor: 'cyan.500' },
+                    })}
+                  >
+                    <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>TikTok</p>
+                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                      1080x1920 • 9:16
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setExportPreset('twitter')}
+                    className={css({
+                      p: '3',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: exportPreset === 'twitter' ? 'blue.400' : 'gray.700',
+                      bg: exportPreset === 'twitter' ? 'rgba(96, 165, 250, 0.1)' : 'gray.800',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      _hover: { borderColor: 'blue.400' },
+                      gridColumn: 'span 2',
+                    })}
+                  >
+                    <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>Twitter / X</p>
+                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                      1280x1024 • 30fps
+                    </p>
+                  </button>
+                </div>
+
+                {exportPreset !== 'none' && (
+                  <div
+                    className={css({
+                      p: '3',
+                      rounded: 'lg',
+                      bg: 'rgba(59, 130, 246, 0.1)',
+                      border: '1px solid',
+                      borderColor: 'blue.500/50',
+                    })}
+                  >
+                    <p className={css({ fontSize: 'xs', color: 'gray.300' })}>
+                      ℹ️ Video will be optimized for{' '}
+                      <span className={css({ fontWeight: 'bold', textTransform: 'capitalize' })}>
+                        {exportPreset}
+                      </span>{' '}
+                      with proper aspect ratio, frame rate, and encoding settings.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Compression Options */}
           <Card>
             <CardHeader>
@@ -1129,9 +1514,27 @@ export default function VideoSubtitleCombinerPage() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className={css({ spaceY: '4' })}
         >
-          <h2 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'white' })}>
-            Processed Videos
-          </h2>
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '4',
+            })}
+          >
+            <h2 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'white' })}>
+              Processed Videos ({processingFiles.filter((f) => f.status === 'completed').length}/
+              {processingFiles.length})
+            </h2>
+
+            {processingFiles.filter((f) => f.status === 'completed').length > 1 && (
+              <Button onClick={handleBatchDownload} variant="outline" className={css({ gap: '2' })}>
+                <Download className={css({ h: '4', w: '4' })} />
+                Download All as ZIP
+              </Button>
+            )}
+          </div>
 
           <div
             className={css({

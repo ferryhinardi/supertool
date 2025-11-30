@@ -82,6 +82,68 @@ async function getFFmpegPath(): Promise<string> {
 // Maximum file size: 100MB (Vercel Pro plan limit)
 const MAX_FILE_SIZE = 100 * 1024 * 1024
 
+interface PresetSettings {
+  preset: string
+  crf: string
+  audioBitrate: string
+  audioSampleRate: string
+  scale?: string
+  frameRate?: string
+}
+
+function getPresetSettings(preset?: string): PresetSettings {
+  switch (preset) {
+    case 'instagram':
+      // Instagram: Max 1080x1350 (4:5), 30fps, H.264, AAC
+      return {
+        preset: 'medium',
+        crf: '23',
+        audioBitrate: '128k',
+        audioSampleRate: '44100',
+        scale: '1080:1350:force_original_aspect_ratio=decrease',
+        frameRate: '30',
+      }
+    case 'tiktok':
+      // TikTok: 1080x1920 (9:16), 30fps, H.264, AAC
+      return {
+        preset: 'medium',
+        crf: '23',
+        audioBitrate: '128k',
+        audioSampleRate: '44100',
+        scale: '1080:1920:force_original_aspect_ratio=decrease',
+        frameRate: '30',
+      }
+    case 'youtube':
+      // YouTube: 1920x1080 (16:9), 30fps, H.264, AAC (high quality)
+      return {
+        preset: 'slow',
+        crf: '18',
+        audioBitrate: '192k',
+        audioSampleRate: '48000',
+        scale: '1920:1080:force_original_aspect_ratio=decrease',
+        frameRate: '30',
+      }
+    case 'twitter':
+      // Twitter: Max 1280x1024, 30fps, H.264, AAC
+      return {
+        preset: 'medium',
+        crf: '23',
+        audioBitrate: '128k',
+        audioSampleRate: '44100',
+        scale: '1280:1024:force_original_aspect_ratio=decrease',
+        frameRate: '30',
+      }
+    default:
+      // Default: No preset, maintain original quality
+      return {
+        preset: 'medium',
+        crf: '23',
+        audioBitrate: '128k',
+        audioSampleRate: '44100',
+      }
+  }
+}
+
 interface SubtitleOptions {
   fontSize?: number
   fontColor?: string
@@ -93,6 +155,11 @@ interface SubtitleOptions {
   brightness?: number
   contrast?: number
   saturation?: number
+  blur?: number
+  sharpen?: number
+  vignette?: number
+  temperature?: number
+  exportPreset?: 'instagram' | 'tiktok' | 'youtube' | 'twitter'
 }
 
 export async function POST(request: NextRequest) {
@@ -117,6 +184,11 @@ export async function POST(request: NextRequest) {
     const brightness = formData.get('brightness')
     const contrast = formData.get('contrast')
     const saturation = formData.get('saturation')
+    const blur = formData.get('blur')
+    const sharpen = formData.get('sharpen')
+    const vignette = formData.get('vignette')
+    const temperature = formData.get('temperature')
+    const exportPreset = formData.get('exportPreset')
 
     console.log('🔵 Files received:', {
       video: videoFile?.name,
@@ -161,6 +233,11 @@ export async function POST(request: NextRequest) {
       brightness: brightness ? parseFloat(brightness as string) : undefined,
       contrast: contrast ? parseFloat(contrast as string) : undefined,
       saturation: saturation ? parseFloat(saturation as string) : undefined,
+      blur: blur ? parseFloat(blur as string) : undefined,
+      sharpen: sharpen ? parseFloat(sharpen as string) : undefined,
+      vignette: vignette ? parseFloat(vignette as string) : undefined,
+      temperature: temperature ? parseFloat(temperature as string) : undefined,
+      exportPreset: exportPreset as 'instagram' | 'tiktok' | 'youtube' | 'twitter' | undefined,
     }
 
     // Create temporary directory for processing
@@ -212,20 +289,40 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Get preset-specific settings
+    const presetSettings = getPresetSettings(options.exportPreset)
+
     ffmpegArgs.push(
       '-vf',
       ffmpegFilters,
       '-c:v',
       'libx264',
       '-preset',
-      'medium',
+      presetSettings.preset,
       '-crf',
-      '23',
+      presetSettings.crf,
       '-c:a',
-      'copy',
-      '-y', // Overwrite output file
-      outputVideoPath
+      'aac',
+      '-b:a',
+      presetSettings.audioBitrate,
+      '-ar',
+      presetSettings.audioSampleRate
     )
+
+    // Add resolution scaling if preset requires it
+    if (presetSettings.scale) {
+      const scaleIndex = ffmpegArgs.indexOf('-vf')
+      if (scaleIndex !== -1) {
+        ffmpegArgs[scaleIndex + 1] = `${ffmpegFilters},scale=${presetSettings.scale}`
+      }
+    }
+
+    // Add frame rate if preset requires it
+    if (presetSettings.frameRate) {
+      ffmpegArgs.push('-r', presetSettings.frameRate)
+    }
+
+    ffmpegArgs.push('-y', outputVideoPath) // Overwrite output file
 
     // Execute FFmpeg command with progress tracking
     console.log('Executing FFmpeg with args:', [ffmpegPath, ...ffmpegArgs].join(' '))
@@ -308,6 +405,10 @@ function buildFFmpegFilters(subtitlePath: string, options: SubtitleOptions): str
     brightness = 1.0,
     contrast = 1.0,
     saturation = 1.0,
+    blur = 0,
+    sharpen = 0,
+    vignette = 0,
+    temperature = 6500,
   } = options
 
   // Convert hex colors to FFmpeg format (without #)
@@ -333,10 +434,40 @@ function buildFFmpegFilters(subtitlePath: string, options: SubtitleOptions): str
 
   // Add color adjustment filters if they differ from defaults
   if (brightness !== 1.0 || contrast !== 1.0 || saturation !== 1.0) {
-    // Use eq filter for brightness and contrast
-    // Use hue filter for saturation
     const eqFilter = `eq=brightness=${(brightness - 1.0) * 0.1}:contrast=${contrast}:saturation=${saturation}`
     filters.push(eqFilter)
+  }
+
+  // Add blur filter if enabled
+  if (blur > 0) {
+    // boxblur: radius_x:radius_y (0-20 recommended)
+    filters.push(`boxblur=${blur}:${blur}`)
+  }
+
+  // Add sharpen filter if enabled
+  if (sharpen > 0) {
+    // unsharp: luma_msize_x:luma_msize_y:luma_amount (0-5 recommended)
+    const amount = sharpen * 0.5 // Scale to 0-2.5 range
+    filters.push(`unsharp=5:5:${amount}:5:5:${amount}`)
+  }
+
+  // Add vignette filter if enabled
+  if (vignette > 0) {
+    // vignette: angle:x0:y0 (0-1 range for intensity)
+    const angle = `PI/${2 + (1 - vignette) * 10}` // Angle inversely related to intensity
+    filters.push(`vignette='${angle}'`)
+  }
+
+  // Add color temperature filter if not default
+  if (temperature !== 6500) {
+    // Convert Kelvin to RGB multipliers (simplified)
+    // Warmer (>6500): increase red, decrease blue
+    // Cooler (<6500): decrease red, increase blue
+    const tempDiff = (temperature - 6500) / 10000 // Normalized difference
+    const redAdj = 1 + Math.max(-0.3, Math.min(0.3, tempDiff))
+    const blueAdj = 1 - Math.max(-0.3, Math.min(0.3, tempDiff))
+
+    filters.push(`eq=r=${redAdj}:b=${blueAdj}`)
   }
 
   // Build subtitles filter with styling
