@@ -12,7 +12,7 @@ const execFileAsync = promisify(execFile)
 // In development with Turbopack, the path has /ROOT/ placeholder
 // Replace /ROOT with parent directory of cwd
 let FFMPEG_PATH = ffmpegPath as string
-if (FFMPEG_PATH && FFMPEG_PATH.includes('/ROOT/')) {
+if (FFMPEG_PATH?.includes('/ROOT/')) {
   // Get parent of parent directory (/Users/ferryhinardi from /Users/ferryhinardi/Project/supertool)
   const parentDir = resolve(process.cwd(), '../..')
   FFMPEG_PATH = FFMPEG_PATH.replace('/ROOT', parentDir)
@@ -42,6 +42,11 @@ interface SubtitleOptions {
   backgroundColor?: string
   backgroundOpacity?: number
   position?: 'bottom' | 'top' | 'center'
+  trimStart?: number
+  trimEnd?: number
+  brightness?: number
+  contrast?: number
+  saturation?: number
 }
 
 export async function POST(request: NextRequest) {
@@ -54,13 +59,26 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     const videoFile = formData.get('video') as File
     const subtitleFile = formData.get('subtitle') as File
-    const optionsJson = formData.get('options') as string
+
+    // Get styling options from form data
+    const fontSize = formData.get('fontSize')
+    const fontColor = formData.get('fontColor')
+    const backgroundColor = formData.get('backgroundColor')
+    const backgroundOpacity = formData.get('backgroundOpacity')
+    const subtitlePosition = formData.get('subtitlePosition')
+    const trimStart = formData.get('trimStart')
+    const trimEnd = formData.get('trimEnd')
+    const brightness = formData.get('brightness')
+    const contrast = formData.get('contrast')
+    const saturation = formData.get('saturation')
 
     console.log('🔵 Files received:', {
       video: videoFile?.name,
       videoSize: videoFile?.size,
       subtitle: subtitleFile?.name,
       subtitleSize: subtitleFile?.size,
+      trimStart,
+      trimEnd,
     })
 
     // Validate inputs
@@ -86,7 +104,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse options
-    const options: SubtitleOptions = optionsJson ? JSON.parse(optionsJson) : {}
+    const options: SubtitleOptions = {
+      fontSize: fontSize ? parseInt(fontSize as string, 10) : undefined,
+      fontColor: fontColor as string,
+      backgroundColor: backgroundColor as string,
+      backgroundOpacity: backgroundOpacity ? parseFloat(backgroundOpacity as string) : undefined,
+      position: subtitlePosition as 'bottom' | 'top' | 'center',
+      trimStart: trimStart ? parseFloat(trimStart as string) : undefined,
+      trimEnd: trimEnd ? parseFloat(trimEnd as string) : undefined,
+      brightness: brightness ? parseFloat(brightness as string) : undefined,
+      contrast: contrast ? parseFloat(contrast as string) : undefined,
+      saturation: saturation ? parseFloat(saturation as string) : undefined,
+    }
 
     // Create temporary directory for processing
     tempDir = join(tmpdir(), `video-subtitle-${Date.now()}-${Math.random().toString(36).slice(2)}`)
@@ -123,9 +152,20 @@ export async function POST(request: NextRequest) {
     const ffmpegFilters = buildFFmpegFilters(escapedSubtitlePath, options)
 
     // Build command as array to avoid shell escaping issues
-    const ffmpegArgs = [
-      '-i',
-      inputVideoPath,
+    const ffmpegArgs = ['-i', inputVideoPath]
+
+    // Add trim options if enabled
+    if (options.trimStart !== undefined && options.trimEnd !== undefined) {
+      if (options.trimStart > 0) {
+        ffmpegArgs.push('-ss', options.trimStart.toString())
+      }
+      if (options.trimEnd > 0) {
+        const duration = options.trimEnd - (options.trimStart || 0)
+        ffmpegArgs.push('-t', duration.toString())
+      }
+    }
+
+    ffmpegArgs.push(
       '-vf',
       ffmpegFilters,
       '-c:v',
@@ -137,11 +177,30 @@ export async function POST(request: NextRequest) {
       '-c:a',
       'copy',
       '-y', // Overwrite output file
-      outputVideoPath,
-    ]
+      outputVideoPath
+    )
 
-    // Execute FFmpeg command
+    // Execute FFmpeg command with progress tracking
     console.log('Executing FFmpeg with args:', [FFMPEG_PATH, ...ffmpegArgs].join(' '))
+
+    // First, get video duration for progress calculation
+    const durationArgs = ['-i', inputVideoPath, '-f', 'null', '-']
+    let totalDuration = 0
+
+    try {
+      await execFileAsync(FFMPEG_PATH, durationArgs)
+    } catch (durationError: unknown) {
+      // FFmpeg outputs duration info to stderr even on "error"
+      const stderr = (durationError as { stderr?: string })?.stderr
+      const durationMatch = stderr?.match(/Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2})/)
+      if (durationMatch) {
+        const hours = parseInt(durationMatch[1], 10)
+        const minutes = parseInt(durationMatch[2], 10)
+        const seconds = parseInt(durationMatch[3], 10)
+        totalDuration = hours * 3600 + minutes * 60 + seconds
+        console.log(`Video duration: ${totalDuration} seconds`)
+      }
+    }
 
     const { stdout, stderr } = await execFileAsync(FFMPEG_PATH, ffmpegArgs, {
       maxBuffer: 10 * 1024 * 1024, // 10MB buffer for output
@@ -199,6 +258,9 @@ function buildFFmpegFilters(subtitlePath: string, options: SubtitleOptions): str
     backgroundColor = '#000000',
     backgroundOpacity = 0.5,
     position = 'bottom',
+    brightness = 1.0,
+    contrast = 1.0,
+    saturation = 1.0,
   } = options
 
   // Convert hex colors to FFmpeg format (without #)
@@ -219,11 +281,23 @@ function buildFFmpegFilters(subtitlePath: string, options: SubtitleOptions): str
     marginV = 20 // bottom
   }
 
+  // Build filter chain
+  const filters: string[] = []
+
+  // Add color adjustment filters if they differ from defaults
+  if (brightness !== 1.0 || contrast !== 1.0 || saturation !== 1.0) {
+    // Use eq filter for brightness and contrast
+    // Use hue filter for saturation
+    const eqFilter = `eq=brightness=${(brightness - 1.0) * 0.1}:contrast=${contrast}:saturation=${saturation}`
+    filters.push(eqFilter)
+  }
+
   // Build subtitles filter with styling
   // Note: subtitlePath should already be escaped by caller
   const subtitleFilter = `subtitles=${subtitlePath}:force_style='FontSize=${fontSize},PrimaryColour=${primaryColor},BackColour=${bgColorWithAlpha},MarginV=${marginV}'`
+  filters.push(subtitleFilter)
 
-  return subtitleFilter
+  return filters.join(',')
 }
 
 // Health check endpoint

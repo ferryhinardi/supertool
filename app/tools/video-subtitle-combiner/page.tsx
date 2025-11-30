@@ -7,8 +7,10 @@ import {
   Download,
   FileText,
   FileVideo,
+  Minimize2,
   Palette,
   Play,
+  Scissors,
   Settings,
   Sparkles,
   Trash2,
@@ -22,6 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/analytics'
+import { compressVideo, isCompressionSupported } from '@/lib/video-compressor'
 import { css } from '@/styled-system/css'
 
 interface ProcessingFile {
@@ -50,6 +53,24 @@ export default function VideoSubtitleCombinerPage() {
   const [processingFiles, setProcessingFiles] = useState<ProcessingFile[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [serverStatus, setServerStatus] = useState<ServerStatus>({ status: 'checking' })
+
+  // Compression options
+  const [enableCompression, setEnableCompression] = useState(false)
+  const [isCompressing, setIsCompressing] = useState(false)
+  const [compressionProgress, setCompressionProgress] = useState(0)
+  const compressionSupported = isCompressionSupported()
+
+  // Video trimming options
+  const [enableTrim, setEnableTrim] = useState(false)
+  const [trimStart, setTrimStart] = useState(0)
+  const [trimEnd, setTrimEnd] = useState(0)
+  const [videoDuration, setVideoDuration] = useState(0)
+
+  // Video filter options
+  const [enableFilters, setEnableFilters] = useState(false)
+  const [brightness, setBrightness] = useState(1.0) // 0.0 to 2.0
+  const [contrast, setContrast] = useState(1.0) // 0.0 to 2.0
+  const [saturation, setSaturation] = useState(1.0) // 0.0 to 3.0
 
   // Subtitle styling options
   const [fontSize, setFontSize] = useState(24)
@@ -124,6 +145,16 @@ export default function VideoSubtitleCombinerPage() {
       return
     }
 
+    // Get video duration for trimming
+    const video = document.createElement('video')
+    video.preload = 'metadata'
+    video.onloadedmetadata = () => {
+      setVideoDuration(video.duration)
+      setTrimEnd(video.duration)
+      URL.revokeObjectURL(video.src)
+    }
+    video.src = URL.createObjectURL(file)
+
     setVideoFile(file)
     toast.success(`Video file selected: ${file.name}`)
     trackEvent({
@@ -167,17 +198,74 @@ export default function VideoSubtitleCombinerPage() {
     setIsProcessing(true)
     const startTime = Date.now()
 
+    let processVideoFile = videoFile
+
+    // Compress video if enabled and file is large
+    if (enableCompression && videoFile.size > 50 * 1024 * 1024) {
+      try {
+        setIsCompressing(true)
+        toast.info('Compressing video before upload...')
+
+        const compressionResult = await compressVideo(videoFile, {
+          maxSizeMB: 80,
+          maxWidthOrHeight: 1920,
+          onProgress: (progress) => {
+            setCompressionProgress(progress)
+          },
+        })
+
+        processVideoFile = compressionResult.file
+        const savedMB = (
+          (compressionResult.originalSize - compressionResult.compressedSize) /
+          1024 /
+          1024
+        ).toFixed(1)
+
+        toast.success(
+          `Video compressed! Saved ${savedMB}MB (${Math.round(compressionResult.compressionRatio * 100)}% of original size)`
+        )
+
+        trackEvent({
+          action: 'video_compressed',
+          category: 'video_subtitle_combiner',
+          label: 'compression_success',
+          value: Math.round(compressionResult.compressionRatio * 100),
+        })
+      } catch (error) {
+        console.error('Compression failed:', error)
+        toast.error('Compression failed. Proceeding with original file...')
+        processVideoFile = videoFile
+      } finally {
+        setIsCompressing(false)
+        setCompressionProgress(0)
+      }
+    }
+
     const processingFile: ProcessingFile = {
       id: Math.random().toString(36).substring(7),
-      videoFile,
+      videoFile: processVideoFile,
       subtitleFile,
-      videoPreview: URL.createObjectURL(videoFile),
+      videoPreview: URL.createObjectURL(processVideoFile),
       status: 'processing',
       progress: 0,
-      originalSize: videoFile.size,
+      originalSize: processVideoFile.size,
     }
 
     setProcessingFiles((prev) => [...prev, processingFile])
+
+    // Start progress simulation
+    const progressInterval = setInterval(() => {
+      setProcessingFiles((prev) =>
+        prev.map((file) => {
+          if (file.id === processingFile.id && file.status === 'processing') {
+            // Simulate progress: slowly increase to 95%, then wait for completion
+            const newProgress = Math.min(file.progress + Math.random() * 5, 95)
+            return { ...file, progress: Math.round(newProgress) }
+          }
+          return file
+        })
+      )
+    }, 1000)
 
     try {
       toast.info('Processing video... This may take a few minutes.')
@@ -188,7 +276,7 @@ export default function VideoSubtitleCombinerPage() {
       })
 
       const formData = new FormData()
-      formData.append('video', videoFile)
+      formData.append('video', processVideoFile)
       formData.append('subtitle', subtitleFile)
       formData.append('fontSize', fontSize.toString())
       formData.append('fontColor', fontColor)
@@ -196,10 +284,25 @@ export default function VideoSubtitleCombinerPage() {
       formData.append('backgroundOpacity', backgroundOpacity.toString())
       formData.append('subtitlePosition', subtitlePosition)
 
+      // Add trim parameters if enabled
+      if (enableTrim) {
+        formData.append('trimStart', trimStart.toString())
+        formData.append('trimEnd', trimEnd.toString())
+      }
+
+      // Add filter parameters if enabled
+      if (enableFilters) {
+        formData.append('brightness', brightness.toString())
+        formData.append('contrast', contrast.toString())
+        formData.append('saturation', saturation.toString())
+      }
+
       const response = await fetch('/api/video-subtitle', {
         method: 'POST',
         body: formData,
       })
+
+      clearInterval(progressInterval)
 
       if (!response.ok) {
         const error = await response.json()
@@ -231,6 +334,7 @@ export default function VideoSubtitleCombinerPage() {
         value: Math.round(processingTime / 1000),
       })
     } catch (error) {
+      clearInterval(progressInterval)
       console.error('Error processing video:', error)
       setProcessingFiles((prev) =>
         prev.map((file) =>
@@ -531,6 +635,260 @@ export default function VideoSubtitleCombinerPage() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className={css({ spaceY: '6' })}
         >
+          {/* Video Trimming */}
+          {videoFile && videoDuration > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Scissors className={css({ h: '5', w: '5', color: 'orange.400' })} />
+                  Trim Video
+                </CardTitle>
+                <CardDescription>Cut video to specific time range</CardDescription>
+              </CardHeader>
+              <CardContent className={css({ spaceY: '4' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  })}
+                >
+                  <label
+                    htmlFor="enable-trim"
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  >
+                    Enable Trimming
+                  </label>
+                  <input
+                    id="enable-trim"
+                    type="checkbox"
+                    checked={enableTrim}
+                    onChange={(e) => setEnableTrim(e.target.checked)}
+                    className={css({ w: '4', h: '4', cursor: 'pointer' })}
+                  />
+                </div>
+
+                {enableTrim && (
+                  <>
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        Start Time: {trimStart.toFixed(1)}s
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max={videoDuration}
+                        step="0.1"
+                        value={trimStart}
+                        onChange={(e) => {
+                          const value = parseFloat(e.target.value)
+                          setTrimStart(Math.min(value, trimEnd - 0.1))
+                        }}
+                        className={css({ w: 'full' })}
+                      />
+                    </div>
+
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        End Time: {trimEnd.toFixed(1)}s
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max={videoDuration}
+                        step="0.1"
+                        value={trimEnd}
+                        onChange={(e) => {
+                          const value = parseFloat(e.target.value)
+                          setTrimEnd(Math.max(value, trimStart + 0.1))
+                        }}
+                        className={css({ w: 'full' })}
+                      />
+                    </div>
+
+                    <p className={css({ fontSize: 'sm', color: 'orange.400' })}>
+                      Duration: {(trimEnd - trimStart).toFixed(1)}s / {videoDuration.toFixed(1)}s
+                    </p>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Video Filters */}
+          {videoFile && (
+            <Card>
+              <CardHeader>
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Settings className={css({ h: '5', w: '5', color: 'yellow.400' })} />
+                  Video Filters
+                </CardTitle>
+                <CardDescription>Adjust video appearance</CardDescription>
+              </CardHeader>
+              <CardContent className={css({ spaceY: '4' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  })}
+                >
+                  <label
+                    htmlFor="enable-filters"
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  >
+                    Enable Filters
+                  </label>
+                  <input
+                    id="enable-filters"
+                    type="checkbox"
+                    checked={enableFilters}
+                    onChange={(e) => setEnableFilters(e.target.checked)}
+                    className={css({ w: '4', h: '4', cursor: 'pointer' })}
+                  />
+                </div>
+
+                {enableFilters && (
+                  <>
+                    {/* Brightness */}
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        Brightness: {brightness.toFixed(2)}
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="2"
+                        step="0.05"
+                        value={brightness}
+                        onChange={(e) => setBrightness(parseFloat(e.target.value))}
+                        className={css({ w: 'full' })}
+                      />
+                    </div>
+
+                    {/* Contrast */}
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        Contrast: {contrast.toFixed(2)}
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="2"
+                        step="0.05"
+                        value={contrast}
+                        onChange={(e) => setContrast(parseFloat(e.target.value))}
+                        className={css({ w: 'full' })}
+                      />
+                    </div>
+
+                    {/* Saturation */}
+                    <div className={css({ spaceY: '2' })}>
+                      {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
+                      <label
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      >
+                        Saturation: {saturation.toFixed(2)}
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="3"
+                        step="0.05"
+                        value={saturation}
+                        onChange={(e) => setSaturation(parseFloat(e.target.value))}
+                        className={css({ w: 'full' })}
+                      />
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setBrightness(1.0)
+                        setContrast(1.0)
+                        setSaturation(1.0)
+                      }}
+                      className={css({ w: 'full', fontSize: 'xs' })}
+                    >
+                      Reset Filters
+                    </Button>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Compression Options */}
+          <Card>
+            <CardHeader>
+              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <Minimize2 className={css({ h: '5', w: '5', color: 'cyan.400' })} />
+                Compression
+              </CardTitle>
+              <CardDescription>
+                {compressionSupported
+                  ? 'Compress large videos before processing'
+                  : 'Not supported in this browser'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className={css({ spaceY: '4' })}>
+              {compressionSupported ? (
+                <>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    })}
+                  >
+                    <label
+                      htmlFor="enable-compression"
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    >
+                      Enable Compression
+                    </label>
+                    <input
+                      id="enable-compression"
+                      type="checkbox"
+                      checked={enableCompression}
+                      onChange={(e) => setEnableCompression(e.target.checked)}
+                      className={css({ w: '4', h: '4', cursor: 'pointer' })}
+                    />
+                  </div>
+                  {isCompressing && (
+                    <div className={css({ spaceY: '2' })}>
+                      <p className={css({ fontSize: 'sm', color: 'cyan.400' })}>
+                        Compressing... {compressionProgress}%
+                      </p>
+                      <Progress value={compressionProgress} className={css({ h: '2' })} />
+                    </div>
+                  )}
+                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    Automatically compress videos larger than 50MB. Helps process larger files
+                    within the 100MB upload limit.
+                  </p>
+                </>
+              ) : (
+                <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                  Video compression is not supported in this browser. Try using Chrome, Edge, or
+                  Firefox.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
