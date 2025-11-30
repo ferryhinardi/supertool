@@ -265,12 +265,12 @@ export default function EncryptionToolPage() {
     setCopied(false)
   }
 
-  // Determine action handler based on active tab and mode
+  // Determine action handler based on mode and action
   const getExecuteHandler = () => {
-    if (activeTab === 'text') {
+    if (mode === 'text') {
       return action === 'encrypt' ? handleEncryptText : handleDecryptText
     }
-    if (activeTab === 'file') {
+    if (mode === 'file') {
       return action === 'encrypt' ? handleEncryptFile : handleDecryptFile
     }
     return handleDecryptFromLink
@@ -278,8 +278,8 @@ export default function EncryptionToolPage() {
 
   // Determine copy handler based on available data
   const getCopyHandler = () => {
-    if (encryptedData?.encryptedText) {
-      return () => handleCopy(encryptedData.encryptedText)
+    if (encryptedData?.encrypted) {
+      return () => handleCopy(encryptedData.encrypted)
     }
     if (decryptedText) {
       return () => handleCopy(decryptedText)

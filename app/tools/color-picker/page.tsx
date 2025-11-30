@@ -341,8 +341,8 @@ function ColorPickerContent() {
   }
 
   const handleReset = () => {
-    setColor('#6366F1')
-    setPalette(['#6366F1', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981'])
+    setColor('#667EEA')
+    setPaletteType('complementary')
     toast.success('Reset to default')
   }
 
