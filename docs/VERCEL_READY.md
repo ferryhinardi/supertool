@@ -202,13 +202,15 @@ git push origin main
 ## Next Steps
 
 ### ✅ Completed:
-- [x] Install FFmpeg binary package
+- [x] Install FFmpeg binary package (ffmpeg-static)
 - [x] Update API route
 - [x] Test locally
 - [x] Create deployment docs
 - [x] Push to GitHub
+- [x] Update CI/CD workflow with build script approval
 
 ### 🚀 Ready to Deploy:
+- [ ] Wait for CI/CD to pass (GitHub Actions)
 - [ ] Deploy on Vercel (automatic from GitHub)
 - [ ] Test health endpoint
 - [ ] Process a test video
