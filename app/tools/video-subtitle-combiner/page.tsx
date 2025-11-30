@@ -42,7 +42,7 @@ interface ServerStatus {
   message?: string
 }
 
-const MAX_VIDEO_SIZE = 1000 * 1024 * 1024 // 1GB
+const MAX_VIDEO_SIZE = 100 * 1024 * 1024 // 100MB (Vercel Pro plan limit)
 
 export default function VideoSubtitleCombinerPage() {
   const [videoFile, setVideoFile] = useState<File | null>(null)

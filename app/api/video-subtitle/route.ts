@@ -33,8 +33,8 @@ if (!FFMPEG_PATH) {
   )
 }
 
-// Maximum file size: 1GB
-const MAX_FILE_SIZE = 1000 * 1024 * 1024
+// Maximum file size: 100MB (Vercel Pro plan limit)
+const MAX_FILE_SIZE = 100 * 1024 * 1024
 
 interface SubtitleOptions {
   fontSize?: number
