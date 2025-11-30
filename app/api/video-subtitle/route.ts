@@ -1,7 +1,8 @@
 import { execFile } from 'node:child_process'
+import { access } from 'node:fs/promises'
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { promisify } from 'node:util'
 import ffmpegPath from 'ffmpeg-static'
 import { type NextRequest, NextResponse } from 'next/server'
@@ -9,8 +10,29 @@ import { type NextRequest, NextResponse } from 'next/server'
 const execFileAsync = promisify(execFile)
 
 // Get FFmpeg binary path (works in both development and Vercel)
-// ffmpeg-static returns a string path directly
-const FFMPEG_PATH = ffmpegPath as string
+// In development with Turbopack, the path has /ROOT/ placeholder
+// Replace /ROOT with parent directory of cwd
+let FFMPEG_PATH = ffmpegPath as string
+if (FFMPEG_PATH && FFMPEG_PATH.includes('/ROOT/')) {
+  // Get parent of parent directory (/Users/ferryhinardi from /Users/ferryhinardi/Project/supertool)
+  const parentDir = resolve(process.cwd(), '../..')
+  FFMPEG_PATH = FFMPEG_PATH.replace('/ROOT', parentDir)
+  console.log('🔧 Fixed Turbopack path:', FFMPEG_PATH)
+} else if (FFMPEG_PATH) {
+  FFMPEG_PATH = resolve(FFMPEG_PATH)
+  console.log('✅ Using resolved path:', FFMPEG_PATH)
+}
+
+// Validate FFmpeg path at startup
+if (!FFMPEG_PATH) {
+  console.error('❌ FFmpeg path is empty!')
+} else {
+  // Test if file exists
+  access(FFMPEG_PATH).then(
+    () => console.log('✅ FFmpeg binary accessible at:', FFMPEG_PATH),
+    (err) => console.error('❌ FFmpeg binary not found:', FFMPEG_PATH, err.message)
+  )
+}
 
 // Maximum file size: 500MB
 const MAX_FILE_SIZE = 500 * 1024 * 1024

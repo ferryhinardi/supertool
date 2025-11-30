@@ -2,7 +2,6 @@
 
 import { FileText, Film, Sparkles, Upload } from 'lucide-react'
 import { useCallback, useId, useRef, useState } from 'react'
-import { cx } from '@/lib/utils'
 
 interface DragDropZoneProps {
   onFilesSelected: (files: FileList) => void
@@ -19,7 +18,7 @@ export function DragDropZone({
   multiple = false,
   maxSize,
   disabled = false,
-  className,
+  className = '',
 }: DragDropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false)
   const inputId = useId()
@@ -75,18 +74,10 @@ export function DragDropZone({
 
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
-      console.log('🔵 DragDropZone clicked!', {
-        disabled,
-        hasInputRef: !!inputRef.current,
-        inputElement: inputRef.current,
-      })
       e.preventDefault()
       e.stopPropagation()
       if (!disabled && inputRef.current) {
-        console.log('🟢 Triggering input click...')
         inputRef.current.click()
-      } else {
-        console.log('🔴 Click blocked:', { disabled, hasRef: !!inputRef.current })
       }
     },
     [disabled]
@@ -100,6 +91,48 @@ export function DragDropZone({
   }
 
   const Icon = getIcon()
+
+  // Container styles
+  const containerStyle: React.CSSProperties = {
+    position: 'relative',
+    overflow: 'hidden',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.5 : 1,
+    pointerEvents: disabled ? 'none' : 'auto',
+    transition: 'all 300ms',
+  }
+
+  // Inner box styles
+  const boxStyle: React.CSSProperties = {
+    position: 'relative',
+    borderRadius: '16px',
+    padding: '32px',
+    transition: 'all 300ms',
+    border: '2px dashed',
+    borderColor: isDragOver ? '#a855f7' : 'rgba(55, 65, 81, 0.5)',
+    backgroundColor: isDragOver ? 'rgba(168, 85, 247, 0.1)' : 'rgba(17, 24, 39, 0.4)',
+    transform: isDragOver ? 'scale(1.02)' : 'scale(1)',
+  }
+
+  // Icon container styles
+  const iconContainerStyle: React.CSSProperties = {
+    borderRadius: '12px',
+    padding: '16px',
+    transition: 'all 300ms',
+    background: isDragOver
+      ? 'linear-gradient(to bottom right, #a855f7, #3b82f6)'
+      : 'linear-gradient(to bottom right, rgba(31, 41, 55, 0.8), rgba(55, 65, 81, 0.8))',
+    transform: isDragOver ? 'scale(1.1) rotate(3deg)' : 'scale(1)',
+    display: 'inline-block',
+  }
+
+  // Icon styles
+  const iconStyle: React.CSSProperties = {
+    width: '32px',
+    height: '32px',
+    color: isDragOver ? '#ffffff' : '#9ca3af',
+    transition: 'color 300ms',
+  }
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: div required for drag-and-drop functionality
@@ -119,11 +152,8 @@ export function DragDropZone({
       }}
       role="button"
       tabIndex={0}
-      className={cx(
-        'group relative overflow-hidden cursor-pointer transition-all duration-300',
-        disabled && 'cursor-not-allowed opacity-50 pointer-events-none',
-        className
-      )}
+      style={containerStyle}
+      className={className}
     >
       <input
         ref={inputRef}
@@ -131,69 +161,98 @@ export function DragDropZone({
         accept={accept}
         multiple={multiple}
         onChange={handleFileInput}
-        disabled={disabled}
-        className="hidden"
+        style={{ display: 'none' }}
         id={inputId}
         aria-label="File upload"
       />
 
-      <div
-        className={cx(
-          'relative rounded-2xl p-8 transition-all duration-300',
-          'border-2 border-dashed',
-          isDragOver
-            ? 'border-purple-500 bg-purple-500/10 scale-[1.02]'
-            : 'border-gray-700/50 bg-gray-900/40 hover:border-purple-500/50 hover:bg-gray-900/60'
-        )}
-      >
+      <div style={boxStyle}>
         {/* Sparkle decorations */}
         {!isDragOver && (
           <>
-            <Sparkles className="absolute top-3 right-3 h-4 w-4 text-purple-400/30 animate-pulse" />
-            <Sparkles className="absolute bottom-3 left-3 h-3 w-3 text-blue-400/30 animate-pulse delay-700" />
+            <Sparkles
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                width: '16px',
+                height: '16px',
+                color: 'rgba(192, 132, 252, 0.3)',
+                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              }}
+            />
+            <Sparkles
+              style={{
+                position: 'absolute',
+                bottom: '12px',
+                left: '12px',
+                width: '12px',
+                height: '12px',
+                color: 'rgba(96, 165, 250, 0.3)',
+                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                animationDelay: '700ms',
+              }}
+            />
           </>
         )}
 
         {/* Content */}
-        <div className="flex flex-col items-center justify-center text-center space-y-4">
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            gap: '16px',
+          }}
+        >
           {/* Icon */}
-          <div
-            className={cx(
-              'rounded-xl p-4 transition-all duration-300',
-              isDragOver
-                ? 'bg-gradient-to-br from-purple-500 to-blue-600 scale-110 rotate-3'
-                : 'bg-gradient-to-br from-gray-800/80 to-gray-700/80 group-hover:scale-105 group-hover:from-purple-900/40 group-hover:to-blue-900/40'
-            )}
-          >
-            <Icon
-              className={cx(
-                'h-8 w-8 transition-colors duration-300',
-                isDragOver ? 'text-white' : 'text-gray-400 group-hover:text-purple-400'
-              )}
-            />
+          <div style={iconContainerStyle}>
+            <Icon style={iconStyle} />
           </div>
 
           {/* Text */}
-          <div className="space-y-1">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <p
-              className={cx(
-                'text-sm font-semibold transition-colors duration-300',
-                isDragOver ? 'text-purple-300' : 'text-gray-300 group-hover:text-purple-300'
-              )}
+              style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: isDragOver ? '#d8b4fe' : '#d1d5db',
+                transition: 'color 300ms',
+                margin: 0,
+              }}
             >
               {isDragOver ? 'Drop your file here' : 'Click to upload'}
             </p>
-            <p className="text-xs text-gray-500">or drag and drop</p>
+            <p
+              style={{
+                fontSize: '12px',
+                color: '#6b7280',
+                margin: 0,
+              }}
+            >
+              or drag and drop
+            </p>
           </div>
 
           {/* File info */}
           {(accept || maxSize) && (
-            <div className="pt-2 text-xs text-gray-600 space-y-1">
+            <div
+              style={{
+                paddingTop: '8px',
+                fontSize: '12px',
+                color: '#4b5563',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+              }}
+            >
               {accept && <div>{accept.includes('video') ? 'Video files' : accept}</div>}
               {maxSize && (
                 <div>
                   Max size:{' '}
-                  <span className="text-purple-400 font-medium">
+                  <span style={{ color: '#c084fc', fontWeight: 500 }}>
                     {(maxSize / (1024 * 1024)).toFixed(0)}MB
                   </span>
                 </div>
@@ -204,11 +263,16 @@ export function DragDropZone({
 
         {/* Animated gradient border */}
         <div
-          className={cx(
-            'absolute inset-0 rounded-2xl transition-opacity duration-300 pointer-events-none',
-            'bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20',
-            isDragOver ? 'opacity-100' : 'opacity-0'
-          )}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '16px',
+            background:
+              'linear-gradient(to right, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2))',
+            opacity: isDragOver ? 1 : 0,
+            transition: 'opacity 300ms',
+            pointerEvents: 'none',
+          }}
         />
       </div>
     </div>

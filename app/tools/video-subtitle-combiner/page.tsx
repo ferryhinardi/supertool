@@ -64,19 +64,31 @@ export default function VideoSubtitleCombinerPage() {
   useEffect(() => {
     const checkServer = async () => {
       try {
+        console.log('🔵 Checking server status...')
         const response = await fetch('/api/video-subtitle')
+        console.log('🔵 Response status:', response.status, response.ok)
+
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status}`)
+        }
+
         const data = await response.json()
+        console.log('🔵 Server response:', data)
 
         if (data.status === 'ok') {
-          setServerStatus({ status: 'ready', message: 'Server ready for processing' })
+          setServerStatus({
+            status: 'ready',
+            message: `Server ready - FFmpeg ${data.version?.split(' ')[2] || 'installed'}`,
+          })
           toast.success('Server is ready for video processing')
         } else {
-          setServerStatus({ status: 'error', message: 'Server is not ready' })
-          toast.error('Server is not available. Please try again later.')
+          setServerStatus({ status: 'error', message: data.error || 'Server is not ready' })
+          toast.error(`Server error: ${data.error || 'Not available'}`)
         }
       } catch (error) {
+        console.error('❌ Server check failed:', error)
         setServerStatus({ status: 'error', message: 'Failed to connect to server' })
-        toast.error('Failed to connect to processing server')
+        toast.error('Failed to connect to processing server. Please check if server is running.')
       }
     }
 
