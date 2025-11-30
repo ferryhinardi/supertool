@@ -245,7 +245,7 @@ export async function GET() {
     // Check if FFmpeg binary exists
     try {
       await access(FFMPEG_PATH)
-    } catch (accessError) {
+    } catch (_accessError) {
       return NextResponse.json(
         {
           status: 'error',
