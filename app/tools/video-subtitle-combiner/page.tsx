@@ -40,6 +40,12 @@ interface ProcessingFile {
   outputSize?: number
 }
 
+interface QueuedVideo {
+  id: string
+  file: File
+  preview: string
+}
+
 interface ServerStatus {
   status: 'checking' | 'ready' | 'error'
   message?: string
@@ -54,11 +60,22 @@ export default function VideoSubtitleCombinerPage() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [serverStatus, setServerStatus] = useState<ServerStatus>({ status: 'checking' })
 
+  // Batch processing
+  const [enableBatch, _setEnableBatch] = useState(false)
+  const [_videoQueue, setVideoQueue] = useState<QueuedVideo[]>([])
+  const [_currentBatchIndex, _setCurrentBatchIndex] = useState(0)
+
   // Compression options
   const [enableCompression, setEnableCompression] = useState(false)
   const [isCompressing, setIsCompressing] = useState(false)
   const [compressionProgress, setCompressionProgress] = useState(0)
   const compressionSupported = isCompressionSupported()
+
+  // Chunked upload options
+  const [_useChunkedUpload, _setUseChunkedUpload] = useState(false)
+  const [_isUploading, _setIsUploading] = useState(false)
+  const [_uploadProgress, _setUploadProgress] = useState(0)
+  const [_uploadedBytes, _setUploadedBytes] = useState(0)
 
   // Video trimming options
   const [enableTrim, setEnableTrim] = useState(false)
@@ -71,6 +88,10 @@ export default function VideoSubtitleCombinerPage() {
   const [brightness, setBrightness] = useState(1.0) // 0.0 to 2.0
   const [contrast, setContrast] = useState(1.0) // 0.0 to 2.0
   const [saturation, setSaturation] = useState(1.0) // 0.0 to 3.0
+
+  // Preview options
+  const [showPreview, _setShowPreview] = useState(true)
+  const [previewWithFilters, setPreviewWithFilters] = useState(true)
 
   // Subtitle styling options
   const [fontSize, setFontSize] = useState(24)
@@ -134,6 +155,41 @@ export default function VideoSubtitleCombinerPage() {
   }, [])
 
   const handleVideoSelect = async (files: FileList) => {
+    if (enableBatch) {
+      // Batch mode: add all files to queue
+      const validFiles: QueuedVideo[] = []
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        if (!file.type.startsWith('video/')) {
+          toast.error(`Skipping ${file.name}: not a video file`)
+          continue
+        }
+
+        if (file.size > MAX_VIDEO_SIZE) {
+          toast.error(`Skipping ${file.name}: exceeds ${formatBytes(MAX_VIDEO_SIZE)} limit`)
+          continue
+        }
+
+        validFiles.push({
+          id: `${Date.now()}-${i}`,
+          file,
+          preview: URL.createObjectURL(file),
+        })
+      }
+
+      setVideoQueue((prev) => [...prev, ...validFiles])
+      toast.success(`Added ${validFiles.length} video(s) to queue`)
+
+      trackEvent({
+        action: 'batch_videos_added',
+        category: 'video_subtitle_combiner',
+        label: `${validFiles.length}_videos`,
+      })
+      return
+    }
+
+    // Single file mode
     const file = files[0]
     if (!file || !file.type.startsWith('video/')) {
       toast.error('Please select a valid video file')
@@ -418,6 +474,14 @@ export default function VideoSubtitleCombinerPage() {
     return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`
   }
 
+  const getFilterStyles = () => {
+    if (!enableFilters || !previewWithFilters) return {}
+
+    return {
+      filter: `brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`,
+    }
+  }
+
   const canProcess = videoFile && subtitleFile && !isProcessing && serverStatus.status === 'ready'
 
   return (
@@ -596,6 +660,56 @@ export default function VideoSubtitleCombinerPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* Video Preview */}
+          {videoFile && showPreview && (
+            <Card>
+              <CardHeader>
+                <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <Play className={css({ h: '5', w: '5', color: 'green.400' })} />
+                  Video Preview
+                </CardTitle>
+                <CardDescription>Preview with filters applied</CardDescription>
+              </CardHeader>
+              <CardContent className={css({ spaceY: '3' })}>
+                {/* biome-ignore lint/a11y/useMediaCaption: preview video, no captions needed */}
+                <video
+                  src={URL.createObjectURL(videoFile)}
+                  controls
+                  style={getFilterStyles()}
+                  className={css({
+                    w: 'full',
+                    rounded: 'md',
+                    bg: 'black',
+                    maxH: '400px',
+                    transition: 'filter 0.3s ease',
+                  })}
+                />
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  })}
+                >
+                  <label
+                    htmlFor="preview-filters"
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  >
+                    Show Filter Preview
+                  </label>
+                  <input
+                    id="preview-filters"
+                    type="checkbox"
+                    checked={previewWithFilters}
+                    onChange={(e) => setPreviewWithFilters(e.target.checked)}
+                    className={css({ w: '4', h: '4', cursor: 'pointer' })}
+                    disabled={!enableFilters}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Process Button */}
           <Button
