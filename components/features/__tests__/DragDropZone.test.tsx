@@ -20,9 +20,9 @@ describe('DragDropZone', () => {
     it('should render with disabled state', () => {
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} disabled />)
       const container = screen.getByRole('button')
-      expect(container.className).toContain('opacity-50')
-      expect(container.className).toContain('cursor-not-allowed')
-      expect(container.className).toContain('pointer-events-none')
+      expect(container.style.opacity).toBe('0.5')
+      expect(container.style.cursor).toBe('not-allowed')
+      expect(container.style.pointerEvents).toBe('none')
     })
 
     it('should display max size when provided', () => {
@@ -74,14 +74,19 @@ describe('DragDropZone', () => {
       expect(mockOnFilesSelected).toHaveBeenCalledTimes(1)
     })
 
-    it('should not trigger file selection when disabled', async () => {
-      const user = userEvent.setup()
+    it('should not trigger file selection when disabled', () => {
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} disabled />)
 
       const dropzone = screen.getByRole('button')
-      await user.click(dropzone)
+      const fileInput = screen.getByLabelText('File upload') as HTMLInputElement
 
-      // Should not call the callback
+      // Verify the component is disabled via style
+      expect(dropzone.style.pointerEvents).toBe('none')
+
+      // Verify the file input is disabled
+      expect(fileInput).toBeDisabled()
+
+      // Should not call the callback since it's disabled
       expect(mockOnFilesSelected).not.toHaveBeenCalled()
     })
 

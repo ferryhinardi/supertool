@@ -164,6 +164,7 @@ export function DragDropZone({
         style={{ display: 'none' }}
         id={inputId}
         aria-label="File upload"
+        disabled={disabled}
       />
 
       <div style={boxStyle}>
