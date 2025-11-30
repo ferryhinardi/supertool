@@ -59,6 +59,217 @@ pnpm build             # Production build check (runs Panda codegen first)
 
 **Prettier**: No semicolons, single quotes, 100-char line width, 2-space indentation (see `.prettierrc`).
 
+### CI/CD Pipeline Debugging
+
+**CRITICAL**: Always verify CI checks pass before pushing to ensure deployment succeeds.
+
+#### GitHub Actions CI Workflow
+
+The CI pipeline runs 3 parallel jobs (see `.github/workflows/ci.yml`):
+
+1. **Lint & Type Check** - Code quality validation
+2. **Unit & Integration Tests** - Test suite execution  
+3. **Build** - Production build verification
+
+#### Local CI Verification (Run Before Pushing)
+
+**Run these commands locally to catch issues before CI:**
+
+```bash
+# 1. Lint Check (matches CI lint job)
+pnpm lint
+# Expected: "Checked X files. No fixes applied." or "Found X warnings"
+# Warnings are non-blocking (continue-on-error: true)
+
+# 2. Type Check (matches CI type check)
+pnpm exec tsc --noEmit
+# Expected: No output = success
+# Any "error TS" output = failure
+
+# 3. Build Check (matches CI build job)
+pnpm build
+# Expected: "✓ Compiled successfully" and route table
+# Watch for: Build errors, FFmpeg accessibility, route generation
+
+# 4. Test Suite (matches CI test job - OPTIONAL)
+CI=true pnpm test run
+# Expected: "X passed" with no failures
+# First time: Run `pnpm exec playwright install chromium`
+```
+
+#### Debugging Build Failures
+
+**Common build issues and solutions:**
+
+1. **TypeScript Errors**
+   ```bash
+   # Check for type errors
+   pnpm exec tsc --noEmit
+   
+   # Common fixes:
+   # - Add missing type imports
+   # - Fix unused variables (prefix with _)
+   # - Remove `any` types
+   # - Add proper return types
+   ```
+
+2. **Lint Warnings**
+   ```bash
+   # Run lint with auto-fix
+   pnpm lint
+   
+   # Common fixes:
+   # - Unused variables: prefix with _ (e.g., _accessError)
+   # - Array index keys: use unique IDs instead
+   # - Non-null assertions: add proper null checks
+   # - Optional chain: use ?. instead of && checks
+   ```
+
+3. **Build Errors**
+   ```bash
+   # Clean build and retry
+   rm -rf .next
+   pnpm build
+   
+   # Common issues:
+   # - Invalid gridTemplateColumns (use '1fr' not '1')
+   # - Missing imports or components
+   # - Server component using client hooks
+   # - Invalid Panda CSS syntax
+   ```
+
+4. **FFmpeg/Binary Dependencies**
+   ```bash
+   # Verify FFmpeg is accessible
+   pnpm build 2>&1 | grep -i ffmpeg
+   
+   # Should see: "✅ FFmpeg binary accessible at: [path]"
+   # Check next.config.ts has: serverExternalPackages: ['ffmpeg-static']
+   ```
+
+#### Checking CI Status on GitHub
+
+**Using GitHub CLI (`gh`):**
+
+```bash
+# View latest CI run status
+gh run list --limit 1
+
+# Watch current CI run
+gh run watch
+
+# View specific run details
+gh run view [RUN_ID]
+
+# Check job status with JSON output
+gh run view [RUN_ID] --json conclusion,status,jobs
+
+# View failed job logs
+gh run view --job=[JOB_ID] --log-failed
+```
+
+**Expected successful output:**
+```json
+{
+  "conclusion": "success",
+  "status": "completed",
+  "jobs": [
+    {"name": "Lint & Type Check", "conclusion": "success"},
+    {"name": "Unit & Integration Tests", "conclusion": "success"},
+    {"name": "Build", "conclusion": "success"}
+  ]
+}
+```
+
+**Using GitHub Web UI:**
+
+1. Go to repository → **Actions** tab
+2. Click on latest workflow run
+3. Verify all 3 jobs show green checkmarks ✓
+4. Check individual job logs for errors/warnings
+
+**CI Status Badges:**
+- ✓ Green = All checks passed
+- ✗ Red = At least one check failed
+- ○ Yellow/Orange = In progress
+
+#### CI Pipeline Expected Results
+
+**Lint & Type Check Job (≈1-2 minutes):**
+```
+✓ Approve build scripts for ffmpeg-static
+✓ Install dependencies
+✓ Run ESLint (warnings allowed)
+✓ Type check (no errors)
+```
+
+**Unit & Integration Tests Job (≈3-4 minutes):**
+```
+✓ Install dependencies
+✓ Install Playwright browsers
+✓ Run unit tests
+  - Test Files: 100+ passed
+  - Tests: 2500+ passed
+✓ Run tests with coverage
+✓ Upload coverage reports (may warn if Codecov token missing)
+```
+
+**Build Job (≈2-3 minutes):**
+```
+✓ Install dependencies
+✓ Build project
+  - Compiled successfully
+  - Static pages generated (100+)
+  - FFmpeg binary accessible
+✓ Upload build artifacts
+```
+
+#### Common CI Failures and Fixes
+
+| Failure | Cause | Solution |
+|---------|-------|----------|
+| Type check fails | TypeScript errors | Run `tsc --noEmit` locally, fix type errors |
+| Build fails | Invalid syntax/imports | Run `pnpm build` locally, check error output |
+| Tests timeout | Infinite loops/hangs | Check test files for async issues, add timeouts |
+| FFmpeg not found | Missing serverExternalPackages | Add to `next.config.ts` and `vercel.json` |
+| Out of memory | Large builds | Reduce bundle size or increase Vercel memory in `vercel.json` |
+
+#### Pre-Push Checklist
+
+Before pushing code, ensure:
+
+- [ ] `pnpm lint` runs without errors (warnings OK)
+- [ ] `pnpm exec tsc --noEmit` shows no type errors
+- [ ] `pnpm build` completes successfully
+- [ ] All new/modified tests pass with `CI=true pnpm test run`
+- [ ] Husky pre-commit hooks pass (runs automatically on `git commit`)
+- [ ] CI workflow file (`.github/workflows/ci.yml`) is not modified unless intentional
+
+**Quick CI Pre-flight Script:**
+```bash
+# Run all CI checks locally
+pnpm lint && \
+pnpm exec tsc --noEmit && \
+pnpm build && \
+echo "✅ All CI checks passed locally!"
+```
+
+#### Troubleshooting CI on Vercel/Deployment
+
+If CI passes but deployment fails:
+
+1. **Check environment variables** - Ensure `NEXT_PUBLIC_*` vars are set in Vercel
+2. **Check build logs** - Vercel dashboard → Deployments → View build logs
+3. **Verify vercel.json** - Function timeout and memory limits
+4. **Check serverExternalPackages** - Native binaries require special handling
+5. **Test production build locally** - `pnpm build && pnpm start`
+
+For production issues, check:
+- Vercel function logs for runtime errors
+- Browser console for client-side errors  
+- Network tab for API failures
+- Supabase logs for database issues
+
 ### Development
 
 ```bash
