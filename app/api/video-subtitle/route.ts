@@ -14,19 +14,32 @@ async function getFFmpegPath(): Promise<string> {
   if (FFMPEG_PATH) return FFMPEG_PATH
 
   try {
-    // Use dynamic import to avoid bundling issues
-    const ffmpegStatic = await import('ffmpeg-static')
-    FFMPEG_PATH = ffmpegStatic.default || ''
+    // In production (Vercel), use bundled Linux binary from /var/task/bin/ffmpeg
+    // In development, try to use local ffmpeg-static or system ffmpeg
+    if (process.env.NODE_ENV === 'production') {
+      // Vercel deploys to /var/task
+      FFMPEG_PATH = '/var/task/bin/ffmpeg'
+      console.log('🚀 Using bundled FFmpeg binary for production:', FFMPEG_PATH)
+    } else {
+      // Development: try ffmpeg-static first, fallback to system ffmpeg
+      try {
+        const ffmpegStatic = await import('ffmpeg-static')
+        FFMPEG_PATH = ffmpegStatic.default || ''
+        console.log('💻 Using ffmpeg-static for development:', FFMPEG_PATH)
+      } catch {
+        // Fallback to system ffmpeg (brew install ffmpeg)
+        FFMPEG_PATH = 'ffmpeg'
+        console.log('💻 Using system FFmpeg for development')
+      }
+    }
 
     if (!FFMPEG_PATH) {
       throw new Error('FFmpeg path is empty')
     }
 
-    console.log('✅ FFmpeg loaded at:', FFMPEG_PATH)
-
-    // Validate the binary exists
+    // Validate the binary exists and is executable
     await access(FFMPEG_PATH)
-    console.log('✅ FFmpeg binary verified')
+    console.log('✅ FFmpeg binary verified at:', FFMPEG_PATH)
 
     return FFMPEG_PATH
   } catch (error) {
