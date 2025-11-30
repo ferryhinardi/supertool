@@ -31,11 +31,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { useTrackToolView } from '@/hooks/useRecentTools'
 import { useToolHistory } from '@/hooks/useToolHistory'
 import { trackToolEvent } from '@/lib/analytics'
@@ -573,6 +575,16 @@ function JSONBeautifyContent() {
     })
   }
 
+  const handleReset = () => {
+    setValue('')
+    setSchema('')
+    setSchemaErrors([])
+    setSearchQuery('')
+    setSearchResults([])
+    setSortKeys(false)
+    toast.success('Cleared all data')
+  }
+
   // Validate schema
   const validateSchema = async () => {
     try {
@@ -753,6 +765,18 @@ function JSONBeautifyContent() {
     toast.success('History item loaded')
     trackToolEvent('json_history_load', { action: item.action })
   }
+
+  // Keyboard shortcuts
+  const { shortcuts, showHelp, setShowHelp } = useKeyboardShortcuts(
+    {
+      onExecute: handleBeautify,
+      onCopy: handleCopy,
+      onSave: handleDownload,
+      onReset: handleReset,
+      onEscape: handleReset,
+    },
+    { allowInInputs: false }
+  )
 
   return (
     <TooltipProvider>
@@ -2557,6 +2581,14 @@ function JSONBeautifyContent() {
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
         <ToolSearch />
+
+        {/* Keyboard Shortcuts Help Dialog */}
+        <KeyboardShortcutsDialog
+          open={showHelp}
+          onOpenChange={setShowHelp}
+          shortcuts={shortcuts}
+          toolName="JSON Beautifier"
+        />
       </main>
     </TooltipProvider>
   )

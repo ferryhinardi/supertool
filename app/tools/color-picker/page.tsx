@@ -16,7 +16,9 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -337,6 +339,23 @@ function ColorPickerContent() {
     toast.success('Palette copied!')
     trackToolEvent('color_picker_copy_palette', { type: paletteType })
   }
+
+  const handleReset = () => {
+    setColor('#6366F1')
+    setPalette(['#6366F1', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981'])
+    toast.success('Reset to default')
+  }
+
+  // Keyboard shortcuts
+  const { shortcuts, showHelp, setShowHelp } = useKeyboardShortcuts(
+    {
+      onExecute: handleRandomColor,
+      onCopy: () => handleCopyColor(color, 'HEX'),
+      onReset: handleReset,
+      onEscape: handleReset,
+    },
+    { allowInInputs: false }
+  )
 
   return (
     <main
@@ -1040,8 +1059,15 @@ function ColorPickerContent() {
       </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
-
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={shortcuts}
+        toolName="Color Picker"
+      />
     </main>
   )
 }

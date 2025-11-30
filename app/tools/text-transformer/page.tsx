@@ -28,11 +28,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { trackEvent, trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -472,6 +474,17 @@ function TextTransformerContent() {
     selectedCategory === 'all'
       ? transformButtons
       : transformButtons.filter((btn) => btn.category === selectedCategory)
+
+  // Keyboard shortcuts
+  const { shortcuts, showHelp, setShowHelp } = useKeyboardShortcuts(
+    {
+      onCopy: handleCopy,
+      onSave: handleDownload,
+      onReset: handleReset,
+      onEscape: handleReset,
+    },
+    { allowInInputs: false }
+  )
 
   return (
     <main
@@ -1475,6 +1488,14 @@ function TextTransformerContent() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={shortcuts}
+        toolName="Text Transformer"
+      />
     </main>
   )
 }
