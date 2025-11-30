@@ -20,11 +20,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
@@ -166,6 +168,45 @@ export default function HashGeneratorPage() {
     setShowHistory(false)
     toast.success('Loaded from history')
     trackEvent({ action: 'history_loaded', category: 'hash_generator' })
+  }
+
+  const handleReset = () => {
+    setInput('')
+    setHashes({
+      MD5: '',
+      'SHA-1': '',
+      'SHA-256': '',
+      'SHA-384': '',
+      'SHA-512': '',
+    })
+    setCompareHash('')
+    setCompareResult(null)
+    toast.success('Form cleared')
+    trackEvent({ action: 'form_reset', category: 'hash_generator' })
+  }
+
+  const handleCopyAll = () => {
+    const allHashes = Object.entries(hashes)
+      .filter(([_, hash]) => hash)
+      .map(([algo, hash]) => `${algo}: ${hash}`)
+      .join('\n')
+
+    if (allHashes) {
+      navigator.clipboard.writeText(allHashes)
+      toast.success('All hashes copied to clipboard!')
+      trackEvent({ action: 'all_hashes_copied', category: 'hash_generator' })
+    } else {
+      toast.error('No hashes to copy')
+    }
+  }
+
+  const toggleHistory = () => {
+    setShowHistory(!showHistory)
+    trackEvent({
+      action: 'history_toggled',
+      category: 'hash_generator',
+      value: showHistory ? 0 : 1,
+    })
   }
 
   const generateHashes = async () => {
@@ -410,6 +451,18 @@ export default function HashGeneratorPage() {
     setCompareResult(match)
     toast.success(match ? 'Hashes match!' : 'Hashes do not match')
   }
+
+  // Keyboard shortcuts - setup after all functions are defined
+  const { shortcuts, showHelp, setShowHelp } = useKeyboardShortcuts(
+    {
+      onExecute: generateHashes,
+      onReset: handleReset,
+      onCopy: handleCopyAll,
+      onHistory: toggleHistory,
+      onEscape: handleReset,
+    },
+    { allowInInputs: false }
+  )
 
   return (
     <main
@@ -1245,8 +1298,15 @@ export default function HashGeneratorPage() {
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
-
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={shortcuts}
+        toolName="Hash Generator"
+      />
     </main>
   )
 }
