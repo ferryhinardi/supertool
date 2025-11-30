@@ -1,11 +1,15 @@
-import { exec } from 'node:child_process'
+import { execFile } from 'node:child_process'
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { promisify } from 'node:util'
+import ffmpegPath from '@ffmpeg-installer/ffmpeg'
 import { type NextRequest, NextResponse } from 'next/server'
 
-const execAsync = promisify(exec)
+const execFileAsync = promisify(execFile)
+
+// Get FFmpeg binary path (works in both development and Vercel)
+const FFMPEG_PATH = ffmpegPath.path
 
 // Maximum file size: 500MB
 const MAX_FILE_SIZE = 500 * 1024 * 1024
@@ -78,14 +82,14 @@ export async function POST(request: NextRequest) {
     await writeFile(inputVideoPath, videoBuffer)
     await writeFile(inputSubtitlePath, subtitleBuffer)
 
-    // Check if FFmpeg is installed
+    // Check if FFmpeg is available
     try {
-      await execAsync('ffmpeg -version')
+      await execFileAsync(FFMPEG_PATH, ['-version'])
     } catch (_error) {
       return NextResponse.json(
         {
           error:
-            'FFmpeg is not installed on the server. Please install FFmpeg to use this feature.',
+            'FFmpeg is not available on the server. Please check the deployment configuration.',
         },
         { status: 500 }
       )
@@ -115,13 +119,9 @@ export async function POST(request: NextRequest) {
     ]
 
     // Execute FFmpeg command
-    console.log('Executing FFmpeg with args:', ['ffmpeg', ...ffmpegArgs].join(' '))
+    console.log('Executing FFmpeg with args:', [FFMPEG_PATH, ...ffmpegArgs].join(' '))
 
-    // Use spawn instead of exec for better control
-    const { execFile } = await import('node:child_process')
-    const execFileAsync = promisify(execFile)
-
-    const { stdout, stderr } = await execFileAsync('ffmpeg', ffmpegArgs, {
+    const { stdout, stderr } = await execFileAsync(FFMPEG_PATH, ffmpegArgs, {
       maxBuffer: 10 * 1024 * 1024, // 10MB buffer for output
     })
 
@@ -207,9 +207,22 @@ function buildFFmpegFilters(subtitlePath: string, options: SubtitleOptions): str
 // Health check endpoint
 export async function GET() {
   try {
-    await execAsync('ffmpeg -version')
-    return NextResponse.json({ status: 'ok', ffmpeg: 'installed' })
+    const { stdout } = await execFileAsync(FFMPEG_PATH, ['-version'])
+    const version = stdout.split('\n')[0]
+    return NextResponse.json({
+      status: 'ok',
+      ffmpeg: 'installed',
+      version,
+      path: FFMPEG_PATH,
+    })
   } catch (_error) {
-    return NextResponse.json({ status: 'error', ffmpeg: 'not installed' }, { status: 500 })
+    return NextResponse.json(
+      {
+        status: 'error',
+        ffmpeg: 'not installed',
+        error: _error instanceof Error ? _error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
   }
 }
