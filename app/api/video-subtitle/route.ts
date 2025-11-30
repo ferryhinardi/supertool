@@ -3,15 +3,17 @@ import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { promisify } from 'node:util'
-import ffmpegPath from 'ffmpeg-static'
+import ffmpeg from '@ffmpeg-installer/ffmpeg'
 import { type NextRequest, NextResponse } from 'next/server'
 
 const execFileAsync = promisify(execFile)
 
 // Get FFmpeg binary path (works in both development and Vercel)
-// In development with Turbopack, the path has /ROOT/ placeholder
+// @ffmpeg-installer/ffmpeg provides the correct path for serverless environments
+let FFMPEG_PATH = ffmpeg.path
+
+// In development with Turbopack, the path might have /ROOT/ placeholder
 // Replace /ROOT with parent directory of cwd
-let FFMPEG_PATH = ffmpegPath as string
 if (FFMPEG_PATH?.includes('/ROOT/')) {
   // Get parent of parent directory (/Users/ferryhinardi from /Users/ferryhinardi/Project/supertool)
   const parentDir = resolve(process.cwd(), '../..')
