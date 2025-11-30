@@ -11,12 +11,10 @@ import {
   Play,
   Settings,
   Sparkles,
-  Subtitles,
   Trash2,
-  Video,
   Zap,
 } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
@@ -65,10 +63,14 @@ export default function VideoSubtitleCombinerPage() {
     const checkServer = async () => {
       try {
         console.log('🔵 Checking server status...')
-        const response = await fetch('/api/video-subtitle')
+        const response = await fetch('/api/video-subtitle', {
+          cache: 'no-store',
+        })
         console.log('🔵 Response status:', response.status, response.ok)
 
         if (!response.ok) {
+          const errorText = await response.text().catch(() => 'Unknown error')
+          console.error('❌ Server error response:', errorText)
           throw new Error(`Server returned ${response.status}`)
         }
 
@@ -87,18 +89,27 @@ export default function VideoSubtitleCombinerPage() {
         }
       } catch (error) {
         console.error('❌ Server check failed:', error)
-        setServerStatus({ status: 'error', message: 'Failed to connect to server' })
-        toast.error('Failed to connect to processing server. Please check if server is running.')
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+        setServerStatus({
+          status: 'error',
+          message: `Failed to connect: ${errorMsg}`,
+        })
+        toast.error(
+          'Failed to connect to processing server. The server may still be starting up. Please wait a moment and refresh the page.'
+        )
       }
     }
 
-    checkServer()
+    // Small delay to ensure API route is compiled in development
+    const timeoutId = setTimeout(checkServer, 500)
 
     trackEvent({
       action: 'page_view',
       category: 'video_subtitle_combiner',
       label: 'tool_opened',
     })
+
+    return () => clearTimeout(timeoutId)
   }, [])
 
   const handleVideoSelect = async (files: FileList) => {
@@ -531,6 +542,7 @@ export default function VideoSubtitleCombinerPage() {
             <CardContent className={css({ spaceY: '4' })}>
               {/* Font Size */}
               <div className={css({ spaceY: '2' })}>
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent range input */}
                 <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
                   Font Size: {fontSize}px
                 </label>
@@ -546,6 +558,7 @@ export default function VideoSubtitleCombinerPage() {
 
               {/* Font Color */}
               <div className={css({ spaceY: '2' })}>
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent color input */}
                 <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
                   Font Color
                 </label>
@@ -559,6 +572,7 @@ export default function VideoSubtitleCombinerPage() {
 
               {/* Background Color */}
               <div className={css({ spaceY: '2' })}>
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent color input */}
                 <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
                   Background Color
                 </label>
@@ -572,6 +586,7 @@ export default function VideoSubtitleCombinerPage() {
 
               {/* Background Opacity */}
               <div className={css({ spaceY: '2' })}>
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent range input */}
                 <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
                   Background Opacity: {Math.round(backgroundOpacity * 100)}%
                 </label>
@@ -588,6 +603,7 @@ export default function VideoSubtitleCombinerPage() {
 
               {/* Position */}
               <div className={css({ spaceY: '2' })}>
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes position button group below */}
                 <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
                   Position
                 </label>
@@ -656,6 +672,7 @@ export default function VideoSubtitleCombinerPage() {
               <Card key={file.id}>
                 <CardContent className={css({ p: '4', spaceY: '3' })}>
                   {/* Video Preview */}
+                  {/* biome-ignore lint/a11y/useMediaCaption: preview video, captions will be burned into output */}
                   <video
                     src={file.videoPreview}
                     controls
