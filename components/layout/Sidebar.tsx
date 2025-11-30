@@ -544,7 +544,7 @@ function AuthSection() {
     )
   }
 
-  if (user && profile) {
+  if (user) {
     return (
       <div
         className={css({
@@ -583,10 +583,10 @@ function AuthSection() {
               color: 'white',
             })}
           >
-            {profile.avatar_url ? (
+            {profile?.avatar_url ? (
               <img
                 src={profile.avatar_url}
-                alt={profile.display_name || 'User'}
+                alt={profile.display_name || user.email || 'User'}
                 className={css({ w: '10', h: '10', rounded: 'full' })}
               />
             ) : (
@@ -602,7 +602,7 @@ function AuthSection() {
                 truncate: true,
               })}
             >
-              {profile.display_name || 'User'}
+              {profile?.display_name || user.email || 'User'}
             </p>
             <p
               className={css({
@@ -611,7 +611,7 @@ function AuthSection() {
                 truncate: true,
               })}
             >
-              {profile.email}
+              {profile?.email || user.email}
             </p>
           </div>
         </div>
