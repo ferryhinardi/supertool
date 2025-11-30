@@ -3,13 +3,14 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { promisify } from 'node:util'
-import ffmpegPath from '@ffmpeg-installer/ffmpeg'
+import ffmpegPath from 'ffmpeg-static'
 import { type NextRequest, NextResponse } from 'next/server'
 
 const execFileAsync = promisify(execFile)
 
 // Get FFmpeg binary path (works in both development and Vercel)
-const FFMPEG_PATH = ffmpegPath.path
+// ffmpeg-static returns a string path directly
+const FFMPEG_PATH = ffmpegPath as string
 
 // Maximum file size: 500MB
 const MAX_FILE_SIZE = 500 * 1024 * 1024

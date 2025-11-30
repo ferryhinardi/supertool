@@ -4,7 +4,7 @@
 
 ### 1. Installed FFmpeg Package
 ```bash
-pnpm add @ffmpeg-installer/ffmpeg
+pnpm add ffmpeg-static
 ```
 
 This package provides **pre-built FFmpeg binaries** for all platforms:
@@ -18,11 +18,18 @@ This package provides **pre-built FFmpeg binaries** for all platforms:
 **File**: `app/api/video-subtitle/route.ts`
 
 **Changes**:
-- Import static FFmpeg binary: `import ffmpegPath from '@ffmpeg-installer/ffmpeg'`
+- Import static FFmpeg binary: `import ffmpegPath from 'ffmpeg-static'`
 - Use `execFileAsync(FFMPEG_PATH, [args])` instead of `execAsync('ffmpeg ...')`
 - Update health endpoint to show FFmpeg version and path
+- Type assertion: `const FFMPEG_PATH = ffmpegPath as string`
 
-**Result**: FFmpeg now works on Vercel without any system installation!
+**Result**: FFmpeg 6.0 now works on Vercel without any system installation!
+
+**Why ffmpeg-static?**:
+- ✅ Compatible with Next.js 15 + Turbopack
+- ✅ Simple default export (string path)
+- ✅ No dynamic requires
+- ✅ Latest FFmpeg 6.0
 
 ---
 
@@ -45,8 +52,8 @@ curl https://your-app.vercel.app/api/video-subtitle
 {
   "status": "ok",
   "ffmpeg": "installed",
-  "version": "ffmpeg version 4.4 Copyright (c) 2000-2021 the FFmpeg developers",
-  "path": "/var/task/node_modules/@ffmpeg-installer/linux-x64/ffmpeg"
+  "version": "ffmpeg version 6.0 Copyright (c) 2000-2023 the FFmpeg developers",
+  "path": "/var/task/node_modules/ffmpeg-static/ffmpeg"
 }
 ```
 
@@ -135,10 +142,14 @@ Look for:
 **Fix**:
 ```bash
 # Verify package is installed
-pnpm list @ffmpeg-installer/ffmpeg
+pnpm list ffmpeg-static
 
 # Reinstall if needed
-pnpm add @ffmpeg-installer/ffmpeg
+pnpm add ffmpeg-static
+
+# Ensure build scripts are approved (for binary download)
+pnpm approve-builds ffmpeg-static
+pnpm install
 
 # Redeploy
 git commit --allow-empty -m "Redeploy with FFmpeg"

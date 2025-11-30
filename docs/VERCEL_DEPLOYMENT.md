@@ -2,15 +2,16 @@
 
 ## ✅ FFmpeg Setup (Completed)
 
-The Video Subtitle Combiner tool now uses `@ffmpeg-installer/ffmpeg` which includes pre-built FFmpeg binaries that work on Vercel's serverless infrastructure.
+The Video Subtitle Combiner tool now uses `ffmpeg-static` which includes pre-built FFmpeg binaries that work on Vercel's serverless infrastructure.
 
 ### What was changed:
 
-1. **Added Package**: `@ffmpeg-installer/ffmpeg` (1.1.0)
+1. **Added Package**: `ffmpeg-static` (5.3.0) - Compatible with Next.js 15 + Turbopack
 2. **Updated API Route**: `/app/api/video-subtitle/route.ts`
    - Uses static FFmpeg binary instead of system FFmpeg
    - Works on Vercel, AWS Lambda, and local development
    - No additional configuration needed
+   - FFmpeg 6.0 (latest stable)
 
 ### Deployment Steps:
 
@@ -44,13 +45,15 @@ curl https://your-app.vercel.app/api/video-subtitle
 
 ### Platform-Specific Binaries:
 
-The package includes binaries for:
-- **Linux x64** (Vercel, AWS Lambda)
-- **macOS ARM64** (M1/M2 Macs)
-- **macOS x64** (Intel Macs)
-- **Windows x64**
+The `ffmpeg-static` package includes binaries for:
+- **Linux x64** (Vercel, AWS Lambda) - 43MB
+- **macOS ARM64** (M1/M2 Macs) - 43MB
+- **macOS x64** (Intel Macs) - 43MB
+- **Windows x64** - 43MB
 
 Vercel automatically selects the correct binary based on the deployment platform.
+
+**Note**: Build scripts must be approved in CI/CD for the binary to download correctly.
 
 ---
 
