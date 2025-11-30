@@ -72,16 +72,11 @@ export function DragDropZone({
     [onFilesSelected]
   )
 
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
-      if (!disabled && inputRef.current) {
-        inputRef.current.click()
-      }
-    },
-    [disabled]
-  )
+  const handleClick = useCallback(() => {
+    if (!disabled && inputRef.current) {
+      inputRef.current.click()
+    }
+  }, [disabled])
 
   // Determine icon based on accept type
   const getIcon = () => {
@@ -112,6 +107,7 @@ export function DragDropZone({
     borderColor: isDragOver ? '#a855f7' : 'rgba(55, 65, 81, 0.5)',
     backgroundColor: isDragOver ? 'rgba(168, 85, 247, 0.1)' : 'rgba(17, 24, 39, 0.4)',
     transform: isDragOver ? 'scale(1.02)' : 'scale(1)',
+    pointerEvents: 'none',
   }
 
   // Icon container styles
@@ -143,11 +139,9 @@ export function DragDropZone({
       onDrop={handleDrop}
       onClick={handleClick}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if ((e.key === 'Enter' || e.key === ' ') && !disabled && inputRef.current) {
           e.preventDefault()
-          if (!disabled && inputRef.current) {
-            inputRef.current.click()
-          }
+          inputRef.current.click()
         }
       }}
       role="button"
