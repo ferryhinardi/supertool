@@ -1,7 +1,7 @@
 {
   "functions": {
     "app/api/video-subtitle/route.ts": {
-      "maxDuration": 600,
+      "maxDuration": 300,
       "memory": 3008
     }
   }
