@@ -1,38 +1,40 @@
 import { execFile } from 'node:child_process'
 import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { join } from 'node:path'
 import { promisify } from 'node:util'
-import ffmpeg from '@ffmpeg-installer/ffmpeg'
 import { type NextRequest, NextResponse } from 'next/server'
 
 const execFileAsync = promisify(execFile)
 
-// Get FFmpeg binary path (works in both development and Vercel)
-// @ffmpeg-installer/ffmpeg provides the correct path for serverless environments
-let FFMPEG_PATH = ffmpeg.path
+// Get FFmpeg binary path with proper dynamic import for Vercel
+let FFMPEG_PATH: string | null = null
 
-// In development with Turbopack, the path might have /ROOT/ placeholder
-// Replace /ROOT with parent directory of cwd
-if (FFMPEG_PATH?.includes('/ROOT/')) {
-  // Get parent of parent directory (/Users/ferryhinardi from /Users/ferryhinardi/Project/supertool)
-  const parentDir = resolve(process.cwd(), '../..')
-  FFMPEG_PATH = FFMPEG_PATH.replace('/ROOT', parentDir)
-  console.log('🔧 Fixed Turbopack path:', FFMPEG_PATH)
-} else if (FFMPEG_PATH) {
-  FFMPEG_PATH = resolve(FFMPEG_PATH)
-  console.log('✅ Using resolved path:', FFMPEG_PATH)
-}
+async function getFFmpegPath(): Promise<string> {
+  if (FFMPEG_PATH) return FFMPEG_PATH
 
-// Validate FFmpeg path at startup
-if (!FFMPEG_PATH) {
-  console.error('❌ FFmpeg path is empty!')
-} else {
-  // Test if file exists
-  access(FFMPEG_PATH).then(
-    () => console.log('✅ FFmpeg binary accessible at:', FFMPEG_PATH),
-    (err) => console.error('❌ FFmpeg binary not found:', FFMPEG_PATH, err.message)
-  )
+  try {
+    // Use dynamic import to avoid bundling issues
+    const ffmpegStatic = await import('ffmpeg-static')
+    FFMPEG_PATH = ffmpegStatic.default || ''
+
+    if (!FFMPEG_PATH) {
+      throw new Error('FFmpeg path is empty')
+    }
+
+    console.log('✅ FFmpeg loaded at:', FFMPEG_PATH)
+
+    // Validate the binary exists
+    await access(FFMPEG_PATH)
+    console.log('✅ FFmpeg binary verified')
+
+    return FFMPEG_PATH
+  } catch (error) {
+    console.error('❌ Failed to load FFmpeg:', error)
+    throw new Error(
+      `FFmpeg not available: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
+  }
 }
 
 // Maximum file size: 100MB (Vercel Pro plan limit)
@@ -135,14 +137,15 @@ export async function POST(request: NextRequest) {
     await writeFile(inputVideoPath, videoBuffer)
     await writeFile(inputSubtitlePath, subtitleBuffer)
 
-    // Check if FFmpeg is available
+    // Get FFmpeg path and check if it's available
+    let ffmpegPath: string
     try {
-      await execFileAsync(FFMPEG_PATH, ['-version'])
-    } catch (_error) {
+      ffmpegPath = await getFFmpegPath()
+      await execFileAsync(ffmpegPath, ['-version'])
+    } catch (error) {
       return NextResponse.json(
         {
-          error:
-            'FFmpeg is not available on the server. Please check the deployment configuration.',
+          error: `FFmpeg is not available: ${error instanceof Error ? error.message : 'Unknown error'}`,
         },
         { status: 500 }
       )
@@ -183,14 +186,14 @@ export async function POST(request: NextRequest) {
     )
 
     // Execute FFmpeg command with progress tracking
-    console.log('Executing FFmpeg with args:', [FFMPEG_PATH, ...ffmpegArgs].join(' '))
+    console.log('Executing FFmpeg with args:', [ffmpegPath, ...ffmpegArgs].join(' '))
 
     // First, get video duration for progress calculation
     const durationArgs = ['-i', inputVideoPath, '-f', 'null', '-']
     let totalDuration = 0
 
     try {
-      await execFileAsync(FFMPEG_PATH, durationArgs)
+      await execFileAsync(ffmpegPath, durationArgs)
     } catch (durationError: unknown) {
       // FFmpeg outputs duration info to stderr even on "error"
       const stderr = (durationError as { stderr?: string })?.stderr
@@ -204,7 +207,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const { stdout, stderr } = await execFileAsync(FFMPEG_PATH, ffmpegArgs, {
+    const { stdout, stderr } = await execFileAsync(ffmpegPath, ffmpegArgs, {
       maxBuffer: 10 * 1024 * 1024, // 10MB buffer for output
     })
 
@@ -305,52 +308,29 @@ function buildFFmpegFilters(subtitlePath: string, options: SubtitleOptions): str
 // Health check endpoint
 export async function GET() {
   try {
-    // Check if FFMPEG_PATH is set
-    if (!FFMPEG_PATH) {
-      return NextResponse.json(
-        {
-          status: 'error',
-          ffmpeg: 'not configured',
-          error: 'FFmpeg path is not set. Check ffmpeg-static installation.',
-          environment: process.env.NODE_ENV,
-        },
-        { status: 500 }
-      )
-    }
+    // Try to load FFmpeg
+    const ffmpegPath = await getFFmpegPath()
 
     // Check if FFmpeg binary exists
-    try {
-      await access(FFMPEG_PATH)
-    } catch (_accessError) {
-      return NextResponse.json(
-        {
-          status: 'error',
-          ffmpeg: 'not found',
-          error: `FFmpeg binary not accessible at: ${FFMPEG_PATH}`,
-          path: FFMPEG_PATH,
-          environment: process.env.NODE_ENV,
-        },
-        { status: 500 }
-      )
-    }
+    await access(ffmpegPath)
 
     // Try to get FFmpeg version
-    const { stdout } = await execFileAsync(FFMPEG_PATH, ['-version'])
+    const { stdout } = await execFileAsync(ffmpegPath, ['-version'])
     const version = stdout.split('\n')[0]
+
     return NextResponse.json({
       status: 'ok',
       ffmpeg: 'installed',
       version,
-      path: FFMPEG_PATH,
+      path: ffmpegPath,
       environment: process.env.NODE_ENV,
     })
-  } catch (_error) {
+  } catch (error) {
     return NextResponse.json(
       {
         status: 'error',
-        ffmpeg: 'execution failed',
-        error: _error instanceof Error ? _error.message : 'Unknown error',
-        path: FFMPEG_PATH,
+        ffmpeg: 'not available',
+        error: error instanceof Error ? error.message : 'Unknown error',
         environment: process.env.NODE_ENV,
       },
       { status: 500 }
