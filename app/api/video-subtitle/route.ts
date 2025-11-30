@@ -14,12 +14,41 @@ async function getFFmpegPath(): Promise<string> {
   if (FFMPEG_PATH) return FFMPEG_PATH
 
   try {
-    // In production (Vercel), use bundled Linux binary from /var/task/bin/ffmpeg
-    // In development, try to use local ffmpeg-static or system ffmpeg
+    // In production (Vercel), download FFmpeg to /tmp on first request
+    // In development, use local ffmpeg-static or system ffmpeg
     if (process.env.NODE_ENV === 'production') {
-      // Vercel deploys to /var/task
-      FFMPEG_PATH = '/var/task/bin/ffmpeg'
-      console.log('🚀 Using bundled FFmpeg binary for production:', FFMPEG_PATH)
+      const tmpFFmpegPath = '/tmp/ffmpeg'
+
+      // Check if already downloaded
+      try {
+        await access(tmpFFmpegPath)
+        FFMPEG_PATH = tmpFFmpegPath
+        console.log('✅ Using cached FFmpeg from /tmp')
+        return FFMPEG_PATH
+      } catch {
+        // Download FFmpeg binary on first request
+        console.log('📥 Downloading FFmpeg binary...')
+        const response = await fetch(
+          'https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-x64.gz'
+        )
+
+        if (!response.ok) {
+          throw new Error(`Failed to download FFmpeg: ${response.statusText}`)
+        }
+
+        const { createGunzip } = await import('node:zlib')
+        const { createWriteStream } = await import('node:fs')
+        const { pipeline } = await import('node:stream/promises')
+
+        // Download, gunzip, and save to /tmp
+        const gunzip = createGunzip()
+        const writeStream = createWriteStream(tmpFFmpegPath, { mode: 0o755 })
+
+        await pipeline(response.body as any, gunzip, writeStream)
+
+        FFMPEG_PATH = tmpFFmpegPath
+        console.log('✅ FFmpeg downloaded and cached to /tmp')
+      }
     } else {
       // Development: try ffmpeg-static first, fallback to system ffmpeg
       try {
