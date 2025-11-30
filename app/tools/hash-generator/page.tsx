@@ -935,7 +935,7 @@ export default function HashGeneratorPage() {
                                 color: 'gray.300',
                               })}
                             >
-                              {file.hashes[algo].substring(0, 32)}...
+                              {file.hashes?.[algo]?.substring(0, 32)}...
                             </code>
                             <Button
                               onClick={() => handleCopy(file.hashes?.[algo] || '')}
