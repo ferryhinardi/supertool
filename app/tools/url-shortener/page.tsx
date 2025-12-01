@@ -23,10 +23,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { css } from '@/styled-system/css'
 
 const faqs = [
@@ -246,6 +248,20 @@ export default function URLShortenerPage() {
     const avgClicks = total > 0 ? (totalClicks / total).toFixed(1) : '0'
     return { total, totalClicks, avgClicks }
   }, [shortenedUrls])
+
+  // Keyboard shortcuts
+  const { showHelp, setShowHelp, modifierKey } = useKeyboardShortcuts({
+    onExecute: isValidUrl ? handleShorten : undefined,
+    onCopy:
+      shortenedUrls.length > 0
+        ? () => handleCopy(shortenedUrls[0].shortUrl, 'Short URL')
+        : undefined,
+    onReset: () => {
+      setUrl('')
+      setCustomAlias('')
+      setShortenedUrls([])
+    },
+  })
 
   return (
     <div
@@ -1335,6 +1351,18 @@ export default function URLShortenerPage() {
       <RelatedTools currentToolPath="/tools/url-shortener" category="productivity" />
       <ToolRating toolId="/tools/url-shortener" toolName="URL Shortener" />
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={[
+          { key: `${modifierKey}+Enter`, label: 'Shorten', description: 'Shorten URL' },
+          { key: `${modifierKey}+C`, label: 'Copy', description: 'Copy latest short URL' },
+          { key: `${modifierKey}+R`, label: 'Reset', description: 'Reset form' },
+          { key: `${modifierKey}+/`, label: 'Help', description: 'Show this help' },
+        ]}
+      />
     </div>
   )
 }
