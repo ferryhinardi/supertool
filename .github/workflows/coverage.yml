@@ -17,13 +17,19 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9.15.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
+
+      - name: Approve build scripts for ffmpeg-static
+        run: |
+          echo "Approving ffmpeg-static build scripts..."
+          pnpm config set enable-pre-post-scripts true
+          pnpm approve-builds ffmpeg-static || true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -32,8 +38,9 @@ jobs:
         run: pnpm exec playwright install chromium --with-deps
 
       - name: Run tests with coverage
-        run: CI=true pnpm test run --coverage
+        run: pnpm test run --coverage
         env:
+          CI: true
           NODE_ENV: test
 
       - name: Generate coverage badge
