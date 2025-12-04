@@ -43,13 +43,6 @@ jobs:
           CI: true
           NODE_ENV: test
 
-      - name: Generate coverage badge
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          badges-directory: badges
-          generate-branches-badge: true
-          generate-summary: true
-
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -86,9 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: |
-            coverage/
-            badges/
+          path: coverage/
           retention-days: 30
 
       - name: Update README with coverage badge
