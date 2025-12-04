@@ -105,6 +105,7 @@ vi.mock('lucide-react', () => {
     Command: createMockIcon('Command'),
     Eye: createMockIcon('Eye'),
     FileJson: createMockIcon('FileJson'),
+    Grid3x3: createMockIcon('Grid3x3'),
     Image: createMockIcon('Image'),
     LayoutGrid: createMockIcon('LayoutGrid'),
     LayoutList: createMockIcon('LayoutList'),
@@ -477,8 +478,11 @@ describe('HomePage Integration Tests', () => {
     it('should display tool statistics', () => {
       render(<HomePage />)
 
-      const statsText = screen.getByText(/Professional Tools for Daily Use/i)
-      expect(statsText).toBeInTheDocument()
+      // Can show either popular view or all view badge
+      const hasPopularBadge = screen.queryByText(/Most Popular Tools/i)
+      const hasAllToolsBadge = screen.queryByText(/Professional Tools for Daily Use/i)
+
+      expect(hasPopularBadge || hasAllToolsBadge).toBeTruthy()
     })
 
     it('should render the search bar', () => {
@@ -498,6 +502,18 @@ describe('HomePage Integration Tests', () => {
       // List view button should be present
       const listButtons = screen.getAllByTestId('layoutlist-icon')
       expect(listButtons.length).toBeGreaterThan(0)
+    })
+
+    it('should render popular/all tools toggle buttons', () => {
+      render(<HomePage />)
+
+      // Popular button should be present
+      const popularButton = screen.getByLabelText(/Popular tools/i)
+      expect(popularButton).toBeInTheDocument()
+
+      // All tools button should be present
+      const allToolsButton = screen.getByLabelText(/All tools/i)
+      expect(allToolsButton).toBeInTheDocument()
     })
 
     it('should render category sections', () => {

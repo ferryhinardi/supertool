@@ -24,10 +24,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { trackToolEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import type { PasswordHistory } from './utils'
@@ -285,6 +287,18 @@ function PasswordGeneratorContent() {
 
   const atLeastOneSelected =
     options.uppercase || options.lowercase || options.numbers || options.symbols
+
+  // Keyboard shortcuts
+  const { showHelp, setShowHelp, modifierKey } = useKeyboardShortcuts({
+    onExecute: handleGenerate,
+    onCopy: password ? () => handleCopy(password) : undefined,
+    onHistory: () => setShowHistory(!showHistory),
+    onReset: () => {
+      setPassword('')
+      setPwnedResult(null)
+      setShowHistory(false)
+    },
+  })
 
   return (
     <main
@@ -1708,6 +1722,19 @@ function PasswordGeneratorContent() {
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={[
+          { key: `${modifierKey}+Enter`, label: 'Generate', description: 'Generate new password' },
+          { key: `${modifierKey}+C`, label: 'Copy', description: 'Copy password' },
+          { key: `${modifierKey}+H`, label: 'History', description: 'Toggle history panel' },
+          { key: `${modifierKey}+R`, label: 'Reset', description: 'Reset form' },
+          { key: `${modifierKey}+/`, label: 'Help', description: 'Show this help' },
+        ]}
+      />
     </main>
   )
 }

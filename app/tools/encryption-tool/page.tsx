@@ -21,9 +21,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { css } from '@/styled-system/css'
 import {
   calculatePasswordStrength,
@@ -262,6 +264,39 @@ export default function EncryptionToolPage() {
     setError('')
     setCopied(false)
   }
+
+  // Determine action handler based on mode and action
+  const getExecuteHandler = () => {
+    if (mode === 'text') {
+      return action === 'encrypt' ? handleEncryptText : handleDecryptText
+    }
+    if (mode === 'file') {
+      return action === 'encrypt' ? handleEncryptFile : handleDecryptFile
+    }
+    return handleDecryptFromLink
+  }
+
+  // Determine copy handler based on available data
+  const getCopyHandler = () => {
+    if (encryptedData?.encrypted) {
+      return () => handleCopy(encryptedData.encrypted)
+    }
+    if (decryptedText) {
+      return () => handleCopy(decryptedText)
+    }
+    return undefined
+  }
+
+  // Keyboard shortcuts
+  const { shortcuts, showHelp, setShowHelp } = useKeyboardShortcuts(
+    {
+      onExecute: getExecuteHandler(),
+      onCopy: getCopyHandler(),
+      onReset: handleReset,
+      onEscape: handleReset,
+    },
+    { allowInInputs: false }
+  )
 
   return (
     <main
@@ -1148,6 +1183,14 @@ export default function EncryptionToolPage() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={shortcuts}
+        toolName="Encryption Tool"
+      />
     </main>
   )
 }

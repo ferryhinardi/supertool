@@ -9,11 +9,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { css } from '@/styled-system/css'
 
 export const dynamic = 'force-dynamic'
@@ -154,6 +156,18 @@ function Base64Content() {
     setImagePreview(null)
     setMode('encode')
   }
+
+  // Keyboard shortcuts
+  const { shortcuts, showHelp, setShowHelp } = useKeyboardShortcuts(
+    {
+      onExecute: mode === 'encode' ? handleEncode : handleDecode,
+      onCopy: handleCopy,
+      onSave: handleDownload,
+      onReset: handleClear,
+      onEscape: handleClear,
+    },
+    { allowInInputs: false }
+  )
 
   return (
     <main
@@ -787,6 +801,14 @@ function Base64Content() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={shortcuts}
+        toolName="Base64 Encoder"
+      />
     </main>
   )
 }

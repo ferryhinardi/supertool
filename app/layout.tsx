@@ -140,6 +140,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <script
+          src="https://cdn.visitors.now/v.js"
+          data-token="57002aa7-44fa-459e-b332-ecb6111a00ef"
+        ></script>
       </head>
       <body
         suppressHydrationWarning

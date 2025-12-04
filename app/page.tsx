@@ -10,6 +10,7 @@ import {
   Clock,
   Eye,
   FileJson,
+  Grid3x3,
   Image,
   LayoutGrid,
   LayoutList,
@@ -32,6 +33,7 @@ import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput } from '@/components/ui/field'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { trackToolEvent } from '@/lib/analytics'
 import {
   generateOrganizationSchema,
   generateWebApplicationSchema,
@@ -188,6 +190,13 @@ export default function HomePage() {
   const shouldReduceMotion = useReducedMotion()
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [toolsView, setToolsView] = useState<'popular' | 'all'>(() => {
+    // Load saved preference from localStorage
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('toolsView') as 'popular' | 'all') || 'popular'
+    }
+    return 'popular'
+  })
   const [expandedCategories, setExpandedCategories] = useState<Set<ToolCategory>>(
     new Set(categories.map((c) => c.value))
   )
@@ -317,7 +326,7 @@ export default function HomePage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [searchQuery])
 
-  // Filter & Sort tools based on search and category and sort by popular and new, then alphabetically
+  // Filter & Sort tools based on search, view mode, and category
   const filteredToolsByCategory = useMemo(() => {
     const result: Record<ToolCategory, Tool[]> = {
       data: [],
@@ -331,6 +340,14 @@ export default function HomePage() {
     }
 
     let allTools = tools
+
+    // Filter by toolsView (popular or all)
+    if (toolsView === 'popular' && !searchQuery) {
+      // Show only popular tools + top 5 new tools (max 20 tools total)
+      const popularTools = tools.filter((t) => t.popular && !t.comingSoon)
+      const newTools = tools.filter((t) => t.new && !t.comingSoon && !t.popular).slice(0, 5)
+      allTools = [...popularTools, ...newTools]
+    }
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
@@ -376,7 +393,7 @@ export default function HomePage() {
     }
 
     return result
-  }, [searchQuery])
+  }, [searchQuery, toolsView])
 
   const stats = useMemo(() => {
     const total = tools.length
@@ -481,7 +498,9 @@ export default function HomePage() {
               color: 'purple.300',
             })}
           >
-            {stats.total} Professional Tools for Daily Use
+            {toolsView === 'popular'
+              ? `${stats.popular} Most Popular Tools`
+              : `${stats.total} Professional Tools for Daily Use`}
           </span>
         </div>
 
@@ -697,7 +716,7 @@ export default function HomePage() {
           </Field>
         </div>
 
-        {/* View Mode Toggle - Right aligned */}
+        {/* Tools View Toggle - Left aligned */}
         <div
           className={css({
             mx: 'auto',
@@ -705,10 +724,11 @@ export default function HomePage() {
             maxW: { base: 'full', md: '100%' },
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
+            gap: '4',
           })}
         >
-          {/* View Mode Toggle */}
+          {/* Tools View Toggle (Popular/All) */}
           <fieldset
             className={css({
               display: 'flex',
@@ -719,53 +739,131 @@ export default function HomePage() {
               bg: 'rgba(17, 24, 39, 0.5)',
               p: '1',
             })}
-            aria-label="View mode"
+            aria-label="Tools view"
           >
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setViewMode('grid')}
-                  aria-label="Grid view"
-                  aria-pressed={viewMode === 'grid'}
-                  className={css({
-                    h: '9',
-                    w: '9',
-                    p: '0',
-                    ...(viewMode === 'grid'
-                      ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
-                      : { color: 'gray.500', _hover: { color: 'gray.300' } }),
-                  })}
-                >
-                  <LayoutGrid className={css({ h: '5', w: '5' })} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Grid view</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                  aria-label="List view"
-                  aria-pressed={viewMode === 'list'}
-                  className={css({
-                    h: '9',
-                    w: '9',
-                    p: '0',
-                    ...(viewMode === 'list'
-                      ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
-                      : { color: 'gray.500', _hover: { color: 'gray.300' } }),
-                  })}
-                >
-                  <LayoutList className={css({ h: '5', w: '5' })} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>List view</TooltipContent>
-            </Tooltip>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setToolsView('popular')
+                trackToolEvent('view_mode_toggle', { mode: 'popular' })
+              }}
+              aria-label="Popular tools"
+              aria-pressed={toolsView === 'popular'}
+              className={css({
+                h: '9',
+                px: '4',
+                gap: '2',
+                fontSize: 'sm',
+                fontWeight: 'semibold',
+                ...(toolsView === 'popular'
+                  ? {
+                      bg: 'rgba(168, 85, 247, 0.2)',
+                      color: 'purple.300',
+                      borderColor: 'purple.500',
+                    }
+                  : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+              })}
+            >
+              <Sparkles className={css({ h: '4', w: '4' })} />
+              Popular ({stats.popular})
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setToolsView('all')
+                trackToolEvent('view_mode_toggle', { mode: 'all' })
+              }}
+              aria-label="All tools"
+              aria-pressed={toolsView === 'all'}
+              className={css({
+                h: '9',
+                px: '4',
+                gap: '2',
+                fontSize: 'sm',
+                fontWeight: 'semibold',
+                ...(toolsView === 'all'
+                  ? {
+                      bg: 'rgba(168, 85, 247, 0.2)',
+                      color: 'purple.300',
+                      borderColor: 'purple.500',
+                    }
+                  : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+              })}
+            >
+              <Grid3x3 className={css({ h: '4', w: '4' })} />
+              All Tools ({stats.total})
+            </Button>
           </fieldset>
+
+          {/* View Mode Toggle - Right aligned */}
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+            })}
+          >
+            {/* View Mode Toggle */}
+            <fieldset
+              className={css({
+                display: 'flex',
+                gap: '1',
+                rounded: 'lg',
+                border: '1px solid',
+                borderColor: 'gray.700',
+                bg: 'rgba(17, 24, 39, 0.5)',
+                p: '1',
+              })}
+              aria-label="View mode"
+            >
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    aria-label="Grid view"
+                    aria-pressed={viewMode === 'grid'}
+                    className={css({
+                      h: '9',
+                      w: '9',
+                      p: '0',
+                      ...(viewMode === 'grid'
+                        ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
+                        : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+                    })}
+                  >
+                    <LayoutGrid className={css({ h: '5', w: '5' })} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Grid view</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    aria-label="List view"
+                    aria-pressed={viewMode === 'list'}
+                    className={css({
+                      h: '9',
+                      w: '9',
+                      p: '0',
+                      ...(viewMode === 'list'
+                        ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
+                        : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+                    })}
+                  >
+                    <LayoutList className={css({ h: '5', w: '5' })} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>List view</TooltipContent>
+              </Tooltip>
+            </fieldset>
+          </div>
         </div>
 
         {/* Results count */}
@@ -989,6 +1087,76 @@ export default function HomePage() {
                   </motion.section>
                 )
               })}
+
+              {/* See All Tools CTA - Only show in popular view */}
+              {toolsView === 'popular' && !searchQuery && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  className={css({
+                    mt: '12',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '6',
+                    py: '12',
+                    textAlign: 'center',
+                  })}
+                >
+                  <div className={css({ spaceY: '4' })}>
+                    <h3
+                      className={css({
+                        fontSize: { base: '2xl', sm: '3xl' },
+                        fontWeight: 'bold',
+                        color: 'gray.200',
+                      })}
+                    >
+                      Explore All {stats.total} Tools
+                    </h3>
+                    <p
+                      className={css({
+                        maxW: '2xl',
+                        mx: 'auto',
+                        fontSize: { base: 'base', sm: 'lg' },
+                        color: 'gray.400',
+                      })}
+                    >
+                      Discover our complete collection of professional tools across all categories
+                    </p>
+                  </div>
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      setToolsView('all')
+                      trackToolEvent('view_mode_toggle', { mode: 'all', source: 'cta_button' })
+                    }}
+                    className={css({
+                      gap: '3',
+                      h: '14',
+                      px: '8',
+                      fontSize: 'lg',
+                      fontWeight: 'semibold',
+                      bg: 'rgba(168, 85, 247, 0.2)',
+                      border: '1px solid',
+                      borderColor: 'purple.500/50',
+                      color: 'purple.300',
+                      backdropFilter: 'blur(8px)',
+                      transition: 'all 0.3s',
+                      _hover: {
+                        bg: 'rgba(168, 85, 247, 0.3)',
+                        borderColor: 'purple.500/70',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 8px 24px rgba(168, 85, 247, 0.3)',
+                      },
+                    })}
+                  >
+                    <Grid3x3 className={css({ h: '5', w: '5' })} />
+                    View All Tools
+                    <ArrowRight className={css({ h: '5', w: '5' })} />
+                  </Button>
+                </motion.div>
+              )}
             </motion.div>
           ) : (
             <motion.div

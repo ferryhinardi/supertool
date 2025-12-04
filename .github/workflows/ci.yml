@@ -25,6 +25,12 @@ jobs:
         with:
           version: 9.15.3
 
+      - name: Approve build scripts for ffmpeg-static
+        run: |
+          echo "Approving ffmpeg-static build scripts..."
+          pnpm config set enable-pre-post-scripts true
+          pnpm approve-builds ffmpeg-static || true
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -59,6 +65,12 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 9.15.3
+
+      - name: Approve build scripts for ffmpeg-static
+        run: |
+          echo "Approving ffmpeg-static build scripts..."
+          pnpm config set enable-pre-post-scripts true
+          pnpm approve-builds ffmpeg-static || true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -110,6 +122,12 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 9.15.3
+
+      - name: Approve build scripts for ffmpeg-static
+        run: |
+          echo "Approving ffmpeg-static build scripts..."
+          pnpm config set enable-pre-post-scripts true
+          pnpm approve-builds ffmpeg-static || true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

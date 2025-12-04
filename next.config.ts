@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['pdfjs-dist'],
+  serverExternalPackages: ['pdfjs-dist', 'ffmpeg-static'],
 
   // Performance optimizations
   compiler: {

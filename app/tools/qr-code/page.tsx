@@ -35,11 +35,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { trackToolEvent } from '@/lib/analytics'
 import {
   type ExportFormat,
@@ -1052,32 +1054,6 @@ url,https://github.com,GitHub,#000000`
     }
   }
 
-  // Save current QR to history
-  const handleSaveToHistory = () => {
-    if (!hasValidInput) {
-      toast.error('Please generate a QR code first')
-      return
-    }
-
-    try {
-      const thumbnail = generateQRThumbnail()
-      const _newItem = saveToHistory({
-        type,
-        content: qrValue,
-        isFavorite: false,
-        styleConfig,
-        thumbnail,
-      })
-
-      setHistory(getHistory())
-      toast.success('QR code saved to history')
-      trackToolEvent('qr_history_save', { type })
-    } catch (error) {
-      console.error('Failed to save to history:', error)
-      toast.error('Failed to save to history')
-    }
-  }
-
   // Load QR from history
   const handleLoadFromHistory = (item: QRHistoryItem) => {
     setType(item.type)
@@ -1485,6 +1461,43 @@ url,https://github.com,GitHub,#000000`
       }
     }
   }, [])
+
+  // Save current QR to history
+  const handleSaveToHistory = () => {
+    if (!hasValidInput) {
+      toast.error('Please generate a QR code first')
+      return
+    }
+
+    try {
+      const thumbnail = generateQRThumbnail()
+      const _newItem = saveToHistory({
+        type,
+        content: qrValue,
+        isFavorite: false,
+        styleConfig,
+        thumbnail,
+      })
+
+      setHistory(getHistory())
+      toast.success('QR code saved to history')
+      trackToolEvent('qr_history_save', { type })
+    } catch (error) {
+      console.error('Failed to save to history:', error)
+      toast.error('Failed to save to history')
+    }
+  }
+
+  // Keyboard shortcuts
+  const { showHelp, setShowHelp, modifierKey } = useKeyboardShortcuts({
+    onCopy: hasValidInput ? copyQRCode : undefined,
+    onSave: hasValidInput ? handleSaveToHistory : undefined,
+    onHistory: () => setShowHistory(!showHistory),
+    onReset: () => {
+      setUrlInput('')
+      setTextInput('')
+    },
+  })
 
   return (
     <main
@@ -4254,6 +4267,19 @@ url,https://github.com,GitHub,#000000`
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={[
+          { key: `${modifierKey}+C`, label: 'Copy', description: 'Copy QR code' },
+          { key: `${modifierKey}+S`, label: 'Save', description: 'Save to history' },
+          { key: `${modifierKey}+H`, label: 'History', description: 'Toggle history panel' },
+          { key: `${modifierKey}+R`, label: 'Reset', description: 'Reset form' },
+          { key: `${modifierKey}+/`, label: 'Help', description: 'Show this help' },
+        ]}
+      />
     </main>
   )
 }

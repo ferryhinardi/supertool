@@ -21,11 +21,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { css } from '@/styled-system/css'
 
 // Dynamically import ReactMarkdown with SSR disabled
@@ -287,6 +289,13 @@ export default function MarkdownEditorPage() {
       }
     }
   }
+
+  // Keyboard shortcuts
+  const { showHelp, setShowHelp, modifierKey } = useKeyboardShortcuts({
+    onCopy: handleCopyMarkdown,
+    onSave: handleDownloadMarkdown,
+    onReset: handleReset,
+  })
 
   return (
     <>
@@ -1523,6 +1532,18 @@ export default function MarkdownEditorPage() {
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
         <ToolSearch />
+
+        {/* Keyboard Shortcuts Dialog */}
+        <KeyboardShortcutsDialog
+          open={showHelp}
+          onOpenChange={setShowHelp}
+          shortcuts={[
+            { key: `${modifierKey}+C`, label: 'Copy', description: 'Copy Markdown' },
+            { key: `${modifierKey}+S`, label: 'Save', description: 'Download Markdown file' },
+            { key: `${modifierKey}+R`, label: 'Reset', description: 'Reset to template' },
+            { key: `${modifierKey}+/`, label: 'Help', description: 'Show this help' },
+          ]}
+        />
       </main>
     </>
   )

@@ -1,21 +1,54 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { CheckCircle, Copy, Hash, Lightbulb, Sparkles, Upload, XCircle } from 'lucide-react'
-import { useState } from 'react'
+import {
+  CheckCircle,
+  Copy,
+  Download,
+  FileStack,
+  Hash,
+  History,
+  Lightbulb,
+  Loader2,
+  Sparkles,
+  Trash2,
+  XCircle,
+} from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
+import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 
 type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
+
+interface BatchFile {
+  id: string
+  file: File
+  name: string
+  size: number
+  status: 'pending' | 'processing' | 'completed' | 'error'
+  hashes?: Record<HashAlgorithm, string>
+  error?: string
+}
+
+interface HashHistory {
+  id: string
+  timestamp: number
+  input: string
+  hashes: Record<HashAlgorithm, string>
+  type: 'text' | 'file'
+}
 
 const faqs = [
   {
@@ -82,6 +115,100 @@ export default function HashGeneratorPage() {
   const [compareHash, setCompareHash] = useState('')
   const [compareResult, setCompareResult] = useState<boolean | null>(null)
 
+  // Batch processing state
+  const [batchMode, setBatchMode] = useState(false)
+  const [batchFiles, setBatchFiles] = useState<BatchFile[]>([])
+  const [batchProcessing, setBatchProcessing] = useState(false)
+
+  // History state
+  const [showHistory, setShowHistory] = useState(false)
+  const [history, setHistory] = useState<HashHistory[]>([])
+
+  // Load history from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('hash-generator-history')
+    if (stored) {
+      try {
+        setHistory(JSON.parse(stored))
+      } catch (e) {
+        console.error('Failed to load history:', e)
+      }
+    }
+  }, [])
+
+  // Save history to localStorage
+  const saveToHistory = (
+    input: string,
+    hashes: Record<HashAlgorithm, string>,
+    type: 'text' | 'file'
+  ) => {
+    const newEntry: HashHistory = {
+      id: Date.now().toString(),
+      timestamp: Date.now(),
+      input: input.length > 100 ? `${input.substring(0, 100)}...` : input,
+      hashes,
+      type,
+    }
+
+    const updatedHistory = [newEntry, ...history].slice(0, 50) // Keep last 50
+    setHistory(updatedHistory)
+    localStorage.setItem('hash-generator-history', JSON.stringify(updatedHistory))
+  }
+
+  const clearHistory = () => {
+    setHistory([])
+    localStorage.removeItem('hash-generator-history')
+    toast.success('History cleared')
+    trackEvent({ action: 'history_cleared', category: 'hash_generator' })
+  }
+
+  const loadFromHistory = (entry: HashHistory) => {
+    setInput(entry.input)
+    setHashes(entry.hashes)
+    setShowHistory(false)
+    toast.success('Loaded from history')
+    trackEvent({ action: 'history_loaded', category: 'hash_generator' })
+  }
+
+  const handleReset = () => {
+    setInput('')
+    setHashes({
+      MD5: '',
+      'SHA-1': '',
+      'SHA-256': '',
+      'SHA-384': '',
+      'SHA-512': '',
+    })
+    setCompareHash('')
+    setCompareResult(null)
+    toast.success('Form cleared')
+    trackEvent({ action: 'form_reset', category: 'hash_generator' })
+  }
+
+  const handleCopyAll = () => {
+    const allHashes = Object.entries(hashes)
+      .filter(([_, hash]) => hash)
+      .map(([algo, hash]) => `${algo}: ${hash}`)
+      .join('\n')
+
+    if (allHashes) {
+      navigator.clipboard.writeText(allHashes)
+      toast.success('All hashes copied to clipboard!')
+      trackEvent({ action: 'all_hashes_copied', category: 'hash_generator' })
+    } else {
+      toast.error('No hashes to copy')
+    }
+  }
+
+  const toggleHistory = () => {
+    setShowHistory(!showHistory)
+    trackEvent({
+      action: 'history_toggled',
+      category: 'hash_generator',
+      value: showHistory ? 0 : 1,
+    })
+  }
+
   const generateHashes = async () => {
     if (!input) {
       toast.error('Please enter text to hash')
@@ -119,18 +246,23 @@ export default function HashGeneratorPage() {
       // MD5 (using a simple implementation)
       const md5Hash = await simpleMD5(input)
 
-      setHashes({
+      const generatedHashes = {
         MD5: md5Hash,
         'SHA-1': sha1Hash,
         'SHA-256': sha256Hash,
         'SHA-384': sha384Hash,
         'SHA-512': sha512Hash,
-      })
+      }
+
+      setHashes(generatedHashes)
+      saveToHistory(input, generatedHashes, 'text')
 
       toast.success('Hashes generated successfully')
+      trackEvent({ action: 'text_hashed', category: 'hash_generator' })
     } catch (error) {
       toast.error('Failed to generate hashes')
       console.error(error)
+      trackEvent({ action: 'hash_error', category: 'hash_generator' })
     }
   }
 
@@ -148,52 +280,158 @@ export default function HashGeneratorPage() {
   }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const files = e.target.files
+    if (!files || files.length === 0) return
 
-    const reader = new FileReader()
-    reader.onload = async (event) => {
-      const arrayBuffer = event.target?.result as ArrayBuffer
+    if (files.length === 1) {
+      // Single file mode
+      const file = files[0]
+      const reader = new FileReader()
+      reader.onload = async (event) => {
+        const arrayBuffer = event.target?.result as ArrayBuffer
+
+        try {
+          const generatedHashes = await hashArrayBuffer(arrayBuffer)
+          setHashes(generatedHashes)
+          setInput(`File: ${file.name} (${formatFileSize(file.size)})`)
+          saveToHistory(`File: ${file.name}`, generatedHashes, 'file')
+          toast.success(`File hashed: ${file.name}`)
+          trackEvent({ action: 'file_hashed', category: 'hash_generator' })
+        } catch (error) {
+          toast.error('Failed to hash file')
+          console.error(error)
+          trackEvent({ action: 'file_hash_error', category: 'hash_generator' })
+        }
+      }
+      reader.readAsArrayBuffer(file)
+    } else {
+      // Batch mode
+      setBatchMode(true)
+      const newBatchFiles: BatchFile[] = Array.from(files).map((file, index) => ({
+        id: `${Date.now()}-${index}`,
+        file,
+        name: file.name,
+        size: file.size,
+        status: 'pending',
+      }))
+      setBatchFiles(newBatchFiles)
+      toast.success(`Added ${files.length} files for batch processing`)
+      trackEvent({ action: 'batch_mode_enabled', category: 'hash_generator', value: files.length })
+    }
+  }
+
+  const hashArrayBuffer = async (
+    arrayBuffer: ArrayBuffer
+  ): Promise<Record<HashAlgorithm, string>> => {
+    const sha256Buffer = await crypto.subtle.digest('SHA-256', arrayBuffer)
+    const sha256Hash = Array.from(new Uint8Array(sha256Buffer))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+
+    const sha384Buffer = await crypto.subtle.digest('SHA-384', arrayBuffer)
+    const sha384Hash = Array.from(new Uint8Array(sha384Buffer))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+
+    const sha512Buffer = await crypto.subtle.digest('SHA-512', arrayBuffer)
+    const sha512Hash = Array.from(new Uint8Array(sha512Buffer))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+
+    const sha1Buffer = await crypto.subtle.digest('SHA-1', arrayBuffer)
+    const sha1Hash = Array.from(new Uint8Array(sha1Buffer))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+
+    return {
+      MD5: 'File MD5 requires external library',
+      'SHA-1': sha1Hash,
+      'SHA-256': sha256Hash,
+      'SHA-384': sha384Hash,
+      'SHA-512': sha512Hash,
+    }
+  }
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+  }
+
+  const processBatchFiles = async () => {
+    setBatchProcessing(true)
+
+    for (let i = 0; i < batchFiles.length; i++) {
+      const file = batchFiles[i]
+
+      // Update status to processing
+      setBatchFiles((prev) =>
+        prev.map((f) => (f.id === file.id ? { ...f, status: 'processing' } : f))
+      )
 
       try {
-        // Generate hashes for file
-        const sha256Buffer = await crypto.subtle.digest('SHA-256', arrayBuffer)
-        const sha256Hash = Array.from(new Uint8Array(sha256Buffer))
-          .map((b) => b.toString(16).padStart(2, '0'))
-          .join('')
+        const arrayBuffer = await file.file.arrayBuffer()
+        const hashes = await hashArrayBuffer(arrayBuffer)
 
-        const sha384Buffer = await crypto.subtle.digest('SHA-384', arrayBuffer)
-        const sha384Hash = Array.from(new Uint8Array(sha384Buffer))
-          .map((b) => b.toString(16).padStart(2, '0'))
-          .join('')
+        // Update with hashes
+        setBatchFiles((prev) =>
+          prev.map((f) => (f.id === file.id ? { ...f, status: 'completed', hashes } : f))
+        )
 
-        const sha512Buffer = await crypto.subtle.digest('SHA-512', arrayBuffer)
-        const sha512Hash = Array.from(new Uint8Array(sha512Buffer))
-          .map((b) => b.toString(16).padStart(2, '0'))
-          .join('')
-
-        const sha1Buffer = await crypto.subtle.digest('SHA-1', arrayBuffer)
-        const sha1Hash = Array.from(new Uint8Array(sha1Buffer))
-          .map((b) => b.toString(16).padStart(2, '0'))
-          .join('')
-
-        setHashes({
-          MD5: 'File MD5 requires external library',
-          'SHA-1': sha1Hash,
-          'SHA-256': sha256Hash,
-          'SHA-384': sha384Hash,
-          'SHA-512': sha512Hash,
-        })
-
-        setInput(`File: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`)
-        toast.success(`File hashed: ${file.name}`)
-      } catch (error) {
-        toast.error('Failed to hash file')
-        console.error(error)
+        saveToHistory(`File: ${file.name}`, hashes, 'file')
+      } catch (_error) {
+        setBatchFiles((prev) =>
+          prev.map((f) =>
+            f.id === file.id ? { ...f, status: 'error', error: 'Failed to hash file' } : f
+          )
+        )
       }
     }
 
-    reader.readAsArrayBuffer(file)
+    setBatchProcessing(false)
+    toast.success('Batch processing complete!')
+    trackEvent({ action: 'batch_processed', category: 'hash_generator', value: batchFiles.length })
+  }
+
+  const exportBatchResults = () => {
+    const csv = [
+      ['Filename', 'Size', 'MD5', 'SHA-1', 'SHA-256', 'SHA-384', 'SHA-512'],
+      ...batchFiles
+        .filter((f) => f.status === 'completed' && f.hashes)
+        .map((f) => [
+          f.name,
+          formatFileSize(f.size),
+          f.hashes?.MD5 || '',
+          f.hashes?.['SHA-1'] || '',
+          f.hashes?.['SHA-256'] || '',
+          f.hashes?.['SHA-384'] || '',
+          f.hashes?.['SHA-512'] || '',
+        ]),
+    ]
+      .map((row) => row.join(','))
+      .join('\n')
+
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `hash-results-${Date.now()}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+
+    toast.success('Results exported as CSV')
+    trackEvent({ action: 'batch_exported', category: 'hash_generator' })
+  }
+
+  const removeBatchFile = (id: string) => {
+    setBatchFiles((prev) => prev.filter((f) => f.id !== id))
+  }
+
+  const clearBatchFiles = () => {
+    setBatchFiles([])
+    setBatchMode(false)
+    toast.success('Batch cleared')
   }
 
   const handleCopy = (hash: string) => {
@@ -213,6 +451,18 @@ export default function HashGeneratorPage() {
     setCompareResult(match)
     toast.success(match ? 'Hashes match!' : 'Hashes do not match')
   }
+
+  // Keyboard shortcuts - setup after all functions are defined
+  const { shortcuts, showHelp, setShowHelp } = useKeyboardShortcuts(
+    {
+      onExecute: generateHashes,
+      onReset: handleReset,
+      onCopy: handleCopyAll,
+      onHistory: toggleHistory,
+      onEscape: handleReset,
+    },
+    { allowInInputs: false }
+  )
 
   return (
     <main
@@ -399,11 +649,20 @@ export default function HashGeneratorPage() {
                   onChange={handleFileUpload}
                   className={css({ cursor: 'pointer' })}
                   accept="*/*"
+                  multiple
                 />
               </div>
               <Button onClick={generateHashes} className={css({ gap: '2' })} disabled={!input}>
                 <Hash className={css({ h: '4', w: '4' })} />
                 Generate Hashes
+              </Button>
+              <Button
+                onClick={() => setShowHistory(!showHistory)}
+                variant="outline"
+                className={css({ gap: '2' })}
+              >
+                <History className={css({ h: '4', w: '4' })} />
+                History
               </Button>
             </div>
           </CardContent>
@@ -530,6 +789,269 @@ export default function HashGeneratorPage() {
         </Card>
       </motion.div>
 
+      {/* Batch Processing Section */}
+      {batchMode && batchFiles.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45 }}
+        >
+          <Card
+            className={css({
+              border: '2px solid',
+              borderColor: 'purple.500/30',
+              bg: 'rgba(168, 85, 247, 0.05)',
+            })}
+          >
+            <CardHeader>
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                })}
+              >
+                <div>
+                  <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <FileStack className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                    Batch Processing ({batchFiles.length} files)
+                  </CardTitle>
+                  <CardDescription>Process multiple files simultaneously</CardDescription>
+                </div>
+                <div className={css({ display: 'flex', gap: '2' })}>
+                  <Button
+                    onClick={processBatchFiles}
+                    disabled={batchProcessing || batchFiles.every((f) => f.status === 'completed')}
+                    className={css({ gap: '2' })}
+                  >
+                    {batchProcessing ? (
+                      <>
+                        <Loader2 className={css({ h: '4', w: '4', animation: 'spin' })} />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Hash className={css({ h: '4', w: '4' })} />
+                        Process All
+                      </>
+                    )}
+                  </Button>
+                  {batchFiles.some((f) => f.status === 'completed') && (
+                    <Button
+                      onClick={exportBatchResults}
+                      variant="outline"
+                      className={css({ gap: '2' })}
+                    >
+                      <Download className={css({ h: '4', w: '4' })} />
+                      Export CSV
+                    </Button>
+                  )}
+                  <Button onClick={clearBatchFiles} variant="outline" size="icon">
+                    <Trash2 className={css({ h: '4', w: '4' })} />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={css({ spaceY: '3', maxH: '[400px]', overflowY: 'auto' })}>
+                {batchFiles.map((file) => (
+                  <div
+                    key={file.id}
+                    className={css({
+                      border: '1px solid',
+                      borderColor: 'gray.800',
+                      rounded: 'lg',
+                      p: '4',
+                      bg: 'gray.900/30',
+                    })}
+                  >
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'start',
+                        justifyContent: 'space-between',
+                        mb: '2',
+                      })}
+                    >
+                      <div className={css({ flex: '1' })}>
+                        <div
+                          className={css({ fontWeight: 'medium', color: 'white', fontSize: 'sm' })}
+                        >
+                          {file.name}
+                        </div>
+                        <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                          {formatFileSize(file.size)}
+                        </div>
+                      </div>
+                      <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                        {file.status === 'pending' && (
+                          <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                            Pending
+                          </span>
+                        )}
+                        {file.status === 'processing' && (
+                          <Loader2
+                            className={css({
+                              h: '4',
+                              w: '4',
+                              color: 'blue.400',
+                              animation: 'spin',
+                            })}
+                          />
+                        )}
+                        {file.status === 'completed' && (
+                          <CheckCircle className={css({ h: '4', w: '4', color: 'green.400' })} />
+                        )}
+                        {file.status === 'error' && (
+                          <XCircle className={css({ h: '4', w: '4', color: 'red.400' })} />
+                        )}
+                        <Button
+                          onClick={() => removeBatchFile(file.id)}
+                          variant="ghost"
+                          size="icon"
+                          className={css({ h: '6', w: '6' })}
+                        >
+                          <Trash2 className={css({ h: '3', w: '3' })} />
+                        </Button>
+                      </div>
+                    </div>
+                    {file.hashes && (
+                      <div className={css({ mt: '3', spaceY: '2' })}>
+                        {(Object.keys(file.hashes) as HashAlgorithm[]).map((algo) => (
+                          <div
+                            key={algo}
+                            className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
+                          >
+                            <span
+                              className={css({ fontSize: 'xs', color: 'gray.400', minW: '[60px]' })}
+                            >
+                              {algo}:
+                            </span>
+                            <code
+                              className={css({
+                                flex: '1',
+                                fontSize: 'xs',
+                                fontFamily: 'mono',
+                                color: 'gray.300',
+                              })}
+                            >
+                              {file.hashes?.[algo]?.substring(0, 32)}...
+                            </code>
+                            <Button
+                              onClick={() => handleCopy(file.hashes?.[algo] || '')}
+                              variant="ghost"
+                              size="icon"
+                              className={css({ h: '6', w: '6' })}
+                            >
+                              <Copy className={css({ h: '3', w: '3' })} />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* History Panel */}
+      {showHistory && history.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45 }}
+        >
+          <Card
+            className={css({
+              border: '2px solid',
+              borderColor: 'blue.500/30',
+              bg: 'rgba(59, 130, 246, 0.05)',
+            })}
+          >
+            <CardHeader>
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                })}
+              >
+                <div>
+                  <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                    <History className={css({ h: '5', w: '5', color: 'blue.400' })} />
+                    History ({history.length} entries)
+                  </CardTitle>
+                  <CardDescription>Last 50 hash operations</CardDescription>
+                </div>
+                <Button
+                  onClick={clearHistory}
+                  variant="outline"
+                  size="sm"
+                  className={css({ gap: '2' })}
+                >
+                  <Trash2 className={css({ h: '3', w: '3' })} />
+                  Clear All
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={css({ spaceY: '3', maxH: '[400px]', overflowY: 'auto' })}>
+                {history.map((entry) => (
+                  <button
+                    type="button"
+                    key={entry.id}
+                    className={css({
+                      border: '1px solid',
+                      borderColor: 'gray.800',
+                      rounded: 'lg',
+                      p: '3',
+                      bg: 'gray.900/30',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      _hover: { borderColor: 'blue.500/50', bg: 'gray.900/50' },
+                      w: 'full',
+                      textAlign: 'left',
+                    })}
+                    onClick={() => loadFromHistory(entry)}
+                  >
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        mb: '2',
+                      })}
+                    >
+                      <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                        {new Date(entry.timestamp).toLocaleString()}
+                      </span>
+                      <span
+                        className={css({
+                          fontSize: 'xs',
+                          color: 'blue.400',
+                          textTransform: 'uppercase',
+                        })}
+                      >
+                        {entry.type}
+                      </span>
+                    </div>
+                    <div className={css({ fontSize: 'sm', color: 'gray.300', mb: '2' })}>
+                      {entry.input}
+                    </div>
+                    <div className={css({ fontSize: 'xs', fontFamily: 'mono', color: 'gray.500' })}>
+                      SHA-256: {entry.hashes['SHA-256'].substring(0, 48)}...
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       {/* Features */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -552,16 +1074,16 @@ export default function HashGeneratorPage() {
             title: 'Multiple Algorithms',
             desc: 'MD5, SHA-1, SHA-256, SHA-384, SHA-512',
           },
-          { icon: Upload, title: 'File Hashing', desc: 'Hash any file type' },
+          { icon: FileStack, title: 'Batch Processing', desc: 'Hash multiple files at once' },
           {
-            icon: CheckCircle,
-            title: 'Verification',
-            desc: 'Compare and verify hashes',
+            icon: History,
+            title: 'Operation History',
+            desc: 'Track last 50 hash operations',
           },
           {
-            icon: Copy,
-            title: 'Easy Copy',
-            desc: 'One-click copy to clipboard',
+            icon: CheckCircle,
+            title: 'Hash Verification',
+            desc: 'Compare and verify integrity',
           },
         ].map((feature) => (
           <Card
@@ -776,8 +1298,15 @@ export default function HashGeneratorPage() {
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
-
       <ToolSearch />
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsDialog
+        open={showHelp}
+        onOpenChange={setShowHelp}
+        shortcuts={shortcuts}
+        toolName="Hash Generator"
+      />
     </main>
   )
 }
