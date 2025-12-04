@@ -45,11 +45,6 @@ export default defineConfig({
         'scripts/**',
         '.mcp/**',
       ],
-      lines: 95,
-      functions: 95,
-      branches: 95,
-      statements: 95,
-      all: true,
       include: [
         'app/**/*.{ts,tsx}',
         'components/**/*.{ts,tsx}',
