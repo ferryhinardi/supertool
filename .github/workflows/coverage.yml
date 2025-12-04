@@ -1,0 +1,121 @@
+name: Test Coverage
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run tests with coverage
+        run: CI=true pnpm test run --coverage
+        env:
+          NODE_ENV: test
+
+      - name: Generate coverage badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          badges-directory: badges
+          generate-branches-badge: true
+          generate-summary: true
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          lcov-file: ./coverage/lcov.info
+          delete-old-comments: true
+
+      - name: Check coverage threshold
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
+          echo "Current coverage: $COVERAGE%"
+          
+          if (( $(echo "$COVERAGE < 95" | bc -l) )); then
+            echo "❌ Coverage is below 95% threshold"
+            echo "Current: $COVERAGE%"
+            echo "Required: 95%"
+            exit 1
+          else
+            echo "✅ Coverage meets 95% threshold"
+          fi
+
+      - name: Store coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            coverage/
+            badges/
+          retention-days: 30
+
+      - name: Update README with coverage badge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # Update README with coverage percentage
+          COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
+          COVERAGE_INT=$(printf "%.0f" $COVERAGE)
+          
+          # Determine badge color
+          if (( $(echo "$COVERAGE >= 95" | bc -l) )); then
+            COLOR="brightgreen"
+          elif (( $(echo "$COVERAGE >= 80" | bc -l) )); then
+            COLOR="yellow"
+          else
+            COLOR="red"
+          fi
+          
+          # Create coverage badge URL
+          BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE_INT}%25-${COLOR}"
+          
+          # Update README if badge placeholder exists
+          if grep -q "!\[Coverage\]" README.md; then
+            sed -i "s|!\[Coverage\](.*)|![Coverage](${BADGE_URL})|g" README.md
+          else
+            # Add badge to README
+            sed -i "1s|^|![Coverage](${BADGE_URL})\n\n|" README.md
+          fi
+          
+          # Commit and push if changes exist
+          if [[ $(git status --porcelain README.md) ]]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add README.md
+            git commit -m "docs: update coverage badge to ${COVERAGE_INT}%"
+            git push
+          fi

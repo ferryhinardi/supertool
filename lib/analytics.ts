@@ -452,6 +452,17 @@ type ToolEvent =
   | 'svg_optimizer_clear'
   | 'svg_optimizer_copy'
   | 'svg_optimizer_download'
+  | 'photo_editor_upload'
+  | 'photo_editor_premium_upsell'
+  | 'photo_editor_filter_apply'
+  | 'photo_editor_adjustment'
+  | 'photo_editor_rotate'
+  | 'photo_editor_flip'
+  | 'photo_editor_export'
+  | 'photo_editor_reset'
+  | 'photo_editor_ai_generate_start'
+  | 'photo_editor_ai_generate_success'
+  | 'photo_editor_ai_generate_error'
 
 // Type-safe gtag wrapper
 declare global {

@@ -21,6 +21,7 @@ import {
   Globe,
   Hash,
   Home,
+  ImagePlus,
   Key,
   LogIn,
   LogOut,
@@ -69,6 +70,7 @@ const navigation = [
     href: '/tools/gradient-generator',
     icon: Wand2,
   },
+  { name: 'AI Photo Editor', href: '/tools/photo-editor', icon: ImagePlus },
   { name: 'Image Metadata', href: '/tools/image-metadata', icon: Camera },
   { name: 'PDF Tools', href: '/tools/pdf-tools', icon: FileCog },
   {

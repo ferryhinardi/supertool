@@ -67,7 +67,7 @@ beforeAll(async () => {
 
   // Mock canvas for browser fingerprinting
   if (typeof HTMLCanvasElement !== 'undefined') {
-    HTMLCanvasElement.prototype.getContext = () =>
+    HTMLCanvasElement.prototype.getContext = (() =>
       ({
         fillStyle: '',
         fillRect: () => {},
@@ -96,7 +96,7 @@ beforeAll(async () => {
         transform: () => {},
         rect: () => {},
         clip: () => {},
-      }) as any
+      }) as unknown as CanvasRenderingContext2D) as unknown as typeof HTMLCanvasElement.prototype.getContext
 
     HTMLCanvasElement.prototype.toDataURL = () => 'data:image/png;base64,test'
     HTMLCanvasElement.prototype.toBlob = (callback) => {

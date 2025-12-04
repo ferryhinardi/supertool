@@ -33,6 +33,7 @@ The design system is dark-themed with purple/pink/blue gradients (see `app/globa
 CI=true pnpm test              # Watch mode
 CI=true pnpm test:ui           # Visual UI
 CI=true pnpm test:browser      # Playwright-powered browser tests
+CI=true pnpm test run --coverage  # Run tests with coverage report
 ```
 
 **First Time Setup**: Run `pnpm exec playwright install chromium` to install browser dependencies.
@@ -44,6 +45,118 @@ CI=true pnpm test:browser      # Playwright-powered browser tests
 - Logic tests separate from component tests (see `app/tools/upload/__tests__/logic.test.ts`)
 - Test tool configurations and data structures (see `app/__tests__/page.test.tsx`)
 - Setup file: `vitest.setup.ts` imports `@testing-library/jest-dom/vitest`
+
+### Test Coverage Requirements (CRITICAL)
+
+**MANDATORY**: All new code MUST achieve **>= 95% test coverage** for:
+- Lines
+- Functions
+- Branches
+- Statements
+
+**Coverage Enforcement**:
+- CI/CD pipeline automatically fails if coverage drops below 95%
+- Coverage reports generated on every push and PR
+- Coverage badge updated automatically in README.md
+- Coverage reports available as GitHub Actions artifacts
+
+**Writing Comprehensive Tests**:
+
+1. **API Routes** (`app/api/**/route.ts`):
+   - Test all HTTP methods (POST, GET, PUT, DELETE)
+   - Test request validation (missing fields, invalid types)
+   - Test error scenarios (400, 401, 404, 409, 429, 500, 503)
+   - Test successful responses with correct data
+   - Test edge cases (empty data, malformed JSON, rate limits)
+   - Mock external API calls (OpenAI, Supabase, etc.)
+
+2. **Component Tests** (`app/tools/**/page.tsx`, `components/**/*.tsx`):
+   - Test initial render and DOM elements
+   - Test user interactions (clicks, form inputs, file uploads)
+   - Test state changes and side effects
+   - Test conditional rendering based on props/state
+   - Test error states and loading states
+   - Test keyboard navigation and accessibility
+   - Mock dependencies (toast, analytics, fetch)
+
+3. **Utility Functions** (`lib/**/*.ts`):
+   - Test all function branches and edge cases
+   - Test error handling and validation
+   - Test with various input types (valid, invalid, edge cases)
+   - Test async operations with mocked promises
+
+4. **Hooks** (`hooks/**/*.ts`):
+   - Test hook initialization and state
+   - Test hook updates and side effects
+   - Test cleanup functions
+   - Use `@testing-library/react-hooks` for hook testing
+
+**Example Test Structure**:
+
+```typescript
+import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import { userEvent } from '@testing-library/user-event'
+
+// Mock all external dependencies
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}))
+
+vi.mock('@/lib/analytics', () => ({
+  trackToolEvent: vi.fn(),
+}))
+
+describe('ComponentName', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  describe('Initial Render', () => {
+    it('should render component with all elements', () => {
+      render(<ComponentName />)
+      expect(screen.getByText('Expected Text')).toBeInTheDocument()
+    })
+  })
+
+  describe('User Interactions', () => {
+    it('should handle button click', async () => {
+      render(<ComponentName />)
+      const button = screen.getByRole('button', { name: /click me/i })
+      await userEvent.click(button)
+      expect(mockFunction).toHaveBeenCalled()
+    })
+  })
+
+  describe('Error Scenarios', () => {
+    it('should show error message on failure', async () => {
+      mockFunction.mockRejectedValueOnce(new Error('Test error'))
+      render(<ComponentName />)
+      // ... test error handling
+    })
+  })
+
+  describe('Edge Cases', () => {
+    it('should handle empty input', () => {
+      // Test with empty/null/undefined values
+    })
+  })
+})
+```
+
+**Coverage Viewing**:
+```bash
+# Generate and view coverage report
+CI=true pnpm test run --coverage
+open coverage/index.html  # macOS
+xdg-open coverage/index.html  # Linux
+```
+
+**Pre-commit Coverage Check**:
+All code must pass coverage thresholds before committing. The CI pipeline will reject PRs that don't meet the 95% threshold.
 
 ### Code Quality Automation
 
@@ -607,7 +720,13 @@ export default function ToolLayout({
    - Use kebab-case for tool names (e.g., `/tools/json-beautify`)
    - Keep URLs short and descriptive (avoid deep nesting)
    - Include primary keyword in URL path when possible
-9. Create `__tests__/` directory with logic and component tests
+9. **Create comprehensive tests with >= 95% coverage** (`__tests__/` directory):
+   - **Unit tests**: Test all functions, utilities, and logic in isolation
+   - **Integration tests**: Test component rendering, user interactions, and workflows
+   - **API tests**: Test all API routes with request validation and error scenarios
+   - **Edge case tests**: Test boundary conditions, empty states, error states
+   - **Mock external dependencies**: Mock toast, analytics, fetch, external APIs
+   - Run `CI=true pnpm test run --coverage` to verify coverage meets 95% threshold
 10. Add analytics events for all user interactions
 11. Update `ToolEvent` type in `lib/analytics.ts` if needed
 12. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):

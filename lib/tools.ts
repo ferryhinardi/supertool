@@ -723,6 +723,24 @@ export const tools: Tool[] = [
     features: ['WCAG 2.1', 'AA/AAA Rating', 'Live Preview', 'Accessibility Score'],
     category: 'design',
   },
+  {
+    title: 'AI Photo Editor',
+    description:
+      'Professional photo editor with AI image generation powered by DALL-E. Apply filters, adjust brightness/contrast/saturation, transform images with rotate and flip, and generate AI images from text descriptions.',
+    icon: ImagePlus,
+    href: '/tools/photo-editor',
+    gradient: 'from-purple-500 via-pink-500 to-orange-500',
+    features: [
+      'AI Image Generation',
+      'Professional Filters',
+      'Advanced Adjustments',
+      'Transform Tools',
+    ],
+    category: 'design',
+    premium: true,
+    new: true,
+    popular: true,
+  },
 
   // Productivity & Workflow Tools
   {
