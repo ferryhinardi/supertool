@@ -1,6 +1,6 @@
 # 🚀 SuperTool - Modern Developer Toolkit
 
-![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen) ![Tests](https://img.shields.io/badge/tests-passing-brightgreen) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue) ![License](https://img.shields.io/badge/license-MIT-blue)
+![Coverage](https://img.shields.io/badge/coverage-32%25-orange)
 
 Professional toolkit with 36+ implemented tools for developers, designers, and productivity enthusiasts. All tools work offline in your browser with no registration required.
 
