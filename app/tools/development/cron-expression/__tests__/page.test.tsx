@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { trackToolEvent } from '@/lib/analytics'
 import CronExpressionPage from '../page'
