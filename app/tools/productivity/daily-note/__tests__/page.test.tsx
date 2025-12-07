@@ -63,31 +63,12 @@ Object.defineProperty(URL, 'revokeObjectURL', {
   writable: true,
 })
 
-// Mock localStorage
-const localStorageMock = (() => {
-  let store: Record<string, string> = {}
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value.toString()
-    },
-    removeItem: (key: string) => {
-      delete store[key]
-    },
-    clear: () => {
-      store = {}
-    },
-  }
-})()
-
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
-})
+// Use global localStorage from vitest.setup.ts
 
 describe('Daily Note Page - Component Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -162,7 +143,7 @@ describe('Daily Note Page - Component Tests', () => {
 describe('Daily Note Page - Template Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -236,7 +217,7 @@ describe('Daily Note Page - Template Tests', () => {
 describe('Daily Note Page - Date Navigation Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -306,7 +287,7 @@ describe('Daily Note Page - Date Navigation Tests', () => {
 describe('Daily Note Page - Save Note Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -369,7 +350,7 @@ describe('Daily Note Page - Save Note Tests', () => {
 describe('Daily Note Page - Copy Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
     mockWriteText.mockClear()
   })
 
@@ -416,7 +397,7 @@ describe('Daily Note Page - Copy Tests', () => {
 describe('Daily Note Page - Download Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -484,7 +465,7 @@ describe('Daily Note Page - Download Tests', () => {
 describe('Daily Note Page - Custom Template Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -566,7 +547,7 @@ describe('Daily Note Page - Custom Template Tests', () => {
 describe('Daily Note Page - Statistics Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -620,7 +601,7 @@ describe('Daily Note Page - Statistics Tests', () => {
 describe('Daily Note Page - Recent Notes Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -653,7 +634,7 @@ describe('Daily Note Page - Recent Notes Tests', () => {
 describe('Daily Note Page - LocalStorage Persistence Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   afterEach(() => {
@@ -670,12 +651,22 @@ describe('Daily Note Page - LocalStorage Persistence Tests', () => {
     fireEvent.change(textarea, { target: { value: 'Persistent note' } })
     await userEvent.click(saveButton as HTMLElement)
 
-    // Check localStorage
-    const savedNotes = localStorageMock.getItem('dailyNotes')
-    expect(savedNotes).toBeTruthy()
+    // Wait for success toast (indicates save was triggered)
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith(expect.stringContaining('saved successfully'))
+    })
+
+    // Wait for localStorage to be updated by useEffect
+    await waitFor(() => {
+      const savedNotes = localStorage.getItem('dailyNotes')
+      expect(savedNotes).toBeTruthy()
+      const parsed = JSON.parse(savedNotes as string)
+      expect(parsed).toHaveLength(1)
+      expect(parsed[0].content).toBe('Persistent note')
+    })
   })
 
-  it('should load notes from localStorage on mount', () => {
+  it('should load notes from localStorage on mount', async () => {
     // Pre-populate localStorage
     const mockNotes = [
       {
@@ -686,13 +677,15 @@ describe('Daily Note Page - LocalStorage Persistence Tests', () => {
         timestamp: new Date().toISOString(),
       },
     ]
-    localStorageMock.setItem('dailyNotes', JSON.stringify(mockNotes))
+    localStorage.setItem('dailyNotes', JSON.stringify(mockNotes))
 
     render(<DailyNotePage />)
 
-    // Should load the note
-    const textarea = screen.getByPlaceholderText('Start writing your note here...')
-    expect(textarea).toHaveValue('# Loaded Note\n\nThis was loaded from storage')
+    // Wait for note to be loaded
+    await waitFor(() => {
+      const textarea = screen.getByPlaceholderText('Start writing your note here...')
+      expect(textarea).toHaveValue('# Loaded Note\n\nThis was loaded from storage')
+    })
   })
 
   it('should persist custom templates to localStorage', async () => {
@@ -715,8 +708,18 @@ describe('Daily Note Page - LocalStorage Persistence Tests', () => {
       await userEvent.click(templateSaveButton as HTMLElement)
     }
 
-    // Check localStorage
-    const savedTemplates = localStorageMock.getItem('dailyNoteTemplates')
-    expect(savedTemplates).toBeTruthy()
+    // Wait for success toast to appear (indicates state was updated)
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith(expect.stringContaining('Custom template'))
+    })
+
+    // Wait for localStorage to be updated by useEffect
+    await waitFor(() => {
+      const savedTemplates = localStorage.getItem('dailyNoteTemplates')
+      expect(savedTemplates).toBeTruthy()
+      const parsed = JSON.parse(savedTemplates as string)
+      expect(parsed).toHaveLength(1)
+      expect(parsed[0].name).toBe('Custom')
+    })
   })
 })

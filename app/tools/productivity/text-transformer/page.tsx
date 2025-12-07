@@ -1052,114 +1052,54 @@ function TextTransformerContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
+            rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
             borderColor: 'cyan.500/20',
             bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-              Pro Tips
-            </CardTitle>
-            <CardDescription>
-              Expert techniques for efficient text transformation and manipulation
-            </CardDescription>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '3' })}>
-            <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
-              <div
-                className={css({
-                  p: '3',
-                  rounded: 'lg',
-                  bg: 'cyan.500/5',
-                  borderLeft: '3px solid',
-                  borderColor: 'cyan.500',
-                })}
-              >
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'cyan.300' })}>
-                    Chain Multiple Transformations:
-                  </strong>{' '}
-                  Apply transformations sequentially for complex text processing. For example:
-                  "Remove Duplicates" → "Sort A-Z" → "Title Case" creates a clean, alphabetized list
-                  with proper capitalization.
-                </p>
-              </div>
-              <div
-                className={css({
-                  p: '3',
-                  rounded: 'lg',
-                  bg: 'cyan.500/5',
-                  borderLeft: '3px solid',
-                  borderColor: 'cyan.500',
-                })}
-              >
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'cyan.300' })}>
-                    Master Regex Find & Replace:
-                  </strong>{' '}
-                  Use regex patterns for advanced text manipulation. Common patterns: \d+ (numbers),
-                  \s+ (whitespace), ^(.+)$ (entire lines), [A-Z] (uppercase letters). Enable "Use
-                  Regex" to unlock powerful pattern matching.
-                </p>
-              </div>
-              <div
-                className={css({
-                  p: '3',
-                  rounded: 'lg',
-                  bg: 'cyan.500/5',
-                  borderLeft: '3px solid',
-                  borderColor: 'cyan.500',
-                })}
-              >
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'cyan.300' })}>Data Cleaning Workflow:</strong>{' '}
-                  For CSV or list data: Use "Trim Lines" to remove extra spaces, "Remove Empty
-                  Lines" to eliminate gaps, "Remove Duplicates" for unique values, then sort or
-                  format as needed. Perfect for preparing data imports.
-                </p>
-              </div>
-              <div
-                className={css({
-                  p: '3',
-                  rounded: 'lg',
-                  bg: 'cyan.500/5',
-                  borderLeft: '3px solid',
-                  borderColor: 'cyan.500',
-                })}
-              >
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'cyan.300' })}>Quick Case Conversions:</strong>{' '}
-                  "Sentence case" for paragraphs, "Title Case" for headings and titles, "camelCase"
-                  for variables, "snake_case" for database fields, "CONSTANT_CASE" for constants.
-                  Choose the right case for your context.
-                </p>
-              </div>
-              <div
-                className={css({
-                  p: '3',
-                  rounded: 'lg',
-                  bg: 'cyan.500/5',
-                  borderLeft: '3px solid',
-                  borderColor: 'cyan.500',
-                })}
-              >
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                  <strong className={css({ color: 'cyan.300' })}>
-                    Keyboard Shortcuts for Speed:
-                  </strong>{' '}
-                  Use Ctrl+A (Cmd+A) to select all text, Ctrl+C to copy results instantly, and the
-                  transformation category filters to quickly find the tool you need. Undo (Ctrl+Z)
-                  works in the text area.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Chain Multiple Transformations:</strong> Apply transformations sequentially
+              for complex text processing. For example: "Remove Duplicates" → "Sort A-Z" → "Title
+              Case" creates a clean, alphabetized list with proper capitalization.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Master Regex Find & Replace:</strong> Use regex patterns for advanced text
+              manipulation. Common patterns: \d+ (numbers), \s+ (whitespace), ^(.+)$ (entire lines),
+              [A-Z] (uppercase letters). Enable "Use Regex" to unlock powerful pattern matching.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Data Cleaning Workflow:</strong> For CSV or list data: Use "Trim Lines" to
+              remove extra spaces, "Remove Empty Lines" to eliminate gaps, "Remove Duplicates" for
+              unique values, then sort or format as needed. Perfect for preparing data imports.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Quick Case Conversions:</strong> "Sentence case" for paragraphs, "Title Case"
+              for headings and titles, "camelCase" for variables, "snake_case" for database fields,
+              "CONSTANT_CASE" for constants. Choose the right case for your context.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Keyboard Shortcuts for Speed:</strong> Use Ctrl+A (Cmd+A) to select all text,
+              Ctrl+C to copy results instantly, and the transformation category filters to quickly
+              find the tool you need. Undo (Ctrl+Z) works in the text area.
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* How to Use Section */}

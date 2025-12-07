@@ -114,7 +114,7 @@ describe('Batch Rename Page', () => {
       })
 
       const prefixInput = screen.getByLabelText('Prefix') as HTMLInputElement
-      await userEvent.type(prefixInput, 'new_')
+      fireEvent.change(prefixInput, { target: { value: 'new_' } })
 
       expect(prefixInput).toHaveValue('new_')
     })
@@ -137,7 +137,7 @@ describe('Batch Rename Page', () => {
       })
 
       const suffixInput = screen.getByLabelText('Suffix') as HTMLInputElement
-      await userEvent.type(suffixInput, '_backup')
+      fireEvent.change(suffixInput, { target: { value: '_backup' } })
 
       expect(suffixInput).toHaveValue('_backup')
     })
@@ -162,8 +162,8 @@ describe('Batch Rename Page', () => {
       const findInput = findInputs[0]
       const replaceInput = findInputs[1]
 
-      await userEvent.type(findInput, 'old')
-      await userEvent.type(replaceInput, 'new')
+      fireEvent.change(findInput, { target: { value: 'old' } })
+      fireEvent.change(replaceInput, { target: { value: 'new' } })
 
       expect(findInput).toHaveValue('old')
       expect(replaceInput).toHaveValue('new')
@@ -234,7 +234,7 @@ describe('Batch Rename Page', () => {
       })
 
       const prefixInput = screen.getByLabelText('Prefix') as HTMLInputElement
-      await userEvent.type(prefixInput, 'test_')
+      fireEvent.change(prefixInput, { target: { value: 'test_' } })
 
       const resetButton = screen.getByText('Reset')
       await userEvent.click(resetButton)

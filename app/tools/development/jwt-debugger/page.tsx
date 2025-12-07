@@ -86,11 +86,12 @@ function JWTDebuggerContent() {
 
     // Auto verify if we have a secret
     if (secret && decoded.isValid) {
-      const result = verifyJWT(token, secret, algorithm)
-      setVerificationResult(result)
-      if (result.isValid) {
-        trackToolEvent('jwt_debugger_verify', { algorithm, success: true })
-      }
+      verifyJWT(token, secret, algorithm).then((result) => {
+        setVerificationResult(result)
+        if (result.isValid) {
+          trackToolEvent('jwt_debugger_verify', { algorithm, success: true })
+        }
+      })
     }
   }, [token, secret, algorithm])
 
@@ -100,7 +101,7 @@ function JWTDebuggerContent() {
   }
 
   // Handle verification
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (!token || !decodedToken?.isValid) {
       toast.error('Please enter a valid JWT token')
       return
@@ -111,7 +112,7 @@ function JWTDebuggerContent() {
       return
     }
 
-    const result = verifyJWT(token, secret, algorithm)
+    const result = await verifyJWT(token, secret, algorithm)
     setVerificationResult(result)
 
     if (result.isValid) {

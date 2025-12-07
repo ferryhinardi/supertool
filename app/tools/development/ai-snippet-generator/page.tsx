@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Braces, Check, Code, Copy, Lightbulb, Sparkles, Wand2 } from 'lucide-react'
+import { Braces, Check, Code, Copy, Lightbulb, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -482,47 +482,51 @@ function AISnippetGeneratorContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: snippet ? 0.3 : 0.2, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Wand2 className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>
-                    • Be specific about what you want - include function names, parameters, and
-                    expected behavior
-                  </li>
-                  <li>
-                    • Mention edge cases or constraints (e.g., "handle null values", "optimize for
-                    large arrays")
-                  </li>
-                  <li>
-                    • For complex logic, break it down into smaller, focused prompts for better
-                    results
-                  </li>
-                  <li>
-                    • Include context like "following best practices" or "with error handling" for
-                    production-ready code
-                  </li>
-                  <li>• Review and test generated code before using in production</li>
-                  <li>
-                    • All code generation uses OpenAI GPT models - ensure your API key is configured
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Be Specific:</strong> Include function names, parameters, and expected
+              behavior in your description
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Edge Cases:</strong> Mention constraints like "handle null values" or
+              "optimize for large arrays"
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Break It Down:</strong> For complex logic, use smaller focused prompts for
+              better results
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Production Ready:</strong> Include context like "following best practices" or
+              "with error handling"
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Review and test generated code before using in production
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All code generation uses OpenAI GPT models - ensure your API key is configured
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

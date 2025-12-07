@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { AlertCircle, Copy, FileText, GitCompare, Sparkles, Trash2 } from 'lucide-react'
+import { AlertCircle, Copy, FileText, GitCompare, Trash2 } from 'lucide-react'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -1002,45 +1002,47 @@ function TextSimilarityContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>
-                    <strong className={css({ color: 'white' })}>Cosine Similarity:</strong> Best for
-                    comparing meaning and semantic content, regardless of word order
-                  </li>
-                  <li>
-                    <strong className={css({ color: 'white' })}>Levenshtein Distance:</strong>{' '}
-                    Perfect for detecting typos and character-level differences
-                  </li>
-                  <li>
-                    <strong className={css({ color: 'white' })}>Jaccard Index:</strong> Ideal for
-                    measuring word overlap and set-based similarity
-                  </li>
-                  <li>
-                    • Use &quot;Show all algorithms&quot; to compare different similarity metrics
-                  </li>
-                  <li>
-                    • All processing happens in your browser - your data never leaves your device
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Cosine Similarity:</strong> Best for comparing meaning and semantic content,
+              regardless of word order
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Levenshtein Distance:</strong> Perfect for detecting typos and character-level
+              differences
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Jaccard Index:</strong> Ideal for measuring word overlap and set-based
+              similarity
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use &quot;Show all algorithms&quot; to compare different similarity metrics
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All processing happens in your browser - your data never leaves your device
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Warning for Long Texts */}

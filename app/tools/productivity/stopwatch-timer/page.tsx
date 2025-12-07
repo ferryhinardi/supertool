@@ -1,19 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import {
-  Bell,
-  Clock,
-  Download,
-  Pause,
-  Play,
-  Plus,
-  RotateCcw,
-  Save,
-  Sparkles,
-  Trash2,
-  X,
-} from 'lucide-react'
+import { Bell, Clock, Download, Pause, Play, Plus, RotateCcw, Save, Trash2, X } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -1285,32 +1273,44 @@ function StopwatchTimerContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'amber.500/20',
-            bg: 'amber.500/5',
+            bg: 'rgba(251, 191, 36, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'amber.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'amber.300' })}>
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>• Use lap times to track intervals during workouts or tasks</li>
-                  <li>• Save frequently used durations as presets for quick access</li>
-                  <li>• Enable notifications to get alerts when timers complete</li>
-                  <li>• Run multiple timers simultaneously for complex schedules</li>
-                  <li>• All data is saved locally and works offline</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'amber.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use lap times to track intervals during workouts or tasks
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Save frequently used durations as presets for quick access
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Enable notifications to get alerts when timers complete
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Run multiple timers simultaneously for complex schedules
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All data is saved locally and works offline
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

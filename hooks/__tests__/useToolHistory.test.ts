@@ -1,37 +1,15 @@
-import { act, renderHook } from '@testing-library/react'
+import { act, renderHook, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useToolHistory } from '../tools/useToolHistory'
 
-// Mock localStorage
-const localStorageMock = (() => {
-  let store: Record<string, string> = {}
-
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value.toString()
-    },
-    removeItem: (key: string) => {
-      delete store[key]
-    },
-    clear: () => {
-      store = {}
-    },
-  }
-})()
-
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
-})
-
 describe('useToolHistory', () => {
   beforeEach(() => {
-    localStorageMock.clear()
+    localStorage.clear()
     vi.clearAllMocks()
   })
 
   afterEach(() => {
-    localStorageMock.clear()
+    localStorage.clear()
   })
 
   describe('Basic Operations', () => {
@@ -152,7 +130,7 @@ describe('useToolHistory', () => {
 
       expect(result.current.items).toHaveLength(0)
       // clearAll removes the key, which sets empty array instead of null
-      const stored = localStorageMock.getItem('test_history')
+      const stored = localStorage.getItem('test_history')
       expect(stored === null || stored === '[]').toBe(true)
     })
   })
@@ -445,21 +423,28 @@ describe('useToolHistory', () => {
         })
       )
 
-      await act(async () => {
-        result.current.addItem({ text: 'Persisted' })
-        // Wait for useEffect to run
-        await new Promise((resolve) => setTimeout(resolve, 0))
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
       })
 
-      const stored = localStorageMock.getItem('test_history')
-      expect(stored).not.toBeNull()
+      await act(async () => {
+        result.current.addItem({ text: 'Persisted' })
+      })
 
+      // Wait for save effect to run
+      await waitFor(() => {
+        const stored = localStorage.getItem('test_history')
+        expect(stored).not.toBeNull()
+      })
+
+      const stored = localStorage.getItem('test_history')
       const parsed = JSON.parse(stored!)
       expect(parsed).toHaveLength(1)
       expect(parsed[0].data.text).toBe('Persisted')
     })
 
-    it('should load from localStorage on mount', () => {
+    it('should load from localStorage on mount', async () => {
       const testData = [
         {
           id: '1',
@@ -469,7 +454,7 @@ describe('useToolHistory', () => {
         },
       ]
 
-      localStorageMock.setItem('test_history', JSON.stringify(testData))
+      localStorage.setItem('test_history', JSON.stringify(testData))
 
       const { result } = renderHook(() =>
         useToolHistory<{ text: string }>({
@@ -477,7 +462,11 @@ describe('useToolHistory', () => {
         })
       )
 
-      expect(result.current.items).toHaveLength(1)
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+        expect(result.current.items).toHaveLength(1)
+      })
+
       expect(result.current.items[0].data.text).toBe('Loaded')
     })
   })

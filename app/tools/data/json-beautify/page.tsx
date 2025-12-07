@@ -907,63 +907,44 @@ function JSONBeautifyContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
         >
-          <Card
+          <div
             className={css({
-              border: '1px solid',
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
               borderColor: 'cyan.500/20',
-              bg: 'cyan.500/5',
+              bg: 'rgba(6, 182, 212, 0.05)',
+              p: { base: '4', sm: '5', md: '6' },
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-              <div
-                className={css({
-                  display: 'flex',
-                  alignItems: 'start',
-                  gap: '4',
-                })}
-              >
-                <Sparkles
-                  className={css({
-                    h: '6',
-                    w: '6',
-                    color: 'cyan.400',
-                    flexShrink: '0',
-                  })}
-                />
-                <div className={css({ spaceY: '2' })}>
-                  <h3
-                    className={css({
-                      fontSize: 'lg',
-                      fontWeight: 'semibold',
-                      color: 'cyan.300',
-                    })}
-                  >
-                    Pro Tips
-                  </h3>
-                  <ul
-                    className={css({
-                      spaceY: '2',
-                      fontSize: 'sm',
-                      color: 'white',
-                    })}
-                  >
-                    <li>• Click any value or key in Tree View to instantly copy its JSON path</li>
-                    <li>
-                      • Use keyboard shortcuts: Ctrl+B to beautify, Ctrl+M to minify, Ctrl+C to copy
-                    </li>
-                    <li>
-                      • All processing happens in your browser - your data never leaves your device
-                    </li>
-                    <li>• Switch to TypeScript view to auto-generate interfaces from your JSON</li>
-                    <li>
-                      • Validate JSON against schemas or compare two JSON objects side-by-side
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            <h3
+              className={css({
+                mb: '3',
+                fontSize: { base: 'base', sm: 'lg' },
+                fontWeight: 'bold',
+                color: 'cyan.300',
+              })}
+            >
+              Pro Tips
+            </h3>
+            <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Click any value or key in Tree View to instantly copy its JSON path
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Use keyboard shortcuts: Ctrl+B to beautify, Ctrl+M to minify, Ctrl+C to copy
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                All processing happens in your browser - your data never leaves your device
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Switch to TypeScript view to auto-generate interfaces from your JSON
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Validate JSON against schemas or compare two JSON objects side-by-side
+              </li>
+            </ul>
+          </div>
         </motion.div>
 
         {/* How to Use Section */}

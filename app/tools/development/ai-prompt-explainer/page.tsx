@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import {
-  AlertCircle,
   ArrowRight,
   Check,
   Copy,
@@ -701,48 +700,44 @@ function AIPromptExplainerContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
+            bg: 'rgba(168, 85, 247, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <AlertCircle className={css({ h: '5', w: '5', color: 'yellow.400' })} />
-              Pro Tips for Better Prompts
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className={css({ spaceY: '3' })}>
-              {[
-                'Be specific and clear about what you want the AI to do',
-                'Provide context and background information when relevant',
-                'Use examples to illustrate the format or style you need',
-                'Break complex tasks into smaller, manageable steps',
-                'Specify constraints like length, tone, or target audience',
-              ].map((tip) => (
-                <li
-                  key={tip.substring(0, 30)}
-                  className={css({
-                    display: 'flex',
-                    alignItems: 'start',
-                    gap: '3',
-                    fontSize: 'sm',
-                    color: 'white',
-                  })}
-                >
-                  <Check
-                    className={css({ h: '5', w: '5', color: 'purple.400', flexShrink: '0' })}
-                  />
-                  {tip}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'purple.300',
+            })}
+          >
+            Pro Tips for Better Prompts
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Be specific and clear about what you want the AI to do
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Provide context and background information when relevant
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use examples to illustrate the format or style you need
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Break complex tasks into smaller, manageable steps
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Specify constraints like length, tone, or target audience
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

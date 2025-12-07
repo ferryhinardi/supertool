@@ -10,7 +10,6 @@ import {
   History,
   Lightbulb,
   Loader2,
-  Sparkles,
   Trash2,
   XCircle,
 } from 'lucide-react'
@@ -543,67 +542,54 @@ export default function HashGeneratorPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card
+        <div
           className={css({
+            rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
-            borderColor: 'cyan.500/30',
+            borderColor: 'cyan.500/20',
             bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-              Pro Tips
-            </CardTitle>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '3' })}>
-            <ul className={css({ spaceY: '3', pl: '0', fontSize: 'sm', color: 'white' })}>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Multiple Algorithms:</strong> Generate
-                  MD5, SHA-1, SHA-256, SHA-384, and SHA-512 hashes simultaneously. SHA-256 is the
-                  industry standard, while SHA-384/512 offer even stronger security for critical
-                  applications.
-                </span>
-              </li>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>File Hashing Support:</strong> Upload
-                  any file type to generate cryptographic hashes. Perfect for software verification,
-                  integrity checking, and detecting file tampering or corruption.
-                </span>
-              </li>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Hash Verification:</strong> Compare
-                  generated hashes against expected values to verify file integrity. A single byte
-                  difference produces completely different hashes, instantly revealing
-                  modifications.
-                </span>
-              </li>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Browser-Based Processing:</strong> All
-                  hashing happens locally using the Web Crypto API - your data never leaves your
-                  device, ensuring complete privacy and security.
-                </span>
-              </li>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Common Use Cases:</strong> Verify
-                  software downloads, create file fingerprints, check data integrity, generate
-                  checksums, and ensure secure password storage (with proper salting).
-                </span>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Multiple Algorithms:</strong> Generate MD5, SHA-1, SHA-256, SHA-384, and
+              SHA-512 hashes simultaneously. SHA-256 is the industry standard, while SHA-384/512
+              offer even stronger security for critical applications.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>File Hashing Support:</strong> Upload any file type to generate cryptographic
+              hashes. Perfect for software verification, integrity checking, and detecting file
+              tampering or corruption.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Hash Verification:</strong> Compare generated hashes against expected values
+              to verify file integrity. A single byte difference produces completely different
+              hashes, instantly revealing modifications.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Browser-Based Processing:</strong> All hashing happens locally using the Web
+              Crypto API - your data never leaves your device, ensuring complete privacy and
+              security.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Common Use Cases:</strong> Verify software downloads, create file
+              fingerprints, check data integrity, generate checksums, and ensure secure password
+              storage (with proper salting).
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Input Section */}

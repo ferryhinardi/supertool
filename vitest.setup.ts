@@ -52,8 +52,106 @@ vi.mock('next/navigation', () => ({
   useParams: () => ({}),
 }))
 
+// Mock Framer Motion to disable animations in tests
+vi.mock('framer-motion', async () => {
+  const actual = await vi.importActual('framer-motion')
+  return {
+    ...actual,
+    motion: new Proxy(
+      {},
+      {
+        get: (_target, prop) => {
+          // Return a component that renders its children without animation
+          return ({ children, ...props }: any) => {
+            const React = require('react')
+            return React.createElement(prop as string, props, children)
+          }
+        },
+      }
+    ),
+  }
+})
+
+// Mock Supabase globally with full chain
+vi.mock('@/lib/supabaseClient', () => ({
+  supabase: {
+    from: vi.fn(() => {
+      const selectChain = {
+        eq: vi.fn(() => ({
+          single: vi.fn(() => Promise.resolve({ data: null, error: null })),
+          data: [],
+          error: null,
+        })),
+        data: [],
+        error: null,
+      }
+      return {
+        select: vi.fn(() => selectChain),
+        insert: vi.fn(() => Promise.resolve({ data: null, error: null })),
+        update: vi.fn(() => ({
+          eq: vi.fn(() => Promise.resolve({ data: null, error: null })),
+        })),
+        delete: vi.fn(() => ({
+          eq: vi.fn(() => Promise.resolve({ data: null, error: null })),
+        })),
+      }
+    }),
+    auth: {
+      signUp: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })),
+      signInWithPassword: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })),
+      signInWithOAuth: vi.fn(() => Promise.resolve({ data: { url: null }, error: null })),
+      signOut: vi.fn(() => Promise.resolve({ error: null })),
+      resetPasswordForEmail: vi.fn(() => Promise.resolve({ error: null })),
+      getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
+      onAuthStateChange: vi.fn(() => ({
+        data: { subscription: { unsubscribe: vi.fn() } },
+      })),
+    },
+  },
+}))
+
+// Mock localStorage
+class LocalStorageMock {
+  private store: Map<string, string>
+
+  constructor() {
+    this.store = new Map()
+  }
+
+  clear() {
+    this.store.clear()
+  }
+
+  getItem(key: string) {
+    return this.store.get(key) || null
+  }
+
+  setItem(key: string, value: string) {
+    this.store.set(key, value)
+  }
+
+  removeItem(key: string) {
+    this.store.delete(key)
+  }
+
+  get length() {
+    return this.store.size
+  }
+
+  key(index: number) {
+    return Array.from(this.store.keys())[index] || null
+  }
+}
+
 // Setup global mocks before all tests
 beforeAll(async () => {
+  // Mock localStorage globally
+  Object.defineProperty(globalThis, 'localStorage', {
+    value: new LocalStorageMock(),
+    writable: true,
+    configurable: true,
+  })
+
   // Mock process.env for browser mode
   if (typeof window !== 'undefined' && typeof process === 'undefined') {
     // @ts-expect-error - Mock process for browser mode
@@ -192,6 +290,9 @@ beforeAll(async () => {
 
 // Setup spies before each test
 beforeEach(() => {
+  // Clear localStorage before each test
+  localStorage.clear()
+
   // Reset and spy on clipboard methods for each test
   if (navigator.clipboard) {
     // Check if methods exist before spying

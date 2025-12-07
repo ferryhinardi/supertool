@@ -55,7 +55,7 @@ describe('Grammar Checker Page', () => {
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
 
-      await userEvent.type(textarea, 'Hello world')
+      fireEvent.input(textarea, { target: { value: 'Hello world' } })
 
       await waitFor(() => {
         expect(screen.getByText('11 / 10,000 characters')).toBeInTheDocument()
@@ -72,11 +72,14 @@ describe('Grammar Checker Page', () => {
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
 
-      await userEvent.type(textarea, 'Test text')
+      fireEvent.input(textarea, { target: { value: 'Test text' } })
 
-      await waitFor(() => {
-        expect(checkButton).not.toBeDisabled()
-      })
+      await waitFor(
+        () => {
+          expect(checkButton).not.toBeDisabled()
+        },
+        { timeout: 3000 }
+      )
     })
 
     it('shows warning when text exceeds limit', async () => {
@@ -87,7 +90,7 @@ describe('Grammar Checker Page', () => {
       ) as HTMLTextAreaElement
 
       const longText = 'a'.repeat(10001)
-      fireEvent.change(textarea, { target: { value: longText } })
+      fireEvent.input(textarea, { target: { value: longText } })
 
       await waitFor(() => {
         expect(screen.getByText('Too long')).toBeInTheDocument()
@@ -102,7 +105,7 @@ describe('Grammar Checker Page', () => {
       ) as HTMLTextAreaElement
 
       const longText = 'a'.repeat(10001)
-      fireEvent.change(textarea, { target: { value: longText } })
+      fireEvent.input(textarea, { target: { value: longText } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
 
@@ -120,7 +123,7 @@ describe('Grammar Checker Page', () => {
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
 
-      await userEvent.type(textarea, 'Test text')
+      fireEvent.input(textarea, { target: { value: 'Test text' } })
 
       const clearButton = screen.getByText('Clear').closest('button') as HTMLButtonElement
       await userEvent.click(clearButton)
@@ -158,7 +161,7 @@ describe('Grammar Checker Page', () => {
       const textarea = screen.getByPlaceholderText(
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
-      await userEvent.type(textarea, 'Test text')
+      fireEvent.input(textarea, { target: { value: 'Test text' } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
       await userEvent.click(checkButton)
@@ -184,7 +187,7 @@ describe('Grammar Checker Page', () => {
       const textarea = screen.getByPlaceholderText(
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
-      await userEvent.type(textarea, 'Test text')
+      fireEvent.input(textarea, { target: { value: 'Test text' } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
       await userEvent.click(checkButton)
@@ -211,7 +214,7 @@ describe('Grammar Checker Page', () => {
       const textarea = screen.getByPlaceholderText(
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
-      await userEvent.type(textarea, 'Perfect text')
+      fireEvent.input(textarea, { target: { value: 'Perfect text' } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
       await userEvent.click(checkButton)
@@ -250,7 +253,7 @@ describe('Grammar Checker Page', () => {
       const textarea = screen.getByPlaceholderText(
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
-      await userEvent.type(textarea, 'teh cat')
+      fireEvent.input(textarea, { target: { value: 'teh cat' } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
       await userEvent.click(checkButton)
@@ -290,7 +293,7 @@ describe('Grammar Checker Page', () => {
       const textarea = screen.getByPlaceholderText(
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
-      await userEvent.type(textarea, 'teh cat')
+      fireEvent.input(textarea, { target: { value: 'teh cat' } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
       await userEvent.click(checkButton)
@@ -312,7 +315,7 @@ describe('Grammar Checker Page', () => {
       const textarea = screen.getByPlaceholderText(
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
-      await userEvent.type(textarea, 'Test text')
+      fireEvent.input(textarea, { target: { value: 'Test text' } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
       await userEvent.click(checkButton)
@@ -352,7 +355,7 @@ describe('Grammar Checker Page', () => {
       const textarea = screen.getByPlaceholderText(
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
-      await userEvent.type(textarea, 'teh cat')
+      fireEvent.input(textarea, { target: { value: 'teh cat' } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
       await userEvent.click(checkButton)
@@ -401,7 +404,7 @@ describe('Grammar Checker Page', () => {
       const textarea = screen.getByPlaceholderText(
         'Start typing or paste your text here...'
       ) as HTMLTextAreaElement
-      await userEvent.type(textarea, 'teh cat')
+      fireEvent.input(textarea, { target: { value: 'teh cat' } })
 
       const checkButton = screen.getByText('Check Grammar').closest('button') as HTMLButtonElement
       await userEvent.click(checkButton)

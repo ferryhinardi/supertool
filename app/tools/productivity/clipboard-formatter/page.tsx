@@ -927,41 +927,44 @@ function ClipboardFormatterPageContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'amber.500/20',
-            bg: 'amber.500/5',
+            bg: 'rgba(251, 191, 36, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'amber.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'amber.300' })}>
-                  Pro Tips
-                </h3>
-                <ul
-                  className={css({
-                    spaceY: '2',
-                    fontSize: 'sm',
-                    color: 'white',
-                    listStylePosition: 'inside',
-                  })}
-                >
-                  <li>
-                    • Click &quot;Paste from Clipboard&quot; or type directly into the input area
-                  </li>
-                  <li>• Toggle auto-format off in settings to format manually when needed</li>
-                  <li>• Use case transformation buttons for quick text conversions</li>
-                  <li>• Access your last 5 clipboard items from the history sidebar</li>
-                  <li>• All settings are saved automatically in your browser</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'amber.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Click &quot;Paste from Clipboard&quot; or type directly into the input area
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Toggle auto-format off in settings to format manually when needed
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use case transformation buttons for quick text conversions
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Access your last 5 clipboard items from the history sidebar
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All settings are saved automatically in your browser
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
