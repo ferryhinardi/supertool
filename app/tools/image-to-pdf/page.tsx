@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import type { Worker as TesseractWorker } from 'tesseract.js'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -54,6 +55,8 @@ export default function ImageToPdfPage() {
   const [margin, setMargin] = useState(10)
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [enableOCR, setEnableOCR] = useState(false)
+  const [ocrProgress, setOcrProgress] = useState<string>('')
 
   // Track page visit
   useEffect(() => {
@@ -144,6 +147,7 @@ export default function ImageToPdfPage() {
 
     setIsGenerating(true)
     setProgress(0)
+    setOcrProgress('')
 
     try {
       trackToolEvent('pdf_generation_started', {
@@ -151,6 +155,7 @@ export default function ImageToPdfPage() {
         pageSize,
         orientation,
         imageFit,
+        enableOCR,
       })
 
       const startTime = Date.now()
@@ -167,6 +172,15 @@ export default function ImageToPdfPage() {
         format: [pageWidth, pageHeight],
       })
 
+      // Load Tesseract if OCR is enabled
+      let ocrWorker: Tesseract.Worker | null = null
+      if (enableOCR) {
+        setOcrProgress('Loading OCR engine...')
+        const { createWorker } = await import('tesseract.js')
+        ocrWorker = await createWorker('eng')
+        setOcrProgress('OCR engine ready')
+      }
+
       // Process each image
       for (let i = 0; i < images.length; i++) {
         const image = images[i]
@@ -177,6 +191,15 @@ export default function ImageToPdfPage() {
           if (i > 0) {
             pdf.addPage()
           }
+
+          // Load image into canvas to get image data
+          const img = new Image()
+          img.crossOrigin = 'anonymous'
+          await new Promise<void>((resolve, reject) => {
+            img.onload = () => resolve()
+            img.onerror = reject
+            img.src = image.preview
+          })
 
           // Calculate image dimensions based on fit mode
           const availableWidth = pageWidth - margin * 2
@@ -189,7 +212,7 @@ export default function ImageToPdfPage() {
 
           if (imageFit === 'contain' || imageFit === 'scale-down') {
             // Maintain aspect ratio and fit within page
-            const imgAspectRatio = image.width / image.height
+            const imgAspectRatio = img.width / img.height
             const pageAspectRatio = availableWidth / availableHeight
 
             if (imgAspectRatio > pageAspectRatio) {
@@ -205,7 +228,7 @@ export default function ImageToPdfPage() {
             }
           } else if (imageFit === 'cover') {
             // Cover entire page while maintaining aspect ratio
-            const imgAspectRatio = image.width / image.height
+            const imgAspectRatio = img.width / img.height
             const pageAspectRatio = availableWidth / availableHeight
 
             if (imgAspectRatio > pageAspectRatio) {
@@ -220,8 +243,63 @@ export default function ImageToPdfPage() {
           }
           // 'fill' mode uses full available space (default values)
 
-          // Add image to PDF
-          pdf.addImage(image.preview, 'JPEG', x, y, imgWidth, imgHeight)
+          // If OCR is enabled, extract text first and add it behind the image
+          if (enableOCR && ocrWorker) {
+            setOcrProgress(`Extracting text from image ${i + 1}/${images.length}...`)
+
+            // Perform OCR to extract text
+            const {
+              data: { text },
+            } = await ocrWorker.recognize(img)
+
+            // Add extracted text as searchable layer (will be behind the image)
+            if (text.trim()) {
+              // Use very small font size and light color to make text minimally visible
+              // but still searchable/selectable in the PDF
+              pdf.setFontSize(6)
+              pdf.setTextColor(250, 250, 250) // Very light gray - barely visible
+
+              // Add text as searchable content
+              // Split text into lines that fit within the image area
+              const lines = pdf.splitTextToSize(text.trim(), imgWidth - 10)
+              let textY = y + 4
+
+              for (const line of lines) {
+                if (textY < y + imgHeight - 4) {
+                  pdf.text(line, x + 5, textY)
+                  textY += 3 // Line height in mm
+                }
+              }
+            }
+          }
+
+          // Create canvas to ensure proper image rendering
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d', { willReadFrequently: false })
+          if (!ctx) {
+            throw new Error('Could not get canvas context')
+          }
+
+          // Set canvas size to match image
+          canvas.width = img.width
+          canvas.height = img.height
+
+          // Draw image to canvas
+          ctx.drawImage(img, 0, 0, img.width, img.height)
+
+          // Wait for canvas to finish rendering
+          await new Promise((resolve) => setTimeout(resolve, 10))
+
+          // Convert to data URL with high quality
+          const imgData = canvas.toDataURL('image/jpeg', 0.95)
+
+          // Verify we have valid image data
+          if (!imgData || imgData === 'data:,') {
+            throw new Error('Failed to generate image data')
+          }
+
+          // Add image to PDF on top of the text (image will cover the text layer)
+          pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight)
 
           // Update image status
           setImages((prev) =>
@@ -237,6 +315,11 @@ export default function ImageToPdfPage() {
         }
       }
 
+      // Cleanup OCR worker
+      if (ocrWorker) {
+        await ocrWorker.terminate()
+      }
+
       // Save PDF
       const fileName = `images-to-pdf-${Date.now()}.pdf`
       pdf.save(fileName)
@@ -248,6 +331,7 @@ export default function ImageToPdfPage() {
         pageSize,
         orientation,
         imageFit,
+        enableOCR,
         duration,
         success: true,
       })
@@ -263,8 +347,9 @@ export default function ImageToPdfPage() {
     } finally {
       setIsGenerating(false)
       setProgress(0)
+      setOcrProgress('')
     }
-  }, [images, pageSize, orientation, imageFit, margin])
+  }, [images, pageSize, orientation, imageFit, margin, enableOCR])
 
   // Cleanup URLs on unmount
   useEffect(() => {
@@ -778,6 +863,81 @@ export default function ImageToPdfPage() {
                     }}
                   />
                 </div>
+
+                {/* OCR Toggle */}
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    p: '4',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: enableOCR ? 'blue.500/30' : 'gray.700',
+                    bg: enableOCR ? 'blue.500/10' : 'gray.800/50',
+                    transition: 'all 300ms',
+                  })}
+                >
+                  <div className={css({ spaceY: '1' })}>
+                    <label
+                      htmlFor="enable-ocr"
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                        cursor: 'pointer',
+                      })}
+                    >
+                      Extract Text (OCR)
+                    </label>
+                    <p
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'gray.500',
+                      })}
+                    >
+                      Convert image text to searchable PDF text
+                    </p>
+                  </div>
+                  <button
+                    id="enable-ocr"
+                    type="button"
+                    role="switch"
+                    aria-checked={enableOCR}
+                    onClick={() => setEnableOCR(!enableOCR)}
+                    className={css({
+                      position: 'relative',
+                      display: 'inline-flex',
+                      h: '6',
+                      w: '11',
+                      flexShrink: 0,
+                      cursor: 'pointer',
+                      rounded: 'full',
+                      border: '2px solid transparent',
+                      transition: 'all 200ms',
+                      bg: enableOCR ? 'blue.500' : 'gray.700',
+                      _focus: {
+                        outline: 'none',
+                        ring: '2px',
+                        ringColor: 'blue.500/20',
+                        ringOffset: '2px',
+                      },
+                    })}
+                  >
+                    <span
+                      className={css({
+                        display: 'inline-block',
+                        h: '5',
+                        w: '5',
+                        transform: enableOCR ? 'translateX(20px)' : 'translateX(0)',
+                        rounded: 'full',
+                        bg: 'white',
+                        shadow: 'lg',
+                        transition: 'all 200ms',
+                      })}
+                    />
+                  </button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -807,7 +967,7 @@ export default function ImageToPdfPage() {
                   color: 'gray.400',
                 })}
               >
-                Generating PDF... {Math.round(progress)}%
+                {ocrProgress || `Generating PDF... ${Math.round(progress)}%`}
               </p>
             </div>
           )}
