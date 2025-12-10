@@ -463,6 +463,11 @@ type ToolEvent =
   | 'photo_editor_ai_generate_start'
   | 'photo_editor_ai_generate_success'
   | 'photo_editor_ai_generate_error'
+  | 'image_to_pdf_opened'
+  | 'images_added'
+  | 'pdf_generation_started'
+  | 'pdf_generated'
+  | 'pdf_generation_failed'
 
 // Type-safe gtag wrapper
 declare global {

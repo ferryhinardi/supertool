@@ -163,6 +163,17 @@ export const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'Image to PDF Converter',
+    description:
+      'Convert JPG, PNG, WebP, and other image formats to PDF instantly. Combine multiple images into a single PDF document with customizable page size, orientation, and layout options.',
+    icon: FileText,
+    href: '/tools/image-to-pdf',
+    gradient: 'from-blue-500 to-cyan-500',
+    features: ['Multiple Images', 'Custom Pages', 'No Upload', 'Instant Download'],
+    category: 'media',
+    new: true,
+  },
+  {
     title: 'Video Subtitle Combiner',
     description:
       'Merge SRT subtitle files with your videos directly in the browser. Burn subtitles permanently into video files with customizable fonts, colors, and positioning using FFmpeg.',

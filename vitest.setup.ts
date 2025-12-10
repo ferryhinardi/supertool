@@ -27,8 +27,14 @@ beforeAll(async () => {
         NODE_ENV: 'test',
         NEXT_PUBLIC_ENABLE_ADS: 'false',
         NEXT_PUBLIC_GOOGLE_ADSENSE_ID: '',
+        NEXT_PUBLIC_SUPABASE_URL: 'https://test.supabase.co',
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
       },
     }
+  } else {
+    // Set env vars for Node.js environment
+    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
   }
 
   // Import CSS for browser mode screenshots
