@@ -21,6 +21,7 @@ export type OperationType =
   | 'split'
   | 'compress'
   | 'toImages'
+  | 'imagesToPdf'
   | 'watermark'
   | 'extract'
   | 'rotate'
@@ -36,6 +37,8 @@ interface ProcessOptions {
   extractStartPage?: number
   extractEndPage?: number
   rotationAngle?: number
+  imageToPdfPageSize?: 'A4' | 'Letter' | 'Legal' | 'Original'
+  imageToPdfFitMode?: 'contain' | 'cover' | 'fill'
 }
 
 /**
@@ -93,6 +96,13 @@ export class PDFBatchProcessor {
           break
         case 'toImages':
           await this.convertToImages(pdf)
+          break
+        case 'imagesToPdf':
+          await this.convertImagesToPDF(
+            pdf,
+            options.imageToPdfPageSize || 'A4',
+            options.imageToPdfFitMode || 'contain'
+          )
           break
         case 'watermark':
           await this.addWatermark(
@@ -609,6 +619,160 @@ export class PDFBatchProcessor {
 
     const grayscaleBytes = await pdfDoc.save()
     const finalBlob = new Blob([new Uint8Array(grayscaleBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: finalBlob,
+      processedSize: finalBlob.size,
+    })
+  }
+
+  private async convertImagesToPDF(
+    pdf: PDFFile,
+    pageSize: 'A4' | 'Letter' | 'Legal' | 'Original',
+    fitMode: 'contain' | 'cover' | 'fill'
+  ): Promise<void> {
+    const { PDFDocument } = await import('pdf-lib')
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    const pdfDoc = await PDFDocument.create()
+
+    // Define page dimensions (in points: 1 point = 1/72 inch)
+    const pageSizes = {
+      A4: { width: 595, height: 842 }, // 210mm x 297mm
+      Letter: { width: 612, height: 792 }, // 8.5" x 11"
+      Legal: { width: 612, height: 1008 }, // 8.5" x 14"
+      Original: { width: 0, height: 0 }, // Will be set based on image dimensions
+    }
+
+    const targetPageSize = pageSizes[pageSize]
+
+    // Load image
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const mimeType = pdf.file.type
+
+    let embeddedImage:
+      | Awaited<ReturnType<typeof pdfDoc.embedPng>>
+      | Awaited<ReturnType<typeof pdfDoc.embedJpg>>
+
+    this.updateCallback(pdf.id, { progress: 30 })
+
+    // Embed image based on type
+    if (mimeType === 'image/png') {
+      embeddedImage = await pdfDoc.embedPng(arrayBuffer)
+    } else if (mimeType === 'image/jpeg' || mimeType === 'image/jpg') {
+      embeddedImage = await pdfDoc.embedJpg(arrayBuffer)
+    } else {
+      // For other formats (like WebP), convert to PNG first
+      const img = new Image()
+      const blob = new Blob([arrayBuffer], { type: mimeType })
+      const url = URL.createObjectURL(blob)
+
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = () => reject(new Error('Failed to load image'))
+        img.src = url
+      })
+
+      const canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
+      const ctx = canvas.getContext('2d')
+      if (!ctx) throw new Error('Could not get canvas context')
+      ctx.drawImage(img, 0, 0)
+
+      const pngBlob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob)
+          else reject(new Error('Failed to convert image to PNG'))
+        }, 'image/png')
+      })
+
+      URL.revokeObjectURL(url)
+      embeddedImage = await pdfDoc.embedPng(await pngBlob.arrayBuffer())
+    }
+
+    this.updateCallback(pdf.id, { progress: 60 })
+
+    const imageWidth = embeddedImage.width
+    const imageHeight = embeddedImage.height
+
+    let pageWidth: number,
+      pageHeight: number,
+      x: number,
+      y: number,
+      drawWidth: number,
+      drawHeight: number
+
+    if (pageSize === 'Original') {
+      // Use original image dimensions
+      pageWidth = imageWidth
+      pageHeight = imageHeight
+      x = 0
+      y = 0
+      drawWidth = imageWidth
+      drawHeight = imageHeight
+    } else {
+      pageWidth = targetPageSize.width
+      pageHeight = targetPageSize.height
+
+      // Calculate scaling based on fit mode
+      const pageAspect = pageWidth / pageHeight
+      const imageAspect = imageWidth / imageHeight
+
+      if (fitMode === 'contain') {
+        // Fit entire image within page, maintain aspect ratio
+        if (imageAspect > pageAspect) {
+          // Image is wider - fit to width
+          drawWidth = pageWidth
+          drawHeight = pageWidth / imageAspect
+          x = 0
+          y = (pageHeight - drawHeight) / 2
+        } else {
+          // Image is taller - fit to height
+          drawHeight = pageHeight
+          drawWidth = pageHeight * imageAspect
+          x = (pageWidth - drawWidth) / 2
+          y = 0
+        }
+      } else if (fitMode === 'cover') {
+        // Cover entire page, crop image if needed
+        if (imageAspect > pageAspect) {
+          // Image is wider - fit to height and crop sides
+          drawHeight = pageHeight
+          drawWidth = pageHeight * imageAspect
+          x = (pageWidth - drawWidth) / 2
+          y = 0
+        } else {
+          // Image is taller - fit to width and crop top/bottom
+          drawWidth = pageWidth
+          drawHeight = pageWidth / imageAspect
+          x = 0
+          y = (pageHeight - drawHeight) / 2
+        }
+      } else {
+        // fill - stretch to fit page (may distort)
+        x = 0
+        y = 0
+        drawWidth = pageWidth
+        drawHeight = pageHeight
+      }
+    }
+
+    const page = pdfDoc.addPage([pageWidth, pageHeight])
+    page.drawImage(embeddedImage, {
+      x,
+      y,
+      width: drawWidth,
+      height: drawHeight,
+    })
+
+    this.updateCallback(pdf.id, { progress: 90 })
+
+    const pdfBytes = await pdfDoc.save()
+    const finalBlob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
 
     this.updateCallback(pdf.id, {
       status: 'completed',

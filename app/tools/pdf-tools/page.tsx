@@ -10,6 +10,7 @@ import {
   Download,
   Droplet,
   Edit3,
+  FileDown,
   FileOutput,
   FileText,
   Image as ImageIcon,
@@ -114,6 +115,7 @@ type OperationType =
   | 'split'
   | 'compress'
   | 'toImages'
+  | 'imagesToPdf'
   | 'watermark'
   | 'extract'
   | 'rotate'
@@ -146,6 +148,14 @@ export default function PDFToolsPage() {
 
   // Rotate options
   const [rotationAngle, setRotationAngle] = useState(90)
+
+  // Images to PDF options
+  const [imageToPdfPageSize, setImageToPdfPageSize] = useState<
+    'A4' | 'Letter' | 'Legal' | 'Original'
+  >('A4')
+  const [imageToPdfFitMode, setImageToPdfFitMode] = useState<'contain' | 'cover' | 'fill'>(
+    'contain'
+  )
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -213,25 +223,46 @@ export default function PDFToolsPage() {
   const handleFilesSelected = useCallback(async (files: FileList) => {
     const fileArray = Array.from(files)
     const pdfFiles = fileArray.filter((file) => file.type === 'application/pdf')
+    const imageFiles = fileArray.filter(
+      (file) =>
+        file.type.startsWith('image/') &&
+        (file.type === 'image/jpeg' ||
+          file.type === 'image/jpg' ||
+          file.type === 'image/png' ||
+          file.type === 'image/webp')
+    )
+
+    const allFiles = [...pdfFiles, ...imageFiles]
+
+    if (allFiles.length === 0) {
+      toast.error('Please upload PDF or image files (JPG, PNG, WebP)')
+      return
+    }
 
     trackEvent({
       action: 'files_added',
       category: 'pdf_tools',
-      label: 'pdf_upload',
-      value: pdfFiles.length,
+      label: pdfFiles.length > 0 ? 'pdf_upload' : 'image_upload',
+      value: allFiles.length,
     })
 
     const { PDFDocument } = await loadPdfLib()
 
     const newPdfs: PDFFile[] = await Promise.all(
-      pdfFiles.map(async (file) => {
+      allFiles.map(async (file) => {
         let pages = 0
-        try {
-          const arrayBuffer = await file.arrayBuffer()
-          const pdfDoc = await PDFDocument.load(arrayBuffer)
-          pages = pdfDoc.getPageCount()
-        } catch (error) {
-          console.error('Error reading PDF:', error)
+
+        if (file.type === 'application/pdf') {
+          try {
+            const arrayBuffer = await file.arrayBuffer()
+            const pdfDoc = await PDFDocument.load(arrayBuffer)
+            pages = pdfDoc.getPageCount()
+          } catch (error) {
+            console.error('Error reading PDF:', error)
+          }
+        } else {
+          // Images count as 1 page when converted to PDF
+          pages = 1
         }
 
         return {
@@ -1216,10 +1247,12 @@ export default function PDFToolsPage() {
             extractStartPage,
             extractEndPage,
             rotationAngle,
+            imageToPdfPageSize,
+            imageToPdfFitMode,
           })
 
           toast.success(
-            `Successfully processed ${pdfs.filter((p) => p.status === 'completed').length} PDFs`
+            `Successfully processed ${pdfs.filter((p) => p.status === 'completed').length} files`
           )
         }
       }
@@ -1327,6 +1360,10 @@ export default function PDFToolsPage() {
         case 'compress':
           suffix = '_compressed'
           break
+        case 'imagesToPdf':
+          suffix = ''
+          extension = '.pdf'
+          break
         case 'watermark':
           suffix = '_watermarked'
           break
@@ -1348,7 +1385,13 @@ export default function PDFToolsPage() {
           break
       }
 
-      a.download = pdf.name.replace('.pdf', `${suffix}${extension}`)
+      // Handle different file name patterns for image to PDF
+      if (operation === 'imagesToPdf') {
+        const nameWithoutExt = pdf.name.replace(/\.(jpg|jpeg|png|webp)$/i, '')
+        a.download = `${nameWithoutExt}${suffix}${extension}`
+      } else {
+        a.download = pdf.name.replace('.pdf', `${suffix}${extension}`)
+      }
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -1388,6 +1431,7 @@ export default function PDFToolsPage() {
     { value: 'split', label: 'Split PDF', icon: Split },
     { value: 'compress', label: 'Compress', icon: Archive },
     { value: 'toImages', label: 'To Images', icon: ImageIcon },
+    { value: 'imagesToPdf', label: 'Images to PDF', icon: FileDown },
     { value: 'watermark', label: 'Watermark', icon: Droplet },
     { value: 'extract', label: 'Extract Pages', icon: Copy },
     { value: 'rotate', label: 'Rotate', icon: RotateCw },
@@ -1485,8 +1529,8 @@ export default function PDFToolsPage() {
             color: 'gray.400',
           })}
         >
-          Merge, split, compress, watermark, and convert PDFs with powerful browser-based tools.
-          100% secure - all processing happens on your device.
+          Merge, split, compress, watermark, and convert PDFs. Convert images to PDF with powerful
+          browser-based tools. 100% secure - all processing happens on your device.
         </p>
       </motion.div>
       {/* Stats Summary */}
@@ -2053,6 +2097,122 @@ export default function PDFToolsPage() {
                   </div>
                 )}
 
+                {operation === 'imagesToPdf' && (
+                  <>
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Page Size
+                      </div>
+                      <div
+                        className={css({
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(2, 1fr)',
+                          gap: '2',
+                          w: 'full',
+                        })}
+                      >
+                        {[
+                          { value: 'A4' as const, label: 'A4' },
+                          { value: 'Letter' as const, label: 'Letter' },
+                          { value: 'Legal' as const, label: 'Legal' },
+                          { value: 'Original' as const, label: 'Original' },
+                        ].map((size) => (
+                          <Button
+                            key={size.value}
+                            variant={imageToPdfPageSize === size.value ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setImageToPdfPageSize(size.value)}
+                            className={css({
+                              ...(imageToPdfPageSize === size.value
+                                ? {
+                                    borderColor: 'red.500/50',
+                                    bg: 'red.500/20',
+                                    color: 'red.200',
+                                  }
+                                : {
+                                    borderColor: 'gray.700',
+                                  }),
+                            })}
+                          >
+                            {size.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Fit Mode
+                      </div>
+                      <div
+                        className={css({
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(3, 1fr)',
+                          gap: '2',
+                          w: 'full',
+                        })}
+                      >
+                        {[
+                          { value: 'contain' as const, label: 'Contain', desc: 'Fit entire image' },
+                          { value: 'cover' as const, label: 'Cover', desc: 'Fill page' },
+                          { value: 'fill' as const, label: 'Fill', desc: 'Stretch' },
+                        ].map((mode) => (
+                          <Button
+                            key={mode.value}
+                            variant={imageToPdfFitMode === mode.value ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setImageToPdfFitMode(mode.value)}
+                            className={css({
+                              flexDirection: 'column',
+                              h: 'auto',
+                              py: '3',
+                              ...(imageToPdfFitMode === mode.value
+                                ? {
+                                    borderColor: 'red.500/50',
+                                    bg: 'red.500/20',
+                                    color: 'red.200',
+                                  }
+                                : {
+                                    borderColor: 'gray.700',
+                                  }),
+                            })}
+                          >
+                            <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
+                              {mode.label}
+                            </span>
+                            <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                              {mode.desc}
+                            </span>
+                          </Button>
+                        ))}
+                      </div>
+                      <p
+                        className={css({
+                          fontSize: 'xs',
+                          color: 'gray.500',
+                        })}
+                      >
+                        {imageToPdfFitMode === 'contain'
+                          ? 'Fits entire image within page, maintains aspect ratio'
+                          : imageToPdfFitMode === 'cover'
+                            ? 'Fills entire page, may crop image edges'
+                            : 'Stretches image to fill page, may distort'}
+                      </p>
+                    </div>
+                  </>
+                )}
+
                 {/* Action Buttons */}
                 <div className={css({ spaceY: '2', pt: '4' })}>
                   <Button
@@ -2225,7 +2385,7 @@ export default function PDFToolsPage() {
                 {pdfs.length === 0 ? (
                   <DragDropZone
                     onFilesSelected={handleFilesSelected}
-                    accept="application/pdf"
+                    accept="application/pdf,image/jpeg,image/jpg,image/png,image/webp"
                     maxSize={100 * 1024 * 1024}
                     multiple
                   />
@@ -2233,7 +2393,7 @@ export default function PDFToolsPage() {
                   <>
                     <DragDropZone
                       onFilesSelected={handleFilesSelected}
-                      accept="application/pdf"
+                      accept="application/pdf,image/jpeg,image/jpg,image/png,image/webp"
                       maxSize={100 * 1024 * 1024}
                       multiple
                       className={css({
