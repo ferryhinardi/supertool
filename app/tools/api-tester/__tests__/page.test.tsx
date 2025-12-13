@@ -16,9 +16,10 @@ vi.mock('@/lib/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock nanoid
+// Mock nanoid to generate unique IDs
+let mockIdCounter = 0
 vi.mock('nanoid', () => ({
-  nanoid: vi.fn(() => 'test-id'),
+  nanoid: vi.fn(() => `test-id-${mockIdCounter++}`),
 }))
 
 // Mock fetch API
@@ -28,6 +29,7 @@ describe('API Tester Page - Component Tests', () => {
   beforeEach(() => {
     localStorage.clear()
     vi.clearAllMocks()
+    mockIdCounter = 0 // Reset counter for each test
     ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockClear()
   })
 

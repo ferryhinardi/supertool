@@ -14,7 +14,6 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import type { Worker as TesseractWorker } from 'tesseract.js'
 import { DragDropZone } from '@/components/features/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

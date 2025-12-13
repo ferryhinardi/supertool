@@ -375,20 +375,53 @@ vi.mock('@/components/ui/tool-search', () => ({
 // Mock framer-motion to avoid animation issues in tests
 vi.mock('framer-motion', () => ({
   motion: {
-    // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    div: ({ children, ref, ...props }: any) => (
+    div: ({
+      children,
+      ref,
+      initial,
+      animate,
+      exit,
+      transition,
+      whileHover,
+      whileTap,
+      ...props
+      // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
+    }: any) => (
       <div ref={ref} {...props}>
         {children}
       </div>
     ),
+    section: ({
+      children,
+      initial,
+      animate,
+      exit,
+      transition,
+      whileHover,
+      whileTap,
+      ...props
+      // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
+    }: any) => <section {...props}>{children}</section>,
     // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    section: ({ children, ...props }: any) => <section {...props}>{children}</section>,
+    h1: ({ children, initial, animate, exit, transition, whileHover, whileTap, ...props }: any) => (
+      <h1 {...props}>{children}</h1>
+    ),
     // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    h1: ({ children, ...props }: any) => <h1 {...props}>{children}</h1>,
-    // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
-    // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    button: ({ children, ref, ...props }: any) => (
+    p: ({ children, initial, animate, exit, transition, whileHover, whileTap, ...props }: any) => (
+      <p {...props}>{children}</p>
+    ),
+    button: ({
+      children,
+      ref,
+      initial,
+      animate,
+      exit,
+      transition,
+      whileHover,
+      whileTap,
+      ...props
+      // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
+    }: any) => (
       <button ref={ref} {...props}>
         {children}
       </button>
@@ -905,9 +938,11 @@ describe('HomePage Integration Tests', () => {
         expect(screen.getByText(/SuperTool Collection/i)).toBeInTheDocument()
       })
 
-      // Simulate small viewport
-      Object.defineProperty(window, 'innerWidth', { value: 480, writable: true })
-      window.dispatchEvent(new Event('resize'))
+      // Simulate small viewport and wrap in act
+      await act(async () => {
+        Object.defineProperty(window, 'innerWidth', { value: 480, writable: true })
+        window.dispatchEvent(new Event('resize'))
+      })
 
       await waitFor(() => {
         expect(screen.getByText(/SuperTool Collection/i)).toBeInTheDocument()

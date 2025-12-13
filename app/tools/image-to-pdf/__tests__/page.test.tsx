@@ -16,17 +16,17 @@ vi.mock('@/lib/analytics', () => ({
 }))
 
 vi.mock('jspdf', () => ({
-  jsPDF: vi.fn().mockImplementation(() => ({
-    addPage: vi.fn(),
-    addImage: vi.fn(),
-    save: vi.fn(),
-    internal: {
+  jsPDF: class MockJsPDF {
+    addPage = vi.fn()
+    addImage = vi.fn()
+    save = vi.fn()
+    internal = {
       pageSize: {
         getWidth: () => 210,
         getHeight: () => 297,
       },
-    },
-  })),
+    }
+  },
 }))
 
 // Mock Image for dimension loading
