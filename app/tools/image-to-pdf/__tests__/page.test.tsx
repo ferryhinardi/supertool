@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ImageToPdfPage from '../page'
@@ -126,11 +126,15 @@ describe('ImageToPdfPage', () => {
       const file = new File(['text'], 'test.txt', { type: 'text/plain' })
       const input = screen.getByLabelText('File upload') as HTMLInputElement
 
-      await userEvent.upload(input, file)
+      // Trigger the change event with non-image file
+      fireEvent.change(input, { target: { files: [file] } })
 
-      await waitFor(() => {
-        expect(toast.error).toHaveBeenCalledWith('Please select valid image files')
-      })
+      await waitFor(
+        () => {
+          expect(toast.error).toHaveBeenCalledWith('Please select valid image files')
+        },
+        { timeout: 2000 }
+      )
     })
   })
 
@@ -181,10 +185,12 @@ describe('ImageToPdfPage', () => {
     it('should allow adjusting margin with slider', async () => {
       const marginSlider = screen.getByLabelText(/Margin: \d+mm/) as HTMLInputElement
 
-      await userEvent.clear(marginSlider)
-      await userEvent.type(marginSlider, '20')
+      // Use fireEvent for range input as userEvent.clear() doesn't work on sliders
+      fireEvent.change(marginSlider, { target: { value: '20' } })
 
-      expect(screen.getByText(/Margin: 20mm/)).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText(/Margin: 20mm/)).toBeInTheDocument()
+      })
     })
   })
 
