@@ -367,6 +367,57 @@ pnpm build && \
 echo "✅ All CI checks passed locally!"
 ```
 
+#### Post-Push CI/CD Monitoring (CRITICAL)
+
+**ALWAYS monitor CI/CD pipeline after pushing to ensure all checks pass.**
+
+When you push to `origin/main`, immediately monitor the CI/CD pipeline to completion:
+
+```bash
+# Method 1: Watch latest CI run interactively
+gh run watch
+
+# Method 2: Watch specific run ID
+RUN_ID=$(gh run list --limit 1 --json databaseId --jq '.[0].databaseId')
+gh run watch $RUN_ID
+
+# Method 3: Check status and wait for completion
+gh run list --limit 1 --json status,conclusion,displayTitle
+```
+
+**Expected workflow completion:**
+- ✓ Lint & Type Check (1-2 minutes)
+- ✓ Unit & Integration Tests (3-4 minutes)  
+- ✓ Build (2-3 minutes)
+
+**If ANY check fails:**
+1. View failure logs: `gh run view --log-failed`
+2. Fix the issues immediately
+3. Commit and push the fix
+4. Monitor the new CI run until all checks pass
+
+**Do NOT leave failing CI checks unresolved.** The pipeline must be green before moving to the next task.
+
+**Example monitoring session:**
+```bash
+# After git push origin main
+git push origin main
+
+# Immediately start monitoring
+gh run watch
+
+# Expected output: All 3 jobs show ✓ green checkmarks
+# ✓ Lint & Type Check
+# ✓ Unit & Integration Tests  
+# ✓ Build
+```
+
+**Common CI failures and quick fixes:**
+- TypeScript errors → Run `pnpm exec tsc --noEmit` locally and fix
+- Build errors → Run `pnpm build` locally and fix syntax/import issues
+- Test failures → Run `CI=true pnpm test run` locally and fix failing tests
+- Lint warnings → Run `pnpm lint` and address issues (warnings allowed but failures block)
+
 #### Troubleshooting CI on Vercel/Deployment
 
 If CI passes but deployment fails:
