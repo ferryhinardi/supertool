@@ -2386,7 +2386,7 @@ export default function PDFToolsPage() {
 
                     <ReorderablePDFList
                       pdfs={pdfs}
-                      onReorder={setPdfs}
+                      onReorder={(reorderedPdfs) => setPdfs(reorderedPdfs)}
                       onRemove={handleRemove}
                       onDownload={handleDownload}
                       formatBytes={formatBytes}
@@ -2480,76 +2480,88 @@ export default function PDFToolsPage() {
           </Card>
         ))}
       </motion.div>
-      editingPdf && operation === 'edit' ? (
-      <PDFPageEditFlow
-        pdfFile={editingPdf.file}
-        onApply={async (newOrder: number[]) => {
-          // Use pdf-lib to reorder/remove pages and update the PDF
-          const { PDFDocument } = await loadPdfLib()
-          const arrayBuffer = await editingPdf.file.arrayBuffer()
-          const pdfDoc = await PDFDocument.load(arrayBuffer)
-          const newPdf = await PDFDocument.create()
-          const copiedPages = await newPdf.copyPages(pdfDoc, newOrder)
-          copiedPages.forEach((page) => {
-            newPdf.addPage(page)
-          })
-          const pdfBytes = await newPdf.save()
-          const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
-          updatePdfStatus(editingPdf.id, {
-            status: 'completed',
-            progress: 100,
-            processedBlob: blob,
-            processedSize: blob.size,
-          })
-          setEditingPdf(null)
-        }}
-        onCancel={() => {
-          setEditingPdf(null)
-        }}
-      />
-      ) : nulleditingPdf && operation !== 'edit' && (
-      <PDFEditor
-        pdfFile={editingPdf.file}
-        onSave={async (annotations) => {
-          setIsEditorOpen(false)
-          if (annotations.length > 0) {
-            await applyAnnotationsToPDF(editingPdf, annotations)
-          }
-          setEditingPdf(null)
-        }}
-        onClose={() => {
-          setIsEditorOpen(false)
-          setEditingPdf(null)
-        }}
-      />
-      )showPresets && (
-      <PresetsDialog
-        onSelect={(preset) => {
-          setCompressionLevel(preset.level)
-          toast.success(`Applied ${preset.name} preset`)
-        }}
-        onClose={() => setShowPresets(false)}
-      />
-      )showComparison && comparisonPdf && comparisonPdf.processedBlob && (
-      <ComparisonView
-        originalFile={comparisonPdf.file}
-        processedBlob={comparisonPdf.processedBlob}
-        originalSize={comparisonPdf.size}
-        processedSize={comparisonPdf.processedSize || comparisonPdf.size}
-        onDownload={() => {
-          const url = URL.createObjectURL(comparisonPdf.processedBlob!)
-          const a = document.createElement('a')
-          a.href = url
-          a.download = `${comparisonPdf.name.replace('.pdf', '')}-${operation}.pdf`
-          a.click()
-          URL.revokeObjectURL(url)
-        }}
-        onClose={() => {
-          setShowComparison(false)
-          setComparisonPdf(null)
-        }}
-      />
-      )
+
+      {/* PDF Page Editor - Reorder/Remove pages */}
+      {editingPdf && operation === 'edit' ? (
+        <PDFPageEditFlow
+          pdfFile={editingPdf.file}
+          onApply={async (newOrder: number[]) => {
+            // Use pdf-lib to reorder/remove pages and update the PDF
+            const { PDFDocument } = await loadPdfLib()
+            const arrayBuffer = await editingPdf.file.arrayBuffer()
+            const pdfDoc = await PDFDocument.load(arrayBuffer)
+            const newPdf = await PDFDocument.create()
+            const copiedPages = await newPdf.copyPages(pdfDoc, newOrder)
+            copiedPages.forEach((page) => {
+              newPdf.addPage(page)
+            })
+            const pdfBytes = await newPdf.save()
+            const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+            updatePdfStatus(editingPdf.id, {
+              status: 'completed',
+              progress: 100,
+              processedBlob: blob,
+              processedSize: blob.size,
+            })
+            setEditingPdf(null)
+          }}
+          onCancel={() => {
+            setEditingPdf(null)
+          }}
+        />
+      ) : null}
+
+      {/* PDF Editor - Annotations */}
+      {editingPdf && operation !== 'edit' && (
+        <PDFEditor
+          pdfFile={editingPdf.file}
+          onSave={async (annotations) => {
+            setIsEditorOpen(false)
+            if (annotations.length > 0) {
+              await applyAnnotationsToPDF(editingPdf, annotations)
+            }
+            setEditingPdf(null)
+          }}
+          onClose={() => {
+            setIsEditorOpen(false)
+            setEditingPdf(null)
+          }}
+        />
+      )}
+
+      {/* Compression Presets Dialog */}
+      {showPresets && (
+        <PresetsDialog
+          onSelect={(preset) => {
+            setCompressionLevel(preset.level)
+            toast.success(`Applied ${preset.name} preset`)
+          }}
+          onClose={() => setShowPresets(false)}
+        />
+      )}
+
+      {/* Comparison View */}
+      {showComparison && comparisonPdf && comparisonPdf.processedBlob && (
+        <ComparisonView
+          originalFile={comparisonPdf.file}
+          processedBlob={comparisonPdf.processedBlob}
+          originalSize={comparisonPdf.size}
+          processedSize={comparisonPdf.processedSize || comparisonPdf.size}
+          onDownload={() => {
+            const url = URL.createObjectURL(comparisonPdf.processedBlob!)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `${comparisonPdf.name.replace('.pdf', '')}-${operation}.pdf`
+            a.click()
+            URL.revokeObjectURL(url)
+          }}
+          onClose={() => {
+            setShowComparison(false)
+            setComparisonPdf(null)
+          }}
+        />
+      )}
+
       <input
         ref={fileInputRef}
         type="file"

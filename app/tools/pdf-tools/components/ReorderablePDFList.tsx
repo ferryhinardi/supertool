@@ -26,12 +26,14 @@ import { css } from '@/styled-system/css'
 
 interface PDFFile {
   id: string
+  file: File
   name: string
   size: number
   pages: number
   status: 'pending' | 'processing' | 'completed' | 'error'
   progress: number
   error?: string
+  processedBlob?: Blob
   processedSize?: number
 }
 
