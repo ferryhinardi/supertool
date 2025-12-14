@@ -1,6 +1,7 @@
 'use client'
 
-import confetti from 'canvas-confetti'
+// Import types only
+import type { Options as ConfettiOptions } from 'canvas-confetti'
 import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import {
@@ -19,12 +20,26 @@ import {
   Split,
   XCircle,
 } from 'lucide-react'
-import { useEffect, useRef } from 'react'
-import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
-import 'react-circular-progressbar/dist/styles.css'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { css } from '@/styled-system/css'
 import type { OperationType } from './OperationGrid'
+
+interface PDFFile {
+  id: string
+  name: string
+  status: 'pending' | 'processing' | 'completed' | 'error'
+  progress: number
+  error?: string
+}
+
+interface ProcessingModalProps {
+  pdfs: PDFFile[]
+  operation: OperationType
+  isOpen: boolean
+  onClose: () => void
+  canClose?: boolean
+}
 
 interface PDFFile {
   id: string
@@ -70,17 +85,66 @@ const operationLabels: Record<OperationType, string> = {
   grayscale: 'Converting to Grayscale',
 }
 
+// Circular Progress Component with dynamic imports
+function ProgressCircle({ value, text }: { value: number; text: string }) {
+  const [Component, setComponent] = useState<any>(null)
+  const [styles, setStyles] = useState<any>(null)
+
+  useEffect(() => {
+    // Dynamically import both the component and buildStyles
+    Promise.all([
+      import('react-circular-progressbar'),
+      import('react-circular-progressbar/dist/styles.css'),
+    ]).then(([module]) => {
+      setComponent(() => module.CircularProgressbar)
+      setStyles(
+        module.buildStyles({
+          pathColor: '#ef4444',
+          textColor: '#ef4444',
+          trailColor: '#1f2937',
+          textSize: '24px',
+        })
+      )
+    })
+  }, [])
+
+  if (!Component || !styles) {
+    return (
+      <div
+        className={css({
+          w: '16',
+          h: '16',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 'xl',
+          fontWeight: 'bold',
+          color: 'red.400',
+        })}
+      >
+        {text}
+      </div>
+    )
+  }
+
+  return <Component value={value} text={text} styles={styles} />
+}
+
 function FileProgressItem({ pdf }: { pdf: PDFFile }) {
   const confettiTriggered = useRef(false)
 
   useEffect(() => {
     if (pdf.status === 'completed' && !confettiTriggered.current) {
       confettiTriggered.current = true
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.6 },
-        colors: ['#ef4444', '#f97316', '#eab308'],
+      // Dynamic import for confetti
+      import('canvas-confetti').then((module) => {
+        const confetti = module.default
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.6 },
+          colors: ['#ef4444', '#f97316', '#eab308'],
+        })
       })
     }
   }, [pdf.status])
@@ -298,16 +362,7 @@ export function ProcessingModal({
             {/* Overall Progress */}
             {!allCompleted && processingCount > 0 && (
               <div className={css({ flexShrink: 0, w: '16', h: '16' })}>
-                <CircularProgressbar
-                  value={totalProgress}
-                  text={`${totalProgress}%`}
-                  styles={buildStyles({
-                    pathColor: '#ef4444',
-                    textColor: '#ef4444',
-                    trailColor: '#1f2937',
-                    textSize: '24px',
-                  })}
-                />
+                <ProgressCircle value={totalProgress} text={`${totalProgress}%`} />
               </div>
             )}
           </div>
