@@ -1,7 +1,5 @@
 'use client'
 
-// Import types only
-import type { Options as ConfettiOptions } from 'canvas-confetti'
 import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import {
@@ -85,69 +83,99 @@ const operationLabels: Record<OperationType, string> = {
   grayscale: 'Converting to Grayscale',
 }
 
-// Circular Progress Component with dynamic imports
+// Simple circular progress component without external dependency
 function ProgressCircle({ value, text }: { value: number; text: string }) {
-  const [Component, setComponent] = useState<any>(null)
-  const [styles, setStyles] = useState<any>(null)
+  const radius = 28
+  const stroke = 4
+  const normalizedRadius = radius - stroke * 2
+  const circumference = normalizedRadius * 2 * Math.PI
+  const strokeDashoffset = circumference - (value / 100) * circumference
 
-  useEffect(() => {
-    // Dynamically import both the component and buildStyles
-    Promise.all([
-      import('react-circular-progressbar'),
-      import('react-circular-progressbar/dist/styles.css'),
-    ]).then(([module]) => {
-      setComponent(() => module.CircularProgressbar)
-      setStyles(
-        module.buildStyles({
-          pathColor: '#ef4444',
-          textColor: '#ef4444',
-          trailColor: '#1f2937',
-          textSize: '24px',
-        })
-      )
-    })
-  }, [])
-
-  if (!Component || !styles) {
-    return (
+  return (
+    <div
+      className={css({
+        w: '16',
+        h: '16',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+      })}
+    >
+      <svg
+        height={radius * 2}
+        width={radius * 2}
+        style={{ transform: 'rotate(-90deg)' }}
+        aria-label={`Progress: ${value}%`}
+        role="img"
+      >
+        <title>Progress indicator</title>
+        {/* Background circle */}
+        <circle
+          stroke="#1f2937"
+          fill="transparent"
+          strokeWidth={stroke}
+          r={normalizedRadius}
+          cx={radius}
+          cy={radius}
+        />
+        {/* Progress circle */}
+        <circle
+          stroke="#ef4444"
+          fill="transparent"
+          strokeWidth={stroke}
+          strokeDasharray={circumference + ' ' + circumference}
+          style={{ strokeDashoffset, transition: 'stroke-dashoffset 0.3s ease' }}
+          strokeLinecap="round"
+          r={normalizedRadius}
+          cx={radius}
+          cy={radius}
+        />
+      </svg>
       <div
         className={css({
-          w: '16',
-          h: '16',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 'xl',
+          position: 'absolute',
+          fontSize: 'sm',
           fontWeight: 'bold',
           color: 'red.400',
         })}
       >
         {text}
       </div>
-    )
-  }
-
-  return <Component value={value} text={text} styles={styles} />
+    </div>
+  )
 }
 
 function FileProgressItem({ pdf }: { pdf: PDFFile }) {
   const confettiTriggered = useRef(false)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    if (pdf.status === 'completed' && !confettiTriggered.current) {
-      confettiTriggered.current = true
-      // Dynamic import for confetti
-      import('canvas-confetti').then((module) => {
-        const confetti = module.default
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.6 },
-          colors: ['#ef4444', '#f97316', '#eab308'],
+    setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient || pdf.status !== 'completed' || confettiTriggered.current) return
+
+    confettiTriggered.current = true
+
+    // Only load confetti on client after mount
+    if (typeof window !== 'undefined') {
+      import('canvas-confetti')
+        .then((module) => {
+          const confetti = module.default
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#ef4444', '#f97316', '#eab308'],
+          })
         })
-      })
+        .catch(() => {
+          // Silently fail if confetti can't load
+        })
     }
-  }, [pdf.status])
+  }, [isClient, pdf.status])
 
   return (
     <motion.div
