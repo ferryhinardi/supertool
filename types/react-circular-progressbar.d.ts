@@ -23,11 +23,23 @@ declare module 'react-circular-progressbar' {
     background?: CSSProperties
   }
 
+  export interface BuildStylesOptions {
+    pathColor?: string
+    textColor?: string
+    trailColor?: string
+    backgroundColor?: string
+    pathTransition?: string
+    pathTransitionDuration?: number
+    rotation?: number
+    strokeLinecap?: 'butt' | 'round' | 'square'
+    textSize?: string
+  }
+
   export interface CircularProgressbarWithChildrenProps extends CircularProgressbarProps {
     children?: ReactNode
   }
 
   export const CircularProgressbar: React.FC<CircularProgressbarProps>
   export const CircularProgressbarWithChildren: React.FC<CircularProgressbarWithChildrenProps>
-  export function buildStyles(styles: Partial<CircularProgressbarStyles>): CircularProgressbarStyles
+  export function buildStyles(styles: BuildStylesOptions): CircularProgressbarStyles
 }
