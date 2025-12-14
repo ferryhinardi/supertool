@@ -2,19 +2,16 @@
 
 export const dynamic = 'force-dynamic'
 
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Archive,
-  CheckCircle,
   Copy,
-  Download,
   Droplet,
   Edit3,
   FileDown,
   FileOutput,
   FileText,
   Image as ImageIcon,
-  Info,
   Merge,
   Redo2,
   RotateCw,
@@ -39,7 +36,13 @@ import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/analytics'
 import { css } from '@/styled-system/css'
 import { ComparisonView } from './components/ComparisonView'
+import { EmptyState } from './components/EmptyState'
+import { KeyboardShortcutsDialog } from './components/KeyboardShortcutsDialog'
+import { MobileOperationPicker } from './components/MobileOperationPicker'
+import { OperationGrid } from './components/OperationGrid'
 import { PresetsDialog } from './components/PresetsDialog'
+import { ProcessingModal } from './components/ProcessingModal'
+import { ReorderablePDFList } from './components/ReorderablePDFList'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useOperationHistory } from './hooks/useOperationHistory'
 import { PDFBatchProcessor } from './PDFBatchProcessor'
@@ -1532,6 +1535,11 @@ export default function PDFToolsPage() {
           Merge, split, compress, watermark, and convert PDFs. Convert images to PDF with powerful
           browser-based tools. 100% secure - all processing happens on your device.
         </p>
+
+        {/* Keyboard Shortcuts Help */}
+        <div className={css({ display: 'flex', justifyContent: 'center', mt: '4' })}>
+          <KeyboardShortcutsDialog />
+        </div>
       </motion.div>
       {/* Stats Summary */}
       {pdfs.length > 0 && (
@@ -1692,56 +1700,25 @@ export default function PDFToolsPage() {
             <CardContent>
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
                 {/* Operation Selection */}
-                <div className={css({ spaceY: '2' })}>
-                  <label
-                    htmlFor="operation-select"
-                    className={css({
-                      fontSize: 'sm',
-                      fontWeight: 'medium',
-                      color: 'gray.300',
-                    })}
-                  >
-                    Select Operation
-                  </label>
-                  <div id="operation-select" className={css({ spaceY: '2' })}>
-                    {operations.map((op) => (
-                      <Button
-                        key={op.value}
-                        variant={operation === op.value ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => {
-                          setOperation(op.value as OperationType)
-                          trackEvent({
-                            action: 'operation_changed',
-                            category: 'pdf_tools',
-                            label: op.value,
-                          })
-                        }}
-                        className={css({
-                          w: 'full',
-                          justifyContent: 'start',
-                          gap: '2',
-                          ...(operation === op.value
-                            ? {
-                                borderColor: 'red.500/50',
-                                bg: 'red.500/20',
-                                color: 'red.200',
-                              }
-                            : {
-                                borderColor: 'gray.700',
-                              }),
-                        })}
-                      >
-                        <op.icon
-                          className={css({
-                            h: '4',
-                            w: '4',
-                          })}
-                        />
-                        {op.label}
-                      </Button>
-                    ))}
-                  </div>
+                {/* Desktop: Grid Layout */}
+                <div className={css({ display: { base: 'none', lg: 'block' } })}>
+                  <OperationGrid
+                    selectedOperation={operation}
+                    onOperationChange={setOperation}
+                    disabled={isProcessing}
+                  />
+                </div>
+
+                {/* Mobile: Bottom Sheet */}
+                <div className={css({ display: { base: 'block', lg: 'none' } })}>
+                  <MobileOperationPicker
+                    selectedOperation={operation}
+                    onOperationChange={setOperation}
+                    operationLabel={
+                      operations.find((op) => op.value === operation)?.label || 'Select Operation'
+                    }
+                    disabled={isProcessing}
+                  />
                 </div>
 
                 {/* Operation-specific settings */}
@@ -2383,12 +2360,18 @@ export default function PDFToolsPage() {
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
                 {/* Drag & Drop Zone */}
                 {pdfs.length === 0 ? (
-                  <DragDropZone
-                    onFilesSelected={handleFilesSelected}
-                    accept="application/pdf,image/jpeg,image/jpg,image/png,image/webp"
-                    maxSize={100 * 1024 * 1024}
-                    multiple
-                  />
+                  <>
+                    <DragDropZone
+                      onFilesSelected={handleFilesSelected}
+                      accept="application/pdf,image/jpeg,image/jpg,image/png,image/webp"
+                      maxSize={100 * 1024 * 1024}
+                      multiple
+                    />
+                    <EmptyState
+                      operation={operation}
+                      onUploadClick={() => fileInputRef.current?.click()}
+                    />
+                  </>
                 ) : (
                   <>
                     <DragDropZone
@@ -2401,230 +2384,15 @@ export default function PDFToolsPage() {
                       })}
                     />
 
-                    <div
-                      className={css({
-                        maxH: '[600px]',
-                        spaceY: '3',
-                        overflowY: 'auto',
-                        pr: '2',
-                      })}
-                    >
-                      <AnimatePresence>
-                        {pdfs.map((pdf) => (
-                          <motion.div
-                            key={pdf.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className={css({
-                              rounded: 'lg',
-                              border: '1px solid',
-                              borderColor: 'gray.800',
-                              bg: 'gray.900/80',
-                              p: '4',
-                            })}
-                          >
-                            <div
-                              className={css({ display: 'flex', alignItems: 'start', gap: '4' })}
-                            >
-                              {/* PDF Thumbnail Preview */}
-                              <PDFThumbnail file={pdf.file} />
-                              {pdf.status === 'completed' && (
-                                <div
-                                  className={css({
-                                    position: 'absolute',
-                                    top: '1',
-                                    right: '1',
-                                    p: '1',
-                                    rounded: 'full',
-                                    bg: 'green.500',
-                                  })}
-                                >
-                                  <CheckCircle
-                                    className={css({
-                                      h: '3',
-                                      w: '3',
-                                      color: 'white',
-                                    })}
-                                  />
-                                </div>
-                              )}
-
-                              {/* PDF Info */}
-                              <div className={css({ minW: '0', flex: '1' })}>
-                                <div
-                                  className={css({
-                                    mb: '2',
-                                    display: 'flex',
-                                    alignItems: 'start',
-                                    justifyContent: 'space-between',
-                                    gap: '2',
-                                  })}
-                                >
-                                  <div className={css({ minW: '0', flex: '1' })}>
-                                    <p
-                                      className={css({
-                                        truncate: true,
-                                        fontSize: 'sm',
-                                        fontWeight: 'medium',
-                                        color: 'gray.200',
-                                      })}
-                                    >
-                                      {pdf.name}
-                                    </p>
-                                    <div
-                                      className={css({
-                                        mt: '1',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '3',
-                                        fontSize: 'xs',
-                                        color: 'gray.500',
-                                      })}
-                                    >
-                                      <span>{formatBytes(pdf.size)}</span>
-                                      <span>•</span>
-                                      <span>{pdf.pages} pages</span>
-                                      {pdf.processedSize && (
-                                        <>
-                                          <span>→</span>
-                                          <span
-                                            className={css({
-                                              color: 'red.400',
-                                            })}
-                                          >
-                                            {formatBytes(pdf.processedSize)}
-                                          </span>
-                                        </>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  {/* Action Buttons */}
-                                  <div className={css({ display: 'flex', gap: '1' })}>
-                                    {pdf.status === 'completed' && pdf.processedBlob && (
-                                      <>
-                                        <Button
-                                          size="sm"
-                                          variant="ghost"
-                                          onClick={() => {
-                                            setComparisonPdf(pdf)
-                                            setShowComparison(true)
-                                          }}
-                                          className={css({
-                                            h: '8',
-                                            w: '8',
-                                            p: '0',
-                                            color: 'blue.400',
-                                            _hover: {
-                                              bg: 'blue.500/20',
-                                            },
-                                          })}
-                                          title="Compare before/after"
-                                        >
-                                          <Info
-                                            className={css({
-                                              h: '4',
-                                              w: '4',
-                                            })}
-                                          />
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          variant="ghost"
-                                          onClick={() => handleDownload(pdf)}
-                                          className={css({
-                                            h: '8',
-                                            w: '8',
-                                            p: '0',
-                                            color: 'red.400',
-                                            _hover: {
-                                              bg: 'red.500/20',
-                                            },
-                                          })}
-                                        >
-                                          <Download
-                                            className={css({
-                                              h: '4',
-                                              w: '4',
-                                            })}
-                                          />
-                                        </Button>
-                                      </>
-                                    )}
-                                    <Button
-                                      size="sm"
-                                      variant="ghost"
-                                      onClick={() => handleRemove(pdf.id)}
-                                      className={css({
-                                        h: '8',
-                                        w: '8',
-                                        p: '0',
-                                        color: 'red.400',
-                                        _hover: {
-                                          bg: 'red.500/20',
-                                        },
-                                      })}
-                                    >
-                                      <Trash2
-                                        className={css({
-                                          h: '4',
-                                          w: '4',
-                                        })}
-                                      />
-                                    </Button>
-                                  </div>
-                                </div>
-
-                                {/* Progress Bar */}
-                                {pdf.status === 'processing' && (
-                                  <div className={css({ spaceY: '1' })}>
-                                    <Progress
-                                      value={pdf.progress}
-                                      className={css({
-                                        h: '2',
-                                      })}
-                                    />
-                                    <p
-                                      className={css({
-                                        fontSize: 'xs',
-                                        color: 'gray.500',
-                                      })}
-                                    >
-                                      Processing... {Math.round(pdf.progress)}%
-                                    </p>
-                                  </div>
-                                )}
-
-                                {/* Error Message */}
-                                {pdf.status === 'error' && (
-                                  <p
-                                    className={css({
-                                      fontSize: 'xs',
-                                      color: 'red.400',
-                                    })}
-                                  >
-                                    {pdf.error}
-                                  </p>
-                                )}
-
-                                {/* Status */}
-                                {pdf.status === 'pending' && (
-                                  <p
-                                    className={css({
-                                      fontSize: 'xs',
-                                      color: 'gray.500',
-                                    })}
-                                  >
-                                    Ready to process
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
-                    </div>
+                    <ReorderablePDFList
+                      pdfs={pdfs}
+                      onReorder={setPdfs}
+                      onRemove={handleRemove}
+                      onDownload={handleDownload}
+                      formatBytes={formatBytes}
+                      renderThumbnail={(pdf) => <PDFThumbnail file={pdf.file} />}
+                      disabled={isProcessing}
+                    />
                   </>
                 )}
               </div>
@@ -2632,7 +2400,6 @@ export default function PDFToolsPage() {
           </Card>
         </motion.div>
       </div>
-      {/* Features Info */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -2713,85 +2480,76 @@ export default function PDFToolsPage() {
           </Card>
         ))}
       </motion.div>
-      {editingPdf && operation === 'edit' ? (
-        <PDFPageEditFlow
-          pdfFile={editingPdf.file}
-          onApply={async (newOrder: number[]) => {
-            // Use pdf-lib to reorder/remove pages and update the PDF
-            const { PDFDocument } = await loadPdfLib()
-            const arrayBuffer = await editingPdf.file.arrayBuffer()
-            const pdfDoc = await PDFDocument.load(arrayBuffer)
-            const newPdf = await PDFDocument.create()
-            const copiedPages = await newPdf.copyPages(pdfDoc, newOrder)
-            copiedPages.forEach((page) => {
-              newPdf.addPage(page)
-            })
-            const pdfBytes = await newPdf.save()
-            const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
-            updatePdfStatus(editingPdf.id, {
-              status: 'completed',
-              progress: 100,
-              processedBlob: blob,
-              processedSize: blob.size,
-            })
-            setEditingPdf(null)
-          }}
-          onCancel={() => {
-            setEditingPdf(null)
-          }}
-        />
-      ) : null}
-      {/* PDFEditor for annotation-based editing (legacy) */}
-      {editingPdf && operation !== 'edit' && (
-        <PDFEditor
-          pdfFile={editingPdf.file}
-          onSave={async (annotations) => {
-            setIsEditorOpen(false)
-            if (annotations.length > 0) {
-              await applyAnnotationsToPDF(editingPdf, annotations)
-            }
-            setEditingPdf(null)
-          }}
-          onClose={() => {
-            setIsEditorOpen(false)
-            setEditingPdf(null)
-          }}
-        />
-      )}
-      {/* Presets Dialog */}
-      {showPresets && (
-        <PresetsDialog
-          onSelect={(preset) => {
-            setCompressionLevel(preset.level)
-            toast.success(`Applied ${preset.name} preset`)
-          }}
-          onClose={() => setShowPresets(false)}
-        />
-      )}
-
-      {/* Comparison View */}
-      {showComparison && comparisonPdf && comparisonPdf.processedBlob && (
-        <ComparisonView
-          originalFile={comparisonPdf.file}
-          processedBlob={comparisonPdf.processedBlob}
-          originalSize={comparisonPdf.size}
-          processedSize={comparisonPdf.processedSize || comparisonPdf.size}
-          onDownload={() => {
-            const url = URL.createObjectURL(comparisonPdf.processedBlob!)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `${comparisonPdf.name.replace('.pdf', '')}-${operation}.pdf`
-            a.click()
-            URL.revokeObjectURL(url)
-          }}
-          onClose={() => {
-            setShowComparison(false)
-            setComparisonPdf(null)
-          }}
-        />
-      )}
-
-      {/* Hidden file input for keyboard shortcut */}
+      editingPdf && operation === 'edit' ? (
+      <PDFPageEditFlow
+        pdfFile={editingPdf.file}
+        onApply={async (newOrder: number[]) => {
+          // Use pdf-lib to reorder/remove pages and update the PDF
+          const { PDFDocument } = await loadPdfLib()
+          const arrayBuffer = await editingPdf.file.arrayBuffer()
+          const pdfDoc = await PDFDocument.load(arrayBuffer)
+          const newPdf = await PDFDocument.create()
+          const copiedPages = await newPdf.copyPages(pdfDoc, newOrder)
+          copiedPages.forEach((page) => {
+            newPdf.addPage(page)
+          })
+          const pdfBytes = await newPdf.save()
+          const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+          updatePdfStatus(editingPdf.id, {
+            status: 'completed',
+            progress: 100,
+            processedBlob: blob,
+            processedSize: blob.size,
+          })
+          setEditingPdf(null)
+        }}
+        onCancel={() => {
+          setEditingPdf(null)
+        }}
+      />
+      ) : nulleditingPdf && operation !== 'edit' && (
+      <PDFEditor
+        pdfFile={editingPdf.file}
+        onSave={async (annotations) => {
+          setIsEditorOpen(false)
+          if (annotations.length > 0) {
+            await applyAnnotationsToPDF(editingPdf, annotations)
+          }
+          setEditingPdf(null)
+        }}
+        onClose={() => {
+          setIsEditorOpen(false)
+          setEditingPdf(null)
+        }}
+      />
+      )showPresets && (
+      <PresetsDialog
+        onSelect={(preset) => {
+          setCompressionLevel(preset.level)
+          toast.success(`Applied ${preset.name} preset`)
+        }}
+        onClose={() => setShowPresets(false)}
+      />
+      )showComparison && comparisonPdf && comparisonPdf.processedBlob && (
+      <ComparisonView
+        originalFile={comparisonPdf.file}
+        processedBlob={comparisonPdf.processedBlob}
+        originalSize={comparisonPdf.size}
+        processedSize={comparisonPdf.processedSize || comparisonPdf.size}
+        onDownload={() => {
+          const url = URL.createObjectURL(comparisonPdf.processedBlob!)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `${comparisonPdf.name.replace('.pdf', '')}-${operation}.pdf`
+          a.click()
+          URL.revokeObjectURL(url)
+        }}
+        onClose={() => {
+          setShowComparison(false)
+          setComparisonPdf(null)
+        }}
+      />
+      )
       <input
         ref={fileInputRef}
         type="file"
@@ -2804,8 +2562,17 @@ export default function PDFToolsPage() {
           }
         }}
       />
-
-      {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
+      <ProcessingModal
+        pdfs={pdfs}
+        operation={operation}
+        isOpen={isProcessing && pdfs.some((p) => p.status === 'processing')}
+        onClose={() => {
+          if (pdfs.every((p) => p.status !== 'processing')) {
+            setIsProcessing(false)
+          }
+        }}
+        canClose={pdfs.every((p) => p.status !== 'processing')}
+      />
       <ToolSearch />
     </main>
   )
