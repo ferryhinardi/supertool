@@ -147,36 +147,6 @@ function ProgressCircle({ value, text }: { value: number; text: string }) {
 }
 
 function FileProgressItem({ pdf }: { pdf: PDFFile }) {
-  const confettiTriggered = useRef(false)
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  useEffect(() => {
-    if (!isClient || pdf.status !== 'completed' || confettiTriggered.current) return
-
-    confettiTriggered.current = true
-
-    // Only load confetti on client after mount
-    if (typeof window !== 'undefined') {
-      import('canvas-confetti')
-        .then((module) => {
-          const confetti = module.default
-          confetti({
-            particleCount: 50,
-            spread: 60,
-            origin: { y: 0.6 },
-            colors: ['#ef4444', '#f97316', '#eab308'],
-          })
-        })
-        .catch(() => {
-          // Silently fail if confetti can't load
-        })
-    }
-  }, [isClient, pdf.status])
-
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
