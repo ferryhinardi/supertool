@@ -290,7 +290,7 @@ const UNIT_CATEGORY_OPERATIONS: ToolOperation[] = [
   },
   {
     id: 'weight',
-    label: 'Weight',
+    label: 'Weight / Mass',
     icon: Weight,
     color: TOOL_COLORS.secondary,
     description: 'Mass & weight',
@@ -353,7 +353,7 @@ const UNIT_CATEGORY_OPERATIONS: ToolOperation[] = [
   },
   {
     id: 'digital',
-    label: 'Digital',
+    label: 'Digital Storage',
     icon: HardDrive,
     color: TOOL_COLORS.indigo,
     description: 'Data storage',
