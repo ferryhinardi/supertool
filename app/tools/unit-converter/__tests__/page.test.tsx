@@ -117,23 +117,23 @@ describe('Unit Converter Page', () => {
     it('displays correct number of units per category', () => {
       render(<UnitConverterPage />)
 
-      // Length should show "11 units" - use getAllByText and find the one in a button
+      // Length should show "Distance & height" - use getAllByText and find the one in a button
       const lengthButtons = screen
         .getAllByRole('button')
         .filter(
-          (btn) => btn.textContent?.includes('Length') && btn.textContent?.includes('11 units')
+          (btn) => btn.textContent?.includes('Length') && btn.textContent?.includes('Distance')
         )
       expect(lengthButtons.length).toBeGreaterThan(0)
-      expect(lengthButtons[0]).toHaveTextContent('11 units')
+      expect(lengthButtons[0]).toHaveTextContent('Distance & height')
 
-      // Temperature should show "3 units"
+      // Temperature should show "Celsius, Fahrenheit, Kelvin"
       const tempButtons = screen
         .getAllByRole('button')
         .filter(
-          (btn) => btn.textContent?.includes('Temperature') && btn.textContent?.includes('3 units')
+          (btn) => btn.textContent?.includes('Temperature') && btn.textContent?.includes('Celsius')
         )
       expect(tempButtons.length).toBeGreaterThan(0)
-      expect(tempButtons[0]).toHaveTextContent('3 units')
+      expect(tempButtons[0]).toHaveTextContent('Celsius, Fahrenheit, Kelvin')
     })
   })
 
@@ -314,7 +314,9 @@ describe('Unit Converter Page', () => {
       // Switch back to Length - use getAllByText since "Length" appears in multiple places
       const lengthButtons = screen
         .getAllByRole('button')
-        .filter((btn) => btn.textContent?.includes('Length') && btn.textContent?.includes('units'))
+        .filter(
+          (btn) => btn.textContent?.includes('Length') && btn.textContent?.includes('Distance')
+        )
       expect(lengthButtons.length).toBeGreaterThan(0)
       await userEvent.click(lengthButtons[0])
 
