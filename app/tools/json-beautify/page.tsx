@@ -26,6 +26,12 @@ import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import {
+  TOOL_COLORS,
+  ToolMobilePicker,
+  type ToolOperation,
+  ToolOperationGrid,
+} from '@/components/features/tool-components'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -133,6 +139,45 @@ const SCHEMA_TEMPLATES = {
 }
 
 type ViewMode = 'editor' | 'tree' | 'schema' | 'diff' | 'typescript'
+
+// View Mode Operations for ToolOperationGrid
+const VIEW_MODE_OPERATIONS: ToolOperation[] = [
+  {
+    id: 'editor',
+    label: 'Editor',
+    icon: Code2,
+    color: TOOL_COLORS.primary,
+    description: 'Edit and format JSON with syntax highlighting',
+  },
+  {
+    id: 'tree',
+    label: 'Tree View',
+    icon: ListTree,
+    color: TOOL_COLORS.secondary,
+    description: 'Visual tree structure with path extraction',
+  },
+  {
+    id: 'schema',
+    label: 'Schema',
+    icon: AlertCircle,
+    color: TOOL_COLORS.warning,
+    description: 'Validate JSON against schemas',
+  },
+  {
+    id: 'diff',
+    label: 'Compare',
+    icon: GitCompare,
+    color: TOOL_COLORS.info,
+    description: 'Compare two JSON objects side-by-side',
+  },
+  {
+    id: 'typescript',
+    label: 'TypeScript',
+    icon: ArrowLeftRight,
+    color: TOOL_COLORS.purple,
+    description: 'Generate TypeScript interfaces',
+  },
+]
 
 // JSON History Item Interface
 interface JSONHistoryItem {
@@ -1117,85 +1162,43 @@ function JSONBeautifyContent() {
           </Card>
         </motion.div>
 
-        {/* View Mode Selector */}
+        {/* View Mode Selector - Desktop */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
+          className={css({ display: { base: 'none', md: 'block' } })}
         >
-          <div
-            className={css({
-              rounded: { base: 'xl', sm: '2xl' },
-              border: '2px solid',
-              borderColor: 'purple.500/30',
-              bg: 'rgba(139, 92, 246, 0.05)',
-              p: { base: '3', sm: '4' },
-              backdropFilter: 'blur(16px)',
-            })}
+          <ToolOperationGrid
+            operations={VIEW_MODE_OPERATIONS}
+            selectedOperation={viewMode}
+            onOperationChange={(mode) => setViewMode(mode as ViewMode)}
+            columns={{ base: 1, sm: 2, md: 3, lg: 5 }}
+            analyticsCategory="json_beautifier"
+          />
+        </motion.div>
+
+        {/* View Mode Selector - Mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className={css({ display: { base: 'block', md: 'none' } })}
+        >
+          <ToolMobilePicker
+            label={`View: ${VIEW_MODE_OPERATIONS.find((op) => op.id === viewMode)?.label || 'Editor'}`}
+            title="Choose View Mode"
+            description="Select how you want to work with your JSON data"
+            color={VIEW_MODE_OPERATIONS.find((op) => op.id === viewMode)?.color}
           >
-            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-              <Button
-                variant={viewMode === 'editor' ? 'default' : 'outline'}
-                onClick={() => setViewMode('editor')}
-                className={css({
-                  gap: '2',
-                  minH: '11',
-                  py: { base: '3', sm: '2.5' },
-                })}
-              >
-                <Code2 className={css({ h: '4', w: '4' })} />
-                Editor
-              </Button>
-              <Button
-                variant={viewMode === 'tree' ? 'default' : 'outline'}
-                onClick={() => setViewMode('tree')}
-                className={css({
-                  gap: '2',
-                  minH: '11',
-                  py: { base: '3', sm: '2.5' },
-                })}
-              >
-                <ListTree className={css({ h: '4', w: '4' })} />
-                Tree View
-              </Button>
-              <Button
-                variant={viewMode === 'schema' ? 'default' : 'outline'}
-                onClick={() => setViewMode('schema')}
-                className={css({
-                  gap: '2',
-                  minH: '11',
-                  py: { base: '3', sm: '2.5' },
-                })}
-              >
-                <AlertCircle className={css({ h: '4', w: '4' })} />
-                Schema Validation
-              </Button>
-              <Button
-                variant={viewMode === 'diff' ? 'default' : 'outline'}
-                onClick={() => setViewMode('diff')}
-                className={css({
-                  gap: '2',
-                  minH: '11',
-                  py: { base: '3', sm: '2.5' },
-                })}
-              >
-                <GitCompare className={css({ h: '4', w: '4' })} />
-                Compare
-              </Button>
-              <Button
-                variant={viewMode === 'typescript' ? 'default' : 'outline'}
-                onClick={() => setViewMode('typescript')}
-                className={css({
-                  gap: '2',
-                  minH: '11',
-                  py: { base: '3', sm: '2.5' },
-                })}
-              >
-                <ArrowLeftRight className={css({ h: '4', w: '4' })} />
-                TypeScript
-              </Button>
-            </div>
-          </div>
+            <ToolOperationGrid
+              operations={VIEW_MODE_OPERATIONS}
+              selectedOperation={viewMode}
+              onOperationChange={(mode) => setViewMode(mode as ViewMode)}
+              columns={{ base: 1, sm: 2 }}
+              analyticsCategory="json_beautifier"
+            />
+          </ToolMobilePicker>
         </motion.div>
 
         {/* Stats Bar */}

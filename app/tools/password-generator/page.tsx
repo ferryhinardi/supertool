@@ -20,6 +20,12 @@ import { parseAsBoolean, parseAsInteger, parseAsString, useQueryState } from 'nu
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
+import {
+  TOOL_COLORS,
+  ToolMobilePicker,
+  type ToolOperation,
+  ToolOperationGrid,
+} from '@/components/features/tool-components'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
@@ -100,6 +106,38 @@ const faqs = [
     question: 'What is password entropy and why does it matter?',
     answer:
       'Password entropy measures the randomness and unpredictability of a password in bits. Higher entropy means more possible combinations and longer crack time. A password with 60+ bits of entropy is considered secure, 80+ bits is very strong, and 100+ bits is extremely strong. Our tool displays entropy for each generated password so you can verify its strength. For reference, a 16-character random password with all character types has about 95 bits of entropy.',
+  },
+]
+
+// Password Generation Mode Operations
+const PASSWORD_MODE_OPERATIONS: ToolOperation[] = [
+  {
+    id: 'random',
+    label: 'Random',
+    icon: Key,
+    color: TOOL_COLORS.primary,
+    description: 'Traditional random character password',
+  },
+  {
+    id: 'diceware',
+    label: 'Diceware',
+    icon: Sparkles,
+    color: TOOL_COLORS.secondary,
+    description: 'Word-based passphrase (memorable)',
+  },
+  {
+    id: 'pronounceable',
+    label: 'Pronounceable',
+    icon: Zap,
+    color: TOOL_COLORS.warning,
+    description: 'Easy to say and remember',
+  },
+  {
+    id: 'template',
+    label: 'Template',
+    icon: Shield,
+    color: TOOL_COLORS.success,
+    description: 'Pre-defined patterns (banking, WiFi, etc)',
   },
 ]
 
@@ -727,100 +765,43 @@ function PasswordGeneratorContent() {
         </Card>
       </motion.div>
 
-      {/* Generation Mode Selector */}
+      {/* Generation Mode Selector - Desktop */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
+        className={css({ display: { base: 'none', md: 'block' } })}
       >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
-            w: 'full',
-          })}
+        <ToolOperationGrid
+          operations={PASSWORD_MODE_OPERATIONS}
+          selectedOperation={mode}
+          onOperationChange={(newMode) => setMode(newMode)}
+          columns={{ base: 1, sm: 2, md: 2, lg: 4 }}
+          analyticsCategory="password_generator"
+        />
+      </motion.div>
+
+      {/* Generation Mode Selector - Mobile */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className={css({ display: { base: 'block', md: 'none' } })}
+      >
+        <ToolMobilePicker
+          label={`Mode: ${PASSWORD_MODE_OPERATIONS.find((op) => op.id === mode)?.label || 'Random'}`}
+          title="Choose Password Mode"
+          description="Select the type of password to generate"
+          color={PASSWORD_MODE_OPERATIONS.find((op) => op.id === mode)?.color}
         >
-          <CardContent className={css({ py: '6' })}>
-            <div className={css({ spaceY: '4' })}>
-              <FieldLabel>Generation Mode</FieldLabel>
-              <div
-                className={css({
-                  display: 'grid',
-                  gap: '3',
-                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
-                })}
-              >
-                {[
-                  { id: 'random' as const, label: 'Random', icon: Key, desc: 'Traditional random' },
-                  {
-                    id: 'diceware' as const,
-                    label: 'Diceware',
-                    icon: Sparkles,
-                    desc: 'Word-based',
-                  },
-                  {
-                    id: 'pronounceable' as const,
-                    label: 'Pronounceable',
-                    icon: Zap,
-                    desc: 'Easy to say',
-                  },
-                  {
-                    id: 'template' as const,
-                    label: 'Template',
-                    icon: Shield,
-                    desc: 'Pre-defined',
-                  },
-                ].map(({ id, label, icon: Icon, desc }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => setMode(id)}
-                    className={css({
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '2',
-                      rounded: 'lg',
-                      border: '2px solid',
-                      borderColor: mode === id ? 'purple.500' : 'gray.700',
-                      bg: mode === id ? 'purple.500/20' : 'gray.900/30',
-                      p: '4',
-                      minH: '24',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      _hover: {
-                        borderColor: 'purple.500',
-                        bg: 'purple.500/15',
-                      },
-                    })}
-                  >
-                    <Icon
-                      className={css({
-                        h: '6',
-                        w: '6',
-                        color: mode === id ? 'purple.400' : 'gray.400',
-                      })}
-                    />
-                    <div className={css({ textAlign: 'center' })}>
-                      <div
-                        className={css({
-                          fontSize: 'sm',
-                          fontWeight: 'semibold',
-                          color: 'white',
-                        })}
-                      >
-                        {label}
-                      </div>
-                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>{desc}</div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <ToolOperationGrid
+            operations={PASSWORD_MODE_OPERATIONS}
+            selectedOperation={mode}
+            onOperationChange={(newMode) => setMode(newMode)}
+            columns={{ base: 1, sm: 2 }}
+            analyticsCategory="password_generator"
+          />
+        </ToolMobilePicker>
       </motion.div>
 
       <div

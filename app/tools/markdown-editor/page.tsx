@@ -17,6 +17,12 @@ import {
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import {
+  TOOL_COLORS,
+  ToolMobilePicker,
+  type ToolOperation,
+  ToolOperationGrid,
+} from '@/components/features/tool-components'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -85,6 +91,31 @@ const faqs = [
     question: 'Can I load existing Markdown files into the editor?',
     answer:
       'Yes! Click the "Load File" button to import existing .md or .markdown files from your computer. The editor will display your content with live preview immediately. You can then edit, export, or download your modified content. This makes it easy to work with existing documentation and README files.',
+  },
+]
+
+// View Mode Operations
+const VIEW_MODE_OPERATIONS: ToolOperation[] = [
+  {
+    id: 'editor',
+    label: 'Editor Only',
+    icon: Code2,
+    color: TOOL_COLORS.success,
+    description: 'Focus on writing',
+  },
+  {
+    id: 'split',
+    label: 'Split View',
+    icon: SplitSquareHorizontal,
+    color: TOOL_COLORS.info,
+    description: 'Side-by-side editing',
+  },
+  {
+    id: 'preview',
+    label: 'Preview Only',
+    icon: Eye,
+    color: TOOL_COLORS.purple,
+    description: 'See final output',
   },
 ]
 
@@ -418,95 +449,35 @@ export default function MarkdownEditorPage() {
               <CardDescription>Choose how you want to work with your markdown</CardDescription>
             </CardHeader>
             <CardContent>
-              <div
-                className={css({
-                  display: 'grid',
-                  gridTemplateColumns: {
-                    base: '1fr',
-                    sm: 'repeat(3, 1fr)',
-                  },
-                  gap: '3',
-                  w: 'full',
-                })}
-              >
-                <Button
-                  variant={viewMode === 'editor' ? 'default' : 'outline'}
-                  size="lg"
-                  onClick={() => setViewMode('editor')}
-                  className={css({
-                    h: 'auto',
-                    flexDirection: 'column',
-                    gap: '2',
-                    py: '4',
-                    bg: viewMode === 'editor' ? 'green.500/20' : 'gray.800/50',
-                    border: '1px solid',
-                    borderColor: viewMode === 'editor' ? 'green.500/50' : 'gray.700/50',
-                    color: viewMode === 'editor' ? 'green.300' : 'gray.400',
-                    transition: 'all 0.2s',
-                    _hover: {
-                      bg: viewMode === 'editor' ? 'green.500/30' : 'gray.800',
-                      borderColor: viewMode === 'editor' ? 'green.500/70' : 'gray.600',
-                      transform: 'translateY(-2px)',
-                    },
-                  })}
+              {/* Desktop: Operation Grid */}
+              <div className={css({ display: { base: 'none', md: 'block' } })}>
+                <ToolOperationGrid
+                  operations={VIEW_MODE_OPERATIONS}
+                  selectedOperation={viewMode}
+                  onOperationChange={(newMode) => setViewMode(newMode as ViewMode)}
+                  columns={{ base: 1, sm: 3 }}
+                  analyticsCategory="markdown_editor"
+                />
+              </div>
+
+              {/* Mobile: Bottom Sheet Picker */}
+              <div className={css({ display: { base: 'block', md: 'none' } })}>
+                <ToolMobilePicker
+                  label={`Mode: ${
+                    VIEW_MODE_OPERATIONS.find((op) => op.id === viewMode)?.label || 'Split View'
+                  }`}
+                  title="Choose View Mode"
+                  description="Select how you want to work with your markdown"
+                  color={VIEW_MODE_OPERATIONS.find((op) => op.id === viewMode)?.color}
                 >
-                  <Code2 className={css({ h: '5', w: '5' })} />
-                  <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
-                    Editor Only
-                  </span>
-                </Button>
-                <Button
-                  variant={viewMode === 'split' ? 'default' : 'outline'}
-                  size="lg"
-                  onClick={() => setViewMode('split')}
-                  className={css({
-                    h: 'auto',
-                    flexDirection: 'column',
-                    gap: '2',
-                    py: '4',
-                    bg: viewMode === 'split' ? 'green.500/20' : 'gray.800/50',
-                    border: '1px solid',
-                    borderColor: viewMode === 'split' ? 'green.500/50' : 'gray.700/50',
-                    color: viewMode === 'split' ? 'green.300' : 'gray.400',
-                    transition: 'all 0.2s',
-                    _hover: {
-                      bg: viewMode === 'split' ? 'green.500/30' : 'gray.800',
-                      borderColor: viewMode === 'split' ? 'green.500/70' : 'gray.600',
-                      transform: 'translateY(-2px)',
-                    },
-                  })}
-                >
-                  <SplitSquareHorizontal className={css({ h: '5', w: '5' })} />
-                  <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
-                    Split View
-                  </span>
-                </Button>
-                <Button
-                  variant={viewMode === 'preview' ? 'default' : 'outline'}
-                  size="lg"
-                  onClick={() => setViewMode('preview')}
-                  className={css({
-                    h: 'auto',
-                    flexDirection: 'column',
-                    gap: '2',
-                    py: '4',
-                    bg: viewMode === 'preview' ? 'green.500/20' : 'gray.800/50',
-                    border: '1px solid',
-                    borderColor: viewMode === 'preview' ? 'green.500/50' : 'gray.700/50',
-                    color: viewMode === 'preview' ? 'green.300' : 'gray.400',
-                    transition: 'all 0.2s',
-                    _hover: {
-                      bg: viewMode === 'preview' ? 'green.500/30' : 'gray.800',
-                      borderColor: viewMode === 'preview' ? 'green.500/70' : 'gray.600',
-                      transform: 'translateY(-2px)',
-                    },
-                  })}
-                >
-                  <Eye className={css({ h: '5', w: '5' })} />
-                  <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
-                    Preview Only
-                  </span>
-                </Button>
+                  <ToolOperationGrid
+                    operations={VIEW_MODE_OPERATIONS}
+                    selectedOperation={viewMode}
+                    onOperationChange={(newMode) => setViewMode(newMode as ViewMode)}
+                    columns={{ base: 1 }}
+                    analyticsCategory="markdown_editor"
+                  />
+                </ToolMobilePicker>
               </div>
             </CardContent>
           </Card>

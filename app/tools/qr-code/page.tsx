@@ -4,31 +4,47 @@ import type { Html5Qrcode } from 'html5-qrcode'
 import JSZip from 'jszip'
 import {
   AlertTriangle,
+  Calendar,
   Camera,
   CheckCircle2,
+  Contact,
   Copy,
   Download,
   FileDown,
   FileText,
   FileUp,
+  Globe,
   History,
   Image as ImageIcon,
   Lightbulb,
+  Link,
+  Mail,
+  MapPin,
+  MessageSquare,
   PackageOpen,
+  Phone,
   Printer,
   QrCode,
   ScanLine,
   Search,
   Settings,
+  ShoppingBag,
   Sparkles,
   Star,
   Trash2,
   Upload,
+  Wifi,
   X,
 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import {
+  TOOL_COLORS,
+  ToolMobilePicker,
+  type ToolOperation,
+  ToolOperationGrid,
+} from '@/components/features/tool-components'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -366,6 +382,88 @@ const stylePresets: Record<QRStylePreset, Partial<QRStyleConfig>> = {
     frameColor: '#C026D3',
   },
 }
+
+// QR Code Type Operations
+const QR_TYPE_OPERATIONS: ToolOperation[] = [
+  { id: 'url', label: 'URL', icon: Link, color: TOOL_COLORS.primary, description: 'Website link' },
+  {
+    id: 'text',
+    label: 'Text',
+    icon: FileText,
+    color: TOOL_COLORS.secondary,
+    description: 'Plain text',
+  },
+  {
+    id: 'wifi',
+    label: 'WiFi',
+    icon: Wifi,
+    color: TOOL_COLORS.info,
+    description: 'Network credentials',
+  },
+  {
+    id: 'vcard',
+    label: 'vCard',
+    icon: Contact,
+    color: TOOL_COLORS.purple,
+    description: 'Contact info',
+  },
+  {
+    id: 'email',
+    label: 'Email',
+    icon: Mail,
+    color: TOOL_COLORS.warning,
+    description: 'Email address',
+  },
+  {
+    id: 'sms',
+    label: 'SMS',
+    icon: MessageSquare,
+    color: TOOL_COLORS.teal,
+    description: 'Text message',
+  },
+  {
+    id: 'phone',
+    label: 'Phone',
+    icon: Phone,
+    color: TOOL_COLORS.success,
+    description: 'Phone number',
+  },
+  {
+    id: 'whatsapp',
+    label: 'WhatsApp',
+    icon: MessageSquare,
+    color: TOOL_COLORS.success,
+    description: 'WhatsApp chat',
+  },
+  {
+    id: 'geo',
+    label: 'Location',
+    icon: MapPin,
+    color: TOOL_COLORS.error,
+    description: 'GPS coordinates',
+  },
+  {
+    id: 'event',
+    label: 'Event',
+    icon: Calendar,
+    color: TOOL_COLORS.indigo,
+    description: 'Calendar event',
+  },
+  {
+    id: 'appstore',
+    label: 'App Store',
+    icon: ShoppingBag,
+    color: TOOL_COLORS.pink,
+    description: 'App download',
+  },
+  {
+    id: 'social',
+    label: 'Social',
+    icon: Globe,
+    color: TOOL_COLORS.orange,
+    description: 'Social media',
+  },
+]
 
 export default function QRCodePage() {
   const [type, setType] = useState<QRCodeType>('url')
@@ -1561,42 +1659,34 @@ url,https://github.com,GitHub,#000000`
             >
               QR Code Type
             </h2>
-            <div
-              className={css({
-                display: 'grid',
-                gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
-                gap: '3',
-              })}
-            >
-              {(
-                [
-                  'url',
-                  'text',
-                  'wifi',
-                  'vcard',
-                  'email',
-                  'sms',
-                  'phone',
-                  'whatsapp',
-                  'geo',
-                  'event',
-                  'appstore',
-                  'social',
-                ] as const
-              ).map((t) => (
-                <Button
-                  key={t}
-                  onClick={() => {
-                    setType(t)
-                    trackToolEvent('qr_code_type_change', { type: t })
-                  }}
-                  variant={type === t ? 'default' : 'outline'}
-                  size="sm"
-                  className="capitalize"
-                >
-                  {t === 'appstore' ? 'App Store' : t === 'whatsapp' ? 'WhatsApp' : t}
-                </Button>
-              ))}
+
+            {/* Desktop: Operation Grid */}
+            <div className={css({ display: { base: 'none', md: 'block' } })}>
+              <ToolOperationGrid
+                operations={QR_TYPE_OPERATIONS}
+                selectedOperation={type}
+                onOperationChange={(newType) => setType(newType as QRCodeType)}
+                columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+                analyticsCategory="qr_code"
+              />
+            </div>
+
+            {/* Mobile: Bottom Sheet Picker */}
+            <div className={css({ display: { base: 'block', md: 'none' } })}>
+              <ToolMobilePicker
+                label={`Type: ${QR_TYPE_OPERATIONS.find((op) => op.id === type)?.label || 'URL'}`}
+                title="Choose QR Code Type"
+                description="Select the type of data to encode in your QR code"
+                color={QR_TYPE_OPERATIONS.find((op) => op.id === type)?.color}
+              >
+                <ToolOperationGrid
+                  operations={QR_TYPE_OPERATIONS}
+                  selectedOperation={type}
+                  onOperationChange={(newType) => setType(newType as QRCodeType)}
+                  columns={{ base: 1, sm: 2 }}
+                  analyticsCategory="qr_code"
+                />
+              </ToolMobilePicker>
             </div>
           </div>
 

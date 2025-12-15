@@ -4,26 +4,40 @@ import { motion } from 'framer-motion'
 import {
   ArrowLeftRight,
   ArrowRight,
+  Bolt,
   Clock,
   Download,
+  Droplet,
+  Gauge,
   GitBranch,
+  HardDrive,
   History,
   Info,
   Lightbulb,
   Plus,
   Repeat,
   RotateCcw,
+  Ruler,
   Save,
   Sparkles,
+  Square,
   Star,
+  Thermometer,
   Trash2,
   TrendingUp,
+  Weight,
   X,
   Zap,
 } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import {
+  TOOL_COLORS,
+  ToolMobilePicker,
+  type ToolOperation,
+  ToolOperationGrid,
+} from '@/components/features/tool-components'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -265,6 +279,87 @@ const faqs = [
   },
 ]
 
+// Unit Category Operations
+const UNIT_CATEGORY_OPERATIONS: ToolOperation[] = [
+  {
+    id: 'length',
+    label: 'Length',
+    icon: Ruler,
+    color: TOOL_COLORS.primary,
+    description: 'Distance & height',
+  },
+  {
+    id: 'weight',
+    label: 'Weight',
+    icon: Weight,
+    color: TOOL_COLORS.secondary,
+    description: 'Mass & weight',
+  },
+  {
+    id: 'temperature',
+    label: 'Temperature',
+    icon: Thermometer,
+    color: TOOL_COLORS.error,
+    description: 'Celsius, Fahrenheit, Kelvin',
+  },
+  {
+    id: 'volume',
+    label: 'Volume',
+    icon: Droplet,
+    color: TOOL_COLORS.info,
+    description: 'Liquid capacity',
+  },
+  {
+    id: 'area',
+    label: 'Area',
+    icon: Square,
+    color: TOOL_COLORS.success,
+    description: 'Surface measurement',
+  },
+  {
+    id: 'speed',
+    label: 'Speed',
+    icon: Gauge,
+    color: TOOL_COLORS.warning,
+    description: 'Velocity & pace',
+  },
+  {
+    id: 'time',
+    label: 'Time',
+    icon: Clock,
+    color: TOOL_COLORS.purple,
+    description: 'Duration & intervals',
+  },
+  {
+    id: 'pressure',
+    label: 'Pressure',
+    icon: Gauge,
+    color: TOOL_COLORS.teal,
+    description: 'Force per unit area',
+  },
+  {
+    id: 'energy',
+    label: 'Energy',
+    icon: Zap,
+    color: TOOL_COLORS.yellow,
+    description: 'Work & heat',
+  },
+  {
+    id: 'power',
+    label: 'Power',
+    icon: Bolt,
+    color: TOOL_COLORS.orange,
+    description: 'Energy rate',
+  },
+  {
+    id: 'digital',
+    label: 'Digital',
+    icon: HardDrive,
+    color: TOOL_COLORS.indigo,
+    description: 'Data storage',
+  },
+]
+
 function UnitConverterContent() {
   const [category, setCategory] = useQueryState(
     'category',
@@ -436,7 +531,7 @@ function UnitConverterContent() {
   const fromUnitInfo = getUnitInfo(category, fromUnit)
   const toUnitInfo = getUnitInfo(category, toUnit)
 
-  const categories = getAllCategories()
+  const _categories = getAllCategories()
   const categoryInfo = unitDefinitions[category]
 
   // Save history to localStorage (client-side only)
@@ -910,52 +1005,39 @@ function UnitConverterContent() {
             <CardDescription>Choose the type of unit you want to convert</CardDescription>
           </CardHeader>
           <CardContent>
-            <div
-              className={css({
-                display: 'grid',
-                gridTemplateColumns: {
-                  base: 'repeat(2, 1fr)',
-                  sm: 'repeat(3, 1fr)',
-                  md: 'repeat(4, 1fr)',
-                  lg: 'repeat(6, 1fr)',
-                },
-                gap: '3',
-              })}
-            >
-              {categories.map((cat) => {
-                const isActive = category === cat
-                const def = unitDefinitions[cat]
-                return (
-                  <Button
-                    key={cat}
-                    onClick={() => handleCategoryChange(cat)}
-                    className={css({
-                      h: 'auto',
-                      flexDirection: 'column',
-                      gap: '2',
-                      py: '4',
-                      px: '3',
-                      bg: isActive ? 'blue.500/20' : 'gray.800/50',
-                      border: '1px solid',
-                      borderColor: isActive ? 'blue.500/50' : 'gray.700/50',
-                      color: isActive ? 'blue.300' : 'gray.400',
-                      transition: 'all 0.2s',
-                      _hover: {
-                        bg: isActive ? 'blue.500/30' : 'gray.800',
-                        borderColor: isActive ? 'blue.500/70' : 'gray.600',
-                        transform: 'translateY(-2px)',
-                      },
-                    })}
-                  >
-                    <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
-                      {def.name}
-                    </span>
-                    <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
-                      {Object.keys(def.units).length} units
-                    </span>
-                  </Button>
-                )
-              })}
+            {/* Desktop: Operation Grid */}
+            <div className={css({ display: { base: 'none', md: 'block' } })}>
+              <ToolOperationGrid
+                operations={UNIT_CATEGORY_OPERATIONS}
+                selectedOperation={category}
+                onOperationChange={(newCategory) =>
+                  handleCategoryChange(newCategory as UnitCategory)
+                }
+                columns={{ base: 1, sm: 2, md: 3, lg: 6 }}
+                analyticsCategory="unit_converter"
+              />
+            </div>
+
+            {/* Mobile: Bottom Sheet Picker */}
+            <div className={css({ display: { base: 'block', md: 'none' } })}>
+              <ToolMobilePicker
+                label={`Category: ${
+                  UNIT_CATEGORY_OPERATIONS.find((op) => op.id === category)?.label || 'Length'
+                }`}
+                title="Choose Unit Category"
+                description="Select the type of unit you want to convert"
+                color={UNIT_CATEGORY_OPERATIONS.find((op) => op.id === category)?.color}
+              >
+                <ToolOperationGrid
+                  operations={UNIT_CATEGORY_OPERATIONS}
+                  selectedOperation={category}
+                  onOperationChange={(newCategory) =>
+                    handleCategoryChange(newCategory as UnitCategory)
+                  }
+                  columns={{ base: 1, sm: 2 }}
+                  analyticsCategory="unit_converter"
+                />
+              </ToolMobilePicker>
             </div>
           </CardContent>
         </Card>
