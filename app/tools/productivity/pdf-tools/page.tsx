@@ -127,6 +127,7 @@ type OperationType =
   | 'toWord'
   | 'edit'
   | 'grayscale'
+  | 'deletePages'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -204,6 +205,9 @@ export default function PDFToolsPage() {
   const [imageToPdfFitMode, setImageToPdfFitMode] = useState<'contain' | 'cover' | 'fill'>(
     'contain'
   )
+
+  // Delete pages options
+  const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set())
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1374,6 +1378,7 @@ export default function PDFToolsPage() {
             rotationAngle,
             imageToPdfPageSize,
             imageToPdfFitMode,
+            pagesToDelete: Array.from(selectedPages),
           })
 
           toast.success(
@@ -1536,12 +1541,46 @@ export default function PDFToolsPage() {
 
   const handleClearAll = () => {
     setPdfs([])
+    setSelectedPages(new Set())
     trackEvent({
       action: 'clear_all',
       category: 'pdf_tools',
       label: 'reset',
     })
   }
+
+  // Toggle page selection for deletePages operation
+  const handleTogglePageSelection = (pageNumber: number) => {
+    setSelectedPages((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(pageNumber)) {
+        newSet.delete(pageNumber)
+      } else {
+        newSet.add(pageNumber)
+      }
+      return newSet
+    })
+  }
+
+  // Select all pages
+  const handleSelectAllPages = () => {
+    if (pdfs.length > 0 && pdfs[0]) {
+      const allPages = Array.from({ length: pdfs[0].pages }, (_, i) => i + 1)
+      setSelectedPages(new Set(allPages))
+    }
+  }
+
+  // Deselect all pages
+  const handleDeselectAllPages = () => {
+    setSelectedPages(new Set())
+  }
+
+  // Reset selected pages when operation changes
+  useEffect(() => {
+    if (operation !== 'deletePages') {
+      setSelectedPages(new Set())
+    }
+  }, [operation])
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes'
@@ -2378,6 +2417,193 @@ export default function PDFToolsPage() {
                         </Button>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {operation === 'deletePages' && pdfs.length > 0 && pdfs[0] && (
+                  <div className={css({ spaceY: '4' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Select Pages to Delete ({selectedPages.size} selected)
+                      </div>
+                      <div className={css({ display: 'flex', gap: '2' })}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleSelectAllPages}
+                          disabled={selectedPages.size === pdfs[0].pages}
+                          className={css({
+                            fontSize: 'xs',
+                            borderColor: 'gray.700',
+                          })}
+                        >
+                          Select All
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleDeselectAllPages}
+                          disabled={selectedPages.size === 0}
+                          className={css({
+                            fontSize: 'xs',
+                            borderColor: 'gray.700',
+                          })}
+                        >
+                          Clear
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Page grid with checkboxes */}
+                    <div
+                      className={css({
+                        display: 'grid',
+                        gridTemplateColumns: {
+                          base: 'repeat(3, 1fr)',
+                          sm: 'repeat(4, 1fr)',
+                          md: 'repeat(5, 1fr)',
+                        },
+                        gap: '2',
+                        w: 'full',
+                        maxH: '400px',
+                        overflowY: 'auto',
+                        p: '2',
+                        rounded: 'md',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                      })}
+                    >
+                      {Array.from({ length: pdfs[0].pages }, (_, i) => i + 1).map((pageNum) => {
+                        const isSelected = selectedPages.has(pageNum)
+                        return (
+                          <button
+                            key={pageNum}
+                            type="button"
+                            onClick={() => handleTogglePageSelection(pageNum)}
+                            className={css({
+                              position: 'relative',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              p: '3',
+                              rounded: 'md',
+                              border: '2px solid',
+                              borderColor: isSelected ? 'red.500' : 'gray.700',
+                              bg: isSelected ? 'red.500/10' : 'gray.800',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                              _hover: {
+                                borderColor: isSelected ? 'red.400' : 'gray.600',
+                                bg: isSelected ? 'red.500/20' : 'gray.700',
+                              },
+                              _focus: {
+                                outline: '2px solid',
+                                outlineColor: 'red.500',
+                                outlineOffset: '2px',
+                              },
+                            })}
+                            aria-label={`${isSelected ? 'Deselect' : 'Select'} page ${pageNum}`}
+                          >
+                            {/* Checkbox indicator */}
+                            <div
+                              className={css({
+                                position: 'absolute',
+                                top: '1',
+                                right: '1',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                h: '5',
+                                w: '5',
+                                rounded: 'sm',
+                                bg: isSelected ? 'red.500' : 'gray.700',
+                                border: '1px solid',
+                                borderColor: isSelected ? 'red.400' : 'gray.600',
+                              })}
+                            >
+                              {isSelected && (
+                                <svg
+                                  className={css({ h: '3', w: '3', color: 'white' })}
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <title>Selected</title>
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={3}
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+
+                            {/* Page number */}
+                            <div
+                              className={css({
+                                fontSize: 'lg',
+                                fontWeight: 'bold',
+                                color: isSelected ? 'red.300' : 'gray.300',
+                              })}
+                            >
+                              {pageNum}
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </div>
+
+                    {/* Warning message */}
+                    {selectedPages.size > 0 && (
+                      <div
+                        className={css({
+                          p: '3',
+                          rounded: 'md',
+                          bg: 'red.500/10',
+                          border: '1px solid',
+                          borderColor: 'red.500/30',
+                        })}
+                      >
+                        <div
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'start',
+                            gap: '2',
+                          })}
+                        >
+                          <Trash2
+                            className={css({
+                              h: '4',
+                              w: '4',
+                              color: 'red.400',
+                              flexShrink: 0,
+                              mt: '0.5',
+                            })}
+                          />
+                          <div className={css({ fontSize: 'xs', color: 'red.200' })}>
+                            <strong>Warning:</strong> {selectedPages.size} page
+                            {selectedPages.size === 1 ? '' : 's'} will be permanently deleted from
+                            the PDF.
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 

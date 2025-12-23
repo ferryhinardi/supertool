@@ -28,6 +28,7 @@ export type OperationType =
   | 'toWord'
   | 'edit'
   | 'grayscale'
+  | 'deletePages'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -52,6 +53,7 @@ interface ProcessOptions {
   rotationAngle?: number
   imageToPdfPageSize?: 'A4' | 'Letter' | 'Legal' | 'Original'
   imageToPdfFitMode?: 'contain' | 'cover' | 'fill'
+  pagesToDelete?: number[] // Array of page numbers (1-indexed) to delete
 }
 
 /**
@@ -142,6 +144,9 @@ export class PDFBatchProcessor {
           break
         case 'grayscale':
           await this.convertToGrayscale(pdf)
+          break
+        case 'deletePages':
+          await this.deletePages(pdf, options.pagesToDelete || [])
           break
       }
     } catch (error) {
@@ -517,6 +522,62 @@ export class PDFBatchProcessor {
 
     const extractedBytes = await newPdf.save()
     const blob = new Blob([new Uint8Array(extractedBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Delete specific pages from PDF
+   * @param pdf - PDF file to process
+   * @param pagesToDelete - Array of 1-indexed page numbers to delete (e.g., [1, 3, 5])
+   */
+  private async deletePages(pdf: PDFFile, pagesToDelete: number[]): Promise<void> {
+    const { PDFDocument } = await import('pdf-lib')
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const totalPages = pdfDoc.getPageCount()
+
+    // Validate page numbers
+    if (pagesToDelete.length === 0) {
+      throw new Error('No pages selected for deletion')
+    }
+
+    if (pagesToDelete.length >= totalPages) {
+      throw new Error('Cannot delete all pages from PDF')
+    }
+
+    const invalidPages = pagesToDelete.filter((page) => page < 1 || page > totalPages)
+    if (invalidPages.length > 0) {
+      throw new Error(`Invalid page numbers: ${invalidPages.join(', ')}`)
+    }
+
+    // Create new PDF with only pages that are NOT in pagesToDelete
+    const newPdf = await PDFDocument.create()
+    const pagesToKeep = Array.from({ length: totalPages }, (_, i) => i + 1).filter(
+      (pageNum) => !pagesToDelete.includes(pageNum)
+    )
+
+    // Convert to 0-indexed for pdf-lib
+    const pageIndices = pagesToKeep.map((p) => p - 1)
+
+    // Copy pages to new document
+    const copiedPages = await newPdf.copyPages(pdfDoc, pageIndices)
+    for (let i = 0; i < copiedPages.length; i++) {
+      newPdf.addPage(copiedPages[i])
+
+      // Update progress
+      this.updateCallback(pdf.id, {
+        progress: ((i + 1) / copiedPages.length) * 100,
+      })
+    }
+
+    const resultBytes = await newPdf.save()
+    const blob = new Blob([new Uint8Array(resultBytes)], { type: 'application/pdf' })
 
     this.updateCallback(pdf.id, {
       status: 'completed',

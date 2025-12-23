@@ -14,6 +14,7 @@ import {
   RotateCw,
   Settings,
   Split,
+  Trash2,
 } from 'lucide-react'
 import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -30,6 +31,7 @@ export type OperationType =
   | 'toWord'
   | 'edit'
   | 'grayscale'
+  | 'deletePages'
 
 interface Operation {
   value: OperationType
@@ -106,6 +108,13 @@ const operationCategories: OperationCategory[] = [
         icon: Copy,
         color: '#ec4899',
         description: 'Extract specific pages',
+      },
+      {
+        value: 'deletePages',
+        label: 'Delete Pages',
+        icon: Trash2,
+        color: '#ef4444',
+        description: 'Remove unwanted pages',
       },
     ],
   },

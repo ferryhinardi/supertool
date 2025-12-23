@@ -75,6 +75,11 @@ const operationTips: Record<
     description: 'Convert color PDF to black and white',
     tips: ['Reduce file size significantly', 'Perfect for printing documents'],
   },
+  deletePages: {
+    title: 'Delete PDF Pages',
+    description: 'Remove unwanted pages from your PDF document',
+    tips: ['Select multiple pages to delete', 'Preview pages before deletion'],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

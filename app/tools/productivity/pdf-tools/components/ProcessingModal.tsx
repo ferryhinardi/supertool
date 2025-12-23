@@ -16,27 +16,12 @@ import {
   RotateCw,
   Settings,
   Split,
+  Trash2,
   XCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { css } from '@/styled-system/css'
 import type { OperationType } from './OperationGrid'
-
-interface PDFFile {
-  id: string
-  name: string
-  status: 'pending' | 'processing' | 'completed' | 'error'
-  progress: number
-  error?: string
-}
-
-interface ProcessingModalProps {
-  pdfs: PDFFile[]
-  operation: OperationType
-  isOpen: boolean
-  onClose: () => void
-  canClose?: boolean
-}
 
 interface PDFFile {
   id: string
@@ -66,6 +51,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   toWord: FileOutput,
   edit: Edit3,
   grayscale: Settings,
+  deletePages: Trash2,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -80,6 +66,7 @@ const operationLabels: Record<OperationType, string> = {
   toWord: 'Converting to Word',
   edit: 'Editing PDF',
   grayscale: 'Converting to Grayscale',
+  deletePages: 'Deleting Pages',
 }
 
 // Simple circular progress component without external dependency
