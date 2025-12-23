@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Button } from '@/components/ui/button'
 
-type PaymentStep = 'select' | 'qris' | 'crypto' | 'international'
+type PaymentStep = 'select' | 'qris' | 'crypto' | 'international' | 'polar'
 
 export function TreatMeDialog() {
   const [open, setOpen] = useState(false)
@@ -159,6 +159,8 @@ export function TreatMeDialog() {
                 <SelectPaymentMethod onSelectMethod={(method) => setStep(method)} />
               ) : step === 'qris' ? (
                 <QRISPayment qrisImageUrl={qrisImageUrl} onBack={() => setStep('select')} />
+              ) : step === 'polar' ? (
+                <PolarPayment onBack={() => setStep('select')} onClose={handleClose} />
               ) : (
                 <ComingSoonPayment
                   method={step}
@@ -314,9 +316,9 @@ function SelectPaymentMethod({
             </div>
           </button>
 
-          {/* International Payment - Coming Soon */}
+          {/* International Payment - Available via Polar */}
           <button
-            onClick={() => onSelectMethod('international')}
+            onClick={() => onSelectMethod('polar')}
             style={{
               position: 'relative',
               width: '100%',
@@ -324,12 +326,12 @@ function SelectPaymentMethod({
               borderRadius: '0.75rem',
               padding: '1rem',
               textAlign: 'left',
-              opacity: 0.6,
               transition: 'all 0.3s',
               borderWidth: '2px',
               borderStyle: 'solid',
-              borderColor: '#374151',
-              backgroundColor: 'rgba(31, 41, 55, 0.5)',
+              borderColor: 'rgba(96, 165, 250, 0.4)',
+              background:
+                'linear-gradient(to right, rgba(96, 165, 250, 0.15), rgba(59, 130, 246, 0.15))',
               cursor: 'pointer',
             }}
             type="button"
@@ -344,11 +346,11 @@ function SelectPaymentMethod({
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderRadius: '0.5rem',
-                    backgroundColor: 'rgba(55, 65, 81, 0.5)',
+                    backgroundColor: 'rgba(96, 165, 250, 0.2)',
                   }}
                 >
                   <CreditCard
-                    style={{ width: '1.5rem', height: '1.5rem', color: 'rgb(156, 163, 175)' }}
+                    style={{ width: '1.5rem', height: '1.5rem', color: 'rgb(96, 165, 250)' }}
                   />
                 </div>
                 <div>
@@ -360,21 +362,32 @@ function SelectPaymentMethod({
                   </div>
                 </div>
               </div>
-              <span
-                style={{
-                  borderRadius: '9999px',
-                  paddingLeft: '0.75rem',
-                  paddingRight: '0.75rem',
-                  paddingTop: '0.25rem',
-                  paddingBottom: '0.25rem',
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  color: 'rgb(156, 163, 175)',
-                  backgroundColor: '#374151',
-                }}
-              >
-                Coming Soon
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span
+                  style={{
+                    borderRadius: '9999px',
+                    paddingLeft: '0.75rem',
+                    paddingRight: '0.75rem',
+                    paddingTop: '0.25rem',
+                    paddingBottom: '0.25rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    color: 'rgb(147, 197, 253)',
+                    backgroundColor: 'rgba(96, 165, 250, 0.3)',
+                  }}
+                >
+                  Available
+                </span>
+                <ArrowLeft
+                  style={{
+                    width: '1.25rem',
+                    height: '1.25rem',
+                    transform: 'rotate(180deg)',
+                    color: 'rgb(96, 165, 250)',
+                    transition: 'transform 0.3s',
+                  }}
+                />
+              </div>
             </div>
           </button>
 
@@ -589,6 +602,267 @@ function QRISPayment({ qrisImageUrl, onBack }: { qrisImageUrl: string; onBack: (
           <ArrowLeft style={{ width: '1rem', height: '1rem' }} />
           Back to Payment Methods
         </Button>
+      </div>
+    </div>
+  )
+}
+
+// Polar Payment Component
+function PolarPayment({ onBack, onClose }: { onBack: () => void; onClose: () => void }) {
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
+  const [customAmount, setCustomAmount] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const predefinedAmounts = [5, 10, 25, 50, 100]
+
+  const handleCheckout = async () => {
+    const amount = selectedAmount || Number.parseFloat(customAmount)
+
+    if (!amount || amount < 1) {
+      setError('Please select or enter an amount (minimum $1)')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/payment/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: process.env.NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID,
+          amount: Math.round(amount * 100), // Convert to cents
+          successUrl: `${window.location.origin}?payment=success`,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session')
+      }
+
+      const data = await response.json()
+
+      // Redirect to Polar checkout
+      window.location.href = data.url
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setLoading(false)
+    }
+  }
+
+  const handleCustomAmountChange = (value: string) => {
+    // Only allow numbers and one decimal point
+    if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+      setCustomAmount(value)
+      setSelectedAmount(null)
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div
+          style={{
+            marginBottom: '0.75rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            color: 'white',
+          }}
+        >
+          <CreditCard style={{ width: '1.5rem', height: '1.5rem', color: 'rgb(96, 165, 250)' }} />
+          <h2>Support with Card</h2>
+        </div>
+        <p style={{ fontSize: '0.875rem', color: 'white' }}>
+          Pay securely with PayPal, Credit Card, or Stripe
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {/* Predefined amounts */}
+        <div>
+          <div
+            style={{
+              marginBottom: '0.75rem',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: 'white',
+            }}
+          >
+            Select Amount (USD):
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+            {predefinedAmounts.map((amount) => (
+              <button
+                key={amount}
+                type="button"
+                onClick={() => {
+                  setSelectedAmount(amount)
+                  setCustomAmount('')
+                  setError('')
+                }}
+                style={{
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  border: '2px solid',
+                  borderColor: selectedAmount === amount ? 'rgb(96, 165, 250)' : 'rgb(55, 65, 81)',
+                  backgroundColor:
+                    selectedAmount === amount ? 'rgba(96, 165, 250, 0.1)' : 'rgb(31, 41, 55)',
+                  color: selectedAmount === amount ? 'rgb(96, 165, 250)' : 'white',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                ${amount}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Custom amount */}
+        <div>
+          <div
+            style={{
+              marginBottom: '0.75rem',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: 'white',
+            }}
+          >
+            Or Enter Custom Amount:
+          </div>
+          <div style={{ position: 'relative' }}>
+            <span
+              style={{
+                position: 'absolute',
+                left: '1rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                fontSize: '1rem',
+                color: 'rgb(156, 163, 175)',
+              }}
+            >
+              $
+            </span>
+            <input
+              type="text"
+              inputMode="decimal"
+              placeholder="0.00"
+              value={customAmount}
+              onChange={(e) => handleCustomAmountChange(e.target.value)}
+              onFocus={() => setSelectedAmount(null)}
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem 0.75rem 2rem',
+                borderRadius: '0.5rem',
+                border: '2px solid',
+                borderColor: customAmount ? 'rgb(96, 165, 250)' : 'rgb(55, 65, 81)',
+                backgroundColor: 'rgb(31, 41, 55)',
+                color: 'white',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'border-color 0.2s',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Error message */}
+        {error && (
+          <div
+            style={{
+              padding: '0.75rem',
+              borderRadius: '0.5rem',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              color: 'rgb(252, 165, 165)',
+              fontSize: '0.875rem',
+              textAlign: 'center',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        {/* Info box */}
+        <div
+          style={{
+            borderRadius: '0.5rem',
+            padding: '0.75rem',
+            border: '1px solid rgba(96, 165, 250, 0.2)',
+            backgroundColor: 'rgba(96, 165, 250, 0.1)',
+          }}
+        >
+          <div style={{ fontSize: '0.75rem', lineHeight: '1.5', color: 'rgb(191, 219, 254)' }}>
+            🔒 Secure payment powered by Polar. Supports PayPal, Credit/Debit Cards, and Stripe.
+          </div>
+        </div>
+
+        {/* Thank you message */}
+        <div
+          style={{
+            borderRadius: '0.5rem',
+            border: '1px solid rgba(236, 72, 153, 0.2)',
+            backgroundColor: 'rgba(236, 72, 153, 0.1)',
+            padding: '0.75rem',
+            textAlign: 'center',
+          }}
+        >
+          <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'rgb(249, 168, 212)' }}>
+            💖 Thank you for your support!
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Button
+            variant="outline"
+            onClick={onBack}
+            disabled={loading}
+            style={{
+              flex: 1,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              borderColor: 'rgb(64, 64, 64)',
+            }}
+          >
+            <ArrowLeft style={{ width: '1rem', height: '1rem' }} />
+            Back
+          </Button>
+          <button
+            type="button"
+            onClick={handleCheckout}
+            disabled={loading || (!selectedAmount && !customAmount)}
+            style={{
+              flex: 1,
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
+              fontSize: '1rem',
+              fontWeight: 600,
+              border: 'none',
+              backgroundColor:
+                loading || (!selectedAmount && !customAmount)
+                  ? 'rgb(55, 65, 81)'
+                  : 'rgb(96, 165, 250)',
+              color: 'white',
+              cursor: loading || (!selectedAmount && !customAmount) ? 'not-allowed' : 'pointer',
+              opacity: loading || (!selectedAmount && !customAmount) ? 0.6 : 1,
+              transition: 'all 0.2s',
+            }}
+          >
+            {loading ? 'Processing...' : 'Continue to Payment'}
+          </button>
+        </div>
       </div>
     </div>
   )
