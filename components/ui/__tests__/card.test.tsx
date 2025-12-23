@@ -1,6 +1,13 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 describe('Card Component', () => {
   it('renders card with all parts', () => {
@@ -40,5 +47,53 @@ describe('Card Component', () => {
     )
 
     expect(screen.getByText('Only content')).toBeInTheDocument()
+  })
+
+  it('CardContent has no top padding by default (for use with CardHeader)', () => {
+    render(
+      <Card>
+        <CardContent data-testid="card-content">Content</CardContent>
+      </Card>
+    )
+
+    const content = screen.getByTestId('card-content')
+    expect(content).toHaveClass('p_6', 'pt_0')
+  })
+
+  it('CardContent has top padding when withTopPadding is true', () => {
+    render(
+      <Card>
+        <CardContent withTopPadding data-testid="card-content">
+          Content
+        </CardContent>
+      </Card>
+    )
+
+    const content = screen.getByTestId('card-content')
+    expect(content).toHaveClass('p_6', 'pt_6')
+  })
+
+  it('CardFooter has no top padding by default', () => {
+    render(
+      <Card>
+        <CardFooter data-testid="card-footer">Footer</CardFooter>
+      </Card>
+    )
+
+    const footer = screen.getByTestId('card-footer')
+    expect(footer).toHaveClass('p_6', 'pt_0')
+  })
+
+  it('CardFooter has top padding when withTopPadding is true', () => {
+    render(
+      <Card>
+        <CardFooter withTopPadding data-testid="card-footer">
+          Footer
+        </CardFooter>
+      </Card>
+    )
+
+    const footer = screen.getByTestId('card-footer')
+    expect(footer).toHaveClass('p_6', 'pt_6')
   })
 })

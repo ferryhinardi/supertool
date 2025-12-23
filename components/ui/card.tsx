@@ -76,14 +76,22 @@ const CardDescription = React.forwardRef<
 ))
 CardDescription.displayName = 'CardDescription'
 
-const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Whether to include top padding. Set to true when CardContent is used without CardHeader.
+   * @default false
+   */
+  withTopPadding?: boolean
+}
+
+const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
+  ({ className, withTopPadding = false, ...props }, ref) => (
     <div
       ref={ref}
       className={cx(
         css({
           p: '6',
-          pt: '0',
+          pt: withTopPadding ? '6' : '0',
         }),
         className
       )}
@@ -93,8 +101,16 @@ const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
 )
 CardContent.displayName = 'CardContent'
 
-const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Whether to include top padding. Set to true when CardFooter is the first element in Card.
+   * @default false
+   */
+  withTopPadding?: boolean
+}
+
+const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
+  ({ className, withTopPadding = false, ...props }, ref) => (
     <footer
       ref={ref}
       className={cx(
@@ -103,7 +119,7 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
           alignItems: 'center',
           gap: '2',
           p: '6',
-          pt: '0',
+          pt: withTopPadding ? '6' : '0',
         }),
         className
       )}
