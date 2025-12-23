@@ -4,11 +4,17 @@ import { css } from '@/styled-system/css'
 
 interface PDFThumbnailProps {
   file: File
+  pageNumber?: number
   width?: number
   height?: number
 }
 
-export function PDFThumbnail({ file, width = 80, height = 100 }: PDFThumbnailProps) {
+export function PDFThumbnail({
+  file,
+  pageNumber = 1,
+  width = 80,
+  height = 100,
+}: PDFThumbnailProps) {
   const [thumbnail, setThumbnail] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -31,8 +37,8 @@ export function PDFThumbnail({ file, width = 80, height = 100 }: PDFThumbnailPro
         const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
         const pdfDoc = await loadingTask.promise
 
-        // Render first page
-        const page = await pdfDoc.getPage(1)
+        // Render specified page
+        const page = await pdfDoc.getPage(pageNumber)
         const viewport = page.getViewport({ scale: 0.5 })
 
         const canvas = document.createElement('canvas')
@@ -66,7 +72,7 @@ export function PDFThumbnail({ file, width = 80, height = 100 }: PDFThumbnailPro
     return () => {
       cancelled = true
     }
-  }, [file])
+  }, [file, pageNumber])
 
   if (loading) {
     return (

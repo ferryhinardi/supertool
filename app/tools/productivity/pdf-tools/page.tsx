@@ -58,6 +58,7 @@ import { EmptyState } from './components/EmptyState'
 import { KeyboardShortcutsDialog } from './components/KeyboardShortcutsDialog'
 import { MobileOperationPicker } from './components/MobileOperationPicker'
 import { OperationGrid } from './components/OperationGrid'
+import { PDFThumbnail } from './components/PDFThumbnail'
 import { PresetsDialog } from './components/PresetsDialog'
 import { ProcessingModal } from './components/ProcessingModal'
 import { ReorderablePDFList } from './components/ReorderablePDFList'
@@ -65,7 +66,6 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useOperationHistory } from './hooks/useOperationHistory'
 import { PDFBatchProcessor } from './PDFBatchProcessor'
 import PDFPageEditFlow from './PDFPageEditFlow'
-import { PDFThumbnail } from './PDFThumbnail'
 
 // Dynamic import for pdf-lib (client-side only)
 let pdfLib: typeof PdfLibTypes | null = null
@@ -1743,25 +1743,7 @@ export default function PDFToolsPage() {
             flexShrink: 0,
           })}
         />
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            h: '10',
-            w: '10',
-            rounded: 'md',
-            bg: 'purple.500/20',
-            border: '1px solid',
-            borderColor: 'purple.500/30',
-            fontSize: 'sm',
-            fontWeight: 'bold',
-            color: 'purple.300',
-            flexShrink: 0,
-          })}
-        >
-          {pageNum}
-        </div>
+        <PDFThumbnail file={pdfs[0].file} pageNumber={pageNum} width={60} height={80} />
         <div className={css({ fontSize: 'sm', color: 'gray.300' })}>Page {pageNum}</div>
       </div>
     )

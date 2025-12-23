@@ -979,7 +979,6 @@ export class PDFBatchProcessor {
           return toRoman(pageNum, true)
         case 'page-of-total':
           return `${pageNum} / ${totalPages + options.startFrom - 1}`
-        case 'numbers':
         default:
           return pageNum.toString()
       }
