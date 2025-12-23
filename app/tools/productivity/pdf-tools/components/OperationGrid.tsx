@@ -11,6 +11,7 @@ import {
   FileDown,
   FileOutput,
   Image as ImageIcon,
+  LockOpen,
   Merge,
   RotateCw,
   Settings,
@@ -33,6 +34,7 @@ export type OperationType =
   | 'edit'
   | 'grayscale'
   | 'deletePages'
+  | 'unlock'
   | 'duplicatePages'
 
 interface Operation {
@@ -150,6 +152,18 @@ const operationCategories: OperationCategory[] = [
         icon: FileOutput,
         color: '#14b8a6',
         description: 'Convert to DOCX',
+      },
+    ],
+  },
+  {
+    label: 'Security',
+    operations: [
+      {
+        value: 'unlock',
+        label: 'Unlock PDF',
+        icon: LockOpen,
+        color: '#22c55e',
+        description: 'Remove password protection',
       },
     ],
   },

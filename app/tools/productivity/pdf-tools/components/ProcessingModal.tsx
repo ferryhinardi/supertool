@@ -13,6 +13,7 @@ import {
   FileOutput,
   Image as ImageIcon,
   Loader2,
+  LockOpen,
   Merge,
   RotateCw,
   Settings,
@@ -53,6 +54,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   edit: Edit3,
   grayscale: Settings,
   deletePages: Trash2,
+  unlock: LockOpen,
   duplicatePages: CopyPlus,
 }
 
@@ -69,6 +71,7 @@ const operationLabels: Record<OperationType, string> = {
   edit: 'Editing PDF',
   grayscale: 'Converting to Grayscale',
   deletePages: 'Deleting Pages',
+  unlock: 'Unlocking PDF',
   duplicatePages: 'Duplicating Pages',
 }
 

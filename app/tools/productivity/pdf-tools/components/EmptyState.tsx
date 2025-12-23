@@ -80,6 +80,16 @@ const operationTips: Record<
     description: 'Remove unwanted pages from your PDF document',
     tips: ['Select multiple pages to delete', 'Preview pages before deletion'],
   },
+  unlock: {
+    title: 'Unlock PDF',
+    description: 'Remove password protection from encrypted PDFs',
+    tips: [
+      'Enter the correct password to unlock',
+      'Creates a new unprotected PDF',
+      'Preserves all content and formatting',
+      'Useful for removing restrictions on PDFs you own',
+    ],
+  },
   duplicatePages: {
     title: 'Duplicate Pages',
     description: 'Create copies of specific pages within your PDF',

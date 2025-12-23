@@ -30,6 +30,7 @@ export type OperationType =
   | 'grayscale'
   | 'deletePages'
   | 'protect'
+  | 'unlock'
   | 'duplicatePages'
 
 interface ProcessOptions {
@@ -69,6 +70,7 @@ interface ProcessOptions {
   }
   pagesToDuplicate?: number[] // Array of page numbers (1-indexed) to duplicate
   duplicateCount?: number // How many times to duplicate each selected page (default: 1)
+  unlockPassword?: string // Password to unlock a protected PDF
 }
 
 /**
@@ -170,6 +172,9 @@ export class PDFBatchProcessor {
             options.ownerPassword,
             options.userPermissions
           )
+          break
+        case 'unlock':
+          await this.unlockPDF(pdf, options.unlockPassword || '')
           break
         case 'duplicatePages':
           await this.duplicatePages(
@@ -672,6 +677,49 @@ export class PDFBatchProcessor {
     if (!response.ok) {
       const error = await response.json()
       throw new Error(error.error || 'Failed to protect PDF')
+    }
+
+    this.updateCallback(pdf.id, { progress: 80 })
+
+    const blob = await response.blob()
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Unlock a password-protected PDF
+   * @param pdf - PDF file to unlock
+   * @param password - Password to unlock the PDF
+   */
+  private async unlockPDF(pdf: PDFFile, password: string): Promise<void> {
+    // Validate password
+    if (!password || password.trim() === '') {
+      throw new Error('Password is required to unlock the PDF')
+    }
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    // Prepare form data
+    const formData = new FormData()
+    formData.append('file', pdf.file)
+    formData.append('password', password)
+
+    this.updateCallback(pdf.id, { progress: 30 })
+
+    // Call server-side API for decryption
+    const response = await fetch('/api/pdf-unlock', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to unlock PDF')
     }
 
     this.updateCallback(pdf.id, { progress: 80 })

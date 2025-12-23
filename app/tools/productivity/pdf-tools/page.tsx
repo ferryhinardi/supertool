@@ -129,6 +129,7 @@ type OperationType =
   | 'edit'
   | 'grayscale'
   | 'deletePages'
+  | 'unlock'
   | 'duplicatePages'
 
 export default function PDFToolsPage() {
@@ -210,6 +211,9 @@ export default function PDFToolsPage() {
 
   // Delete pages options
   const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set())
+
+  // Unlock options
+  const [unlockPassword, setUnlockPassword] = useState('')
 
   // Duplicate pages options
   const [duplicateCount, setDuplicateCount] = useState(1)
@@ -1384,6 +1388,7 @@ export default function PDFToolsPage() {
             imageToPdfPageSize,
             imageToPdfFitMode,
             pagesToDelete: Array.from(selectedPages),
+            unlockPassword,
             pagesToDuplicate: Array.from(selectedPages),
             duplicateCount,
           })
@@ -1523,6 +1528,9 @@ export default function PDFToolsPage() {
         case 'deletePages':
           suffix = '_pages_deleted'
           break
+        case 'unlock':
+          suffix = '_unlocked'
+          break
         case 'duplicatePages':
           suffix = '_pages_duplicated'
           break
@@ -1595,6 +1603,9 @@ export default function PDFToolsPage() {
     }
     if (operation !== 'duplicatePages') {
       setDuplicateCount(1)
+    }
+    if (operation !== 'unlock') {
+      setUnlockPassword('')
     }
   }, [operation])
 
@@ -2620,6 +2631,52 @@ export default function PDFToolsPage() {
                         </div>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* Unlock PDF password input */}
+                {operation === 'unlock' && (
+                  <div className={css({ spaceY: '2' })}>
+                    <label
+                      htmlFor="unlock-password"
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'gray.300',
+                      })}
+                    >
+                      PDF Password
+                    </label>
+                    <input
+                      id="unlock-password"
+                      type="password"
+                      value={unlockPassword}
+                      onChange={(e) => setUnlockPassword(e.target.value)}
+                      placeholder="Enter PDF password"
+                      className={css({
+                        w: 'full',
+                        px: '4',
+                        py: '2',
+                        rounded: 'md',
+                        bg: 'gray.800',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        color: 'gray.200',
+                        fontSize: 'sm',
+                        _placeholder: {
+                          color: 'gray.500',
+                        },
+                        _focus: {
+                          outline: 'none',
+                          borderColor: 'green.500',
+                          ring: '2px',
+                          ringColor: 'green.500/20',
+                        },
+                      })}
+                    />
+                    <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      Enter the password to unlock and remove protection from the PDF
+                    </p>
                   </div>
                 )}
 
