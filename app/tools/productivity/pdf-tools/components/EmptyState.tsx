@@ -80,6 +80,16 @@ const operationTips: Record<
     description: 'Remove unwanted pages from your PDF document',
     tips: ['Select multiple pages to delete', 'Preview pages before deletion'],
   },
+  duplicatePages: {
+    title: 'Duplicate Pages',
+    description: 'Create copies of specific pages within your PDF',
+    tips: [
+      'Select pages you want to duplicate',
+      'Choose how many copies to create (1-10)',
+      'Duplicates are inserted right after the original page',
+      'Useful for creating forms or repeated sections',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

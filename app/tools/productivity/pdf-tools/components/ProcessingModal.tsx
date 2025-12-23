@@ -6,6 +6,7 @@ import {
   Archive,
   CheckCircle,
   Copy,
+  CopyPlus,
   Droplet,
   Edit3,
   FileDown,
@@ -52,6 +53,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   edit: Edit3,
   grayscale: Settings,
   deletePages: Trash2,
+  duplicatePages: CopyPlus,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -67,6 +69,7 @@ const operationLabels: Record<OperationType, string> = {
   edit: 'Editing PDF',
   grayscale: 'Converting to Grayscale',
   deletePages: 'Deleting Pages',
+  duplicatePages: 'Duplicating Pages',
 }
 
 // Simple circular progress component without external dependency

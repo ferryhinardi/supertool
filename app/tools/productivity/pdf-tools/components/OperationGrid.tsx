@@ -5,6 +5,7 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Archive,
   Copy,
+  CopyPlus,
   Droplet,
   Edit3,
   FileDown,
@@ -32,6 +33,7 @@ export type OperationType =
   | 'edit'
   | 'grayscale'
   | 'deletePages'
+  | 'duplicatePages'
 
 interface Operation {
   value: OperationType
@@ -115,6 +117,13 @@ const operationCategories: OperationCategory[] = [
         icon: Trash2,
         color: '#ef4444',
         description: 'Remove unwanted pages',
+      },
+      {
+        value: 'duplicatePages',
+        label: 'Duplicate Pages',
+        icon: CopyPlus,
+        color: '#3b82f6',
+        description: 'Create copies of selected pages',
       },
     ],
   },

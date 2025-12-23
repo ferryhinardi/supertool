@@ -30,6 +30,7 @@ export type OperationType =
   | 'grayscale'
   | 'deletePages'
   | 'protect'
+  | 'duplicatePages'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -66,6 +67,8 @@ interface ProcessOptions {
     contentAccessibility?: boolean
     documentAssembly?: boolean
   }
+  pagesToDuplicate?: number[] // Array of page numbers (1-indexed) to duplicate
+  duplicateCount?: number // How many times to duplicate each selected page (default: 1)
 }
 
 /**
@@ -166,6 +169,13 @@ export class PDFBatchProcessor {
             options.password || '',
             options.ownerPassword,
             options.userPermissions
+          )
+          break
+        case 'duplicatePages':
+          await this.duplicatePages(
+            pdf,
+            options.pagesToDuplicate || [],
+            options.duplicateCount || 1
           )
           break
       }
@@ -667,6 +677,81 @@ export class PDFBatchProcessor {
     this.updateCallback(pdf.id, { progress: 80 })
 
     const blob = await response.blob()
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Duplicate specific pages in a PDF
+   * @param pdf - PDF file to process
+   * @param pagesToDuplicate - Array of 1-indexed page numbers to duplicate (e.g., [1, 3, 5])
+   * @param duplicateCount - How many times to duplicate each page (default: 1)
+   */
+  private async duplicatePages(
+    pdf: PDFFile,
+    pagesToDuplicate: number[],
+    duplicateCount: number
+  ): Promise<void> {
+    const { PDFDocument } = await import('pdf-lib')
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const totalPages = pdfDoc.getPageCount()
+
+    // Validate page numbers
+    if (pagesToDuplicate.length === 0) {
+      throw new Error('No pages selected for duplication')
+    }
+
+    if (duplicateCount < 1) {
+      throw new Error('Duplicate count must be at least 1')
+    }
+
+    if (duplicateCount > 10) {
+      throw new Error('Duplicate count cannot exceed 10')
+    }
+
+    const invalidPages = pagesToDuplicate.filter((page) => page < 1 || page > totalPages)
+    if (invalidPages.length > 0) {
+      throw new Error(`Invalid page numbers: ${invalidPages.join(', ')}`)
+    }
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    // Create new PDF with duplicated pages
+    const newPdf = await PDFDocument.create()
+
+    // Build the new page order
+    // For each original page, add it once, then if it's in pagesToDuplicate, add it N more times
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      const pageIndex = pageNum - 1
+
+      // Copy original page
+      const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageIndex])
+      newPdf.addPage(copiedPage)
+
+      // If this page should be duplicated, add copies
+      if (pagesToDuplicate.includes(pageNum)) {
+        for (let copy = 0; copy < duplicateCount; copy++) {
+          const [duplicatedPage] = await newPdf.copyPages(pdfDoc, [pageIndex])
+          newPdf.addPage(duplicatedPage)
+        }
+      }
+
+      // Update progress
+      this.updateCallback(pdf.id, {
+        progress: 10 + (pageNum / totalPages) * 80,
+      })
+    }
+
+    this.updateCallback(pdf.id, { progress: 90 })
+
+    const resultBytes = await newPdf.save()
+    const blob = new Blob([new Uint8Array(resultBytes)], { type: 'application/pdf' })
 
     this.updateCallback(pdf.id, {
       status: 'completed',

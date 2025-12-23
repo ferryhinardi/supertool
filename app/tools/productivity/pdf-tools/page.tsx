@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import {
   Archive,
   Copy,
+  CopyPlus,
   Droplet,
   Edit3,
   FileDown,
@@ -128,6 +129,7 @@ type OperationType =
   | 'edit'
   | 'grayscale'
   | 'deletePages'
+  | 'duplicatePages'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -208,6 +210,9 @@ export default function PDFToolsPage() {
 
   // Delete pages options
   const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set())
+
+  // Duplicate pages options
+  const [duplicateCount, setDuplicateCount] = useState(1)
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1379,6 +1384,8 @@ export default function PDFToolsPage() {
             imageToPdfPageSize,
             imageToPdfFitMode,
             pagesToDelete: Array.from(selectedPages),
+            pagesToDuplicate: Array.from(selectedPages),
+            duplicateCount,
           })
 
           toast.success(
@@ -1513,6 +1520,12 @@ export default function PDFToolsPage() {
         case 'grayscale':
           suffix = '_grayscale'
           break
+        case 'deletePages':
+          suffix = '_pages_deleted'
+          break
+        case 'duplicatePages':
+          suffix = '_pages_duplicated'
+          break
       }
 
       // Handle different file name patterns for image to PDF
@@ -1577,8 +1590,11 @@ export default function PDFToolsPage() {
 
   // Reset selected pages when operation changes
   useEffect(() => {
-    if (operation !== 'deletePages') {
+    if (operation !== 'deletePages' && operation !== 'duplicatePages') {
       setSelectedPages(new Set())
+    }
+    if (operation !== 'duplicatePages') {
+      setDuplicateCount(1)
     }
   }, [operation])
 
@@ -2600,6 +2616,237 @@ export default function PDFToolsPage() {
                             <strong>Warning:</strong> {selectedPages.size} page
                             {selectedPages.size === 1 ? '' : 's'} will be permanently deleted from
                             the PDF.
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {operation === 'duplicatePages' && pdfs.length > 0 && pdfs[0] && (
+                  <div className={css({ spaceY: '4' })}>
+                    {/* Duplicate count selector */}
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        htmlFor="duplicate-count"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Copies to Create
+                      </label>
+                      <input
+                        id="duplicate-count"
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={duplicateCount}
+                        onChange={(e) => setDuplicateCount(Number(e.target.value))}
+                        className={css({
+                          w: 'full',
+                          px: '4',
+                          py: '2',
+                          rounded: 'md',
+                          bg: 'gray.800',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          color: 'gray.200',
+                          fontSize: 'sm',
+                          _focus: {
+                            outline: 'none',
+                            borderColor: 'blue.500',
+                            ring: '2px',
+                            ringColor: 'blue.500/20',
+                          },
+                        })}
+                      />
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        Each selected page will be duplicated {duplicateCount} time
+                        {duplicateCount === 1 ? '' : 's'}
+                      </p>
+                    </div>
+
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Select Pages to Duplicate ({selectedPages.size} selected)
+                      </div>
+                      <div className={css({ display: 'flex', gap: '2' })}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleSelectAllPages}
+                          disabled={selectedPages.size === pdfs[0].pages}
+                          className={css({
+                            fontSize: 'xs',
+                            borderColor: 'gray.700',
+                          })}
+                        >
+                          Select All
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleDeselectAllPages}
+                          disabled={selectedPages.size === 0}
+                          className={css({
+                            fontSize: 'xs',
+                            borderColor: 'gray.700',
+                          })}
+                        >
+                          Clear
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Page grid with checkboxes */}
+                    <div
+                      className={css({
+                        display: 'grid',
+                        gridTemplateColumns: {
+                          base: 'repeat(3, 1fr)',
+                          sm: 'repeat(4, 1fr)',
+                          md: 'repeat(5, 1fr)',
+                        },
+                        gap: '2',
+                        w: 'full',
+                        maxH: '400px',
+                        overflowY: 'auto',
+                        p: '2',
+                        rounded: 'md',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                      })}
+                    >
+                      {Array.from({ length: pdfs[0].pages }, (_, i) => i + 1).map((pageNum) => {
+                        const isSelected = selectedPages.has(pageNum)
+                        return (
+                          <button
+                            key={pageNum}
+                            type="button"
+                            onClick={() => handleTogglePageSelection(pageNum)}
+                            className={css({
+                              position: 'relative',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              p: '3',
+                              rounded: 'md',
+                              border: '2px solid',
+                              borderColor: isSelected ? 'blue.500' : 'gray.700',
+                              bg: isSelected ? 'blue.500/10' : 'gray.800',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                              _hover: {
+                                borderColor: isSelected ? 'blue.400' : 'gray.600',
+                                bg: isSelected ? 'blue.500/20' : 'gray.700',
+                              },
+                              _focus: {
+                                outline: '2px solid',
+                                outlineColor: 'blue.500',
+                                outlineOffset: '2px',
+                              },
+                            })}
+                            aria-label={`${isSelected ? 'Deselect' : 'Select'} page ${pageNum}`}
+                          >
+                            {/* Checkbox indicator */}
+                            <div
+                              className={css({
+                                position: 'absolute',
+                                top: '1',
+                                right: '1',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                h: '5',
+                                w: '5',
+                                rounded: 'sm',
+                                bg: isSelected ? 'blue.500' : 'gray.700',
+                                border: '1px solid',
+                                borderColor: isSelected ? 'blue.400' : 'gray.600',
+                              })}
+                            >
+                              {isSelected && (
+                                <svg
+                                  className={css({ h: '3', w: '3', color: 'white' })}
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <title>Selected</title>
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={3}
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+
+                            {/* Page number */}
+                            <div
+                              className={css({
+                                fontSize: 'lg',
+                                fontWeight: 'bold',
+                                color: isSelected ? 'blue.300' : 'gray.300',
+                              })}
+                            >
+                              {pageNum}
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </div>
+
+                    {/* Info message */}
+                    {selectedPages.size > 0 && (
+                      <div
+                        className={css({
+                          p: '3',
+                          rounded: 'md',
+                          bg: 'blue.500/10',
+                          border: '1px solid',
+                          borderColor: 'blue.500/30',
+                        })}
+                      >
+                        <div
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'start',
+                            gap: '2',
+                          })}
+                        >
+                          <CopyPlus
+                            className={css({
+                              h: '4',
+                              w: '4',
+                              color: 'blue.400',
+                              flexShrink: 0,
+                              mt: '0.5',
+                            })}
+                          />
+                          <div className={css({ fontSize: 'xs', color: 'blue.200' })}>
+                            {selectedPages.size} page{selectedPages.size === 1 ? '' : 's'} will be
+                            duplicated {duplicateCount} time
+                            {duplicateCount === 1 ? '' : 's'} each. Total new pages:{' '}
+                            {selectedPages.size * duplicateCount}
                           </div>
                         </div>
                       </div>
