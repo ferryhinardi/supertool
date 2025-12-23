@@ -241,6 +241,7 @@ export default function PDFToolsPage() {
 
   // Reorder pages options
   const [pageOrder, setPageOrder] = useState<number[]>([])
+  const [focusedPageIndex, setFocusedPageIndex] = useState<number>(-1)
 
   // Page numbering options
   const [pageNumberPosition, setPageNumberPosition] = useState<
@@ -1669,6 +1670,108 @@ export default function PDFToolsPage() {
     }
   }, [operation, pdfs, pageOrder.length])
 
+  // Reset focused page when switching operations or clearing pages
+  useEffect(() => {
+    if (operation !== 'reorder' || pageOrder.length === 0) {
+      setFocusedPageIndex(-1)
+    } else if (focusedPageIndex >= pageOrder.length) {
+      setFocusedPageIndex(pageOrder.length - 1)
+    }
+  }, [operation, pageOrder.length, focusedPageIndex])
+
+  // Keyboard shortcuts for reorder operation
+  useEffect(() => {
+    if (operation !== 'reorder' || pageOrder.length === 0) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+      const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
+
+      // Arrow Up: Navigate to previous page
+      if (e.key === 'ArrowUp' && !cmdOrCtrl && !e.shiftKey) {
+        e.preventDefault()
+        setFocusedPageIndex((prev) => (prev <= 0 ? 0 : prev - 1))
+      }
+
+      // Arrow Down: Navigate to next page
+      if (e.key === 'ArrowDown' && !cmdOrCtrl && !e.shiftKey) {
+        e.preventDefault()
+        setFocusedPageIndex((prev) =>
+          prev >= pageOrder.length - 1 ? pageOrder.length - 1 : prev + 1
+        )
+      }
+
+      // Ctrl/Cmd + Arrow Up: Move focused page up
+      if (e.key === 'ArrowUp' && cmdOrCtrl && focusedPageIndex > 0) {
+        e.preventDefault()
+        setPageOrder((items) => {
+          const newItems = [...items]
+          const temp = newItems[focusedPageIndex]
+          newItems[focusedPageIndex] = newItems[focusedPageIndex - 1]
+          newItems[focusedPageIndex - 1] = temp
+          return newItems
+        })
+        setFocusedPageIndex((prev) => prev - 1)
+      }
+
+      // Ctrl/Cmd + Arrow Down: Move focused page down
+      if (
+        e.key === 'ArrowDown' &&
+        cmdOrCtrl &&
+        focusedPageIndex >= 0 &&
+        focusedPageIndex < pageOrder.length - 1
+      ) {
+        e.preventDefault()
+        setPageOrder((items) => {
+          const newItems = [...items]
+          const temp = newItems[focusedPageIndex]
+          newItems[focusedPageIndex] = newItems[focusedPageIndex + 1]
+          newItems[focusedPageIndex + 1] = temp
+          return newItems
+        })
+        setFocusedPageIndex((prev) => prev + 1)
+      }
+
+      // Ctrl/Cmd + Home: Move focused page to top
+      if (e.key === 'Home' && cmdOrCtrl && focusedPageIndex > 0) {
+        e.preventDefault()
+        setPageOrder((items) => {
+          const newItems = [...items]
+          const page = newItems.splice(focusedPageIndex, 1)[0]
+          newItems.unshift(page)
+          return newItems
+        })
+        setFocusedPageIndex(0)
+      }
+
+      // Ctrl/Cmd + End: Move focused page to bottom
+      if (
+        e.key === 'End' &&
+        cmdOrCtrl &&
+        focusedPageIndex >= 0 &&
+        focusedPageIndex < pageOrder.length - 1
+      ) {
+        e.preventDefault()
+        setPageOrder((items) => {
+          const newItems = [...items]
+          const page = newItems.splice(focusedPageIndex, 1)[0]
+          newItems.push(page)
+          return newItems
+        })
+        setFocusedPageIndex(pageOrder.length - 1)
+      }
+
+      // Tab: Focus first page if none focused
+      if (e.key === 'Tab' && !e.shiftKey && focusedPageIndex === -1 && pageOrder.length > 0) {
+        e.preventDefault()
+        setFocusedPageIndex(0)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [operation, pageOrder, focusedPageIndex])
+
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
@@ -1698,7 +1801,15 @@ export default function PDFToolsPage() {
   }
 
   // Sortable page item component
-  function SortablePageItem({ pageNum }: { pageNum: number }) {
+  function SortablePageItem({
+    pageNum,
+    index,
+    isFocused,
+  }: {
+    pageNum: number
+    index: number
+    isFocused: boolean
+  }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
       id: pageNum,
     })
@@ -1714,6 +1825,16 @@ export default function PDFToolsPage() {
         style={style}
         {...attributes}
         {...listeners}
+        onClick={() => setFocusedPageIndex(index)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setFocusedPageIndex(index)
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={`Page ${pageNum}`}
         className={css({
           position: 'relative',
           display: 'flex',
@@ -1721,14 +1842,14 @@ export default function PDFToolsPage() {
           gap: '3',
           p: '3',
           rounded: 'md',
-          bg: 'gray.800',
-          border: '1px solid',
-          borderColor: 'gray.700',
+          bg: isFocused ? 'purple.500/20' : 'gray.800',
+          border: '2px solid',
+          borderColor: isFocused ? 'purple.500' : 'gray.700',
           cursor: 'grab',
           transition: 'all 0.2s',
           _hover: {
             borderColor: 'purple.500',
-            bg: 'gray.750',
+            bg: isFocused ? 'purple.500/20' : 'gray.750',
           },
           _active: {
             cursor: 'grabbing',
@@ -3090,8 +3211,12 @@ export default function PDFToolsPage() {
                             mt: '0.5',
                           })}
                         />
-                        <div className={css({ fontSize: 'sm', color: 'purple.200' })}>
-                          Drag pages up or down to change their order in the PDF
+                        <div className={css({ fontSize: 'sm', color: 'purple.200', spaceY: '1' })}>
+                          <div>Drag pages up or down to change their order in the PDF</div>
+                          <div className={css({ fontSize: 'xs', color: 'purple.300', mt: '2' })}>
+                            <strong>Keyboard shortcuts:</strong> ↑/↓ to navigate • Ctrl/⌘+↑/↓ to
+                            move • Ctrl/⌘+Home/End to move to top/bottom
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -3104,8 +3229,13 @@ export default function PDFToolsPage() {
                     >
                       <SortableContext items={pageOrder} strategy={verticalListSortingStrategy}>
                         <div className={css({ spaceY: '2' })}>
-                          {pageOrder.map((pageNum) => (
-                            <SortablePageItem key={pageNum} pageNum={pageNum} />
+                          {pageOrder.map((pageNum, index) => (
+                            <SortablePageItem
+                              key={pageNum}
+                              pageNum={pageNum}
+                              index={index}
+                              isFocused={focusedPageIndex === index}
+                            />
                           ))}
                         </div>
                       </SortableContext>
