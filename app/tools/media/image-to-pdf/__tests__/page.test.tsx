@@ -61,7 +61,7 @@ describe('ImageToPdfPage', () => {
         screen.getByRole('heading', { name: 'Image to PDF Converter', level: 1 })
       ).toBeInTheDocument()
       expect(
-        screen.getByText(/Convert JPG, PNG, WebP, and other image formats to PDF instantly/i)
+        screen.getAllByText(/Convert JPG, PNG, WebP, and other image formats to PDF instantly/i)[0]
       ).toBeInTheDocument()
     })
 
