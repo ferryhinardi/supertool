@@ -161,6 +161,35 @@ export default function PDFToolsPage() {
   const [watermarkFontSize, setWatermarkFontSize] = useState(50)
   const [watermarkPattern, setWatermarkPattern] = useState(false)
 
+  // Reset completed PDFs to pending when watermark settings change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We intentionally depend on all watermark settings
+  useEffect(() => {
+    if (operation === 'watermark') {
+      setPdfs((prev) =>
+        prev.map((pdf) =>
+          pdf.status === 'completed'
+            ? {
+                ...pdf,
+                status: 'pending',
+                processedBlob: undefined,
+                processedSize: undefined,
+                progress: 0,
+              }
+            : pdf
+        )
+      )
+    }
+  }, [
+    watermarkText,
+    watermarkOpacity,
+    watermarkRotation,
+    watermarkPosition,
+    watermarkColor,
+    watermarkFontSize,
+    watermarkPattern,
+    operation,
+  ])
+
   // Extract pages options
   const [extractStartPage, setExtractStartPage] = useState(1)
   const [extractEndPage, setExtractEndPage] = useState(1)
