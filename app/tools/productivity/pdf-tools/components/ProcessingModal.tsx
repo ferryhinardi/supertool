@@ -11,6 +11,7 @@ import {
   Edit3,
   FileDown,
   FileOutput,
+  FileText,
   GripVertical,
   Hash,
   Image as ImageIcon,
@@ -60,6 +61,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   duplicatePages: CopyPlus,
   reorder: GripVertical,
   addPageNumbers: Hash,
+  extractText: FileText,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -79,6 +81,7 @@ const operationLabels: Record<OperationType, string> = {
   duplicatePages: 'Duplicating Pages',
   reorder: 'Reordering Pages',
   addPageNumbers: 'Adding Page Numbers',
+  extractText: 'Extracting Text',
 }
 
 // Simple circular progress component without external dependency

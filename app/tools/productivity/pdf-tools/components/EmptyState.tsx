@@ -120,6 +120,16 @@ const operationTips: Record<
       'Numbers added to all pages automatically',
     ],
   },
+  extractText: {
+    title: 'Extract Text from PDF',
+    description: 'Extract all text content from your PDF document',
+    tips: [
+      'Extracts text from all pages',
+      'Preserves page structure with page markers',
+      'Output as plain text (.txt) file',
+      'Perfect for content analysis or copying text',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

@@ -10,6 +10,7 @@ import {
   Edit3,
   FileDown,
   FileOutput,
+  FileText,
   GripVertical,
   Hash,
   Image as ImageIcon,
@@ -40,6 +41,7 @@ export type OperationType =
   | 'duplicatePages'
   | 'reorder'
   | 'addPageNumbers'
+  | 'extractText'
 
 interface Operation {
   value: OperationType
@@ -170,6 +172,13 @@ const operationCategories: OperationCategory[] = [
         icon: FileOutput,
         color: '#14b8a6',
         description: 'Convert to DOCX',
+      },
+      {
+        value: 'extractText',
+        label: 'PDF → Text',
+        icon: FileText,
+        color: '#10b981',
+        description: 'Extract all text content',
       },
     ],
   },

@@ -34,6 +34,7 @@ export type OperationType =
   | 'reorder'
   | 'duplicatePages'
   | 'addPageNumbers'
+  | 'extractText'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -206,6 +207,9 @@ export class PDFBatchProcessor {
             fontSize: options.pageNumberFontSize || 12,
             startFrom: options.pageNumberStartFrom || 1,
           })
+          break
+        case 'extractText':
+          await this.extractText(pdf)
           break
       }
     } catch (error) {
@@ -1041,6 +1045,68 @@ export class PDFBatchProcessor {
     // Save the PDF with page numbers
     const pdfBytes = await pdfDoc.save()
     const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Extract text content from PDF
+   * @param pdf - PDF file to extract text from
+   */
+  private async extractText(pdf: PDFFile): Promise<void> {
+    const pdfjs = await import('pdfjs-dist')
+
+    // Set up the worker
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
+    }
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+    const pdfDoc = await loadingTask.promise
+    const totalPages = pdfDoc.numPages
+
+    this.updateCallback(pdf.id, { progress: 20 })
+
+    let extractedText = ''
+
+    // Extract text from each page
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      const page = await pdfDoc.getPage(pageNum)
+      const textContent = await page.getTextContent()
+
+      // Add page header
+      extractedText += `\n========== Page ${pageNum} ==========\n\n`
+
+      // Extract text items
+      const pageText = textContent.items
+        .map((item: any) => {
+          return item.str
+        })
+        .join(' ')
+
+      extractedText += pageText + '\n'
+
+      // Update progress
+      this.updateCallback(pdf.id, {
+        progress: 20 + (pageNum / totalPages) * 70,
+      })
+    }
+
+    this.updateCallback(pdf.id, { progress: 95 })
+
+    // Create a text file blob
+    const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' })
 
     this.updateCallback(pdf.id, {
       status: 'completed',

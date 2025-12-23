@@ -151,6 +151,7 @@ type OperationType =
   | 'duplicatePages'
   | 'reorder'
   | 'addPageNumbers'
+  | 'extractText'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -1577,6 +1578,10 @@ export default function PDFToolsPage() {
           break
         case 'addPageNumbers':
           suffix = '_numbered'
+          break
+        case 'extractText':
+          suffix = ''
+          extension = '.txt'
           break
       }
 
