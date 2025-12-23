@@ -3,32 +3,46 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AffiliateSuggestion } from '../ads/AffiliateSuggestion'
 
 // Mock the ads-config module
-vi.mock('@/lib/ads-config', () => ({
+vi.mock('@/lib/services/ads-config', () => ({
   getAdsConfig: vi.fn(() => ({
     enabled: process.env.NEXT_PUBLIC_ENABLE_ADS === 'true',
+    adsense: {
+      enabled: false,
+      clientId: '',
+    },
+    carbon: {
+      enabled: false,
+      serveId: '',
+      placement: '',
+    },
+    ethical: {
+      enabled: false,
+      publisherId: '',
+    },
     affiliates: {
       enabled: process.env.NEXT_PUBLIC_ENABLE_AFFILIATES === 'true',
       partners: {
         passwordManagers: {
-          onePassword: process.env.NEXT_PUBLIC_AFFILIATE_1PASSWORD || '',
-          bitwarden: process.env.NEXT_PUBLIC_AFFILIATE_BITWARDEN || '',
-          dashlane: process.env.NEXT_PUBLIC_AFFILIATE_DASHLANE || '',
+          onePassword: process.env.NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF || '',
+          bitwarden: process.env.NEXT_PUBLIC_AFFILIATE_BITWARDEN_REF || '',
+          dashlane: process.env.NEXT_PUBLIC_AFFILIATE_DASHLANE_REF || '',
         },
         vpn: {
-          nordvpn: process.env.NEXT_PUBLIC_AFFILIATE_NORDVPN || '',
-          expressvpn: process.env.NEXT_PUBLIC_AFFILIATE_EXPRESSVPN || '',
+          nordvpn: process.env.NEXT_PUBLIC_AFFILIATE_NORDVPN_REF || '',
+          expressvpn: process.env.NEXT_PUBLIC_AFFILIATE_EXPRESSVPN_REF || '',
         },
         imageCdn: {
-          cloudinary: process.env.NEXT_PUBLIC_AFFILIATE_CLOUDINARY || '',
-          tinypng: process.env.NEXT_PUBLIC_AFFILIATE_TINYPNG || '',
+          cloudinary: process.env.NEXT_PUBLIC_AFFILIATE_CLOUDINARY_REF || '',
+          tinypng: process.env.NEXT_PUBLIC_AFFILIATE_TINYPNG_REF || '',
         },
         developerTools: {
-          postman: process.env.NEXT_PUBLIC_AFFILIATE_POSTMAN || '',
-          insomnia: process.env.NEXT_PUBLIC_AFFILIATE_INSOMNIA || '',
+          postman: process.env.NEXT_PUBLIC_AFFILIATE_POSTMAN_REF || '',
+          insomnia: process.env.NEXT_PUBLIC_AFFILIATE_INSOMNIA_REF || '',
         },
         hosting: {
-          cloudflare: process.env.NEXT_PUBLIC_AFFILIATE_CLOUDFLARE || '',
-          supabase: process.env.NEXT_PUBLIC_AFFILIATE_SUPABASE || '',
+          vercel: process.env.NEXT_PUBLIC_AFFILIATE_VERCEL_REF || '',
+          cloudflare: process.env.NEXT_PUBLIC_AFFILIATE_CLOUDFLARE_REF || '',
+          supabase: process.env.NEXT_PUBLIC_AFFILIATE_SUPABASE_REF || '',
         },
       },
     },
@@ -45,17 +59,18 @@ describe('AffiliateSuggestion Component', () => {
     // Reset env vars before each test
     process.env.NEXT_PUBLIC_ENABLE_ADS = 'false'
     process.env.NEXT_PUBLIC_ENABLE_AFFILIATES = 'false'
-    process.env.NEXT_PUBLIC_AFFILIATE_1PASSWORD = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_BITWARDEN = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_DASHLANE = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_NORDVPN = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_EXPRESSVPN = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_CLOUDINARY = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_TINYPNG = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_POSTMAN = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_INSOMNIA = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_CLOUDFLARE = ''
-    process.env.NEXT_PUBLIC_AFFILIATE_SUPABASE = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_BITWARDEN_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_DASHLANE_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_NORDVPN_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_EXPRESSVPN_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_CLOUDINARY_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_TINYPNG_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_POSTMAN_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_INSOMNIA_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_VERCEL_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_CLOUDFLARE_REF = ''
+    process.env.NEXT_PUBLIC_AFFILIATE_SUPABASE_REF = ''
     vi.clearAllMocks()
   })
 
@@ -86,7 +101,7 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_1PASSWORD: '/ref/test',
+        NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF: '/ref/test',
       })
       const { container } = render(<AffiliateSuggestion tool="password-generator" />)
       expect(container.firstChild).not.toBeNull()
@@ -99,9 +114,9 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_1PASSWORD: '/ref/test1',
-        NEXT_PUBLIC_AFFILIATE_BITWARDEN: '/ref/test2',
-        NEXT_PUBLIC_AFFILIATE_DASHLANE: '/ref/test3',
+        NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF: '/ref/test1',
+        NEXT_PUBLIC_AFFILIATE_BITWARDEN_REF: '/ref/test2',
+        NEXT_PUBLIC_AFFILIATE_DASHLANE_REF: '/ref/test3',
       })
     })
 
@@ -133,8 +148,8 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_NORDVPN: '/ref/nord',
-        NEXT_PUBLIC_AFFILIATE_EXPRESSVPN: '/ref/express',
+        NEXT_PUBLIC_AFFILIATE_NORDVPN_REF: '/ref/nord',
+        NEXT_PUBLIC_AFFILIATE_EXPRESSVPN_REF: '/ref/express',
       })
     })
 
@@ -150,8 +165,8 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_CLOUDINARY: '/ref/cloudinary',
-        NEXT_PUBLIC_AFFILIATE_TINYPNG: '/ref/tinypng',
+        NEXT_PUBLIC_AFFILIATE_CLOUDINARY_REF: '/ref/cloudinary',
+        NEXT_PUBLIC_AFFILIATE_TINYPNG_REF: '/ref/tinypng',
       })
     })
 
@@ -167,8 +182,8 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_POSTMAN: '/ref/postman',
-        NEXT_PUBLIC_AFFILIATE_INSOMNIA: '/ref/insomnia',
+        NEXT_PUBLIC_AFFILIATE_POSTMAN_REF: '/ref/postman',
+        NEXT_PUBLIC_AFFILIATE_INSOMNIA_REF: '/ref/insomnia',
       })
     })
 
@@ -184,8 +199,8 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_CLOUDFLARE: '/ref/cloudflare',
-        NEXT_PUBLIC_AFFILIATE_SUPABASE: '/ref/supabase',
+        NEXT_PUBLIC_AFFILIATE_CLOUDFLARE_REF: '/ref/cloudflare',
+        NEXT_PUBLIC_AFFILIATE_SUPABASE_REF: '/ref/supabase',
       })
     })
 
@@ -201,7 +216,7 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_1PASSWORD: '/ref/test',
+        NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF: '/ref/test',
       })
     })
 
@@ -214,9 +229,7 @@ describe('AffiliateSuggestion Component', () => {
     })
 
     it('should render banner variant explicitly', () => {
-      const { container } = render(
-        <AffiliateSuggestion tool="password-generator" variant="banner" />
-      )
+      render(<AffiliateSuggestion tool="password-generator" variant="banner" />)
       expect(screen.getByText('💡 Recommended Tools')).toBeInTheDocument()
     })
 
@@ -229,8 +242,8 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_1PASSWORD: '/ref/test1',
-        NEXT_PUBLIC_AFFILIATE_BITWARDEN: '/ref/test2',
+        NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF: '/ref/test1',
+        NEXT_PUBLIC_AFFILIATE_BITWARDEN_REF: '/ref/test2',
       })
       render(<AffiliateSuggestion tool="password-generator" variant="inline" />)
       expect(screen.getByText('1Password')).toBeInTheDocument()
@@ -244,7 +257,7 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_1PASSWORD: '/ref/test',
+        NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF: '/ref/test',
       })
     })
 
@@ -259,7 +272,7 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_NORDVPN: '/ref/nord',
+        NEXT_PUBLIC_AFFILIATE_NORDVPN_REF: '/ref/nord',
       })
       const { container } = render(<AffiliateSuggestion tool="encryption-tool" />)
       const element = container.querySelector('[data-affiliate-tool]')
@@ -272,7 +285,7 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_1PASSWORD: '/ref/test1',
+        NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF: '/ref/test1',
         // Bitwarden and Dashlane not configured
       })
       render(<AffiliateSuggestion tool="password-generator" />)
@@ -285,8 +298,8 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_1PASSWORD: '',
-        NEXT_PUBLIC_AFFILIATE_BITWARDEN: '',
+        NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF: '',
+        NEXT_PUBLIC_AFFILIATE_BITWARDEN_REF: '',
       })
       const { container } = render(<AffiliateSuggestion tool="password-generator" />)
       expect(container.firstChild).toBeNull()
@@ -298,7 +311,7 @@ describe('AffiliateSuggestion Component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
         NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
-        NEXT_PUBLIC_AFFILIATE_1PASSWORD: '/ref/test',
+        NEXT_PUBLIC_AFFILIATE_1PASSWORD_REF: '/ref/test',
       })
       render(<AffiliateSuggestion tool="password-generator" />)
       expect(screen.getByText('1Password')).toBeInTheDocument()
