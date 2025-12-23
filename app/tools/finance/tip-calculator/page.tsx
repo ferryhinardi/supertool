@@ -854,7 +854,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ py: '6' })}>
+            <CardContent className={css({ pt: '6', pb: '6' })}>
               <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
                 <Sparkles
                   className={css({
@@ -893,7 +893,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ py: '6' })}>
+            <CardContent className={css({ pt: '6', pb: '6' })}>
               <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
                 <Info
                   className={css({

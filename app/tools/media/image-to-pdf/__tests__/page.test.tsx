@@ -57,8 +57,12 @@ describe('ImageToPdfPage', () => {
     it('should render the page with title and description', () => {
       render(<ImageToPdfPage />)
 
-      expect(screen.getByText('Image to PDF Converter')).toBeInTheDocument()
-      expect(screen.getByText(/Convert JPG, PNG, WebP/i)).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: 'Image to PDF Converter', level: 1 })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/Convert JPG, PNG, WebP, and other image formats to PDF instantly/i)
+      ).toBeInTheDocument()
     })
 
     it('should render the upload section', () => {

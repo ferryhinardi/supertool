@@ -497,7 +497,7 @@ export default function MarkdownEditorPage() {
               backdropFilter: 'blur(8px)',
             })}
           >
-            <CardContent className={css({ py: '5' })}>
+            <CardContent className={css({ pt: '5', pb: '5' })}>
               <div
                 className={css({
                   display: 'flex',

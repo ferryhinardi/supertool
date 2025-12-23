@@ -277,7 +277,7 @@ function JSONSchemaContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ py: '4' })}>
+            <CardContent className={css({ pt: '4', pb: '4' })}>
               <div
                 className={css({
                   display: 'flex',
@@ -589,7 +589,7 @@ function JSONSchemaContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ py: '4' })}>
+            <CardContent className={css({ pt: '4', pb: '4' })}>
               <div
                 className={css({
                   display: 'flex',
@@ -679,7 +679,7 @@ function JSONSchemaContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ py: '6' })}>
+            <CardContent className={css({ pt: '6', pb: '6' })}>
               <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
                 <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
                 <div className={css({ spaceY: '2' })}>

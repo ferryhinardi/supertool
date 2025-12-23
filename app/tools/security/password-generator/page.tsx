@@ -428,7 +428,7 @@ function PasswordGeneratorContent() {
             w: 'full',
           })}
         >
-          <CardContent className={css({ py: '6' })}>
+          <CardContent className={css({ pt: '6', pb: '6' })}>
             <div className={css({ spaceY: '4' })}>
               <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
                 <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400' })} />
@@ -490,7 +490,7 @@ function PasswordGeneratorContent() {
             w: 'full',
           })}
         >
-          <CardContent className={css({ py: '6' })}>
+          <CardContent className={css({ pt: '6', pb: '6' })}>
             <div className={css({ spaceY: '6' })}>
               <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
                 <Lightbulb className={css({ h: '6', w: '6', color: 'blue.400' })} />
@@ -1638,7 +1638,7 @@ function PasswordGeneratorContent() {
           w: 'full',
         })}
       >
-        <CardContent className={css({ py: '6' })}>
+        <CardContent className={css({ pt: '6', pb: '6' })}>
           <div className={css({ display: 'flex', gap: '4', alignItems: 'start' })}>
             <Shield
               className={css({

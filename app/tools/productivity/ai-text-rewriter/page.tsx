@@ -739,7 +739,7 @@ function AITextRewriterContent() {
                 backdropFilter: 'blur(16px)',
               })}
             >
-              <CardContent className={css({ py: '4' })}>
+              <CardContent className={css({ pt: '4', pb: '4' })}>
                 <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
                   <Lightbulb
                     className={css({
@@ -875,7 +875,7 @@ function AITextRewriterContent() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ py: '6' })}>
+          <CardContent className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
               <Sparkles
                 className={css({

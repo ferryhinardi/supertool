@@ -1261,7 +1261,7 @@ function ColorContrastContent() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ py: '6' })}>
+          <CardContent className={css({ pt: '6', pb: '6' })}>
             <div
               className={css({
                 display: 'flex',

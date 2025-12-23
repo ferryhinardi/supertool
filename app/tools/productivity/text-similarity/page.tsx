@@ -919,7 +919,7 @@ function TextSimilarityContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ py: '8' })}>
+            <CardContent className={css({ pt: '8', pb: '8' })}>
               <div className={css({ textAlign: 'center', spaceY: '4' })}>
                 <FileText className={css({ h: '12', w: '12', color: 'gray.600', mx: 'auto' })} />
                 <div>
@@ -1014,7 +1014,7 @@ function TextSimilarityContent() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ py: '6' })}>
+          <CardContent className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
               <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
               <div className={css({ spaceY: '2' })}>
@@ -1057,7 +1057,7 @@ function TextSimilarityContent() {
               bg: 'yellow.500/5',
             })}
           >
-            <CardContent className={css({ py: '4' })}>
+            <CardContent className={css({ pt: '4', pb: '4' })}>
               <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
                 <AlertCircle className={css({ h: '5', w: '5', color: 'yellow.400' })} />
                 <p className={css({ fontSize: 'sm', color: 'yellow.300' })}>
