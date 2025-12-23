@@ -110,7 +110,10 @@ export const PDFPageThumbnails: React.FC<PDFPageThumbnailsProps> = ({
     // Dynamically import pdfjs-dist
     import('pdfjs-dist').then((module) => {
       if (typeof window !== 'undefined') {
-        module.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${module.version}/build/pdf.worker.min.mjs`
+        module.GlobalWorkerOptions.workerSrc = new URL(
+          'pdfjs-dist/build/pdf.worker.mjs',
+          import.meta.url
+        ).toString()
       }
       setPdfjsLib(module)
     })

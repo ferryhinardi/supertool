@@ -18,7 +18,10 @@ const PDFPageEditFlow: React.FC<PDFPageEditFlowProps> = ({ pdfFile, onApply, onC
     let cancelled = false
     import('pdfjs-dist').then(async (pdfjsLib) => {
       if (typeof window !== 'undefined') {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+        pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+          'pdfjs-dist/build/pdf.worker.mjs',
+          import.meta.url
+        ).toString()
       }
       const arrayBuffer = await pdfFile.arrayBuffer()
       const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })

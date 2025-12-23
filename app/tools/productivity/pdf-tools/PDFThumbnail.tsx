@@ -19,7 +19,10 @@ export function PDFThumbnail({ file, width = 80, height = 100 }: PDFThumbnailPro
       try {
         const pdfjsLib = await import('pdfjs-dist')
         if (typeof window !== 'undefined') {
-          pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+          pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+            'pdfjs-dist/build/pdf.worker.mjs',
+            import.meta.url
+          ).toString()
         }
 
         const arrayBuffer = await file.arrayBuffer()

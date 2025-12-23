@@ -141,7 +141,10 @@ export class PDFBatchProcessor {
     const { PDFDocument } = await import('pdf-lib')
 
     if (typeof window !== 'undefined') {
-      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
     }
 
     this.updateCallback(pdf.id, { progress: 10 })
@@ -300,7 +303,10 @@ export class PDFBatchProcessor {
     const pdfjs = await import('pdfjs-dist')
 
     if (typeof window !== 'undefined') {
-      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
     }
 
     const arrayBuffer = await pdf.file.arrayBuffer()
@@ -441,7 +447,10 @@ export class PDFBatchProcessor {
     const { Document, Paragraph, TextRun, HeadingLevel, Packer } = await import('docx')
 
     if (typeof window !== 'undefined') {
-      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
     }
 
     const arrayBuffer = await pdf.file.arrayBuffer()
@@ -561,7 +570,10 @@ export class PDFBatchProcessor {
     const { PDFDocument } = await import('pdf-lib')
 
     if (typeof window !== 'undefined') {
-      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
     }
 
     const arrayBuffer = await pdf.file.arrayBuffer()

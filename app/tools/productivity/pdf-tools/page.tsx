@@ -75,8 +75,11 @@ const initPdfjs = async () => {
   pdfjsInitPromise = import('pdfjs-dist').then(async (module) => {
     pdfjsLib = module
     if (typeof window !== 'undefined') {
-      // Use unpkg as a more reliable CDN fallback with HTTPS
-      module.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${module.version}/build/pdf.worker.min.mjs`
+      // Use local worker file from node_modules
+      module.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
     }
     return module
   })
