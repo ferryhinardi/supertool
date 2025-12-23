@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AdContainer } from '../ads/AdContainer'
 
 // Mock all ad components
-vi.mock('../AdBanner', () => ({
+vi.mock('../ads/AdBanner', () => ({
   AdBanner: ({ position, className, slot }: any) => (
     <div data-testid="ad-banner" data-position={position} className={className} data-slot={slot}>
       AdBanner Mock
@@ -11,7 +11,7 @@ vi.mock('../AdBanner', () => ({
   ),
 }))
 
-vi.mock('../CarbonAd', () => ({
+vi.mock('../ads/CarbonAd', () => ({
   CarbonAd: ({ position, className }: any) => (
     <div data-testid="carbon-ad" data-position={position} className={className}>
       CarbonAd Mock
@@ -19,7 +19,7 @@ vi.mock('../CarbonAd', () => ({
   ),
 }))
 
-vi.mock('../EthicalAd', () => ({
+vi.mock('../ads/EthicalAd', () => ({
   EthicalAd: ({ position, className, type }: any) => (
     <div data-testid="ethical-ad" data-position={position} className={className} data-type={type}>
       EthicalAd Mock
@@ -28,20 +28,54 @@ vi.mock('../EthicalAd', () => ({
 }))
 
 // Mock the ads-config module
-vi.mock('@/lib/ads-config', () => ({
+vi.mock('@/lib/services/ads-config', () => ({
+  getAdsConfig: vi.fn(() => {
+    const masterEnabled = process.env.NEXT_PUBLIC_ENABLE_ADS === 'true'
+    return {
+      enabled: masterEnabled,
+      adsense: {
+        enabled: masterEnabled && process.env.NEXT_PUBLIC_ENABLE_ADSENSE === 'true',
+        clientId: process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID || 'test-client-id',
+      },
+      carbon: {
+        enabled: masterEnabled && process.env.NEXT_PUBLIC_ENABLE_CARBON_ADS === 'true',
+        serveId: process.env.NEXT_PUBLIC_CARBON_SERVE_ID || 'test-serve-id',
+        placement: process.env.NEXT_PUBLIC_CARBON_PLACEMENT || 'test-placement',
+      },
+      ethical: {
+        enabled: masterEnabled && process.env.NEXT_PUBLIC_ENABLE_ETHICAL_ADS === 'true',
+        publisherId: process.env.NEXT_PUBLIC_ETHICAL_ADS_PUBLISHER_ID || 'test-publisher-id',
+      },
+      affiliates: {
+        enabled: masterEnabled && process.env.NEXT_PUBLIC_ENABLE_AFFILIATES === 'true',
+        partners: {
+          passwordManagers: { onePassword: '', bitwarden: '', dashlane: '' },
+          imageCdn: { cloudinary: '', tinypng: '' },
+          developerTools: { postman: '', insomnia: '' },
+          vpn: { nordvpn: '', expressvpn: '' },
+          hosting: { vercel: '', cloudflare: '', supabase: '' },
+        },
+      },
+    }
+  }),
   isAnyAdEnabled: vi.fn(() => {
+    const masterEnabled = process.env.NEXT_PUBLIC_ENABLE_ADS === 'true'
     return (
-      process.env.NEXT_PUBLIC_ENABLE_CARBON === 'true' ||
-      process.env.NEXT_PUBLIC_ENABLE_ETHICAL === 'true' ||
-      process.env.NEXT_PUBLIC_ENABLE_ADSENSE === 'true'
+      masterEnabled &&
+      (process.env.NEXT_PUBLIC_ENABLE_CARBON_ADS === 'true' ||
+        process.env.NEXT_PUBLIC_ENABLE_ETHICAL_ADS === 'true' ||
+        process.env.NEXT_PUBLIC_ENABLE_ADSENSE === 'true')
     )
   }),
   getPriorityAdNetwork: vi.fn(() => {
+    const masterEnabled = process.env.NEXT_PUBLIC_ENABLE_ADS === 'true'
+    if (!masterEnabled) return null
+
     // Priority: Carbon > Ethical > AdSense
-    if (process.env.NEXT_PUBLIC_ENABLE_CARBON === 'true') {
+    if (process.env.NEXT_PUBLIC_ENABLE_CARBON_ADS === 'true') {
       return 'carbon'
     }
-    if (process.env.NEXT_PUBLIC_ENABLE_ETHICAL === 'true') {
+    if (process.env.NEXT_PUBLIC_ENABLE_ETHICAL_ADS === 'true') {
       return 'ethical'
     }
     if (process.env.NEXT_PUBLIC_ENABLE_ADSENSE === 'true') {
@@ -60,8 +94,8 @@ describe('AdContainer Component', () => {
   beforeEach(() => {
     // Reset env vars before each test
     process.env.NEXT_PUBLIC_ENABLE_ADS = 'false'
-    process.env.NEXT_PUBLIC_ENABLE_CARBON = 'false'
-    process.env.NEXT_PUBLIC_ENABLE_ETHICAL = 'false'
+    process.env.NEXT_PUBLIC_ENABLE_CARBON_ADS = 'false'
+    process.env.NEXT_PUBLIC_ENABLE_ETHICAL_ADS = 'false'
     process.env.NEXT_PUBLIC_ENABLE_ADSENSE = 'false'
     vi.clearAllMocks()
   })
@@ -83,7 +117,7 @@ describe('AdContainer Component', () => {
     it('should render Carbon Ads when only Carbon is enabled', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
       })
       const { getByTestId } = render(<AdContainer />)
       expect(getByTestId('carbon-ad')).toBeInTheDocument()
@@ -92,7 +126,7 @@ describe('AdContainer Component', () => {
     it('should render Ethical Ads when only Ethical is enabled', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_ETHICAL: 'true',
+        NEXT_PUBLIC_ENABLE_ETHICAL_ADS: 'true',
       })
       const { getByTestId } = render(<AdContainer />)
       expect(getByTestId('ethical-ad')).toBeInTheDocument()
@@ -110,8 +144,8 @@ describe('AdContainer Component', () => {
     it('should prioritize Carbon over Ethical when both are enabled', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
-        NEXT_PUBLIC_ENABLE_ETHICAL: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
+        NEXT_PUBLIC_ENABLE_ETHICAL_ADS: 'true',
       })
       const { getByTestId, queryByTestId } = render(<AdContainer />)
       expect(getByTestId('carbon-ad')).toBeInTheDocument()
@@ -121,7 +155,7 @@ describe('AdContainer Component', () => {
     it('should prioritize Carbon over AdSense when both are enabled', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
         NEXT_PUBLIC_ENABLE_ADSENSE: 'true',
       })
       const { getByTestId, queryByTestId } = render(<AdContainer />)
@@ -132,7 +166,7 @@ describe('AdContainer Component', () => {
     it('should prioritize Ethical over AdSense when both are enabled', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_ETHICAL: 'true',
+        NEXT_PUBLIC_ENABLE_ETHICAL_ADS: 'true',
         NEXT_PUBLIC_ENABLE_ADSENSE: 'true',
       })
       const { getByTestId, queryByTestId } = render(<AdContainer />)
@@ -143,8 +177,8 @@ describe('AdContainer Component', () => {
     it('should prioritize Carbon when all three are enabled', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
-        NEXT_PUBLIC_ENABLE_ETHICAL: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
+        NEXT_PUBLIC_ENABLE_ETHICAL_ADS: 'true',
         NEXT_PUBLIC_ENABLE_ADSENSE: 'true',
       })
       const { getByTestId, queryByTestId } = render(<AdContainer />)
@@ -158,8 +192,8 @@ describe('AdContainer Component', () => {
     beforeEach(() => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
-        NEXT_PUBLIC_ENABLE_ETHICAL: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
+        NEXT_PUBLIC_ENABLE_ETHICAL_ADS: 'true',
         NEXT_PUBLIC_ENABLE_ADSENSE: 'true',
       })
     })
@@ -196,7 +230,7 @@ describe('AdContainer Component', () => {
     it('should pass position prop to ad components', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
       })
       const { getByTestId } = render(<AdContainer position="header" />)
       expect(getByTestId('carbon-ad')).toHaveAttribute('data-position', 'header')
@@ -205,7 +239,7 @@ describe('AdContainer Component', () => {
     it('should pass className prop to ad components', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_ETHICAL: 'true',
+        NEXT_PUBLIC_ENABLE_ETHICAL_ADS: 'true',
       })
       const { container } = render(<AdContainer className="custom-class" />)
       expect(container.querySelector('.custom-class')).toBeInTheDocument()
@@ -232,7 +266,7 @@ describe('AdContainer Component', () => {
     it('should pass all props together', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
       })
       const { getByTestId } = render(
         <AdContainer position="footer" className="test-class" slot="test-slot" />
@@ -247,7 +281,7 @@ describe('AdContainer Component', () => {
     it('should default position to content', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_ETHICAL: 'true',
+        NEXT_PUBLIC_ENABLE_ETHICAL_ADS: 'true',
       })
       const { getByTestId } = render(<AdContainer />)
       expect(getByTestId('ethical-ad')).toHaveAttribute('data-position', 'content')
@@ -256,7 +290,7 @@ describe('AdContainer Component', () => {
     it('should default forceNetwork to null (use priority)', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
         NEXT_PUBLIC_ENABLE_ADSENSE: 'true',
       })
       const { getByTestId } = render(<AdContainer />)
@@ -269,7 +303,7 @@ describe('AdContainer Component', () => {
     it('should handle undefined props gracefully', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_CARBON: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON_ADS: 'true',
       })
       const { container } = render(<AdContainer />)
       expect(container).toBeDefined()
@@ -284,7 +318,7 @@ describe('AdContainer Component', () => {
     it('should pass type="image" to EthicalAd component', () => {
       mockEnv({
         NEXT_PUBLIC_ENABLE_ADS: 'true',
-        NEXT_PUBLIC_ENABLE_ETHICAL: 'true',
+        NEXT_PUBLIC_ENABLE_ETHICAL_ADS: 'true',
       })
       const { getByTestId } = render(<AdContainer />)
       expect(getByTestId('ethical-ad')).toHaveAttribute('data-type', 'image')
