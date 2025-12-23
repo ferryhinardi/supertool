@@ -29,6 +29,7 @@ export type OperationType =
   | 'edit'
   | 'grayscale'
   | 'deletePages'
+  | 'protect'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -54,6 +55,17 @@ interface ProcessOptions {
   imageToPdfPageSize?: 'A4' | 'Letter' | 'Legal' | 'Original'
   imageToPdfFitMode?: 'contain' | 'cover' | 'fill'
   pagesToDelete?: number[] // Array of page numbers (1-indexed) to delete
+  password?: string // Password for encryption
+  ownerPassword?: string // Owner password for permissions (optional)
+  userPermissions?: {
+    printing?: boolean
+    modifying?: boolean
+    copying?: boolean
+    annotating?: boolean
+    fillingForms?: boolean
+    contentAccessibility?: boolean
+    documentAssembly?: boolean
+  }
 }
 
 /**
@@ -147,6 +159,14 @@ export class PDFBatchProcessor {
           break
         case 'deletePages':
           await this.deletePages(pdf, options.pagesToDelete || [])
+          break
+        case 'protect':
+          await this.protectPDF(
+            pdf,
+            options.password || '',
+            options.ownerPassword,
+            options.userPermissions
+          )
           break
       }
     } catch (error) {
@@ -578,6 +598,75 @@ export class PDFBatchProcessor {
 
     const resultBytes = await newPdf.save()
     const blob = new Blob([new Uint8Array(resultBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Protect PDF with password encryption
+   * Note: This uses a server-side API for encryption as client-side encryption is limited
+   * @param pdf - PDF file to protect
+   * @param userPassword - Password required to open the PDF
+   * @param ownerPassword - Optional owner password for advanced permissions
+   * @param permissions - User permissions for the protected PDF
+   */
+  private async protectPDF(
+    pdf: PDFFile,
+    userPassword: string,
+    ownerPassword?: string,
+    permissions?: {
+      printing?: boolean
+      modifying?: boolean
+      copying?: boolean
+      annotating?: boolean
+      fillingForms?: boolean
+      contentAccessibility?: boolean
+      documentAssembly?: boolean
+    }
+  ): Promise<void> {
+    // Validate password
+    if (!userPassword || userPassword.trim() === '') {
+      throw new Error('Password is required')
+    }
+
+    if (userPassword.length < 4) {
+      throw new Error('Password must be at least 4 characters long')
+    }
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    // Prepare form data
+    const formData = new FormData()
+    formData.append('file', pdf.file)
+    formData.append('password', userPassword)
+    if (ownerPassword) {
+      formData.append('ownerPassword', ownerPassword)
+    }
+    if (permissions) {
+      formData.append('permissions', JSON.stringify(permissions))
+    }
+
+    this.updateCallback(pdf.id, { progress: 30 })
+
+    // Call server-side API for encryption
+    const response = await fetch('/api/pdf-protect', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to protect PDF')
+    }
+
+    this.updateCallback(pdf.id, { progress: 80 })
+
+    const blob = await response.blob()
 
     this.updateCallback(pdf.id, {
       status: 'completed',
