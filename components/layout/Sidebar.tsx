@@ -1,99 +1,23 @@
 'use client'
 
-import {
-  Activity,
-  Braces,
-  Brain,
-  Calendar,
-  Camera,
-  Clipboard,
-  Clock,
-  Code,
-  DollarSign,
-  FileCog,
-  FileJson,
-  FileSearch,
-  FileSpreadsheet,
-  FileText,
-  Gauge,
-  GitCompare,
-  Github,
-  Globe,
-  Hash,
-  Home,
-  ImagePlus,
-  Key,
-  LogIn,
-  LogOut,
-  Menu,
-  MessageSquare,
-  QrCode,
-  Repeat,
-  Shield,
-  ShieldAlert,
-  Star,
-  Subtitles,
-  Terminal,
-  Timer,
-  Upload,
-  User,
-  Users,
-  Wand2,
-  X,
-} from 'lucide-react'
+import { Github, Home, LogIn, LogOut, Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { useAuthStore } from '@/lib/auth/auth-store'
+import { tools } from '@/lib/data/tools'
 import { css, cva } from '@/styled-system/css'
 
+// Generate navigation from tools data, filtering out coming soon tools
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
-  { name: 'JSON Beautifier', href: '/tools/json-beautify', icon: Code },
-  { name: 'JSON Schema', href: '/tools/json-schema', icon: Code },
-  { name: 'JSON to CSV', href: '/tools/json-to-csv', icon: FileSpreadsheet },
-  { name: 'YAML ↔ JSON', href: '/tools/yaml-json', icon: FileJson },
-  { name: 'CSV ↔ Excel', href: '/tools/csv-excel', icon: FileSpreadsheet },
-  { name: 'CSV Merger & Splitter', href: '/tools/csv-merger', icon: FileSpreadsheet },
-  { name: 'Split Bill', href: '/tools/split-bill', icon: Users },
-  { name: 'Currency Converter', href: '/tools/currency-converter', icon: DollarSign },
-  { name: 'QR Code', href: '/tools/qr-code', icon: QrCode },
-  { name: 'Password Generator', href: '/tools/password-generator', icon: Key },
-  { name: 'Password Strength', href: '/tools/password-strength', icon: ShieldAlert },
-  { name: 'Encryption Tool', href: '/tools/encryption-tool', icon: Shield },
-  { name: 'Hash Generator', href: '/tools/hash-generator', icon: Hash },
-  { name: 'UUID Generator', href: '/tools/uuid-generator', icon: Hash },
-  { name: 'Unit Converter', href: '/tools/unit-converter', icon: Repeat },
-  { name: 'Timezone Converter', href: '/tools/timezone-converter', icon: Globe },
-  {
-    name: 'Gradient Generator',
-    href: '/tools/gradient-generator',
-    icon: Wand2,
-  },
-  { name: 'AI Photo Editor', href: '/tools/photo-editor', icon: ImagePlus },
-  { name: 'Image Metadata', href: '/tools/image-metadata', icon: Camera },
-  { name: 'PDF Tools', href: '/tools/pdf-tools', icon: FileCog },
-  {
-    name: 'Daily Task Summary',
-    href: '/tools/daily-task-summary',
-    icon: Calendar,
-  },
-  { name: 'BMI Calculator', href: '/tools/bmi-calculator', icon: Activity },
-  { name: 'Stopwatch & Timer', href: '/tools/stopwatch-timer', icon: Clock },
-  { name: 'Task Timer', href: '/tools/task-timer', icon: Timer },
-  { name: 'Clipboard History', href: '/tools/clipboard-history', icon: Clipboard },
-  { name: 'Clipboard Formatter', href: '/tools/clipboard-formatter', icon: Clipboard },
-  { name: 'Tally Counter', href: '/tools/tally-counter', icon: Star },
-  { name: 'API Tester', href: '/tools/api-tester', icon: Terminal },
-  { name: 'Network Speed Test', href: '/tools/speed-test', icon: Gauge },
-  { name: 'Code Diff Viewer', href: '/tools/diff', icon: GitCompare },
-  { name: 'Markdown Editor', href: '/tools/markdown-editor', icon: FileText },
-  { name: 'AI Snippet Generator', href: '/tools/ai-snippet-generator', icon: Braces },
-  { name: 'AI JSON Analyzer', href: '/tools/ai-json-analyzer', icon: Brain },
-  { name: 'AI Command Explainer', href: '/tools/ai-command-explainer', icon: MessageSquare },
-  { name: 'File Inspector', href: '/tools/file-inspector', icon: FileSearch },
-  { name: 'File Upload', href: '/tools/upload', icon: Upload },
-  { name: 'Video Subtitle Combiner', href: '/tools/video-subtitle-combiner', icon: Subtitles },
+  ...tools
+    .filter((tool) => !tool.comingSoon)
+    .map((tool) => ({
+      name: tool.title,
+      href: tool.href,
+      icon: tool.icon,
+    })),
 ]
 const showAccessToGithub = false
 
