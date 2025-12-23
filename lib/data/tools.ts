@@ -803,7 +803,7 @@ export const tools: Tool[] = [
     href: '/tools/data/json-markdown-table',
     gradient: 'from-purple-500 to-pink-500',
     features: ['Auto Format', 'Custom Headers', 'Column Alignment', 'Copy & Download'],
-    category: 'productivity',
+    category: 'data',
   },
 
   // System & Utility Tools
@@ -868,7 +868,7 @@ export const tools: Tool[] = [
     description:
       'Analyze and optimize AI prompts for better results. Get suggestions to improve clarity, structure, and effectiveness. Learn prompt engineering techniques with AI-powered insights.',
     icon: Lightbulb,
-    href: '/tools/prompt-explainer',
+    href: '/tools/development/ai-prompt-explainer',
     gradient: 'from-purple-500 to-pink-500',
     features: ['Prompt Analysis', 'Optimization Tips', 'Best Practices', 'AI Insights'],
     category: 'development',
