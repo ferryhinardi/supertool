@@ -10,6 +10,7 @@ import {
   Edit3,
   FileDown,
   FileOutput,
+  GripVertical,
   Image as ImageIcon,
   LockOpen,
   Merge,
@@ -36,6 +37,7 @@ export type OperationType =
   | 'deletePages'
   | 'unlock'
   | 'duplicatePages'
+  | 'reorder'
 
 interface Operation {
   value: OperationType
@@ -98,6 +100,13 @@ const operationCategories: OperationCategory[] = [
         icon: RotateCw,
         color: '#f97316',
         description: 'Rotate pages',
+      },
+      {
+        value: 'reorder',
+        label: 'Reorder Pages',
+        icon: GripVertical,
+        color: '#8b5cf6',
+        description: 'Drag pages to reorder',
       },
       {
         value: 'watermark',

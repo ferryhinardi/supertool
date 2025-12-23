@@ -2,6 +2,23 @@
 
 export const dynamic = 'force-dynamic'
 
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { motion } from 'framer-motion'
 import {
   Archive,
@@ -12,6 +29,7 @@ import {
   FileDown,
   FileOutput,
   FileText,
+  GripVertical,
   Image as ImageIcon,
   Merge,
   Redo2,
@@ -131,6 +149,7 @@ type OperationType =
   | 'deletePages'
   | 'unlock'
   | 'duplicatePages'
+  | 'reorder'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -217,6 +236,9 @@ export default function PDFToolsPage() {
 
   // Duplicate pages options
   const [duplicateCount, setDuplicateCount] = useState(1)
+
+  // Reorder pages options
+  const [pageOrder, setPageOrder] = useState<number[]>([])
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1391,6 +1413,7 @@ export default function PDFToolsPage() {
             unlockPassword,
             pagesToDuplicate: Array.from(selectedPages),
             duplicateCount,
+            pageOrder,
           })
 
           toast.success(
@@ -1534,6 +1557,9 @@ export default function PDFToolsPage() {
         case 'duplicatePages':
           suffix = '_pages_duplicated'
           break
+        case 'reorder':
+          suffix = '_reordered'
+          break
       }
 
       // Handle different file name patterns for image to PDF
@@ -1607,7 +1633,18 @@ export default function PDFToolsPage() {
     if (operation !== 'unlock') {
       setUnlockPassword('')
     }
+    if (operation !== 'reorder') {
+      setPageOrder([])
+    }
   }, [operation])
+
+  // Initialize page order when operation is reorder and PDF is loaded
+  useEffect(() => {
+    if (operation === 'reorder' && pdfs.length > 0 && pdfs[0] && pageOrder.length === 0) {
+      const pages = Array.from({ length: pdfs[0].pages }, (_, i) => i + 1)
+      setPageOrder(pages)
+    }
+  }, [operation, pdfs, pageOrder.length])
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes'
@@ -1615,6 +1652,96 @@ export default function PDFToolsPage() {
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return `${Math.round((bytes / k ** i) * 100) / 100} ${sizes[i]}`
+  }
+
+  // Drag and drop sensors for reorder
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (over && active.id !== over.id) {
+      setPageOrder((items) => {
+        const oldIndex = items.indexOf(active.id as number)
+        const newIndex = items.indexOf(over.id as number)
+        return arrayMove(items, oldIndex, newIndex)
+      })
+    }
+  }
+
+  // Sortable page item component
+  function SortablePageItem({ pageNum }: { pageNum: number }) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+      id: pageNum,
+    })
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    }
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className={css({
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '3',
+          p: '3',
+          rounded: 'md',
+          bg: 'gray.800',
+          border: '1px solid',
+          borderColor: 'gray.700',
+          cursor: 'grab',
+          transition: 'all 0.2s',
+          _hover: {
+            borderColor: 'purple.500',
+            bg: 'gray.750',
+          },
+          _active: {
+            cursor: 'grabbing',
+          },
+        })}
+      >
+        <GripVertical
+          className={css({
+            h: '5',
+            w: '5',
+            color: 'gray.500',
+            flexShrink: 0,
+          })}
+        />
+        <div
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            h: '10',
+            w: '10',
+            rounded: 'md',
+            bg: 'purple.500/20',
+            border: '1px solid',
+            borderColor: 'purple.500/30',
+            fontSize: 'sm',
+            fontWeight: 'bold',
+            color: 'purple.300',
+            flexShrink: 0,
+          })}
+        >
+          {pageNum}
+        </div>
+        <div className={css({ fontSize: 'sm', color: 'gray.300' })}>Page {pageNum}</div>
+      </div>
+    )
   }
 
   const operations = [
@@ -2908,6 +3035,76 @@ export default function PDFToolsPage() {
                         </div>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* Reorder pages drag-and-drop UI */}
+                {operation === 'reorder' && pdfs.length > 0 && pdfs[0] && pageOrder.length > 0 && (
+                  <div className={css({ spaceY: '4' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Drag Pages to Reorder ({pageOrder.length} pages)
+                      </div>
+                    </div>
+
+                    {/* Info message */}
+                    <div
+                      className={css({
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'purple.500/10',
+                        border: '1px solid',
+                        borderColor: 'purple.500/30',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          gap: '2',
+                        })}
+                      >
+                        <Sparkles
+                          className={css({
+                            h: '4',
+                            w: '4',
+                            color: 'purple.400',
+                            flexShrink: 0,
+                            mt: '0.5',
+                          })}
+                        />
+                        <div className={css({ fontSize: 'sm', color: 'purple.200' })}>
+                          Drag pages up or down to change their order in the PDF
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Drag and drop list */}
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                    >
+                      <SortableContext items={pageOrder} strategy={verticalListSortingStrategy}>
+                        <div className={css({ spaceY: '2' })}>
+                          {pageOrder.map((pageNum) => (
+                            <SortablePageItem key={pageNum} pageNum={pageNum} />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                   </div>
                 )}
 

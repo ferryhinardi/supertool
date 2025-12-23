@@ -11,6 +11,7 @@ import {
   Edit3,
   FileDown,
   FileOutput,
+  GripVertical,
   Image as ImageIcon,
   Loader2,
   LockOpen,
@@ -56,6 +57,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   deletePages: Trash2,
   unlock: LockOpen,
   duplicatePages: CopyPlus,
+  reorder: GripVertical,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -73,6 +75,7 @@ const operationLabels: Record<OperationType, string> = {
   deletePages: 'Deleting Pages',
   unlock: 'Unlocking PDF',
   duplicatePages: 'Duplicating Pages',
+  reorder: 'Reordering Pages',
 }
 
 // Simple circular progress component without external dependency

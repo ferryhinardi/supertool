@@ -100,6 +100,16 @@ const operationTips: Record<
       'Useful for creating forms or repeated sections',
     ],
   },
+  reorder: {
+    title: 'Reorder PDF Pages',
+    description: 'Drag and drop pages to rearrange them',
+    tips: [
+      'Drag pages up or down to change order',
+      'Visual preview of new page order',
+      'All pages must remain in the document',
+      'Perfect for fixing page order in scanned documents',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

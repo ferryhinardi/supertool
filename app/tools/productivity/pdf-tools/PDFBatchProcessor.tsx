@@ -31,6 +31,7 @@ export type OperationType =
   | 'deletePages'
   | 'protect'
   | 'unlock'
+  | 'reorder'
   | 'duplicatePages'
 
 interface ProcessOptions {
@@ -71,6 +72,7 @@ interface ProcessOptions {
   pagesToDuplicate?: number[] // Array of page numbers (1-indexed) to duplicate
   duplicateCount?: number // How many times to duplicate each selected page (default: 1)
   unlockPassword?: string // Password to unlock a protected PDF
+  pageOrder?: number[] // Array of page numbers (1-indexed) in desired order for reorder operation
 }
 
 /**
@@ -175,6 +177,9 @@ export class PDFBatchProcessor {
           break
         case 'unlock':
           await this.unlockPDF(pdf, options.unlockPassword || '')
+          break
+        case 'reorder':
+          await this.reorderPages(pdf, options.pageOrder || [])
           break
         case 'duplicatePages':
           await this.duplicatePages(
@@ -725,6 +730,73 @@ export class PDFBatchProcessor {
     this.updateCallback(pdf.id, { progress: 80 })
 
     const blob = await response.blob()
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Reorder pages in a PDF according to a custom order
+   * @param pdf - PDF file to process
+   * @param pageOrder - Array of 1-indexed page numbers in desired order (e.g., [3, 1, 2])
+   */
+  private async reorderPages(pdf: PDFFile, pageOrder: number[]): Promise<void> {
+    const { PDFDocument } = await import('pdf-lib')
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const totalPages = pdfDoc.getPageCount()
+
+    // Validate page order
+    if (pageOrder.length === 0) {
+      throw new Error('Page order is required')
+    }
+
+    if (pageOrder.length !== totalPages) {
+      throw new Error(
+        `Page order must include all pages. Expected ${totalPages} pages, got ${pageOrder.length}`
+      )
+    }
+
+    // Check for duplicates or invalid page numbers
+    const uniquePages = new Set(pageOrder)
+    if (uniquePages.size !== pageOrder.length) {
+      throw new Error('Page order contains duplicate page numbers')
+    }
+
+    const invalidPages = pageOrder.filter((page) => page < 1 || page > totalPages)
+    if (invalidPages.length > 0) {
+      throw new Error(`Invalid page numbers: ${invalidPages.join(', ')}`)
+    }
+
+    this.updateCallback(pdf.id, { progress: 20 })
+
+    // Create new PDF with pages in the specified order
+    const newPdf = await PDFDocument.create()
+
+    // Convert 1-indexed page numbers to 0-indexed for pdf-lib
+    const pageIndices = pageOrder.map((pageNum) => pageNum - 1)
+
+    this.updateCallback(pdf.id, { progress: 40 })
+
+    // Copy pages in the new order
+    const copiedPages = await newPdf.copyPages(pdfDoc, pageIndices)
+
+    this.updateCallback(pdf.id, { progress: 70 })
+
+    // Add all copied pages to the new document
+    for (const page of copiedPages) {
+      newPdf.addPage(page)
+    }
+
+    this.updateCallback(pdf.id, { progress: 85 })
+
+    // Save the reordered PDF
+    const pdfBytes = await newPdf.save()
+    const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
 
     this.updateCallback(pdf.id, {
       status: 'completed',
