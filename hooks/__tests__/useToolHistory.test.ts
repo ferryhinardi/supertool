@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { useToolHistory } from '../useToolHistory'
+import { useToolHistory } from '../tools/useToolHistory'
 
 // Mock localStorage
 const localStorageMock = (() => {

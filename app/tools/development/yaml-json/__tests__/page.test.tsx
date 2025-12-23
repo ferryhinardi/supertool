@@ -3,7 +3,7 @@ import { userEvent } from '@testing-library/user-event'
 import { createElement } from 'react'
 import { toast } from 'sonner'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 
 // Mock modules inline - must NOT reference external variables
 vi.mock('next/navigation', () => ({
@@ -21,7 +21,7 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/tools/yaml-json',
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))

@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))

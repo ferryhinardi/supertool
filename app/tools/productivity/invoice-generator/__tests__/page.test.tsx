@@ -20,7 +20,7 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
@@ -288,7 +288,7 @@ describe('InvoiceGeneratorPage', () => {
   })
 
   it('tracks analytics events', async () => {
-    const { trackToolEvent } = await import('@/lib/analytics')
+    const { trackToolEvent } = await import('@/lib/services/analytics')
     render(<InvoiceGeneratorPage />)
 
     // Check that page open event was tracked

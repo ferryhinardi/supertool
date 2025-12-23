@@ -1,6 +1,6 @@
 'use client'
 
-import { getPriorityAdNetwork, isAnyAdEnabled } from '@/lib/ads-config'
+import { getPriorityAdNetwork, isAnyAdEnabled } from '@/lib/services/ads-config'
 import { AdBanner } from './AdBanner'
 import { CarbonAd } from './CarbonAd'
 import { EthicalAd } from './EthicalAd'

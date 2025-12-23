@@ -12,7 +12,7 @@ vi.mock('framer-motion', () => ({
 }))
 
 // Mock analytics tracking
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 

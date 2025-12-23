@@ -15,7 +15,7 @@ import {
   Settings,
   Split,
 } from 'lucide-react'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 export type OperationType =

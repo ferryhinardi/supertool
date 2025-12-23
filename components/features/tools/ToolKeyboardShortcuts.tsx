@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Keyboard, X } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import type { ToolKeyboardShortcut } from '@/lib/tool-components-types'
-import { TOOL_ANIMATIONS } from '@/lib/tool-components-types'
+import type { ToolKeyboardShortcut } from '@/lib/data/tool-components-types'
+import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
 import { css } from '@/styled-system/css'
 
 interface ToolKeyboardShortcutsProps {

@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-512'

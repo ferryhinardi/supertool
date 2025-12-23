@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
-import { generateToolBreadcrumbs, generateToolMetadata } from '@/lib/metadata'
-import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-data'
+import { generateToolBreadcrumbs, generateToolMetadata } from '@/lib/data/metadata'
+import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/data/structured-data'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'Text Transformer & Case Converter',

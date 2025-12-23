@@ -3,7 +3,7 @@ import { afterEach, beforeAll, beforeEach, expect, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 
 // Mock Supabase client globally
-vi.mock('@/lib/supabaseClient', () => ({
+vi.mock('@/lib/auth/supabaseClient', () => ({
   supabase: {
     from: (table: string) => ({
       select: () => ({

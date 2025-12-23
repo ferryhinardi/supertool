@@ -7,7 +7,7 @@
 
 import { Trash2 } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { useSwipeToDelete } from '@/hooks/useSwipeGesture'
+import { useSwipeToDelete } from '@/hooks/common/useSwipeGesture'
 import { css, cx } from '@/styled-system/css'
 
 interface SwipeableItemProps {

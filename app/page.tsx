@@ -33,19 +33,19 @@ import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput } from '@/components/ui/field'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { trackToolEvent } from '@/lib/analytics'
 import {
   generateOrganizationSchema,
   generateWebApplicationSchema,
   generateWebSiteSchema,
-} from '@/lib/structured-data'
-import { type Tool, type ToolCategory, tools } from '@/lib/tools'
+} from '@/lib/data/structured-data'
+import { type Tool, type ToolCategory, tools } from '@/lib/data/tools'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 // Lazy load non-critical components to reduce initial bundle size
 const RecentTools = dynamic(
   () =>
-    import('@/components/features/RecentTools').then((mod) => ({
+    import('@/components/features/tools/RecentTools').then((mod) => ({
       default: mod.RecentTools,
     })),
   {
@@ -56,7 +56,7 @@ const RecentTools = dynamic(
 
 const AdContainer = dynamic(
   () =>
-    import('@/components/features/AdContainer').then((mod) => ({
+    import('@/components/features/ads/AdContainer').then((mod) => ({
       default: mod.AdContainer,
     })),
   {
@@ -67,7 +67,7 @@ const AdContainer = dynamic(
 
 const FeedbackDialog = dynamic(
   () =>
-    import('@/components/features/FeedbackDialog').then((mod) => ({
+    import('@/components/features/shared/FeedbackDialog').then((mod) => ({
       default: mod.FeedbackDialog,
     })),
   {
@@ -77,7 +77,7 @@ const FeedbackDialog = dynamic(
 
 const TreatMeDialog = dynamic(
   () =>
-    import('@/components/features/TreatMeDialog').then((mod) => ({
+    import('@/components/features/shared/TreatMeDialog').then((mod) => ({
       default: mod.TreatMeDialog,
     })),
   {

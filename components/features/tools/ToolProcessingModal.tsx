@@ -3,8 +3,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { AlertCircle, CheckCircle, Loader2, X, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { ToolProcessingState } from '@/lib/tool-components-types'
-import { TOOL_ANIMATIONS } from '@/lib/tool-components-types'
+import type { ToolProcessingState } from '@/lib/data/tool-components-types'
+import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
 import { css } from '@/styled-system/css'
 
 interface ToolProcessingModalProps extends ToolProcessingState {

@@ -5,8 +5,8 @@ import { ArrowRight, Clock, X } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useClearRecentTools, useRecentTools } from '@/hooks/useRecentTools'
-import { trackToolEvent } from '@/lib/analytics'
+import { useClearRecentTools, useRecentTools } from '@/hooks/tools/useRecentTools'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 // Color mapping for gradients

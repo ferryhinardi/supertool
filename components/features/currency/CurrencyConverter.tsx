@@ -3,8 +3,12 @@
 import { ArrowRightLeft, RefreshCw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { useCurrencyConverter } from '@/hooks/useCurrencyConverter'
-import { formatCurrencyAmount, getCurrencyInfo, POPULAR_CURRENCIES } from '@/lib/currency-converter'
+import { useCurrencyConverter } from '@/hooks/tools/useCurrencyConverter'
+import {
+  formatCurrencyAmount,
+  getCurrencyInfo,
+  POPULAR_CURRENCIES,
+} from '@/lib/tools/currency/currency-converter'
 import { css } from '@/styled-system/css'
 
 interface CurrencyConverterProps {

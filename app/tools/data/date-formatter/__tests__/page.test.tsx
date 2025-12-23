@@ -38,7 +38,7 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
@@ -533,7 +533,7 @@ describe('Date Formatter Page', () => {
 
   describe('Analytics Tracking', () => {
     it('tracks page open event', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
       render(<DateFormatterPage />)
 
       await waitFor(() => {
@@ -542,7 +542,7 @@ describe('Date Formatter Page', () => {
     })
 
     it('tracks copy event when copying format', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
       render(<DateFormatterPage />)
       const input = screen.getByPlaceholderText(
         /2024-01-01, 1704067200, or any date format.../
@@ -559,7 +559,7 @@ describe('Date Formatter Page', () => {
     })
 
     it('tracks set current date event', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
       render(<DateFormatterPage />)
       const nowButton = screen.getByText('Now')
 

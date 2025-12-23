@@ -11,7 +11,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
@@ -228,7 +228,7 @@ describe('ImageToPdfPage', () => {
     })
 
     it('should track analytics event when generating PDF', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
       render(<ImageToPdfPage />)
 
       const file = new File(['image'], 'test.jpg', { type: 'image/jpeg' })
@@ -299,14 +299,14 @@ describe('ImageToPdfPage', () => {
 
   describe('Analytics Tracking', () => {
     it('should track page view on mount', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
       render(<ImageToPdfPage />)
 
       expect(trackToolEvent).toHaveBeenCalledWith('image_to_pdf_opened', expect.any(Object))
     })
 
     it('should track when images are added', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
       render(<ImageToPdfPage />)
 
       const file = new File(['image'], 'test.jpg', { type: 'image/jpeg' })

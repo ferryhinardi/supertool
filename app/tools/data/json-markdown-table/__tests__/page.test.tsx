@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
@@ -186,7 +186,7 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
     })
 
     const { toast } = await import('sonner')
-    const { trackToolEvent } = await import('@/lib/analytics')
+    const { trackToolEvent } = await import('@/lib/services/analytics')
 
     render(<JSONToMarkdownTablePage />)
 
@@ -202,7 +202,7 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
 
   it('should download markdown file when download button is clicked', async () => {
     const { toast } = await import('sonner')
-    const { trackToolEvent } = await import('@/lib/analytics')
+    const { trackToolEvent } = await import('@/lib/services/analytics')
 
     // Mock URL.createObjectURL and revokeObjectURL
     globalThis.URL.createObjectURL = vi.fn(() => 'blob:mock-url')

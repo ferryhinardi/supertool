@@ -19,21 +19,21 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { trackToolEvent } from '@/lib/analytics'
-import { formatCurrency as formatCurrencyUtil } from '@/lib/currency'
+import { trackToolEvent } from '@/lib/services/analytics'
+import { formatCurrency as formatCurrencyUtil } from '@/lib/tools/currency/currency'
 import {
   BillPDFDocument,
   copyToClipboard,
   downloadCSV,
   exportBillToCSV,
   generateBillSummary,
-} from '@/lib/split-bill-export'
+} from '@/lib/tools/split-bill/split-bill-export'
 import {
   getBillById,
   subscribeToBillUpdates,
   updateParticipantPaymentStatus,
-} from '@/lib/split-bill-service'
-import type { BillDetailResponse } from '@/lib/split-bill-types'
+} from '@/lib/tools/split-bill/split-bill-service'
+import type { BillDetailResponse } from '@/lib/tools/split-bill/split-bill-types'
 import { css } from '@/styled-system/css'
 
 export default function SharedBillPage() {

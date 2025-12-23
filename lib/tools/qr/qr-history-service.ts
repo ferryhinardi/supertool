@@ -1,4 +1,4 @@
-import type { QRCodeType } from '@/app/tools/qr-code/page'
+import type { QRCodeType } from '@/app/tools/productivity/qr-code/page'
 
 // Re-declare interfaces to avoid circular dependencies
 interface QRStyleConfig {

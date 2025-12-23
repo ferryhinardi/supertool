@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { useFavorites } from '../useFavorites'
+import { useFavorites } from '../common/useFavorites'
 
 // Mock localStorage
 const localStorageMock = (() => {

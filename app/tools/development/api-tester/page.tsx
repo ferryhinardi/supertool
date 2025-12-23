@@ -25,14 +25,14 @@ import {
 import { nanoid } from 'nanoid'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
+import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 // Register JSON language for syntax highlighting

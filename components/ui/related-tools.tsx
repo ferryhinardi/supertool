@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import type { Tool } from '@/lib/tools'
-import { tools } from '@/lib/tools'
+import type { Tool } from '@/lib/data/tools'
+import { tools } from '@/lib/data/tools'
 import { cx } from '@/lib/utils'
 import { css } from '@/styled-system/css'
 

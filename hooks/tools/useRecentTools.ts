@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import type { RecentTool } from '@/lib/recent-tools'
+import type { RecentTool } from '@/lib/services/recent-tools'
 import {
   addRecentTool,
   clearRecentTools,
   getRecentTools,
   isIndexedDBSupported,
-} from '@/lib/recent-tools'
+} from '@/lib/services/recent-tools'
 
 /**
  * Query key for recent tools

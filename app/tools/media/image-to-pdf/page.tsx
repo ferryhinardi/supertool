@@ -14,14 +14,14 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { DragDropZone } from '@/components/features/DragDropZone'
+import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 interface ImageFile {

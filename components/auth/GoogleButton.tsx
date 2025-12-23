@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { useAuthStore } from '@/lib/auth-store'
-import { supabase } from '@/lib/supabaseClient'
+import { useAuthStore } from '@/lib/auth/auth-store'
+import { supabase } from '@/lib/auth/supabaseClient'
 import { css } from '@/styled-system/css'
 
 export function GoogleButton() {

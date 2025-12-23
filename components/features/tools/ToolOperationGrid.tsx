@@ -1,13 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { trackEvent } from '@/lib/analytics'
 import type {
   ToolGridLayout,
   ToolOperation,
   ToolOperationCategory,
-} from '@/lib/tool-components-types'
-import { TOOL_ANIMATIONS } from '@/lib/tool-components-types'
+} from '@/lib/data/tool-components-types'
+import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 interface ToolOperationGridProps {

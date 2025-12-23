@@ -1,6 +1,6 @@
 'use client'
 
-import { FeedbackDialog } from '@/components/features/FeedbackDialog'
+import { FeedbackDialog } from '@/components/features/shared/FeedbackDialog'
 
 export default function Header() {
   return (

@@ -6,23 +6,23 @@ import {
   getBillById,
   updateParticipantPaymentStatus,
   validateCustomSplit,
-} from '@/lib/split-bill-service'
+} from '@/lib/tools/split-bill/split-bill-service'
 import type {
   CreateBillData,
   PaymentStatus,
   SplitBill,
   SplitBillParticipant,
-} from '@/lib/split-bill-types'
+} from '@/lib/tools/split-bill/split-bill-types'
 
 // Mock Supabase client
-vi.mock('@/lib/supabaseClient', () => ({
+vi.mock('@/lib/auth/supabaseClient', () => ({
   supabase: {
     from: vi.fn(),
   },
 }))
 
 // Import supabase after mock
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/auth/supabaseClient'
 
 describe('Split Bill Service', () => {
   let mockFrom: ReturnType<typeof vi.fn>

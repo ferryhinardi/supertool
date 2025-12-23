@@ -9,7 +9,7 @@ import { FileText, Trash2, X } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { deleteBillTemplate, loadBillTemplates } from '@/lib/split-bill-storage'
+import { deleteBillTemplate, loadBillTemplates } from '@/lib/tools/split-bill/split-bill-storage'
 import { css } from '@/styled-system/css'
 
 interface Template {

@@ -12,7 +12,7 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { ReactQueryProvider } from '@/components/providers/ReactQueryProvider'
 import { SpeculationRules } from '@/components/SpeculationRules'
-import { getAdsConfig } from '@/lib/ads-config'
+import { getAdsConfig } from '@/lib/services/ads-config'
 import { css } from '@/styled-system/css/css.mjs'
 
 const inter = Inter({

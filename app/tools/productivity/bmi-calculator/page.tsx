@@ -13,7 +13,7 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 interface BMIResult {

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 // Dynamically import CodeMirror to reduce initial bundle size (~200KB)

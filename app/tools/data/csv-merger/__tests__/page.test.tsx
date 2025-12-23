@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import * as analytics from '@/lib/analytics'
+import * as analytics from '@/lib/services/analytics'
 import CSVMergerPage from '../page'
 
 // Mock sonner toast
@@ -13,7 +13,7 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 

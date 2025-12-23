@@ -28,9 +28,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { CurrencyConverter } from '@/components/features/CurrencyConverter'
-import { ShortcutsHelp } from '@/components/features/ShortcutsHelp'
-import { TemplatesSelector } from '@/components/features/TemplatesSelector'
+import { CurrencyConverter } from '@/components/features/currency/CurrencyConverter'
+import { ShortcutsHelp } from '@/components/features/shared/ShortcutsHelp'
+import { TemplatesSelector } from '@/components/features/shared/TemplatesSelector'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FAQAccordion } from '@/components/ui/faq-accordion'
@@ -41,41 +41,43 @@ import { SwipeableItem, SwipeHint } from '@/components/ui/swipeable-item'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import {
   CURRENCIES,
   type Currency,
   formatCurrency as formatCurrencyUtil,
   getDefaultCurrency,
-} from '@/lib/currency'
+} from '@/lib/tools/currency/currency'
 import {
   announceToScreenReader,
   formatCurrencyForScreenReader,
   getPaymentStatusMessage,
   getSplitTypeDescription,
-} from '@/lib/split-bill-a11y'
+} from '@/lib/tools/split-bill/split-bill-a11y'
 import {
   copyToClipboard,
   downloadCSV,
   exportAsText,
   generatePaymentRequest,
-} from '@/lib/split-bill-export-legacy'
-import { createBill } from '@/lib/split-bill-service'
-import { useKeyboardShortcuts } from '@/lib/split-bill-shortcuts'
+} from '@/lib/tools/split-bill/split-bill-export-legacy'
+import { createBill } from '@/lib/tools/split-bill/split-bill-service'
+import { useKeyboardShortcuts } from '@/lib/tools/split-bill/split-bill-shortcuts'
 import {
   clearBillDraft,
   hasUnsavedDraft,
   loadBillDraft,
   saveBillDraft,
   saveBillTemplate,
-} from '@/lib/split-bill-storage'
-import type { CreateParticipantData } from '@/lib/split-bill-types'
+} from '@/lib/tools/split-bill/split-bill-storage'
+import type { CreateParticipantData } from '@/lib/tools/split-bill/split-bill-types'
 import { css } from '@/styled-system/css'
 
 // Dynamic import for ReceiptScanner to avoid loading Tesseract.js (~2-3MB) on initial page load
 const ReceiptScanner = dynamic(
   () =>
-    import('@/components/features/ReceiptScanner').then((mod) => ({ default: mod.ReceiptScanner })),
+    import('@/components/features/media/ReceiptScanner').then((mod) => ({
+      default: mod.ReceiptScanner,
+    })),
   { ssr: false }
 )
 

@@ -22,8 +22,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { useToolHistory } from '@/hooks/useToolHistory'
-import { trackToolEvent } from '@/lib/analytics'
+import { useToolHistory } from '@/hooks/tools/useToolHistory'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
   type DecodedJWT,

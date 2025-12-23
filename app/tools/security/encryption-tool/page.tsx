@@ -15,8 +15,8 @@ import {
   Upload,
 } from 'lucide-react'
 import { useCallback, useState } from 'react'
-import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
-import { DragDropZone } from '@/components/features/DragDropZone'
+import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
+import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
@@ -25,7 +25,7 @@ import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dial
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
 import { css } from '@/styled-system/css'
 import {
   calculatePasswordStrength,

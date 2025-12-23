@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AdBanner, isAdsEnabled } from '../AdBanner'
+import { AdBanner, isAdsEnabled } from '../ads/AdBanner'
 
 // Mock the ads-config module
 vi.mock('@/lib/ads-config', () => ({

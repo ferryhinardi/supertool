@@ -3,7 +3,7 @@
  * Provides PDF, CSV, and image export functionality
  */
 
-import type { Currency } from './currency'
+import type { Currency } from '../currency/currency'
 
 interface ExportData {
   title?: string

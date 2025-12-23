@@ -1,5 +1,6 @@
 // Split Bill Service - Supabase API Functions
 
+import { supabase } from '../../auth/supabaseClient'
 import type {
   BillDetailResponse,
   CreateBillData,
@@ -15,7 +16,6 @@ import type {
   SplitBillTransaction,
   TransactionStatus,
 } from './split-bill-types'
-import { supabase } from './supabaseClient'
 
 /**
  * Create a new split bill with participants

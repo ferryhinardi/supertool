@@ -56,7 +56,7 @@ describe('DragDropZone', () => {
     })
 
     it('should call onFilesSelected when file is selected', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} />)
 
       const fileInput = screen.getByLabelText('File upload') as HTMLInputElement
@@ -91,7 +91,7 @@ describe('DragDropZone', () => {
     })
 
     it('should handle multiple file selection', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} multiple />)
 
       const fileInput = screen.getByLabelText('File upload') as HTMLInputElement
@@ -142,8 +142,8 @@ describe('DragDropZone', () => {
       // Skip: DragEvent/DataTransfer not available in JSDOM
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} />)
 
-      const dropzone = screen.getByRole('button')
-      const file = new File(['test'], 'test.txt', { type: 'text/plain' })
+      const _dropzone = screen.getByRole('button')
+      const _file = new File(['test'], 'test.txt', { type: 'text/plain' })
 
       // const dataTransfer = new DataTransfer()
       // dataTransfer.items.add(file)
@@ -163,8 +163,8 @@ describe('DragDropZone', () => {
       // Skip: DragEvent/DataTransfer not available in JSDOM
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} disabled />)
 
-      const dropzone = screen.getByRole('button')
-      const file = new File(['test'], 'test.txt', { type: 'text/plain' })
+      const _dropzone = screen.getByRole('button')
+      const _file = new File(['test'], 'test.txt', { type: 'text/plain' })
 
       // const dataTransfer = new DataTransfer()
       // dataTransfer.items.add(file)

@@ -169,7 +169,7 @@ vi.mock('lucide-react', () => {
 })
 
 // Import original tools first
-import { tools as originalTools } from '@/lib/tools'
+import { tools as originalTools } from '@/lib/data/tools'
 
 // Create mock tools with properly mocked icon components
 const MockIcon = () => React.createElement('svg', { 'data-testid': 'mock-icon' })
@@ -179,8 +179,8 @@ const tools = originalTools.map((tool) => ({
 }))
 
 // Mock the tools module to return our mocked tools
-vi.mock('@/lib/tools', async () => {
-  const actual = await vi.importActual<typeof import('@/lib/tools')>('@/lib/tools')
+vi.mock('@/lib/data/tools', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/data/tools')>('@/lib/data/tools')
   const MockIcon = () => React.createElement('svg', { 'data-testid': 'mock-icon' })
   return {
     ...actual,
@@ -338,7 +338,7 @@ vi.mock('@ark-ui/react/field', () => ({
 }))
 
 // Mock RecentTools component
-vi.mock('@/components/features/RecentTools', () => ({
+vi.mock('@/components/features/tools/RecentTools', () => ({
   RecentTools: () => <div data-testid="recent-tools">Recent Tools</div>,
 }))
 
@@ -473,7 +473,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
   trackPageView: vi.fn(),
   trackToolEvent: vi.fn(),

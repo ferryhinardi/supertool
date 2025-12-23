@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/vitest'
 import SteganographyPage from '../page'
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 

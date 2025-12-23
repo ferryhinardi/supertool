@@ -19,7 +19,7 @@ import {
 import { parseAsBoolean, parseAsInteger, parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
+import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import {
   TOOL_COLORS,
   ToolMobilePicker,
@@ -35,8 +35,8 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
-import { trackToolEvent } from '@/lib/analytics'
+import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import type { PasswordHistory } from './utils'
 import {

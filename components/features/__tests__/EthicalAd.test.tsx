@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { EthicalAd } from '../EthicalAd'
+import { EthicalAd } from '../ads/EthicalAd'
 
 // Mock the ads-config module
 vi.mock('@/lib/ads-config', () => ({

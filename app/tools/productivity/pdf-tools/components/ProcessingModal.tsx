@@ -18,7 +18,6 @@ import {
   Split,
   XCircle,
 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { css } from '@/styled-system/css'
 import type { OperationType } from './OperationGrid'
@@ -124,7 +123,7 @@ function ProgressCircle({ value, text }: { value: number; text: string }) {
           stroke="#ef4444"
           fill="transparent"
           strokeWidth={stroke}
-          strokeDasharray={circumference + ' ' + circumference}
+          strokeDasharray={`${circumference} ${circumference}`}
           style={{ strokeDashoffset, transition: 'stroke-dashoffset 0.3s ease' }}
           strokeLinecap="round"
           r={normalizedRadius}

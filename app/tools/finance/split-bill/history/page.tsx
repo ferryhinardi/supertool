@@ -7,10 +7,13 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackToolEvent } from '@/lib/analytics'
-import { formatCurrency as formatCurrencyUtil, getCurrencySymbol } from '@/lib/currency'
-import { getAllBills } from '@/lib/split-bill-service'
-import type { SplitBillSummary } from '@/lib/split-bill-types'
+import { trackToolEvent } from '@/lib/services/analytics'
+import {
+  formatCurrency as formatCurrencyUtil,
+  getCurrencySymbol,
+} from '@/lib/tools/currency/currency'
+import { getAllBills } from '@/lib/tools/split-bill/split-bill-service'
+import type { SplitBillSummary } from '@/lib/tools/split-bill/split-bill-types'
 import { css } from '@/styled-system/css'
 
 type SortField = 'created_at' | 'total_amount' | 'title'

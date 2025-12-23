@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ClipboardFormatterPage from '../page'
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))
@@ -339,7 +339,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
     })
 
     it('should track case transformation event', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       render(<ClipboardFormatterPage />)
 
@@ -359,7 +359,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
 
   describe('Clipboard Operations', () => {
     it('should paste text from clipboard', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       // Mock clipboard API
       const readTextMock = vi.fn().mockResolvedValue('Pasted text')
@@ -387,7 +387,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
     })
 
     it('should copy formatted text to clipboard', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       // Mock clipboard API
       const writeTextMock = vi.fn().mockResolvedValue(undefined)
@@ -495,7 +495,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
 
   describe('Download Functionality', () => {
     it('should download formatted text as file', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       // Mock URL.createObjectURL and document methods
       const createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url')
@@ -536,7 +536,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
 
   describe('Reset Functionality', () => {
     it('should reset input and output', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       render(<ClipboardFormatterPage />)
 
@@ -672,7 +672,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
     })
 
     it('should add item to history when pasting', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       // Mock clipboard API
       const readTextMock = vi.fn().mockResolvedValue('History item')
@@ -696,7 +696,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
     })
 
     it('should load text from history', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       // Pre-populate history in localStorage
       const historyItem = {
@@ -725,7 +725,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
     })
 
     it('should clear history', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       // Pre-populate history
       const historyItem = {
@@ -875,7 +875,7 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
     })
 
     it('should format text when manual format button is clicked', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
 
       render(<ClipboardFormatterPage />)
 

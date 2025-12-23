@@ -2,9 +2,9 @@
 
 import type { Session, User } from '@supabase/supabase-js'
 import { useEffect } from 'react'
-import { useAuthStore } from '@/lib/auth-store'
-import type { UserProfile } from '@/lib/auth-types'
-import { supabase } from '@/lib/supabaseClient'
+import { useAuthStore } from '@/lib/auth/auth-store'
+import type { UserProfile } from '@/lib/auth/auth-types'
+import { supabase } from '@/lib/auth/supabaseClient'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { setUser, setProfile, setLoading } = useAuthStore()

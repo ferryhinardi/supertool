@@ -21,15 +21,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { useToolHistory } from '@/hooks/useToolHistory'
-import { trackToolEvent } from '@/lib/analytics'
+import { useToolHistory } from '@/hooks/tools/useToolHistory'
+import { trackToolEvent } from '@/lib/services/analytics'
 import {
   downloadFile,
   exportLapsAsCSV,
   exportLapsAsJSON,
   type LapTime,
   playBeepSound,
-} from '@/lib/stopwatch-utils'
+} from '@/lib/tools/stopwatch/stopwatch-utils'
 import { css } from '@/styled-system/css'
 
 interface Timer {

@@ -7,7 +7,7 @@ import {
   getRatingStats,
   type RatingStats,
   submitRating,
-} from '@/lib/rating-service'
+} from '@/lib/services/rating-service'
 import { css } from '@/styled-system/css'
 import { flex } from '@/styled-system/patterns'
 

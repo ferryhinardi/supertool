@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 interface Task {

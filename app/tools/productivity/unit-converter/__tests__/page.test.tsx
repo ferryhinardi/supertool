@@ -6,7 +6,7 @@ import '@testing-library/jest-dom/vitest'
 import UnitConverterPage from '../page'
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))

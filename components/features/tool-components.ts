@@ -14,18 +14,18 @@ export type {
   ToolOperation,
   ToolOperationCategory,
   ToolProcessingState,
-} from '@/lib/tool-components-types'
+} from '@/lib/data/tool-components-types'
 // Constants
 export {
   TOOL_ANIMATIONS,
   TOOL_COLORS,
   TOOL_LAYOUT,
   TOUCH_TARGET,
-} from '@/lib/tool-components-types'
-export { ToolDragList } from './ToolDragList'
-export { ToolEmptyState } from './ToolEmptyState'
-export { ToolKeyboardShortcuts } from './ToolKeyboardShortcuts'
-export { ToolMobilePicker } from './ToolMobilePicker'
+} from '@/lib/data/tool-components-types'
+export { ToolDragList } from './tools/ToolDragList'
+export { ToolEmptyState } from './tools/ToolEmptyState'
+export { ToolKeyboardShortcuts } from './tools/ToolKeyboardShortcuts'
+export { ToolMobilePicker } from './tools/ToolMobilePicker'
 // Components
-export { ToolOperationGrid } from './ToolOperationGrid'
-export { ToolProcessingModal } from './ToolProcessingModal'
+export { ToolOperationGrid } from './tools/ToolOperationGrid'
+export { ToolProcessingModal } from './tools/ToolProcessingModal'

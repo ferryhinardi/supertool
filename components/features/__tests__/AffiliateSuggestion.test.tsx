@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AffiliateSuggestion } from '../AffiliateSuggestion'
+import { AffiliateSuggestion } from '../ads/AffiliateSuggestion'
 
 // Mock the ads-config module
 vi.mock('@/lib/ads-config', () => ({

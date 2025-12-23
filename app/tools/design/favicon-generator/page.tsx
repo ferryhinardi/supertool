@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
   copyToClipboard,

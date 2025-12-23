@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { ConversionResult, ExchangeRates } from '@/lib/currency-converter'
+import type { ConversionResult, ExchangeRates } from '@/lib/tools/currency/currency-converter'
 import {
   convertAmount,
   convertBatch,
@@ -7,7 +7,7 @@ import {
   getCacheAge,
   getCachedRates,
   isCacheFresh,
-} from '@/lib/currency-converter'
+} from '@/lib/tools/currency/currency-converter'
 
 export interface UseCurrencyConverterReturn {
   // State

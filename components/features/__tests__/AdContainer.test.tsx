@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AdContainer } from '../AdContainer'
+import { AdContainer } from '../ads/AdContainer'
 
 // Mock all ad components
 vi.mock('../AdBanner', () => ({

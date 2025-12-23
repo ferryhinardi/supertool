@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/vitest'
 import KeywordDensityPage from '../page'
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 

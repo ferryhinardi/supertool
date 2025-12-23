@@ -6,11 +6,11 @@ import {
   useClearRecentTools,
   useRecentTools,
   useTrackToolView,
-} from '@/hooks/useRecentTools'
-import * as recentToolsLib from '@/lib/recent-tools'
+} from '@/hooks/tools/useRecentTools'
+import * as recentToolsLib from '@/lib/services/recent-tools'
 
 // Mock the recent-tools library
-vi.mock('@/lib/recent-tools', () => ({
+vi.mock('@/lib/services/recent-tools', () => ({
   getRecentTools: vi.fn(),
   addRecentTool: vi.fn(),
   clearRecentTools: vi.fn(),

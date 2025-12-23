@@ -23,7 +23,7 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackEvent, trackToolEvent } from '@/lib/analytics'
+import { trackEvent, trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 export const dynamic = 'force-dynamic'

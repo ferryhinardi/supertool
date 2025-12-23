@@ -8,7 +8,7 @@ import {
   getRecentTools,
   isIndexedDBSupported,
   type RecentTool,
-} from '@/lib/recent-tools'
+} from '@/lib/services/recent-tools'
 
 // Mock idb
 vi.mock('idb', () => ({

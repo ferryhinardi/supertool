@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient'
+import { supabase } from '../auth/supabaseClient'
 
 export interface RatingStats {
   toolId: string

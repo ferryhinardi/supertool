@@ -18,13 +18,13 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { DragDropZone } from '@/components/features/DragDropZone'
+import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackEvent } from '@/lib/analytics'
-import { compressVideo, isCompressionSupported } from '@/lib/video-compressor'
+import { compressVideo, isCompressionSupported } from '@/lib/media/video-compressor'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 interface ProcessingFile {

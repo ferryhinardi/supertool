@@ -17,8 +17,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackToolEvent } from '@/lib/analytics'
-import { CURRENCIES } from '@/lib/currency'
+import { trackToolEvent } from '@/lib/services/analytics'
+import { CURRENCIES } from '@/lib/tools/currency/currency'
 import { css } from '@/styled-system/css'
 
 interface LineItem {

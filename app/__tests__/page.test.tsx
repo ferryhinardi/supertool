@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { tools } from '@/lib/tools'
+import { tools } from '@/lib/data/tools'
 
 // Test the tools configuration and rendering logic
 describe('Home Page Tools', () => {

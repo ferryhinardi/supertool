@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import SVGOptimizerPage from '../page'
 
 // Mock the analytics module
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
   trackToolEvent: vi.fn(),
 }))

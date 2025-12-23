@@ -3,14 +3,14 @@
 import { Check, Copy, ExternalLink, FileUp, RotateCcw, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
-import { DragDropZone } from '@/components/features/DragDropZone'
+import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
+import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/auth/supabaseClient'
 import { css } from '@/styled-system/css'
 
 export default function UploadTool() {

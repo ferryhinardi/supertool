@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import * as analytics from '@/lib/analytics'
+import * as analytics from '@/lib/services/analytics'
 import DailyNotePage from '../page'
 
 // Mock next/navigation
@@ -40,7 +40,7 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
 }))
 

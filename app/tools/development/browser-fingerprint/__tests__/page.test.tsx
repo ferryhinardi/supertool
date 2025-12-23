@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
@@ -194,7 +194,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should track section toggle event', async () => {
-    const { trackToolEvent } = await import('@/lib/analytics')
+    const { trackToolEvent } = await import('@/lib/services/analytics')
 
     render(<BrowserFingerprintPage />)
 
@@ -216,7 +216,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
 
   it('should copy fingerprint hash to clipboard', async () => {
     const { toast } = await import('sonner')
-    const { trackToolEvent } = await import('@/lib/analytics')
+    const { trackToolEvent } = await import('@/lib/services/analytics')
 
     // Mock clipboard API
     const writeTextMock = vi.fn().mockResolvedValue(undefined)
@@ -252,7 +252,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
 
   it('should copy all fingerprint data', async () => {
     const { toast } = await import('sonner')
-    const { trackToolEvent } = await import('@/lib/analytics')
+    const { trackToolEvent } = await import('@/lib/services/analytics')
 
     // Mock clipboard API
     const writeTextMock = vi.fn().mockResolvedValue(undefined)
@@ -412,7 +412,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should track page open event on mount', async () => {
-    const { trackToolEvent } = await import('@/lib/analytics')
+    const { trackToolEvent } = await import('@/lib/services/analytics')
 
     render(<BrowserFingerprintPage />)
 

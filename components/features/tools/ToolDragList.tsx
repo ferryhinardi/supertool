@@ -18,7 +18,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
-import type { ToolDragItem } from '@/lib/tool-components-types'
+import type { ToolDragItem } from '@/lib/data/tool-components-types'
 import { css } from '@/styled-system/css'
 
 interface ToolDragListProps<T extends ToolDragItem> {

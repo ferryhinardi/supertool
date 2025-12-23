@@ -18,8 +18,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
-import { trackToolEvent } from '@/lib/analytics'
+import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 // Color conversion utilities

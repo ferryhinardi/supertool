@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { getAdsConfig } from '@/lib/ads-config'
+import { getAdsConfig } from '@/lib/services/ads-config'
 import { css } from '@/styled-system/css'
 
 interface EthicalAdProps {

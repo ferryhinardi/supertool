@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 type SignatureStyle = 'handwritten' | 'cursive' | 'modern' | 'elegant' | 'bold' | 'minimal'

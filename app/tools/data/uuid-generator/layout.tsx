@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { generateToolMetadata } from '@/lib/metadata'
-import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/structured-data'
+import { generateToolMetadata } from '@/lib/data/metadata'
+import { generateBreadcrumbSchema, generateFAQSchema } from '@/lib/data/structured-data'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'UUID Generator & Validator - Generate v1, v4, v5 UUIDs',

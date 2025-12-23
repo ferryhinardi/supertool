@@ -3,8 +3,8 @@
 import { motion } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { ToolEmptyStateProps } from '@/lib/tool-components-types'
-import { TOOL_ANIMATIONS } from '@/lib/tool-components-types'
+import type { ToolEmptyStateProps } from '@/lib/data/tool-components-types'
+import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
 import { css } from '@/styled-system/css'
 
 /**

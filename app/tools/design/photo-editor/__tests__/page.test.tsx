@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
@@ -280,7 +280,7 @@ describe('PhotoEditorPage', () => {
 
   describe('Filter Application', () => {
     it('should track analytics when filter is applied', async () => {
-      const { trackToolEvent } = await import('@/lib/analytics')
+      const { trackToolEvent } = await import('@/lib/services/analytics')
       render(<PhotoEditorPage />)
 
       // Upload an image first

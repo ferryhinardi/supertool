@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
-import { generateToolBreadcrumbs, generateToolMetadata } from '@/lib/metadata'
+import { generateToolBreadcrumbs, generateToolMetadata } from '@/lib/data/metadata'
 import {
   generateBreadcrumbSchema,
   generateFAQSchema,
   generateHowToSchema,
-} from '@/lib/structured-data'
+} from '@/lib/data/structured-data'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'Code Diff Viewer & Text Comparison',

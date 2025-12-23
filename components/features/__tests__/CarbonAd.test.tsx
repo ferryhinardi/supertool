@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { CarbonAd } from '../CarbonAd'
+import { CarbonAd } from '../ads/CarbonAd'
 
 // Mock the ads-config module
 vi.mock('@/lib/ads-config', () => ({

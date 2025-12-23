@@ -15,8 +15,8 @@ import {
   Zap,
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
-import { AffiliateSuggestion } from '@/components/features/AffiliateSuggestion'
-import { DragDropZone } from '@/components/features/DragDropZone'
+import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
+import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -26,7 +26,7 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 interface ImageFile {

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { generateToolMetadata } from '@/lib/metadata'
+import { generateToolMetadata } from '@/lib/data/metadata'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'YAML to JSON Converter - Free Online Tool',

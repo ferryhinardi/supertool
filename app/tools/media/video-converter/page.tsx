@@ -15,12 +15,12 @@ import {
   Zap,
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { DragDropZone } from '@/components/features/DragDropZone'
+import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 interface VideoFile {

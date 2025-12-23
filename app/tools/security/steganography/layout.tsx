@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import { generateToolMetadata } from '@/lib/metadata'
+import { generateToolMetadata } from '@/lib/data/metadata'
 import {
   generateBreadcrumbSchema,
   generateFAQSchema,
   generateSoftwareApplicationSchema,
-} from '@/lib/structured-data'
+} from '@/lib/data/structured-data'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
 const toolPath = '/tools/steganography'

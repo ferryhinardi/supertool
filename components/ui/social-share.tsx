@@ -2,7 +2,7 @@
 
 import { Share2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import { Button } from './button'
 import { Card, CardContent } from './card'

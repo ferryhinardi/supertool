@@ -3,13 +3,13 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import React from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { RecentTools } from '@/components/features/RecentTools'
-import * as recentToolsHooks from '@/hooks/useRecentTools'
-import * as analytics from '@/lib/analytics'
+import { RecentTools } from '@/components/features/tools/RecentTools'
+import * as recentToolsHooks from '@/hooks/tools/useRecentTools'
+import * as analytics from '@/lib/services/analytics'
 
 // Mock the hooks and analytics
 vi.mock('@/hooks/useRecentTools')
-vi.mock('@/lib/analytics')
+vi.mock('@/lib/services/analytics')
 
 // Mock lucide-react icons - they are ForwardRef components
 vi.mock('lucide-react', () => ({

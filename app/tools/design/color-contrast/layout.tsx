@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { generateToolMetadata } from '@/lib/metadata'
+import { generateToolMetadata } from '@/lib/data/metadata'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'Color Contrast Checker - WCAG 2.1 Accessibility Compliance',

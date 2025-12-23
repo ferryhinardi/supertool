@@ -57,8 +57,8 @@ import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
-import { trackToolEvent } from '@/lib/analytics'
+import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
+import { trackToolEvent } from '@/lib/services/analytics'
 import {
   type ExportFormat,
   exportToJPEG,
@@ -67,8 +67,8 @@ import {
   exportToSVG,
   exportToWebP,
   type PrintTemplate,
-} from '@/lib/qr-export-service'
-import type { QRHistoryItem } from '@/lib/qr-history-service'
+} from '@/lib/tools/qr/qr-export-service'
+import type { QRHistoryItem } from '@/lib/tools/qr/qr-history-service'
 import {
   clearHistory,
   deleteHistoryItem,
@@ -78,7 +78,7 @@ import {
   importHistory,
   saveToHistory,
   toggleFavorite,
-} from '@/lib/qr-history-service'
+} from '@/lib/tools/qr/qr-history-service'
 import {
   parseQRData,
   type ScanResult,
@@ -87,7 +87,7 @@ import {
   stopWebcamScanner,
   type ValidationResult,
   validateQRCode,
-} from '@/lib/qr-scanner-service'
+} from '@/lib/tools/qr/qr-scanner-service'
 import {
   generateAppStoreQR,
   generateEmailQR,
@@ -97,7 +97,7 @@ import {
   generateSMSQR,
   generateSocialQR,
   generateWhatsAppQR,
-} from '@/lib/qr-types'
+} from '@/lib/tools/qr/qr-types'
 import { css } from '@/styled-system/css'
 
 export type QRCodeType =

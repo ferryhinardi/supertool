@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import FaviconGeneratorPage from '../page'
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
 }))
 
@@ -138,7 +138,7 @@ describe('Favicon Generator Page - Component Tests', () => {
 
   describe('Upload Mode - File Handling', () => {
     it('should accept valid image file upload', async () => {
-      const { trackEvent } = await import('@/lib/analytics')
+      const { trackEvent } = await import('@/lib/services/analytics')
       render(<FaviconGeneratorPage />)
 
       const file = new File(['image'], 'test.png', { type: 'image/png' })
@@ -361,7 +361,7 @@ describe('Favicon Generator Page - Component Tests', () => {
 
   describe('Generate Functionality', () => {
     it('should track generate event with analytics', async () => {
-      const { trackEvent } = await import('@/lib/analytics')
+      const { trackEvent } = await import('@/lib/services/analytics')
       render(<FaviconGeneratorPage />)
 
       // Switch to emoji mode
@@ -393,7 +393,7 @@ describe('Favicon Generator Page - Component Tests', () => {
     })
 
     it('should track ICO download event', async () => {
-      const { trackEvent } = await import('@/lib/analytics')
+      const { trackEvent } = await import('@/lib/services/analytics')
       render(<FaviconGeneratorPage />)
 
       // Switch to emoji mode and generate
@@ -438,7 +438,7 @@ describe('Favicon Generator Page - Component Tests', () => {
     })
 
     it('should track HTML copy event', async () => {
-      const { trackEvent } = await import('@/lib/analytics')
+      const { trackEvent } = await import('@/lib/services/analytics')
 
       // Mock clipboard API
       const writeTextMock = vi.fn().mockResolvedValue(undefined)

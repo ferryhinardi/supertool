@@ -3,7 +3,7 @@
 import { Dialog } from '@ark-ui/react/dialog'
 import { Portal } from '@ark-ui/react/portal'
 import { XIcon } from 'lucide-react'
-import { useAuthStore } from '@/lib/auth-store'
+import { useAuthStore } from '@/lib/auth/auth-store'
 import { css } from '@/styled-system/css'
 import { hstack, vstack } from '@/styled-system/patterns'
 import { ForgotPasswordForm } from './ForgotPasswordForm'

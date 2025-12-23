@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/auth/supabaseClient'
 import { css } from '@/styled-system/css'
 import { vstack } from '@/styled-system/patterns'
 

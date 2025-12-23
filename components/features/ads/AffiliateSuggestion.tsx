@@ -1,6 +1,6 @@
 'use client'
 
-import { getAdsConfig } from '@/lib/ads-config'
+import { getAdsConfig } from '@/lib/services/ads-config'
 import { css } from '@/styled-system/css'
 
 /**
