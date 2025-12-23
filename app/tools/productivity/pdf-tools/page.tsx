@@ -146,6 +146,20 @@ export default function PDFToolsPage() {
   // Watermark options
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL')
   const [watermarkOpacity, setWatermarkOpacity] = useState(0.3)
+  const [watermarkRotation, setWatermarkRotation] = useState(-45)
+  const [watermarkPosition, setWatermarkPosition] = useState<
+    | 'center'
+    | 'diagonal'
+    | 'top'
+    | 'bottom'
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right'
+  >('diagonal')
+  const [watermarkColor, setWatermarkColor] = useState('#b3b3b3')
+  const [watermarkFontSize, setWatermarkFontSize] = useState(50)
+  const [watermarkPattern, setWatermarkPattern] = useState(false)
 
   // Extract pages options
   const [extractStartPage, setExtractStartPage] = useState(1)
@@ -756,18 +770,90 @@ export default function PDFToolsPage() {
       const pdfDoc = await PDFDocument.load(arrayBuffer)
       const pages = pdfDoc.getPages()
 
+      // Helper function to convert hex color to RGB
+      const hexToRgb = (hex: string) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+        return result
+          ? {
+              r: parseInt(result[1], 16) / 255,
+              g: parseInt(result[2], 16) / 255,
+              b: parseInt(result[3], 16) / 255,
+            }
+          : { r: 0.7, g: 0.7, b: 0.7 }
+      }
+
+      // Helper function to calculate position
+      const getPosition = (
+        width: number,
+        height: number,
+        textLength: number,
+        position: string,
+        fontSize: number
+      ) => {
+        const estimatedWidth = textLength * fontSize * 0.5
+        switch (position) {
+          case 'center':
+            return { x: width / 2 - estimatedWidth / 2, y: height / 2 }
+          case 'diagonal':
+            return { x: width / 2 - textLength * 10, y: height / 2 }
+          case 'top':
+            return { x: width / 2 - estimatedWidth / 2, y: height - 50 }
+          case 'bottom':
+            return { x: width / 2 - estimatedWidth / 2, y: 50 }
+          case 'top-left':
+            return { x: 50, y: height - 50 }
+          case 'top-right':
+            return { x: width - estimatedWidth - 50, y: height - 50 }
+          case 'bottom-left':
+            return { x: 50, y: 50 }
+          case 'bottom-right':
+            return { x: width - estimatedWidth - 50, y: 50 }
+          default:
+            return { x: width / 2 - textLength * 10, y: height / 2 }
+        }
+      }
+
+      const rgbColor = hexToRgb(watermarkColor)
+
       // biome-ignore lint/suspicious/noExplicitAny: pdf-lib types compatibility
       pages.forEach((page: any, index: number) => {
         const { width, height } = page.getSize()
 
-        page.drawText(watermarkText, {
-          x: width / 2 - watermarkText.length * 10,
-          y: height / 2,
-          size: 50,
-          color: rgb(0.7, 0.7, 0.7),
+        const drawOptions = {
+          size: watermarkFontSize,
+          color: rgb(rgbColor.r, rgbColor.g, rgbColor.b),
           opacity: watermarkOpacity,
-          rotate: degrees(-45),
-        })
+          rotate: degrees(watermarkRotation),
+        }
+
+        if (watermarkPattern) {
+          // Draw watermark multiple times in a grid pattern
+          const spacingX = width / 3
+          const spacingY = height / 3
+          for (let xOffset = 0; xOffset < width; xOffset += spacingX) {
+            for (let yOffset = 0; yOffset < height; yOffset += spacingY) {
+              page.drawText(watermarkText, {
+                x: xOffset,
+                y: yOffset,
+                ...drawOptions,
+              })
+            }
+          }
+        } else {
+          // Single watermark at specified position
+          const pos = getPosition(
+            width,
+            height,
+            watermarkText.length,
+            watermarkPosition,
+            watermarkFontSize
+          )
+          page.drawText(watermarkText, {
+            x: pos.x,
+            y: pos.y,
+            ...drawOptions,
+          })
+        }
 
         updatePdfStatus(pdf.id, {
           status: 'processing',
@@ -1935,6 +2021,191 @@ export default function PDFToolsPage() {
                           accentColor: 'red.500',
                         })}
                       />
+                    </div>
+                    <div className={css({ spaceY: '3' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        })}
+                      >
+                        <label
+                          htmlFor="watermark-font-size"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                          })}
+                        >
+                          Font Size
+                        </label>
+                        <span
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'bold',
+                            color: 'red.400',
+                          })}
+                        >
+                          {watermarkFontSize}px
+                        </span>
+                      </div>
+                      <input
+                        id="watermark-font-size"
+                        type="range"
+                        min="10"
+                        max="100"
+                        step="5"
+                        value={watermarkFontSize}
+                        onChange={(e) => setWatermarkFontSize(Number(e.target.value))}
+                        className={css({
+                          w: 'full',
+                          accentColor: 'red.500',
+                        })}
+                      />
+                    </div>
+                    <div className={css({ spaceY: '3' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        })}
+                      >
+                        <label
+                          htmlFor="watermark-rotation"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                          })}
+                        >
+                          Rotation
+                        </label>
+                        <span
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'bold',
+                            color: 'red.400',
+                          })}
+                        >
+                          {watermarkRotation}°
+                        </span>
+                      </div>
+                      <input
+                        id="watermark-rotation"
+                        type="range"
+                        min="-180"
+                        max="180"
+                        step="15"
+                        value={watermarkRotation}
+                        onChange={(e) => setWatermarkRotation(Number(e.target.value))}
+                        className={css({
+                          w: 'full',
+                          accentColor: 'red.500',
+                        })}
+                      />
+                    </div>
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Position
+                      </div>
+                      <div
+                        className={css({
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(3, 1fr)',
+                          gap: '2',
+                        })}
+                      >
+                        {(
+                          [
+                            'top-left',
+                            'top',
+                            'top-right',
+                            'center',
+                            'diagonal',
+                            'bottom',
+                            'bottom-left',
+                            'bottom-right',
+                          ] as const
+                        ).map((pos) => (
+                          <Button
+                            key={pos}
+                            variant={watermarkPosition === pos ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setWatermarkPosition(pos)}
+                            className={css({
+                              fontSize: 'xs',
+                              textTransform: 'capitalize',
+                            })}
+                          >
+                            {pos.replace('-', ' ')}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        htmlFor="watermark-color"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Color
+                      </label>
+                      <input
+                        id="watermark-color"
+                        type="color"
+                        value={watermarkColor}
+                        onChange={(e) => setWatermarkColor(e.target.value)}
+                        className={css({
+                          w: 'full',
+                          h: '10',
+                          cursor: 'pointer',
+                          borderRadius: 'md',
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                        })}
+                      />
+                    </div>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                      })}
+                    >
+                      <input
+                        type="checkbox"
+                        id="watermark-pattern"
+                        checked={watermarkPattern}
+                        onChange={(e) => setWatermarkPattern(e.target.checked)}
+                        className={css({
+                          w: '4',
+                          h: '4',
+                          cursor: 'pointer',
+                          accentColor: 'red.500',
+                        })}
+                      />
+                      <label
+                        htmlFor="watermark-pattern"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                          cursor: 'pointer',
+                        })}
+                      >
+                        Tile Pattern (Repeating Grid)
+                      </label>
                     </div>
                   </>
                 )}

@@ -352,24 +352,114 @@ export class PDFBatchProcessor {
     })
   }
 
-  private async addWatermark(pdf: PDFFile, text: string, opacity: number): Promise<void> {
+  private async addWatermark(
+    pdf: PDFFile,
+    text: string,
+    opacity: number,
+    options?: {
+      rotation?: number
+      position?:
+        | 'center'
+        | 'diagonal'
+        | 'top'
+        | 'bottom'
+        | 'top-left'
+        | 'top-right'
+        | 'bottom-left'
+        | 'bottom-right'
+      color?: string
+      fontSize?: number
+      pattern?: boolean
+    }
+  ): Promise<void> {
     const { PDFDocument, rgb, degrees } = await import('pdf-lib')
     const arrayBuffer = await pdf.file.arrayBuffer()
     const pdfDoc = await PDFDocument.load(arrayBuffer)
     const pages = pdfDoc.getPages()
 
+    // Helper function to convert hex color to RGB
+    const hexToRgb = (hex: string) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+      return result
+        ? {
+            r: parseInt(result[1], 16) / 255,
+            g: parseInt(result[2], 16) / 255,
+            b: parseInt(result[3], 16) / 255,
+          }
+        : { r: 0.7, g: 0.7, b: 0.7 }
+    }
+
+    // Helper function to calculate position
+    const getPosition = (
+      width: number,
+      height: number,
+      textLength: number,
+      position: string,
+      fontSize: number
+    ) => {
+      const estimatedWidth = textLength * fontSize * 0.5
+      switch (position) {
+        case 'center':
+          return { x: width / 2 - estimatedWidth / 2, y: height / 2 }
+        case 'diagonal':
+          return { x: width / 2 - textLength * 10, y: height / 2 }
+        case 'top':
+          return { x: width / 2 - estimatedWidth / 2, y: height - 50 }
+        case 'bottom':
+          return { x: width / 2 - estimatedWidth / 2, y: 50 }
+        case 'top-left':
+          return { x: 50, y: height - 50 }
+        case 'top-right':
+          return { x: width - estimatedWidth - 50, y: height - 50 }
+        case 'bottom-left':
+          return { x: 50, y: 50 }
+        case 'bottom-right':
+          return { x: width - estimatedWidth - 50, y: 50 }
+        default:
+          return { x: width / 2 - textLength * 10, y: height / 2 }
+      }
+    }
+
+    const rotation = options?.rotation ?? -45
+    const position = options?.position ?? 'diagonal'
+    const fontSize = options?.fontSize ?? 50
+    const colorHex = options?.color ?? '#b3b3b3'
+    const pattern = options?.pattern ?? false
+    const rgbColor = hexToRgb(colorHex)
+
     // biome-ignore lint/suspicious/noExplicitAny: pdf-lib page types
     pages.forEach((page: any, index: number) => {
       const { width, height } = page.getSize()
 
-      page.drawText(text, {
-        x: width / 2 - text.length * 10,
-        y: height / 2,
-        size: 50,
-        color: rgb(0.7, 0.7, 0.7),
+      const drawOptions = {
+        size: fontSize,
+        color: rgb(rgbColor.r, rgbColor.g, rgbColor.b),
         opacity: opacity,
-        rotate: degrees(-45),
-      })
+        rotate: degrees(rotation),
+      }
+
+      if (pattern) {
+        // Draw watermark multiple times in a grid pattern
+        const spacingX = width / 3
+        const spacingY = height / 3
+        for (let xOffset = 0; xOffset < width; xOffset += spacingX) {
+          for (let yOffset = 0; yOffset < height; yOffset += spacingY) {
+            page.drawText(text, {
+              x: xOffset,
+              y: yOffset,
+              ...drawOptions,
+            })
+          }
+        }
+      } else {
+        // Single watermark at specified position
+        const pos = getPosition(width, height, text.length, position, fontSize)
+        page.drawText(text, {
+          x: pos.x,
+          y: pos.y,
+          ...drawOptions,
+        })
+      }
 
       this.updateCallback(pdf.id, {
         progress: ((index + 1) / pages.length) * 100,
