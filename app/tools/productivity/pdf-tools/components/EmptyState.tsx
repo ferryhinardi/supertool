@@ -110,6 +110,16 @@ const operationTips: Record<
       'Perfect for fixing page order in scanned documents',
     ],
   },
+  addPageNumbers: {
+    title: 'Add Page Numbers',
+    description: 'Automatically number your PDF pages',
+    tips: [
+      'Choose position: top/bottom, left/center/right',
+      'Select format: numbers, Roman numerals, or "page/total"',
+      'Customize font size and starting number',
+      'Numbers added to all pages automatically',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

@@ -12,6 +12,7 @@ import {
   FileDown,
   FileOutput,
   GripVertical,
+  Hash,
   Image as ImageIcon,
   Loader2,
   LockOpen,
@@ -58,6 +59,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   unlock: LockOpen,
   duplicatePages: CopyPlus,
   reorder: GripVertical,
+  addPageNumbers: Hash,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -76,6 +78,7 @@ const operationLabels: Record<OperationType, string> = {
   unlock: 'Unlocking PDF',
   duplicatePages: 'Duplicating Pages',
   reorder: 'Reordering Pages',
+  addPageNumbers: 'Adding Page Numbers',
 }
 
 // Simple circular progress component without external dependency

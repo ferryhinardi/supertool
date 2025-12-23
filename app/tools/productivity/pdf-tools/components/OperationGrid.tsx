@@ -11,6 +11,7 @@ import {
   FileDown,
   FileOutput,
   GripVertical,
+  Hash,
   Image as ImageIcon,
   LockOpen,
   Merge,
@@ -38,6 +39,7 @@ export type OperationType =
   | 'unlock'
   | 'duplicatePages'
   | 'reorder'
+  | 'addPageNumbers'
 
 interface Operation {
   value: OperationType
@@ -107,6 +109,13 @@ const operationCategories: OperationCategory[] = [
         icon: GripVertical,
         color: '#8b5cf6',
         description: 'Drag pages to reorder',
+      },
+      {
+        value: 'addPageNumbers',
+        label: 'Add Page Numbers',
+        icon: Hash,
+        color: '#0ea5e9',
+        description: 'Number pages automatically',
       },
       {
         value: 'watermark',

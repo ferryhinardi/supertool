@@ -33,6 +33,7 @@ export type OperationType =
   | 'unlock'
   | 'reorder'
   | 'duplicatePages'
+  | 'addPageNumbers'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -73,6 +74,16 @@ interface ProcessOptions {
   duplicateCount?: number // How many times to duplicate each selected page (default: 1)
   unlockPassword?: string // Password to unlock a protected PDF
   pageOrder?: number[] // Array of page numbers (1-indexed) in desired order for reorder operation
+  pageNumberPosition?:
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right'
+  pageNumberFormat?: 'numbers' | 'roman-lower' | 'roman-upper' | 'page-of-total'
+  pageNumberFontSize?: number
+  pageNumberStartFrom?: number // Starting page number (default: 1)
 }
 
 /**
@@ -187,6 +198,14 @@ export class PDFBatchProcessor {
             options.pagesToDuplicate || [],
             options.duplicateCount || 1
           )
+          break
+        case 'addPageNumbers':
+          await this.addPageNumbers(pdf, {
+            position: options.pageNumberPosition || 'bottom-center',
+            format: options.pageNumberFormat || 'numbers',
+            fontSize: options.pageNumberFontSize || 12,
+            startFrom: options.pageNumberStartFrom || 1,
+          })
           break
       }
     } catch (error) {
@@ -872,6 +891,156 @@ export class PDFBatchProcessor {
 
     const resultBytes = await newPdf.save()
     const blob = new Blob([new Uint8Array(resultBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Add page numbers to PDF pages
+   * @param pdf - PDF file to process
+   * @param options - Page numbering options
+   */
+  private async addPageNumbers(
+    pdf: PDFFile,
+    options: {
+      position:
+        | 'top-left'
+        | 'top-center'
+        | 'top-right'
+        | 'bottom-left'
+        | 'bottom-center'
+        | 'bottom-right'
+      format: 'numbers' | 'roman-lower' | 'roman-upper' | 'page-of-total'
+      fontSize: number
+      startFrom: number
+    }
+  ): Promise<void> {
+    const { PDFDocument, rgb, StandardFonts } = await import('pdf-lib')
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+    const pages = pdfDoc.getPages()
+    const totalPages = pages.length
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    // Load font
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+
+    this.updateCallback(pdf.id, { progress: 20 })
+
+    // Helper function to convert number to Roman numerals
+    const toRoman = (num: number, uppercase: boolean): string => {
+      const romanNumerals = [
+        { value: 1000, symbol: 'M' },
+        { value: 900, symbol: 'CM' },
+        { value: 500, symbol: 'D' },
+        { value: 400, symbol: 'CD' },
+        { value: 100, symbol: 'C' },
+        { value: 90, symbol: 'XC' },
+        { value: 50, symbol: 'L' },
+        { value: 40, symbol: 'XL' },
+        { value: 10, symbol: 'X' },
+        { value: 9, symbol: 'IX' },
+        { value: 5, symbol: 'V' },
+        { value: 4, symbol: 'IV' },
+        { value: 1, symbol: 'I' },
+      ]
+
+      let result = ''
+      let remaining = num
+
+      for (const { value, symbol } of romanNumerals) {
+        while (remaining >= value) {
+          result += symbol
+          remaining -= value
+        }
+      }
+
+      return uppercase ? result : result.toLowerCase()
+    }
+
+    // Format page number based on format option
+    const formatPageNumber = (pageIndex: number): string => {
+      const pageNum = pageIndex + options.startFrom
+
+      switch (options.format) {
+        case 'roman-lower':
+          return toRoman(pageNum, false)
+        case 'roman-upper':
+          return toRoman(pageNum, true)
+        case 'page-of-total':
+          return `${pageNum} / ${totalPages + options.startFrom - 1}`
+        case 'numbers':
+        default:
+          return pageNum.toString()
+      }
+    }
+
+    // Add page numbers to each page
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i]
+      const { width, height } = page.getSize()
+      const pageNumberText = formatPageNumber(i)
+      const textWidth = font.widthOfTextAtSize(pageNumberText, options.fontSize)
+      const textHeight = options.fontSize
+
+      // Calculate position
+      let x = 0
+      let y = 0
+      const margin = 30
+
+      switch (options.position) {
+        case 'top-left':
+          x = margin
+          y = height - margin
+          break
+        case 'top-center':
+          x = (width - textWidth) / 2
+          y = height - margin
+          break
+        case 'top-right':
+          x = width - textWidth - margin
+          y = height - margin
+          break
+        case 'bottom-left':
+          x = margin
+          y = margin
+          break
+        case 'bottom-center':
+          x = (width - textWidth) / 2
+          y = margin
+          break
+        case 'bottom-right':
+          x = width - textWidth - margin
+          y = margin
+          break
+      }
+
+      // Draw page number
+      page.drawText(pageNumberText, {
+        x,
+        y,
+        size: options.fontSize,
+        font,
+        color: rgb(0, 0, 0),
+      })
+
+      // Update progress
+      this.updateCallback(pdf.id, {
+        progress: 20 + ((i + 1) / totalPages) * 70,
+      })
+    }
+
+    this.updateCallback(pdf.id, { progress: 95 })
+
+    // Save the PDF with page numbers
+    const pdfBytes = await pdfDoc.save()
+    const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
 
     this.updateCallback(pdf.id, {
       status: 'completed',

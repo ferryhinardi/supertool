@@ -150,6 +150,7 @@ type OperationType =
   | 'unlock'
   | 'duplicatePages'
   | 'reorder'
+  | 'addPageNumbers'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -239,6 +240,16 @@ export default function PDFToolsPage() {
 
   // Reorder pages options
   const [pageOrder, setPageOrder] = useState<number[]>([])
+
+  // Page numbering options
+  const [pageNumberPosition, setPageNumberPosition] = useState<
+    'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+  >('bottom-center')
+  const [pageNumberFormat, setPageNumberFormat] = useState<
+    'numbers' | 'roman-lower' | 'roman-upper' | 'page-of-total'
+  >('numbers')
+  const [pageNumberFontSize, setPageNumberFontSize] = useState(12)
+  const [pageNumberStartFrom, setPageNumberStartFrom] = useState(1)
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1414,6 +1425,10 @@ export default function PDFToolsPage() {
             pagesToDuplicate: Array.from(selectedPages),
             duplicateCount,
             pageOrder,
+            pageNumberPosition,
+            pageNumberFormat,
+            pageNumberFontSize,
+            pageNumberStartFrom,
           })
 
           toast.success(
@@ -1559,6 +1574,9 @@ export default function PDFToolsPage() {
           break
         case 'reorder':
           suffix = '_reordered'
+          break
+        case 'addPageNumbers':
+          suffix = '_numbered'
           break
       }
 
@@ -3105,6 +3123,232 @@ export default function PDFToolsPage() {
                         </div>
                       </SortableContext>
                     </DndContext>
+                  </div>
+                )}
+
+                {/* Add Page Numbers UI */}
+                {operation === 'addPageNumbers' && pdfs.length > 0 && (
+                  <div className={css({ spaceY: '4' })}>
+                    {/* Position Selection */}
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Position
+                      </div>
+                      <div
+                        className={css({
+                          display: 'grid',
+                          gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' },
+                          gap: '2',
+                          w: 'full',
+                        })}
+                      >
+                        {[
+                          { value: 'top-left' as const, label: 'Top Left' },
+                          { value: 'top-center' as const, label: 'Top Center' },
+                          { value: 'top-right' as const, label: 'Top Right' },
+                          { value: 'bottom-left' as const, label: 'Bottom Left' },
+                          { value: 'bottom-center' as const, label: 'Bottom Center' },
+                          { value: 'bottom-right' as const, label: 'Bottom Right' },
+                        ].map((pos) => (
+                          <Button
+                            key={pos.value}
+                            variant={pageNumberPosition === pos.value ? 'default' : 'outline'}
+                            onClick={() => setPageNumberPosition(pos.value)}
+                            className={css({
+                              flex: 1,
+                              bg:
+                                pageNumberPosition === pos.value
+                                  ? 'sky.500'
+                                  : 'rgba(255, 255, 255, 0.05)',
+                              borderColor:
+                                pageNumberPosition === pos.value
+                                  ? 'sky.500'
+                                  : 'rgba(255, 255, 255, 0.1)',
+                              color: pageNumberPosition === pos.value ? 'white' : 'gray.300',
+                              _hover: {
+                                bg:
+                                  pageNumberPosition === pos.value
+                                    ? 'sky.600'
+                                    : 'rgba(255, 255, 255, 0.1)',
+                                borderColor:
+                                  pageNumberPosition === pos.value ? 'sky.600' : 'sky.500',
+                              },
+                            })}
+                          >
+                            {pos.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Format Selection */}
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Format
+                      </div>
+                      <div
+                        className={css({
+                          display: 'grid',
+                          gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                          gap: '2',
+                          w: 'full',
+                        })}
+                      >
+                        {[
+                          { value: 'numbers' as const, label: '1, 2, 3...' },
+                          { value: 'roman-lower' as const, label: 'i, ii, iii...' },
+                          { value: 'roman-upper' as const, label: 'I, II, III...' },
+                          { value: 'page-of-total' as const, label: '1 / 10' },
+                        ].map((fmt) => (
+                          <Button
+                            key={fmt.value}
+                            variant={pageNumberFormat === fmt.value ? 'default' : 'outline'}
+                            onClick={() => setPageNumberFormat(fmt.value)}
+                            className={css({
+                              flex: 1,
+                              bg:
+                                pageNumberFormat === fmt.value
+                                  ? 'sky.500'
+                                  : 'rgba(255, 255, 255, 0.05)',
+                              borderColor:
+                                pageNumberFormat === fmt.value
+                                  ? 'sky.500'
+                                  : 'rgba(255, 255, 255, 0.1)',
+                              color: pageNumberFormat === fmt.value ? 'white' : 'gray.300',
+                              _hover: {
+                                bg:
+                                  pageNumberFormat === fmt.value
+                                    ? 'sky.600'
+                                    : 'rgba(255, 255, 255, 0.1)',
+                                borderColor: pageNumberFormat === fmt.value ? 'sky.600' : 'sky.500',
+                              },
+                            })}
+                          >
+                            {fmt.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Font Size */}
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        })}
+                      >
+                        <div
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                          })}
+                        >
+                          Font Size
+                        </div>
+                        <div
+                          className={css({
+                            fontSize: 'sm',
+                            color: 'sky.400',
+                            fontWeight: 'medium',
+                          })}
+                        >
+                          {pageNumberFontSize}pt
+                        </div>
+                      </div>
+                      <input
+                        type="range"
+                        min="8"
+                        max="24"
+                        value={pageNumberFontSize}
+                        onChange={(e) => setPageNumberFontSize(Number(e.target.value))}
+                        className={css({
+                          w: 'full',
+                          accentColor: 'sky.500',
+                        })}
+                      />
+                    </div>
+
+                    {/* Starting Number */}
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.300',
+                        })}
+                      >
+                        Start From
+                      </div>
+                      <input
+                        type="number"
+                        min="1"
+                        max="999"
+                        value={pageNumberStartFrom}
+                        onChange={(e) => setPageNumberStartFrom(Number(e.target.value))}
+                        className={css({
+                          w: 'full',
+                          px: '3',
+                          py: '2',
+                          rounded: 'md',
+                          bg: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid',
+                          borderColor: 'rgba(255, 255, 255, 0.1)',
+                          color: 'white',
+                          fontSize: 'sm',
+                          _focus: {
+                            outline: 'none',
+                            borderColor: 'sky.500',
+                          },
+                        })}
+                      />
+                    </div>
+
+                    {/* Info message */}
+                    <div
+                      className={css({
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'sky.500/10',
+                        border: '1px solid',
+                        borderColor: 'sky.500/30',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          gap: '2',
+                        })}
+                      >
+                        <Sparkles
+                          className={css({
+                            h: '4',
+                            w: '4',
+                            color: 'sky.400',
+                            flexShrink: 0,
+                            mt: '0.5',
+                          })}
+                        />
+                        <div className={css({ fontSize: 'sm', color: 'sky.200' })}>
+                          Page numbers will be added to all pages automatically
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
