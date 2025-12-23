@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { DragDropZone } from '../DragDropZone'
+import { DragDropZone } from '../media/DragDropZone'
 
 describe('DragDropZone', () => {
   const mockOnFilesSelected = vi.fn()

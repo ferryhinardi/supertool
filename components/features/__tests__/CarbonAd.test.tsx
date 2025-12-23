@@ -3,13 +3,31 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CarbonAd } from '../ads/CarbonAd'
 
 // Mock the ads-config module
-vi.mock('@/lib/ads-config', () => ({
+vi.mock('@/lib/services/ads-config', () => ({
   getAdsConfig: vi.fn(() => ({
     enabled: process.env.NEXT_PUBLIC_ENABLE_ADS === 'true',
+    adsense: {
+      enabled: false,
+      clientId: '',
+    },
     carbon: {
       enabled: process.env.NEXT_PUBLIC_ENABLE_CARBON === 'true',
       serveId: process.env.NEXT_PUBLIC_CARBON_SERVE_ID || '',
       placement: process.env.NEXT_PUBLIC_CARBON_PLACEMENT || 'supertoolsite',
+    },
+    ethical: {
+      enabled: false,
+      publisherId: '',
+    },
+    affiliates: {
+      enabled: false,
+      partners: {
+        passwordManagers: { onePassword: '', bitwarden: '', dashlane: '' },
+        imageCdn: { cloudinary: '', tinypng: '' },
+        developerTools: { postman: '', insomnia: '' },
+        vpn: { nordvpn: '', expressvpn: '' },
+        hosting: { vercel: '', cloudflare: '', supabase: '' },
+      },
     },
   })),
 }))

@@ -8,7 +8,7 @@ import * as recentToolsHooks from '@/hooks/tools/useRecentTools'
 import * as analytics from '@/lib/services/analytics'
 
 // Mock the hooks and analytics
-vi.mock('@/hooks/useRecentTools')
+vi.mock('@/hooks/tools/useRecentTools')
 vi.mock('@/lib/services/analytics')
 
 // Mock lucide-react icons - they are ForwardRef components

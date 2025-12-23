@@ -3,12 +3,31 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EthicalAd } from '../ads/EthicalAd'
 
 // Mock the ads-config module
-vi.mock('@/lib/ads-config', () => ({
+vi.mock('@/lib/services/ads-config', () => ({
   getAdsConfig: vi.fn(() => ({
     enabled: process.env.NEXT_PUBLIC_ENABLE_ADS === 'true',
+    adsense: {
+      enabled: false,
+      clientId: '',
+    },
+    carbon: {
+      enabled: false,
+      serveId: '',
+      placement: '',
+    },
     ethical: {
       enabled: process.env.NEXT_PUBLIC_ENABLE_ETHICAL === 'true',
       publisherId: process.env.NEXT_PUBLIC_ETHICAL_ADS_PUBLISHER_ID || '',
+    },
+    affiliates: {
+      enabled: false,
+      partners: {
+        passwordManagers: { onePassword: '', bitwarden: '', dashlane: '' },
+        imageCdn: { cloudinary: '', tinypng: '' },
+        developerTools: { postman: '', insomnia: '' },
+        vpn: { nordvpn: '', expressvpn: '' },
+        hosting: { vercel: '', cloudflare: '', supabase: '' },
+      },
     },
   })),
 }))
