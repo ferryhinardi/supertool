@@ -34,6 +34,19 @@ interface ProcessOptions {
   splitPageNumber?: number
   watermarkText?: string
   watermarkOpacity?: number
+  watermarkRotation?: number
+  watermarkPosition?:
+    | 'center'
+    | 'diagonal'
+    | 'top'
+    | 'bottom'
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right'
+  watermarkColor?: string
+  watermarkFontSize?: number
+  watermarkPattern?: boolean
   extractStartPage?: number
   extractEndPage?: number
   rotationAngle?: number
@@ -108,7 +121,14 @@ export class PDFBatchProcessor {
           await this.addWatermark(
             pdf,
             options.watermarkText || 'CONFIDENTIAL',
-            options.watermarkOpacity || 0.3
+            options.watermarkOpacity || 0.3,
+            {
+              rotation: options.watermarkRotation,
+              position: options.watermarkPosition,
+              color: options.watermarkColor,
+              fontSize: options.watermarkFontSize,
+              pattern: options.watermarkPattern,
+            }
           )
           break
         case 'extract':
