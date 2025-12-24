@@ -153,6 +153,7 @@ type OperationType =
   | 'addPageNumbers'
   | 'extractText'
   | 'editMetadata'
+  | 'ocrExtract'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -261,6 +262,9 @@ export default function PDFToolsPage() {
   const [metadataKeywords, setMetadataKeywords] = useState('')
   const [metadataCreator, setMetadataCreator] = useState('')
   const [metadataProducer, setMetadataProducer] = useState('')
+
+  // OCR options
+  const [ocrLanguage, setOcrLanguage] = useState('eng')
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1449,6 +1453,7 @@ export default function PDFToolsPage() {
               .filter(Boolean),
             metadataCreator,
             metadataProducer,
+            ocrLanguage,
           })
 
           toast.success(
@@ -1604,6 +1609,10 @@ export default function PDFToolsPage() {
           break
         case 'editMetadata':
           suffix = '_metadata_updated'
+          break
+        case 'ocrExtract':
+          suffix = '_ocr'
+          extension = '.txt'
           break
       }
 
@@ -3758,6 +3767,104 @@ export default function PDFToolsPage() {
                           })}
                         />
                       </div>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'ocrExtract' && pdfs.length > 0 && (
+                  <div className={css({ spaceY: '4' })}>
+                    {/* Info message */}
+                    <div
+                      className={css({
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'purple.500/10',
+                        border: '1px solid',
+                        borderColor: 'purple.500/30',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          gap: '2',
+                        })}
+                      >
+                        <Sparkles
+                          className={css({
+                            h: '5',
+                            w: '5',
+                            color: 'purple.400',
+                            flexShrink: 0,
+                            mt: '0.5',
+                          })}
+                        />
+                        <div>
+                          <p className={css({ fontSize: 'sm', color: 'purple.300' })}>
+                            OCR (Optical Character Recognition) will extract text from scanned PDFs
+                            and images. Processing may take longer depending on file size and number
+                            of pages.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Language selection */}
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        htmlFor="ocr-language"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'purple.400',
+                          display: 'block',
+                        })}
+                      >
+                        OCR Language
+                      </label>
+                      <select
+                        id="ocr-language"
+                        value={ocrLanguage}
+                        onChange={(e) => setOcrLanguage(e.target.value)}
+                        className={css({
+                          w: 'full',
+                          px: '3',
+                          py: '2',
+                          rounded: 'md',
+                          bg: 'gray.800',
+                          border: '1px solid',
+                          borderColor: 'purple.500/30',
+                          color: 'gray.200',
+                          fontSize: 'sm',
+                          _focus: {
+                            outline: '2px solid',
+                            outlineColor: 'purple.500',
+                            outlineOffset: '0',
+                          },
+                        })}
+                      >
+                        <option value="eng">English</option>
+                        <option value="spa">Spanish</option>
+                        <option value="fra">French</option>
+                        <option value="deu">German</option>
+                        <option value="ita">Italian</option>
+                        <option value="por">Portuguese</option>
+                        <option value="rus">Russian</option>
+                        <option value="ara">Arabic</option>
+                        <option value="chi_sim">Chinese (Simplified)</option>
+                        <option value="chi_tra">Chinese (Traditional)</option>
+                        <option value="jpn">Japanese</option>
+                        <option value="kor">Korean</option>
+                        <option value="hin">Hindi</option>
+                        <option value="nld">Dutch</option>
+                        <option value="pol">Polish</option>
+                        <option value="tur">Turkish</option>
+                        <option value="vie">Vietnamese</option>
+                        <option value="tha">Thai</option>
+                      </select>
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        Select the language of the text in your scanned document for better accuracy
+                      </p>
                     </div>
                   </div>
                 )}

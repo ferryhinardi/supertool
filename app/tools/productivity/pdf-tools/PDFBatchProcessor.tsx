@@ -36,6 +36,7 @@ export type OperationType =
   | 'addPageNumbers'
   | 'extractText'
   | 'editMetadata'
+  | 'ocrExtract'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -93,6 +94,8 @@ interface ProcessOptions {
   metadataKeywords?: string[]
   metadataCreator?: string
   metadataProducer?: string
+  // OCR options
+  ocrLanguage?: string // Language code for OCR (default: 'eng')
 }
 
 /**
@@ -228,6 +231,9 @@ export class PDFBatchProcessor {
             creator: options.metadataCreator,
             producer: options.metadataProducer,
           })
+          break
+        case 'ocrExtract':
+          await this.ocrExtractText(pdf, options.ocrLanguage || 'eng')
           break
       }
     } catch (error) {
@@ -1187,6 +1193,98 @@ export class PDFBatchProcessor {
     const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
 
     this.updateCallback(pdf.id, { progress: 95 })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Extract text from PDF using OCR (Optical Character Recognition)
+   * Useful for scanned PDFs or images that don't contain selectable text
+   */
+  private async ocrExtractText(pdf: PDFFile, language: string): Promise<void> {
+    const Tesseract = await import('tesseract.js')
+    const pdfjs = await import('pdfjs-dist')
+
+    // Set up the pdfjs worker
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
+    }
+
+    this.updateCallback(pdf.id, { progress: 5 })
+
+    // Load the PDF
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+    const pdfDoc = await loadingTask.promise
+    const totalPages = pdfDoc.numPages
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    let extractedText = ''
+
+    // Process each page
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      const page = await pdfDoc.getPage(pageNum)
+
+      // Render page to canvas at higher resolution for better OCR accuracy
+      const viewport = page.getViewport({ scale: 2.0 })
+      const canvas = document.createElement('canvas')
+      const context = canvas.getContext('2d')
+
+      if (!context) {
+        throw new Error('Could not get canvas context')
+      }
+
+      canvas.width = viewport.width
+      canvas.height = viewport.height
+
+      // Render PDF page to canvas
+      await page.render({
+        canvasContext: context,
+        viewport: viewport,
+        canvas: canvas,
+      }).promise
+
+      // Update progress for rendering phase
+      const renderProgress = 10 + (pageNum / totalPages) * 30
+      this.updateCallback(pdf.id, { progress: renderProgress })
+
+      // Convert canvas to image data URL
+      const imageDataUrl = canvas.toDataURL('image/png')
+
+      // Perform OCR on the rendered page
+      const result = await Tesseract.recognize(imageDataUrl, language, {
+        logger: (m) => {
+          // Log OCR progress for this specific page
+          if (m.status === 'recognizing text') {
+            const ocrProgress =
+              40 + ((pageNum - 1) / totalPages) * 50 + (m.progress / totalPages) * 50
+            this.updateCallback(pdf.id, { progress: Math.min(ocrProgress, 90) })
+          }
+        },
+      })
+
+      // Add page header
+      extractedText += `\n========== Page ${pageNum} (OCR) ==========\n\n`
+      extractedText += result.data.text + '\n'
+
+      // Update progress
+      const pageProgress = 40 + (pageNum / totalPages) * 50
+      this.updateCallback(pdf.id, { progress: pageProgress })
+    }
+
+    this.updateCallback(pdf.id, { progress: 95 })
+
+    // Create a text file blob
+    const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' })
 
     this.updateCallback(pdf.id, {
       status: 'completed',

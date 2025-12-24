@@ -140,6 +140,16 @@ const operationTips: Record<
       'Useful for organizing and cataloging PDFs',
     ],
   },
+  ocrExtract: {
+    title: 'OCR Text Extraction',
+    description: 'Extract text from scanned PDFs using Optical Character Recognition',
+    tips: [
+      'Works with scanned documents and images in PDFs',
+      'Supports multiple languages (English default)',
+      'Higher resolution improves accuracy',
+      'Exports plain text file with page headers',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

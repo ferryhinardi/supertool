@@ -12,6 +12,7 @@ import {
   FileDown,
   FileEdit,
   FileOutput,
+  FileScan,
   FileText,
   GripVertical,
   Hash,
@@ -64,6 +65,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   addPageNumbers: Hash,
   extractText: FileText,
   editMetadata: FileEdit,
+  ocrExtract: FileScan,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -85,6 +87,7 @@ const operationLabels: Record<OperationType, string> = {
   addPageNumbers: 'Adding Page Numbers',
   extractText: 'Extracting Text',
   editMetadata: 'Editing Metadata',
+  ocrExtract: 'Extracting Text with OCR',
 }
 
 // Simple circular progress component without external dependency

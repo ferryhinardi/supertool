@@ -11,6 +11,7 @@ import {
   FileDown,
   FileEdit,
   FileOutput,
+  FileScan,
   FileText,
   GripVertical,
   Hash,
@@ -44,7 +45,7 @@ export type OperationType =
   | 'addPageNumbers'
   | 'extractText'
   | 'editMetadata'
-  | 'editMetadata'
+  | 'ocrExtract'
 
 interface Operation {
   value: OperationType
@@ -182,6 +183,13 @@ const operationCategories: OperationCategory[] = [
         icon: FileText,
         color: '#10b981',
         description: 'Extract all text content',
+      },
+      {
+        value: 'ocrExtract',
+        label: 'OCR Text Extract',
+        icon: FileScan,
+        color: '#8b5cf6',
+        description: 'Extract text from scanned PDFs',
       },
     ],
   },
