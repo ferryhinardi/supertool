@@ -17,6 +17,7 @@ import {
   Hash,
   Image as ImageIcon,
   Layers,
+  Lock,
   LockOpen,
   Merge,
   RotateCw,
@@ -40,6 +41,7 @@ export type OperationType =
   | 'edit'
   | 'grayscale'
   | 'deletePages'
+  | 'protect'
   | 'unlock'
   | 'duplicatePages'
   | 'reorder'
@@ -198,6 +200,13 @@ const operationCategories: OperationCategory[] = [
   {
     label: 'Security',
     operations: [
+      {
+        value: 'protect',
+        label: 'Protect PDF',
+        icon: Lock,
+        color: '#10b981',
+        description: 'Add password protection',
+      },
       {
         value: 'unlock',
         label: 'Unlock PDF',

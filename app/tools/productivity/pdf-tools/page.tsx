@@ -32,6 +32,7 @@ import {
   GripVertical,
   Image as ImageIcon,
   Info,
+  Lock,
   Merge,
   Redo2,
   RotateCw,
@@ -148,6 +149,7 @@ type OperationType =
   | 'edit'
   | 'grayscale'
   | 'deletePages'
+  | 'protect'
   | 'unlock'
   | 'duplicatePages'
   | 'reorder'
@@ -267,6 +269,13 @@ export default function PDFToolsPage() {
 
   // OCR options
   const [ocrLanguage, setOcrLanguage] = useState('eng')
+
+  // Protection options
+  const [password, setPassword] = useState('')
+  const [ownerPassword, setOwnerPassword] = useState('')
+  const [allowPrinting, setAllowPrinting] = useState(true)
+  const [allowModifying, setAllowModifying] = useState(false)
+  const [allowCopying, setAllowCopying] = useState(true)
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1456,6 +1465,13 @@ export default function PDFToolsPage() {
             metadataCreator,
             metadataProducer,
             ocrLanguage,
+            password,
+            ownerPassword,
+            userPermissions: {
+              printing: allowPrinting,
+              modifying: allowModifying,
+              copying: allowCopying,
+            },
           })
 
           toast.success(
@@ -1615,6 +1631,9 @@ export default function PDFToolsPage() {
         case 'ocrExtract':
           suffix = '_ocr'
           extension = '.txt'
+          break
+        case 'protect':
+          suffix = '_protected'
           break
         case 'flatten':
           suffix = '_flattened'
@@ -3907,6 +3926,197 @@ export default function PDFToolsPage() {
                             content, making the PDF non-editable and more portable.
                           </p>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'protect' && pdfs.length > 0 && (
+                  <div className={css({ spaceY: '4' })}>
+                    {/* Info message */}
+                    <div
+                      className={css({
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'green.500/10',
+                        border: '1px solid',
+                        borderColor: 'green.500/30',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          gap: '2',
+                        })}
+                      >
+                        <Lock
+                          className={css({
+                            h: '5',
+                            w: '5',
+                            color: 'green.400',
+                            flexShrink: 0,
+                            mt: '0.5',
+                          })}
+                        />
+                        <div>
+                          <p className={css({ fontSize: 'sm', color: 'green.300' })}>
+                            Add password protection to secure your PDF. You can set a user password
+                            (required to open) and optionally an owner password (for permissions
+                            control).
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Password inputs */}
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        htmlFor="user-password"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'green.400',
+                          display: 'block',
+                        })}
+                      >
+                        User Password (Required)
+                      </label>
+                      <input
+                        id="user-password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter password to open PDF"
+                        className={css({
+                          w: 'full',
+                          px: '3',
+                          py: '2',
+                          rounded: 'md',
+                          bg: 'gray.800',
+                          border: '1px solid',
+                          borderColor: 'green.500/30',
+                          color: 'gray.200',
+                          fontSize: 'sm',
+                          _focus: {
+                            outline: '2px solid',
+                            outlineColor: 'green.500',
+                            outlineOffset: '0',
+                          },
+                        })}
+                      />
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        Minimum 4 characters required
+                      </p>
+                    </div>
+
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        htmlFor="owner-password"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'green.400',
+                          display: 'block',
+                        })}
+                      >
+                        Owner Password (Optional)
+                      </label>
+                      <input
+                        id="owner-password"
+                        type="password"
+                        value={ownerPassword}
+                        onChange={(e) => setOwnerPassword(e.target.value)}
+                        placeholder="Enter owner password for permissions"
+                        className={css({
+                          w: 'full',
+                          px: '3',
+                          py: '2',
+                          rounded: 'md',
+                          bg: 'gray.800',
+                          border: '1px solid',
+                          borderColor: 'green.500/30',
+                          color: 'gray.200',
+                          fontSize: 'sm',
+                          _focus: {
+                            outline: '2px solid',
+                            outlineColor: 'green.500',
+                            outlineOffset: '0',
+                          },
+                        })}
+                      />
+                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        For advanced permission control
+                      </p>
+                    </div>
+
+                    {/* Permissions */}
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'green.400',
+                          display: 'block',
+                        })}
+                      >
+                        Permissions
+                      </div>
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '2',
+                            cursor: 'pointer',
+                          })}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={allowPrinting}
+                            onChange={(e) => setAllowPrinting(e.target.checked)}
+                            className={css({ w: '4', h: '4', rounded: 'sm', cursor: 'pointer' })}
+                          />
+                          <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                            Allow Printing
+                          </span>
+                        </label>
+                        <label
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '2',
+                            cursor: 'pointer',
+                          })}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={allowModifying}
+                            onChange={(e) => setAllowModifying(e.target.checked)}
+                            className={css({ w: '4', h: '4', rounded: 'sm', cursor: 'pointer' })}
+                          />
+                          <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                            Allow Modifying
+                          </span>
+                        </label>
+                        <label
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '2',
+                            cursor: 'pointer',
+                          })}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={allowCopying}
+                            onChange={(e) => setAllowCopying(e.target.checked)}
+                            className={css({ w: '4', h: '4', rounded: 'sm', cursor: 'pointer' })}
+                          />
+                          <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                            Allow Copying
+                          </span>
+                        </label>
                       </div>
                     </div>
                   </div>

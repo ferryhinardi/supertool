@@ -150,6 +150,16 @@ const operationTips: Record<
       'Exports plain text file with page headers',
     ],
   },
+  protect: {
+    title: 'Protect PDF',
+    description: 'Add password protection and set permissions',
+    tips: [
+      'Requires password to open the PDF',
+      'Set different user and owner passwords',
+      'Control printing, copying, and editing permissions',
+      'Keeps sensitive documents secure',
+    ],
+  },
   flatten: {
     title: 'Flatten PDF',
     description: 'Convert interactive elements to static content',
