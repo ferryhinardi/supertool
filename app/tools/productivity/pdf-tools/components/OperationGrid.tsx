@@ -9,6 +9,7 @@ import {
   Droplet,
   Edit3,
   FileDown,
+  FileEdit,
   FileOutput,
   FileText,
   GripVertical,
@@ -42,6 +43,8 @@ export type OperationType =
   | 'reorder'
   | 'addPageNumbers'
   | 'extractText'
+  | 'editMetadata'
+  | 'editMetadata'
 
 interface Operation {
   value: OperationType
@@ -203,6 +206,13 @@ const operationCategories: OperationCategory[] = [
         icon: Edit3,
         color: '#ef4444',
         description: 'Add annotations',
+      },
+      {
+        value: 'editMetadata',
+        label: 'Edit Metadata',
+        icon: FileEdit,
+        color: '#06b6d4',
+        description: 'Edit PDF properties',
       },
     ],
   },

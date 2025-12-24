@@ -130,6 +130,16 @@ const operationTips: Record<
       'Perfect for content analysis or copying text',
     ],
   },
+  editMetadata: {
+    title: 'Edit PDF Metadata',
+    description: 'View and edit document properties and information',
+    tips: [
+      'Edit title, author, subject, and keywords',
+      'Set creator and producer information',
+      'Modification date updated automatically',
+      'Useful for organizing and cataloging PDFs',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

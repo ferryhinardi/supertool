@@ -152,6 +152,7 @@ type OperationType =
   | 'reorder'
   | 'addPageNumbers'
   | 'extractText'
+  | 'editMetadata'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -252,6 +253,14 @@ export default function PDFToolsPage() {
   >('numbers')
   const [pageNumberFontSize, setPageNumberFontSize] = useState(12)
   const [pageNumberStartFrom, setPageNumberStartFrom] = useState(1)
+
+  // Metadata editor options
+  const [metadataTitle, setMetadataTitle] = useState('')
+  const [metadataAuthor, setMetadataAuthor] = useState('')
+  const [metadataSubject, setMetadataSubject] = useState('')
+  const [metadataKeywords, setMetadataKeywords] = useState('')
+  const [metadataCreator, setMetadataCreator] = useState('')
+  const [metadataProducer, setMetadataProducer] = useState('')
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1431,6 +1440,15 @@ export default function PDFToolsPage() {
             pageNumberFormat,
             pageNumberFontSize,
             pageNumberStartFrom,
+            metadataTitle,
+            metadataAuthor,
+            metadataSubject,
+            metadataKeywords: metadataKeywords
+              .split(',')
+              .map((k) => k.trim())
+              .filter(Boolean),
+            metadataCreator,
+            metadataProducer,
           })
 
           toast.success(
@@ -1583,6 +1601,9 @@ export default function PDFToolsPage() {
         case 'extractText':
           suffix = ''
           extension = '.txt'
+          break
+        case 'editMetadata':
+          suffix = '_metadata_updated'
           break
       }
 
@@ -3464,6 +3485,278 @@ export default function PDFToolsPage() {
                         <div className={css({ fontSize: 'sm', color: 'sky.200' })}>
                           Page numbers will be added to all pages automatically
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Edit Metadata UI */}
+                {operation === 'editMetadata' && pdfs.length > 0 && (
+                  <div className={css({ spaceY: '4' })}>
+                    {/* Info message */}
+                    <div
+                      className={css({
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'cyan.500/10',
+                        border: '1px solid',
+                        borderColor: 'cyan.500/30',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          gap: '2',
+                        })}
+                      >
+                        <Sparkles
+                          className={css({
+                            h: '4',
+                            w: '4',
+                            color: 'cyan.400',
+                            flexShrink: 0,
+                            mt: '0.5',
+                          })}
+                        />
+                        <div className={css({ fontSize: 'sm', color: 'cyan.200' })}>
+                          Edit PDF document properties like title, author, and keywords.
+                          Modification date will be updated automatically.
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Form fields */}
+                    <div className={css({ spaceY: '3' })}>
+                      {/* Title */}
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="metadata-title"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                            display: 'block',
+                          })}
+                        >
+                          Title
+                        </label>
+                        <input
+                          id="metadata-title"
+                          type="text"
+                          value={metadataTitle}
+                          onChange={(e) => setMetadataTitle(e.target.value)}
+                          placeholder="Document title"
+                          className={css({
+                            w: 'full',
+                            px: '3',
+                            py: '2',
+                            rounded: 'md',
+                            bg: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            color: 'white',
+                            fontSize: 'sm',
+                            _placeholder: { color: 'gray.500' },
+                            _focus: {
+                              outline: 'none',
+                              borderColor: 'cyan.500',
+                            },
+                          })}
+                        />
+                      </div>
+
+                      {/* Author */}
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="metadata-author"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                            display: 'block',
+                          })}
+                        >
+                          Author
+                        </label>
+                        <input
+                          id="metadata-author"
+                          type="text"
+                          value={metadataAuthor}
+                          onChange={(e) => setMetadataAuthor(e.target.value)}
+                          placeholder="Author name"
+                          className={css({
+                            w: 'full',
+                            px: '3',
+                            py: '2',
+                            rounded: 'md',
+                            bg: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            color: 'white',
+                            fontSize: 'sm',
+                            _placeholder: { color: 'gray.500' },
+                            _focus: {
+                              outline: 'none',
+                              borderColor: 'cyan.500',
+                            },
+                          })}
+                        />
+                      </div>
+
+                      {/* Subject */}
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="metadata-subject"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                            display: 'block',
+                          })}
+                        >
+                          Subject
+                        </label>
+                        <input
+                          id="metadata-subject"
+                          type="text"
+                          value={metadataSubject}
+                          onChange={(e) => setMetadataSubject(e.target.value)}
+                          placeholder="Document subject"
+                          className={css({
+                            w: 'full',
+                            px: '3',
+                            py: '2',
+                            rounded: 'md',
+                            bg: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            color: 'white',
+                            fontSize: 'sm',
+                            _placeholder: { color: 'gray.500' },
+                            _focus: {
+                              outline: 'none',
+                              borderColor: 'cyan.500',
+                            },
+                          })}
+                        />
+                      </div>
+
+                      {/* Keywords */}
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="metadata-keywords"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                            display: 'block',
+                          })}
+                        >
+                          Keywords
+                        </label>
+                        <input
+                          id="metadata-keywords"
+                          type="text"
+                          value={metadataKeywords}
+                          onChange={(e) => setMetadataKeywords(e.target.value)}
+                          placeholder="keyword1, keyword2, keyword3"
+                          className={css({
+                            w: 'full',
+                            px: '3',
+                            py: '2',
+                            rounded: 'md',
+                            bg: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            color: 'white',
+                            fontSize: 'sm',
+                            _placeholder: { color: 'gray.500' },
+                            _focus: {
+                              outline: 'none',
+                              borderColor: 'cyan.500',
+                            },
+                          })}
+                        />
+                        <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                          Separate keywords with commas
+                        </p>
+                      </div>
+
+                      {/* Creator */}
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="metadata-creator"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                            display: 'block',
+                          })}
+                        >
+                          Creator
+                        </label>
+                        <input
+                          id="metadata-creator"
+                          type="text"
+                          value={metadataCreator}
+                          onChange={(e) => setMetadataCreator(e.target.value)}
+                          placeholder="Creating application"
+                          className={css({
+                            w: 'full',
+                            px: '3',
+                            py: '2',
+                            rounded: 'md',
+                            bg: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            color: 'white',
+                            fontSize: 'sm',
+                            _placeholder: { color: 'gray.500' },
+                            _focus: {
+                              outline: 'none',
+                              borderColor: 'cyan.500',
+                            },
+                          })}
+                        />
+                      </div>
+
+                      {/* Producer */}
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="metadata-producer"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                            display: 'block',
+                          })}
+                        >
+                          Producer
+                        </label>
+                        <input
+                          id="metadata-producer"
+                          type="text"
+                          value={metadataProducer}
+                          onChange={(e) => setMetadataProducer(e.target.value)}
+                          placeholder="PDF producer"
+                          className={css({
+                            w: 'full',
+                            px: '3',
+                            py: '2',
+                            rounded: 'md',
+                            bg: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            color: 'white',
+                            fontSize: 'sm',
+                            _placeholder: { color: 'gray.500' },
+                            _focus: {
+                              outline: 'none',
+                              borderColor: 'cyan.500',
+                            },
+                          })}
+                        />
                       </div>
                     </div>
                   </div>

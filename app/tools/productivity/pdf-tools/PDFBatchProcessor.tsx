@@ -35,6 +35,7 @@ export type OperationType =
   | 'duplicatePages'
   | 'addPageNumbers'
   | 'extractText'
+  | 'editMetadata'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -85,6 +86,13 @@ interface ProcessOptions {
   pageNumberFormat?: 'numbers' | 'roman-lower' | 'roman-upper' | 'page-of-total'
   pageNumberFontSize?: number
   pageNumberStartFrom?: number // Starting page number (default: 1)
+  // Metadata options
+  metadataTitle?: string
+  metadataAuthor?: string
+  metadataSubject?: string
+  metadataKeywords?: string[]
+  metadataCreator?: string
+  metadataProducer?: string
 }
 
 /**
@@ -210,6 +218,16 @@ export class PDFBatchProcessor {
           break
         case 'extractText':
           await this.extractText(pdf)
+          break
+        case 'editMetadata':
+          await this.editMetadata(pdf, {
+            title: options.metadataTitle,
+            author: options.metadataAuthor,
+            subject: options.metadataSubject,
+            keywords: options.metadataKeywords,
+            creator: options.metadataCreator,
+            producer: options.metadataProducer,
+          })
           break
       }
     } catch (error) {
@@ -1106,6 +1124,69 @@ export class PDFBatchProcessor {
 
     // Create a text file blob
     const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  /**
+   * Edit PDF metadata (title, author, subject, keywords, etc.)
+   */
+  private async editMetadata(
+    pdf: PDFFile,
+    metadata: {
+      title?: string
+      author?: string
+      subject?: string
+      keywords?: string[]
+      creator?: string
+      producer?: string
+    }
+  ): Promise<void> {
+    const { PDFDocument } = await import('pdf-lib')
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    // Load the PDF
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+
+    this.updateCallback(pdf.id, { progress: 30 })
+
+    // Set metadata fields if provided
+    if (metadata.title !== undefined) {
+      pdfDoc.setTitle(metadata.title)
+    }
+    if (metadata.author !== undefined) {
+      pdfDoc.setAuthor(metadata.author)
+    }
+    if (metadata.subject !== undefined) {
+      pdfDoc.setSubject(metadata.subject)
+    }
+    if (metadata.keywords !== undefined && metadata.keywords.length > 0) {
+      pdfDoc.setKeywords(metadata.keywords)
+    }
+    if (metadata.creator !== undefined) {
+      pdfDoc.setCreator(metadata.creator)
+    }
+    if (metadata.producer !== undefined) {
+      pdfDoc.setProducer(metadata.producer)
+    }
+
+    // Set modification date to now
+    pdfDoc.setModificationDate(new Date())
+
+    this.updateCallback(pdf.id, { progress: 70 })
+
+    // Save the PDF with updated metadata
+    const pdfBytes = await pdfDoc.save()
+    const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, { progress: 95 })
 
     this.updateCallback(pdf.id, {
       status: 'completed',

@@ -10,6 +10,7 @@ import {
   Droplet,
   Edit3,
   FileDown,
+  FileEdit,
   FileOutput,
   FileText,
   GripVertical,
@@ -62,6 +63,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   reorder: GripVertical,
   addPageNumbers: Hash,
   extractText: FileText,
+  editMetadata: FileEdit,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -82,6 +84,7 @@ const operationLabels: Record<OperationType, string> = {
   reorder: 'Reordering Pages',
   addPageNumbers: 'Adding Page Numbers',
   extractText: 'Extracting Text',
+  editMetadata: 'Editing Metadata',
 }
 
 // Simple circular progress component without external dependency
