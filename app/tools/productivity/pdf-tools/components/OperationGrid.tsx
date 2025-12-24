@@ -13,6 +13,7 @@ import {
   FileOutput,
   FileScan,
   FileText,
+  FileType,
   GripVertical,
   Hash,
   Image as ImageIcon,
@@ -50,6 +51,7 @@ export type OperationType =
   | 'editMetadata'
   | 'ocrExtract'
   | 'flatten'
+  | 'addHeaderFooter'
 
 interface Operation {
   value: OperationType
@@ -239,6 +241,13 @@ const operationCategories: OperationCategory[] = [
         icon: Layers,
         color: '#f59e0b',
         description: 'Flatten forms and annotations',
+      },
+      {
+        value: 'addHeaderFooter',
+        label: 'Add Headers/Footers',
+        icon: FileType,
+        color: '#8b5cf6',
+        description: 'Add headers and footers',
       },
     ],
   },

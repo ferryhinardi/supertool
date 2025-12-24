@@ -14,6 +14,7 @@ import {
   FileOutput,
   FileScan,
   FileText,
+  FileType,
   GripVertical,
   Hash,
   Image as ImageIcon,
@@ -70,6 +71,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   editMetadata: FileEdit,
   ocrExtract: FileScan,
   flatten: Layers,
+  addHeaderFooter: FileType,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -94,6 +96,7 @@ const operationLabels: Record<OperationType, string> = {
   editMetadata: 'Editing Metadata',
   ocrExtract: 'Extracting Text with OCR',
   flatten: 'Flattening PDF',
+  addHeaderFooter: 'Adding Headers/Footers',
 }
 
 // Simple circular progress component without external dependency

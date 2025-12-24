@@ -170,6 +170,16 @@ const operationTips: Record<
       'Creates more portable PDFs',
     ],
   },
+  addHeaderFooter: {
+    title: 'Add Headers/Footers',
+    description: 'Add custom headers and footers to all pages',
+    tips: [
+      'Add text to top (header) or bottom (footer)',
+      'Choose left, center, or right alignment',
+      'Include page numbers with {page} and {total}',
+      'Customize font size and appearance',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

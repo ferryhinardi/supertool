@@ -38,6 +38,7 @@ export type OperationType =
   | 'editMetadata'
   | 'ocrExtract'
   | 'flatten'
+  | 'addHeaderFooter'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -97,6 +98,13 @@ interface ProcessOptions {
   metadataProducer?: string
   // OCR options
   ocrLanguage?: string // Language code for OCR (default: 'eng')
+  // Header/Footer options
+  headerText?: string
+  footerText?: string
+  headerPosition?: 'left' | 'center' | 'right'
+  footerPosition?: 'left' | 'center' | 'right'
+  headerFooterFontSize?: number
+  includePageNumbers?: boolean
 }
 
 /**
@@ -238,6 +246,16 @@ export class PDFBatchProcessor {
           break
         case 'flatten':
           await this.flattenPDF(pdf)
+          break
+        case 'addHeaderFooter':
+          await this.addHeaderFooter(pdf, {
+            headerText: options.headerText || '',
+            footerText: options.footerText || '',
+            headerPosition: options.headerPosition || 'center',
+            footerPosition: options.footerPosition || 'center',
+            fontSize: options.headerFooterFontSize || 10,
+            includePageNumbers: options.includePageNumbers || false,
+          })
           break
       }
     } catch (error) {
@@ -1693,6 +1711,124 @@ export class PDFBatchProcessor {
       width: drawWidth,
       height: drawHeight,
     })
+
+    this.updateCallback(pdf.id, { progress: 90 })
+
+    const pdfBytes = await pdfDoc.save()
+    const finalBlob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: finalBlob,
+      processedSize: finalBlob.size,
+    })
+  }
+
+  /**
+   * Add headers and footers to PDF
+   */
+  private async addHeaderFooter(
+    pdf: PDFFile,
+    options: {
+      headerText: string
+      footerText: string
+      headerPosition: 'left' | 'center' | 'right'
+      footerPosition: 'left' | 'center' | 'right'
+      fontSize: number
+      includePageNumbers: boolean
+    }
+  ): Promise<void> {
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfLib = await import('pdf-lib')
+    const pdfDoc = await pdfLib.PDFDocument.load(arrayBuffer)
+    const pages = pdfDoc.getPages()
+    const totalPages = pages.length
+
+    this.updateCallback(pdf.id, { progress: 30 })
+
+    // Process each page
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i]
+      const { width, height } = page.getSize()
+      const font = await pdfDoc.embedFont(pdfLib.StandardFonts.Helvetica)
+
+      // Add header if text provided
+      if (options.headerText) {
+        let headerTextToShow = options.headerText
+
+        // Replace {page} and {total} placeholders
+        if (options.includePageNumbers) {
+          headerTextToShow = headerTextToShow
+            .replace('{page}', `${i + 1}`)
+            .replace('{total}', `${totalPages}`)
+        }
+
+        const headerWidth = font.widthOfTextAtSize(headerTextToShow, options.fontSize)
+        let headerX = 0
+
+        switch (options.headerPosition) {
+          case 'left':
+            headerX = 50
+            break
+          case 'center':
+            headerX = (width - headerWidth) / 2
+            break
+          case 'right':
+            headerX = width - headerWidth - 50
+            break
+        }
+
+        page.drawText(headerTextToShow, {
+          x: headerX,
+          y: height - 30,
+          size: options.fontSize,
+          font,
+          color: pdfLib.rgb(0, 0, 0),
+        })
+      }
+
+      // Add footer if text provided
+      if (options.footerText) {
+        let footerTextToShow = options.footerText
+
+        // Replace {page} and {total} placeholders
+        if (options.includePageNumbers) {
+          footerTextToShow = footerTextToShow
+            .replace('{page}', `${i + 1}`)
+            .replace('{total}', `${totalPages}`)
+        }
+
+        const footerWidth = font.widthOfTextAtSize(footerTextToShow, options.fontSize)
+        let footerX = 0
+
+        switch (options.footerPosition) {
+          case 'left':
+            footerX = 50
+            break
+          case 'center':
+            footerX = (width - footerWidth) / 2
+            break
+          case 'right':
+            footerX = width - footerWidth - 50
+            break
+        }
+
+        page.drawText(footerTextToShow, {
+          x: footerX,
+          y: 30,
+          size: options.fontSize,
+          font,
+          color: pdfLib.rgb(0, 0, 0),
+        })
+      }
+
+      // Update progress
+      const progress = 30 + Math.floor(((i + 1) / pages.length) * 60)
+      this.updateCallback(pdf.id, { progress })
+    }
 
     this.updateCallback(pdf.id, { progress: 90 })
 

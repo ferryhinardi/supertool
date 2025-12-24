@@ -158,6 +158,7 @@ type OperationType =
   | 'editMetadata'
   | 'ocrExtract'
   | 'flatten'
+  | 'addHeaderFooter'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -276,6 +277,14 @@ export default function PDFToolsPage() {
   const [allowPrinting, setAllowPrinting] = useState(true)
   const [allowModifying, setAllowModifying] = useState(false)
   const [allowCopying, setAllowCopying] = useState(true)
+
+  // Header/Footer options
+  const [headerText, setHeaderText] = useState('')
+  const [footerText, setFooterText] = useState('Page {page} of {total}')
+  const [headerPosition, setHeaderPosition] = useState<'left' | 'center' | 'right'>('center')
+  const [footerPosition, setFooterPosition] = useState<'left' | 'center' | 'right'>('center')
+  const [headerFooterFontSize, setHeaderFooterFontSize] = useState(10)
+  const [includePageNumbers, setIncludePageNumbers] = useState(true)
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1472,6 +1481,12 @@ export default function PDFToolsPage() {
               modifying: allowModifying,
               copying: allowCopying,
             },
+            headerText,
+            footerText,
+            headerPosition,
+            footerPosition,
+            headerFooterFontSize,
+            includePageNumbers,
           })
 
           toast.success(
@@ -1637,6 +1652,9 @@ export default function PDFToolsPage() {
           break
         case 'flatten':
           suffix = '_flattened'
+          break
+        case 'addHeaderFooter':
+          suffix = '_header_footer'
           break
       }
 
@@ -4118,6 +4136,199 @@ export default function PDFToolsPage() {
                           </span>
                         </label>
                       </div>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'addHeaderFooter' && pdfs.length > 0 && (
+                  <div className={css({ spaceY: '4' })}>
+                    {/* Info message */}
+                    <div
+                      className={css({
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'purple.500/10',
+                        border: '1px solid',
+                        borderColor: 'purple.500/30',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          gap: '2',
+                        })}
+                      >
+                        <Info
+                          className={css({
+                            h: '5',
+                            w: '5',
+                            color: 'purple.400',
+                            flexShrink: 0,
+                            mt: '0.5',
+                          })}
+                        />
+                        <div>
+                          <p className={css({ fontSize: 'sm', color: 'purple.300' })}>
+                            Add custom headers and footers to all pages. Use placeholders like{' '}
+                            {'{page}'} and {'{total}'} for dynamic page numbers.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Header text */}
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        htmlFor="header-text"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'purple.400',
+                          display: 'block',
+                        })}
+                      >
+                        Header Text
+                      </label>
+                      <input
+                        id="header-text"
+                        type="text"
+                        value={headerText}
+                        onChange={(e) => setHeaderText(e.target.value)}
+                        placeholder="e.g., My Document"
+                        className={css({
+                          w: 'full',
+                          px: '3',
+                          py: '2',
+                          rounded: 'md',
+                          bg: 'gray.800',
+                          border: '1px solid',
+                          borderColor: 'purple.500/30',
+                          color: 'gray.200',
+                          fontSize: 'sm',
+                          _focus: {
+                            outline: '2px solid',
+                            outlineColor: 'purple.500',
+                            outlineOffset: '0',
+                          },
+                        })}
+                      />
+                      <div className={css({ display: 'flex', gap: '2', mt: '2' })}>
+                        {(['left', 'center', 'right'] as const).map((pos) => (
+                          <Button
+                            key={pos}
+                            onClick={() => setHeaderPosition(pos)}
+                            variant={headerPosition === pos ? 'default' : 'outline'}
+                            size="sm"
+                            className={css({
+                              flex: '1',
+                              textTransform: 'capitalize',
+                            })}
+                          >
+                            {pos}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Footer text */}
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        htmlFor="footer-text"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'purple.400',
+                          display: 'block',
+                        })}
+                      >
+                        Footer Text
+                      </label>
+                      <input
+                        id="footer-text"
+                        type="text"
+                        value={footerText}
+                        onChange={(e) => setFooterText(e.target.value)}
+                        placeholder="e.g., Page {page} of {total}"
+                        className={css({
+                          w: 'full',
+                          px: '3',
+                          py: '2',
+                          rounded: 'md',
+                          bg: 'gray.800',
+                          border: '1px solid',
+                          borderColor: 'purple.500/30',
+                          color: 'gray.200',
+                          fontSize: 'sm',
+                          _focus: {
+                            outline: '2px solid',
+                            outlineColor: 'purple.500',
+                            outlineOffset: '0',
+                          },
+                        })}
+                      />
+                      <div className={css({ display: 'flex', gap: '2', mt: '2' })}>
+                        {(['left', 'center', 'right'] as const).map((pos) => (
+                          <Button
+                            key={pos}
+                            onClick={() => setFooterPosition(pos)}
+                            variant={footerPosition === pos ? 'default' : 'outline'}
+                            size="sm"
+                            className={css({
+                              flex: '1',
+                              textTransform: 'capitalize',
+                            })}
+                          >
+                            {pos}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Font size */}
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        htmlFor="header-footer-font-size"
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'purple.400',
+                          display: 'block',
+                        })}
+                      >
+                        Font Size: {headerFooterFontSize}px
+                      </label>
+                      <input
+                        id="header-footer-font-size"
+                        type="range"
+                        min="8"
+                        max="20"
+                        value={headerFooterFontSize}
+                        onChange={(e) => setHeaderFooterFontSize(Number(e.target.value))}
+                        className={css({ w: 'full' })}
+                      />
+                    </div>
+
+                    {/* Include page numbers checkbox */}
+                    <div className={css({ spaceY: '2' })}>
+                      <label
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2',
+                          cursor: 'pointer',
+                        })}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={includePageNumbers}
+                          onChange={(e) => setIncludePageNumbers(e.target.checked)}
+                          className={css({ w: '4', h: '4', rounded: 'sm', cursor: 'pointer' })}
+                        />
+                        <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                          Replace {'{page}'} and {'{total}'} with actual page numbers
+                        </span>
+                      </label>
                     </div>
                   </div>
                 )}
