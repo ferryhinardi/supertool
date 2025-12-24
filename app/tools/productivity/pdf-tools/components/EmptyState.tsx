@@ -150,6 +150,16 @@ const operationTips: Record<
       'Exports plain text file with page headers',
     ],
   },
+  flatten: {
+    title: 'Flatten PDF',
+    description: 'Convert interactive elements to static content',
+    tips: [
+      'Flattens form fields to regular text',
+      'Converts annotations to page content',
+      'Prevents further editing of forms',
+      'Creates more portable PDFs',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

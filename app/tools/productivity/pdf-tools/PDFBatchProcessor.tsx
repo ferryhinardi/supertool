@@ -37,6 +37,7 @@ export type OperationType =
   | 'extractText'
   | 'editMetadata'
   | 'ocrExtract'
+  | 'flatten'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -234,6 +235,9 @@ export class PDFBatchProcessor {
           break
         case 'ocrExtract':
           await this.ocrExtractText(pdf, options.ocrLanguage || 'eng')
+          break
+        case 'flatten':
+          await this.flattenPDF(pdf)
           break
       }
     } catch (error) {
@@ -1285,6 +1289,37 @@ export class PDFBatchProcessor {
 
     // Create a text file blob
     const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: blob,
+      processedSize: blob.size,
+    })
+  }
+
+  private async flattenPDF(pdf: PDFFile): Promise<void> {
+    const { PDFDocument } = await import('pdf-lib')
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    // Load PDF
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfDoc = await PDFDocument.load(arrayBuffer)
+
+    this.updateCallback(pdf.id, { progress: 30 })
+
+    // Flatten the PDF (converts form fields and annotations to content)
+    const form = pdfDoc.getForm()
+    form.flatten() // This flattens all form fields
+
+    this.updateCallback(pdf.id, { progress: 70 })
+
+    // Save flattened PDF
+    const pdfBytes = await pdfDoc.save()
+    const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, { progress: 95 })
 
     this.updateCallback(pdf.id, {
       status: 'completed',

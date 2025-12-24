@@ -31,6 +31,7 @@ import {
   FileText,
   GripVertical,
   Image as ImageIcon,
+  Info,
   Merge,
   Redo2,
   RotateCw,
@@ -154,6 +155,7 @@ type OperationType =
   | 'extractText'
   | 'editMetadata'
   | 'ocrExtract'
+  | 'flatten'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -1613,6 +1615,9 @@ export default function PDFToolsPage() {
         case 'ocrExtract':
           suffix = '_ocr'
           extension = '.txt'
+          break
+        case 'flatten':
+          suffix = '_flattened'
           break
       }
 
@@ -3865,6 +3870,44 @@ export default function PDFToolsPage() {
                       <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
                         Select the language of the text in your scanned document for better accuracy
                       </p>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'flatten' && pdfs.length > 0 && (
+                  <div className={css({ spaceY: '4' })}>
+                    <div
+                      className={css({
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'amber.500/10',
+                        border: '1px solid',
+                        borderColor: 'amber.500/30',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          gap: '2',
+                        })}
+                      >
+                        <Info
+                          className={css({
+                            h: '5',
+                            w: '5',
+                            color: 'amber.400',
+                            flexShrink: 0,
+                            mt: '0.5',
+                          })}
+                        />
+                        <div>
+                          <p className={css({ fontSize: 'sm', color: 'amber.300' })}>
+                            Flattening will convert all form fields and annotations to static
+                            content, making the PDF non-editable and more portable.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}

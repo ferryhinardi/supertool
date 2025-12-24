@@ -16,6 +16,7 @@ import {
   GripVertical,
   Hash,
   Image as ImageIcon,
+  Layers,
   LockOpen,
   Merge,
   RotateCw,
@@ -46,6 +47,7 @@ export type OperationType =
   | 'extractText'
   | 'editMetadata'
   | 'ocrExtract'
+  | 'flatten'
 
 interface Operation {
   value: OperationType
@@ -221,6 +223,13 @@ const operationCategories: OperationCategory[] = [
         icon: FileEdit,
         color: '#06b6d4',
         description: 'Edit PDF properties',
+      },
+      {
+        value: 'flatten',
+        label: 'Flatten PDF',
+        icon: Layers,
+        color: '#f59e0b',
+        description: 'Flatten forms and annotations',
       },
     ],
   },

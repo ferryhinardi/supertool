@@ -17,6 +17,7 @@ import {
   GripVertical,
   Hash,
   Image as ImageIcon,
+  Layers,
   Loader2,
   LockOpen,
   Merge,
@@ -66,6 +67,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   extractText: FileText,
   editMetadata: FileEdit,
   ocrExtract: FileScan,
+  flatten: Layers,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -88,6 +90,7 @@ const operationLabels: Record<OperationType, string> = {
   extractText: 'Extracting Text',
   editMetadata: 'Editing Metadata',
   ocrExtract: 'Extracting Text with OCR',
+  flatten: 'Flattening PDF',
 }
 
 // Simple circular progress component without external dependency
