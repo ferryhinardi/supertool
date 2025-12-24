@@ -8,7 +8,7 @@
 
 import { type NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/auth/supabaseClient'
-import { polar } from '@/lib/services/polar'
+import { POLAR_CONFIG, polar } from '@/lib/services/polar'
 
 export const runtime = 'nodejs'
 
@@ -28,6 +28,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Product ID is required' }, { status: 400 })
     }
 
+    // Validate donation product is configured if using donations
+    if (productId === POLAR_CONFIG.donationProductId && !POLAR_CONFIG.donationProductId) {
+      return NextResponse.json(
+        { error: 'Donation product not configured. Please contact support.' },
+        { status: 500 }
+      )
+    }
+
     // Get authenticated user from Supabase (optional - Polar works without auth too)
     const authHeader = request.headers.get('authorization')
     let userId: string | undefined
@@ -43,10 +51,11 @@ export async function POST(request: NextRequest) {
 
     // Create checkout session with Polar
     // https://docs.polar.sh/api/checkouts/create
+    // Note: Amount must be in cents (e.g., $5.00 = 500 cents)
     const checkout = await polar.checkouts.create({
       products: [productId],
       successUrl: successUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/pricing?payment=success`,
-      ...(amount ? { amount } : {}),
+      ...(amount ? { amount } : {}), // Amount in cents
       ...(customerEmail || userEmail ? { customerEmail: customerEmail || userEmail } : {}),
       ...(userId
         ? {

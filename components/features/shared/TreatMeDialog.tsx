@@ -160,7 +160,7 @@ export function TreatMeDialog() {
               ) : step === 'qris' ? (
                 <QRISPayment qrisImageUrl={qrisImageUrl} onBack={() => setStep('select')} />
               ) : step === 'polar' ? (
-                <PolarPayment onBack={() => setStep('select')} onClose={handleClose} />
+                <PolarPayment onBack={() => setStep('select')} />
               ) : (
                 <ComingSoonPayment
                   method={step}
@@ -608,7 +608,7 @@ function QRISPayment({ qrisImageUrl, onBack }: { qrisImageUrl: string; onBack: (
 }
 
 // Polar Payment Component
-function PolarPayment({ onBack, onClose }: { onBack: () => void; onClose: () => void }) {
+function PolarPayment({ onBack }: { onBack: () => void }) {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
   const [customAmount, setCustomAmount] = useState('')
   const [loading, setLoading] = useState(false)
@@ -619,8 +619,15 @@ function PolarPayment({ onBack, onClose }: { onBack: () => void; onClose: () => 
   const handleCheckout = async () => {
     const amount = selectedAmount || Number.parseFloat(customAmount)
 
-    if (!amount || amount < 1) {
-      setError('Please select or enter an amount (minimum $1)')
+    // Explicit validation: check for NaN, negative, and minimum amount
+    if (Number.isNaN(amount) || amount < 1) {
+      setError('Please enter a valid amount (minimum $1.00)')
+      return
+    }
+
+    // Prevent amounts over $10,000 to avoid accidental large donations
+    if (amount > 10000) {
+      setError('Maximum amount is $10,000. Please contact us for larger donations.')
       return
     }
 
@@ -635,13 +642,14 @@ function PolarPayment({ onBack, onClose }: { onBack: () => void; onClose: () => 
         },
         body: JSON.stringify({
           productId: process.env.NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID,
-          amount: Math.round(amount * 100), // Convert to cents
+          amount: Math.round(amount * 100), // Convert dollars to cents (e.g., $5.00 -> 500)
           successUrl: `${window.location.origin}?payment=success`,
         }),
       })
 
       if (!response.ok) {
-        throw new Error('Failed to create checkout session')
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to create checkout session')
       }
 
       const data = await response.json()
@@ -655,10 +663,14 @@ function PolarPayment({ onBack, onClose }: { onBack: () => void; onClose: () => 
   }
 
   const handleCustomAmountChange = (value: string) => {
-    // Only allow numbers and one decimal point
-    if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+    // Strict validation: only allow numbers with up to 2 decimal places
+    // Regex explanation: ^ = start, \d* = zero or more digits, \.? = optional decimal, \d{0,2} = 0-2 decimal digits, $ = end
+    const isValidFormat = value === '' || /^\d*\.?\d{0,2}$/.test(value)
+
+    if (isValidFormat) {
       setCustomAmount(value)
       setSelectedAmount(null)
+      setError('') // Clear error when user starts typing valid input
     }
   }
 

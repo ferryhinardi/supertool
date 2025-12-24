@@ -3,91 +3,93 @@
  * Handles payment events from Polar (subscriptions, orders, etc.)
  *
  * POST /api/webhooks/polar
- * Headers: { 'polar-signature': string }
+ * Headers: { 'webhook-id': string, 'webhook-timestamp': string, 'webhook-signature': string }
+ *
+ * Security: Uses webhook signature verification via standard-webhooks
+ * Idempotency: Uses upsert operations to handle duplicate webhook deliveries
  */
 
+import { validateEvent, WebhookVerificationError } from '@polar-sh/sdk/webhooks'
 import { type NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/auth/supabaseClient'
-import { POLAR_CONFIG, POLAR_WEBHOOK_EVENTS } from '@/lib/services/polar'
+import { supabaseServer } from '@/lib/auth/supabaseServer'
+import { POLAR_CONFIG } from '@/lib/services/polar'
 
 export const runtime = 'nodejs'
 
-interface PolarWebhookPayload {
-  type: string
-  data: {
-    id: string
-    type: string
-    attributes: {
-      status?: string
-      customer_email?: string
-      amount?: number
-      currency?: string
-      product_id?: string
-      product_price_id?: string
-      user_id?: string
-      subscription_id?: string
-      current_period_start?: string
-      current_period_end?: string
-      metadata?: Record<string, string>
-    }
-  }
-}
+/**
+ * Polar webhook event types we handle
+ */
+type WebhookEvent =
+  | { type: 'subscription.created'; data: any }
+  | { type: 'subscription.updated'; data: any }
+  | { type: 'subscription.canceled'; data: any }
+  | { type: 'subscription.revoked'; data: any }
+  | { type: 'order.created'; data: any }
+  | { type: 'checkout.created'; data: any }
+  | { type: 'checkout.updated'; data: any }
 
 export async function POST(request: NextRequest) {
   try {
-    // 1. Get raw body and signature
+    // 1. Get raw body for signature verification
     const body = await request.text()
-    const signature = request.headers.get('polar-signature')
 
-    if (!signature) {
+    // 2. Extract webhook headers (standard-webhooks format)
+    const headers: Record<string, string> = {
+      'webhook-id': request.headers.get('webhook-id') || '',
+      'webhook-timestamp': request.headers.get('webhook-timestamp') || '',
+      'webhook-signature': request.headers.get('webhook-signature') || '',
+    }
+
+    if (!headers['webhook-signature']) {
       console.error('Missing webhook signature')
       return NextResponse.json({ error: 'Missing signature' }, { status: 401 })
     }
 
-    // 2. Verify webhook signature
-    // Note: Polar SDK should provide a verification method
-    // For now, we'll check if webhook secret matches (basic validation)
+    // 3. Verify webhook secret is configured
     if (!POLAR_CONFIG.webhookSecret) {
       console.error('POLAR_WEBHOOK_SECRET not configured')
       return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 })
     }
 
-    // TODO: Implement proper signature verification using Polar SDK
-    // const isValid = await validatePolarWebhook(body, signature, POLAR_CONFIG.webhookSecret)
-    // if (!isValid) {
-    //   return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
-    // }
+    // 4. Verify webhook signature using Polar SDK
+    let event: WebhookEvent
+    try {
+      event = validateEvent(body, headers, POLAR_CONFIG.webhookSecret) as WebhookEvent
+      console.log(`✓ Verified webhook signature: ${event.type}`, { id: headers['webhook-id'] })
+    } catch (error) {
+      if (error instanceof WebhookVerificationError) {
+        console.error('Invalid webhook signature:', error.message)
+        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+      }
+      throw error
+    }
 
-    // 3. Parse payload
-    const payload: PolarWebhookPayload = JSON.parse(body)
-    const { type, data } = payload
+    // 5. Handle different webhook events
+    const { type, data } = event
 
-    console.log(`Received webhook: ${type}`, { id: data.id })
-
-    // 4. Handle different webhook events
     switch (type) {
-      case POLAR_WEBHOOK_EVENTS.SUBSCRIPTION_CREATED:
+      case 'subscription.created':
         await handleSubscriptionCreated(data)
         break
 
-      case POLAR_WEBHOOK_EVENTS.SUBSCRIPTION_UPDATED:
+      case 'subscription.updated':
         await handleSubscriptionUpdated(data)
         break
 
-      case POLAR_WEBHOOK_EVENTS.SUBSCRIPTION_CANCELED:
+      case 'subscription.canceled':
         await handleSubscriptionCanceled(data)
         break
 
-      case POLAR_WEBHOOK_EVENTS.SUBSCRIPTION_REVOKED:
+      case 'subscription.revoked':
         await handleSubscriptionRevoked(data)
         break
 
-      case POLAR_WEBHOOK_EVENTS.ORDER_CREATED:
+      case 'order.created':
         await handleOrderCreated(data)
         break
 
-      case POLAR_WEBHOOK_EVENTS.CHECKOUT_CREATED:
-      case POLAR_WEBHOOK_EVENTS.CHECKOUT_UPDATED:
+      case 'checkout.created':
+      case 'checkout.updated':
         // Just log these for now
         console.log(`Checkout event: ${type}`, data.id)
         break
@@ -110,34 +112,57 @@ export async function POST(request: NextRequest) {
 
 /**
  * Handle subscription created event
+ * Uses UPSERT for idempotency - handles duplicate webhook deliveries gracefully
  */
-async function handleSubscriptionCreated(data: PolarWebhookPayload['data']) {
-  const { attributes } = data
-
+async function handleSubscriptionCreated(data: any) {
   try {
-    const { error } = await supabase.from('subscriptions').insert({
-      polar_subscription_id: data.id,
-      user_id: attributes.metadata?.userId || null,
-      customer_email: attributes.customer_email || '',
-      status: attributes.status || 'active',
-      plan_id: attributes.product_id || '',
-      amount: attributes.amount || 0,
-      currency: attributes.currency || 'USD',
-      current_period_start: attributes.current_period_start || null,
-      current_period_end: attributes.current_period_end || null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    })
+    // Extract customer email from subscription customer object
+    const customerEmail = data.customer?.email || data.user?.email || ''
+
+    // Note: Polar amounts are in cents (verified from SDK)
+    const { error } = await supabaseServer.from('subscriptions').upsert(
+      {
+        polar_subscription_id: data.id,
+        polar_customer_id: data.customer?.id || data.customer_id || '',
+        polar_product_id: data.product?.id || data.product_id || '',
+        polar_price_id: data.price?.id || data.price_id || '',
+        user_id: data.metadata?.user_id || null,
+        customer_email: customerEmail,
+        status: data.status || 'active',
+        amount: data.amount || 0, // Amount in cents
+        currency: data.currency || 'USD',
+        interval: data.recurring_interval || data.recurringInterval || 'month',
+        interval_count: data.recurring_interval_count || data.recurringIntervalCount || 1,
+        current_period_start: data.current_period_start
+          ? new Date(data.current_period_start).toISOString()
+          : new Date().toISOString(),
+        current_period_end: data.current_period_end
+          ? new Date(data.current_period_end).toISOString()
+          : null,
+        trial_start: data.trial_start ? new Date(data.trial_start).toISOString() : null,
+        trial_end: data.trial_end ? new Date(data.trial_end).toISOString() : null,
+        cancel_at_period_end: data.cancel_at_period_end || false,
+        canceled_at: null,
+        ended_at: null,
+        metadata: data.metadata || {},
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      {
+        onConflict: 'polar_subscription_id',
+        ignoreDuplicates: false, // Update if exists
+      }
+    )
 
     if (error) {
-      console.error('Failed to create subscription in database:', error)
+      console.error('Failed to upsert subscription in database:', error)
       throw error
     }
 
-    console.log('Subscription created:', data.id)
+    console.log('✓ Subscription created/updated:', data.id)
 
     // TODO: Send welcome email
-    // await sendSubscriptionConfirmation(attributes.customer_email, 'Pro')
+    // await sendSubscriptionConfirmation(customerEmail, 'Pro')
   } catch (error) {
     console.error('handleSubscriptionCreated error:', error)
     throw error
@@ -147,17 +172,20 @@ async function handleSubscriptionCreated(data: PolarWebhookPayload['data']) {
 /**
  * Handle subscription updated event
  */
-async function handleSubscriptionUpdated(data: PolarWebhookPayload['data']) {
-  const { attributes } = data
-
+async function handleSubscriptionUpdated(data: any) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('subscriptions')
       .update({
-        status: attributes.status || 'active',
-        amount: attributes.amount,
-        current_period_start: attributes.current_period_start,
-        current_period_end: attributes.current_period_end,
+        status: data.status,
+        amount: data.amount,
+        current_period_start: data.current_period_start
+          ? new Date(data.current_period_start).toISOString()
+          : undefined,
+        current_period_end: data.current_period_end
+          ? new Date(data.current_period_end).toISOString()
+          : null,
+        cancel_at_period_end: data.cancel_at_period_end,
         updated_at: new Date().toISOString(),
       })
       .eq('polar_subscription_id', data.id)
@@ -167,7 +195,7 @@ async function handleSubscriptionUpdated(data: PolarWebhookPayload['data']) {
       throw error
     }
 
-    console.log('Subscription updated:', data.id)
+    console.log('✓ Subscription updated:', data.id)
   } catch (error) {
     console.error('handleSubscriptionUpdated error:', error)
     throw error
@@ -177,9 +205,9 @@ async function handleSubscriptionUpdated(data: PolarWebhookPayload['data']) {
 /**
  * Handle subscription canceled event
  */
-async function handleSubscriptionCanceled(data: PolarWebhookPayload['data']) {
+async function handleSubscriptionCanceled(data: any) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('subscriptions')
       .update({
         status: 'canceled',
@@ -194,7 +222,7 @@ async function handleSubscriptionCanceled(data: PolarWebhookPayload['data']) {
       throw error
     }
 
-    console.log('Subscription canceled:', data.id)
+    console.log('✓ Subscription canceled:', data.id)
 
     // TODO: Send cancellation confirmation email
   } catch (error) {
@@ -206,14 +234,15 @@ async function handleSubscriptionCanceled(data: PolarWebhookPayload['data']) {
 /**
  * Handle subscription revoked event (forced cancellation)
  */
-async function handleSubscriptionRevoked(data: PolarWebhookPayload['data']) {
+async function handleSubscriptionRevoked(data: any) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('subscriptions')
       .update({
         status: 'canceled',
         cancel_at_period_end: false,
         canceled_at: new Date().toISOString(),
+        ended_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .eq('polar_subscription_id', data.id)
@@ -223,7 +252,7 @@ async function handleSubscriptionRevoked(data: PolarWebhookPayload['data']) {
       throw error
     }
 
-    console.log('Subscription revoked:', data.id)
+    console.log('✓ Subscription revoked:', data.id)
   } catch (error) {
     console.error('handleSubscriptionRevoked error:', error)
     throw error
@@ -232,29 +261,40 @@ async function handleSubscriptionRevoked(data: PolarWebhookPayload['data']) {
 
 /**
  * Handle order created event (one-time payment)
+ * Uses UPSERT for idempotency
  */
-async function handleOrderCreated(data: PolarWebhookPayload['data']) {
-  const { attributes } = data
-
+async function handleOrderCreated(data: any) {
   try {
-    const { error } = await supabase.from('orders').insert({
-      polar_order_id: data.id,
-      user_id: attributes.metadata?.userId || null,
-      customer_email: attributes.customer_email || '',
-      amount: attributes.amount || 0,
-      currency: attributes.currency || 'USD',
-      status: attributes.status || 'pending',
-      product_id: attributes.product_id || '',
-      metadata: attributes.metadata || {},
-      created_at: new Date().toISOString(),
-    })
+    const customerEmail = data.customer?.email || data.user?.email || ''
+
+    // Note: Polar amounts are in cents (verified from SDK)
+    const { error } = await supabaseServer.from('orders').upsert(
+      {
+        polar_order_id: data.id,
+        polar_customer_id: data.customer?.id || data.customer_id || '',
+        polar_product_id: data.product?.id || data.product_id || '',
+        user_id: data.metadata?.user_id || null,
+        customer_email: customerEmail,
+        amount: data.amount || 0, // Amount in cents
+        currency: data.currency || 'USD',
+        status: data.status || 'pending',
+        payment_processor: data.payment_processor || null,
+        payment_processor_order_id: data.payment_processor_order_id || null,
+        metadata: data.metadata || {},
+        created_at: new Date().toISOString(),
+      },
+      {
+        onConflict: 'polar_order_id',
+        ignoreDuplicates: false, // Update if exists
+      }
+    )
 
     if (error) {
-      console.error('Failed to create order in database:', error)
+      console.error('Failed to upsert order in database:', error)
       throw error
     }
 
-    console.log('Order created:', data.id)
+    console.log('✓ Order created/updated:', data.id)
 
     // TODO: Send receipt email
   } catch (error) {

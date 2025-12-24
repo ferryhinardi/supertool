@@ -28,6 +28,7 @@ export const polar = new Polar({
 export const POLAR_CONFIG = {
   organizationId: process.env.POLAR_ORGANIZATION_ID || '',
   webhookSecret: process.env.POLAR_WEBHOOK_SECRET || '',
+  donationProductId: process.env.NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID || '',
 } as const
 
 /**
@@ -42,6 +43,12 @@ if (!POLAR_CONFIG.organizationId) {
 if (!POLAR_CONFIG.webhookSecret) {
   console.warn(
     'POLAR_WEBHOOK_SECRET is not set. Webhook verification will fail. Create a webhook endpoint at: https://polar.sh/dashboard/webhooks'
+  )
+}
+
+if (!POLAR_CONFIG.donationProductId) {
+  console.warn(
+    'NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID is not set. Donation feature will not work. Create a product at: https://polar.sh/dashboard/products'
   )
 }
 
