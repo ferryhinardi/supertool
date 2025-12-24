@@ -8,20 +8,6 @@
 
 import { Polar } from '@polar-sh/sdk'
 
-if (!process.env.POLAR_ACCESS_TOKEN) {
-  throw new Error(
-    'POLAR_ACCESS_TOKEN is not set. Please add it to your .env file. Get it from: https://polar.sh/dashboard/settings'
-  )
-}
-
-/**
- * Initialize Polar SDK with access token
- * This instance should only be used in server-side code (API routes, server components)
- */
-export const polar = new Polar({
-  accessToken: process.env.POLAR_ACCESS_TOKEN,
-})
-
 /**
  * Polar Configuration
  */
@@ -32,7 +18,7 @@ export const POLAR_CONFIG = {
 } as const
 
 /**
- * Verify required configuration
+ * Verify required configuration (only warn during build, don't throw)
  */
 if (!POLAR_CONFIG.organizationId) {
   console.warn(
@@ -51,6 +37,38 @@ if (!POLAR_CONFIG.donationProductId) {
     'NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID is not set. Donation feature will not work. Create a product at: https://polar.sh/dashboard/products'
   )
 }
+
+/**
+ * Initialize Polar SDK with access token
+ * This instance should only be used in server-side code (API routes, server components)
+ *
+ * Note: Lazily initialized to allow builds to succeed without access token.
+ * The token is only required at runtime when the client is actually used.
+ */
+let _polarClient: Polar | null = null
+
+export const getPolar = (): Polar => {
+  if (!_polarClient) {
+    if (!process.env.POLAR_ACCESS_TOKEN) {
+      throw new Error(
+        'POLAR_ACCESS_TOKEN is not set. Please add it to your .env file. Get it from: https://polar.sh/dashboard/settings'
+      )
+    }
+
+    _polarClient = new Polar({
+      accessToken: process.env.POLAR_ACCESS_TOKEN,
+    })
+  }
+
+  return _polarClient
+}
+
+// Export a getter-based client for backward compatibility
+export const polar = new Proxy({} as Polar, {
+  get(_target, prop) {
+    return getPolar()[prop as keyof Polar]
+  },
+})
 
 /**
  * Polar webhook event types
