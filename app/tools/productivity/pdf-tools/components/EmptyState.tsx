@@ -210,6 +210,16 @@ const operationTips: Record<
       'Ideal for web publishing and sharing',
     ],
   },
+  splitByBookmarks: {
+    title: 'Split by Bookmarks',
+    description: 'Split PDF into separate files at each bookmark',
+    tips: [
+      'PDF must have existing bookmarks/table of contents',
+      'Creates one file per top-level bookmark',
+      'Automatically names files based on bookmark titles',
+      'Preserves all content and formatting',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

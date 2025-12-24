@@ -5,6 +5,7 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Archive,
   Bookmark,
+  BookmarkCheck,
   Copy,
   CopyPlus,
   Droplet,
@@ -58,6 +59,7 @@ export type OperationType =
   | 'addBookmarks'
   | 'extractImages'
   | 'optimizeWeb'
+  | 'splitByBookmarks'
 
 interface Operation {
   value: OperationType
@@ -89,6 +91,13 @@ const operationCategories: OperationCategory[] = [
         icon: Split,
         color: '#a855f7',
         description: 'Break PDF into separate files',
+      },
+      {
+        value: 'splitByBookmarks',
+        label: 'Split by Bookmarks',
+        icon: BookmarkCheck,
+        color: '#a855f7',
+        description: 'Split PDF at each bookmark',
       },
     ],
   },

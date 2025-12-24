@@ -5,6 +5,7 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Archive,
   Bookmark,
+  BookmarkCheck,
   CheckCircle,
   Copy,
   CopyPlus,
@@ -78,6 +79,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   addBookmarks: Bookmark,
   extractImages: ImageDown,
   optimizeWeb: Globe,
+  splitByBookmarks: BookmarkCheck,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -106,6 +108,7 @@ const operationLabels: Record<OperationType, string> = {
   addBookmarks: 'Adding Bookmarks',
   extractImages: 'Extracting Images',
   optimizeWeb: 'Optimizing for Web',
+  splitByBookmarks: 'Splitting by Bookmarks',
 }
 
 // Simple circular progress component without external dependency

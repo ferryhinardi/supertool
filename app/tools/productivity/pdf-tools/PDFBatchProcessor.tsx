@@ -13,6 +13,7 @@ export interface PDFFile {
   processedSize?: number
   splitBlob2?: Blob
   imageBlobs?: Blob[]
+  splitPdfs?: Array<{ blob: Blob; name: string }> // For splitByBookmarks operation
 }
 
 export type CompressionLevel = 'low' | 'medium' | 'high'
@@ -42,6 +43,7 @@ export type OperationType =
   | 'addBookmarks'
   | 'extractImages'
   | 'optimizeWeb'
+  | 'splitByBookmarks'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -274,6 +276,9 @@ export class PDFBatchProcessor {
           break
         case 'optimizeWeb':
           await this.optimizeForWeb(pdf)
+          break
+        case 'splitByBookmarks':
+          await this.splitByBookmarks(pdf)
           break
       }
     } catch (error) {
@@ -2114,6 +2119,163 @@ export class PDFBatchProcessor {
       progress: 100,
       processedBlob: finalBlob,
       processedSize: finalBlob.size,
+    })
+  }
+
+  /**
+   * Split PDF by bookmarks - creates separate files for each top-level bookmark
+   */
+  private async splitByBookmarks(pdf: PDFFile): Promise<void> {
+    const pdfjs = await import('pdfjs-dist')
+    const { PDFDocument } = await import('pdf-lib')
+
+    // Set worker for pdfjs
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
+    }
+
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    // Load PDF with pdfjs-dist to read bookmarks
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const loadingTask = pdfjs.getDocument({ data: arrayBuffer })
+    const pdfDoc = await loadingTask.promise
+
+    this.updateCallback(pdf.id, { progress: 20 })
+
+    // Get outline (bookmarks)
+    const outline = await pdfDoc.getOutline()
+
+    if (!outline || outline.length === 0) {
+      throw new Error(
+        'No bookmarks found in PDF. Please add bookmarks first using the "Add Bookmarks" operation.'
+      )
+    }
+
+    this.updateCallback(pdf.id, { progress: 30 })
+
+    // Parse top-level bookmarks and get page numbers
+    const bookmarks: Array<{ title: string; pageIndex: number }> = []
+
+    for (const item of outline) {
+      try {
+        let pageIndex: number
+
+        // Handle different destination formats
+        if (typeof item.dest === 'string') {
+          // Named destination - need to resolve
+          const destination = await pdfDoc.getDestination(item.dest)
+          if (destination && destination[0]) {
+            const pageRef = destination[0]
+            pageIndex = await pdfDoc.getPageIndex(pageRef)
+          } else {
+            continue // Skip if can't resolve
+          }
+        } else if (Array.isArray(item.dest) && item.dest[0]) {
+          // Direct destination
+          const pageRef = item.dest[0]
+          pageIndex = await pdfDoc.getPageIndex(pageRef)
+        } else {
+          continue // Skip if no valid destination
+        }
+
+        bookmarks.push({
+          title: item.title || `Bookmark ${bookmarks.length + 1}`,
+          pageIndex: pageIndex,
+        })
+      } catch (err) {
+        console.warn('Failed to parse bookmark destination:', err)
+        // Continue with other bookmarks
+      }
+    }
+
+    if (bookmarks.length === 0) {
+      throw new Error('Could not parse any valid bookmarks from PDF.')
+    }
+
+    // Sort by page index
+    bookmarks.sort((a, b) => a.pageIndex - b.pageIndex)
+
+    this.updateCallback(pdf.id, { progress: 50 })
+
+    // Load with pdf-lib for splitting
+    const sourcePdf = await PDFDocument.load(arrayBuffer)
+    const totalPages = sourcePdf.getPageCount()
+
+    // Create splits
+    const splitPdfs: Array<{ blob: Blob; name: string }> = []
+
+    for (let i = 0; i < bookmarks.length; i++) {
+      const startPage = bookmarks[i].pageIndex
+      const endPage = i < bookmarks.length - 1 ? bookmarks[i + 1].pageIndex - 1 : totalPages - 1
+
+      // Skip if invalid range
+      if (startPage > endPage || startPage >= totalPages) {
+        continue
+      }
+
+      // Create new PDF
+      const newPdf = await PDFDocument.create()
+
+      // Copy metadata from source
+      const sourceTitle = sourcePdf.getTitle()
+      const sourceAuthor = sourcePdf.getAuthor()
+      if (sourceTitle) newPdf.setTitle(`${sourceTitle} - ${bookmarks[i].title}`)
+      if (sourceAuthor) newPdf.setAuthor(sourceAuthor)
+      newPdf.setSubject(`Split from: ${pdf.name}`)
+      newPdf.setCreator('SuperTool PDF Tools')
+      newPdf.setProducer('SuperTool PDF Tools')
+
+      // Copy pages
+      const pageIndices = Array.from(
+        { length: Math.min(endPage - startPage + 1, totalPages - startPage) },
+        (_, j) => startPage + j
+      )
+      const pages = await newPdf.copyPages(sourcePdf, pageIndices)
+
+      for (const page of pages) {
+        newPdf.addPage(page)
+      }
+
+      const pdfBytes = await newPdf.save()
+      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+
+      // Sanitize bookmark title for filename
+      const sanitizedTitle = bookmarks[i].title
+        .replace(/[^a-z0-9\s-]/gi, '_') // Replace special chars with underscore
+        .replace(/\s+/g, '_') // Replace spaces with underscore
+        .toLowerCase()
+        .substring(0, 50) // Limit length
+
+      const baseName = pdf.name.replace(/\.pdf$/i, '')
+      const fileName = `${baseName}_${i + 1}_${sanitizedTitle}.pdf`
+
+      splitPdfs.push({
+        blob,
+        name: fileName,
+      })
+
+      this.updateCallback(pdf.id, {
+        progress: 50 + Math.floor(((i + 1) / bookmarks.length) * 40),
+      })
+    }
+
+    if (splitPdfs.length === 0) {
+      throw new Error('Failed to create split PDFs from bookmarks.')
+    }
+
+    this.updateCallback(pdf.id, { progress: 95 })
+
+    // Store all split PDFs
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: splitPdfs[0].blob, // First file as main
+      processedSize: splitPdfs.reduce((sum, s) => sum + s.blob.size, 0),
+      splitPdfs: splitPdfs,
     })
   }
 }

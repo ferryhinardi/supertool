@@ -22,6 +22,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { motion } from 'framer-motion'
 import {
   Archive,
+  BookmarkCheck,
   Copy,
   CopyPlus,
   Droplet,
@@ -164,6 +165,7 @@ type OperationType =
   | 'addBookmarks'
   | 'extractImages'
   | 'optimizeWeb'
+  | 'splitByBookmarks'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -1559,6 +1561,31 @@ export default function PDFToolsPage() {
         category: 'pdf_tools',
         label: operation === 'extractImages' ? 'extract_images' : 'download_images',
         value: images.length,
+      })
+    } else if (operation === 'splitByBookmarks') {
+      // Download all split PDFs
+      const splitPdfs = (pdf as PDFFile & { splitPdfs?: Array<{ blob: Blob; name: string }> })
+        .splitPdfs
+      if (!splitPdfs) return
+
+      splitPdfs.forEach((split, index) => {
+        setTimeout(() => {
+          const url = URL.createObjectURL(split.blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = split.name
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          URL.revokeObjectURL(url)
+        }, index * 100) // Stagger downloads to avoid browser blocking
+      })
+
+      trackEvent({
+        action: 'split_by_bookmarks_downloaded',
+        category: 'pdf_tools',
+        label: 'download_split_bookmarks',
+        value: splitPdfs.length,
       })
     } else if (operation === 'split') {
       // Download both parts
@@ -4601,6 +4628,48 @@ export default function PDFToolsPage() {
                           Optimizes your PDF for faster loading on websites by removing unused
                           objects and creating an efficient document structure. All content and
                           metadata will be preserved.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'splitByBookmarks' && pdfs.length > 0 && (
+                  <div
+                    className={css({
+                      p: '4',
+                      borderRadius: 'lg',
+                      bg: '#a855f7/10',
+                      borderWidth: '1px',
+                      borderColor: '#a855f7/20',
+                    })}
+                  >
+                    <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                      <BookmarkCheck
+                        className={css({
+                          h: '5',
+                          w: '5',
+                          color: '#a855f7',
+                          flexShrink: '0',
+                          mt: '0.5',
+                        })}
+                      />
+                      <div className={css({ spaceY: '2' })}>
+                        <div
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.200',
+                          })}
+                        >
+                          Split by Bookmarks
+                        </div>
+                        <p
+                          className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: '1.5' })}
+                        >
+                          Splits your PDF into separate files at each top-level bookmark. Your PDF
+                          must have existing bookmarks. Each file will be automatically named based
+                          on the bookmark title.
                         </p>
                       </div>
                     </div>
