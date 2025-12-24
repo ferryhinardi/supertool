@@ -28,11 +28,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Product ID is required' }, { status: 400 })
     }
 
-    // Validate donation product is configured if using donations
+    // Validate donation product is configured
     if (!POLAR_CONFIG.donationProductId) {
       return NextResponse.json(
         { error: 'Donation product not configured. Please contact support.' },
         { status: 500 }
+      )
+    }
+
+    // Validate product ID matches configured donation product
+    if (productId !== POLAR_CONFIG.donationProductId) {
+      return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 })
+    }
+
+    // Validate amount if provided (must be between $1 and $10,000 in cents)
+    if (amount !== undefined && (amount < 100 || amount > 1000000)) {
+      return NextResponse.json(
+        { error: 'Amount must be between $1.00 and $10,000.00' },
+        { status: 400 }
       )
     }
 

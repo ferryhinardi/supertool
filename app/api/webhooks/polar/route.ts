@@ -120,6 +120,32 @@ async function handleSubscriptionCreated(data: any) {
     const customerEmail = data.customer?.email || data.user?.email || ''
 
     // Note: Polar amounts are in cents (verified from SDK)
+    const interval = data.recurring_interval || data.recurringInterval || 'month'
+    const intervalCount = data.recurring_interval_count || data.recurringIntervalCount || 1
+
+    // Calculate period end based on interval if not provided
+    const periodStart = data.current_period_start ? new Date(data.current_period_start) : new Date()
+    let periodEnd: Date
+
+    if (data.current_period_end) {
+      periodEnd = new Date(data.current_period_end)
+    } else {
+      // Calculate based on interval: month, year, day, week
+      periodEnd = new Date(periodStart)
+      if (interval === 'month') {
+        periodEnd.setMonth(periodEnd.getMonth() + intervalCount)
+      } else if (interval === 'year') {
+        periodEnd.setFullYear(periodEnd.getFullYear() + intervalCount)
+      } else if (interval === 'day') {
+        periodEnd.setDate(periodEnd.getDate() + intervalCount)
+      } else if (interval === 'week') {
+        periodEnd.setDate(periodEnd.getDate() + 7 * intervalCount)
+      } else {
+        // Default to 1 month if unknown interval
+        periodEnd.setMonth(periodEnd.getMonth() + 1)
+      }
+    }
+
     const { error } = await supabaseServer.from('subscriptions').upsert(
       {
         polar_subscription_id: data.id,
@@ -131,14 +157,10 @@ async function handleSubscriptionCreated(data: any) {
         status: data.status || 'active',
         amount: data.amount || 0, // Amount in cents
         currency: data.currency || 'USD',
-        interval: data.recurring_interval || data.recurringInterval || 'month',
-        interval_count: data.recurring_interval_count || data.recurringIntervalCount || 1,
-        current_period_start: data.current_period_start
-          ? new Date(data.current_period_start).toISOString()
-          : new Date().toISOString(),
-        current_period_end: data.current_period_end
-          ? new Date(data.current_period_end).toISOString()
-          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // Default to 30 days from now
+        interval,
+        interval_count: intervalCount,
+        current_period_start: periodStart.toISOString(),
+        current_period_end: periodEnd.toISOString(),
         trial_start: data.trial_start ? new Date(data.trial_start).toISOString() : null,
         trial_end: data.trial_end ? new Date(data.trial_end).toISOString() : null,
         cancel_at_period_end: data.cancel_at_period_end || false,
@@ -181,7 +203,7 @@ async function handleSubscriptionUpdated(data: any) {
         amount: data.amount,
         current_period_start: data.current_period_start
           ? new Date(data.current_period_start).toISOString()
-          : undefined,
+          : null,
         current_period_end: data.current_period_end
           ? new Date(data.current_period_end).toISOString()
           : null,
