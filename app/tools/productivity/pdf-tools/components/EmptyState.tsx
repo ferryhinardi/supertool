@@ -180,6 +180,16 @@ const operationTips: Record<
       'Customize font size and appearance',
     ],
   },
+  addBookmarks: {
+    title: 'Add Bookmarks',
+    description: 'Add a table of contents with navigation bookmarks',
+    tips: [
+      'Creates a TOC page at the beginning',
+      'Add multiple bookmarks pointing to different pages',
+      'Support for nested bookmarks with levels',
+      'Easy navigation within the PDF',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

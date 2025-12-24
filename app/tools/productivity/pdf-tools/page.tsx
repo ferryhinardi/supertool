@@ -159,6 +159,7 @@ type OperationType =
   | 'ocrExtract'
   | 'flatten'
   | 'addHeaderFooter'
+  | 'addBookmarks'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -285,6 +286,11 @@ export default function PDFToolsPage() {
   const [footerPosition, setFooterPosition] = useState<'left' | 'center' | 'right'>('center')
   const [headerFooterFontSize, setHeaderFooterFontSize] = useState(10)
   const [includePageNumbers, setIncludePageNumbers] = useState(true)
+
+  // Bookmark options
+  const [bookmarks, setBookmarks] = useState<
+    Array<{ title: string; pageNumber: number; level?: number }>
+  >([{ title: 'Chapter 1', pageNumber: 1, level: 0 }])
 
   // New enhancements
   const [showPresets, setShowPresets] = useState(false)
@@ -1487,6 +1493,7 @@ export default function PDFToolsPage() {
             footerPosition,
             headerFooterFontSize,
             includePageNumbers,
+            bookmarks,
           })
 
           toast.success(
@@ -1655,6 +1662,9 @@ export default function PDFToolsPage() {
           break
         case 'addHeaderFooter':
           suffix = '_header_footer'
+          break
+        case 'addBookmarks':
+          suffix = '_bookmarks'
           break
       }
 
@@ -4329,6 +4339,176 @@ export default function PDFToolsPage() {
                           Replace {'{page}'} and {'{total}'} with actual page numbers
                         </span>
                       </label>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'addBookmarks' && pdfs.length > 0 && (
+                  <div className={css({ spaceY: '4' })}>
+                    {/* Info message */}
+                    <div
+                      className={css({
+                        p: '3',
+                        rounded: 'md',
+                        bg: 'sky.500/10',
+                        border: '1px solid',
+                        borderColor: 'sky.500/30',
+                      })}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'start',
+                          gap: '2',
+                        })}
+                      >
+                        <Info
+                          className={css({
+                            h: '5',
+                            w: '5',
+                            color: 'sky.400',
+                            flexShrink: 0,
+                            mt: '0.5',
+                          })}
+                        />
+                        <div>
+                          <p className={css({ fontSize: 'sm', color: 'sky.300' })}>
+                            Add bookmarks to create a table of contents. A TOC page will be inserted
+                            at the beginning of your PDF.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bookmarks list */}
+                    <div className={css({ spaceY: '2' })}>
+                      <div
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'sky.400',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        })}
+                      >
+                        <span>Bookmarks</span>
+                        <Button
+                          onClick={() =>
+                            setBookmarks([
+                              ...bookmarks,
+                              {
+                                title: `Chapter ${bookmarks.length + 1}`,
+                                pageNumber: 1,
+                                level: 0,
+                              },
+                            ])
+                          }
+                          variant="outline"
+                          size="sm"
+                        >
+                          Add Bookmark
+                        </Button>
+                      </div>
+
+                      <div className={css({ spaceY: '2' })}>
+                        {bookmarks.map((bookmark, index) => (
+                          <div
+                            key={index}
+                            className={css({
+                              display: 'flex',
+                              gap: '2',
+                              alignItems: 'start',
+                              p: '2',
+                              rounded: 'md',
+                              bg: 'gray.800/50',
+                              border: '1px solid',
+                              borderColor: 'sky.500/20',
+                            })}
+                          >
+                            <div className={css({ flex: '1', spaceY: '2' })}>
+                              <input
+                                type="text"
+                                value={bookmark.title}
+                                onChange={(e) => {
+                                  const newBookmarks = [...bookmarks]
+                                  newBookmarks[index].title = e.target.value
+                                  setBookmarks(newBookmarks)
+                                }}
+                                placeholder="Bookmark title"
+                                className={css({
+                                  w: 'full',
+                                  px: '2',
+                                  py: '1',
+                                  rounded: 'md',
+                                  bg: 'gray.800',
+                                  border: '1px solid',
+                                  borderColor: 'sky.500/30',
+                                  color: 'gray.200',
+                                  fontSize: 'sm',
+                                })}
+                              />
+                              <div className={css({ display: 'flex', gap: '2' })}>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  value={bookmark.pageNumber}
+                                  onChange={(e) => {
+                                    const newBookmarks = [...bookmarks]
+                                    newBookmarks[index].pageNumber = Number(e.target.value)
+                                    setBookmarks(newBookmarks)
+                                  }}
+                                  placeholder="Page"
+                                  className={css({
+                                    w: '20',
+                                    px: '2',
+                                    py: '1',
+                                    rounded: 'md',
+                                    bg: 'gray.800',
+                                    border: '1px solid',
+                                    borderColor: 'sky.500/30',
+                                    color: 'gray.200',
+                                    fontSize: 'sm',
+                                  })}
+                                />
+                                <select
+                                  value={bookmark.level || 0}
+                                  onChange={(e) => {
+                                    const newBookmarks = [...bookmarks]
+                                    newBookmarks[index].level = Number(e.target.value)
+                                    setBookmarks(newBookmarks)
+                                  }}
+                                  className={css({
+                                    px: '2',
+                                    py: '1',
+                                    rounded: 'md',
+                                    bg: 'gray.800',
+                                    border: '1px solid',
+                                    borderColor: 'sky.500/30',
+                                    color: 'gray.200',
+                                    fontSize: 'sm',
+                                  })}
+                                >
+                                  <option value="0">Level 1</option>
+                                  <option value="1">Level 2</option>
+                                  <option value="2">Level 3</option>
+                                </select>
+                              </div>
+                            </div>
+                            <Button
+                              onClick={() => {
+                                const newBookmarks = bookmarks.filter((_, i) => i !== index)
+                                setBookmarks(newBookmarks)
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className={css({ color: 'red.400' })}
+                            >
+                              <Trash2 className={css({ h: '4', w: '4' })} />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}

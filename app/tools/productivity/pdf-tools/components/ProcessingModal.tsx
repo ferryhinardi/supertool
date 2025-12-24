@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import {
   Archive,
+  Bookmark,
   CheckCircle,
   Copy,
   CopyPlus,
@@ -72,6 +73,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   ocrExtract: FileScan,
   flatten: Layers,
   addHeaderFooter: FileType,
+  addBookmarks: Bookmark,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -97,6 +99,7 @@ const operationLabels: Record<OperationType, string> = {
   ocrExtract: 'Extracting Text with OCR',
   flatten: 'Flattening PDF',
   addHeaderFooter: 'Adding Headers/Footers',
+  addBookmarks: 'Adding Bookmarks',
 }
 
 // Simple circular progress component without external dependency

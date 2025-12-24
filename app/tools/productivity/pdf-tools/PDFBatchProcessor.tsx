@@ -39,6 +39,7 @@ export type OperationType =
   | 'ocrExtract'
   | 'flatten'
   | 'addHeaderFooter'
+  | 'addBookmarks'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -105,6 +106,12 @@ interface ProcessOptions {
   footerPosition?: 'left' | 'center' | 'right'
   headerFooterFontSize?: number
   includePageNumbers?: boolean
+  // Bookmark options
+  bookmarks?: Array<{
+    title: string
+    pageNumber: number
+    level?: number // Nesting level (0 = top level, 1 = nested, etc.)
+  }>
 }
 
 /**
@@ -256,6 +263,9 @@ export class PDFBatchProcessor {
             fontSize: options.headerFooterFontSize || 10,
             includePageNumbers: options.includePageNumbers || false,
           })
+          break
+        case 'addBookmarks':
+          await this.addBookmarks(pdf, options.bookmarks || [])
           break
       }
     } catch (error) {
@@ -1828,6 +1838,104 @@ export class PDFBatchProcessor {
       // Update progress
       const progress = 30 + Math.floor(((i + 1) / pages.length) * 60)
       this.updateCallback(pdf.id, { progress })
+    }
+
+    this.updateCallback(pdf.id, { progress: 90 })
+
+    const pdfBytes = await pdfDoc.save()
+    const finalBlob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
+
+    this.updateCallback(pdf.id, {
+      status: 'completed',
+      progress: 100,
+      processedBlob: finalBlob,
+      processedSize: finalBlob.size,
+    })
+  }
+
+  /**
+   * Add bookmarks to PDF
+   * Note: This creates a simple Table of Contents page with clickable links
+   * since pdf-lib has limited native bookmark support
+   */
+  private async addBookmarks(
+    pdf: PDFFile,
+    bookmarks: Array<{ title: string; pageNumber: number; level?: number }>
+  ): Promise<void> {
+    this.updateCallback(pdf.id, { progress: 10 })
+
+    if (bookmarks.length === 0) {
+      throw new Error('At least one bookmark is required')
+    }
+
+    const arrayBuffer = await pdf.file.arrayBuffer()
+    const pdfLib = await import('pdf-lib')
+    const pdfDoc = await pdfLib.PDFDocument.load(arrayBuffer)
+    const pages = pdfDoc.getPages()
+
+    this.updateCallback(pdf.id, { progress: 30 })
+
+    // Validate all page numbers
+    for (const bookmark of bookmarks) {
+      if (bookmark.pageNumber < 1 || bookmark.pageNumber > pages.length) {
+        throw new Error(
+          `Bookmark "${bookmark.title}" references invalid page ${bookmark.pageNumber}. PDF has ${pages.length} pages.`
+        )
+      }
+    }
+
+    // Insert a Table of Contents page at the beginning
+    const tocPage = pdfDoc.insertPage(0, [595.28, 841.89]) // A4 size
+    const font = await pdfDoc.embedFont(pdfLib.StandardFonts.Helvetica)
+    const boldFont = await pdfDoc.embedFont(pdfLib.StandardFonts.HelveticaBold)
+
+    // Draw title
+    tocPage.drawText('Table of Contents', {
+      x: 50,
+      y: 791.89,
+      size: 20,
+      font: boldFont,
+      color: pdfLib.rgb(0, 0, 0),
+    })
+
+    // Draw bookmarks
+    let yPosition = 750
+    const lineHeight = 25
+
+    for (let i = 0; i < bookmarks.length; i++) {
+      const bookmark = bookmarks[i]
+      const level = bookmark.level || 0
+      const indent = level * 20
+
+      this.updateCallback(pdf.id, {
+        progress: 30 + Math.floor(((i + 1) / bookmarks.length) * 50),
+      })
+
+      // Check if we need a new page for TOC
+      if (yPosition < 50) {
+        yPosition = 791.89
+        const newTocPage = pdfDoc.insertPage(i + 1, [595.28, 841.89])
+        newTocPage.drawText('Table of Contents (continued)', {
+          x: 50,
+          y: yPosition,
+          size: 16,
+          font: boldFont,
+          color: pdfLib.rgb(0, 0, 0),
+        })
+        yPosition -= 30
+      }
+
+      // Draw bookmark text
+      const bookmarkText = `${bookmark.title} .............. ${bookmark.pageNumber + 1}` // +1 because we added TOC page
+      tocPage.drawText(bookmarkText, {
+        x: 50 + indent,
+        y: yPosition,
+        size: 12,
+        font,
+        color: pdfLib.rgb(0, 0, 0.8),
+      })
+
+      yPosition -= lineHeight
     }
 
     this.updateCallback(pdf.id, { progress: 90 })

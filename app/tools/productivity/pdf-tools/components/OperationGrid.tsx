@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import {
   Archive,
+  Bookmark,
   Copy,
   CopyPlus,
   Droplet,
@@ -52,6 +53,7 @@ export type OperationType =
   | 'ocrExtract'
   | 'flatten'
   | 'addHeaderFooter'
+  | 'addBookmarks'
 
 interface Operation {
   value: OperationType
@@ -128,6 +130,13 @@ const operationCategories: OperationCategory[] = [
         icon: Hash,
         color: '#0ea5e9',
         description: 'Number pages automatically',
+      },
+      {
+        value: 'addBookmarks',
+        label: 'Add Bookmarks',
+        icon: Bookmark,
+        color: '#0ea5e9',
+        description: 'Add table of contents',
       },
       {
         value: 'watermark',
