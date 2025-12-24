@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate donation product is configured if using donations
-    if (productId === POLAR_CONFIG.donationProductId && !POLAR_CONFIG.donationProductId) {
+    if (!POLAR_CONFIG.donationProductId) {
       return NextResponse.json(
         { error: 'Donation product not configured. Please contact support.' },
         { status: 500 }

@@ -854,7 +854,7 @@ function PolarPayment({ onBack }: { onBack: () => void }) {
           <button
             type="button"
             onClick={handleCheckout}
-            disabled={loading || (!selectedAmount && !customAmount)}
+            disabled={loading || (!selectedAmount && (!customAmount || customAmount === ''))}
             style={{
               flex: 1,
               padding: '0.5rem 1rem',
@@ -863,11 +863,14 @@ function PolarPayment({ onBack }: { onBack: () => void }) {
               fontWeight: 600,
               border: 'none',
               backgroundColor:
-                loading || (!selectedAmount && !customAmount)
+                loading || (!selectedAmount && (!customAmount || customAmount === ''))
                   ? 'rgb(55, 65, 81)'
                   : 'rgb(96, 165, 250)',
               color: 'white',
-              cursor: loading || (!selectedAmount && !customAmount) ? 'not-allowed' : 'pointer',
+              cursor:
+                loading || (!selectedAmount && (!customAmount || customAmount === ''))
+                  ? 'not-allowed'
+                  : 'pointer',
               opacity: loading || (!selectedAmount && !customAmount) ? 0.6 : 1,
               transition: 'all 0.2s',
             }}

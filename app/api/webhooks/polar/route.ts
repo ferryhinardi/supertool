@@ -138,7 +138,7 @@ async function handleSubscriptionCreated(data: any) {
           : new Date().toISOString(),
         current_period_end: data.current_period_end
           ? new Date(data.current_period_end).toISOString()
-          : null,
+          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // Default to 30 days from now
         trial_start: data.trial_start ? new Date(data.trial_start).toISOString() : null,
         trial_end: data.trial_end ? new Date(data.trial_end).toISOString() : null,
         cancel_at_period_end: data.cancel_at_period_end || false,
