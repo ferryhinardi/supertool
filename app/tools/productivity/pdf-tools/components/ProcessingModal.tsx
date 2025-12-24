@@ -18,6 +18,7 @@ import {
   FileType,
   GripVertical,
   Hash,
+  ImageDown,
   Image as ImageIcon,
   Layers,
   Loader2,
@@ -74,6 +75,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   flatten: Layers,
   addHeaderFooter: FileType,
   addBookmarks: Bookmark,
+  extractImages: ImageDown,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -100,6 +102,7 @@ const operationLabels: Record<OperationType, string> = {
   flatten: 'Flattening PDF',
   addHeaderFooter: 'Adding Headers/Footers',
   addBookmarks: 'Adding Bookmarks',
+  extractImages: 'Extracting Images',
 }
 
 // Simple circular progress component without external dependency

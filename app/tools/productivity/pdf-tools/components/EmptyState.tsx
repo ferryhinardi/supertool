@@ -190,6 +190,16 @@ const operationTips: Record<
       'Easy navigation within the PDF',
     ],
   },
+  extractImages: {
+    title: 'Extract Images',
+    description: 'Extract all embedded images from PDF files',
+    tips: [
+      'Extract images in PNG format',
+      'Maintains original image quality',
+      'Process all pages automatically',
+      'Download images as individual files',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

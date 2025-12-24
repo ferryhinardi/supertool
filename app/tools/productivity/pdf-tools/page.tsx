@@ -30,6 +30,7 @@ import {
   FileOutput,
   FileText,
   GripVertical,
+  ImageDown,
   Image as ImageIcon,
   Info,
   Lock,
@@ -160,6 +161,7 @@ type OperationType =
   | 'flatten'
   | 'addHeaderFooter'
   | 'addBookmarks'
+  | 'extractImages'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -1530,7 +1532,7 @@ export default function PDFToolsPage() {
   }
 
   const handleDownload = (pdf: PDFFile) => {
-    if (operation === 'toImages') {
+    if (operation === 'toImages' || operation === 'extractImages') {
       // Download all images
       const images = (pdf as PDFFile & { imageBlobs?: Blob[] }).imageBlobs
       if (!images) return
@@ -1539,7 +1541,11 @@ export default function PDFToolsPage() {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `${pdf.name.replace('.pdf', '')}_page_${index + 1}.png`
+        if (operation === 'extractImages') {
+          a.download = `${pdf.name.replace('.pdf', '')}_image_${index + 1}.png`
+        } else {
+          a.download = `${pdf.name.replace('.pdf', '')}_page_${index + 1}.png`
+        }
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
@@ -1547,9 +1553,9 @@ export default function PDFToolsPage() {
       })
 
       trackEvent({
-        action: 'images_downloaded',
+        action: operation === 'extractImages' ? 'images_extracted' : 'images_downloaded',
         category: 'pdf_tools',
-        label: 'download_images',
+        label: operation === 'extractImages' ? 'extract_images' : 'download_images',
         value: images.length,
       })
     } else if (operation === 'split') {
@@ -4508,6 +4514,47 @@ export default function PDFToolsPage() {
                             </Button>
                           </div>
                         ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'extractImages' && pdfs.length > 0 && (
+                  <div
+                    className={css({
+                      p: '4',
+                      borderRadius: 'lg',
+                      bg: '#f59e0b/10',
+                      borderWidth: '1px',
+                      borderColor: '#f59e0b/20',
+                    })}
+                  >
+                    <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                      <ImageDown
+                        className={css({
+                          h: '5',
+                          w: '5',
+                          color: '#f59e0b',
+                          flexShrink: '0',
+                          mt: '0.5',
+                        })}
+                      />
+                      <div className={css({ spaceY: '2' })}>
+                        <div
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.200',
+                          })}
+                        >
+                          Extract Embedded Images
+                        </div>
+                        <p
+                          className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: '1.5' })}
+                        >
+                          All embedded images will be extracted from the PDF and saved as individual
+                          PNG files. Original image quality will be preserved.
+                        </p>
                       </div>
                     </div>
                   </div>

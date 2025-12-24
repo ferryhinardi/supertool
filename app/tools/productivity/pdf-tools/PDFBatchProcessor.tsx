@@ -40,6 +40,7 @@ export type OperationType =
   | 'flatten'
   | 'addHeaderFooter'
   | 'addBookmarks'
+  | 'extractImages'
 
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
@@ -266,6 +267,9 @@ export class PDFBatchProcessor {
           break
         case 'addBookmarks':
           await this.addBookmarks(pdf, options.bookmarks || [])
+          break
+        case 'extractImages':
+          await this.extractImages(pdf)
           break
       }
     } catch (error) {
@@ -1949,5 +1953,105 @@ export class PDFBatchProcessor {
       processedBlob: finalBlob,
       processedSize: finalBlob.size,
     })
+  }
+
+  /**
+   * Extract all images from PDF
+   */
+  private async extractImages(pdf: PDFFile): Promise<void> {
+    const pdfjs = await import('pdfjs-dist')
+
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
+    }
+
+    try {
+      this.updateCallback(pdf.id, { status: 'processing', progress: 10 })
+
+      // Load PDF with pdfjs-dist
+      const pdfDoc = await pdfjs.getDocument({ data: await pdf.file.arrayBuffer() }).promise
+      const numPages = pdfDoc.numPages
+
+      const images: Blob[] = []
+
+      // Process each page
+      for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+        const page = await pdfDoc.getPage(pageNum)
+        const ops = await page.getOperatorList()
+
+        // Find image operations
+        for (let i = 0; i < ops.fnArray.length; i++) {
+          const fn = ops.fnArray[i]
+          const args = ops.argsArray[i]
+
+          // OPS.paintImageXObject or OPS.paintInlineImageXObject
+          if (fn === pdfjs.OPS.paintImageXObject || fn === pdfjs.OPS.paintInlineImageXObject) {
+            try {
+              const imageName = args[0]
+
+              // Get the image object
+              const objs = page.objs
+              const img = await new Promise<any>((resolve) => {
+                objs.get(imageName, (data: any) => {
+                  resolve(data)
+                })
+              })
+
+              if (img) {
+                // Create canvas and draw image
+                const canvas = document.createElement('canvas')
+                canvas.width = img.width
+                canvas.height = img.height
+                const ctx = canvas.getContext('2d')
+
+                if (ctx) {
+                  // Convert image data to ImageData
+                  const imageData = new ImageData(
+                    new Uint8ClampedArray(img.data),
+                    img.width,
+                    img.height
+                  )
+                  ctx.putImageData(imageData, 0, 0)
+
+                  // Convert canvas to blob
+                  const blob = await new Promise<Blob>((resolve) => {
+                    canvas.toBlob((b) => {
+                      resolve(b || new Blob())
+                    }, 'image/png')
+                  })
+
+                  images.push(blob)
+                }
+              }
+            } catch (imgError) {
+              console.warn(`Failed to extract image on page ${pageNum}:`, imgError)
+            }
+          }
+        }
+
+        // Update progress
+        const progress = 10 + (pageNum / numPages) * 80
+        this.updateCallback(pdf.id, { progress })
+      }
+
+      if (images.length === 0) {
+        throw new Error('No images found in PDF')
+      }
+
+      this.updateCallback(pdf.id, {
+        status: 'completed',
+        progress: 100,
+        imageBlobs: images,
+      })
+    } catch (error) {
+      this.updateCallback(pdf.id, {
+        status: 'error',
+        progress: 0,
+        error: error instanceof Error ? error.message : 'Failed to extract images',
+      })
+    }
   }
 }

@@ -17,6 +17,7 @@ import {
   FileType,
   GripVertical,
   Hash,
+  ImageDown,
   Image as ImageIcon,
   Layers,
   Lock,
@@ -54,6 +55,7 @@ export type OperationType =
   | 'flatten'
   | 'addHeaderFooter'
   | 'addBookmarks'
+  | 'extractImages'
 
 interface Operation {
   value: OperationType
@@ -205,6 +207,13 @@ const operationCategories: OperationCategory[] = [
         icon: FileScan,
         color: '#8b5cf6',
         description: 'Extract text from scanned PDFs',
+      },
+      {
+        value: 'extractImages',
+        label: 'Extract Images',
+        icon: ImageDown,
+        color: '#f59e0b',
+        description: 'Extract all embedded images',
       },
     ],
   },
