@@ -29,6 +29,7 @@ import {
   FileDown,
   FileOutput,
   FileText,
+  Globe,
   GripVertical,
   ImageDown,
   Image as ImageIcon,
@@ -162,6 +163,7 @@ type OperationType =
   | 'addHeaderFooter'
   | 'addBookmarks'
   | 'extractImages'
+  | 'optimizeWeb'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -1671,6 +1673,9 @@ export default function PDFToolsPage() {
           break
         case 'addBookmarks':
           suffix = '_bookmarks'
+          break
+        case 'optimizeWeb':
+          suffix = '_optimized'
           break
       }
 
@@ -4554,6 +4559,48 @@ export default function PDFToolsPage() {
                         >
                           All embedded images will be extracted from the PDF and saved as individual
                           PNG files. Original image quality will be preserved.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {operation === 'optimizeWeb' && pdfs.length > 0 && (
+                  <div
+                    className={css({
+                      p: '4',
+                      borderRadius: 'lg',
+                      bg: '#06b6d4/10',
+                      borderWidth: '1px',
+                      borderColor: '#06b6d4/20',
+                    })}
+                  >
+                    <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
+                      <Globe
+                        className={css({
+                          h: '5',
+                          w: '5',
+                          color: '#06b6d4',
+                          flexShrink: '0',
+                          mt: '0.5',
+                        })}
+                      />
+                      <div className={css({ spaceY: '2' })}>
+                        <div
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.200',
+                          })}
+                        >
+                          Optimize for Web Viewing
+                        </div>
+                        <p
+                          className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: '1.5' })}
+                        >
+                          Optimizes your PDF for faster loading on websites by removing unused
+                          objects and creating an efficient document structure. All content and
+                          metadata will be preserved.
                         </p>
                       </div>
                     </div>

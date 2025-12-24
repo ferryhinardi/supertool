@@ -15,6 +15,7 @@ import {
   FileScan,
   FileText,
   FileType,
+  Globe,
   GripVertical,
   Hash,
   ImageDown,
@@ -56,6 +57,7 @@ export type OperationType =
   | 'addHeaderFooter'
   | 'addBookmarks'
   | 'extractImages'
+  | 'optimizeWeb'
 
 interface Operation {
   value: OperationType
@@ -99,6 +101,13 @@ const operationCategories: OperationCategory[] = [
         icon: Archive,
         color: '#10b981',
         description: 'Reduce file size',
+      },
+      {
+        value: 'optimizeWeb',
+        label: 'Optimize for Web',
+        icon: Globe,
+        color: '#06b6d4',
+        description: 'Optimize for faster web viewing',
       },
       {
         value: 'grayscale',

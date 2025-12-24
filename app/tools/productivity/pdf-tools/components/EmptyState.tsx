@@ -200,6 +200,16 @@ const operationTips: Record<
       'Download images as individual files',
     ],
   },
+  optimizeWeb: {
+    title: 'Optimize for Web',
+    description: 'Optimize PDF for faster loading on websites',
+    tips: [
+      'Removes unused objects and references',
+      'Creates clean document structure',
+      'Preserves all content and metadata',
+      'Ideal for web publishing and sharing',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

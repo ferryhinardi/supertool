@@ -16,6 +16,7 @@ import {
   FileScan,
   FileText,
   FileType,
+  Globe,
   GripVertical,
   Hash,
   ImageDown,
@@ -76,6 +77,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   addHeaderFooter: FileType,
   addBookmarks: Bookmark,
   extractImages: ImageDown,
+  optimizeWeb: Globe,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -103,6 +105,7 @@ const operationLabels: Record<OperationType, string> = {
   addHeaderFooter: 'Adding Headers/Footers',
   addBookmarks: 'Adding Bookmarks',
   extractImages: 'Extracting Images',
+  optimizeWeb: 'Optimizing for Web',
 }
 
 // Simple circular progress component without external dependency
