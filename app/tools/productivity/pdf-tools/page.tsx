@@ -67,10 +67,12 @@ import { PDFThumbnail } from './components/PDFThumbnail'
 import { PresetsDialog } from './components/PresetsDialog'
 import { ProcessingModal } from './components/ProcessingModal'
 import { ReorderablePDFList } from './components/ReorderablePDFList'
+import { SummarizationDialog } from './components/SummarizationDialog'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useOperationHistory } from './hooks/useOperationHistory'
 import { PDFBatchProcessor } from './PDFBatchProcessor'
 import PDFPageEditFlow from './PDFPageEditFlow'
+import { extractTextFromPDF } from './utils/pdfTextExtractor'
 
 // Dynamic import for pdf-lib (client-side only)
 let pdfLib: typeof PdfLibTypes | null = null
@@ -166,6 +168,7 @@ type OperationType =
   | 'extractImages'
   | 'optimizeWeb'
   | 'splitByBookmarks'
+  | 'aiSummarize'
 
 export default function PDFToolsPage() {
   const [pdfs, setPdfs] = useState<PDFFile[]>([])
@@ -304,6 +307,26 @@ export default function PDFToolsPage() {
   const [comparisonPdf, setComparisonPdf] = useState<PDFFile | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const batchProcessorRef = useRef<PDFBatchProcessor | null>(null)
+
+  // AI Summarization options
+  const [showSummarization, setShowSummarization] = useState(false)
+  const [summarizationResult, setSummarizationResult] = useState<{
+    summary: string
+    keyPoints: string[]
+    documentType: string
+    mainTopics: string[]
+    actionItems: string[]
+    technicalTerms: string[]
+    pageAnalysis: string
+    metadata: {
+      fileName: string
+      pageCount: number
+      wordCount: number
+      charCount: number
+      estimatedReadingTime: number
+    }
+  } | null>(null)
+  const [isSummarizing, setIsSummarizing] = useState(false)
 
   // Initialize batch processor
   useEffect(() => {
@@ -1434,6 +1457,94 @@ export default function PDFToolsPage() {
       })
     }
   }
+
+  // AI Summarization handler
+  const handleAISummarize = async () => {
+    if (pdfs.length === 0) {
+      toast.error('Please upload a PDF file first')
+      return
+    }
+
+    if (pdfs.length > 1) {
+      toast.error('AI Summarization works with one PDF at a time. Please upload only one file.')
+      return
+    }
+
+    const pdf = pdfs[0]
+    setIsSummarizing(true)
+    setShowSummarization(true)
+    setSummarizationResult(null)
+
+    try {
+      trackEvent({
+        action: 'ai_summarize_start',
+        category: 'pdf_tools',
+        label: 'ai_summarize',
+      })
+
+      // Extract text from PDF
+      toast.info('Extracting text from PDF...')
+      const extractedData = await extractTextFromPDF(pdf.file, {
+        maxPages: 50, // Limit to first 50 pages for performance
+        onProgress: (current, total) => {
+          console.log(`Extracting page ${current} of ${total}`)
+        },
+      })
+
+      if (!extractedData.text || extractedData.text.trim().length < 100) {
+        throw new Error(
+          'Could not extract enough text from PDF. The PDF might be scanned or image-based. Try using OCR first.'
+        )
+      }
+
+      // Call AI API
+      toast.info('Analyzing document with AI...')
+      const response = await fetch('/api/ai-pdf-summarize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: extractedData.text,
+          fileName: pdf.name,
+          pageCount: extractedData.pageCount,
+          options: {
+            length: 'medium',
+            includeTechnical: true,
+            language: 'en',
+          },
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to generate summary')
+      }
+
+      const result = await response.json()
+      setSummarizationResult(result)
+      toast.success('AI summary generated successfully!')
+
+      trackEvent({
+        action: 'ai_summarize_complete',
+        category: 'pdf_tools',
+        label: 'ai_summarize',
+      })
+    } catch (error) {
+      console.error('AI Summarization error:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to generate AI summary')
+      setShowSummarization(false)
+
+      trackEvent({
+        action: 'ai_summarize_error',
+        category: 'pdf_tools',
+        label: error instanceof Error ? error.message : 'unknown_error',
+      })
+    } finally {
+      setIsSummarizing(false)
+    }
+  }
+
   const handleProcess = async () => {
     saveSnapshot(`process_${operation}`)
     setIsProcessing(true)
@@ -1448,6 +1559,10 @@ export default function PDFToolsPage() {
           setIsEditorOpen(true)
         }
         setIsProcessing(false)
+        return
+      } else if (operation === 'aiSummarize') {
+        setIsProcessing(false)
+        await handleAISummarize()
         return
       } else {
         // Use batch processor for parallel processing
@@ -5186,6 +5301,15 @@ export default function PDFToolsPage() {
           }
         }}
         canClose={pdfs.every((p) => p.status !== 'processing')}
+      />
+      <SummarizationDialog
+        isOpen={showSummarization}
+        onClose={() => {
+          setShowSummarization(false)
+          setSummarizationResult(null)
+        }}
+        result={summarizationResult}
+        isLoading={isSummarizing}
       />
       <ToolSearch />
     </main>

@@ -6,6 +6,7 @@ import {
   Archive,
   Bookmark,
   BookmarkCheck,
+  Brain,
   Copy,
   CopyPlus,
   Droplet,
@@ -60,6 +61,7 @@ export type OperationType =
   | 'extractImages'
   | 'optimizeWeb'
   | 'splitByBookmarks'
+  | 'aiSummarize'
 
 interface Operation {
   value: OperationType
@@ -232,6 +234,18 @@ const operationCategories: OperationCategory[] = [
         icon: ImageDown,
         color: '#f59e0b',
         description: 'Extract all embedded images',
+      },
+    ],
+  },
+  {
+    label: 'AI-Powered',
+    operations: [
+      {
+        value: 'aiSummarize',
+        label: 'AI Summarize',
+        icon: Brain,
+        color: '#a855f7',
+        description: 'AI-powered document summary & insights',
       },
     ],
   },
