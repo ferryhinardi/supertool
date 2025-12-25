@@ -6,6 +6,7 @@ import {
   Archive,
   Bookmark,
   BookmarkCheck,
+  Brain,
   CheckCircle,
   Copy,
   CopyPlus,
@@ -80,6 +81,7 @@ const operationIcons: Record<OperationType, LucideIcon> = {
   extractImages: ImageDown,
   optimizeWeb: Globe,
   splitByBookmarks: BookmarkCheck,
+  aiSummarize: Brain,
 }
 
 const operationLabels: Record<OperationType, string> = {
@@ -109,6 +111,7 @@ const operationLabels: Record<OperationType, string> = {
   extractImages: 'Extracting Images',
   optimizeWeb: 'Optimizing for Web',
   splitByBookmarks: 'Splitting by Bookmarks',
+  aiSummarize: 'Summarizing with AI',
 }
 
 // Simple circular progress component without external dependency

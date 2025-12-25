@@ -220,6 +220,16 @@ const operationTips: Record<
       'Preserves all content and formatting',
     ],
   },
+  aiSummarize: {
+    title: 'AI-Powered PDF Summarization',
+    description: 'Get an intelligent summary of your PDF using AI',
+    tips: [
+      'Analyzes document content and structure',
+      'Extracts key points and action items',
+      'Identifies document type and main topics',
+      'Export summary as text file',
+    ],
+  },
 }
 
 export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {

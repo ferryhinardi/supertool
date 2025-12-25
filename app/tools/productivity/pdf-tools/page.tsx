@@ -58,6 +58,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ToolSearch } from '@/components/ui/tool-search'
 import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
+import { BatchQueue } from './components/BatchQueue'
+import { BatchToolbar } from './components/BatchToolbar'
 import { ComparisonView } from './components/ComparisonView'
 import { EmptyState } from './components/EmptyState'
 import { KeyboardShortcutsDialog } from './components/KeyboardShortcutsDialog'
@@ -68,6 +70,7 @@ import { PresetsDialog } from './components/PresetsDialog'
 import { ProcessingModal } from './components/ProcessingModal'
 import { ReorderablePDFList } from './components/ReorderablePDFList'
 import { SummarizationDialog } from './components/SummarizationDialog'
+import { useBatchQueue } from './hooks/useBatchQueue'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useOperationHistory } from './hooks/useOperationHistory'
 import { PDFBatchProcessor } from './PDFBatchProcessor'
@@ -335,6 +338,9 @@ export default function PDFToolsPage() {
     })
   }, [])
 
+  // Batch queue management
+  const batchQueue = useBatchQueue(pdfs, setPdfs)
+
   // Operation history for undo/redo
   const { addSnapshot, undo, redo, canUndo, canRedo } = useOperationHistory<PDFFile[]>()
 
@@ -383,6 +389,15 @@ export default function PDFToolsPage() {
       label: 'tool_opened',
     })
   }, [])
+
+  // Show toast when batch processing is paused/resumed
+  useEffect(() => {
+    if (pdfs.length > 1) {
+      if (batchQueue.isPaused) {
+        toast.info('Batch processing paused')
+      }
+    }
+  }, [batchQueue.isPaused, pdfs.length])
 
   const handleFilesSelected = useCallback(async (files: FileList) => {
     const fileArray = Array.from(files)
@@ -1547,6 +1562,13 @@ export default function PDFToolsPage() {
 
   const handleProcess = async () => {
     saveSnapshot(`process_${operation}`)
+
+    // Check if batch processing is paused
+    if (batchQueue.isPaused && pdfs.length > 1) {
+      toast.error('Batch processing is paused. Please resume to continue.')
+      return
+    }
+
     setIsProcessing(true)
 
     try {
@@ -5100,6 +5122,27 @@ export default function PDFToolsPage() {
                         py: '8',
                       })}
                     />
+
+                    {/* Batch Operations Dashboard - Show when 2+ files */}
+                    {pdfs.length > 1 && (
+                      <>
+                        <BatchToolbar
+                          pdfs={pdfs}
+                          isPaused={batchQueue.isPaused}
+                          onPauseResume={batchQueue.togglePause}
+                          onCancelAll={batchQueue.cancelAll}
+                          onRetryFailed={batchQueue.retryFailed}
+                          onDownloadAll={handleDownloadAll}
+                          onClearCompleted={batchQueue.clearCompleted}
+                        />
+                        <BatchQueue
+                          pdfs={pdfs}
+                          onDownload={handleDownload}
+                          onRetry={(pdf) => batchQueue.retryFile(pdf.id)}
+                          onRemove={(pdf) => batchQueue.removeFile(pdf.id)}
+                        />
+                      </>
+                    )}
 
                     <ReorderablePDFList
                       pdfs={pdfs}
