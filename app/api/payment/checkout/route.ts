@@ -7,7 +7,7 @@
  */
 
 import { type NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/auth/supabaseClient'
+import { supabaseServer } from '@/lib/auth/supabaseServer'
 import { POLAR_CONFIG, polar } from '@/lib/services/polar'
 
 export const runtime = 'nodejs'
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     if (authHeader) {
       const {
         data: { user },
-      } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''))
+      } = await supabaseServer.auth.getUser(authHeader.replace('Bearer ', ''))
       userId = user?.id
       userEmail = user?.email
     }

@@ -4,6 +4,12 @@
       "maxDuration": 300,
       "memory": 2048,
       "includeFiles": "bin/ffmpeg"
+    },
+    "app/api/payment/checkout/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/webhooks/polar/route.ts": {
+      "maxDuration": 10
     }
   }
 }
