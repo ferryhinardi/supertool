@@ -48,7 +48,10 @@ export type OperationType =
 interface ProcessOptions {
   compressionLevel?: CompressionLevel
   splitPageNumber?: number
+  watermarkType?: 'text' | 'image' | 'qr'
   watermarkText?: string
+  watermarkImage?: File | null
+  watermarkImageScale?: number
   watermarkOpacity?: number
   watermarkRotation?: number
   watermarkPosition?:
@@ -56,6 +59,8 @@ interface ProcessOptions {
     | 'diagonal'
     | 'top'
     | 'bottom'
+    | 'left'
+    | 'right'
     | 'top-left'
     | 'top-right'
     | 'bottom-left'
@@ -184,7 +189,9 @@ export class PDFBatchProcessor {
         case 'watermark':
           await this.addWatermark(
             pdf,
+            options.watermarkType || 'text',
             options.watermarkText || 'CONFIDENTIAL',
+            options.watermarkImage || null,
             options.watermarkOpacity || 0.3,
             {
               rotation: options.watermarkRotation,
@@ -192,6 +199,7 @@ export class PDFBatchProcessor {
               color: options.watermarkColor,
               fontSize: options.watermarkFontSize,
               pattern: options.watermarkPattern,
+              imageScale: options.watermarkImageScale,
             }
           )
           break
@@ -511,7 +519,9 @@ export class PDFBatchProcessor {
 
   private async addWatermark(
     pdf: PDFFile,
+    type: 'text' | 'image' | 'qr',
     text: string,
+    image: File | null,
     opacity: number,
     options?: {
       rotation?: number
@@ -520,6 +530,8 @@ export class PDFBatchProcessor {
         | 'diagonal'
         | 'top'
         | 'bottom'
+        | 'left'
+        | 'right'
         | 'top-left'
         | 'top-right'
         | 'bottom-left'
@@ -527,12 +539,27 @@ export class PDFBatchProcessor {
       color?: string
       fontSize?: number
       pattern?: boolean
+      imageScale?: number
     }
   ): Promise<void> {
     const { PDFDocument, rgb, degrees } = await import('pdf-lib')
     const arrayBuffer = await pdf.file.arrayBuffer()
     const pdfDoc = await PDFDocument.load(arrayBuffer)
     const pages = pdfDoc.getPages()
+
+    // Embed image if type is image or qr
+    // biome-ignore lint/suspicious/noExplicitAny: pdf-lib image types
+    let embeddedImage: any = null
+    if ((type === 'image' || type === 'qr') && image) {
+      const imageBytes = await image.arrayBuffer()
+      const imageType = image.type
+
+      if (imageType === 'image/png') {
+        embeddedImage = await pdfDoc.embedPng(imageBytes)
+      } else if (imageType === 'image/jpeg' || imageType === 'image/jpg') {
+        embeddedImage = await pdfDoc.embedJpg(imageBytes)
+      }
+    }
 
     // Helper function to convert hex color to RGB
     const hexToRgb = (hex: string) => {
@@ -546,7 +573,7 @@ export class PDFBatchProcessor {
         : { r: 0.7, g: 0.7, b: 0.7 }
     }
 
-    // Helper function to calculate position
+    // Helper function to calculate position for text
     const getPosition = (
       width: number,
       height: number,
@@ -564,6 +591,10 @@ export class PDFBatchProcessor {
           return { x: width / 2 - estimatedWidth / 2, y: height - 50 }
         case 'bottom':
           return { x: width / 2 - estimatedWidth / 2, y: 50 }
+        case 'left':
+          return { x: 50, y: height / 2 }
+        case 'right':
+          return { x: width - estimatedWidth - 50, y: height / 2 }
         case 'top-left':
           return { x: 50, y: height - 50 }
         case 'top-right':
@@ -577,45 +608,118 @@ export class PDFBatchProcessor {
       }
     }
 
+    // Helper function to calculate position for image
+    const getImagePosition = (
+      width: number,
+      height: number,
+      imageWidth: number,
+      imageHeight: number,
+      position: string
+    ) => {
+      switch (position) {
+        case 'center':
+          return { x: width / 2 - imageWidth / 2, y: height / 2 - imageHeight / 2 }
+        case 'diagonal':
+          return { x: width / 2 - imageWidth / 2, y: height / 2 - imageHeight / 2 }
+        case 'top':
+          return { x: width / 2 - imageWidth / 2, y: height - imageHeight - 50 }
+        case 'bottom':
+          return { x: width / 2 - imageWidth / 2, y: 50 }
+        case 'left':
+          return { x: 50, y: height / 2 - imageHeight / 2 }
+        case 'right':
+          return { x: width - imageWidth - 50, y: height / 2 - imageHeight / 2 }
+        case 'top-left':
+          return { x: 50, y: height - imageHeight - 50 }
+        case 'top-right':
+          return { x: width - imageWidth - 50, y: height - imageHeight - 50 }
+        case 'bottom-left':
+          return { x: 50, y: 50 }
+        case 'bottom-right':
+          return { x: width - imageWidth - 50, y: 50 }
+        default:
+          return { x: width / 2 - imageWidth / 2, y: height / 2 - imageHeight / 2 }
+      }
+    }
+
     const rotation = options?.rotation ?? -45
     const position = options?.position ?? 'diagonal'
     const fontSize = options?.fontSize ?? 50
     const colorHex = options?.color ?? '#b3b3b3'
     const pattern = options?.pattern ?? false
+    const imageScale = options?.imageScale ?? 1.0
     const rgbColor = hexToRgb(colorHex)
 
     // biome-ignore lint/suspicious/noExplicitAny: pdf-lib page types
     pages.forEach((page: any, index: number) => {
       const { width, height } = page.getSize()
 
-      const drawOptions = {
-        size: fontSize,
-        color: rgb(rgbColor.r, rgbColor.g, rgbColor.b),
-        opacity: opacity,
-        rotate: degrees(rotation),
-      }
-
-      if (pattern) {
-        // Draw watermark multiple times in a grid pattern
-        const spacingX = width / 3
-        const spacingY = height / 3
-        for (let xOffset = 0; xOffset < width; xOffset += spacingX) {
-          for (let yOffset = 0; yOffset < height; yOffset += spacingY) {
-            page.drawText(text, {
-              x: xOffset,
-              y: yOffset,
-              ...drawOptions,
-            })
-          }
+      if (type === 'text') {
+        // Text watermark
+        const drawOptions = {
+          size: fontSize,
+          color: rgb(rgbColor.r, rgbColor.g, rgbColor.b),
+          opacity: opacity,
+          rotate: degrees(rotation),
         }
-      } else {
-        // Single watermark at specified position
-        const pos = getPosition(width, height, text.length, position, fontSize)
-        page.drawText(text, {
-          x: pos.x,
-          y: pos.y,
-          ...drawOptions,
-        })
+
+        if (pattern) {
+          // Draw watermark multiple times in a grid pattern
+          const spacingX = width / 3
+          const spacingY = height / 3
+          for (let xOffset = 0; xOffset < width; xOffset += spacingX) {
+            for (let yOffset = 0; yOffset < height; yOffset += spacingY) {
+              page.drawText(text, {
+                x: xOffset,
+                y: yOffset,
+                ...drawOptions,
+              })
+            }
+          }
+        } else {
+          // Single watermark at specified position
+          const pos = getPosition(width, height, text.length, position, fontSize)
+          page.drawText(text, {
+            x: pos.x,
+            y: pos.y,
+            ...drawOptions,
+          })
+        }
+      } else if ((type === 'image' || type === 'qr') && embeddedImage) {
+        // Image/QR watermark
+        const imageDims = embeddedImage.scale(imageScale)
+        const imageWidth = imageDims.width
+        const imageHeight = imageDims.height
+
+        const drawOptions = {
+          width: imageWidth,
+          height: imageHeight,
+          opacity: opacity,
+          rotate: degrees(rotation),
+        }
+
+        if (pattern) {
+          // Draw image watermark multiple times in a grid pattern
+          const spacingX = width / 3
+          const spacingY = height / 3
+          for (let xOffset = 0; xOffset < width; xOffset += spacingX) {
+            for (let yOffset = 0; yOffset < height; yOffset += spacingY) {
+              page.drawImage(embeddedImage, {
+                x: xOffset,
+                y: yOffset,
+                ...drawOptions,
+              })
+            }
+          }
+        } else {
+          // Single image watermark at specified position
+          const pos = getImagePosition(width, height, imageWidth, imageHeight, position)
+          page.drawImage(embeddedImage, {
+            x: pos.x,
+            y: pos.y,
+            ...drawOptions,
+          })
+        }
       }
 
       this.updateCallback(pdf.id, {

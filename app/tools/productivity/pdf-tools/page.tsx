@@ -71,12 +71,15 @@ import { PresetsDialog } from './components/PresetsDialog'
 import { ProcessingModal } from './components/ProcessingModal'
 import { ReorderablePDFList } from './components/ReorderablePDFList'
 import { SummarizationDialog } from './components/SummarizationDialog'
+import { WatermarkPreview } from './components/WatermarkPreview'
+import { type WatermarkTemplate, WatermarkTemplates } from './components/WatermarkTemplates'
 import { useBatchQueue } from './hooks/useBatchQueue'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useOperationHistory } from './hooks/useOperationHistory'
 import { PDFBatchProcessor } from './PDFBatchProcessor'
 import PDFPageEditFlow from './PDFPageEditFlow'
 import { extractTextFromPDF } from './utils/pdfTextExtractor'
+import { generateQRCodeFile } from './utils/qrCodeGenerator'
 
 // Dynamic import for pdf-lib (client-side only)
 let pdfLib: typeof PdfLibTypes | null = null
@@ -190,6 +193,7 @@ export default function PDFToolsPage() {
   const [compressionLevel, setCompressionLevel] = useState<'low' | 'medium' | 'high'>('high')
 
   // Watermark options
+  const [watermarkType, setWatermarkType] = useState<'text' | 'image' | 'qr'>('text')
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL')
   const [watermarkOpacity, setWatermarkOpacity] = useState(0.3)
   const [watermarkRotation, setWatermarkRotation] = useState(-45)
@@ -198,6 +202,8 @@ export default function PDFToolsPage() {
     | 'diagonal'
     | 'top'
     | 'bottom'
+    | 'left'
+    | 'right'
     | 'top-left'
     | 'top-right'
     | 'bottom-left'
@@ -206,6 +212,10 @@ export default function PDFToolsPage() {
   const [watermarkColor, setWatermarkColor] = useState('#b3b3b3')
   const [watermarkFontSize, setWatermarkFontSize] = useState(50)
   const [watermarkPattern, setWatermarkPattern] = useState(false)
+  const [watermarkImage, setWatermarkImage] = useState<File | null>(null)
+  const [watermarkImageScale, setWatermarkImageScale] = useState(1.0)
+  const [watermarkQRText, setWatermarkQRText] = useState('')
+  const [currentTemplateName, setCurrentTemplateName] = useState<string>('Custom')
 
   // Reset completed PDFs to pending when watermark settings change
   // biome-ignore lint/correctness/useExhaustiveDependencies: We intentionally depend on all watermark settings
@@ -226,6 +236,7 @@ export default function PDFToolsPage() {
       )
     }
   }, [
+    watermarkType,
     watermarkText,
     watermarkOpacity,
     watermarkRotation,
@@ -233,6 +244,9 @@ export default function PDFToolsPage() {
     watermarkColor,
     watermarkFontSize,
     watermarkPattern,
+    watermarkImage,
+    watermarkImageScale,
+    watermarkQRText,
     operation,
   ])
 
@@ -399,6 +413,53 @@ export default function PDFToolsPage() {
       }
     }
   }, [batchQueue.isPaused, pdfs.length])
+
+  // Handle watermark template selection
+  const handleTemplateSelect = useCallback((template: WatermarkTemplate) => {
+    setWatermarkText(template.text)
+    setWatermarkOpacity(template.opacity)
+    setWatermarkRotation(template.rotation)
+    setWatermarkPosition(template.position)
+    setWatermarkColor(template.color)
+    setWatermarkFontSize(template.fontSize)
+    setWatermarkPattern(template.pattern)
+    setCurrentTemplateName(template.name)
+    setWatermarkType('text')
+    toast.success(`Applied ${template.name} template`)
+  }, [])
+
+  // Handle watermark image upload
+  const handleWatermarkImageUpload = useCallback((file: File) => {
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file')
+      return
+    }
+    setWatermarkImage(file)
+    setWatermarkType('image')
+    setCurrentTemplateName('Custom')
+    toast.success('Image uploaded successfully')
+  }, [])
+
+  // Handle QR code generation
+  const handleGenerateQRCode = useCallback(async (text: string) => {
+    if (!text || text.trim() === '') {
+      toast.error('Please enter text for QR code')
+      return
+    }
+
+    try {
+      const qrFile = await generateQRCodeFile(text, 'watermark-qr.png', 300)
+      setWatermarkImage(qrFile)
+      setWatermarkType('qr')
+      setWatermarkQRText(text)
+      setCurrentTemplateName('Custom')
+      toast.success('QR code generated successfully')
+    } catch (error) {
+      toast.error(
+        `Failed to generate QR code: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
+    }
+  }, [])
 
   const handleFilesSelected = useCallback(async (files: FileList) => {
     const fileArray = Array.from(files)
@@ -1593,7 +1654,10 @@ export default function PDFToolsPage() {
           await batchProcessorRef.current.processBatch(pdfs, operation, {
             compressionLevel,
             splitPageNumber,
+            watermarkType,
             watermarkText,
+            watermarkImage,
+            watermarkImageScale,
             watermarkOpacity,
             watermarkRotation,
             watermarkPosition,
@@ -2558,39 +2622,208 @@ export default function PDFToolsPage() {
 
                 {operation === 'watermark' && (
                   <>
+                    {/* Watermark Templates */}
+                    <WatermarkTemplates
+                      onSelectTemplate={handleTemplateSelect}
+                      currentTemplate={currentTemplateName}
+                    />
+
+                    {/* Watermark Type Selection */}
                     <div className={css({ spaceY: '2' })}>
-                      <label
-                        htmlFor="watermark-text"
+                      <div
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
                           color: 'gray.300',
                         })}
                       >
-                        Watermark Text
-                      </label>
-                      <input
-                        id="watermark-text"
-                        type="text"
-                        value={watermarkText}
-                        onChange={(e) => setWatermarkText(e.target.value)}
+                        Watermark Type
+                      </div>
+                      <div
                         className={css({
-                          w: 'full',
-                          rounded: 'md',
-                          border: '1px solid',
-                          borderColor: 'gray.700',
-                          bg: 'gray.800',
-                          px: '3',
-                          py: '2',
-                          fontSize: 'sm',
-                          color: 'gray.100',
-                          _focus: {
-                            borderColor: 'red.500',
-                            outline: 'none',
-                          },
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(3, 1fr)',
+                          gap: '2',
                         })}
-                      />
+                      >
+                        <Button
+                          variant={watermarkType === 'text' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => {
+                            setWatermarkType('text')
+                            setCurrentTemplateName('Custom')
+                          }}
+                          className={css({ fontSize: 'xs' })}
+                        >
+                          Text
+                        </Button>
+                        <Button
+                          variant={watermarkType === 'image' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => {
+                            setWatermarkType('image')
+                            setCurrentTemplateName('Custom')
+                          }}
+                          className={css({ fontSize: 'xs' })}
+                        >
+                          Image
+                        </Button>
+                        <Button
+                          variant={watermarkType === 'qr' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => {
+                            setWatermarkType('qr')
+                            setCurrentTemplateName('Custom')
+                          }}
+                          className={css({ fontSize: 'xs' })}
+                        >
+                          QR Code
+                        </Button>
+                      </div>
                     </div>
+
+                    {/* Conditional Input Based on Type */}
+                    {watermarkType === 'text' && (
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="watermark-text"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                          })}
+                        >
+                          Watermark Text
+                        </label>
+                        <input
+                          id="watermark-text"
+                          type="text"
+                          value={watermarkText}
+                          onChange={(e) => {
+                            setWatermarkText(e.target.value)
+                            setCurrentTemplateName('Custom')
+                          }}
+                          className={css({
+                            w: 'full',
+                            rounded: 'md',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            bg: 'gray.800',
+                            px: '3',
+                            py: '2',
+                            fontSize: 'sm',
+                            color: 'gray.100',
+                            _focus: {
+                              borderColor: 'red.500',
+                              outline: 'none',
+                            },
+                          })}
+                        />
+                      </div>
+                    )}
+
+                    {watermarkType === 'image' && (
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="watermark-image-upload"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                          })}
+                        >
+                          Upload Image
+                        </label>
+                        <input
+                          id="watermark-image-upload"
+                          type="file"
+                          accept="image/png,image/jpeg,image/jpg"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) handleWatermarkImageUpload(file)
+                          }}
+                          className={css({
+                            w: 'full',
+                            rounded: 'md',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            bg: 'gray.800',
+                            px: '3',
+                            py: '2',
+                            fontSize: 'sm',
+                            color: 'gray.100',
+                          })}
+                        />
+                        {watermarkImage && (
+                          <div
+                            className={css({
+                              fontSize: 'xs',
+                              color: 'gray.400',
+                            })}
+                          >
+                            Selected: {watermarkImage.name}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {watermarkType === 'qr' && (
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="watermark-qr-text"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                          })}
+                        >
+                          QR Code Text/URL
+                        </label>
+                        <div className={css({ display: 'flex', gap: '2' })}>
+                          <input
+                            id="watermark-qr-text"
+                            type="text"
+                            value={watermarkQRText}
+                            onChange={(e) => setWatermarkQRText(e.target.value)}
+                            placeholder="Enter text or URL for QR code"
+                            className={css({
+                              flex: '1',
+                              rounded: 'md',
+                              border: '1px solid',
+                              borderColor: 'gray.700',
+                              bg: 'gray.800',
+                              px: '3',
+                              py: '2',
+                              fontSize: 'sm',
+                              color: 'gray.100',
+                              _focus: {
+                                borderColor: 'red.500',
+                                outline: 'none',
+                              },
+                            })}
+                          />
+                          <Button
+                            size="sm"
+                            onClick={() => handleGenerateQRCode(watermarkQRText)}
+                            disabled={!watermarkQRText.trim()}
+                          >
+                            Generate
+                          </Button>
+                        </div>
+                        {watermarkImage && watermarkType === 'qr' && (
+                          <div
+                            className={css({
+                              fontSize: 'xs',
+                              color: 'green.400',
+                            })}
+                          >
+                            QR code generated successfully
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Opacity Slider */}
                     <div className={css({ spaceY: '3' })}>
                       <div
                         className={css({
@@ -2626,55 +2859,113 @@ export default function PDFToolsPage() {
                         max="1"
                         step="0.1"
                         value={watermarkOpacity}
-                        onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
+                        onChange={(e) => {
+                          setWatermarkOpacity(Number(e.target.value))
+                          setCurrentTemplateName('Custom')
+                        }}
                         className={css({
                           w: 'full',
                           accentColor: 'red.500',
                         })}
                       />
                     </div>
-                    <div className={css({ spaceY: '3' })}>
-                      <div
-                        className={css({
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        })}
-                      >
-                        <label
-                          htmlFor="watermark-font-size"
+
+                    {/* Conditional Size Control */}
+                    {watermarkType === 'text' ? (
+                      <div className={css({ spaceY: '3' })}>
+                        <div
                           className={css({
-                            fontSize: 'sm',
-                            fontWeight: 'medium',
-                            color: 'gray.300',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
                           })}
                         >
-                          Font Size
-                        </label>
-                        <span
+                          <label
+                            htmlFor="watermark-font-size"
+                            className={css({
+                              fontSize: 'sm',
+                              fontWeight: 'medium',
+                              color: 'gray.300',
+                            })}
+                          >
+                            Font Size
+                          </label>
+                          <span
+                            className={css({
+                              fontSize: 'sm',
+                              fontWeight: 'bold',
+                              color: 'red.400',
+                            })}
+                          >
+                            {watermarkFontSize}px
+                          </span>
+                        </div>
+                        <input
+                          id="watermark-font-size"
+                          type="range"
+                          min="10"
+                          max="100"
+                          step="5"
+                          value={watermarkFontSize}
+                          onChange={(e) => {
+                            setWatermarkFontSize(Number(e.target.value))
+                            setCurrentTemplateName('Custom')
+                          }}
                           className={css({
-                            fontSize: 'sm',
-                            fontWeight: 'bold',
-                            color: 'red.400',
+                            w: 'full',
+                            accentColor: 'red.500',
                           })}
-                        >
-                          {watermarkFontSize}px
-                        </span>
+                        />
                       </div>
-                      <input
-                        id="watermark-font-size"
-                        type="range"
-                        min="10"
-                        max="100"
-                        step="5"
-                        value={watermarkFontSize}
-                        onChange={(e) => setWatermarkFontSize(Number(e.target.value))}
-                        className={css({
-                          w: 'full',
-                          accentColor: 'red.500',
-                        })}
-                      />
-                    </div>
+                    ) : (
+                      <div className={css({ spaceY: '3' })}>
+                        <div
+                          className={css({
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          })}
+                        >
+                          <label
+                            htmlFor="watermark-image-scale"
+                            className={css({
+                              fontSize: 'sm',
+                              fontWeight: 'medium',
+                              color: 'gray.300',
+                            })}
+                          >
+                            Image Scale
+                          </label>
+                          <span
+                            className={css({
+                              fontSize: 'sm',
+                              fontWeight: 'bold',
+                              color: 'red.400',
+                            })}
+                          >
+                            {watermarkImageScale.toFixed(1)}x
+                          </span>
+                        </div>
+                        <input
+                          id="watermark-image-scale"
+                          type="range"
+                          min="0.1"
+                          max="3"
+                          step="0.1"
+                          value={watermarkImageScale}
+                          onChange={(e) => {
+                            setWatermarkImageScale(Number(e.target.value))
+                            setCurrentTemplateName('Custom')
+                          }}
+                          className={css({
+                            w: 'full',
+                            accentColor: 'red.500',
+                          })}
+                        />
+                      </div>
+                    )}
+
+                    {/* Rotation Slider */}
                     <div className={css({ spaceY: '3' })}>
                       <div
                         className={css({
@@ -2710,13 +3001,18 @@ export default function PDFToolsPage() {
                         max="180"
                         step="15"
                         value={watermarkRotation}
-                        onChange={(e) => setWatermarkRotation(Number(e.target.value))}
+                        onChange={(e) => {
+                          setWatermarkRotation(Number(e.target.value))
+                          setCurrentTemplateName('Custom')
+                        }}
                         className={css({
                           w: 'full',
                           accentColor: 'red.500',
                         })}
                       />
                     </div>
+
+                    {/* Position Grid - Now with left and right */}
                     <div className={css({ spaceY: '2' })}>
                       <div
                         className={css({
@@ -2739,10 +3035,12 @@ export default function PDFToolsPage() {
                             'top-left',
                             'top',
                             'top-right',
+                            'left',
                             'center',
+                            'right',
+                            'bottom-left',
                             'diagonal',
                             'bottom',
-                            'bottom-left',
                             'bottom-right',
                           ] as const
                         ).map((pos) => (
@@ -2750,7 +3048,10 @@ export default function PDFToolsPage() {
                             key={pos}
                             variant={watermarkPosition === pos ? 'default' : 'outline'}
                             size="sm"
-                            onClick={() => setWatermarkPosition(pos)}
+                            onClick={() => {
+                              setWatermarkPosition(pos)
+                              setCurrentTemplateName('Custom')
+                            }}
                             className={css({
                               fontSize: 'xs',
                               textTransform: 'capitalize',
@@ -2761,32 +3062,41 @@ export default function PDFToolsPage() {
                         ))}
                       </div>
                     </div>
-                    <div className={css({ spaceY: '2' })}>
-                      <label
-                        htmlFor="watermark-color"
-                        className={css({
-                          fontSize: 'sm',
-                          fontWeight: 'medium',
-                          color: 'gray.300',
-                        })}
-                      >
-                        Color
-                      </label>
-                      <input
-                        id="watermark-color"
-                        type="color"
-                        value={watermarkColor}
-                        onChange={(e) => setWatermarkColor(e.target.value)}
-                        className={css({
-                          w: 'full',
-                          h: '10',
-                          cursor: 'pointer',
-                          borderRadius: 'md',
-                          border: '1px solid',
-                          borderColor: 'gray.700',
-                        })}
-                      />
-                    </div>
+
+                    {/* Color Picker - Only for Text */}
+                    {watermarkType === 'text' && (
+                      <div className={css({ spaceY: '2' })}>
+                        <label
+                          htmlFor="watermark-color"
+                          className={css({
+                            fontSize: 'sm',
+                            fontWeight: 'medium',
+                            color: 'gray.300',
+                          })}
+                        >
+                          Color
+                        </label>
+                        <input
+                          id="watermark-color"
+                          type="color"
+                          value={watermarkColor}
+                          onChange={(e) => {
+                            setWatermarkColor(e.target.value)
+                            setCurrentTemplateName('Custom')
+                          }}
+                          className={css({
+                            w: 'full',
+                            h: '10',
+                            cursor: 'pointer',
+                            borderRadius: 'md',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                          })}
+                        />
+                      </div>
+                    )}
+
+                    {/* Pattern Checkbox */}
                     <div
                       className={css({
                         display: 'flex',
@@ -2798,7 +3108,10 @@ export default function PDFToolsPage() {
                         type="checkbox"
                         id="watermark-pattern"
                         checked={watermarkPattern}
-                        onChange={(e) => setWatermarkPattern(e.target.checked)}
+                        onChange={(e) => {
+                          setWatermarkPattern(e.target.checked)
+                          setCurrentTemplateName('Custom')
+                        }}
                         className={css({
                           w: '4',
                           h: '4',
@@ -2818,6 +3131,20 @@ export default function PDFToolsPage() {
                         Tile Pattern (Repeating Grid)
                       </label>
                     </div>
+
+                    {/* Watermark Preview */}
+                    <WatermarkPreview
+                      type={watermarkType}
+                      text={watermarkText}
+                      image={watermarkImage}
+                      opacity={watermarkOpacity}
+                      rotation={watermarkRotation}
+                      position={watermarkPosition}
+                      color={watermarkColor}
+                      fontSize={watermarkFontSize}
+                      imageScale={watermarkImageScale}
+                      pattern={watermarkPattern}
+                    />
                   </>
                 )}
 
