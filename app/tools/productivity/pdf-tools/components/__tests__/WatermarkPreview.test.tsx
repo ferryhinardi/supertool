@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { WatermarkPreview } from '../WatermarkPreview'
 
-// Mock canvas context
-const mockGetContext = vi.fn(() => ({
+// Create a persistent mock context object
+const createMockContext = () => ({
   clearRect: vi.fn(),
   fillRect: vi.fn(),
   strokeRect: vi.fn(),
@@ -18,38 +18,20 @@ const mockGetContext = vi.fn(() => ({
   drawImage: vi.fn(),
   measureText: vi.fn(() => ({ width: 100 })),
   fillText: vi.fn(),
-  set fillStyle(_value: string) {},
-  get fillStyle() {
-    return '#000000'
-  },
-  set strokeStyle(_value: string) {},
-  get strokeStyle() {
-    return '#000000'
-  },
-  set lineWidth(_value: number) {},
-  get lineWidth() {
-    return 1
-  },
-  set globalAlpha(_value: number) {},
-  get globalAlpha() {
-    return 1
-  },
-  set font(_value: string) {},
-  get font() {
-    return '16px sans-serif'
-  },
-  set textAlign(_value: CanvasTextAlign) {},
-  get textAlign(): CanvasTextAlign {
-    return 'left'
-  },
-  set textBaseline(_value: CanvasTextBaseline) {},
-  get textBaseline(): CanvasTextBaseline {
-    return 'alphabetic'
-  },
-}))
+  fillStyle: '#000000',
+  strokeStyle: '#000000',
+  lineWidth: 1,
+  globalAlpha: 1,
+  font: '16px sans-serif',
+  textAlign: 'left' as CanvasTextAlign,
+  textBaseline: 'alphabetic' as CanvasTextBaseline,
+})
 
-// Setup canvas mock before tests
-HTMLCanvasElement.prototype.getContext = mockGetContext as any
+// Setup canvas mock before each test
+beforeEach(() => {
+  const mockContext = createMockContext()
+  HTMLCanvasElement.prototype.getContext = vi.fn(() => mockContext) as any
+})
 
 describe('WatermarkPreview', () => {
   const defaultProps = {
