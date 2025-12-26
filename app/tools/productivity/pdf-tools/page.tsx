@@ -64,6 +64,7 @@ import { ComparisonView } from './components/ComparisonView'
 import { EmptyState } from './components/EmptyState'
 import { KeyboardShortcutsDialog } from './components/KeyboardShortcutsDialog'
 import { MobileOperationPicker } from './components/MobileOperationPicker'
+import { MobileUploadButton } from './components/MobileUploadButton'
 import { OperationGrid } from './components/OperationGrid'
 import { PDFThumbnail } from './components/PDFThumbnail'
 import { PresetsDialog } from './components/PresetsDialog'
@@ -5110,6 +5111,13 @@ export default function PDFToolsPage() {
                       operation={operation}
                       onUploadClick={() => fileInputRef.current?.click()}
                     />
+                    {/* Mobile-specific upload buttons with camera support */}
+                    <MobileUploadButton
+                      onFilesSelected={handleFilesSelected}
+                      accept="application/pdf,image/jpeg,image/jpg,image/png,image/webp"
+                      multiple
+                      disabled={isProcessing}
+                    />
                   </>
                 ) : (
                   <>
@@ -5151,6 +5159,14 @@ export default function PDFToolsPage() {
                       onDownload={handleDownload}
                       formatBytes={formatBytes}
                       renderThumbnail={(pdf) => <PDFThumbnail file={pdf.file} />}
+                      disabled={isProcessing}
+                    />
+
+                    {/* Mobile upload button for adding more files */}
+                    <MobileUploadButton
+                      onFilesSelected={handleFilesSelected}
+                      accept="application/pdf,image/jpeg,image/jpg,image/png,image/webp"
+                      multiple
                       disabled={isProcessing}
                     />
                   </>

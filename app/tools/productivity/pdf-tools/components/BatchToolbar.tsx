@@ -141,7 +141,15 @@ export function BatchToolbar({
       </div>
 
       {/* Right: Action Buttons */}
-      <div className={css({ display: 'flex', gap: 2, flexWrap: 'wrap' })}>
+      <div
+        className={css({
+          display: 'flex',
+          gap: '2',
+          flexWrap: 'wrap',
+          justifyContent: { base: 'stretch', sm: 'flex-end' },
+          w: { base: 'full', sm: 'auto' },
+        })}
+      >
         {/* Pause/Resume (only if processing or pending) */}
         {hasPending && (
           <Button
@@ -149,7 +157,9 @@ export function BatchToolbar({
             size="sm"
             variant="outline"
             className={css({
-              gap: 2,
+              gap: '2',
+              minH: '11',
+              flex: { base: '1', sm: 'initial' },
               bg: isPaused ? 'green.500/10' : 'yellow.500/10',
               borderColor: isPaused ? 'green.500/30' : 'yellow.500/30',
               color: isPaused ? 'green.300' : 'yellow.300',
@@ -180,7 +190,9 @@ export function BatchToolbar({
             size="sm"
             variant="outline"
             className={css({
-              gap: 2,
+              gap: '2',
+              minH: '11',
+              flex: { base: '1', sm: 'initial' },
               bg: 'blue.500/10',
               borderColor: 'blue.500/30',
               color: 'blue.300',
@@ -202,7 +214,9 @@ export function BatchToolbar({
             size="sm"
             variant="outline"
             className={css({
-              gap: 2,
+              gap: '2',
+              minH: '11',
+              flex: { base: '1', sm: 'initial' },
               bg: 'green.500/10',
               borderColor: 'green.500/30',
               color: 'green.300',
@@ -224,7 +238,9 @@ export function BatchToolbar({
             size="sm"
             variant="outline"
             className={css({
-              gap: 2,
+              gap: '2',
+              minH: '11',
+              flex: { base: '1', sm: 'initial' },
               bg: 'gray.500/10',
               borderColor: 'gray.500/30',
               color: 'gray.300',
@@ -246,7 +262,9 @@ export function BatchToolbar({
             size="sm"
             variant="outline"
             className={css({
-              gap: 2,
+              gap: '2',
+              minH: '11',
+              flex: { base: '1', sm: 'initial' },
               bg: 'red.500/10',
               borderColor: 'red.500/30',
               color: 'red.300',

@@ -23,6 +23,7 @@ import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { css } from '@/styled-system/css'
+import { SwipeablePDFCard } from './SwipeablePDFCard'
 
 interface PDFFile {
   id: string
@@ -75,6 +76,7 @@ function SortablePDFCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       className={css({
+        display: { base: 'none', lg: 'block' },
         rounded: 'lg',
         border: '1px solid',
         borderColor: pdf.status === 'error' ? 'red.500/50' : 'gray.800',
@@ -306,31 +308,60 @@ export function ReorderablePDFList({
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={pdfs.map((pdf) => pdf.id)} strategy={verticalListSortingStrategy}>
-        <div
-          className={css({
-            maxH: '[600px]',
-            spaceY: '3',
-            overflowY: 'auto',
-            pr: '2',
-          })}
-        >
-          <AnimatePresence>
-            {pdfs.map((pdf) => (
-              <SortablePDFCard
-                key={pdf.id}
-                pdf={pdf}
-                onRemove={onRemove}
-                onDownload={onDownload}
-                formatBytes={formatBytes}
-                thumbnail={renderThumbnail?.(pdf)}
-                disabled={disabled}
-              />
-            ))}
-          </AnimatePresence>
-        </div>
-      </SortableContext>
-    </DndContext>
+    <>
+      {/* Desktop: Sortable drag-and-drop list */}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={pdfs.map((pdf) => pdf.id)} strategy={verticalListSortingStrategy}>
+          <div
+            className={css({
+              display: { base: 'none', lg: 'block' },
+              maxH: '[600px]',
+              spaceY: '3',
+              overflowY: 'auto',
+              pr: '2',
+            })}
+          >
+            <AnimatePresence>
+              {pdfs.map((pdf) => (
+                <SortablePDFCard
+                  key={pdf.id}
+                  pdf={pdf}
+                  onRemove={onRemove}
+                  onDownload={onDownload}
+                  formatBytes={formatBytes}
+                  thumbnail={renderThumbnail?.(pdf)}
+                  disabled={disabled}
+                />
+              ))}
+            </AnimatePresence>
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      {/* Mobile: Swipeable cards */}
+      <div
+        className={css({
+          display: { base: 'block', lg: 'none' },
+          maxH: '[600px]',
+          spaceY: '3',
+          overflowY: 'auto',
+          pr: '2',
+        })}
+      >
+        <AnimatePresence>
+          {pdfs.map((pdf) => (
+            <SwipeablePDFCard
+              key={pdf.id}
+              pdf={pdf}
+              onDownload={(p) => onDownload?.(p)}
+              onRemove={(p) => onRemove(p.id)}
+              formatBytes={formatBytes}
+              renderThumbnail={(p) => renderThumbnail?.(p) || null}
+              disabled={disabled}
+            />
+          ))}
+        </AnimatePresence>
+      </div>
+    </>
   )
 }
