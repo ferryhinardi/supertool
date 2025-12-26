@@ -279,7 +279,11 @@ function JWTDebuggerContent() {
 
       {/* Main Content */}
       <div
-        className={css({ display: 'grid', gridTemplateColumns: { base: '1', lg: '3' }, gap: '6' })}
+        className={css({
+          display: 'grid',
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          gap: '6',
+        })}
       >
         {/* Left Column - Input & Controls */}
         <div className={css({ gridColumn: { lg: 'span 2' }, spaceY: '6' })}>
@@ -349,7 +353,7 @@ function JWTDebuggerContent() {
                 <div
                   className={css({
                     display: 'grid',
-                    gridTemplateColumns: { base: '1', sm: '2' },
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
                     gap: '4',
                   })}
                 >

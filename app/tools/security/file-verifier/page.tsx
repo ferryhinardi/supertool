@@ -644,7 +644,7 @@ function FileVerifierContent() {
             <div
               className={css({
                 display: 'grid',
-                gridTemplateColumns: { base: '1', md: '2' },
+                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
                 gap: '4',
               })}
             >

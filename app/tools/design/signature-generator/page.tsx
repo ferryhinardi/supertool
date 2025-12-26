@@ -295,8 +295,9 @@ export default function SignatureGeneratorPage() {
         <div
           className={css({
             display: 'grid',
-            gridTemplateColumns: { base: '1', lg: '1fr 1.5fr' },
+            gridTemplateColumns: { base: '1fr', lg: '1fr 1.5fr' },
             gap: '8',
+            w: 'full',
           })}
         >
           {/* Controls */}
@@ -555,8 +556,9 @@ export default function SignatureGeneratorPage() {
           <div
             className={css({
               display: 'grid',
-              gridTemplateColumns: { base: '1', md: '2', lg: '3' },
+              gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
               gap: '6',
+              w: 'full',
             })}
           >
             {[

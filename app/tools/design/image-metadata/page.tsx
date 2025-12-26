@@ -680,7 +680,7 @@ function ImageMetadataContent() {
           className={css({
             display: 'grid',
             gap: { base: '6', md: '6' },
-            gridTemplateColumns: { base: '1', md: '2' },
+            gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
           })}
         >
           {renderMetadataSection(
