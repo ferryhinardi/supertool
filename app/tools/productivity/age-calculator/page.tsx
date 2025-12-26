@@ -474,8 +474,13 @@ Zodiac Sign: ${calculation.zodiacSign}
                 <div
                   className={css({
                     display: 'grid',
-                    gridTemplateColumns: { base: '1', sm: '2', lg: '3' },
+                    gridTemplateColumns: {
+                      base: '1fr',
+                      sm: 'repeat(2, 1fr)',
+                      lg: 'repeat(3, 1fr)',
+                    },
                     gap: '4',
+                    w: 'full',
                   })}
                 >
                   <div
