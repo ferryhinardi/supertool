@@ -207,7 +207,7 @@ export default function TallyCounterPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Simple and effective tally counter with multiple counters, custom step values, and
@@ -375,7 +375,7 @@ export default function TallyCounterPage() {
                     <span
                       className={css({
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                         flexShrink: '0',
                       })}
                     >
@@ -554,7 +554,7 @@ export default function TallyCounterPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Custom Step Values:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Set step values to 5 or 10 for faster counting of large quantities like inventory or
                 attendance
               </p>
@@ -571,7 +571,7 @@ export default function TallyCounterPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Multiple Counters:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Create separate counters for different categories to track multiple metrics
                 simultaneously
               </p>
@@ -588,7 +588,7 @@ export default function TallyCounterPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Keyboard Shortcuts:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Use arrow keys and spacebar for hands-free counting when using a single counter
               </p>
             </div>
@@ -604,7 +604,7 @@ export default function TallyCounterPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Total Count Feature:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Monitor the combined total of all counters to track overall progress at a glance
               </p>
             </div>
@@ -620,7 +620,7 @@ export default function TallyCounterPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Persistent Storage:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Your counters are saved automatically - close and reopen the page without losing
                 data
               </p>
@@ -678,11 +678,12 @@ export default function TallyCounterPage() {
                     mb: '1',
                     fontSize: 'sm',
                     fontWeight: 'semibold',
+                    color: 'white',
                   })}
                 >
                   Create Counters
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Add new counters with custom names and set your desired step values
                 </p>
               </div>
@@ -715,11 +716,12 @@ export default function TallyCounterPage() {
                     mb: '1',
                     fontSize: 'sm',
                     fontWeight: 'semibold',
+                    color: 'white',
                   })}
                 >
                   Increment & Decrement
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Use the + and - buttons or keyboard shortcuts to adjust your counts
                 </p>
               </div>
@@ -752,11 +754,12 @@ export default function TallyCounterPage() {
                     mb: '1',
                     fontSize: 'sm',
                     fontWeight: 'semibold',
+                    color: 'white',
                   })}
                 >
                   Monitor Total
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   View the combined total of all counters in the sidebar at any time
                 </p>
               </div>
@@ -789,11 +792,12 @@ export default function TallyCounterPage() {
                     mb: '1',
                     fontSize: 'sm',
                     fontWeight: 'semibold',
+                    color: 'white',
                   })}
                 >
                   Reset as Needed
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Reset individual counters or start fresh while maintaining your setup
                 </p>
               </div>
@@ -827,7 +831,7 @@ export default function TallyCounterPage() {
               className={css({
                 spaceY: '3',
                 fontSize: 'sm',
-                color: 'gray.300',
+                color: 'white',
               })}
             >
               <li
@@ -917,7 +921,7 @@ export default function TallyCounterPage() {
                   >
                     ↑
                   </kbd>
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>or</span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>or</span>
                   <kbd
                     className={css({
                       px: '2',
@@ -931,7 +935,7 @@ export default function TallyCounterPage() {
                     Space
                   </kbd>
                 </div>
-                <span className={css({ fontSize: 'sm', color: 'gray.300' })}>Increment</span>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>Increment</span>
               </div>
 
               <div
@@ -952,7 +956,7 @@ export default function TallyCounterPage() {
                 >
                   ↓
                 </kbd>
-                <span className={css({ fontSize: 'sm', color: 'gray.300' })}>Decrement</span>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>Decrement</span>
               </div>
 
               <div
@@ -973,7 +977,7 @@ export default function TallyCounterPage() {
                 >
                   R
                 </kbd>
-                <span className={css({ fontSize: 'sm', color: 'gray.300' })}>Reset Counter</span>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>Reset Counter</span>
               </div>
             </div>
           </CardContent>
@@ -1010,11 +1014,12 @@ export default function TallyCounterPage() {
                   mb: '1',
                   fontSize: 'sm',
                   fontWeight: 'semibold',
+                  color: 'white',
                 })}
               >
                 Event Tracking
               </h3>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Count attendees, participants, or visitors
               </p>
             </div>
@@ -1025,11 +1030,12 @@ export default function TallyCounterPage() {
                   mb: '1',
                   fontSize: 'sm',
                   fontWeight: 'semibold',
+                  color: 'white',
                 })}
               >
                 Inventory Management
               </h3>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Track stock levels and quantities
               </p>
             </div>
@@ -1040,11 +1046,12 @@ export default function TallyCounterPage() {
                   mb: '1',
                   fontSize: 'sm',
                   fontWeight: 'semibold',
+                  color: 'white',
                 })}
               >
                 Goal Tracking
               </h3>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Monitor progress towards daily targets
               </p>
             </div>
@@ -1055,11 +1062,12 @@ export default function TallyCounterPage() {
                   mb: '1',
                   fontSize: 'sm',
                   fontWeight: 'semibold',
+                  color: 'white',
                 })}
               >
                 General Counting
               </h3>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Any situation requiring numeric tracking
               </p>
             </div>

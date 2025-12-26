@@ -478,7 +478,7 @@ function StopwatchTimerContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Professional stopwatch with lap tracking and multiple countdown timers. Save presets, set
@@ -810,7 +810,7 @@ function StopwatchTimerContent() {
                             <span
                               className={css({
                                 fontSize: 'sm',
-                                color: 'gray.400',
+                                color: 'white',
                                 fontVariantNumeric: 'tabular-nums',
                               })}
                             >
@@ -899,7 +899,7 @@ function StopwatchTimerContent() {
                   <div>
                     <label
                       htmlFor="minutes"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                     >
                       Minutes
                     </label>
@@ -921,7 +921,7 @@ function StopwatchTimerContent() {
                   <div>
                     <label
                       htmlFor="seconds"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                     >
                       Seconds
                     </label>
@@ -1060,7 +1060,7 @@ function StopwatchTimerContent() {
                             className={css({
                               fontSize: 'sm',
                               fontWeight: 'medium',
-                              color: 'gray.300',
+                              color: 'white',
                             })}
                           >
                             {preset.name}
@@ -1168,7 +1168,7 @@ function StopwatchTimerContent() {
                                 className={css({
                                   fontSize: 'lg',
                                   fontWeight: 'semibold',
-                                  color: 'gray.200',
+                                  color: 'white',
                                 })}
                               >
                                 {timer.name}
@@ -1300,7 +1300,7 @@ function StopwatchTimerContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'amber.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Use lap times to track intervals during workouts or tasks</li>
                   <li>• Save frequently used durations as presets for quick access</li>
                   <li>• Enable notifications to get alerts when timers complete</li>
