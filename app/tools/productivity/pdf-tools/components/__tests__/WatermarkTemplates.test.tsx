@@ -31,7 +31,8 @@ describe('WatermarkTemplates', () => {
     )
 
     const confidentialButton = screen.getByText('Confidential').closest('button')
-    expect(confidentialButton).toHaveClass('bg-red-600')
+    // Check for Panda CSS active state class (blue background)
+    expect(confidentialButton?.className).toContain('bg_blue')
   })
 
   it('should call onSelectTemplate when a template is clicked', async () => {

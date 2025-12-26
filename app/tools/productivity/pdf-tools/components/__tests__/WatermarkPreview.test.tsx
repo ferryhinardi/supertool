@@ -157,7 +157,9 @@ describe('WatermarkPreview', () => {
 
   describe('canvas drawing', () => {
     it('should call getContext on mount', () => {
-      mockGetContext.mockClear()
+      const mockGetContext = vi.fn(() => createMockContext())
+      HTMLCanvasElement.prototype.getContext = mockGetContext as any
+
       render(<WatermarkPreview {...defaultProps} />)
       expect(mockGetContext).toHaveBeenCalledWith('2d')
     })
