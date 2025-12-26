@@ -347,7 +347,7 @@ export default function ImageOptimizerPage() {
               backdropFilter: 'blur(4px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '4', textAlign: 'center' })}>
                 <div
                   className={css({
@@ -371,7 +371,7 @@ export default function ImageOptimizerPage() {
               backdropFilter: 'blur(4px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '4', textAlign: 'center' })}>
                 <div
                   className={css({
@@ -395,7 +395,7 @@ export default function ImageOptimizerPage() {
               backdropFilter: 'blur(4px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '4', textAlign: 'center' })}>
                 <div
                   className={css({
@@ -419,7 +419,7 @@ export default function ImageOptimizerPage() {
               backdropFilter: 'blur(4px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '4', textAlign: 'center' })}>
                 <div
                   className={css({
@@ -1045,7 +1045,7 @@ export default function ImageOptimizerPage() {
               backdropFilter: 'blur(4px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '6' })}>
                 <feature.icon
                   className={css({

@@ -522,7 +522,7 @@ export default function ScreenshotDiffPage() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: '6', pb: '6' })}>
+            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
                 <AlertCircle
                   className={css({ h: '6', w: '6', color: 'red.400', flexShrink: '0' })}
@@ -805,7 +805,7 @@ export default function ScreenshotDiffPage() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ pt: '6', pb: '6' })}>
+          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
               <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
               <div className={css({ spaceY: '2' })}>

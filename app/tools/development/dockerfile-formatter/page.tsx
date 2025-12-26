@@ -497,7 +497,7 @@ function DockerfileFormatterContent() {
           <Card
             className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}
           >
-            <CardContent className={css({ p: '4', textAlign: 'center' })}>
+            <CardContent withTopPadding className={css({ p: '4', textAlign: 'center' })}>
               <FileText
                 className={css({ h: '8', w: '8', mx: 'auto', mb: '2', color: 'cyan.400' })}
               />
@@ -511,7 +511,7 @@ function DockerfileFormatterContent() {
           <Card
             className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}
           >
-            <CardContent className={css({ p: '4', textAlign: 'center' })}>
+            <CardContent withTopPadding className={css({ p: '4', textAlign: 'center' })}>
               <Zap className={css({ h: '8', w: '8', mx: 'auto', mb: '2', color: 'blue.400' })} />
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {stats.instructions}
@@ -523,7 +523,7 @@ function DockerfileFormatterContent() {
           <Card
             className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}
           >
-            <CardContent className={css({ p: '4', textAlign: 'center' })}>
+            <CardContent withTopPadding className={css({ p: '4', textAlign: 'center' })}>
               <Shield
                 className={css({ h: '8', w: '8', mx: 'auto', mb: '2', color: 'indigo.400' })}
               />
@@ -537,7 +537,7 @@ function DockerfileFormatterContent() {
           <Card
             className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}
           >
-            <CardContent className={css({ p: '4', textAlign: 'center' })}>
+            <CardContent withTopPadding className={css({ p: '4', textAlign: 'center' })}>
               <AlertTriangle
                 className={css({
                   h: '8',

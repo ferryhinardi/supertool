@@ -526,7 +526,7 @@ function LoanCalculatorContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: '6', pb: '6' })}>
+            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <Calculator className={css({ h: '5', w: '5', color: 'emerald.400' })} />
@@ -550,7 +550,7 @@ function LoanCalculatorContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: '6', pb: '6' })}>
+            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <Percent className={css({ h: '5', w: '5', color: 'orange.400' })} />
@@ -572,7 +572,7 @@ function LoanCalculatorContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: '6', pb: '6' })}>
+            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <TrendingUp className={css({ h: '5', w: '5', color: 'blue.400' })} />
@@ -594,7 +594,7 @@ function LoanCalculatorContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: '6', pb: '6' })}>
+            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <PiggyBank className={css({ h: '5', w: '5', color: 'purple.400' })} />
@@ -980,7 +980,7 @@ function LoanCalculatorContent() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ pt: '6', pb: '6' })}>
+          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
               <Info className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
               <div className={css({ spaceY: '2' })}>

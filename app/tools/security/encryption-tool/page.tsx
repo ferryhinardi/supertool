@@ -387,7 +387,7 @@ export default function EncryptionToolPage() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ pt: 6, pb: 6 })}>
+          <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
             <div
               className={css({
                 display: 'flex',
@@ -446,7 +446,7 @@ export default function EncryptionToolPage() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: 6, pb: 6 })}>
+            <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 {/* Action Selection */}
                 <div
@@ -718,7 +718,7 @@ export default function EncryptionToolPage() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: 6, pb: 6 })}>
+            <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 {/* Action Selection */}
                 <div
@@ -961,7 +961,7 @@ export default function EncryptionToolPage() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: 6, pb: 6 })}>
+            <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 <Field>
                   <FieldLabel className={css({ color: 'gray.300' })}>Encrypted Link</FieldLabel>
@@ -1132,7 +1132,7 @@ export default function EncryptionToolPage() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ pt: '6', pb: '6' })}>
+          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div
               className={css({
                 display: 'flex',

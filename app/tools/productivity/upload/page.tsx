@@ -174,7 +174,7 @@ export default function UploadTool() {
 
         {/* Upload Area */}
         <Card className="glass-card border-2 border-blue-500/30 shadow-2xl shadow-blue-500/20">
-          <CardContent>
+          <CardContent withTopPadding>
             <div
               className={css({
                 spaceY: { base: '5', sm: '6' },

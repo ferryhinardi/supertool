@@ -1059,7 +1059,6 @@ export class PDFBatchProcessor {
       const { width, height } = page.getSize()
       const pageNumberText = formatPageNumber(i)
       const textWidth = font.widthOfTextAtSize(pageNumberText, options.fontSize)
-      const textHeight = options.fontSize
 
       // Calculate position
       let x = 0

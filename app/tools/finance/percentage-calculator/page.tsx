@@ -568,7 +568,7 @@ function PercentageCalculatorContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: '6', pb: '6' })}>
+            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
                 <Sparkles className={css({ h: '6', w: '6', color: 'pink.400', flexShrink: '0' })} />
                 <div className={css({ spaceY: '2' })}>
@@ -596,7 +596,7 @@ function PercentageCalculatorContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: '6', pb: '6' })}>
+            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
                 <Info className={css({ h: '6', w: '6', color: 'rose.400', flexShrink: '0' })} />
                 <div className={css({ spaceY: '2' })}>

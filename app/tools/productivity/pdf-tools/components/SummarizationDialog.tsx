@@ -216,7 +216,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                 })}
               >
                 <Card className={css({ bg: 'gray.800/50', borderColor: 'gray.700' })}>
-                  <CardContent className={css({ p: 4, textAlign: 'center' })}>
+                  <CardContent withTopPadding className={css({ p: 4, textAlign: 'center' })}>
                     <Tag className={css({ w: 5, h: 5, mx: 'auto', mb: 2, color: 'blue.400' })} />
                     <div className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                       {result.documentType}
@@ -226,7 +226,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                 </Card>
 
                 <Card className={css({ bg: 'gray.800/50', borderColor: 'gray.700' })}>
-                  <CardContent className={css({ p: 4, textAlign: 'center' })}>
+                  <CardContent withTopPadding className={css({ p: 4, textAlign: 'center' })}>
                     <FileText
                       className={css({ w: 5, h: 5, mx: 'auto', mb: 2, color: 'green.400' })}
                     />
@@ -240,7 +240,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                 </Card>
 
                 <Card className={css({ bg: 'gray.800/50', borderColor: 'gray.700' })}>
-                  <CardContent className={css({ p: 4, textAlign: 'center' })}>
+                  <CardContent withTopPadding className={css({ p: 4, textAlign: 'center' })}>
                     <BookOpen
                       className={css({ w: 5, h: 5, mx: 'auto', mb: 2, color: 'purple.400' })}
                     />
@@ -252,7 +252,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                 </Card>
 
                 <Card className={css({ bg: 'gray.800/50', borderColor: 'gray.700' })}>
-                  <CardContent className={css({ p: 4, textAlign: 'center' })}>
+                  <CardContent withTopPadding className={css({ p: 4, textAlign: 'center' })}>
                     <TrendingUp
                       className={css({ w: 5, h: 5, mx: 'auto', mb: 2, color: 'orange.400' })}
                     />

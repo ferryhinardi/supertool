@@ -1545,7 +1545,7 @@ export default function VideoSubtitleCombinerPage() {
           >
             {processingFiles.map((file) => (
               <Card key={file.id}>
-                <CardContent className={css({ p: '4', spaceY: '3' })}>
+                <CardContent withTopPadding className={css({ p: '4', spaceY: '3' })}>
                   {/* Video Preview */}
                   {/* biome-ignore lint/a11y/useMediaCaption: preview video, captions will be burned into output */}
                   <video

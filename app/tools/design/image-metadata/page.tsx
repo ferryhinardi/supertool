@@ -729,7 +729,10 @@ function ImageMetadataContent() {
                 bg: 'yellow.500/5',
               })}
             >
-              <CardContent className={css({ pt: '8', pb: '8', textAlign: 'center' })}>
+              <CardContent
+                withTopPadding
+                className={css({ pt: '8', pb: '8', textAlign: 'center' })}
+              >
                 <ImageIcon
                   className={css({ h: '12', w: '12', mx: 'auto', mb: '4', color: 'yellow.400' })}
                 />
@@ -761,7 +764,7 @@ function ImageMetadataContent() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ pt: '6', pb: '6' })}>
+          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
               <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
               <div className={css({ spaceY: '2' })}>

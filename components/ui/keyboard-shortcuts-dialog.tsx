@@ -45,6 +45,13 @@ export function KeyboardShortcutsDialog({
         p: '4',
       })}
       onClick={onClose}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          onClose()
+        }
+      }}
+      role="button"
+      tabIndex={0}
     >
       <Card
         className={css({

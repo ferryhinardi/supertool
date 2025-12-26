@@ -582,7 +582,7 @@ function KeywordDensityContent() {
                   bg: 'gray.900/50',
                 })}
               >
-                <CardContent className={css({ pt: '6', textAlign: 'center' })}>
+                <CardContent withTopPadding className={css({ pt: '6', textAlign: 'center' })}>
                   <div
                     className={css({
                       fontSize: '3xl',
@@ -610,7 +610,7 @@ function KeywordDensityContent() {
                   bg: 'gray.900/50',
                 })}
               >
-                <CardContent className={css({ pt: '6', textAlign: 'center' })}>
+                <CardContent withTopPadding className={css({ pt: '6', textAlign: 'center' })}>
                   <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'blue.400' })}>
                     {analysis.totalWords}
                   </div>
@@ -627,7 +627,7 @@ function KeywordDensityContent() {
                   bg: 'gray.900/50',
                 })}
               >
-                <CardContent className={css({ pt: '6', textAlign: 'center' })}>
+                <CardContent withTopPadding className={css({ pt: '6', textAlign: 'center' })}>
                   <div
                     className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'purple.400' })}
                   >
@@ -646,7 +646,7 @@ function KeywordDensityContent() {
                   bg: 'gray.900/50',
                 })}
               >
-                <CardContent className={css({ pt: '6', textAlign: 'center' })}>
+                <CardContent withTopPadding className={css({ pt: '6', textAlign: 'center' })}>
                   <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'cyan.400' })}>
                     {((analysis.uniqueWords / analysis.totalWords) * 100).toFixed(1)}%
                   </div>
@@ -1004,7 +1004,7 @@ function KeywordDensityContent() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ pt: '6', pb: '6' })}>
+          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
               <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
               <div className={css({ spaceY: '2' })}>

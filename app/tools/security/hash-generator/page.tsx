@@ -1094,7 +1094,7 @@ export default function HashGeneratorPage() {
               bg: 'gray.900/30',
             })}
           >
-            <CardContent className={css({ p: '6' })}>
+            <CardContent withTopPadding className={css({ p: '6' })}>
               <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'red.400' })} />
               <h3
                 className={css({

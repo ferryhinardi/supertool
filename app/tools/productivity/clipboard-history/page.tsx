@@ -386,7 +386,7 @@ export default function ClipboardHistoryPage() {
             bg: 'gray.900/50',
           })}
         >
-          <CardContent className={css({ pt: '6', pb: '6' })}>
+          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <Field>
               <div className={css({ position: 'relative' })}>
                 <div
@@ -479,6 +479,7 @@ export default function ClipboardHistoryPage() {
           })}
         >
           <CardContent
+            withTopPadding
             className={css({
               display: 'flex',
               flexDirection: 'column',
@@ -533,6 +534,7 @@ export default function ClipboardHistoryPage() {
           })}
         >
           <CardContent
+            withTopPadding
             className={css({
               display: 'flex',
               flexDirection: 'column',
@@ -584,7 +586,7 @@ export default function ClipboardHistoryPage() {
                 },
               })}
             >
-              <CardContent className={css({ p: '4' })}>
+              <CardContent withTopPadding className={css({ p: '4' })}>
                 <div
                   className={css({
                     mb: '3',

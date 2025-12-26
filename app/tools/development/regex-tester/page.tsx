@@ -418,7 +418,7 @@ function RegexTesterContent() {
             backdropFilter: 'blur(4px)',
           })}
         >
-          <CardContent>
+          <CardContent withTopPadding>
             <div className={css({ p: '4', textAlign: 'center' })}>
               <div
                 className={css({
@@ -451,7 +451,7 @@ function RegexTesterContent() {
             backdropFilter: 'blur(4px)',
           })}
         >
-          <CardContent>
+          <CardContent withTopPadding>
             <div className={css({ p: '4', textAlign: 'center' })}>
               <div
                 className={css({
@@ -484,7 +484,7 @@ function RegexTesterContent() {
             backdropFilter: 'blur(4px)',
           })}
         >
-          <CardContent>
+          <CardContent withTopPadding>
             <div className={css({ p: '4', textAlign: 'center' })}>
               <div
                 className={css({
@@ -509,7 +509,7 @@ function RegexTesterContent() {
             backdropFilter: 'blur(4px)',
           })}
         >
-          <CardContent>
+          <CardContent withTopPadding>
             <div className={css({ p: '4', textAlign: 'center' })}>
               <div
                 className={css({

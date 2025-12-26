@@ -369,7 +369,7 @@ function TimezoneConverterContent() {
                   },
                 })}
               >
-                <CardContent className={css({ pt: '4', pb: '4' })}>
+                <CardContent withTopPadding className={css({ pt: '4', pb: '4' })}>
                   <div
                     className={css({
                       display: 'flex',

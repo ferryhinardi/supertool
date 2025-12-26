@@ -595,7 +595,7 @@ export default function DailyNotePage() {
           backdropFilter: 'blur(8px)',
         })}
       >
-        <CardContent>
+        <CardContent withTopPadding>
           <div
             className={css({
               display: 'flex',
@@ -973,7 +973,7 @@ export default function DailyNotePage() {
           gradientTo: 'emerald.500/10',
         })}
       >
-        <CardContent>
+        <CardContent withTopPadding>
           <div
             className={css({
               display: 'flex',

@@ -630,7 +630,7 @@ function TextTransformerContent() {
                 backdropFilter: 'blur(4px)',
               })}
             >
-              <CardContent>
+              <CardContent withTopPadding>
                 <div
                   className={css({
                     p: '4',

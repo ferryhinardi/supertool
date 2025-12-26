@@ -915,7 +915,7 @@ function JSONBeautifyContent() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent className={css({ pt: '6', pb: '6' })}>
+            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div
                 className={css({
                   display: 'flex',
@@ -2131,7 +2131,7 @@ function JSONBeautifyContent() {
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ pt: '4', pb: '4' })}>
+          <CardContent withTopPadding className={css({ pt: '4', pb: '4' })}>
             <div
               className={css({
                 display: 'flex',

@@ -450,6 +450,7 @@ export default function WebsiteScreenshotPage() {
             })}
           >
             <CardContent
+              withTopPadding
               className={css({ display: 'flex', alignItems: 'center', gap: '3', p: '4' })}
             >
               <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
@@ -566,7 +567,7 @@ export default function WebsiteScreenshotPage() {
               bg: 'gray.900/30',
             })}
           >
-            <CardContent className={css({ p: '6' })}>
+            <CardContent withTopPadding className={css({ p: '6' })}>
               <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'purple.400' })} />
               <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'gray.200' })}>
                 {feature.title}
@@ -590,7 +591,10 @@ export default function WebsiteScreenshotPage() {
             bg: 'blue.500/10',
           })}
         >
-          <CardContent className={css({ display: 'flex', alignItems: 'start', gap: '3', p: '4' })}>
+          <CardContent
+            withTopPadding
+            className={css({ display: 'flex', alignItems: 'start', gap: '3', p: '4' })}
+          >
             <CheckCircle
               className={css({ mt: '0.5', h: '5', w: '5', flexShrink: '0', color: 'blue.400' })}
             />

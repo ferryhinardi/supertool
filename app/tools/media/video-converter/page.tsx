@@ -534,7 +534,7 @@ export default function VideoConverterPage() {
               backdropFilter: 'blur(8px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '4', textAlign: 'center' })}>
                 <div
                   className={css({
@@ -558,7 +558,7 @@ export default function VideoConverterPage() {
               backdropFilter: 'blur(8px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '4', textAlign: 'center' })}>
                 <div
                   className={css({
@@ -582,7 +582,7 @@ export default function VideoConverterPage() {
               backdropFilter: 'blur(8px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '4', textAlign: 'center' })}>
                 <div
                   className={css({
@@ -606,7 +606,7 @@ export default function VideoConverterPage() {
               backdropFilter: 'blur(8px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '4', textAlign: 'center' })}>
                 <div
                   className={css({
@@ -1179,7 +1179,7 @@ export default function VideoConverterPage() {
               backdropFilter: 'blur(8px)',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '6' })}>
                 <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'indigo.400' })} />
                 <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'gray.200' })}>

@@ -578,7 +578,7 @@ function Base64Content() {
               bg: 'gray.900/30',
             })}
           >
-            <CardContent>
+            <CardContent withTopPadding>
               <div className={css({ p: '6' })}>
                 <feature.icon
                   className={css({

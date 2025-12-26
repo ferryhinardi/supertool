@@ -698,7 +698,7 @@ Zodiac Sign: ${calculation.zodiacSign}
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent className={css({ pt: '6', pb: '6' })}>
+          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', gap: '4' })}>
               <Info
                 className={css({ h: '5', w: '5', color: 'gray.400', flexShrink: '0', mt: '1' })}
