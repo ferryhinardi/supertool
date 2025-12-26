@@ -213,7 +213,7 @@ export default function IPLookupPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Discover detailed information about any IP address including location, ISP, timezone, and
@@ -345,7 +345,7 @@ export default function IPLookupPage() {
                         alignItems: 'center',
                         gap: '2',
                         fontSize: 'sm',
-                        color: 'gray.500',
+                        color: 'white',
                       })}
                     >
                       <Network className={css({ h: '4', w: '4' })} />
@@ -389,7 +389,7 @@ export default function IPLookupPage() {
                         alignItems: 'center',
                         gap: '2',
                         fontSize: 'sm',
-                        color: 'gray.500',
+                        color: 'white',
                       })}
                     >
                       <CheckCircle className={css({ h: '4', w: '4' })} />
@@ -579,7 +579,7 @@ export default function IPLookupPage() {
               >
                 {feature.title}
               </h3>
-              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.desc}</p>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.desc}</p>
             </CardContent>
           </Card>
         ))}
@@ -609,7 +609,7 @@ function InfoItem({ label, value, emoji }: { label: string; value: string; emoji
           mb: '1',
           fontSize: 'xs',
           fontWeight: 'medium',
-          color: 'gray.500',
+          color: 'white',
         })}
       >
         {label}

@@ -326,7 +326,7 @@ function ClipboardFormatterPageContent() {
         <p
           className={css({
             fontSize: { base: 'lg', md: 'xl' },
-            color: 'gray.400',
+            color: 'white',
             textAlign: 'center',
             maxWidth: '3xl',
             mx: 'auto',
@@ -374,7 +374,7 @@ function ClipboardFormatterPageContent() {
               >
                 <div className={css({ flex: '1', minWidth: '0' })}>
                   <CardTitle className={css({ color: 'gray.100' })}>Input Text</CardTitle>
-                  <CardDescription className={css({ color: 'gray.400', mt: '1.5' })}>
+                  <CardDescription className={css({ color: 'white', mt: '1.5' })}>
                     Paste or type text to format. Auto-format is{' '}
                     {settings.autoFormat ? 'enabled' : 'disabled'}.
                   </CardDescription>
@@ -430,7 +430,7 @@ function ClipboardFormatterPageContent() {
                   justifyContent: 'space-between',
                   mt: '4',
                   fontSize: 'sm',
-                  color: 'gray.500',
+                  color: 'white',
                   flexWrap: 'wrap',
                   gap: '2',
                 })}
@@ -478,7 +478,7 @@ function ClipboardFormatterPageContent() {
               >
                 <CardHeader>
                   <CardTitle className={css({ color: 'gray.100' })}>Format Settings</CardTitle>
-                  <CardDescription className={css({ color: 'gray.400' })}>
+                  <CardDescription className={css({ color: 'white' })}>
                     Customize how text is formatted
                   </CardDescription>
                 </CardHeader>
@@ -496,7 +496,7 @@ function ClipboardFormatterPageContent() {
                         alignItems: 'center',
                         gap: '2',
                         cursor: 'pointer',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       <input
@@ -518,7 +518,7 @@ function ClipboardFormatterPageContent() {
                         alignItems: 'center',
                         gap: '2',
                         cursor: 'pointer',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       <input
@@ -540,7 +540,7 @@ function ClipboardFormatterPageContent() {
                         alignItems: 'center',
                         gap: '2',
                         cursor: 'pointer',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       <input
@@ -562,7 +562,7 @@ function ClipboardFormatterPageContent() {
                         alignItems: 'center',
                         gap: '2',
                         cursor: 'pointer',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       <input
@@ -585,7 +585,7 @@ function ClipboardFormatterPageContent() {
                           display: 'block',
                           mb: '2',
                           fontSize: 'sm',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Tab size (spaces)
@@ -645,7 +645,7 @@ function ClipboardFormatterPageContent() {
                   </Button>
                 )}
               </div>
-              <CardDescription className={css({ color: 'gray.400' })}>
+              <CardDescription className={css({ color: 'white' })}>
                 Last 5 clipboard items
               </CardDescription>
             </CardHeader>
@@ -654,7 +654,7 @@ function ClipboardFormatterPageContent() {
                 <p
                   className={css({
                     textAlign: 'center',
-                    color: 'gray.500',
+                    color: 'white',
                     fontSize: 'sm',
                   })}
                 >
@@ -691,7 +691,7 @@ function ClipboardFormatterPageContent() {
                       <p
                         className={css({
                           fontSize: 'xs',
-                          color: 'gray.400',
+                          color: 'white',
                           mb: '1',
                         })}
                       >
@@ -743,7 +743,7 @@ function ClipboardFormatterPageContent() {
             >
               <div className={css({ flex: '1', minWidth: '0' })}>
                 <CardTitle className={css({ color: 'gray.100' })}>Formatted Output</CardTitle>
-                <CardDescription className={css({ color: 'gray.400', mt: '1.5' })}>
+                <CardDescription className={css({ color: 'white', mt: '1.5' })}>
                   {stats.charsRemoved > 0
                     ? `Removed ${stats.charsRemoved} characters`
                     : 'Apply transformations or let auto-format do its magic'}
@@ -835,7 +835,7 @@ function ClipboardFormatterPageContent() {
                 justifyContent: 'space-between',
                 mt: '4',
                 fontSize: 'sm',
-                color: 'gray.500',
+                color: 'white',
                 flexWrap: 'wrap',
                 gap: '2',
               })}
@@ -943,7 +943,7 @@ function ClipboardFormatterPageContent() {
                   className={css({
                     spaceY: '2',
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     listStylePosition: 'inside',
                   })}
                 >

@@ -249,7 +249,7 @@ function AIImageCaptionContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Generate descriptive alt text and captions for your images using AI. Improve
@@ -338,12 +338,12 @@ function AIImageCaptionContent() {
                     <Upload className={css({ h: '8', w: '8', color: 'white' })} />
                   </div>
 
-                  <p className={css({ mb: '2', fontSize: 'sm', color: 'gray.300' })}>
+                  <p className={css({ mb: '2', fontSize: 'sm', color: 'white' })}>
                     <span className={css({ fontWeight: 'semibold' })}>Click to upload</span> or drag
                     and drop
                   </p>
 
-                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ fontSize: 'xs', color: 'white' })}>
                     JPEG, PNG, WebP, or any image format • Max 20MB
                   </p>
 
@@ -394,7 +394,7 @@ function AIImageCaptionContent() {
                     p: '4',
                   })}
                 >
-                  <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>File Name</p>
+                  <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>File Name</p>
                   <p className={css({ fontSize: 'sm', color: 'gray.200', fontFamily: 'mono' })}>
                     {selectedImage.name}
                   </p>
@@ -405,7 +405,7 @@ function AIImageCaptionContent() {
                     w: 'full',
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.300',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -479,7 +479,7 @@ function AIImageCaptionContent() {
                         {type.label}
                       </span>
                       <span
-                        className={css({ fontSize: 'xs', color: 'gray.500', textAlign: 'center' })}
+                        className={css({ fontSize: 'xs', color: 'white', textAlign: 'center' })}
                       >
                         {type.description}
                       </span>
@@ -662,7 +662,7 @@ function AIImageCaptionContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
                     • Use <strong>Alt Text</strong> for WCAG-compliant accessibility (ideal for
                     screen readers)

@@ -443,7 +443,7 @@ export default function InvoiceGeneratorPage() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Create professional invoices with custom templates, tax calculations, and client
@@ -557,7 +557,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Invoice Number
@@ -584,7 +584,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Currency
@@ -625,7 +625,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Invoice Date
@@ -648,7 +648,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Due Date
@@ -703,7 +703,7 @@ export default function InvoiceGeneratorPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Company Name *
@@ -733,7 +733,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Email
@@ -757,7 +757,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Phone
@@ -782,7 +782,7 @@ export default function InvoiceGeneratorPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Address
@@ -836,7 +836,7 @@ export default function InvoiceGeneratorPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Client Name *
@@ -866,7 +866,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Email
@@ -890,7 +890,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Phone
@@ -915,7 +915,7 @@ export default function InvoiceGeneratorPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Address
@@ -998,7 +998,7 @@ export default function InvoiceGeneratorPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.400',
+                          color: 'white',
                         })}
                       >
                         Item #{index + 1}
@@ -1010,7 +1010,7 @@ export default function InvoiceGeneratorPage() {
                           className={css({
                             gap: '2',
                             bg: 'transparent',
-                            color: 'gray.500',
+                            color: 'white',
                             _hover: { bg: 'red.500/20', color: 'red.400' },
                           })}
                         >
@@ -1024,7 +1024,7 @@ export default function InvoiceGeneratorPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Description *
@@ -1056,7 +1056,7 @@ export default function InvoiceGeneratorPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Quantity
@@ -1082,7 +1082,7 @@ export default function InvoiceGeneratorPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Rate ({selectedCurrency.symbol})
@@ -1108,7 +1108,7 @@ export default function InvoiceGeneratorPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Amount
@@ -1169,7 +1169,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Tax Rate (%)
@@ -1200,7 +1200,7 @@ export default function InvoiceGeneratorPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Discount ({selectedCurrency.symbol})
@@ -1304,7 +1304,7 @@ export default function InvoiceGeneratorPage() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   <span>Subtotal:</span>
@@ -1316,7 +1316,7 @@ export default function InvoiceGeneratorPage() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                     })}
                   >
                     <span>Tax ({invoice.taxRate}%):</span>
@@ -1412,7 +1412,7 @@ export default function InvoiceGeneratorPage() {
                         >
                           {savedInvoice.invoiceNumber}
                         </div>
-                        <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <div className={css({ fontSize: 'xs', color: 'white' })}>
                           {savedInvoice.toCompany || 'No client'}
                         </div>
                       </button>
@@ -1422,7 +1422,7 @@ export default function InvoiceGeneratorPage() {
                         className={css({
                           gap: '2',
                           bg: 'transparent',
-                          color: 'gray.500',
+                          color: 'white',
                           _hover: { bg: 'red.500/20', color: 'red.400' },
                         })}
                       >

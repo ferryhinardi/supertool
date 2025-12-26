@@ -317,7 +317,7 @@ export default function ImageOptimizerPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Compress and optimize images up to 80% smaller without visible quality loss. Convert
@@ -359,7 +359,7 @@ export default function ImageOptimizerPage() {
                 >
                   {images.length}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Total Images</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Total Images</div>
               </div>
             </CardContent>
           </Card>
@@ -383,7 +383,7 @@ export default function ImageOptimizerPage() {
                 >
                   {formatBytes(totalOriginalSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Original Size</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Original Size</div>
               </div>
             </CardContent>
           </Card>
@@ -407,7 +407,7 @@ export default function ImageOptimizerPage() {
                 >
                   {formatBytes(totalCompressedSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Compressed Size</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Compressed Size</div>
               </div>
             </CardContent>
           </Card>
@@ -431,7 +431,7 @@ export default function ImageOptimizerPage() {
                 >
                   {totalSavings}%
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Space Saved</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Space Saved</div>
               </div>
             </CardContent>
           </Card>
@@ -486,7 +486,7 @@ export default function ImageOptimizerPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Output Format
@@ -532,7 +532,7 @@ export default function ImageOptimizerPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Quality
@@ -562,7 +562,7 @@ export default function ImageOptimizerPage() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontSize: 'xs',
-                      color: 'gray.500',
+                      color: 'white',
                     })}
                   >
                     <span>Lower size</span>
@@ -577,7 +577,7 @@ export default function ImageOptimizerPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Max Dimensions
@@ -597,7 +597,7 @@ export default function ImageOptimizerPage() {
                           mb: '1',
                           display: 'block',
                           fontSize: 'xs',
-                          color: 'gray.400',
+                          color: 'white',
                         })}
                       >
                         Width (px)
@@ -633,7 +633,7 @@ export default function ImageOptimizerPage() {
                           mb: '1',
                           display: 'block',
                           fontSize: 'xs',
-                          color: 'gray.400',
+                          color: 'white',
                         })}
                       >
                         Height (px)
@@ -670,7 +670,7 @@ export default function ImageOptimizerPage() {
                       alignItems: 'center',
                       gap: '2',
                       fontSize: 'sm',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     <input
@@ -893,7 +893,7 @@ export default function ImageOptimizerPage() {
                                         alignItems: 'center',
                                         gap: '3',
                                         fontSize: 'xs',
-                                        color: 'gray.500',
+                                        color: 'white',
                                       })}
                                     >
                                       <span>{formatBytes(image.originalSize)}</span>
@@ -966,7 +966,7 @@ export default function ImageOptimizerPage() {
                                 {image.status === 'processing' && (
                                   <div className={css({ spaceY: '1' })}>
                                     <Progress value={image.progress} className={css({ h: '2' })} />
-                                    <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                                    <p className={css({ fontSize: 'xs', color: 'white' })}>
                                       Optimizing... {image.progress}%
                                     </p>
                                   </div>
@@ -981,7 +981,7 @@ export default function ImageOptimizerPage() {
 
                                 {/* Status */}
                                 {image.status === 'pending' && (
-                                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                                  <p className={css({ fontSize: 'xs', color: 'white' })}>
                                     Ready to optimize
                                   </p>
                                 )}
@@ -1064,7 +1064,7 @@ export default function ImageOptimizerPage() {
                 >
                   {feature.title}
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.description}</p>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.description}</p>
               </div>
             </CardContent>
           </Card>
@@ -1132,7 +1132,7 @@ export default function ImageOptimizerPage() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
                     Upload Your Images
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Drag and drop your images into the upload zone, or click to browse your files.
                     Supports JPG, PNG, WebP, and GIF formats up to 50MB each.
                   </p>
@@ -1162,7 +1162,7 @@ export default function ImageOptimizerPage() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
                     Configure Settings
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Select your desired output format (JPEG, PNG, or WebP), adjust quality level
                     (10-100%), and set maximum dimensions if you want to resize your images.
                   </p>
@@ -1192,7 +1192,7 @@ export default function ImageOptimizerPage() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
                     Optimize Images
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Click "Optimize All Images" to process your entire batch. Watch the real-time
                     progress as each image is compressed, and see instant file size savings.
                   </p>
@@ -1222,7 +1222,7 @@ export default function ImageOptimizerPage() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
                     Download Optimized Files
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Download individual optimized images or use "Download All" for batch downloads.
                     Each file is renamed with "_optimized" suffix for easy identification.
                   </p>
@@ -1294,7 +1294,7 @@ export default function ImageOptimizerPage() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
                     Upload Your Images
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Drag and drop your images into the upload zone, or click to browse your files.
                     Supports JPG, PNG, WebP, and GIF formats up to 50MB each.
                   </p>
@@ -1324,7 +1324,7 @@ export default function ImageOptimizerPage() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
                     Configure Settings
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Select your desired output format (JPEG, PNG, or WebP), adjust quality level
                     (10-100%), and set maximum dimensions if you want to resize your images.
                   </p>
@@ -1354,7 +1354,7 @@ export default function ImageOptimizerPage() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
                     Optimize Images
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Click "Optimize All Images" to process your entire batch. Watch the real-time
                     progress as each image is compressed, and see instant file size savings.
                   </p>
@@ -1384,7 +1384,7 @@ export default function ImageOptimizerPage() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
                     Download Optimized Files
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Download individual optimized images or use "Download All" for batch downloads.
                     Each file is renamed with "_optimized" suffix for easy identification.
                   </p>

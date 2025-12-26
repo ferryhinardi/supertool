@@ -84,7 +84,7 @@ export function PDFThumbnail({ file, width = 80, height = 100 }: PDFThumbnailPro
           className={css({
             h: '6',
             w: '6',
-            color: 'gray.400',
+            color: 'white',
             animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           })}
         />

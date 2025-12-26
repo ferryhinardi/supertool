@@ -405,7 +405,7 @@ function DockerfileFormatterContent() {
             maxW: '3xl',
             mx: 'auto',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Beautify and lint Dockerfiles with intelligent formatting, best practice recommendations,
@@ -504,7 +504,7 @@ function DockerfileFormatterContent() {
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {stats.totalLines}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Total Lines</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Total Lines</div>
             </CardContent>
           </Card>
 
@@ -516,7 +516,7 @@ function DockerfileFormatterContent() {
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {stats.instructions}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Instructions</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Instructions</div>
             </CardContent>
           </Card>
 
@@ -530,7 +530,7 @@ function DockerfileFormatterContent() {
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {stats.layers}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Build Layers</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Build Layers</div>
             </CardContent>
           </Card>
 
@@ -550,7 +550,7 @@ function DockerfileFormatterContent() {
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {stats.issues}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Issues Found</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Issues Found</div>
             </CardContent>
           </Card>
         </motion.div>
@@ -600,7 +600,7 @@ function DockerfileFormatterContent() {
                               className={css({
                                 fontSize: 'xs',
                                 fontFamily: 'mono',
-                                color: 'gray.500',
+                                color: 'white',
                               })}
                             >
                               Line {issue.line}
@@ -617,7 +617,7 @@ function DockerfileFormatterContent() {
                           </span>
                         </div>
                         {issue.suggestion && (
-                          <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                          <p className={css({ fontSize: 'xs', color: 'white' })}>
                             💡 {issue.suggestion}
                           </p>
                         )}
@@ -697,7 +697,7 @@ function DockerfileFormatterContent() {
             <CardTitle className={css({ fontSize: 'lg' })}>Best Practices</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'gray.400' })}>
+            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'white' })}>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
                 <CheckCircle2
                   className={css({
@@ -709,7 +709,7 @@ function DockerfileFormatterContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Pin versions:</strong> Always use
+                  <strong className={css({ color: 'white' })}>Pin versions:</strong> Always use
                   specific image tags, never :latest
                 </div>
               </li>
@@ -724,8 +724,8 @@ function DockerfileFormatterContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Minimize layers:</strong> Combine
-                  RUN commands with && to reduce image size
+                  <strong className={css({ color: 'white' })}>Minimize layers:</strong> Combine RUN
+                  commands with && to reduce image size
                 </div>
               </li>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -739,7 +739,7 @@ function DockerfileFormatterContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Use .dockerignore:</strong> Exclude
+                  <strong className={css({ color: 'white' })}>Use .dockerignore:</strong> Exclude
                   unnecessary files from build context
                 </div>
               </li>
@@ -754,7 +754,7 @@ function DockerfileFormatterContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Multi-stage builds:</strong> Use
+                  <strong className={css({ color: 'white' })}>Multi-stage builds:</strong> Use
                   multiple FROM statements to reduce final image size
                 </div>
               </li>
@@ -767,7 +767,7 @@ function DockerfileFormatterContent() {
             <CardTitle className={css({ fontSize: 'lg' })}>Security Tips</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'gray.400' })}>
+            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'white' })}>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
                 <Shield
                   className={css({
@@ -779,7 +779,7 @@ function DockerfileFormatterContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Non-root user:</strong> Always run
+                  <strong className={css({ color: 'white' })}>Non-root user:</strong> Always run
                   containers as non-root users
                 </div>
               </li>
@@ -794,7 +794,7 @@ function DockerfileFormatterContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>No secrets:</strong> Never hardcode
+                  <strong className={css({ color: 'white' })}>No secrets:</strong> Never hardcode
                   secrets in Dockerfiles or images
                 </div>
               </li>
@@ -809,7 +809,7 @@ function DockerfileFormatterContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Minimal base images:</strong> Use
+                  <strong className={css({ color: 'white' })}>Minimal base images:</strong> Use
                   alpine or distroless for smaller attack surface
                 </div>
               </li>
@@ -824,8 +824,8 @@ function DockerfileFormatterContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Scan images:</strong> Regularly
-                  scan images for vulnerabilities with tools like Trivy
+                  <strong className={css({ color: 'white' })}>Scan images:</strong> Regularly scan
+                  images for vulnerabilities with tools like Trivy
                 </div>
               </li>
             </ul>

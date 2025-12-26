@@ -110,7 +110,7 @@ export function WatermarkTemplates({ onSelectTemplate, currentTemplate }: Waterm
           gap: '2',
           fontSize: 'sm',
           fontWeight: 'medium',
-          color: 'gray.300',
+          color: 'white',
         })}
       >
         <Sparkles className={css({ w: '4', h: '4', color: 'blue.400' })} />
@@ -194,7 +194,7 @@ export function WatermarkTemplates({ onSelectTemplate, currentTemplate }: Waterm
       <div
         className={css({
           fontSize: 'xs',
-          color: 'gray.500',
+          color: 'white',
           fontStyle: 'italic',
         })}
       >

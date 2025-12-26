@@ -255,7 +255,7 @@ export default function ScreenshotDiffPage() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Compare UI screenshots pixel-by-pixel to detect visual changes. Perfect for QA testing,
@@ -296,9 +296,7 @@ export default function ScreenshotDiffPage() {
               <div className={css({ spaceY: '3' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
                   <ImageIcon className={css({ h: '4', w: '4', color: 'blue.400' })} />
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Screenshot 1 (Before)
                   </span>
                   {image1File && <Badge variant="secondary">{image1File.name}</Badge>}
@@ -315,9 +313,7 @@ export default function ScreenshotDiffPage() {
               <div className={css({ spaceY: '3' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
                   <ImageIcon className={css({ h: '4', w: '4', color: 'green.400' })} />
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Screenshot 2 (After)
                   </span>
                   {image2File && <Badge variant="secondary">{image2File.name}</Badge>}
@@ -373,7 +369,7 @@ export default function ScreenshotDiffPage() {
                       gap: '2',
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Sensitivity Threshold
@@ -402,7 +398,7 @@ export default function ScreenshotDiffPage() {
                       cursor: 'pointer',
                     })}
                   />
-                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ fontSize: 'xs', color: 'white' })}>
                     Lower values detect more subtle differences. Range: 0 (most sensitive) to 1
                     (least sensitive)
                   </p>
@@ -410,9 +406,7 @@ export default function ScreenshotDiffPage() {
 
                 {/* View Mode */}
                 <div className={css({ spaceY: '3' })}>
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     View Mode
                   </span>
                   <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
@@ -478,7 +472,7 @@ export default function ScreenshotDiffPage() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -578,7 +572,7 @@ export default function ScreenshotDiffPage() {
                     p: '4',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Pixels</p>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>Total Pixels</p>
                   <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.200' })}>
                     {comparisonResult.totalPixels.toLocaleString()}
                   </p>
@@ -812,7 +806,7 @@ export default function ScreenshotDiffPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Lower threshold values (0-0.1) detect subtle color differences</li>
                   <li>• Images with different dimensions will be automatically resized to match</li>
                   <li>• Magenta highlights show pixel differences in the diff view</li>

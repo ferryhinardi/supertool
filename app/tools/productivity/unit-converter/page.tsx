@@ -978,7 +978,7 @@ function UnitConverterContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Convert between metric, imperial, and scientific units instantly. Support for length,
@@ -1067,7 +1067,7 @@ function UnitConverterContent() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.700', color: 'yellow.400' },
                   })}
                 >
@@ -1082,7 +1082,7 @@ function UnitConverterContent() {
             <div className={css({ spaceY: '3' })}>
               <label
                 htmlFor="from-value"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
               >
                 From
               </label>
@@ -1141,8 +1141,8 @@ function UnitConverterContent() {
               </div>
               {fromUnitInfo && (
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <Info className={css({ h: '4', w: '4', color: 'gray.500' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                  <Info className={css({ h: '4', w: '4', color: 'white' })} />
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     {fromUnitInfo.name} ({fromUnitInfo.symbol})
                   </span>
                 </div>
@@ -1176,7 +1176,7 @@ function UnitConverterContent() {
             <div className={css({ spaceY: '3' })}>
               <label
                 htmlFor="to-value"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
               >
                 To
               </label>
@@ -1234,8 +1234,8 @@ function UnitConverterContent() {
               </div>
               {toUnitInfo && (
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <Info className={css({ h: '4', w: '4', color: 'gray.500' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                  <Info className={css({ h: '4', w: '4', color: 'white' })} />
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     {toUnitInfo.name} ({toUnitInfo.symbol})
                   </span>
                 </div>
@@ -1296,7 +1296,7 @@ function UnitConverterContent() {
                   className={css({
                     fontFamily: 'mono',
                     fontSize: 'sm',
-                    color: 'gray.300',
+                    color: 'white',
                     bg: 'gray.800/50',
                     p: '3',
                     rounded: 'md',
@@ -1307,7 +1307,7 @@ function UnitConverterContent() {
                   {formulaExplanation.formula}
                 </div>
 
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Quick reference: 1 {fromUnitInfo?.symbol} ={' '}
                   {convertUnit(1, fromUnit, toUnit, category).toFixed(6)} {toUnitInfo?.symbol}
                 </p>
@@ -1359,7 +1359,7 @@ function UnitConverterContent() {
                             >
                               {index + 1}
                             </Badge>
-                            <p className={css({ fontSize: 'xs', color: 'gray.400', flex: '1' })}>
+                            <p className={css({ fontSize: 'xs', color: 'white', flex: '1' })}>
                               {step}
                             </p>
                           </div>
@@ -1397,7 +1397,7 @@ function UnitConverterContent() {
                           >
                             How This Works
                           </h4>
-                          <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                          <p className={css({ fontSize: 'xs', color: 'white' })}>
                             {formulaExplanation.explanation}
                           </p>
                         </div>
@@ -1482,7 +1482,7 @@ function UnitConverterContent() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.400',
+                        color: 'white',
                         _hover: { bg: 'red.500/20', color: 'red.400' },
                       })}
                     >
@@ -1520,7 +1520,7 @@ function UnitConverterContent() {
                   className={css({
                     fontSize: 'lg',
                     fontWeight: 'semibold',
-                    color: 'gray.300',
+                    color: 'white',
                     mb: '2',
                   })}
                 >
@@ -1529,7 +1529,7 @@ function UnitConverterContent() {
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.500',
+                    color: 'white',
                     mb: '4',
                     maxW: 'md',
                     mx: 'auto',
@@ -1559,7 +1559,7 @@ function UnitConverterContent() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="chain-input"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Starting Value
                   </label>
@@ -1696,7 +1696,7 @@ function UnitConverterContent() {
                                   >
                                     {step.value || '—'}
                                   </span>
-                                  <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                                     {unitInfo?.symbol}
                                   </span>
                                 </div>
@@ -1709,7 +1709,7 @@ function UnitConverterContent() {
                                 size="sm"
                                 className={css({
                                   bg: 'transparent',
-                                  color: 'gray.500',
+                                  color: 'white',
                                   p: '2',
                                   h: 'auto',
                                   _hover: { bg: 'red.500/20', color: 'red.400' },
@@ -1767,7 +1767,7 @@ function UnitConverterContent() {
                           Chain Summary
                         </span>
                       </div>
-                      <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                      <p className={css({ fontSize: 'sm', color: 'white' })}>
                         {chainInputValue} {getUnitInfo(category, conversionChain[0].unit)?.symbol} →{' '}
                         {conversionChain.length - 1} step{conversionChain.length > 2 ? 's' : ''} →{' '}
                         <span className={css({ fontWeight: 'bold', color: 'cyan.300' })}>
@@ -1801,7 +1801,7 @@ function UnitConverterContent() {
                           className={css({
                             gap: '2',
                             bg: 'gray.800',
-                            color: 'gray.400',
+                            color: 'white',
                             _hover: { bg: 'gray.700', color: 'cyan.400' },
                           })}
                         >
@@ -1856,7 +1856,7 @@ function UnitConverterContent() {
                         >
                           Save Conversion Chain
                         </h3>
-                        <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                        <p className={css({ fontSize: 'sm', color: 'white' })}>
                           Give your chain a name to save it for later use
                         </p>
                       </div>
@@ -1893,7 +1893,7 @@ function UnitConverterContent() {
                           }}
                           className={css({
                             bg: 'gray.800',
-                            color: 'gray.400',
+                            color: 'white',
                             _hover: { bg: 'gray.700' },
                           })}
                         >
@@ -1949,7 +1949,7 @@ function UnitConverterContent() {
                       Quick Start Presets
                     </span>
                   </div>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Load common conversion chains instantly
                   </p>
                   <div
@@ -2005,7 +2005,7 @@ function UnitConverterContent() {
                             {preset.name}
                           </span>
                         </div>
-                        <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <p className={css({ fontSize: 'xs', color: 'white' })}>
                           {preset.description}
                         </p>
                       </button>
@@ -2105,7 +2105,7 @@ function UnitConverterContent() {
                                 {chain.name}
                               </span>
                             </div>
-                            <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                            <p className={css({ fontSize: 'xs', color: 'white' })}>
                               {chain.steps.length} steps •{' '}
                               {new Date(chain.createdAt).toLocaleDateString()}
                             </p>
@@ -2118,7 +2118,7 @@ function UnitConverterContent() {
                             size="sm"
                             className={css({
                               bg: 'transparent',
-                              color: 'gray.500',
+                              color: 'white',
                               p: '2',
                               h: 'auto',
                               _hover: { bg: 'red.500/20', color: 'red.400' },
@@ -2220,11 +2220,11 @@ function UnitConverterContent() {
                         >
                           {catDef.name}
                         </Badge>
-                        <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                        <span className={css({ fontSize: 'sm', color: 'white' })}>
                           {fromInfo?.name} ({fromInfo?.symbol})
                         </span>
-                        <ArrowRight className={css({ h: '4', w: '4', color: 'gray.500' })} />
-                        <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                        <ArrowRight className={css({ h: '4', w: '4', color: 'white' })} />
+                        <span className={css({ fontSize: 'sm', color: 'white' })}>
                           {toInfo?.name} ({toInfo?.symbol})
                         </span>
                       </button>
@@ -2237,7 +2237,7 @@ function UnitConverterContent() {
                         className={css({
                           gap: '2',
                           bg: 'transparent',
-                          color: 'gray.500',
+                          color: 'white',
                           _hover: { bg: 'red.500/20', color: 'red.400' },
                         })}
                       >
@@ -2296,7 +2296,7 @@ function UnitConverterContent() {
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'purple.400' },
                     })}
                   >
@@ -2309,7 +2309,7 @@ function UnitConverterContent() {
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'red.500/20', color: 'red.400' },
                     })}
                   >
@@ -2359,7 +2359,7 @@ function UnitConverterContent() {
                         onClick={() => handleReplayHistory(item)}
                       >
                         <Clock
-                          className={css({ h: '4', w: '4', color: 'gray.500', flexShrink: '0' })}
+                          className={css({ h: '4', w: '4', color: 'white', flexShrink: '0' })}
                         />
                         <div className={css({ flex: '1', minW: '0' })}>
                           <div
@@ -2384,17 +2384,17 @@ function UnitConverterContent() {
                             <span
                               className={css({
                                 fontSize: 'sm',
-                                color: 'gray.300',
+                                color: 'white',
                                 fontWeight: 'semibold',
                               })}
                             >
                               {item.fromValue} {fromInfo?.symbol}
                             </span>
-                            <ArrowRight className={css({ h: '3', w: '3', color: 'gray.500' })} />
+                            <ArrowRight className={css({ h: '3', w: '3', color: 'white' })} />
                             <span
                               className={css({
                                 fontSize: 'sm',
-                                color: 'gray.300',
+                                color: 'white',
                                 fontWeight: 'semibold',
                               })}
                             >
@@ -2404,7 +2404,7 @@ function UnitConverterContent() {
                           <span
                             className={css({
                               fontSize: 'xs',
-                              color: 'gray.500',
+                              color: 'white',
                               display: 'block',
                               mt: '1',
                             })}
@@ -2413,7 +2413,7 @@ function UnitConverterContent() {
                           </span>
                         </div>
                         <RotateCcw
-                          className={css({ h: '4', w: '4', color: 'gray.500', flexShrink: '0' })}
+                          className={css({ h: '4', w: '4', color: 'white', flexShrink: '0' })}
                         />
                       </button>
                     </div>
@@ -2424,7 +2424,7 @@ function UnitConverterContent() {
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.500',
+                    color: 'white',
                     textAlign: 'center',
                     mt: '3',
                   })}
@@ -2458,7 +2458,7 @@ function UnitConverterContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Use the swap button to quickly reverse conversions</li>
                   <li>• Save frequently used conversions as favorites for quick access</li>
                   <li>• All conversions are instant and work offline</li>
@@ -2516,7 +2516,7 @@ function UnitConverterContent() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
                     Select Unit Category
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Choose from 30+ categories including Length, Weight, Temperature, Volume, Area,
                     Speed, Time, Pressure, Energy, Power, and Data Storage. Each category contains
                     relevant measurement units for that type.
@@ -2545,7 +2545,7 @@ function UnitConverterContent() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
                     Enter Value and Choose Units
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Type your number in the input field, select the source unit (what you have), and
                     choose the target unit (what you want). The conversion happens instantly as you
                     type with up to 10 decimal places of precision.
@@ -2574,7 +2574,7 @@ function UnitConverterContent() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
                     View Results and Formula
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     The converted value appears immediately below. Click the info icon to see the
                     conversion formula and learn how the calculation works. Use the swap button to
                     reverse the conversion direction quickly.
@@ -2603,7 +2603,7 @@ function UnitConverterContent() {
                   <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
                     Save Favorites (Optional)
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Click the star icon to save frequently used conversions like kg to lbs, miles to
                     km, or Celsius to Fahrenheit. Your favorites appear at the top for instant
                     access on future visits. All data is stored locally in your browser.

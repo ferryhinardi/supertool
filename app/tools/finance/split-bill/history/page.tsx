@@ -347,7 +347,7 @@ export default function BillHistoryPage() {
             className={css({
               textAlign: 'center',
               py: '12',
-              color: 'gray.400',
+              color: 'white',
             })}
           >
             Loading bills...
@@ -449,7 +449,7 @@ export default function BillHistoryPage() {
                         display: 'flex',
                         flexWrap: 'wrap',
                         gap: '3',
-                        color: 'gray.400',
+                        color: 'white',
                         fontSize: 'sm',
                       })}
                     >
@@ -560,7 +560,7 @@ export default function BillHistoryPage() {
                     borderTop: '1px solid',
                     borderColor: 'gray.700',
                     fontSize: 'xs',
-                    color: 'gray.500',
+                    color: 'white',
                   })}
                 >
                   Organized by{' '}

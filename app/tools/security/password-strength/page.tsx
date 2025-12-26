@@ -149,7 +149,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Measure password entropy and security strength with visual feedback. Detect common
@@ -204,7 +204,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                   rounded: 'md',
                   bg: 'transparent',
                   border: 'none',
-                  color: 'gray.400',
+                  color: 'white',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
                   _hover: { color: 'gray.200', bg: 'gray.800' },
@@ -227,9 +227,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                 {/* Strength Meter */}
                 <div className={css({ spaceY: '2' })}>
                   <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
-                    <span
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                    >
+                    <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                       Password Strength
                     </span>
                     <Badge
@@ -273,9 +271,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
-                      Length
-                    </div>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>Length</div>
                     <div className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'gray.200' })}>
                       {analysis.length} characters
                     </div>
@@ -290,9 +286,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
-                      Entropy
-                    </div>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>Entropy</div>
                     <div className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'gray.200' })}>
                       {analysis.entropy} bits
                     </div>
@@ -307,7 +301,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>Score</div>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>Score</div>
                     <div className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'gray.200' })}>
                       {analysis.score} / 4
                     </div>
@@ -322,7 +316,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                       Crack Time
                     </div>
                     <div
@@ -387,7 +381,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                   {analysis.hasLowercase ? (
                     <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
                   ) : (
-                    <XCircle className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                    <XCircle className={css({ h: '5', w: '5', color: 'white' })} />
                   )}
                   <div>
                     <div
@@ -399,7 +393,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                     >
                       Lowercase Letters
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>a-z</div>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>a-z</div>
                   </div>
                 </div>
 
@@ -418,7 +412,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                   {analysis.hasUppercase ? (
                     <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
                   ) : (
-                    <XCircle className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                    <XCircle className={css({ h: '5', w: '5', color: 'white' })} />
                   )}
                   <div>
                     <div
@@ -430,7 +424,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                     >
                       Uppercase Letters
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>A-Z</div>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>A-Z</div>
                   </div>
                 </div>
 
@@ -449,7 +443,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                   {analysis.hasNumbers ? (
                     <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
                   ) : (
-                    <XCircle className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                    <XCircle className={css({ h: '5', w: '5', color: 'white' })} />
                   )}
                   <div>
                     <div
@@ -461,7 +455,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                     >
                       Numbers
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>0-9</div>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>0-9</div>
                   </div>
                 </div>
 
@@ -480,7 +474,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                   {analysis.hasSymbols ? (
                     <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
                   ) : (
-                    <XCircle className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                    <XCircle className={css({ h: '5', w: '5', color: 'white' })} />
                   )}
                   <div>
                     <div
@@ -492,7 +486,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                     >
                       Special Characters
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>!@#$%^&*</div>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>!@#$%^&*</div>
                   </div>
                 </div>
               </div>
@@ -549,7 +543,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                     >
                       {analysis.hasSequences ? 'Sequences Detected' : 'No Sequences'}
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>
                       Common patterns like abc, 123, qwerty
                     </div>
                   </div>
@@ -582,7 +576,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                     >
                       {analysis.hasRepeats ? 'Repeated Characters' : 'No Repeats'}
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>
                       Repeated characters like aaa, 111
                     </div>
                   </div>
@@ -614,7 +608,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                       >
                         Warning
                       </div>
-                      <div className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                      <div className={css({ fontSize: 'xs', color: 'white', mt: '1' })}>
                         {analysis.feedback.warning}
                       </div>
                     </div>
@@ -695,7 +689,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                         mt: '0.5',
                       })}
                     />
-                    <span className={css({ fontSize: 'sm', color: 'gray.300' })}>{suggestion}</span>
+                    <span className={css({ fontSize: 'sm', color: 'white' })}>{suggestion}</span>
                   </li>
                 ))}
               </ul>
@@ -725,7 +719,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Security Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Use at least 12 characters for strong passwords</li>
                   <li>• Mix uppercase, lowercase, numbers, and special characters</li>
                   <li>• Avoid common words, names, and predictable patterns</li>

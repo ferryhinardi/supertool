@@ -73,7 +73,7 @@ export function OperationProgress({
       case 'processing':
         return <Loader2 className={css({ w: 5, h: 5, color: 'blue.400', animation: 'spin' })} />
       default:
-        return <Clock className={css({ w: 5, h: 5, color: 'gray.400' })} />
+        return <Clock className={css({ w: 5, h: 5, color: 'white' })} />
     }
   }
 
@@ -166,7 +166,7 @@ export function OperationProgress({
             </div>
 
             {/* File Size */}
-            <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+            <span className={css({ fontSize: 'xs', color: 'white' })}>
               {formatFileSize(pdf.size)}
               {pdf.processedSize && pdf.processedSize !== pdf.size && (
                 <>
@@ -179,7 +179,7 @@ export function OperationProgress({
             </span>
 
             {/* Pages */}
-            <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+            <span className={css({ fontSize: 'xs', color: 'white' })}>
               {pdf.pages} {pdf.pages === 1 ? 'page' : 'pages'}
             </span>
           </div>
@@ -234,7 +234,7 @@ export function OperationProgress({
               transition={{ duration: 0.3 }}
             />
           </div>
-          <span className={css({ fontSize: 'xs', color: 'gray.400', w: 10, textAlign: 'right' })}>
+          <span className={css({ fontSize: 'xs', color: 'white', w: 10, textAlign: 'right' })}>
             {pdf.progress}%
           </span>
         </div>
@@ -316,7 +316,7 @@ export function OperationProgress({
                 px: 3,
                 bg: 'gray.500/10',
                 borderColor: 'gray.500/30',
-                color: 'gray.300',
+                color: 'white',
                 _hover: {
                   bg: 'gray.500/20',
                   borderColor: 'gray.500/50',

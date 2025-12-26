@@ -499,7 +499,7 @@ export default function PomodoroTimerPage() {
           Pomodoro Timer
         </h1>
 
-        <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'gray.400' })}>
+        <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'white' })}>
           Boost productivity with the Pomodoro Technique. Work in focused 25-minute intervals, track
           your tasks, and build better habits with statistics and insights.
         </p>
@@ -670,7 +670,7 @@ export default function PomodoroTimerPage() {
                   >
                     {formatTime(timeLeft)}
                   </div>
-                  <div className={css({ fontSize: 'lg', color: 'gray.500', mt: '2' })}>
+                  <div className={css({ fontSize: 'lg', color: 'white', mt: '2' })}>
                     {mode === 'work'
                       ? 'Focus Time'
                       : mode === 'longBreak'
@@ -749,19 +749,19 @@ export default function PomodoroTimerPage() {
                 <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'red.400' })}>
                   {pomodoroCount}
                 </div>
-                <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Session</div>
+                <div className={css({ fontSize: 'sm', color: 'white' })}>Session</div>
               </div>
               <div className={css({ textAlign: 'center' })}>
                 <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'purple.400' })}>
                   {statistics.sessionsToday}
                 </div>
-                <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Today</div>
+                <div className={css({ fontSize: 'sm', color: 'white' })}>Today</div>
               </div>
               <div className={css({ textAlign: 'center' })}>
                 <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'blue.400' })}>
                   {statistics.totalPomodoros}
                 </div>
-                <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Total</div>
+                <div className={css({ fontSize: 'sm', color: 'white' })}>Total</div>
               </div>
             </div>
 
@@ -772,7 +772,7 @@ export default function PomodoroTimerPage() {
                 justifyContent: 'center',
                 gap: '4',
                 fontSize: 'sm',
-                color: 'gray.500',
+                color: 'white',
               })}
             >
               <div>
@@ -867,7 +867,7 @@ export default function PomodoroTimerPage() {
                     textAlign: 'center',
                     py: '8',
                     fontSize: 'sm',
-                    color: 'gray.500',
+                    color: 'white',
                   })}
                 >
                   No tasks yet. Add one to get started!
@@ -975,7 +975,7 @@ export default function PomodoroTimerPage() {
                           }}
                         />
                       </div>
-                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <div className={css({ fontSize: 'xs', color: 'white' })}>
                         {task.pomodorosCompleted}/{task.pomodorosTarget}
                       </div>
                     </div>
@@ -1030,7 +1030,7 @@ export default function PomodoroTimerPage() {
               <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
                 Choose a Task
               </h3>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Select a task you want to work on and set a target number of Pomodoros.
               </p>
             </div>
@@ -1055,7 +1055,7 @@ export default function PomodoroTimerPage() {
               <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
                 Work for 25 Minutes
               </h3>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Focus completely on your task. Avoid all distractions until the timer rings.
               </p>
             </div>
@@ -1080,7 +1080,7 @@ export default function PomodoroTimerPage() {
               <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
                 Take a Short Break
               </h3>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Relax for 5 minutes. Stretch, grab water, or take a quick walk.
               </p>
             </div>
@@ -1105,7 +1105,7 @@ export default function PomodoroTimerPage() {
               <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
                 Repeat & Rest
               </h3>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 After 4 Pomodoros, take a longer 15-minute break to recharge.
               </p>
             </div>
@@ -1148,9 +1148,7 @@ function SettingsPanel({
     <div className={css({ p: '6', spaceY: '6' })}>
       <div>
         <h2 className={css({ fontSize: '2xl', fontWeight: 'bold', mb: '2' })}>Timer Settings</h2>
-        <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
-          Customize your Pomodoro intervals
-        </p>
+        <p className={css({ fontSize: 'sm', color: 'white' })}>Customize your Pomodoro intervals</p>
       </div>
 
       <div className={css({ spaceY: '4' })}>
@@ -1317,9 +1315,7 @@ function StatisticsPanel({ statistics }: { statistics: Statistics }) {
     <div className={css({ p: '6', spaceY: '6' })}>
       <div>
         <h2 className={css({ fontSize: '2xl', fontWeight: 'bold', mb: '2' })}>Your Statistics</h2>
-        <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
-          Track your productivity over time
-        </p>
+        <p className={css({ fontSize: 'sm', color: 'white' })}>Track your productivity over time</p>
       </div>
 
       <div
@@ -1341,7 +1337,7 @@ function StatisticsPanel({ statistics }: { statistics: Statistics }) {
           <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'purple.400' })}>
             {statistics.totalPomodoros}
           </div>
-          <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Pomodoros</div>
+          <div className={css({ fontSize: 'sm', color: 'white' })}>Total Pomodoros</div>
         </div>
 
         <div
@@ -1356,7 +1352,7 @@ function StatisticsPanel({ statistics }: { statistics: Statistics }) {
           <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'blue.400' })}>
             {statistics.sessionsToday}
           </div>
-          <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Today</div>
+          <div className={css({ fontSize: 'sm', color: 'white' })}>Today</div>
         </div>
 
         <div
@@ -1371,7 +1367,7 @@ function StatisticsPanel({ statistics }: { statistics: Statistics }) {
           <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'green.400' })}>
             {totalHours}h {totalMinutes}m
           </div>
-          <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Focus Time</div>
+          <div className={css({ fontSize: 'sm', color: 'white' })}>Focus Time</div>
         </div>
 
         <div
@@ -1386,7 +1382,7 @@ function StatisticsPanel({ statistics }: { statistics: Statistics }) {
           <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'orange.400' })}>
             {avgPerDay}
           </div>
-          <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Avg per Day</div>
+          <div className={css({ fontSize: 'sm', color: 'white' })}>Avg per Day</div>
         </div>
       </div>
 
@@ -1407,7 +1403,7 @@ function StatisticsPanel({ statistics }: { statistics: Statistics }) {
                       fontSize: 'sm',
                     })}
                   >
-                    <span className={css({ color: 'gray.400' })}>
+                    <span className={css({ color: 'white' })}>
                       {new Date(day.date).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',

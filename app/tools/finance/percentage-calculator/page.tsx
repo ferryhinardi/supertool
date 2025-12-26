@@ -282,7 +282,7 @@ function PercentageCalculatorContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Calculate percentages, discounts, tips, tax, and more with instant results. Seven powerful
@@ -351,7 +351,7 @@ function PercentageCalculatorContent() {
                     <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                       {modeConfig.name}
                     </span>
-                    <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <span className={css({ fontSize: 'xs', color: 'white' })}>
                       {modeConfig.description}
                     </span>
                   </Button>
@@ -397,7 +397,7 @@ function PercentageCalculatorContent() {
                 <div key={inputConfig.id} className={css({ spaceY: '3' })}>
                   <label
                     htmlFor={inputConfig.id}
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     {inputConfig.label}
                   </label>
@@ -438,7 +438,7 @@ function PercentageCalculatorContent() {
                           transform: 'translateY(-50%)',
                           fontSize: 'lg',
                           fontWeight: 'semibold',
-                          color: 'gray.500',
+                          color: 'white',
                         })}
                       >
                         {inputConfig.suffix}
@@ -457,7 +457,7 @@ function PercentageCalculatorContent() {
                 className={css({ spaceY: '4' })}
               >
                 <div className={css({ spaceY: '3' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Result
                   </div>
                   <div className={css({ position: 'relative' })}>
@@ -520,7 +520,7 @@ function PercentageCalculatorContent() {
                       Calculation
                     </span>
                   </div>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400', fontFamily: 'mono' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', fontFamily: 'mono' })}>
                     {result.formula}
                   </p>
                 </div>
@@ -534,7 +534,7 @@ function PercentageCalculatorContent() {
                 className={css({
                   gap: '2',
                   bg: 'gray.800',
-                  color: 'gray.400',
+                  color: 'white',
                   _hover: { bg: 'gray.700' },
                 })}
               >
@@ -577,7 +577,7 @@ function PercentageCalculatorContent() {
                   >
                     Pro Tips
                   </h3>
-                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                     <li>• Switch between modes without losing your data</li>
                     <li>• Copy results with one click</li>
                     <li>• All calculations are instant and work offline</li>
@@ -605,7 +605,7 @@ function PercentageCalculatorContent() {
                   >
                     Common Uses
                   </h3>
-                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                     <li>• Calculate sales discounts and savings</li>
                     <li>• Determine tip amounts at restaurants</li>
                     <li>• Compute sales tax on purchases</li>

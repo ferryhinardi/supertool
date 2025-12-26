@@ -329,7 +329,7 @@ export default function URLShortenerPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: { base: 'base', sm: 'lg' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Create short, memorable links with custom aliases. Track clicks and generate QR codes for
@@ -363,7 +363,7 @@ export default function URLShortenerPage() {
             })}
           >
             <div>
-              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Total URLs</p>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>Total URLs</p>
               <p
                 className={css({
                   fontSize: '3xl',
@@ -395,7 +395,7 @@ export default function URLShortenerPage() {
             })}
           >
             <div>
-              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Clicks</p>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>Total Clicks</p>
               <p
                 className={css({
                   fontSize: '3xl',
@@ -427,7 +427,7 @@ export default function URLShortenerPage() {
             })}
           >
             <div>
-              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Avg. Clicks</p>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>Avg. Clicks</p>
               <p
                 className={css({
                   fontSize: '3xl',
@@ -543,7 +543,7 @@ export default function URLShortenerPage() {
                 color: 'gray.200',
               })}
             >
-              Custom alias <span className={css({ color: 'gray.500' })}>(optional)</span>
+              Custom alias <span className={css({ color: 'white' })}>(optional)</span>
             </label>
             <Input
               id="custom-alias"
@@ -560,7 +560,7 @@ export default function URLShortenerPage() {
                 bg: 'gray.800',
               })}
             />
-            <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+            <p className={css({ fontSize: 'xs', color: 'white' })}>
               Use lowercase letters, numbers, and hyphens only. Leave empty for auto-generated short
               code.
             </p>
@@ -607,7 +607,7 @@ export default function URLShortenerPage() {
                   className={css({
                     fontSize: 'xs',
                     fontWeight: 'medium',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   Short URL
@@ -683,7 +683,7 @@ export default function URLShortenerPage() {
                   className={css({
                     fontSize: 'xs',
                     fontWeight: 'medium',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   Original URL
@@ -708,7 +708,7 @@ export default function URLShortenerPage() {
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                       fontSize: 'sm',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     {selectedUrl.originalUrl}
@@ -718,9 +718,9 @@ export default function URLShortenerPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={css({
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: {
-                        color: 'gray.300',
+                        color: 'white',
                       },
                     })}
                   >
@@ -876,7 +876,7 @@ export default function URLShortenerPage() {
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                       })}
                     >
                       {item.originalUrl}
@@ -887,7 +887,7 @@ export default function URLShortenerPage() {
                         flexWrap: 'wrap',
                         gap: '2',
                         fontSize: 'xs',
-                        color: 'gray.500',
+                        color: 'white',
                       })}
                     >
                       <span
@@ -991,7 +991,7 @@ export default function URLShortenerPage() {
             >
               Cloud Storage Enabled
             </p>
-            <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+            <p className={css({ fontSize: 'xs', color: 'white' })}>
               Your URLs are stored in Supabase with real-time analytics tracking. All shortened
               links are persistent and accessible across devices. Click tracking is enabled
               automatically.
@@ -1029,7 +1029,7 @@ export default function URLShortenerPage() {
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>
                   Custom Aliases for Brand Recognition:
                 </strong>{' '}
@@ -1048,7 +1048,7 @@ export default function URLShortenerPage() {
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>
                   Track and Analyze Performance:
                 </strong>{' '}
@@ -1066,7 +1066,7 @@ export default function URLShortenerPage() {
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>
                   QR Codes for Physical Marketing:
                 </strong>{' '}
@@ -1084,7 +1084,7 @@ export default function URLShortenerPage() {
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>
                   Link Management Best Practices:
                 </strong>{' '}
@@ -1102,7 +1102,7 @@ export default function URLShortenerPage() {
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>Social Media Optimization:</strong>{' '}
                 Short links save character count on Twitter, look cleaner on Instagram, and improve
                 click-through rates across all platforms. Test links before posting, use link
@@ -1185,7 +1185,7 @@ export default function URLShortenerPage() {
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >
@@ -1232,7 +1232,7 @@ export default function URLShortenerPage() {
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >
@@ -1279,7 +1279,7 @@ export default function URLShortenerPage() {
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >
@@ -1326,7 +1326,7 @@ export default function URLShortenerPage() {
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >

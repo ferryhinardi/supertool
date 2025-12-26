@@ -116,7 +116,7 @@ export function PDFPreview({ file }: PDFPreviewProps) {
           className={css({
             h: '8',
             w: '8',
-            color: 'gray.400',
+            color: 'white',
           })}
         />
       </div>

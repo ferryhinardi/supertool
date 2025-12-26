@@ -262,7 +262,7 @@ developers:
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Convert between YAML and JSON formats instantly with syntax validation and formatting.
@@ -402,7 +402,7 @@ developers:
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'green.400' },
                     })}
                   >
@@ -414,7 +414,7 @@ developers:
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'red.400' },
                     })}
                   >
@@ -446,7 +446,7 @@ developers:
                     ring: '2px',
                     ringColor: error ? 'red.500/20' : 'green.500/20',
                   },
-                  _placeholder: { color: 'gray.500' },
+                  _placeholder: { color: 'white' },
                 })}
               />
               {error && (
@@ -504,7 +504,7 @@ developers:
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'green.400' },
                       _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                     })}
@@ -523,7 +523,7 @@ developers:
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'green.400' },
                       _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                     })}
@@ -552,7 +552,7 @@ developers:
                   color: 'green.200',
                   resize: 'vertical',
                   cursor: outputText ? 'text' : 'default',
-                  _placeholder: { color: 'gray.500' },
+                  _placeholder: { color: 'white' },
                 })}
               />
             </CardContent>
@@ -585,7 +585,7 @@ developers:
                 >
                   Features & Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Real-time conversion as you type</li>
                   <li>• Automatic syntax validation with detailed error messages</li>
                   <li>• Pretty formatting with proper indentation</li>

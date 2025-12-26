@@ -162,7 +162,7 @@ export default function UploadTool() {
               <p
                 className={css({
                   fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.300',
+                  color: 'white',
                   lineHeight: 'relaxed',
                 })}
               >
@@ -227,7 +227,7 @@ export default function UploadTool() {
                           <p
                             className={css({
                               fontSize: { base: 'xs', sm: 'sm' },
-                              color: 'gray.300',
+                              color: 'white',
                             })}
                           >
                             {formatFileSize(file.size)} • {file.type || 'Unknown type'}
@@ -385,7 +385,7 @@ export default function UploadTool() {
                     <p
                       className={css({
                         fontSize: { base: 'base', sm: 'lg' },
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Your file is now available via a public URL
@@ -420,7 +420,7 @@ export default function UploadTool() {
                         className={css({
                           fontSize: { base: 'xs', sm: 'sm' },
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         File name:
@@ -449,7 +449,7 @@ export default function UploadTool() {
                         className={css({
                           fontSize: { base: 'xs', sm: 'sm' },
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Size:
@@ -485,7 +485,7 @@ export default function UploadTool() {
                         textAlign: 'left',
                         fontSize: { base: 'sm', sm: 'base' },
                         fontWeight: 'semibold',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Public URL:
@@ -665,7 +665,7 @@ export default function UploadTool() {
               <CardDescription
                 className={css({
                   fontSize: { base: 'sm', sm: 'base' },
-                  color: 'gray.300',
+                  color: 'white',
                   lineHeight: 'relaxed',
                 })}
               >

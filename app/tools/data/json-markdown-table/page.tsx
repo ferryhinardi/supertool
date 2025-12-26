@@ -399,9 +399,7 @@ export default function JSONToMarkdownTablePage() {
             })}
           >
             <Field>
-              <FieldLabel
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-              >
+              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Column Alignment
               </FieldLabel>
               <select
@@ -432,9 +430,7 @@ export default function JSONToMarkdownTablePage() {
             </Field>
 
             <Field>
-              <FieldLabel
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-              >
+              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Custom Headers (comma-separated, optional)
               </FieldLabel>
               <input
@@ -458,7 +454,7 @@ export default function JSONToMarkdownTablePage() {
                     ringColor: 'rgba(168, 85, 247, 0.3)',
                   },
                   _placeholder: {
-                    color: 'gray.500',
+                    color: 'white',
                   },
                 })}
               />
@@ -661,7 +657,7 @@ export default function JSONToMarkdownTablePage() {
                 className={css({
                   fontFamily: 'mono',
                   fontSize: { base: 'xs', sm: 'sm' },
-                  color: 'gray.300',
+                  color: 'white',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-all',
                 })}
@@ -675,7 +671,7 @@ export default function JSONToMarkdownTablePage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   py: '8',
-                  color: 'gray.500',
+                  color: 'white',
                 })}
               >
                 Enter valid JSON array to see Markdown table
@@ -705,7 +701,7 @@ export default function JSONToMarkdownTablePage() {
           >
             How to Use
           </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
             <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Paste your JSON array in the editor above
             </li>

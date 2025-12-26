@@ -536,7 +536,7 @@ export default function DailyNotePage() {
               className={css({
                 mt: '1',
                 fontSize: { base: 'sm', sm: 'base' },
-                color: 'gray.400',
+                color: 'white',
               })}
             >
               Create timestamped notes with customizable templates
@@ -612,7 +612,7 @@ export default function DailyNotePage() {
                 <h2 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   {formatDisplayDate(selectedDate)}
                 </h2>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   <Clock className={css({ display: 'inline', h: '3', w: '3', mr: '1' })} />
                   {formatTime()}
                 </p>
@@ -700,7 +700,7 @@ export default function DailyNotePage() {
                           className={css({
                             fontSize: 'xs',
                             fontWeight: 'semibold',
-                            color: 'gray.500',
+                            color: 'white',
                             mb: '2',
                           })}
                         >
@@ -859,7 +859,7 @@ export default function DailyNotePage() {
                             day: 'numeric',
                           })}
                         </span>
-                        <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <span className={css({ fontSize: 'xs', color: 'white' })}>
                           {note.content.trim().split(/\s+/).length} words
                         </span>
                       </div>
@@ -948,7 +948,7 @@ export default function DailyNotePage() {
                     display: 'flex',
                     gap: '3',
                     fontSize: 'xs',
-                    color: 'gray.500',
+                    color: 'white',
                   })}
                 >
                   <span>{content.trim().split(/\s+/).filter(Boolean).length} words</span>
@@ -989,7 +989,7 @@ export default function DailyNotePage() {
               <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'white' })}>
                 Template Variables
               </h3>
-              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>
                 Use{' '}
                 <code
                   className={css({

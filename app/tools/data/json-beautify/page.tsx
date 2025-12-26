@@ -207,10 +207,10 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
             type="button"
             onClick={() => handleCopyPath(path)}
             className={css({
-              color: 'gray.500',
+              color: 'white',
               fontStyle: 'italic',
               cursor: 'pointer',
-              _hover: { color: 'gray.300', textDecoration: 'underline' },
+              _hover: { color: 'white', textDecoration: 'underline' },
             })}
           >
             null
@@ -259,7 +259,7 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
   const isEmpty = isArray ? data.length === 0 : Object.keys(data).length === 0
 
   if (isEmpty) {
-    return <span className={css({ color: 'gray.500' })}>{isArray ? '[]' : '{}'}</span>
+    return <span className={css({ color: 'white' })}>{isArray ? '[]' : '{}'}</span>
   }
 
   return (
@@ -272,7 +272,7 @@ function TreeNode({ data, path = 'root' }: { data: unknown; path?: string }) {
           alignItems: 'center',
           gap: '1',
           cursor: 'pointer',
-          color: 'gray.300',
+          color: 'white',
           _hover: { color: 'white' },
         })}
       >
@@ -945,7 +945,7 @@ function JSONBeautifyContent() {
                     className={css({
                       spaceY: '2',
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                     })}
                   >
                     <li>• Click any value or key in Tree View to instantly copy its JSON path</li>
@@ -1024,7 +1024,7 @@ function JSONBeautifyContent() {
                     >
                       Paste Your JSON
                     </h3>
-                    <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    <p className={css({ fontSize: 'sm', color: 'white' })}>
                       Copy your JSON data from API responses, config files, or any source and paste
                       it into the editor below. Works with minified or formatted JSON.
                     </p>
@@ -1058,7 +1058,7 @@ function JSONBeautifyContent() {
                     >
                       Choose Your Action
                     </h3>
-                    <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    <p className={css({ fontSize: 'sm', color: 'white' })}>
                       Click <strong>Beautify</strong> to format with indentation,{' '}
                       <strong>Minify</strong> to compress, or explore advanced features like schema
                       validation, comparison, and TypeScript generation.
@@ -1093,7 +1093,7 @@ function JSONBeautifyContent() {
                     >
                       Copy or Download
                     </h3>
-                    <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    <p className={css({ fontSize: 'sm', color: 'white' })}>
                       Use the <strong>Copy</strong> button to copy formatted JSON to your clipboard,
                       or <strong>Download</strong> as a .json file. All processing happens in your
                       browser - your data never leaves your device.
@@ -1130,7 +1130,7 @@ function JSONBeautifyContent() {
                   className={css({
                     spaceY: '1',
                     fontSize: 'sm',
-                    color: 'gray.300',
+                    color: 'white',
                   })}
                 >
                   <li>
@@ -1333,7 +1333,7 @@ function JSONBeautifyContent() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     JSONPath Search (e.g., $.users[*].email)
@@ -1381,7 +1381,7 @@ function JSONBeautifyContent() {
                       <pre
                         className={css({
                           fontSize: 'sm',
-                          color: 'gray.300',
+                          color: 'white',
                           overflowX: 'auto',
                         })}
                       >
@@ -1405,7 +1405,7 @@ function JSONBeautifyContent() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Indent Size
@@ -1451,7 +1451,7 @@ function JSONBeautifyContent() {
                         onChange={(e) => setSortKeys(e.target.checked)}
                         className={css({ h: '4', w: '4' })}
                       />
-                      <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                      <span className={css({ fontSize: 'sm', color: 'white' })}>
                         Sort Keys Alphabetically
                       </span>
                     </label>
@@ -1917,7 +1917,7 @@ function JSONBeautifyContent() {
                       rounded: 'lg',
                       bg: 'gray.900/50',
                       fontSize: 'sm',
-                      color: 'gray.300',
+                      color: 'white',
                       overflowX: 'auto',
                       fontFamily: 'mono',
                     })}
@@ -2148,12 +2148,12 @@ function JSONBeautifyContent() {
                   gap: '2',
                 })}
               >
-                <Settings2 className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                <Settings2 className={css({ h: '5', w: '5', color: 'white' })} />
                 <span
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                   })}
                 >
                   Keyboard Shortcuts
@@ -2184,13 +2184,13 @@ function JSONBeautifyContent() {
                       borderColor: 'gray.600',
                       fontSize: 'xs',
                       fontWeight: 'semibold',
-                      color: 'gray.300',
+                      color: 'white',
                       fontFamily: 'mono',
                     })}
                   >
                     Ctrl+B
                   </kbd>
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Beautify</span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>Beautify</span>
                 </div>
                 <div
                   className={css({
@@ -2209,13 +2209,13 @@ function JSONBeautifyContent() {
                       borderColor: 'gray.600',
                       fontSize: 'xs',
                       fontWeight: 'semibold',
-                      color: 'gray.300',
+                      color: 'white',
                       fontFamily: 'mono',
                     })}
                   >
                     Ctrl+M
                   </kbd>
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Minify</span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>Minify</span>
                 </div>
                 <div
                   className={css({
@@ -2234,13 +2234,13 @@ function JSONBeautifyContent() {
                       borderColor: 'gray.600',
                       fontSize: 'xs',
                       fontWeight: 'semibold',
-                      color: 'gray.300',
+                      color: 'white',
                       fontFamily: 'mono',
                     })}
                   >
                     Ctrl+C
                   </kbd>
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Copy</span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>Copy</span>
                 </div>
               </div>
             </div>
@@ -2296,7 +2296,7 @@ function JSONBeautifyContent() {
                     }
                   }}
                   className={css({
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { color: 'red.400', bg: 'red.500/10' },
                   })}
                 >
@@ -2304,7 +2304,7 @@ function JSONBeautifyContent() {
                   Clear All
                 </Button>
               </div>
-              <CardDescription className={css({ color: 'gray.400', mt: '2' })}>
+              <CardDescription className={css({ color: 'white', mt: '2' })}>
                 Your recent JSON operations are saved here
               </CardDescription>
             </CardHeader>
@@ -2397,7 +2397,7 @@ function JSONBeautifyContent() {
                     className={css({
                       textAlign: 'center',
                       py: '8',
-                      color: 'gray.500',
+                      color: 'white',
                     })}
                   >
                     <Clock
@@ -2456,7 +2456,7 @@ function JSONBeautifyContent() {
                             >
                               {item.data.action === 'beautify' ? 'Beautified' : 'Minified'}
                             </Badge>
-                            <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                            <span className={css({ fontSize: 'xs', color: 'white' })}>
                               {new Date(item.timestamp).toLocaleString('en-US', {
                                 month: '2-digit',
                                 day: '2-digit',
@@ -2468,7 +2468,7 @@ function JSONBeautifyContent() {
                           <pre
                             className={css({
                               fontSize: 'xs',
-                              color: 'gray.400',
+                              color: 'white',
                               fontFamily: 'mono',
                               whiteSpace: 'pre-wrap',
                               wordBreak: 'break-all',
@@ -2550,7 +2550,7 @@ function JSONBeautifyContent() {
                                   h: '8',
                                   w: '8',
                                   p: '0',
-                                  color: 'gray.500',
+                                  color: 'white',
                                   _hover: { color: 'red.400', bg: 'red.500/10' },
                                 })}
                               >

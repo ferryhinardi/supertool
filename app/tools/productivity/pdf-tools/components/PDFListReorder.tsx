@@ -63,7 +63,7 @@ function SortablePDFItem({ pdf, onRemove }: { pdf: PDFFile; onRemove: (id: strin
         },
       })}
     >
-      <div {...attributes} {...listeners} className={css({ cursor: 'grab', color: 'gray.500' })}>
+      <div {...attributes} {...listeners} className={css({ cursor: 'grab', color: 'white' })}>
         <GripVertical className={css({ h: '5', w: '5' })} />
       </div>
 
@@ -80,7 +80,7 @@ function SortablePDFItem({ pdf, onRemove }: { pdf: PDFFile; onRemove: (id: strin
         >
           {pdf.name}
         </p>
-        <p className={css({ fontSize: 'xs', color: 'gray.500' })}>{pdf.pages} pages</p>
+        <p className={css({ fontSize: 'xs', color: 'white' })}>{pdf.pages} pages</p>
       </div>
 
       <Button

@@ -187,7 +187,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Calculate tips quickly with preset percentages or custom amounts. Split bills among
@@ -223,7 +223,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   transform: 'translateY(-50%)',
                   fontSize: '2xl',
                   fontWeight: 'semibold',
-                  color: 'gray.500',
+                  color: 'white',
                 })}
               >
                 $
@@ -327,7 +327,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Custom Percentage
@@ -363,7 +363,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                     transform: 'translateY(-50%)',
                     fontSize: 'lg',
                     fontWeight: 'semibold',
-                    color: 'gray.500',
+                    color: 'white',
                   })}
                 >
                   %
@@ -400,7 +400,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Number of People
@@ -471,7 +471,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Round Total
@@ -567,7 +567,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700' },
                     })}
                   >
@@ -610,7 +610,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   ${(calculation.roundedTotal ?? calculation.totalWithTip).toFixed(2)}
                 </div>
                 {calculation.roundedTotal && (
-                  <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  <div className={css({ fontSize: 'xs', color: 'white' })}>
                     Original: ${calculation.totalWithTip.toFixed(2)}
                   </div>
                 )}
@@ -637,7 +637,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   <div
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                       mb: '1',
                     })}
                   >
@@ -667,7 +667,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   <div
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                       mb: '1',
                     })}
                   >
@@ -726,7 +726,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                       <div
                         className={css({
                           fontSize: 'xs',
-                          color: 'gray.500',
+                          color: 'white',
                           mb: '1',
                         })}
                       >
@@ -736,7 +736,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                         className={css({
                           fontSize: 'lg',
                           fontWeight: 'bold',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         ${calculation.perPersonBeforeTip.toFixed(2)}
@@ -746,7 +746,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                       <div
                         className={css({
                           fontSize: 'xs',
-                          color: 'gray.500',
+                          color: 'white',
                           mb: '1',
                         })}
                       >
@@ -756,7 +756,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                         className={css({
                           fontSize: 'lg',
                           fontWeight: 'bold',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         ${calculation.perPersonTip.toFixed(2)}
@@ -766,7 +766,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                       <div
                         className={css({
                           fontSize: 'xs',
-                          color: 'gray.500',
+                          color: 'white',
                           mb: '1',
                         })}
                       >
@@ -818,7 +818,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     fontFamily: 'mono',
                   })}
                 >
@@ -874,7 +874,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   >
                     Quick Tips
                   </h3>
-                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                     <li>• 15-20% is standard for good service</li>
                     <li>• Use presets for quick calculations</li>
                     <li>• Round up for easier cash payments</li>
@@ -913,7 +913,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   >
                     Tipping Guidelines
                   </h3>
-                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                     <li>• Excellent service: 20-25%</li>
                     <li>• Good service: 15-20%</li>
                     <li>• Adequate service: 10-15%</li>

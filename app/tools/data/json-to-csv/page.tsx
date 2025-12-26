@@ -390,7 +390,7 @@ export default function JSONToCSVPage() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Delimiter
@@ -438,7 +438,7 @@ export default function JSONToCSVPage() {
                     cursor: 'pointer',
                   })}
                 />
-                <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Flatten nested objects
                 </span>
               </label>
@@ -652,7 +652,7 @@ export default function JSONToCSVPage() {
                 className={css({
                   fontFamily: 'mono',
                   fontSize: { base: 'xs', sm: 'sm' },
-                  color: 'gray.300',
+                  color: 'white',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-all',
                 })}
@@ -666,7 +666,7 @@ export default function JSONToCSVPage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   py: '8',
-                  color: 'gray.500',
+                  color: 'white',
                 })}
               >
                 Enter valid JSON array to see CSV output
@@ -696,7 +696,7 @@ export default function JSONToCSVPage() {
           >
             How to Use
           </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
             <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Paste your JSON array in the editor above
             </li>

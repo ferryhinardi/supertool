@@ -268,7 +268,7 @@ function FileProgressItem({ pdf }: { pdf: PDFFile }) {
       {/* Progress */}
       {pdf.status === 'processing' && (
         <div className={css({ flexShrink: 0, w: '12' })}>
-          <span className={css({ fontSize: 'xs', color: 'gray.400' })}>{pdf.progress}%</span>
+          <span className={css({ fontSize: 'xs', color: 'white' })}>{pdf.progress}%</span>
         </div>
       )}
     </motion.div>
@@ -382,7 +382,7 @@ export function ProcessingModal({
                     ? 'Processing Complete with Errors'
                     : operationLabels[operation]}
               </h2>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 {completedCount} of {pdfs.length} files completed
                 {errorCount > 0 && ` • ${errorCount} failed`}
               </p>

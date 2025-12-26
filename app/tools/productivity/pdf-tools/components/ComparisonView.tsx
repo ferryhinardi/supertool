@@ -79,7 +79,7 @@ export function ComparisonView({
               className={css({
                 p: '1',
                 rounded: 'md',
-                color: 'gray.400',
+                color: 'white',
                 _hover: { bg: 'gray.800', color: 'gray.200' },
               })}
             >
@@ -104,19 +104,19 @@ export function ComparisonView({
                 <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'red.400' })}>
                   {compressionRatio}%
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Size Reduction</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Size Reduction</div>
               </div>
               <div className={css({ textAlign: 'center' })}>
                 <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'orange.400' })}>
                   {formatBytes(savings)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Space Saved</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Space Saved</div>
               </div>
               <div className={css({ textAlign: 'center' })}>
                 <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'yellow.400' })}>
                   {formatBytes(processedSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Final Size</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Final Size</div>
               </div>
             </div>
 
@@ -146,12 +146,10 @@ export function ComparisonView({
                   <PDFThumbnail file={originalFile} width={150} height={200} />
                 </div>
                 <div>
-                  <h3
-                    className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'gray.300' })}
-                  >
+                  <h3 className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'white' })}>
                     Original
                   </h3>
-                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ fontSize: 'xs', color: 'white' })}>
                     {formatBytes(originalSize)}
                   </p>
                 </div>

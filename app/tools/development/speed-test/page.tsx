@@ -608,7 +608,7 @@ function SpeedTestContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Test your internet connection speed in real-time. Measure download speed, upload speed,
@@ -673,9 +673,7 @@ function SpeedTestContent() {
                   <Loader2
                     className={css({ h: '5', w: '5', color: 'purple.400', animation: 'spin' })}
                   />
-                  <span
-                    className={css({ fontSize: 'lg', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'lg', fontWeight: 'medium', color: 'white' })}>
                     {getPhaseLabel()}
                   </span>
                 </div>
@@ -712,7 +710,7 @@ function SpeedTestContent() {
                     color: phase === 'download' ? 'green.400' : 'gray.500',
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>Download</p>
+                <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>Download</p>
                 <p
                   className={css({
                     fontSize: '2xl',
@@ -722,7 +720,7 @@ function SpeedTestContent() {
                 >
                   {result?.downloadSpeed.toFixed(2) || downloadSpeed.toFixed(2) || '0.00'}
                 </p>
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>Mbps</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>Mbps</p>
               </div>
 
               {/* Upload Speed */}
@@ -746,7 +744,7 @@ function SpeedTestContent() {
                     color: phase === 'upload' ? 'blue.400' : 'gray.500',
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>Upload</p>
+                <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>Upload</p>
                 <p
                   className={css({
                     fontSize: '2xl',
@@ -756,7 +754,7 @@ function SpeedTestContent() {
                 >
                   {result?.uploadSpeed.toFixed(2) || uploadSpeed.toFixed(2) || '0.00'}
                 </p>
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>Mbps</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>Mbps</p>
               </div>
 
               {/* Latency */}
@@ -780,7 +778,7 @@ function SpeedTestContent() {
                     color: phase === 'latency' ? 'yellow.400' : 'gray.500',
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>Latency</p>
+                <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>Latency</p>
                 <p
                   className={css({
                     fontSize: '2xl',
@@ -790,7 +788,7 @@ function SpeedTestContent() {
                 >
                   {result?.latency.toFixed(0) || latency.toFixed(0) || '0'}
                 </p>
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>ms</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>ms</p>
               </div>
 
               {/* Jitter */}
@@ -814,7 +812,7 @@ function SpeedTestContent() {
                     color: phase === 'latency' ? 'orange.400' : 'gray.500',
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>Jitter</p>
+                <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>Jitter</p>
                 <p
                   className={css({
                     fontSize: '2xl',
@@ -824,7 +822,7 @@ function SpeedTestContent() {
                 >
                   {result?.jitter.toFixed(0) || jitter.toFixed(0) || '0'}
                 </p>
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>ms</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>ms</p>
               </div>
             </div>
 
@@ -893,7 +891,7 @@ function SpeedTestContent() {
                     p: '4',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', color: 'gray.500', mb: '2' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
                     Connection Quality
                   </p>
                   <Badge
@@ -938,7 +936,7 @@ function SpeedTestContent() {
                     p: '4',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', color: 'gray.500', mb: '2' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
                     Latency Quality
                   </p>
                   <Badge
@@ -996,7 +994,7 @@ function SpeedTestContent() {
                     >
                       What do these numbers mean?
                     </h4>
-                    <ul className={css({ spaceY: '1', fontSize: 'xs', color: 'gray.400' })}>
+                    <ul className={css({ spaceY: '1', fontSize: 'xs', color: 'white' })}>
                       <li>
                         • <strong>Download Speed:</strong> How fast you can receive data (streaming,
                         downloads)
@@ -1043,7 +1041,7 @@ function SpeedTestContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Tips for Accurate Testing
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Close other tabs and applications that might be using the internet</li>
                   <li>• Connect via ethernet for most accurate results (Wi-Fi can be slower)</li>
                   <li>• Run multiple tests at different times for a complete picture</li>

@@ -355,7 +355,7 @@ function PromptFormatterContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Transform your AI prompts with professional templates and formatting. Optimize for
@@ -420,9 +420,7 @@ function PromptFormatterContent() {
                     <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                       {model.name}
                     </span>
-                    <span
-                      className={css({ fontSize: 'xs', color: 'gray.500', textAlign: 'center' })}
-                    >
+                    <span className={css({ fontSize: 'xs', color: 'white', textAlign: 'center' })}>
                       {model.tips}
                     </span>
                   </Button>
@@ -465,7 +463,7 @@ function PromptFormatterContent() {
                 >
                   Basic
                 </Badge>
-                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   Essential prompt patterns
                 </span>
               </div>
@@ -504,7 +502,7 @@ function PromptFormatterContent() {
                     >
                       {template.name}
                     </span>
-                    <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <span className={css({ fontSize: 'xs', color: 'white' })}>
                       {template.description}
                     </span>
                   </button>
@@ -525,7 +523,7 @@ function PromptFormatterContent() {
                 >
                   Advanced
                 </Badge>
-                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   Sophisticated prompt engineering
                 </span>
               </div>
@@ -564,7 +562,7 @@ function PromptFormatterContent() {
                     >
                       {template.name}
                     </span>
-                    <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <span className={css({ fontSize: 'xs', color: 'white' })}>
                       {template.description}
                     </span>
                   </button>
@@ -585,7 +583,7 @@ function PromptFormatterContent() {
                 >
                   Specialized
                 </Badge>
-                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   Task-specific templates
                 </span>
               </div>
@@ -624,7 +622,7 @@ function PromptFormatterContent() {
                     >
                       {template.name}
                     </span>
-                    <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <span className={css({ fontSize: 'xs', color: 'white' })}>
                       {template.description}
                     </span>
                   </button>
@@ -715,7 +713,7 @@ function PromptFormatterContent() {
                 className={css({
                   gap: '2',
                   bg: 'gray.800',
-                  color: 'gray.400',
+                  color: 'white',
                   _hover: { bg: 'gray.700' },
                 })}
               >
@@ -814,7 +812,7 @@ function PromptFormatterContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Prompt Engineering Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Be specific and clear about what you want the AI to do</li>
                   <li>• Provide context and relevant background information</li>
                   <li>• Use examples to guide the AI toward your desired output</li>

@@ -63,7 +63,7 @@ export function CompressionPresets({ selected, onSelect }: CompressionPresetsPro
         className={css({
           fontSize: 'sm',
           fontWeight: 'medium',
-          color: 'gray.300',
+          color: 'white',
         })}
       >
         Quick Presets
@@ -100,7 +100,7 @@ export function CompressionPresets({ selected, onSelect }: CompressionPresetsPro
           >
             <preset.icon className={css({ h: '4', w: '4' })} />
             <span className={css({ fontSize: 'xs', fontWeight: 'semibold' })}>{preset.name}</span>
-            <span className={css({ fontSize: '2xs', color: 'gray.400', textAlign: 'center' })}>
+            <span className={css({ fontSize: '2xs', color: 'white', textAlign: 'center' })}>
               {preset.description}
             </span>
           </Button>

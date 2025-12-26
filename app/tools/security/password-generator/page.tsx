@@ -405,7 +405,7 @@ function PasswordGeneratorContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Generate cryptographically secure passwords with advanced strength analysis, pattern-based
@@ -442,7 +442,7 @@ function PasswordGeneratorContent() {
                   Pro Tips
                 </h2>
               </div>
-              <ul className={css({ spaceY: '3', pl: '4', fontSize: 'sm', color: 'gray.300' })}>
+              <ul className={css({ spaceY: '3', pl: '4', fontSize: 'sm', color: 'white' })}>
                 <li>
                   • <strong className={css({ color: 'white' })}>Cryptographic Security:</strong> All
                   passwords use Web Crypto API's crypto.getRandomValues() for cryptographically
@@ -535,7 +535,7 @@ function PasswordGeneratorContent() {
                   <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                     Choose Generation Mode
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                     Select from Random (traditional), Diceware (word-based), Pronounceable (easy to
                     say), or Template (pre-configured for specific use cases like banking or WiFi).
                     Each mode offers different security and memorability tradeoffs.
@@ -565,7 +565,7 @@ function PasswordGeneratorContent() {
                   <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                     Customize Settings
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                     Adjust password length (8-64 characters), select character types (uppercase,
                     lowercase, numbers, symbols), or configure mode-specific options like word count
                     for Diceware or template selection for specific platforms.
@@ -595,7 +595,7 @@ function PasswordGeneratorContent() {
                   <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                     Generate & Verify
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                     Click "Generate Password" to create your secure password. Check the strength
                     meter showing entropy and crack time. Use "Check if Pwned" to verify it hasn't
                     been exposed in data breaches. Copy or save to history for later use.
@@ -647,7 +647,7 @@ function PasswordGeneratorContent() {
                       <span className={css({ fontWeight: 'semibold', color: 'white' })}>
                         Diceware Passphrases:
                       </span>
-                      <span className={css({ color: 'gray.400' })}>
+                      <span className={css({ color: 'white' })}>
                         {' '}
                         Generate memorable word-based passwords with 77+ bits of entropy
                       </span>
@@ -668,7 +668,7 @@ function PasswordGeneratorContent() {
                       <span className={css({ fontWeight: 'semibold', color: 'white' })}>
                         Bulk Generation:
                       </span>
-                      <span className={css({ color: 'gray.400' })}>
+                      <span className={css({ color: 'white' })}>
                         {' '}
                         Create up to 100 unique passwords at once with CSV export
                       </span>
@@ -689,7 +689,7 @@ function PasswordGeneratorContent() {
                       <span className={css({ fontWeight: 'semibold', color: 'white' })}>
                         Password Templates:
                       </span>
-                      <span className={css({ color: 'gray.400' })}>
+                      <span className={css({ color: 'white' })}>
                         {' '}
                         Pre-configured patterns for banking, email, WiFi, and more
                       </span>
@@ -710,7 +710,7 @@ function PasswordGeneratorContent() {
                       <span className={css({ fontWeight: 'semibold', color: 'white' })}>
                         HIBP Breach Check:
                       </span>
-                      <span className={css({ color: 'gray.400' })}>
+                      <span className={css({ color: 'white' })}>
                         {' '}
                         Verify passwords against billions of leaked credentials
                       </span>
@@ -731,7 +731,7 @@ function PasswordGeneratorContent() {
                       <span className={css({ fontWeight: 'semibold', color: 'white' })}>
                         Password History:
                       </span>
-                      <span className={css({ color: 'gray.400' })}>
+                      <span className={css({ color: 'white' })}>
                         {' '}
                         Local storage with favorites, strength metrics, and export
                       </span>
@@ -752,7 +752,7 @@ function PasswordGeneratorContent() {
                       <span className={css({ fontWeight: 'semibold', color: 'white' })}>
                         Strength Analysis:
                       </span>
-                      <span className={css({ color: 'gray.400' })}>
+                      <span className={css({ color: 'white' })}>
                         {' '}
                         Real-time entropy calculation and crack time estimation
                       </span>
@@ -914,7 +914,7 @@ function PasswordGeneratorContent() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.400',
+                        color: 'white',
                       })}
                     >
                       Password Strength
@@ -962,7 +962,7 @@ function PasswordGeneratorContent() {
                         p: '3',
                       })}
                     >
-                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Entropy</div>
+                      <div className={css({ fontSize: 'xs', color: 'white' })}>Entropy</div>
                       <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'white' })}>
                         {strength.entropy?.toFixed(1) || 'N/A'} bits
                       </div>
@@ -974,7 +974,7 @@ function PasswordGeneratorContent() {
                         p: '3',
                       })}
                     >
-                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Crack Time</div>
+                      <div className={css({ fontSize: 'xs', color: 'white' })}>Crack Time</div>
                       <div
                         className={css({
                           fontSize: 'lg',
@@ -994,7 +994,7 @@ function PasswordGeneratorContent() {
                         spaceY: '1',
                         pl: '4',
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                       })}
                     >
                       {strength.feedback.map((tip) => (
@@ -1093,7 +1093,7 @@ function PasswordGeneratorContent() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontSize: 'xs',
-                      color: 'gray.500',
+                      color: 'white',
                     })}
                   >
                     <span>8</span>
@@ -1183,7 +1183,7 @@ function PasswordGeneratorContent() {
                             className={css({
                               fontFamily: 'mono',
                               fontSize: 'xs',
-                              color: 'gray.500',
+                              color: 'white',
                             })}
                           >
                             {example}
@@ -1224,13 +1224,13 @@ function PasswordGeneratorContent() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     fontSize: 'xs',
-                    color: 'gray.500',
+                    color: 'white',
                   })}
                 >
                   <span>4 words</span>
                   <span>10 words</span>
                 </div>
-                <p className={css({ fontSize: 'xs', color: 'gray.500', mt: '2' })}>
+                <p className={css({ fontSize: 'xs', color: 'white', mt: '2' })}>
                   6 words ≈ 77 bits of entropy (recommended)
                 </p>
               </Field>
@@ -1282,7 +1282,7 @@ function PasswordGeneratorContent() {
                     </option>
                   ))}
                 </select>
-                <p className={css({ fontSize: 'xs', color: 'gray.500', mt: '2' })}>
+                <p className={css({ fontSize: 'xs', color: 'white', mt: '2' })}>
                   Example: {PASSWORD_TEMPLATES.find((t) => t.id === selectedTemplate)?.example}
                 </p>
               </Field>
@@ -1345,7 +1345,7 @@ function PasswordGeneratorContent() {
                 }
                 className={css({ h: '12' })}
               />
-              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>
                 Generate up to 100 unique passwords at once
               </p>
             </Field>
@@ -1379,7 +1379,7 @@ function PasswordGeneratorContent() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.400',
+                      color: 'white',
                     })}
                   >
                     Generated {bulkPasswords.length} passwords
@@ -1473,7 +1473,7 @@ function PasswordGeneratorContent() {
             <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
               <History className={css({ h: '5', w: '5', color: 'blue.400' })} />
               <CardTitle>Password History</CardTitle>
-              <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <span className={css({ fontSize: 'sm', color: 'white' })}>
                 (Last {passwordHistory.length})
               </span>
             </div>
@@ -1571,7 +1571,7 @@ function PasswordGeneratorContent() {
                         display: 'flex',
                         gap: '3',
                         fontSize: 'xs',
-                        color: 'gray.500',
+                        color: 'white',
                         mt: '1',
                       })}
                     >
@@ -1618,7 +1618,7 @@ function PasswordGeneratorContent() {
               className={css({
                 textAlign: 'center',
                 py: '8',
-                color: 'gray.500',
+                color: 'white',
               })}
             >
               <History className={css({ h: '12', w: '12', mx: 'auto', mb: '3', opacity: '0.3' })} />
@@ -1662,7 +1662,7 @@ function PasswordGeneratorContent() {
                 className={css({
                   spaceY: '2',
                   fontSize: 'sm',
-                  color: 'gray.400',
+                  color: 'white',
                 })}
               >
                 <li>

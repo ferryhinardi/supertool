@@ -72,7 +72,7 @@ export function PDFMetadataEditor({ initialMetadata, onSave, onClose }: PDFMetad
               className={css({
                 p: '1',
                 rounded: 'md',
-                color: 'gray.400',
+                color: 'white',
                 _hover: { bg: 'gray.800', color: 'gray.200' },
               })}
             >
@@ -85,7 +85,7 @@ export function PDFMetadataEditor({ initialMetadata, onSave, onClose }: PDFMetad
             <div className={css({ spaceY: '2' })}>
               <label
                 htmlFor="title"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
               >
                 Title
               </label>
@@ -113,7 +113,7 @@ export function PDFMetadataEditor({ initialMetadata, onSave, onClose }: PDFMetad
             <div className={css({ spaceY: '2' })}>
               <label
                 htmlFor="author"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
               >
                 Author
               </label>
@@ -141,7 +141,7 @@ export function PDFMetadataEditor({ initialMetadata, onSave, onClose }: PDFMetad
             <div className={css({ spaceY: '2' })}>
               <label
                 htmlFor="subject"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
               >
                 Subject
               </label>
@@ -169,7 +169,7 @@ export function PDFMetadataEditor({ initialMetadata, onSave, onClose }: PDFMetad
             <div className={css({ spaceY: '2' })}>
               <label
                 htmlFor="keywords"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
               >
                 Keywords
               </label>

@@ -177,7 +177,7 @@ export default function GrammarCheckerPage() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Check your text for grammar, spelling, punctuation, and style issues. Get instant
@@ -231,7 +231,7 @@ export default function GrammarCheckerPage() {
                   ring: '2px',
                   ringColor: 'green.500/20',
                 },
-                _placeholder: { color: 'gray.500' },
+                _placeholder: { color: 'white' },
               })}
             />
 
@@ -245,7 +245,7 @@ export default function GrammarCheckerPage() {
               })}
             >
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   {text.length.toLocaleString()} / 10,000 characters
                 </span>
                 {text.length > 10000 && (
@@ -269,7 +269,7 @@ export default function GrammarCheckerPage() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                     _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                   })}
@@ -374,7 +374,7 @@ export default function GrammarCheckerPage() {
                       p: '4',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.500', mb: '1' })}>
+                    <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>
                       Total Issues
                     </div>
                     <div
@@ -395,7 +395,7 @@ export default function GrammarCheckerPage() {
                         p: '4',
                       })}
                     >
-                      <div className={css({ fontSize: 'sm', color: 'gray.500', mb: '1' })}>
+                      <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>
                         {type.charAt(0).toUpperCase() + type.slice(1)}
                       </div>
                       <div
@@ -481,7 +481,7 @@ export default function GrammarCheckerPage() {
                               >
                                 {issue.type}
                               </Badge>
-                              <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                              <span className={css({ fontSize: 'sm', color: 'white' })}>
                                 "{issue.text}"
                               </span>
                             </div>
@@ -492,7 +492,7 @@ export default function GrammarCheckerPage() {
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className={css({ spaceY: '2', mt: '3' })}
                               >
-                                <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                                <div className={css({ fontSize: 'sm', color: 'white' })}>
                                   {issue.message}
                                 </div>
                                 <div
@@ -570,7 +570,7 @@ export default function GrammarCheckerPage() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.400',
+                        color: 'white',
                         _hover: { bg: 'gray.700' },
                       })}
                       size="sm"
@@ -591,7 +591,7 @@ export default function GrammarCheckerPage() {
                       whiteSpace: 'pre-wrap',
                       lineHeight: '1.6',
                       fontSize: 'base',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     {result.correctedText}
@@ -624,7 +624,7 @@ export default function GrammarCheckerPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'teal.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
                     <Lightbulb
                       className={css({

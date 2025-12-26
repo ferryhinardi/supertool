@@ -339,9 +339,7 @@ function ImageMetadataContent() {
                 })}
               >
                 <div className={css({ flex: '1', minW: '0' })}>
-                  <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
-                    {entry.label}
-                  </p>
+                  <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>{entry.label}</p>
                   {entry.label === 'Google Maps' ? (
                     <a
                       href={entry.value}
@@ -377,7 +375,7 @@ function ImageMetadataContent() {
                     p: '2',
                     h: 'auto',
                     bg: 'transparent',
-                    color: 'gray.500',
+                    color: 'white',
                     _hover: { bg: 'gray.700', color: 'blue.400' },
                   })}
                 >
@@ -452,7 +450,7 @@ function ImageMetadataContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Extract EXIF data, GPS location, camera settings, and technical metadata from your photos.
@@ -541,12 +539,12 @@ function ImageMetadataContent() {
                     <Upload className={css({ h: '8', w: '8', color: 'white' })} />
                   </div>
 
-                  <p className={css({ mb: '2', fontSize: 'sm', color: 'gray.300' })}>
+                  <p className={css({ mb: '2', fontSize: 'sm', color: 'white' })}>
                     <span className={css({ fontWeight: 'semibold' })}>Click to upload</span> or drag
                     and drop
                   </p>
 
-                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ fontSize: 'xs', color: 'white' })}>
                     JPEG, PNG, HEIC, TIFF, or any image format • Max 50MB
                   </p>
 
@@ -592,7 +590,7 @@ function ImageMetadataContent() {
                       p: '4',
                     })}
                   >
-                    <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>File Name</p>
+                    <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>File Name</p>
                     <p className={css({ fontSize: 'sm', color: 'gray.200', fontFamily: 'mono' })}>
                       {selectedImage.name}
                     </p>
@@ -606,7 +604,7 @@ function ImageMetadataContent() {
                       p: '4',
                     })}
                   >
-                    <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>File Size</p>
+                    <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>File Size</p>
                     <p className={css({ fontSize: 'sm', color: 'gray.200', fontFamily: 'mono' })}>
                       {(selectedImage.size / 1024 / 1024).toFixed(2)} MB
                     </p>
@@ -618,7 +616,7 @@ function ImageMetadataContent() {
                         flex: '1',
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.300',
+                        color: 'white',
                         _hover: { bg: 'gray.700' },
                       })}
                     >
@@ -667,7 +665,7 @@ function ImageMetadataContent() {
               animation: 'spin 1s linear infinite',
             })}
           />
-          <p className={css({ mt: '4', color: 'gray.400' })}>Parsing metadata...</p>
+          <p className={css({ mt: '4', color: 'white' })}>Parsing metadata...</p>
         </motion.div>
       )}
 
@@ -741,7 +739,7 @@ function ImageMetadataContent() {
                 >
                   No Metadata Found
                 </h3>
-                <p className={css({ mt: '2', color: 'gray.400' })}>
+                <p className={css({ mt: '2', color: 'white' })}>
                   This image doesn't contain any EXIF metadata, or it has been stripped during
                   processing.
                 </p>
@@ -771,7 +769,7 @@ function ImageMetadataContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   About Image Metadata
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
                     • <strong>EXIF data</strong> includes camera make, model, date taken, and
                     software used

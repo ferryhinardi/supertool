@@ -126,12 +126,12 @@ export function BatchToolbar({
           <div className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
             {completedCount} of {totalFiles} Complete
           </div>
-          <div className={css({ display: 'flex', gap: 3, fontSize: 'xs', color: 'gray.400' })}>
+          <div className={css({ display: 'flex', gap: 3, fontSize: 'xs', color: 'white' })}>
             {processingCount > 0 && (
               <span className={css({ color: 'blue.400' })}>{processingCount} processing</span>
             )}
             {pendingCount > 0 && (
-              <span className={css({ color: 'gray.400' })}>{pendingCount} pending</span>
+              <span className={css({ color: 'white' })}>{pendingCount} pending</span>
             )}
             {errorCount > 0 && (
               <span className={css({ color: 'red.400' })}>{errorCount} failed</span>
@@ -243,7 +243,7 @@ export function BatchToolbar({
               flex: { base: '1', sm: 'initial' },
               bg: 'gray.500/10',
               borderColor: 'gray.500/30',
-              color: 'gray.300',
+              color: 'white',
               _hover: {
                 bg: 'gray.500/20',
                 borderColor: 'gray.500/50',

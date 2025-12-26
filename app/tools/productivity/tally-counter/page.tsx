@@ -495,7 +495,7 @@ export default function TallyCounterPage() {
                 textAlign: 'center',
               })}
             >
-              <div className={css({ fontSize: 'sm', color: 'gray.500', mb: '1' })}>Total Count</div>
+              <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>Total Count</div>
               <div
                 className={css({
                   fontSize: '3xl',

@@ -155,7 +155,7 @@ function BrowserFingerprintContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Discover how unique and trackable your browser is. See what information websites can
@@ -205,9 +205,7 @@ function BrowserFingerprintContent() {
                     >
                       {uniquenessScore}%
                     </div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
-                      Uniqueness Score
-                    </div>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>Uniqueness Score</div>
                   </div>
                 </div>
                 <Badge
@@ -223,7 +221,7 @@ function BrowserFingerprintContent() {
                 >
                   {getScoreLabel(uniquenessScore)}
                 </Badge>
-                <p className={css({ fontSize: 'sm', color: 'gray.500', maxW: '2xl', mx: 'auto' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', maxW: '2xl', mx: 'auto' })}>
                   Your browser has a {uniquenessScore >= 60 ? 'high' : 'moderate'} level of
                   uniqueness, making it {uniquenessScore >= 60 ? 'easier' : 'somewhat difficult'}{' '}
                   for websites to track you across the web.
@@ -304,7 +302,7 @@ function BrowserFingerprintContent() {
           <div className={css({ display: 'inline-block', animation: 'spin 1s linear infinite' })}>
             <Fingerprint className={css({ h: '12', w: '12', color: 'indigo.400' })} />
           </div>
-          <p className={css({ mt: '4', fontSize: 'lg', color: 'gray.400' })}>
+          <p className={css({ mt: '4', fontSize: 'lg', color: 'white' })}>
             Collecting fingerprint data...
           </p>
         </motion.div>
@@ -347,7 +345,7 @@ function BrowserFingerprintContent() {
                     <Monitor className={css({ h: '5', w: '5', color: 'indigo.400' })} />
                     <CardTitle>Basic Browser Information</CardTitle>
                   </div>
-                  <Eye className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                  <Eye className={css({ h: '5', w: '5', color: 'white' })} />
                 </button>
               </CardHeader>
               {expandedSections.has('basic') && (
@@ -400,7 +398,7 @@ function BrowserFingerprintContent() {
                     <Monitor className={css({ h: '5', w: '5', color: 'blue.400' })} />
                     <CardTitle>Screen & Display</CardTitle>
                   </div>
-                  <Eye className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                  <Eye className={css({ h: '5', w: '5', color: 'white' })} />
                 </button>
               </CardHeader>
               {expandedSections.has('screen') && (
@@ -459,7 +457,7 @@ function BrowserFingerprintContent() {
                     <Monitor className={css({ h: '5', w: '5', color: 'cyan.400' })} />
                     <CardTitle>Hardware Information</CardTitle>
                   </div>
-                  <Eye className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                  <Eye className={css({ h: '5', w: '5', color: 'white' })} />
                 </button>
               </CardHeader>
               {expandedSections.has('hardware') && (
@@ -510,7 +508,7 @@ function BrowserFingerprintContent() {
                     <Monitor className={css({ h: '5', w: '5', color: 'green.400' })} />
                     <CardTitle>Graphics & Rendering</CardTitle>
                   </div>
-                  <Eye className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                  <Eye className={css({ h: '5', w: '5', color: 'white' })} />
                 </button>
               </CardHeader>
               {expandedSections.has('graphics') && (
@@ -580,7 +578,7 @@ function BrowserFingerprintContent() {
                       {fingerprint.fonts.length}
                     </Badge>
                   </div>
-                  <Eye className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                  <Eye className={css({ h: '5', w: '5', color: 'white' })} />
                 </button>
               </CardHeader>
               {expandedSections.has('fonts') && (
@@ -597,7 +595,7 @@ function BrowserFingerprintContent() {
                         key={font}
                         className={css({
                           bg: 'gray.800',
-                          color: 'gray.300',
+                          color: 'white',
                           border: '1px solid',
                           borderColor: 'gray.700',
                         })}
@@ -645,7 +643,7 @@ function BrowserFingerprintContent() {
                     <Shield className={css({ h: '5', w: '5', color: 'purple.400' })} />
                     <CardTitle>Privacy & Storage</CardTitle>
                   </div>
-                  <Eye className={css({ h: '5', w: '5', color: 'gray.400' })} />
+                  <Eye className={css({ h: '5', w: '5', color: 'white' })} />
                 </button>
               </CardHeader>
               {expandedSections.has('privacy') && (
@@ -745,7 +743,7 @@ function BrowserFingerprintContent() {
                 >
                   Privacy Insights
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Browser fingerprinting allows websites to identify you without cookies</li>
                   <li>
                     • Your canvas and WebGL fingerprints are highly unique and difficult to change
@@ -787,7 +785,7 @@ function BrowserFingerprintContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Understanding Your Fingerprint
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Click on each section to expand and view detailed information</li>
                   <li>• The uniqueness score shows how easily you can be tracked online</li>
                   <li>
@@ -831,8 +829,8 @@ function DataRow({ label, value, icon }: DataRowProps) {
       })}
     >
       <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-        <Info className={css({ h: '4', w: '4', color: 'gray.500', flexShrink: '0' })} />
-        <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+        <Info className={css({ h: '4', w: '4', color: 'white', flexShrink: '0' })} />
+        <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
           {label}
         </span>
       </div>
@@ -841,7 +839,7 @@ function DataRow({ label, value, icon }: DataRowProps) {
         <span
           className={css({
             fontSize: 'sm',
-            color: 'gray.400',
+            color: 'white',
             fontFamily: label.includes('Fingerprint') ? 'mono' : 'inherit',
             wordBreak: 'break-all',
             maxW: 'md',

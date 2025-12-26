@@ -394,7 +394,7 @@ function ColorContrastContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Check color contrast ratios for WCAG 2.1 accessibility compliance. Ensure your designs are
@@ -428,7 +428,7 @@ function ColorContrastContent() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Foreground (Text Color)
@@ -492,7 +492,7 @@ function ColorContrastContent() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -532,7 +532,7 @@ function ColorContrastContent() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Background Color
@@ -596,7 +596,7 @@ function ColorContrastContent() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -620,7 +620,7 @@ function ColorContrastContent() {
                 className={css({
                   gap: '2',
                   bg: 'gray.800',
-                  color: 'gray.400',
+                  color: 'white',
                   _hover: { bg: 'gray.700' },
                 })}
               >
@@ -684,7 +684,7 @@ function ColorContrastContent() {
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                   })}
                 >
                   Accessible Background Suggestions (for current foreground)
@@ -752,7 +752,7 @@ function ColorContrastContent() {
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                   })}
                 >
                   Recent History
@@ -799,14 +799,14 @@ function ColorContrastContent() {
                         </div>
                       </div>
                       <div className={css({ flex: '1', textAlign: 'left', fontSize: 'sm' })}>
-                        <div className={css({ color: 'gray.300', fontFamily: 'mono' })}>
+                        <div className={css({ color: 'white', fontFamily: 'mono' })}>
                           {item.foreground} / {item.background}
                         </div>
-                        <div className={css({ color: 'gray.500', fontSize: 'xs' })}>
+                        <div className={css({ color: 'white', fontSize: 'xs' })}>
                           Ratio: {item.ratio.toFixed(2)}:1
                         </div>
                       </div>
-                      <Clock className={css({ h: '4', w: '4', color: 'gray.500' })} />
+                      <Clock className={css({ h: '4', w: '4', color: 'white' })} />
                     </button>
                   ))}
                 </div>
@@ -820,7 +820,7 @@ function ColorContrastContent() {
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                   })}
                 >
                   Favorite Color Pairs
@@ -874,10 +874,10 @@ function ColorContrastContent() {
                           </div>
                         </div>
                         <div className={css({ flex: '1', textAlign: 'left', fontSize: 'sm' })}>
-                          <div className={css({ color: 'gray.300', fontFamily: 'mono' })}>
+                          <div className={css({ color: 'white', fontFamily: 'mono' })}>
                             {item.foreground} / {item.background}
                           </div>
-                          <div className={css({ color: 'gray.500', fontSize: 'xs' })}>
+                          <div className={css({ color: 'white', fontSize: 'xs' })}>
                             Ratio: {item.ratio.toFixed(2)}:1
                           </div>
                         </div>
@@ -907,7 +907,7 @@ function ColorContrastContent() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Quick Presets
@@ -986,7 +986,7 @@ function ColorContrastContent() {
               >
                 {contrastRatio.toFixed(2)}:1
               </div>
-              <p className={css({ fontSize: 'lg', color: 'gray.400' })}>Contrast Ratio</p>
+              <p className={css({ fontSize: 'lg', color: 'white' })}>Contrast Ratio</p>
             </div>
 
             {/* Compliance Level */}
@@ -1105,7 +1105,7 @@ function ColorContrastContent() {
                     Normal Text
                   </span>
                 </div>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   {compliance.normalText
                     ? 'Passes WCAG AA (4.5:1 minimum)'
                     : 'Fails WCAG AA (needs 4.5:1)'}
@@ -1145,7 +1145,7 @@ function ColorContrastContent() {
                     Large Text
                   </span>
                 </div>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   {compliance.largeText
                     ? 'Passes WCAG AA (3:1 minimum)'
                     : 'Fails WCAG AA (needs 3:1)'}
@@ -1291,7 +1291,7 @@ function ColorContrastContent() {
                   className={css({
                     spaceY: '2',
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   <li>

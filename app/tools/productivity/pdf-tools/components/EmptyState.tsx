@@ -331,7 +331,7 @@ export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStat
           mb: '6',
           maxW: 'md',
           fontSize: { base: 'sm', sm: 'base' },
-          color: 'gray.400',
+          color: 'white',
           lineHeight: 'relaxed',
         })}
       >
@@ -359,7 +359,7 @@ export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStat
               alignItems: 'center',
               gap: '2',
               fontSize: 'sm',
-              color: 'gray.500',
+              color: 'white',
             })}
           >
             <div
@@ -413,7 +413,7 @@ export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStat
             className={css({
               gap: '2',
               borderColor: 'gray.700',
-              color: 'gray.300',
+              color: 'white',
               _hover: {
                 bg: 'gray.800',
               },
@@ -476,7 +476,7 @@ export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStat
             <p
               className={css({
                 fontSize: 'xs',
-                color: 'gray.400',
+                color: 'white',
                 lineHeight: 'relaxed',
               })}
             >

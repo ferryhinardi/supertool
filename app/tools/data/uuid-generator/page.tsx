@@ -242,7 +242,7 @@ export default function UUIDGeneratorPage() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Generate unique identifiers (v1-v5) with bulk generation support. Validate UUID format and
@@ -333,8 +333,8 @@ export default function UUIDGeneratorPage() {
             </div>
 
             <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Info className={css({ h: '4', w: '4', color: 'gray.500' })} />
-              <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <Info className={css({ h: '4', w: '4', color: 'white' })} />
+              <span className={css({ fontSize: 'sm', color: 'white' })}>
                 UUID v4 uses cryptographically secure random generation
               </span>
             </div>
@@ -365,7 +365,7 @@ export default function UUIDGeneratorPage() {
               <div className={css({ flex: '1', spaceY: '2' })}>
                 <label
                   htmlFor="bulk-count"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Number of UUIDs
                 </label>
@@ -450,7 +450,7 @@ export default function UUIDGeneratorPage() {
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'cyan.300' },
                     })}
                   >
@@ -578,7 +578,7 @@ export default function UUIDGeneratorPage() {
                         >
                           Valid UUID
                         </p>
-                        <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                        <p className={css({ fontSize: 'sm', color: 'white' })}>
                           Version: {validationResult.version}
                         </p>
                       </div>
@@ -596,7 +596,7 @@ export default function UUIDGeneratorPage() {
                         >
                           Invalid UUID
                         </p>
-                        <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                        <p className={css({ fontSize: 'sm', color: 'white' })}>
                           {validationResult.error}
                         </p>
                       </div>
@@ -630,7 +630,7 @@ export default function UUIDGeneratorPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'teal.300' })}>
                   UUID Information
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
                     • <strong>UUID v1:</strong> Timestamp-based, includes MAC address (predictable
                     but unique)

@@ -268,7 +268,7 @@ function JWTDebuggerContent() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: { base: 'lg', md: 'xl' },
-            color: 'gray.400',
+            color: 'white',
             lineHeight: 'relaxed',
           })}
         >
@@ -323,7 +323,7 @@ function JWTDebuggerContent() {
 
               {/* Sample Tokens */}
               <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.400' })}>
+                <h3 className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Sample Tokens:
                 </h3>
                 <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
@@ -585,7 +585,7 @@ function JWTDebuggerContent() {
                           alignItems: 'center',
                           gap: '2',
                           fontSize: 'xs',
-                          color: 'gray.400',
+                          color: 'white',
                         })}
                       >
                         <Clock className={css({ h: '3', w: '3' })} />
@@ -643,7 +643,7 @@ function JWTDebuggerContent() {
                         transform: 'translateY(-50%)',
                         h: '4',
                         w: '4',
-                        color: 'gray.400',
+                        color: 'white',
                       })}
                     />
                     <Input
@@ -688,7 +688,7 @@ function JWTDebuggerContent() {
                     className={css({
                       textAlign: 'center',
                       fontSize: 'sm',
-                      color: 'gray.500',
+                      color: 'white',
                       py: '8',
                     })}
                   >
@@ -726,7 +726,7 @@ function JWTDebuggerContent() {
                             Expired
                           </Badge>
                         )}
-                        <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                        <p className={css({ fontSize: 'xs', color: 'white', mt: '1' })}>
                           {new Date(item.timestamp).toLocaleString()}
                         </p>
                       </div>
@@ -794,7 +794,7 @@ export default function JWTDebuggerPage() {
                 animation: 'spin 1s linear infinite',
               })}
             />
-            <p className={css({ color: 'gray.400' })}>Loading JWT Debugger...</p>
+            <p className={css({ color: 'white' })}>Loading JWT Debugger...</p>
           </div>
         </div>
       }

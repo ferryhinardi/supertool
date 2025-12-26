@@ -202,7 +202,7 @@ function DateFormatterContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Convert timestamps between formats and timezones. Parse dates, calculate differences, and
@@ -320,7 +320,7 @@ function DateFormatterContent() {
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                       Unix Timestamp
                     </div>
                     <div
@@ -339,9 +339,7 @@ function DateFormatterContent() {
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
-                      ISO 8601
-                    </div>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>ISO 8601</div>
                     <div
                       className={css({
                         fontSize: 'lg',
@@ -404,7 +402,7 @@ function DateFormatterContent() {
                     <div
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.500',
+                        color: 'white',
                         mb: '2',
                         fontWeight: 'medium',
                       })}
@@ -414,7 +412,7 @@ function DateFormatterContent() {
                     <div
                       className={css({
                         fontSize: 'sm',
-                        color: 'gray.300',
+                        color: 'white',
                         wordBreak: 'break-all',
                         mb: '2',
                       })}
@@ -476,7 +474,7 @@ function DateFormatterContent() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="targetTimezone"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Target Timezone
                   </label>
@@ -521,7 +519,7 @@ function DateFormatterContent() {
                       p: '4',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.400', mb: '2' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '2' })}>
                       Converted Time
                     </div>
                     <div
@@ -586,7 +584,7 @@ function DateFormatterContent() {
               <div className={css({ spaceY: '2' })}>
                 <label
                   htmlFor="startDate"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Start Date
                 </label>
@@ -608,7 +606,7 @@ function DateFormatterContent() {
               <div className={css({ spaceY: '2' })}>
                 <label
                   htmlFor="endDate"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   End Date
                 </label>
@@ -643,7 +641,7 @@ function DateFormatterContent() {
                     p: '4',
                   })}
                 >
-                  <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '2' })}>
+                  <div className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
                     Time Difference
                   </div>
                   <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
@@ -671,7 +669,7 @@ function DateFormatterContent() {
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                       Total Days
                     </div>
                     <div
@@ -690,7 +688,7 @@ function DateFormatterContent() {
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                       Total Hours
                     </div>
                     <div
@@ -709,7 +707,7 @@ function DateFormatterContent() {
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                       Total Minutes
                     </div>
                     <div
@@ -728,7 +726,7 @@ function DateFormatterContent() {
                       p: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                       Total Seconds
                     </div>
                     <div
@@ -765,7 +763,7 @@ function DateFormatterContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Supported Formats
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• ISO 8601: 2024-01-01T12:00:00Z</li>
                   <li>• Unix Timestamp: 1704067200 (seconds or milliseconds)</li>
                   <li>• US Format: 01/15/2024</li>

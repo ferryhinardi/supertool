@@ -281,7 +281,7 @@ export function SwipeablePDFCard({
             <div
               className={css({
                 fontSize: 'xs',
-                color: 'gray.500',
+                color: 'white',
                 display: 'flex',
                 gap: '2',
               })}

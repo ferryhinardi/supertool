@@ -390,7 +390,7 @@ export default function GradientGeneratorPage() {
           Gradient Generator
         </h1>
 
-        <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'gray.400' })}>
+        <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'white' })}>
           Create stunning CSS gradients visually. Linear, radial, and conic gradients with unlimited
           color stops, presets, and export options.
         </p>
@@ -601,7 +601,7 @@ export default function GradientGeneratorPage() {
                         <span
                           className={css({
                             fontSize: 'sm',
-                            color: 'gray.400',
+                            color: 'white',
                             w: '12',
                             textAlign: 'right',
                           })}
@@ -640,7 +640,7 @@ export default function GradientGeneratorPage() {
                     borderColor: 'gray.700',
                     fontSize: 'sm',
                     fontFamily: 'mono',
-                    color: 'gray.300',
+                    color: 'white',
                     overflow: 'auto',
                   })}
                 >
@@ -677,7 +677,7 @@ export default function GradientGeneratorPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: '600',
-                          color: 'gray.400',
+                          color: 'white',
                           mb: '2',
                           textTransform: 'capitalize',
                         })}
@@ -759,7 +759,7 @@ export default function GradientGeneratorPage() {
               <h3 className={css({ fontWeight: '600', color: 'gray.200', mb: '1' })}>
                 Select Gradient Type
               </h3>
-              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
+              <p className={css({ color: 'white', fontSize: 'sm' })}>
                 Choose from linear, radial, or conic gradient types. Linear gradients flow in a
                 straight line, radial gradients spread from a center point, and conic gradients
                 rotate around a center point.
@@ -773,7 +773,7 @@ export default function GradientGeneratorPage() {
               <h3 className={css({ fontWeight: '600', color: 'gray.200', mb: '1' })}>
                 Add and Customize Colors
               </h3>
-              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
+              <p className={css({ color: 'white', fontSize: 'sm' })}>
                 Add multiple color stops using the &quot;Add&quot; button. Click on any color picker
                 to select colors, enter hex codes manually, or adjust the position slider to control
                 where each color appears in the gradient.
@@ -787,7 +787,7 @@ export default function GradientGeneratorPage() {
               <h3 className={css({ fontWeight: '600', color: 'gray.200', mb: '1' })}>
                 Adjust Angle and Settings
               </h3>
-              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
+              <p className={css({ color: 'white', fontSize: 'sm' })}>
                 For linear and conic gradients, use the angle slider to control the direction of the
                 gradient. Try different angles to achieve the perfect visual effect. Use the shuffle
                 button for random gradients or the reverse button to flip your gradient.
@@ -801,7 +801,7 @@ export default function GradientGeneratorPage() {
               <h3 className={css({ fontWeight: '600', color: 'gray.200', mb: '1' })}>
                 Copy CSS or Download
               </h3>
-              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
+              <p className={css({ color: 'white', fontSize: 'sm' })}>
                 Click &quot;Copy CSS&quot; to copy the gradient code directly to your clipboard for
                 use in your stylesheets. Alternatively, download the gradient as a high-quality PNG
                 image (1200x675px) for use in design mockups or presentations.

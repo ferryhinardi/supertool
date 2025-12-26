@@ -251,7 +251,7 @@ function LoanCalculatorContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Calculate monthly payments, view amortization schedules, and compare different loan
@@ -292,7 +292,7 @@ function LoanCalculatorContent() {
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '2',
@@ -344,7 +344,7 @@ function LoanCalculatorContent() {
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '2',
@@ -384,7 +384,7 @@ function LoanCalculatorContent() {
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '2',
@@ -425,7 +425,7 @@ function LoanCalculatorContent() {
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '2',
@@ -465,7 +465,7 @@ function LoanCalculatorContent() {
                   className={css({
                     fontSize: 'sm',
                     fontWeight: 'medium',
-                    color: 'gray.300',
+                    color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '2',
@@ -530,9 +530,7 @@ function LoanCalculatorContent() {
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <Calculator className={css({ h: '5', w: '5', color: 'emerald.400' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
-                    Monthly Payment
-                  </span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>Monthly Payment</span>
                 </div>
                 <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'emerald.300' })}>
                   {formatCurrency(loanData.monthlyPayment)}
@@ -554,7 +552,7 @@ function LoanCalculatorContent() {
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <Percent className={css({ h: '5', w: '5', color: 'orange.400' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Interest</span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>Total Interest</span>
                 </div>
                 <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'orange.300' })}>
                   {formatCurrency(loanData.totalInterest)}
@@ -576,7 +574,7 @@ function LoanCalculatorContent() {
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <TrendingUp className={css({ h: '5', w: '5', color: 'blue.400' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Cost</span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>Total Cost</span>
                 </div>
                 <p className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'blue.300' })}>
                   {formatCurrency(loanData.totalPayment)}
@@ -598,7 +596,7 @@ function LoanCalculatorContent() {
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   <PiggyBank className={css({ h: '5', w: '5', color: 'purple.400' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     Principal / Interest
                   </span>
                 </div>
@@ -641,27 +639,25 @@ function LoanCalculatorContent() {
                 })}
               >
                 <div className={css({ spaceY: '1' })}>
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Interest Saved</span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>Interest Saved</span>
                   <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
                     {formatCurrency(loanData.withExtra.interestSaved)}
                   </p>
                 </div>
                 <div className={css({ spaceY: '1' })}>
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Time Saved</span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>Time Saved</span>
                   <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
                     {loanData.withExtra.monthsSaved} months
                   </p>
                 </div>
                 <div className={css({ spaceY: '1' })}>
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
-                    New Payoff Time
-                  </span>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>New Payoff Time</span>
                   <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
                     {loanData.withExtra.payoffYears}y {loanData.withExtra.payoffMonths}m
                   </p>
                 </div>
                 <div className={css({ spaceY: '1' })}>
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     New Total Interest
                   </span>
                   <p className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'green.300' })}>
@@ -772,25 +768,25 @@ function LoanCalculatorContent() {
                         })}
                       >
                         <div>
-                          <span className={css({ color: 'gray.400' })}>Total Paid</span>
+                          <span className={css({ color: 'white' })}>Total Paid</span>
                           <p className={css({ fontWeight: 'semibold', color: 'gray.200' })}>
                             {formatCurrency(yearTotal)}
                           </p>
                         </div>
                         <div>
-                          <span className={css({ color: 'gray.400' })}>Principal</span>
+                          <span className={css({ color: 'white' })}>Principal</span>
                           <p className={css({ fontWeight: 'semibold', color: 'emerald.300' })}>
                             {formatCurrency(yearPrincipal)}
                           </p>
                         </div>
                         <div>
-                          <span className={css({ color: 'gray.400' })}>Interest</span>
+                          <span className={css({ color: 'white' })}>Interest</span>
                           <p className={css({ fontWeight: 'semibold', color: 'orange.300' })}>
                             {formatCurrency(yearInterest)}
                           </p>
                         </div>
                         <div>
-                          <span className={css({ color: 'gray.400' })}>End Balance</span>
+                          <span className={css({ color: 'white' })}>End Balance</span>
                           <p className={css({ fontWeight: 'semibold', color: 'blue.300' })}>
                             {formatCurrency(endBalance)}
                           </p>
@@ -891,7 +887,7 @@ function LoanCalculatorContent() {
                           type="button"
                           onClick={() => handleRemoveComparison(loan.id)}
                           className={css({
-                            color: 'gray.500',
+                            color: 'white',
                             _hover: { color: 'red.400' },
                             bg: 'transparent',
                             border: 'none',
@@ -904,7 +900,7 @@ function LoanCalculatorContent() {
                       </div>
                       <div className={css({ spaceY: '2', fontSize: 'sm' })}>
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
-                          <span className={css({ color: 'gray.400' })}>Loan Amount:</span>
+                          <span className={css({ color: 'white' })}>Loan Amount:</span>
                           <span className={css({ color: 'gray.200' })}>
                             {new Intl.NumberFormat('en-US', {
                               style: 'currency',
@@ -915,16 +911,16 @@ function LoanCalculatorContent() {
                           </span>
                         </div>
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
-                          <span className={css({ color: 'gray.400' })}>Rate:</span>
+                          <span className={css({ color: 'white' })}>Rate:</span>
                           <span className={css({ color: 'gray.200' })}>{loan.rate}%</span>
                         </div>
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
-                          <span className={css({ color: 'gray.400' })}>Term:</span>
+                          <span className={css({ color: 'white' })}>Term:</span>
                           <span className={css({ color: 'gray.200' })}>{loan.years} years</span>
                         </div>
                         <div className={css({ h: 'px', bg: 'gray.700', my: '2' })} />
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
-                          <span className={css({ color: 'gray.400' })}>Monthly Payment:</span>
+                          <span className={css({ color: 'white' })}>Monthly Payment:</span>
                           <span className={css({ fontWeight: 'bold', color: 'emerald.300' })}>
                             {new Intl.NumberFormat('en-US', {
                               style: 'currency',
@@ -935,7 +931,7 @@ function LoanCalculatorContent() {
                           </span>
                         </div>
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
-                          <span className={css({ color: 'gray.400' })}>Total Interest:</span>
+                          <span className={css({ color: 'white' })}>Total Interest:</span>
                           <span className={css({ fontWeight: 'bold', color: 'orange.300' })}>
                             {new Intl.NumberFormat('en-US', {
                               style: 'currency',
@@ -946,7 +942,7 @@ function LoanCalculatorContent() {
                           </span>
                         </div>
                         <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
-                          <span className={css({ color: 'gray.400' })}>Total Cost:</span>
+                          <span className={css({ color: 'white' })}>Total Cost:</span>
                           <span className={css({ fontWeight: 'bold', color: 'blue.300' })}>
                             {new Intl.NumberFormat('en-US', {
                               style: 'currency',
@@ -987,7 +983,7 @@ function LoanCalculatorContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   How It Works
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Monthly payments are calculated using the standard amortization formula</li>
                   <li>
                     • Extra payments go directly to principal, reducing interest and loan term

@@ -150,7 +150,7 @@ function JWTDecoderContent() {
 
   const renderJSON = (obj: unknown, depth = 0): React.ReactNode => {
     if (obj === null || obj === undefined) {
-      return <span className={css({ color: 'gray.500' })}>null</span>
+      return <span className={css({ color: 'white' })}>null</span>
     }
 
     if (typeof obj !== 'object') {
@@ -171,30 +171,30 @@ function JWTDecoderContent() {
     if (Array.isArray(obj)) {
       return (
         <div className={css({ pl: depth > 0 ? '4' : '0' })}>
-          <span className={css({ color: 'gray.400' })}>[</span>
+          <span className={css({ color: 'white' })}>[</span>
           {obj.map((item, idx) => (
             <div key={`arr-item-${depth}-${idx}`} className={css({ pl: '4' })}>
               {renderJSON(item, depth + 1)}
-              {idx < obj.length - 1 && <span className={css({ color: 'gray.400' })}>,</span>}
+              {idx < obj.length - 1 && <span className={css({ color: 'white' })}>,</span>}
             </div>
           ))}
-          <span className={css({ color: 'gray.400' })}>]</span>
+          <span className={css({ color: 'white' })}>]</span>
         </div>
       )
     }
 
     return (
       <div className={css({ pl: depth > 0 ? '4' : '0' })}>
-        <span className={css({ color: 'gray.400' })}>{`{`}</span>
+        <span className={css({ color: 'white' })}>{`{`}</span>
         {Object.entries(obj).map(([key, value], idx, arr) => (
           <div key={key} className={css({ pl: '4' })}>
             <span className={css({ color: 'cyan.400' })}>{`"${key}"`}</span>
-            <span className={css({ color: 'gray.400' })}>: </span>
+            <span className={css({ color: 'white' })}>: </span>
             {renderJSON(value, depth + 1)}
-            {idx < arr.length - 1 && <span className={css({ color: 'gray.400' })}>,</span>}
+            {idx < arr.length - 1 && <span className={css({ color: 'white' })}>,</span>}
           </div>
         ))}
-        <span className={css({ color: 'gray.400' })}>{'}'}</span>
+        <span className={css({ color: 'white' })}>{'}'}</span>
       </div>
     )
   }
@@ -255,7 +255,7 @@ function JWTDecoderContent() {
             maxW: '3xl',
             mx: 'auto',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Decode, verify, and validate JSON Web Tokens securely in your browser. View header,
@@ -290,7 +290,7 @@ function JWTDecoderContent() {
                   display: 'block',
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 JWT Token
@@ -531,34 +531,26 @@ function JWTDecoderContent() {
 
                 {/* Standard Claims Info */}
                 <div className={css({ mt: '4', spaceY: '2' })}>
-                  <h4
-                    className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'gray.300' })}
-                  >
+                  <h4 className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'white' })}>
                     Standard Claims
                   </h4>
                   <div className={css({ display: 'grid', gap: '2', fontSize: 'sm' })}>
                     {decodedJWT.payload.iss && (
                       <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'gray.500', minW: '16' })}>
-                          Issuer (iss):
-                        </span>
-                        <span className={css({ color: 'gray.300' })}>{decodedJWT.payload.iss}</span>
+                        <span className={css({ color: 'white', minW: '16' })}>Issuer (iss):</span>
+                        <span className={css({ color: 'white' })}>{decodedJWT.payload.iss}</span>
                       </div>
                     )}
                     {decodedJWT.payload.sub && (
                       <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'gray.500', minW: '16' })}>
-                          Subject (sub):
-                        </span>
-                        <span className={css({ color: 'gray.300' })}>{decodedJWT.payload.sub}</span>
+                        <span className={css({ color: 'white', minW: '16' })}>Subject (sub):</span>
+                        <span className={css({ color: 'white' })}>{decodedJWT.payload.sub}</span>
                       </div>
                     )}
                     {decodedJWT.payload.aud && (
                       <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'gray.500', minW: '16' })}>
-                          Audience (aud):
-                        </span>
-                        <span className={css({ color: 'gray.300' })}>
+                        <span className={css({ color: 'white', minW: '16' })}>Audience (aud):</span>
+                        <span className={css({ color: 'white' })}>
                           {Array.isArray(decodedJWT.payload.aud)
                             ? decodedJWT.payload.aud.join(', ')
                             : decodedJWT.payload.aud}
@@ -567,30 +559,30 @@ function JWTDecoderContent() {
                     )}
                     {decodedJWT.payload.exp && (
                       <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'gray.500', minW: '16' })}>
+                        <span className={css({ color: 'white', minW: '16' })}>
                           Expiration (exp):
                         </span>
-                        <span className={css({ color: 'gray.300' })}>
+                        <span className={css({ color: 'white' })}>
                           {formatTimestamp(decodedJWT.payload.exp)}
                         </span>
                       </div>
                     )}
                     {decodedJWT.payload.iat && (
                       <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'gray.500', minW: '16' })}>
+                        <span className={css({ color: 'white', minW: '16' })}>
                           Issued At (iat):
                         </span>
-                        <span className={css({ color: 'gray.300' })}>
+                        <span className={css({ color: 'white' })}>
                           {formatTimestamp(decodedJWT.payload.iat)}
                         </span>
                       </div>
                     )}
                     {decodedJWT.payload.nbf && (
                       <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'gray.500', minW: '16' })}>
+                        <span className={css({ color: 'white', minW: '16' })}>
                           Not Before (nbf):
                         </span>
-                        <span className={css({ color: 'gray.300' })}>
+                        <span className={css({ color: 'white' })}>
                           {formatTimestamp(decodedJWT.payload.nbf)}
                         </span>
                       </div>
@@ -667,7 +659,7 @@ function JWTDecoderContent() {
                   {showSignature ? (
                     <span className={css({ color: 'pink.400' })}>{decodedJWT.signature}</span>
                   ) : (
-                    <span className={css({ color: 'gray.500' })}>
+                    <span className={css({ color: 'white' })}>
                       {'•'.repeat(Math.min(decodedJWT.signature.length, 64))}
                     </span>
                   )}
@@ -689,7 +681,7 @@ function JWTDecoderContent() {
           <CardHeader>
             <CardTitle className={css({ fontSize: 'lg' })}>What is JWT?</CardTitle>
           </CardHeader>
-          <CardContent className={css({ spaceY: '3', fontSize: 'sm', color: 'gray.400' })}>
+          <CardContent className={css({ spaceY: '3', fontSize: 'sm', color: 'white' })}>
             <p>
               JSON Web Token (JWT) is an open standard (RFC 7519) for securely transmitting
               information between parties as a JSON object. JWTs are commonly used for
@@ -718,7 +710,7 @@ function JWTDecoderContent() {
             <CardTitle className={css({ fontSize: 'lg' })}>Common Use Cases</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'gray.400' })}>
+            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'white' })}>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
                 <CheckCircle2
                   className={css({
@@ -730,8 +722,8 @@ function JWTDecoderContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Authentication:</strong> Verify
-                  user identity after login
+                  <strong className={css({ color: 'white' })}>Authentication:</strong> Verify user
+                  identity after login
                 </div>
               </li>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -745,8 +737,8 @@ function JWTDecoderContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Authorization:</strong> Control
-                  access to protected resources
+                  <strong className={css({ color: 'white' })}>Authorization:</strong> Control access
+                  to protected resources
                 </div>
               </li>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -760,7 +752,7 @@ function JWTDecoderContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Information Exchange:</strong>{' '}
+                  <strong className={css({ color: 'white' })}>Information Exchange:</strong>{' '}
                   Securely transmit data between services
                 </div>
               </li>
@@ -775,7 +767,7 @@ function JWTDecoderContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>API Security:</strong> Protect REST
+                  <strong className={css({ color: 'white' })}>API Security:</strong> Protect REST
                   APIs and microservices
                 </div>
               </li>

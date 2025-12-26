@@ -137,7 +137,7 @@ export function MobileUploadButton({
       <p
         className={css({
           fontSize: 'xs',
-          color: 'gray.500',
+          color: 'white',
           textAlign: 'center',
           lineHeight: 'relaxed',
         })}

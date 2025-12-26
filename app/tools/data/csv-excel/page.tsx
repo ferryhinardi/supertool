@@ -438,7 +438,7 @@ export default function CSVExcelConverterPage() {
                 })}
               >
                 <span className={css({ fontSize: 'lg', fontWeight: 'semibold' })}>CSV → Excel</span>
-                <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                <span className={css({ fontSize: 'xs', color: 'white' })}>
                   Convert .csv to .xlsx
                 </span>
               </Button>
@@ -486,7 +486,7 @@ export default function CSVExcelConverterPage() {
                 })}
               >
                 <span className={css({ fontSize: 'lg', fontWeight: 'semibold' })}>Excel → CSV</span>
-                <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                <span className={css({ fontSize: 'xs', color: 'white' })}>
                   Convert .xlsx to .csv
                 </span>
               </Button>
@@ -675,7 +675,7 @@ export default function CSVExcelConverterPage() {
                   ? 'Drop CSV file here or click to browse'
                   : 'Drop Excel file here or click to browse'}
               </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>
                 {mode === 'csv-to-excel'
                   ? 'Supports .csv files up to 50MB'
                   : 'Supports .xlsx and .xls files up to 50MB'}
@@ -831,7 +831,7 @@ export default function CSVExcelConverterPage() {
                         className={css({
                           textAlign: 'center',
                           py: '3',
-                          color: 'gray.500',
+                          color: 'white',
                           fontSize: 'xs',
                           borderTop: '1px solid',
                           borderColor: 'gray.700',
@@ -860,7 +860,7 @@ export default function CSVExcelConverterPage() {
             <CardTitle>How to Use</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
               <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
                 Select conversion mode (CSV to Excel or Excel to CSV)
               </li>

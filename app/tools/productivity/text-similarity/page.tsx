@@ -268,7 +268,7 @@ function TextSimilarityContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Compare text blocks and measure similarity using advanced NLP algorithms. Perfect for
@@ -326,7 +326,7 @@ function TextSimilarityContent() {
                   <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                     Cosine Similarity
                   </span>
-                  <span className={css({ fontSize: 'xs', color: 'gray.500', textAlign: 'center' })}>
+                  <span className={css({ fontSize: 'xs', color: 'white', textAlign: 'center' })}>
                     Best for semantic similarity
                   </span>
                 </Button>
@@ -356,7 +356,7 @@ function TextSimilarityContent() {
                   <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                     Levenshtein Distance
                   </span>
-                  <span className={css({ fontSize: 'xs', color: 'gray.500', textAlign: 'center' })}>
+                  <span className={css({ fontSize: 'xs', color: 'white', textAlign: 'center' })}>
                     Best for character-level edits
                   </span>
                 </Button>
@@ -384,7 +384,7 @@ function TextSimilarityContent() {
                   <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                     Jaccard Index
                   </span>
-                  <span className={css({ fontSize: 'xs', color: 'gray.500', textAlign: 'center' })}>
+                  <span className={css({ fontSize: 'xs', color: 'white', textAlign: 'center' })}>
                     Best for word overlap
                   </span>
                 </Button>
@@ -407,7 +407,7 @@ function TextSimilarityContent() {
                   htmlFor="show-all"
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     cursor: 'pointer',
                   })}
                 >
@@ -451,7 +451,7 @@ function TextSimilarityContent() {
                 className={css({
                   gap: '2',
                   bg: 'gray.800',
-                  color: 'gray.400',
+                  color: 'white',
                   _hover: { bg: 'red.500/20', color: 'red.400' },
                 })}
               >
@@ -472,11 +472,11 @@ function TextSimilarityContent() {
               >
                 <label
                   htmlFor="text1"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Text 1
                 </label>
-                <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                <span className={css({ fontSize: 'xs', color: 'white' })}>
                   {text1.length} characters
                 </span>
               </div>
@@ -503,7 +503,7 @@ function TextSimilarityContent() {
                     ring: '2px',
                     ringColor: 'indigo.500/20',
                   },
-                  _placeholder: { color: 'gray.500' },
+                  _placeholder: { color: 'white' },
                 })}
               />
             </div>
@@ -525,9 +525,7 @@ function TextSimilarityContent() {
               <div
                 className={css({ position: 'relative', display: 'flex', justifyContent: 'center' })}
               >
-                <span
-                  className={css({ bg: 'gray.900', px: '3', fontSize: 'xs', color: 'gray.500' })}
-                >
+                <span className={css({ bg: 'gray.900', px: '3', fontSize: 'xs', color: 'white' })}>
                   VS
                 </span>
               </div>
@@ -544,11 +542,11 @@ function TextSimilarityContent() {
               >
                 <label
                   htmlFor="text2"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Text 2
                 </label>
-                <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                <span className={css({ fontSize: 'xs', color: 'white' })}>
                   {text2.length} characters
                 </span>
               </div>
@@ -575,7 +573,7 @@ function TextSimilarityContent() {
                     ring: '2px',
                     ringColor: 'indigo.500/20',
                   },
-                  _placeholder: { color: 'gray.500' },
+                  _placeholder: { color: 'white' },
                 })}
               />
             </div>
@@ -638,7 +636,7 @@ function TextSimilarityContent() {
                             >
                               {result.algorithm} Similarity
                             </h3>
-                            <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                            <p className={css({ fontSize: 'sm', color: 'white' })}>
                               {getScoreLabel(result.score)}
                             </p>
                           </div>
@@ -648,7 +646,7 @@ function TextSimilarityContent() {
                             className={css({
                               gap: '2',
                               bg: 'gray.800',
-                              color: 'gray.400',
+                              color: 'white',
                               _hover: { bg: 'gray.700', color: 'white' },
                             })}
                           >
@@ -705,7 +703,7 @@ function TextSimilarityContent() {
                               display: 'flex',
                               gap: '4',
                               fontSize: 'sm',
-                              color: 'gray.400',
+                              color: 'white',
                             })}
                           >
                             {result.details.matches !== undefined && (
@@ -757,7 +755,7 @@ function TextSimilarityContent() {
                           >
                             {result.algorithm} Similarity
                           </h3>
-                          <p className={css({ fontSize: 'base', color: 'gray.400', mt: '1' })}>
+                          <p className={css({ fontSize: 'base', color: 'white', mt: '1' })}>
                             {getScoreLabel(result.score)}
                           </p>
                         </div>
@@ -766,7 +764,7 @@ function TextSimilarityContent() {
                           className={css({
                             gap: '2',
                             bg: 'gray.800',
-                            color: 'gray.400',
+                            color: 'white',
                             _hover: { bg: 'gray.700', color: 'white' },
                           })}
                         >
@@ -831,14 +829,14 @@ function TextSimilarityContent() {
                         >
                           {result.details.matches !== undefined && (
                             <div>
-                              <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                              <span className={css({ fontSize: 'xs', color: 'white' })}>
                                 Matches
                               </span>
                               <p
                                 className={css({
                                   fontSize: 'lg',
                                   fontWeight: 'semibold',
-                                  color: 'gray.300',
+                                  color: 'white',
                                 })}
                               >
                                 {result.details.matches}
@@ -847,14 +845,14 @@ function TextSimilarityContent() {
                           )}
                           {result.details.total !== undefined && (
                             <div>
-                              <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                              <span className={css({ fontSize: 'xs', color: 'white' })}>
                                 Total Items
                               </span>
                               <p
                                 className={css({
                                   fontSize: 'lg',
                                   fontWeight: 'semibold',
-                                  color: 'gray.300',
+                                  color: 'white',
                                 })}
                               >
                                 {result.details.total}
@@ -863,14 +861,14 @@ function TextSimilarityContent() {
                           )}
                           {result.details.distance !== undefined && (
                             <div>
-                              <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                              <span className={css({ fontSize: 'xs', color: 'white' })}>
                                 Edit Distance
                               </span>
                               <p
                                 className={css({
                                   fontSize: 'lg',
                                   fontWeight: 'semibold',
-                                  color: 'gray.300',
+                                  color: 'white',
                                 })}
                               >
                                 {result.details.distance}
@@ -879,14 +877,14 @@ function TextSimilarityContent() {
                           )}
                           {result.details.maxLength !== undefined && (
                             <div>
-                              <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                              <span className={css({ fontSize: 'xs', color: 'white' })}>
                                 Max Length
                               </span>
                               <p
                                 className={css({
                                   fontSize: 'lg',
                                   fontWeight: 'semibold',
-                                  color: 'gray.300',
+                                  color: 'white',
                                 })}
                               >
                                 {result.details.maxLength}
@@ -923,12 +921,10 @@ function TextSimilarityContent() {
               <div className={css({ textAlign: 'center', spaceY: '4' })}>
                 <FileText className={css({ h: '12', w: '12', color: 'gray.600', mx: 'auto' })} />
                 <div>
-                  <h3
-                    className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'gray.400' })}
-                  >
+                  <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                     No Texts to Compare
                   </h3>
-                  <p className={css({ fontSize: 'sm', color: 'gray.500', mt: '2' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', mt: '2' })}>
                     Enter two text blocks above or try one of the examples below
                   </p>
                 </div>
@@ -986,10 +982,10 @@ function TextSimilarityContent() {
                     {example.name}
                   </h4>
                   <div className={css({ spaceY: '1' })}>
-                    <p className={css({ fontSize: 'xs', color: 'gray.400', truncate: true })}>
+                    <p className={css({ fontSize: 'xs', color: 'white', truncate: true })}>
                       Text 1: {example.text1}
                     </p>
-                    <p className={css({ fontSize: 'xs', color: 'gray.400', truncate: true })}>
+                    <p className={css({ fontSize: 'xs', color: 'white', truncate: true })}>
                       Text 2: {example.text2}
                     </p>
                   </div>
@@ -1021,17 +1017,17 @@ function TextSimilarityContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
-                    <strong className={css({ color: 'gray.300' })}>Cosine Similarity:</strong> Best
-                    for comparing meaning and semantic content, regardless of word order
+                    <strong className={css({ color: 'white' })}>Cosine Similarity:</strong> Best for
+                    comparing meaning and semantic content, regardless of word order
                   </li>
                   <li>
-                    <strong className={css({ color: 'gray.300' })}>Levenshtein Distance:</strong>{' '}
+                    <strong className={css({ color: 'white' })}>Levenshtein Distance:</strong>{' '}
                     Perfect for detecting typos and character-level differences
                   </li>
                   <li>
-                    <strong className={css({ color: 'gray.300' })}>Jaccard Index:</strong> Ideal for
+                    <strong className={css({ color: 'white' })}>Jaccard Index:</strong> Ideal for
                     measuring word overlap and set-based similarity
                   </li>
                   <li>

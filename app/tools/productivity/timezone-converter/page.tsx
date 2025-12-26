@@ -261,7 +261,7 @@ function TimezoneConverterContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Convert time across multiple timezones with DST awareness. Perfect for scheduling
@@ -315,7 +315,7 @@ function TimezoneConverterContent() {
                   Now
                 </Button>
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>
                 {format(selectedDate, 'EEEE, MMMM d, yyyy')}
               </div>
             </div>
@@ -379,13 +379,13 @@ function TimezoneConverterContent() {
                   >
                     <div className={css({ spaceY: '1' })}>
                       <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                        <MapPin className={css({ h: '4', w: '4', color: 'gray.400' })} />
+                        <MapPin className={css({ h: '4', w: '4', color: 'white' })} />
                         <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold' })}>
                           {tz.label || tz.timezone}
                         </h3>
                         <Badge variant="outline">{offsetString}</Badge>
                       </div>
-                      <p className={css({ fontSize: 'sm', color: 'gray.400' })}>{dateString}</p>
+                      <p className={css({ fontSize: 'sm', color: 'white' })}>{dateString}</p>
                     </div>
                     <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
                       <div className={css({ textAlign: 'right' })}>
@@ -530,7 +530,7 @@ function TimezoneConverterContent() {
                       <div className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
                         {fav.timezones.length} timezones
                       </div>
-                      <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                      <div className={css({ fontSize: 'xs', color: 'white' })}>
                         {fav.timezones.slice(0, 3).join(', ')}
                         {fav.timezones.length > 3 && '...'}
                       </div>

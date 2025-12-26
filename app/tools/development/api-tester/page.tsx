@@ -686,7 +686,7 @@ function ApiTesterContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Test REST APIs directly in your browser. Send requests with custom headers, body, and
@@ -706,7 +706,7 @@ function ApiTesterContent() {
           className={css({
             gap: '2',
             bg: 'gray.800',
-            color: 'gray.300',
+            color: 'white',
             _hover: { bg: 'gray.700' },
           })}
         >
@@ -718,7 +718,7 @@ function ApiTesterContent() {
           className={css({
             gap: '2',
             bg: 'gray.800',
-            color: 'gray.300',
+            color: 'white',
             _hover: { bg: 'gray.700' },
           })}
         >
@@ -730,7 +730,7 @@ function ApiTesterContent() {
           className={css({
             gap: '2',
             bg: 'gray.800',
-            color: 'gray.300',
+            color: 'white',
             _hover: { bg: 'gray.700' },
           })}
         >
@@ -776,7 +776,7 @@ function ApiTesterContent() {
                   size="sm"
                   className={css({
                     bg: 'transparent',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.800' },
                   })}
                 >
@@ -786,7 +786,7 @@ function ApiTesterContent() {
             </CardHeader>
             <CardContent>
               {presets.length === 0 ? (
-                <p className={css({ textAlign: 'center', color: 'gray.500', py: '8' })}>
+                <p className={css({ textAlign: 'center', color: 'white', py: '8' })}>
                   No presets saved yet
                 </p>
               ) : (
@@ -833,14 +833,12 @@ function ApiTesterContent() {
                             className={css({
                               fontSize: 'sm',
                               fontWeight: 'medium',
-                              color: 'gray.300',
+                              color: 'white',
                             })}
                           >
                             {preset.name}
                           </span>
-                          <span
-                            className={css({ fontSize: 'xs', color: 'gray.500', truncate: true })}
-                          >
+                          <span className={css({ fontSize: 'xs', color: 'white', truncate: true })}>
                             {preset.url}
                           </span>
                         </div>
@@ -850,7 +848,7 @@ function ApiTesterContent() {
                         size="sm"
                         className={css({
                           bg: 'transparent',
-                          color: 'gray.500',
+                          color: 'white',
                           _hover: { bg: 'red.500/20', color: 'red.400' },
                         })}
                       >
@@ -890,7 +888,7 @@ function ApiTesterContent() {
                     className={css({
                       gap: '2',
                       bg: 'transparent',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'red.500/20', color: 'red.400' },
                     })}
                   >
@@ -902,7 +900,7 @@ function ApiTesterContent() {
                     size="sm"
                     className={css({
                       bg: 'transparent',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.800' },
                     })}
                   >
@@ -913,7 +911,7 @@ function ApiTesterContent() {
             </CardHeader>
             <CardContent>
               {history.length === 0 ? (
-                <p className={css({ textAlign: 'center', color: 'gray.500', py: '8' })}>
+                <p className={css({ textAlign: 'center', color: 'white', py: '8' })}>
                   No requests yet
                 </p>
               ) : (
@@ -968,13 +966,11 @@ function ApiTesterContent() {
                             {item.response.status}
                           </Badge>
                         )}
-                        <span
-                          className={css({ fontSize: 'sm', color: 'gray.300', truncate: true })}
-                        >
+                        <span className={css({ fontSize: 'sm', color: 'white', truncate: true })}>
                           {item.url}
                         </span>
                       </div>
-                      <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <span className={css({ fontSize: 'xs', color: 'white' })}>
                         {new Date(item.timestamp).toLocaleTimeString()}
                       </span>
                     </button>
@@ -1014,7 +1010,7 @@ function ApiTesterContent() {
                   size="sm"
                   className={css({
                     bg: 'transparent',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.800' },
                   })}
                 >
@@ -1027,7 +1023,7 @@ function ApiTesterContent() {
                 {/* Environment List */}
                 <div className={css({ spaceY: '3' })}>
                   {environments.length === 0 ? (
-                    <p className={css({ textAlign: 'center', color: 'gray.500', py: '8' })}>
+                    <p className={css({ textAlign: 'center', color: 'white', py: '8' })}>
                       No environments yet. Create one to get started.
                     </p>
                   ) : (
@@ -1074,7 +1070,7 @@ function ApiTesterContent() {
                                 {activeEnvironmentId === env.id ? (
                                   <Globe className={css({ h: '5', w: '5', color: 'green.400' })} />
                                 ) : (
-                                  <Globe className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                                  <Globe className={css({ h: '5', w: '5', color: 'white' })} />
                                 )}
                               </button>
                               <div>
@@ -1087,7 +1083,7 @@ function ApiTesterContent() {
                                 >
                                   {env.name}
                                 </h3>
-                                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                                <p className={css({ fontSize: 'xs', color: 'white' })}>
                                   {env.variables.filter((v) => v.enabled && v.key.trim()).length}{' '}
                                   variables
                                 </p>
@@ -1104,7 +1100,7 @@ function ApiTesterContent() {
                                 className={css({
                                   gap: '2',
                                   bg: 'transparent',
-                                  color: 'gray.400',
+                                  color: 'white',
                                   _hover: { bg: 'blue.500/20', color: 'blue.400' },
                                 })}
                               >
@@ -1116,7 +1112,7 @@ function ApiTesterContent() {
                                 size="sm"
                                 className={css({
                                   bg: 'transparent',
-                                  color: 'gray.400',
+                                  color: 'white',
                                   _hover: { bg: 'cyan.500/20', color: 'cyan.400' },
                                 })}
                               >
@@ -1135,7 +1131,7 @@ function ApiTesterContent() {
                                 size="sm"
                                 className={css({
                                   bg: 'transparent',
-                                  color: 'gray.400',
+                                  color: 'white',
                                   _hover: { bg: 'red.500/20', color: 'red.400' },
                                 })}
                               >
@@ -1162,7 +1158,7 @@ function ApiTesterContent() {
                                     display: 'block',
                                     fontSize: 'sm',
                                     fontWeight: 'medium',
-                                    color: 'gray.300',
+                                    color: 'white',
                                     mb: '2',
                                   })}
                                 >
@@ -1199,7 +1195,7 @@ function ApiTesterContent() {
                                     className={css({
                                       fontSize: 'sm',
                                       fontWeight: 'medium',
-                                      color: 'gray.300',
+                                      color: 'white',
                                     })}
                                   >
                                     Variables
@@ -1345,7 +1341,7 @@ function ApiTesterContent() {
                                         className={css({
                                           p: '2',
                                           rounded: 'md',
-                                          color: 'gray.500',
+                                          color: 'white',
                                           _hover: { bg: 'gray.700', color: 'blue.400' },
                                         })}
                                         title={`Use {{${variable.key}}} in your requests`}
@@ -1365,7 +1361,7 @@ function ApiTesterContent() {
                                         className={css({
                                           p: '2',
                                           rounded: 'md',
-                                          color: 'gray.500',
+                                          color: 'white',
                                           _hover: { bg: 'red.500/20', color: 'red.400' },
                                         })}
                                       >
@@ -1438,10 +1434,10 @@ function ApiTesterContent() {
                   alignItems: 'center',
                 })}
               >
-                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Request URL
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>
                   Tip: Press{' '}
                   <kbd
                     className={css({
@@ -1627,9 +1623,7 @@ function ApiTesterContent() {
                       alignItems: 'center',
                     })}
                   >
-                    <div
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                    >
+                    <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                       Query Parameters
                     </div>
                     <Button
@@ -1638,7 +1632,7 @@ function ApiTesterContent() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.400',
+                        color: 'white',
                         _hover: { bg: 'gray.700' },
                       })}
                     >
@@ -1698,7 +1692,7 @@ function ApiTesterContent() {
                           size="sm"
                           className={css({
                             bg: 'transparent',
-                            color: 'gray.500',
+                            color: 'white',
                             _hover: { bg: 'red.500/20', color: 'red.400' },
                           })}
                         >
@@ -1712,7 +1706,7 @@ function ApiTesterContent() {
 
               {activeRequestTab === 'auth' && (
                 <div className={css({ spaceY: '3' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Authentication
                   </div>
                   <select
@@ -1833,9 +1827,7 @@ function ApiTesterContent() {
                       alignItems: 'center',
                     })}
                   >
-                    <div
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                    >
+                    <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                       Headers
                     </div>
                     <Button
@@ -1844,7 +1836,7 @@ function ApiTesterContent() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.400',
+                        color: 'white',
                         _hover: { bg: 'gray.700' },
                       })}
                     >
@@ -1904,7 +1896,7 @@ function ApiTesterContent() {
                           size="sm"
                           className={css({
                             bg: 'transparent',
-                            color: 'gray.500',
+                            color: 'white',
                             _hover: { bg: 'red.500/20', color: 'red.400' },
                           })}
                         >
@@ -1918,7 +1910,7 @@ function ApiTesterContent() {
 
               {activeRequestTab === 'body' && ['POST', 'PUT', 'PATCH'].includes(method) && (
                 <div className={css({ spaceY: '3' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Request Body
                   </div>
                   <select
@@ -1991,7 +1983,7 @@ function ApiTesterContent() {
                         className={css({
                           gap: '2',
                           bg: 'gray.800',
-                          color: 'gray.400',
+                          color: 'white',
                           _hover: { bg: 'gray.700' },
                         })}
                       >
@@ -2051,7 +2043,7 @@ function ApiTesterContent() {
                             size="sm"
                             className={css({
                               bg: 'transparent',
-                              color: 'gray.500',
+                              color: 'white',
                               _hover: { bg: 'red.500/20', color: 'red.400' },
                             })}
                           >
@@ -2077,8 +2069,8 @@ function ApiTesterContent() {
                     borderColor: 'gray.700',
                   })}
                 >
-                  <Info className={css({ h: '5', w: '5', color: 'gray.400' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <Info className={css({ h: '5', w: '5', color: 'white' })} />
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     Request body is only available for POST, PUT, and PATCH requests
                   </span>
                 </div>
@@ -2156,7 +2148,7 @@ function ApiTesterContent() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.400',
+                        color: 'white',
                         _hover: { bg: 'gray.700' },
                       })}
                     >
@@ -2169,7 +2161,7 @@ function ApiTesterContent() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.400',
+                        color: 'white',
                         _hover: { bg: 'gray.700' },
                       })}
                     >
@@ -2199,9 +2191,7 @@ function ApiTesterContent() {
                 <>
                   {/* Response Headers */}
                   <div className={css({ spaceY: '2' })}>
-                    <h4
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                    >
+                    <h4 className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                       Response Headers
                     </h4>
                     <div
@@ -2215,9 +2205,7 @@ function ApiTesterContent() {
                         overflowY: 'auto',
                       })}
                     >
-                      <pre
-                        className={css({ fontSize: 'xs', fontFamily: 'mono', color: 'gray.400' })}
-                      >
+                      <pre className={css({ fontSize: 'xs', fontFamily: 'mono', color: 'white' })}>
                         {Object.entries(response.headers)
                           .map(([key, value]) => `${key}: ${value}`)
                           .join('\n')}
@@ -2227,9 +2215,7 @@ function ApiTesterContent() {
 
                   {/* Response Body */}
                   <div className={css({ spaceY: '2' })}>
-                    <h4
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                    >
+                    <h4 className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                       Response Body
                     </h4>
                     <div
@@ -2283,7 +2269,7 @@ function ApiTesterContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Features
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
                     • Support for all HTTP methods (GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS)
                   </li>

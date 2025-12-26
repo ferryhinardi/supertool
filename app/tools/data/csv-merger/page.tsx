@@ -457,7 +457,7 @@ export default function CSVMergerPage() {
               >
                 <Layers className={css({ h: '6', w: '6' })} />
                 <span className={css({ fontSize: 'lg', fontWeight: 'semibold' })}>Merge</span>
-                <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                <span className={css({ fontSize: 'xs', color: 'white' })}>
                   Combine multiple CSV files
                 </span>
               </Button>
@@ -486,7 +486,7 @@ export default function CSVMergerPage() {
               >
                 <Scissors className={css({ h: '6', w: '6' })} />
                 <span className={css({ fontSize: 'lg', fontWeight: 'semibold' })}>Split</span>
-                <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                <span className={css({ fontSize: 'xs', color: 'white' })}>
                   Divide large CSV files
                 </span>
               </Button>
@@ -649,7 +649,7 @@ export default function CSVMergerPage() {
                   ? 'Drop CSV files here or click to browse'
                   : 'Drop CSV file here or click to browse'}
               </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>
                 {mode === 'merge'
                   ? 'Select 2 or more CSV files to merge'
                   : 'Select 1 CSV file to split'}
@@ -694,7 +694,7 @@ export default function CSVMergerPage() {
                       >
                         {file.name}
                       </p>
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         {file.rowCount} rows × {file.columnCount} columns
                       </p>
                     </div>
@@ -706,7 +706,7 @@ export default function CSVMergerPage() {
                       className={css({
                         gap: '2',
                         bg: 'transparent',
-                        color: 'gray.500',
+                        color: 'white',
                         _hover: { bg: 'red.500/20', color: 'red.400' },
                       })}
                     >
@@ -755,7 +755,7 @@ export default function CSVMergerPage() {
                     cursor: 'pointer',
                   })}
                 />
-                <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   Remove duplicate rows
                 </span>
               </label>
@@ -793,7 +793,7 @@ export default function CSVMergerPage() {
             </CardHeader>
             <CardContent className={css({ spaceY: '4' })}>
               <div className={css({ spaceY: '3' })}>
-                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Split By
                 </div>
                 <div className={css({ display: 'flex', gap: '3' })}>
@@ -834,7 +834,7 @@ export default function CSVMergerPage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="rows-per-file"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Rows per file
                   </label>
@@ -858,7 +858,7 @@ export default function CSVMergerPage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="filter-column"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                     >
                       Filter Column
                     </label>
@@ -886,7 +886,7 @@ export default function CSVMergerPage() {
                       ))}
                     </select>
                   </div>
-                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ fontSize: 'xs', color: 'white' })}>
                     Files will be split based on unique values in the selected column
                   </p>
                 </>
@@ -978,7 +978,7 @@ export default function CSVMergerPage() {
                     className={css({
                       textAlign: 'center',
                       py: '3',
-                      color: 'gray.500',
+                      color: 'white',
                       fontSize: 'xs',
                       borderTop: '1px solid',
                       borderColor: 'gray.700',
@@ -1017,7 +1017,7 @@ export default function CSVMergerPage() {
                 >
                   Merge Mode
                 </h3>
-                <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+                <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
                   <li className={css({ fontSize: 'sm' })}>Upload 2 or more CSV files to merge</li>
                   <li className={css({ fontSize: 'sm' })}>
                     Columns will be automatically aligned by header names
@@ -1041,7 +1041,7 @@ export default function CSVMergerPage() {
                 >
                   Split Mode
                 </h3>
-                <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+                <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
                   <li className={css({ fontSize: 'sm' })}>Upload 1 CSV file to split</li>
                   <li className={css({ fontSize: 'sm' })}>
                     Split by row count: Divides file into chunks of specified size

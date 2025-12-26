@@ -77,7 +77,7 @@ function Kbd({ children }: { children: React.ReactNode }) {
         border: '1px solid',
         borderColor: 'gray.700',
         shadow: 'sm',
-        color: 'gray.300',
+        color: 'white',
       })}
     >
       {children}
@@ -94,9 +94,9 @@ export function KeyboardShortcutsDialog() {
           size="sm"
           className={css({
             gap: '2',
-            color: 'gray.400',
+            color: 'white',
             _hover: {
-              color: 'gray.300',
+              color: 'white',
               bg: 'gray.800',
             },
           })}
@@ -130,7 +130,7 @@ export function KeyboardShortcutsDialog() {
           </DialogTitle>
           <DialogDescription
             className={css({
-              color: 'gray.400',
+              color: 'white',
             })}
           >
             Use these shortcuts to speed up your workflow
@@ -216,7 +216,7 @@ export function KeyboardShortcutsDialog() {
                         <span
                           className={css({
                             fontSize: 'xs',
-                            color: 'gray.500',
+                            color: 'white',
                           })}
                         >
                           +

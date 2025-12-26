@@ -459,7 +459,7 @@ export default function VideoConverterPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Convert videos between formats (MP4, WebM, AVI, MOV), compress file sizes, and optimize
@@ -476,7 +476,7 @@ export default function VideoConverterPage() {
                   justifyContent: 'center',
                   gap: '2',
                   fontSize: 'sm',
-                  color: 'gray.400',
+                  color: 'white',
                 })}
               >
                 <div
@@ -546,7 +546,7 @@ export default function VideoConverterPage() {
                 >
                   {videos.length}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Total Videos</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Total Videos</div>
               </div>
             </CardContent>
           </Card>
@@ -570,7 +570,7 @@ export default function VideoConverterPage() {
                 >
                   {formatBytes(totalOriginalSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Original Size</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Original Size</div>
               </div>
             </CardContent>
           </Card>
@@ -594,7 +594,7 @@ export default function VideoConverterPage() {
                 >
                   {formatBytes(totalConvertedSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Converted Size</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Converted Size</div>
               </div>
             </CardContent>
           </Card>
@@ -618,7 +618,7 @@ export default function VideoConverterPage() {
                 >
                   {totalSavings}%
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Space Saved</div>
+                <div className={css({ fontSize: 'xs', color: 'white' })}>Space Saved</div>
               </div>
             </CardContent>
           </Card>
@@ -665,7 +665,7 @@ export default function VideoConverterPage() {
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
                 {/* Output Format */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Output Format
                   </div>
                   <div
@@ -700,7 +700,7 @@ export default function VideoConverterPage() {
 
                 {/* Video Codec */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Video Codec
                   </div>
                   <div
@@ -735,7 +735,7 @@ export default function VideoConverterPage() {
 
                 {/* Audio Codec */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Audio Codec
                   </div>
                   <div
@@ -779,7 +779,7 @@ export default function VideoConverterPage() {
                   >
                     <label
                       htmlFor="quality-range"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                     >
                       Quality (CRF)
                     </label>
@@ -803,7 +803,7 @@ export default function VideoConverterPage() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontSize: 'xs',
-                      color: 'gray.500',
+                      color: 'white',
                     })}
                   >
                     <span>Best Quality</span>
@@ -815,7 +815,7 @@ export default function VideoConverterPage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="resolution-select"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Resolution
                   </label>
@@ -1025,7 +1025,7 @@ export default function VideoConverterPage() {
                                       alignItems: 'center',
                                       gap: '3',
                                       fontSize: 'xs',
-                                      color: 'gray.500',
+                                      color: 'white',
                                     })}
                                   >
                                     <span>{formatBytes(video.originalSize)}</span>
@@ -1097,7 +1097,7 @@ export default function VideoConverterPage() {
                               {video.status === 'processing' && (
                                 <div className={css({ spaceY: '1' })}>
                                   <Progress value={video.progress} className={css({ h: '2' })} />
-                                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                                  <p className={css({ fontSize: 'xs', color: 'white' })}>
                                     Converting... {video.progress}%
                                   </p>
                                 </div>
@@ -1112,7 +1112,7 @@ export default function VideoConverterPage() {
 
                               {/* Status */}
                               {video.status === 'pending' && (
-                                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                                <p className={css({ fontSize: 'xs', color: 'white' })}>
                                   Ready to convert
                                 </p>
                               )}
@@ -1185,7 +1185,7 @@ export default function VideoConverterPage() {
                 <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'gray.200' })}>
                   {feature.title}
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.description}</p>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.description}</p>
               </div>
             </CardContent>
           </Card>

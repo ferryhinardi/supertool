@@ -422,7 +422,7 @@ export default function MarkdownEditorPage() {
               mx: 'auto',
               maxW: '3xl',
               fontSize: { base: 'lg', sm: 'xl' },
-              color: 'gray.400',
+              color: 'white',
             })}
           >
             Write and preview markdown in real-time with syntax highlighting, tables, task lists,
@@ -1005,7 +1005,7 @@ export default function MarkdownEditorPage() {
                                 borderLeft: '4px solid',
                                 borderColor: 'gray.600',
                                 pl: '4',
-                                color: 'gray.400',
+                                color: 'white',
                                 fontStyle: 'italic',
                               })}
                               {...props}
@@ -1087,7 +1087,7 @@ export default function MarkdownEditorPage() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: 'gray.400',
+                          color: 'white',
                         })}
                       >
                         Loading preview...
@@ -1134,7 +1134,7 @@ export default function MarkdownEditorPage() {
                     borderColor: 'cyan.500',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                     <strong className={css({ color: 'cyan.300' })}>
                       Master GitHub-Flavored Markdown:
                     </strong>{' '}
@@ -1152,7 +1152,7 @@ export default function MarkdownEditorPage() {
                     borderColor: 'cyan.500',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                     <strong className={css({ color: 'cyan.300' })}>Optimize Your Workflow:</strong>{' '}
                     Use Editor Only mode for distraction-free writing, Split View for simultaneous
                     editing and verification, or Preview Only mode for final review and
@@ -1168,7 +1168,7 @@ export default function MarkdownEditorPage() {
                     borderColor: 'cyan.500',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                     <strong className={css({ color: 'cyan.300' })}>Code Blocks Done Right:</strong>{' '}
                     Use fenced code blocks with language identifiers (```javascript) for automatic
                     syntax highlighting. Supports 180+ languages. Add line numbers or highlights for
@@ -1184,7 +1184,7 @@ export default function MarkdownEditorPage() {
                     borderColor: 'cyan.500',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                     <strong className={css({ color: 'cyan.300' })}>Export Flexibility:</strong>{' '}
                     Download as .md for version control and collaboration, or export as styled HTML
                     for embedding in websites, blogs, or documentation sites. HTML exports include
@@ -1200,7 +1200,7 @@ export default function MarkdownEditorPage() {
                     borderColor: 'cyan.500',
                   })}
                 >
-                  <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                     <strong className={css({ color: 'cyan.300' })}>
                       Documentation Best Practices:
                     </strong>{' '}
@@ -1302,7 +1302,7 @@ export default function MarkdownEditorPage() {
                     <p
                       className={css({
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                         lineHeight: '1.6',
                       })}
                     >
@@ -1350,7 +1350,7 @@ export default function MarkdownEditorPage() {
                     <p
                       className={css({
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                         lineHeight: '1.6',
                       })}
                     >
@@ -1398,7 +1398,7 @@ export default function MarkdownEditorPage() {
                     <p
                       className={css({
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                         lineHeight: '1.6',
                       })}
                     >
@@ -1445,7 +1445,7 @@ export default function MarkdownEditorPage() {
                     <p
                       className={css({
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                         lineHeight: '1.6',
                       })}
                     >

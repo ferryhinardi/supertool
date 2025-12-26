@@ -631,7 +631,7 @@ export default function VideoSubtitleCombinerPage() {
         <p
           className={css({
             fontSize: { base: 'base', sm: 'lg' },
-            color: 'gray.400',
+            color: 'white',
             maxW: '2xl',
             mx: 'auto',
           })}
@@ -689,7 +689,7 @@ export default function VideoSubtitleCombinerPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>
                 {serverStatus.message || 'Checking server status...'}
               </p>
             </CardContent>
@@ -792,7 +792,7 @@ export default function VideoSubtitleCombinerPage() {
                 >
                   <label
                     htmlFor="preview-filters"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Show Filter Preview
                   </label>
@@ -867,7 +867,7 @@ export default function VideoSubtitleCombinerPage() {
                 >
                   <label
                     htmlFor="enable-trim"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Enable Trimming
                   </label>
@@ -885,7 +885,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         Start Time: {trimStart.toFixed(1)}s
                       </label>
@@ -906,7 +906,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         End Time: {trimEnd.toFixed(1)}s
                       </label>
@@ -953,7 +953,7 @@ export default function VideoSubtitleCombinerPage() {
                 >
                   <label
                     htmlFor="enable-filters"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Enable Filters
                   </label>
@@ -972,7 +972,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         Brightness: {brightness.toFixed(2)}
                       </label>
@@ -991,7 +991,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         Contrast: {contrast.toFixed(2)}
                       </label>
@@ -1010,7 +1010,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         Saturation: {saturation.toFixed(2)}
                       </label>
@@ -1078,7 +1078,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         Blur: {blur}
                       </label>
@@ -1091,7 +1091,7 @@ export default function VideoSubtitleCombinerPage() {
                         onChange={(e) => setBlur(parseInt(e.target.value, 10))}
                         className={css({ w: 'full' })}
                       />
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Add motion blur or soften the image
                       </p>
                     </div>
@@ -1100,7 +1100,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         Sharpen: {sharpen}
                       </label>
@@ -1113,7 +1113,7 @@ export default function VideoSubtitleCombinerPage() {
                         onChange={(e) => setSharpen(parseFloat(e.target.value))}
                         className={css({ w: 'full' })}
                       />
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Enhance edges and details
                       </p>
                     </div>
@@ -1122,7 +1122,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         Vignette: {vignette.toFixed(2)}
                       </label>
@@ -1135,7 +1135,7 @@ export default function VideoSubtitleCombinerPage() {
                         onChange={(e) => setVignette(parseFloat(e.target.value))}
                         className={css({ w: 'full' })}
                       />
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Darken corners for cinematic look
                       </p>
                     </div>
@@ -1144,7 +1144,7 @@ export default function VideoSubtitleCombinerPage() {
                     <div className={css({ spaceY: '2' })}>
                       {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent input */}
                       <label
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         Temperature: {temperature}K
                       </label>
@@ -1157,7 +1157,7 @@ export default function VideoSubtitleCombinerPage() {
                         onChange={(e) => setTemperature(parseInt(e.target.value, 10))}
                         className={css({ w: 'full' })}
                       />
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         {temperature < 6500
                           ? '❄️ Cool (blue)'
                           : temperature > 6500
@@ -1219,7 +1219,7 @@ export default function VideoSubtitleCombinerPage() {
                     })}
                   >
                     <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>Original</p>
-                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                    <p className={css({ fontSize: 'xs', color: 'white', mt: '1' })}>
                       No optimization
                     </p>
                   </button>
@@ -1239,7 +1239,7 @@ export default function VideoSubtitleCombinerPage() {
                     })}
                   >
                     <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>YouTube</p>
-                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                    <p className={css({ fontSize: 'xs', color: 'white', mt: '1' })}>
                       1920x1080 • 30fps
                     </p>
                   </button>
@@ -1259,7 +1259,7 @@ export default function VideoSubtitleCombinerPage() {
                     })}
                   >
                     <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>Instagram</p>
-                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                    <p className={css({ fontSize: 'xs', color: 'white', mt: '1' })}>
                       1080x1350 • 4:5
                     </p>
                   </button>
@@ -1279,7 +1279,7 @@ export default function VideoSubtitleCombinerPage() {
                     })}
                   >
                     <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>TikTok</p>
-                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                    <p className={css({ fontSize: 'xs', color: 'white', mt: '1' })}>
                       1080x1920 • 9:16
                     </p>
                   </button>
@@ -1300,7 +1300,7 @@ export default function VideoSubtitleCombinerPage() {
                     })}
                   >
                     <p className={css({ fontWeight: 'medium', fontSize: 'sm' })}>Twitter / X</p>
-                    <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                    <p className={css({ fontSize: 'xs', color: 'white', mt: '1' })}>
                       1280x1024 • 30fps
                     </p>
                   </button>
@@ -1316,7 +1316,7 @@ export default function VideoSubtitleCombinerPage() {
                       borderColor: 'blue.500/50',
                     })}
                   >
-                    <p className={css({ fontSize: 'xs', color: 'gray.300' })}>
+                    <p className={css({ fontSize: 'xs', color: 'white' })}>
                       ℹ️ Video will be optimized for{' '}
                       <span className={css({ fontWeight: 'bold', textTransform: 'capitalize' })}>
                         {exportPreset}
@@ -1354,7 +1354,7 @@ export default function VideoSubtitleCombinerPage() {
                   >
                     <label
                       htmlFor="enable-compression"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                     >
                       Enable Compression
                     </label>
@@ -1374,13 +1374,13 @@ export default function VideoSubtitleCombinerPage() {
                       <Progress value={compressionProgress} className={css({ h: '2' })} />
                     </div>
                   )}
-                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ fontSize: 'xs', color: 'white' })}>
                     Automatically compress videos larger than 50MB. Helps process larger files
                     within the 100MB upload limit.
                   </p>
                 </>
               ) : (
-                <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Video compression is not supported in this browser. Try using Chrome, Edge, or
                   Firefox.
                 </p>
@@ -1400,7 +1400,7 @@ export default function VideoSubtitleCombinerPage() {
               {/* Font Size */}
               <div className={css({ spaceY: '2' })}>
                 {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent range input */}
-                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Font Size: {fontSize}px
                 </label>
                 <input
@@ -1416,7 +1416,7 @@ export default function VideoSubtitleCombinerPage() {
               {/* Font Color */}
               <div className={css({ spaceY: '2' })}>
                 {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent color input */}
-                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Font Color
                 </label>
                 <input
@@ -1430,7 +1430,7 @@ export default function VideoSubtitleCombinerPage() {
               {/* Background Color */}
               <div className={css({ spaceY: '2' })}>
                 {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent color input */}
-                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Background Color
                 </label>
                 <input
@@ -1444,7 +1444,7 @@ export default function VideoSubtitleCombinerPage() {
               {/* Background Opacity */}
               <div className={css({ spaceY: '2' })}>
                 {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes adjacent range input */}
-                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Background Opacity: {Math.round(backgroundOpacity * 100)}%
                 </label>
                 <input
@@ -1461,7 +1461,7 @@ export default function VideoSubtitleCombinerPage() {
               {/* Position */}
               <div className={css({ spaceY: '2' })}>
                 {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes position button group below */}
-                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Position
                 </label>
                 <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
@@ -1559,7 +1559,7 @@ export default function VideoSubtitleCombinerPage() {
                     <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                       {file.videoFile.name}
                     </p>
-                    <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                    <p className={css({ fontSize: 'xs', color: 'white' })}>
                       Original: {formatBytes(file.originalSize)}
                       {file.outputSize && ` → Output: ${formatBytes(file.outputSize)}`}
                     </p>

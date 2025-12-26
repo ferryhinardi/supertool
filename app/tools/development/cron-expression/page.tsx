@@ -162,7 +162,7 @@ function CronExpressionContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Build and validate cron schedules visually. Generate expressions, preview execution times,
@@ -279,9 +279,7 @@ function CronExpressionContent() {
             >
               {['Minute', 'Hour', 'Day', 'Month', 'Weekday'].map((label) => (
                 <div key={label} className={css({ textAlign: 'center' })}>
-                  <span
-                    className={css({ fontSize: 'xs', color: 'gray.500', fontWeight: 'medium' })}
-                  >
+                  <span className={css({ fontSize: 'xs', color: 'white', fontWeight: 'medium' })}>
                     {label}
                   </span>
                 </div>
@@ -322,7 +320,7 @@ function CronExpressionContent() {
               <div className={css({ spaceY: '2' })}>
                 <label
                   htmlFor="minute"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Minute
                 </label>
@@ -339,14 +337,14 @@ function CronExpressionContent() {
                     _focus: { borderColor: 'teal.500', ring: '2px', ringColor: 'teal.500/20' },
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>0-59</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>0-59</p>
               </div>
 
               {/* Hour */}
               <div className={css({ spaceY: '2' })}>
                 <label
                   htmlFor="hour"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Hour
                 </label>
@@ -363,14 +361,14 @@ function CronExpressionContent() {
                     _focus: { borderColor: 'teal.500', ring: '2px', ringColor: 'teal.500/20' },
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>0-23</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>0-23</p>
               </div>
 
               {/* Day of Month */}
               <div className={css({ spaceY: '2' })}>
                 <label
                   htmlFor="dayOfMonth"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Day
                 </label>
@@ -387,14 +385,14 @@ function CronExpressionContent() {
                     _focus: { borderColor: 'teal.500', ring: '2px', ringColor: 'teal.500/20' },
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>1-31</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>1-31</p>
               </div>
 
               {/* Month */}
               <div className={css({ spaceY: '2' })}>
                 <label
                   htmlFor="month"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Month
                 </label>
@@ -411,14 +409,14 @@ function CronExpressionContent() {
                     _focus: { borderColor: 'teal.500', ring: '2px', ringColor: 'teal.500/20' },
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>1-12</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>1-12</p>
               </div>
 
               {/* Day of Week */}
               <div className={css({ spaceY: '2' })}>
                 <label
                   htmlFor="dayOfWeek"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Weekday
                 </label>
@@ -435,7 +433,7 @@ function CronExpressionContent() {
                     _focus: { borderColor: 'teal.500', ring: '2px', ringColor: 'teal.500/20' },
                   })}
                 />
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>0-6</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>0-6</p>
               </div>
             </div>
           </CardContent>
@@ -558,9 +556,7 @@ function CronExpressionContent() {
                   >
                     {pattern.expression}
                   </code>
-                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
-                    {pattern.description}
-                  </p>
+                  <p className={css({ fontSize: 'xs', color: 'white' })}>{pattern.description}</p>
                 </button>
               ))}
             </div>
@@ -618,9 +614,7 @@ function CronExpressionContent() {
                     >
                       {index + 1}
                     </Badge>
-                    <span
-                      className={css({ fontFamily: 'mono', fontSize: 'sm', color: 'gray.300' })}
-                    >
+                    <span className={css({ fontFamily: 'mono', fontSize: 'sm', color: 'white' })}>
                       {formatExecutionDate(date)}
                     </span>
                   </div>
@@ -664,7 +658,7 @@ function CronExpressionContent() {
               >
                 <label
                   htmlFor="platform"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Platform:
                 </label>
@@ -730,7 +724,7 @@ function CronExpressionContent() {
                   className={css({
                     fontFamily: 'mono',
                     fontSize: 'xs',
-                    color: 'gray.300',
+                    color: 'white',
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
                   })}
@@ -764,7 +758,7 @@ function CronExpressionContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Cron Syntax Guide
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Use * for any value (every minute, hour, day, etc.)</li>
                   <li>• Use */N for intervals (*/5 = every 5 units)</li>
                   <li>• Use ranges with - (1-5 = Monday through Friday)</li>

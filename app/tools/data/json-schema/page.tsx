@@ -255,7 +255,7 @@ function JSONSchemaContent() {
               mx: 'auto',
               maxW: '3xl',
               fontSize: { base: 'lg', sm: 'xl' },
-              color: 'gray.400',
+              color: 'white',
             })}
           >
             Automatically generate JSON Schema from sample JSON data with type inference, format
@@ -377,7 +377,7 @@ function JSONSchemaContent() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="schema-title"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Schema Title (Optional)
                   </label>
@@ -411,7 +411,7 @@ function JSONSchemaContent() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="schema-description"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Schema Description (Optional)
                   </label>
@@ -465,7 +465,7 @@ function JSONSchemaContent() {
                       cursor: 'pointer',
                     })}
                   />
-                  <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     Detect Required Fields
                   </span>
                 </label>
@@ -485,7 +485,7 @@ function JSONSchemaContent() {
                       cursor: 'pointer',
                     })}
                   />
-                  <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     Detect String Formats
                   </span>
                 </label>
@@ -625,7 +625,7 @@ function JSONSchemaContent() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.300',
+                        color: 'white',
                         _hover: { bg: 'gray.700' },
                         _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                       })}
@@ -647,7 +647,7 @@ function JSONSchemaContent() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.300',
+                        color: 'white',
                         _hover: { bg: 'gray.700' },
                         _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                       })}
@@ -688,7 +688,7 @@ function JSONSchemaContent() {
                   >
                     Pro Tips
                   </h3>
-                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                     <li>• Automatic type inference from sample JSON data</li>
                     <li>• Detects string formats (email, URI, date-time, UUID)</li>
                     <li>• Identifies required fields based on non-null values</li>

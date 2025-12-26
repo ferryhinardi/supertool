@@ -35,7 +35,7 @@ const ReactDiffViewer = dynamic(() => import('react-diff-viewer-continued'), {
         justifyContent: 'center',
       })}
     >
-      <div className={css({ color: 'gray.400' })}>Loading diff viewer...</div>
+      <div className={css({ color: 'white' })}>Loading diff viewer...</div>
     </div>
   ),
 })
@@ -236,7 +236,7 @@ export default function DiffTool() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Compare text, JSON, or code side-by-side like GitHub PR reviews. Instantly visualize
@@ -264,7 +264,7 @@ export default function DiffTool() {
               className={css({
                 fontSize: 'sm',
                 fontWeight: 'medium',
-                color: 'gray.300',
+                color: 'white',
               })}
             >
               View Type
@@ -302,7 +302,7 @@ export default function DiffTool() {
               className={css({
                 fontSize: 'sm',
                 fontWeight: 'medium',
-                color: 'gray.300',
+                color: 'white',
               })}
             >
               Content Type
@@ -340,7 +340,7 @@ export default function DiffTool() {
               className={css({
                 fontSize: 'sm',
                 fontWeight: 'medium',
-                color: 'gray.300',
+                color: 'white',
               })}
             >
               Actions
@@ -462,7 +462,7 @@ export default function DiffTool() {
                 <Badge
                   className={css({
                     bg: 'gray.800',
-                    color: 'gray.300',
+                    color: 'white',
                     border: '1px solid',
                     borderColor: 'gray.700',
                   })}
@@ -524,7 +524,7 @@ export default function DiffTool() {
                 <Badge
                   className={css({
                     bg: 'gray.800',
-                    color: 'gray.300',
+                    color: 'white',
                     border: '1px solid',
                     borderColor: 'gray.700',
                   })}
@@ -584,7 +584,7 @@ export default function DiffTool() {
                 <div
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     mb: '1',
                   })}
                 >
@@ -610,7 +610,7 @@ export default function DiffTool() {
                 <div
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     mb: '1',
                   })}
                 >
@@ -636,7 +636,7 @@ export default function DiffTool() {
                 <div
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     mb: '1',
                   })}
                 >
@@ -656,7 +656,7 @@ export default function DiffTool() {
                 <div
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     mb: '1',
                   })}
                 >

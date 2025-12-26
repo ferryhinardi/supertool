@@ -228,7 +228,7 @@ function FileVerifierContent() {
             maxW: '3xl',
             mx: 'auto',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Verify file integrity by comparing cryptographic hashes. Detect tampering, corruption, or
@@ -296,7 +296,7 @@ function FileVerifierContent() {
               })}
             >
               <Info className={css({ h: '5', w: '5', color: 'blue.400', mt: '0.5' })} />
-              <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>
                 <strong>Note:</strong> MD5 and SHA-1 are considered cryptographically weak. Use
                 SHA-256 or SHA-512 for better security.
               </div>
@@ -357,7 +357,7 @@ function FileVerifierContent() {
               <p className={css({ fontSize: 'lg', fontWeight: 'medium', color: 'gray.200' })}>
                 {selectedFile ? selectedFile.name : 'Click or drag file to upload'}
               </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.500', mt: '2' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', mt: '2' })}>
                 Any file type supported • No size limit • Processed locally
               </p>
             </div>
@@ -372,7 +372,7 @@ function FileVerifierContent() {
                     alignItems: 'center',
                     gap: '2',
                     borderColor: 'gray.700',
-                    color: 'gray.300',
+                    color: 'white',
                     _hover: { borderColor: 'gray.600', bg: 'gray.800' },
                   })}
                 >
@@ -426,17 +426,17 @@ function FileVerifierContent() {
                   borderColor: 'gray.700',
                 })}
               >
-                <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '2' })}>
+                <div className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
                   File Information
                 </div>
                 <div className={css({ spaceY: '1' })}>
-                  <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', color: 'white' })}>
                     <strong>Size:</strong> {formatFileSize(fileData.size)}
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', color: 'white' })}>
                     <strong>Type:</strong> {fileData.type || 'Unknown'}
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', color: 'white' })}>
                     <strong>Modified:</strong> {fileData.lastModified.toLocaleString()}
                   </div>
                 </div>
@@ -451,7 +451,7 @@ function FileVerifierContent() {
                   borderColor: 'emerald.500/30',
                 })}
               >
-                <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '2' })}>
+                <div className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
                   {algorithm} Hash
                 </div>
                 <div
@@ -563,7 +563,7 @@ function FileVerifierContent() {
                       <div className={css({ fontWeight: 'semibold', color: 'emerald.300' })}>
                         ✅ Hash Match!
                       </div>
-                      <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                      <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
                         File integrity verified. The file has not been tampered with.
                       </div>
                     </div>
@@ -575,7 +575,7 @@ function FileVerifierContent() {
                       <div className={css({ fontWeight: 'semibold', color: 'red.300' })}>
                         ❌ Hash Mismatch!
                       </div>
-                      <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                      <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
                         File may be corrupted or tampered with. Do not trust this file.
                       </div>
                     </div>
@@ -606,15 +606,15 @@ function FileVerifierContent() {
           </CardHeader>
           <CardContent>
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>
                 <strong>1. Hash Calculation:</strong> A cryptographic hash function generates a
                 unique fingerprint of your file.
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>
                 <strong>2. Comparison:</strong> Compare the calculated hash with the expected hash
                 from a trusted source.
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>
                 <strong>3. Verification:</strong> If hashes match, the file is authentic and
                 unmodified. If they don't match, the file may be corrupted or tampered with.
               </div>
@@ -660,7 +660,7 @@ function FileVerifierContent() {
                 <div className={css({ fontWeight: 'semibold', color: 'emerald.300', mb: '2' })}>
                   Software Downloads
                 </div>
-                <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <div className={css({ fontSize: 'sm', color: 'white' })}>
                   Verify downloaded software hasn't been tampered with before installation
                 </div>
               </div>
@@ -676,7 +676,7 @@ function FileVerifierContent() {
                 <div className={css({ fontWeight: 'semibold', color: 'emerald.300', mb: '2' })}>
                   Data Backups
                 </div>
-                <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <div className={css({ fontSize: 'sm', color: 'white' })}>
                   Ensure backup files haven't been corrupted during storage or transfer
                 </div>
               </div>
@@ -692,7 +692,7 @@ function FileVerifierContent() {
                 <div className={css({ fontWeight: 'semibold', color: 'emerald.300', mb: '2' })}>
                   File Transfers
                 </div>
-                <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <div className={css({ fontSize: 'sm', color: 'white' })}>
                   Confirm files received match the original after network transfer
                 </div>
               </div>
@@ -708,7 +708,7 @@ function FileVerifierContent() {
                 <div className={css({ fontWeight: 'semibold', color: 'emerald.300', mb: '2' })}>
                   Security Audits
                 </div>
-                <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <div className={css({ fontSize: 'sm', color: 'white' })}>
                   Detect unauthorized modifications to sensitive files or documents
                 </div>
               </div>
@@ -734,7 +734,7 @@ export default function FileVerifierPage() {
             minH: 'screen',
           })}
         >
-          <div className={css({ fontSize: 'xl', color: 'gray.400' })}>Loading...</div>
+          <div className={css({ fontSize: 'xl', color: 'white' })}>Loading...</div>
         </div>
       }
     >

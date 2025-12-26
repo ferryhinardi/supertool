@@ -365,7 +365,7 @@ function TaskTimerContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Track multiple tasks concurrently with session management. Organize your work into
@@ -446,7 +446,7 @@ function TaskTimerContent() {
                 >
                   <Clock className={css({ h: '5', w: '5', color: 'purple.400' })} />
                   <div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Active Session</div>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>Active Session</div>
                     <div
                       className={css({
                         fontSize: 'lg',
@@ -489,7 +489,7 @@ function TaskTimerContent() {
                     textAlign: 'center',
                   })}
                 >
-                  <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                  <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                     Active Timers
                   </div>
                   <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'blue.300' })}>
@@ -506,7 +506,7 @@ function TaskTimerContent() {
                     textAlign: 'center',
                   })}
                 >
-                  <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                  <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                     Total Timers
                   </div>
                   <div
@@ -525,7 +525,7 @@ function TaskTimerContent() {
                     textAlign: 'center',
                   })}
                 >
-                  <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                  <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                     Session Time
                   </div>
                   <div
@@ -718,7 +718,7 @@ function TaskTimerContent() {
                           size="sm"
                           className={css({
                             bg: 'gray.700',
-                            color: 'gray.400',
+                            color: 'white',
                             _hover: { bg: 'gray.600' },
                           })}
                         >
@@ -729,7 +729,7 @@ function TaskTimerContent() {
                           size="sm"
                           className={css({
                             bg: 'transparent',
-                            color: 'gray.500',
+                            color: 'white',
                             _hover: { bg: 'red.500/20', color: 'red.400' },
                           })}
                         >
@@ -808,7 +808,7 @@ function TaskTimerContent() {
                         >
                           {session.name}
                         </div>
-                        <div className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                        <div className={css({ fontSize: 'sm', color: 'white' })}>
                           {new Date(session.startTime).toLocaleString()}
                           {session.endTime && ` - ${new Date(session.endTime).toLocaleString()}`}
                         </div>
@@ -860,7 +860,7 @@ function TaskTimerContent() {
                           size="sm"
                           className={css({
                             bg: 'transparent',
-                            color: 'gray.500',
+                            color: 'white',
                             _hover: { bg: 'red.500/20', color: 'red.400' },
                           })}
                         >
@@ -876,7 +876,7 @@ function TaskTimerContent() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'semibold',
-                            color: 'gray.400',
+                            color: 'white',
                             mb: '2',
                           })}
                         >
@@ -895,7 +895,7 @@ function TaskTimerContent() {
                               px: '3',
                             })}
                           >
-                            <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                            <span className={css({ fontSize: 'sm', color: 'white' })}>
                               {timer.name}
                             </span>
                             <span
@@ -941,7 +941,7 @@ function TaskTimerContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'pink.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Start a session to organize multiple task timers together</li>
                   <li>• Run multiple timers concurrently to track different tasks</li>
                   <li>• Export session reports to CSV or JSON for analysis</li>

@@ -137,7 +137,7 @@ export function MobileOperationPicker({
                   className={css({
                     mt: '2',
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   Select a PDF operation to perform

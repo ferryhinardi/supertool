@@ -559,7 +559,7 @@ function TextTransformerContent() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Powerful text manipulation tool with case conversion, duplicate removal, word/character
@@ -655,7 +655,7 @@ function TextTransformerContent() {
                   >
                     {stat.value.toLocaleString()}
                   </div>
-                  <div className={css({ fontSize: 'xs', color: 'gray.400' })}>{stat.label}</div>
+                  <div className={css({ fontSize: 'xs', color: 'white' })}>{stat.label}</div>
                 </div>
               </CardContent>
             </Card>
@@ -822,7 +822,7 @@ function TextTransformerContent() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Find
@@ -841,7 +841,7 @@ function TextTransformerContent() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Replace with
@@ -891,7 +891,7 @@ function TextTransformerContent() {
                         },
                       })}
                     />
-                    <span className={css({ fontSize: 'sm', color: 'gray.300' })}>Use Regex</span>
+                    <span className={css({ fontSize: 'sm', color: 'white' })}>Use Regex</span>
                   </label>
                   <label
                     className={css({
@@ -920,9 +920,7 @@ function TextTransformerContent() {
                         },
                       })}
                     />
-                    <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                      Case Sensitive
-                    </span>
+                    <span className={css({ fontSize: 'sm', color: 'white' })}>Case Sensitive</span>
                   </label>
                   <Button
                     onClick={handleFindReplace}
@@ -1036,7 +1034,7 @@ function TextTransformerContent() {
                         })}
                         title={btn.description}
                       >
-                        <Icon className={css({ h: '4', w: '4', color: 'gray.400' })} />
+                        <Icon className={css({ h: '4', w: '4', color: 'white' })} />
                         <span className={css({ flex: '1', textAlign: 'left' })}>{btn.label}</span>
                       </Button>
                     )
@@ -1082,7 +1080,7 @@ function TextTransformerContent() {
                   borderColor: 'cyan.500',
                 })}
               >
-                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                   <strong className={css({ color: 'cyan.300' })}>
                     Chain Multiple Transformations:
                   </strong>{' '}
@@ -1100,7 +1098,7 @@ function TextTransformerContent() {
                   borderColor: 'cyan.500',
                 })}
               >
-                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                   <strong className={css({ color: 'cyan.300' })}>
                     Master Regex Find & Replace:
                   </strong>{' '}
@@ -1118,7 +1116,7 @@ function TextTransformerContent() {
                   borderColor: 'cyan.500',
                 })}
               >
-                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                   <strong className={css({ color: 'cyan.300' })}>Data Cleaning Workflow:</strong>{' '}
                   For CSV or list data: Use "Trim Lines" to remove extra spaces, "Remove Empty
                   Lines" to eliminate gaps, "Remove Duplicates" for unique values, then sort or
@@ -1134,7 +1132,7 @@ function TextTransformerContent() {
                   borderColor: 'cyan.500',
                 })}
               >
-                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                   <strong className={css({ color: 'cyan.300' })}>Quick Case Conversions:</strong>{' '}
                   "Sentence case" for paragraphs, "Title Case" for headings and titles, "camelCase"
                   for variables, "snake_case" for database fields, "CONSTANT_CASE" for constants.
@@ -1150,7 +1148,7 @@ function TextTransformerContent() {
                   borderColor: 'cyan.500',
                 })}
               >
-                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                   <strong className={css({ color: 'cyan.300' })}>
                     Keyboard Shortcuts for Speed:
                   </strong>{' '}
@@ -1238,7 +1236,7 @@ function TextTransformerContent() {
                   <p
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                       lineHeight: '1.6',
                     })}
                   >
@@ -1286,7 +1284,7 @@ function TextTransformerContent() {
                   <p
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                       lineHeight: '1.6',
                     })}
                   >
@@ -1334,7 +1332,7 @@ function TextTransformerContent() {
                   <p
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                       lineHeight: '1.6',
                     })}
                   >
@@ -1382,7 +1380,7 @@ function TextTransformerContent() {
                   <p
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                       lineHeight: '1.6',
                     })}
                   >
@@ -1430,7 +1428,7 @@ function TextTransformerContent() {
                   <p
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                       lineHeight: '1.6',
                     })}
                   >
@@ -1512,7 +1510,7 @@ export default function TextTransformerPage() {
             justifyContent: 'center',
           })}
         >
-          <div className={css({ color: 'gray.400' })}>Loading...</div>
+          <div className={css({ color: 'white' })}>Loading...</div>
         </div>
       }
     >

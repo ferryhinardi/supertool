@@ -195,7 +195,7 @@ function FileInspectorContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Inspect file metadata without uploading to any server. View MIME type, file hash, size
@@ -261,8 +261,8 @@ function FileInspectorContent() {
               </Button>
             </div>
             <div className={css({ mt: '3', display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Info className={css({ h: '4', w: '4', color: 'gray.500', flexShrink: '0' })} />
-              <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <Info className={css({ h: '4', w: '4', color: 'white', flexShrink: '0' })} />
+              <span className={css({ fontSize: 'sm', color: 'white' })}>
                 SHA-256 is more secure and recommended for file verification. MD5 option uses SHA-1
                 as browser fallback.
               </span>
@@ -330,10 +330,10 @@ function FileInspectorContent() {
                   mb: '4',
                 })}
               />
-              <p className={css({ fontSize: 'lg', fontWeight: 'medium', color: 'gray.300' })}>
+              <p className={css({ fontSize: 'lg', fontWeight: 'medium', color: 'white' })}>
                 {selectedFile ? selectedFile.name : 'Click or drag file here'}
               </p>
-              <p className={css({ mt: '2', fontSize: 'sm', color: 'gray.500' })}>
+              <p className={css({ mt: '2', fontSize: 'sm', color: 'white' })}>
                 {isHashing ? 'Analyzing file...' : 'Any file type supported'}
               </p>
             </div>
@@ -392,9 +392,7 @@ function FileInspectorContent() {
               >
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
                   <FileText className={css({ h: '4', w: '4', color: 'orange.400' })} />
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     File Name
                   </span>
                 </div>
@@ -421,7 +419,7 @@ function FileInspectorContent() {
                     size="sm"
                     className={css({
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700' },
                     })}
                   >
@@ -442,9 +440,7 @@ function FileInspectorContent() {
               >
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
                   <HardDrive className={css({ h: '4', w: '4', color: 'orange.400' })} />
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     File Size
                   </span>
                 </div>
@@ -455,7 +451,7 @@ function FileInspectorContent() {
                   <Badge
                     className={css({
                       bg: 'gray.700/50',
-                      color: 'gray.400',
+                      color: 'white',
                       border: '1px solid',
                       borderColor: 'gray.600',
                     })}
@@ -477,9 +473,7 @@ function FileInspectorContent() {
               >
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
                   <FileSearch className={css({ h: '4', w: '4', color: 'orange.400' })} />
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     MIME Type
                   </span>
                 </div>
@@ -496,7 +490,7 @@ function FileInspectorContent() {
                     <p className={css({ fontSize: 'base', color: 'gray.200', mb: '1' })}>
                       {metadata.type}
                     </p>
-                    <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                    <p className={css({ fontSize: 'sm', color: 'white' })}>
                       {getMimeTypeDescription(metadata.type)}
                     </p>
                   </div>
@@ -505,7 +499,7 @@ function FileInspectorContent() {
                     size="sm"
                     className={css({
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700' },
                     })}
                   >
@@ -526,9 +520,7 @@ function FileInspectorContent() {
               >
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
                   <Calendar className={css({ h: '4', w: '4', color: 'orange.400' })} />
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Last Modified
                   </span>
                 </div>
@@ -594,7 +586,7 @@ function FileInspectorContent() {
                       Copy
                     </Button>
                   </div>
-                  <p className={css({ mt: '2', fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ mt: '2', fontSize: 'xs', color: 'white' })}>
                     Use this hash to verify file integrity and authenticity
                   </p>
                 </div>
@@ -627,7 +619,7 @@ function FileInspectorContent() {
                 >
                   Privacy First
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Files are never uploaded to any server</li>
                   <li>• All processing happens locally in your browser</li>
                   <li>• No data is stored or transmitted</li>

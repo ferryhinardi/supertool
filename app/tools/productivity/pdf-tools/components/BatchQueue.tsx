@@ -64,12 +64,12 @@ export function BatchQueue({
             mb: 4,
           })}
         >
-          <FileStack className={css({ w: 10, h: 10, color: 'gray.500' })} />
+          <FileStack className={css({ w: 10, h: 10, color: 'white' })} />
         </div>
-        <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', mb: 2, color: 'gray.300' })}>
+        <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', mb: 2, color: 'white' })}>
           No files in queue
         </h3>
-        <p className={css({ fontSize: 'sm', color: 'gray.400', maxW: 'md' })}>
+        <p className={css({ fontSize: 'sm', color: 'white', maxW: 'md' })}>
           Upload PDF files to start batch processing. You can process multiple files at once.
         </p>
       </motion.div>
@@ -98,11 +98,11 @@ export function BatchQueue({
           rounded: 'lg',
         })}
       >
-        <Layers className={css({ w: 5, h: 5, color: 'gray.400' })} />
-        <h3 className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'gray.300' })}>
+        <Layers className={css({ w: 5, h: 5, color: 'white' })} />
+        <h3 className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'white' })}>
           Batch Queue
         </h3>
-        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+        <span className={css({ fontSize: 'xs', color: 'white' })}>
           ({pdfs.length} {pdfs.length === 1 ? 'file' : 'files'})
         </span>
       </div>
@@ -157,7 +157,7 @@ export function BatchQueue({
             gap: 2,
             py: 2,
             fontSize: 'xs',
-            color: 'gray.400',
+            color: 'white',
             borderTop: '1px solid',
             borderColor: 'gray.700',
           })}

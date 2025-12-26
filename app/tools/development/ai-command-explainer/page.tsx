@@ -182,7 +182,7 @@ function AICommandExplainerContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Understand complex CLI commands with AI assistance. Get detailed breakdowns, parameter
@@ -217,7 +217,7 @@ function AICommandExplainerContent() {
                   top: '3',
                   h: '5',
                   w: '5',
-                  color: 'gray.500',
+                  color: 'white',
                   pointerEvents: 'none',
                 })}
               />
@@ -245,7 +245,7 @@ function AICommandExplainerContent() {
                     ring: '2px',
                     ringColor: 'green.500/20',
                   },
-                  _placeholder: { color: 'gray.500' },
+                  _placeholder: { color: 'white' },
                 })}
               />
             </div>
@@ -289,7 +289,7 @@ function AICommandExplainerContent() {
                 className={css({
                   gap: '2',
                   bg: 'gray.800',
-                  color: 'gray.400',
+                  color: 'white',
                   _hover: { bg: 'gray.700' },
                   _disabled: {
                     opacity: '0.5',
@@ -382,7 +382,7 @@ function AICommandExplainerContent() {
                         display: 'block',
                         fontSize: 'xs',
                         fontFamily: 'mono',
-                        color: 'gray.400',
+                        color: 'white',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
@@ -422,7 +422,7 @@ function AICommandExplainerContent() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className={css({ fontSize: 'base', color: 'gray.300', lineHeight: '1.8' })}>
+                <p className={css({ fontSize: 'base', color: 'white', lineHeight: '1.8' })}>
                   {explanation.overallPurpose}
                 </p>
               </CardContent>
@@ -522,7 +522,7 @@ function AICommandExplainerContent() {
                         >
                           {item.part}
                         </code>
-                        <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                        <p className={css({ fontSize: 'sm', color: 'white' })}>
                           {item.explanation}
                         </p>
                       </div>
@@ -579,7 +579,7 @@ function AICommandExplainerContent() {
                         >
                           {param.parameter}
                         </Badge>
-                        <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                        <span className={css({ fontSize: 'sm', color: 'white' })}>
                           {param.description}
                         </span>
                       </div>
@@ -618,7 +618,7 @@ function AICommandExplainerContent() {
                         key={alt}
                         className={css({
                           fontSize: 'sm',
-                          color: 'gray.300',
+                          color: 'white',
                           pl: '4',
                           position: 'relative',
                           _before: {
@@ -660,7 +660,7 @@ function AICommandExplainerContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'green.300' })}>
                   How It Works
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• AI analyzes your command and identifies the shell/tool type</li>
                   <li>• Get detailed breakdowns of each command component</li>
                   <li>• Understand what each flag and parameter does</li>

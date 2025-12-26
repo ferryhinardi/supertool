@@ -193,7 +193,7 @@ function AISnippetGeneratorContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Generate code snippets instantly with AI. Create functions, classes, regex patterns, SQL
@@ -244,7 +244,7 @@ function AISnippetGeneratorContent() {
 
             {/* Language Selection */}
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Programming Language
               </div>
               <div
@@ -332,7 +332,7 @@ function AISnippetGeneratorContent() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.300',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -461,7 +461,7 @@ function AISnippetGeneratorContent() {
                       <p
                         className={css({
                           fontSize: 'sm',
-                          color: 'gray.400',
+                          color: 'white',
                           lineHeight: '1.6',
                         })}
                       >
@@ -497,7 +497,7 @@ function AISnippetGeneratorContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
                     • Be specific about what you want - include function names, parameters, and
                     expected behavior

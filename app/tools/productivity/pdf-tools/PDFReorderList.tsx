@@ -59,7 +59,7 @@ function SortablePDFItem({ pdf }: { pdf: PDFFile }) {
         {...listeners}
         className={css({
           cursor: 'grab',
-          color: 'gray.400',
+          color: 'white',
           _hover: { color: 'red.400' },
         })}
       >
@@ -87,7 +87,7 @@ function SortablePDFItem({ pdf }: { pdf: PDFFile }) {
         <p
           className={css({
             fontSize: 'xs',
-            color: 'gray.500',
+            color: 'white',
           })}
         >
           {pdf.pages} pages

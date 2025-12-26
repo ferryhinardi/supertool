@@ -263,7 +263,7 @@ export default function ClipboardHistoryPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Never lose copied text again. Save, search, pin favorites, and restore clipboard items
@@ -363,7 +363,7 @@ export default function ClipboardHistoryPage() {
               py: '2',
             })}
           >
-            <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Items:</span>
+            <span className={css({ fontSize: 'sm', color: 'white' })}>Items:</span>
             <Badge
               className={css({
                 bg: 'cyan.500/20',
@@ -398,7 +398,7 @@ export default function ClipboardHistoryPage() {
                     pointerEvents: 'none',
                   })}
                 >
-                  <Search className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                  <Search className={css({ h: '5', w: '5', color: 'white' })} />
                 </div>
 
                 <FieldInput
@@ -419,7 +419,7 @@ export default function ClipboardHistoryPage() {
                     pr: '12',
                     fontSize: 'base',
                     color: 'gray.100',
-                    _placeholder: { color: 'gray.500' },
+                    _placeholder: { color: 'white' },
                     _focus: {
                       borderColor: 'cyan.500',
                       ring: '2px',
@@ -443,7 +443,7 @@ export default function ClipboardHistoryPage() {
                       rounded: 'md',
                       bg: 'gray.700',
                       p: '1',
-                      color: 'gray.400',
+                      color: 'white',
                       transition: 'all 0.2s',
                       _hover: { bg: 'gray.600', color: 'gray.200' },
                     })}
@@ -459,7 +459,7 @@ export default function ClipboardHistoryPage() {
                 className={css({
                   mt: '3',
                   fontSize: 'sm',
-                  color: 'gray.400',
+                  color: 'white',
                 })}
               >
                 Found {filteredItems.length} result{filteredItems.length !== 1 ? 's' : ''}
@@ -507,7 +507,7 @@ export default function ClipboardHistoryPage() {
                 mb: '2',
                 fontSize: 'xl',
                 fontWeight: 'bold',
-                color: 'gray.300',
+                color: 'white',
               })}
             >
               No clipboard history yet
@@ -517,7 +517,7 @@ export default function ClipboardHistoryPage() {
                 mb: '6',
                 maxW: 'md',
                 fontSize: 'base',
-                color: 'gray.500',
+                color: 'white',
               })}
             >
               Click &quot;Add Current Clipboard&quot; to save your current clipboard content, or
@@ -549,12 +549,12 @@ export default function ClipboardHistoryPage() {
                 mb: '2',
                 fontSize: 'xl',
                 fontWeight: 'bold',
-                color: 'gray.300',
+                color: 'white',
               })}
             >
               No results found
             </h3>
-            <p className={css({ fontSize: 'base', color: 'gray.500' })}>
+            <p className={css({ fontSize: 'base', color: 'white' })}>
               Try adjusting your search query
             </p>
           </CardContent>
@@ -603,8 +603,8 @@ export default function ClipboardHistoryPage() {
                       gap: '2',
                     })}
                   >
-                    <Clock className={css({ h: '4', w: '4', color: 'gray.500' })} />
-                    <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <Clock className={css({ h: '4', w: '4', color: 'white' })} />
+                    <span className={css({ fontSize: 'xs', color: 'white' })}>
                       {formatTime(item.timestamp)}
                     </span>
                     {item.isPinned && (
@@ -661,7 +661,7 @@ export default function ClipboardHistoryPage() {
                         rounded: 'md',
                         bg: 'transparent',
                         p: '1',
-                        color: 'gray.500',
+                        color: 'white',
                         transition: 'all 0.2s',
                         _hover: { bg: 'red.900/20', color: 'red.400' },
                       })}
@@ -689,7 +689,7 @@ export default function ClipboardHistoryPage() {
                       fontSize: 'sm',
                       fontFamily: 'mono',
                       lineHeight: 'relaxed',
-                      color: 'gray.300',
+                      color: 'white',
                       whiteSpace: 'pre-wrap',
                       wordBreak: 'break-word',
                     })}
@@ -753,7 +753,7 @@ export default function ClipboardHistoryPage() {
             How to Use Clipboard History Manager
           </CardTitle>
         </CardHeader>
-        <CardContent className={css({ spaceY: '3', color: 'gray.300' })}>
+        <CardContent className={css({ spaceY: '3', color: 'white' })}>
           <p>This tool helps you manage your clipboard history locally in your browser:</p>
           <ol className={css({ pl: '6', spaceY: '2', listStyle: 'decimal' })}>
             <li>

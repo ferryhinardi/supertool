@@ -101,7 +101,7 @@ function SortablePDFCard({
             bg: 'transparent',
             border: 'none',
             p: '0',
-            _hover: canDrag ? { color: 'gray.300' } : {},
+            _hover: canDrag ? { color: 'white' } : {},
             _active: canDrag ? { cursor: 'grabbing' } : {},
             opacity: canDrag ? 1 : 0.5,
             touchAction: 'none',
@@ -173,7 +173,7 @@ function SortablePDFCard({
                   alignItems: 'center',
                   gap: '3',
                   fontSize: 'xs',
-                  color: 'gray.500',
+                  color: 'white',
                   flexWrap: 'wrap',
                 })}
               >
@@ -238,7 +238,7 @@ function SortablePDFCard({
           {pdf.status === 'processing' && (
             <div className={css({ mt: '3', spaceY: '2' })}>
               <Progress value={pdf.progress} className={css({ h: '2' })} />
-              <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Processing... {pdf.progress}%
               </p>
             </div>

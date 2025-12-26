@@ -1127,7 +1127,7 @@ export default function SplitBillPage() {
                 {currency.symbol}
                 {formatCurrency(calculations.total)}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Bill</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Total Bill</div>
             </div>
             <div className={css({ textAlign: 'center' })}>
               <div
@@ -1142,19 +1142,19 @@ export default function SplitBillPage() {
                 {currency.symbol}
                 {formatCurrency(calculations.perPerson)}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Per Person</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Per Person</div>
             </div>
             <div className={css({ textAlign: 'center' })}>
               <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'teal.400' })}>
                 {people.length}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.400' })}>People</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>People</div>
             </div>
             <div className={css({ textAlign: 'center' })}>
               <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'green.400' })}>
                 {calculations.paidCount}/{people.length}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Paid</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Paid</div>
             </div>
           </div>
         </div>
@@ -1188,9 +1188,7 @@ export default function SplitBillPage() {
             </h2>
 
             <Field>
-              <FieldLabel
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-              >
+              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Bill Title *
               </FieldLabel>
               <FieldInput
@@ -1218,9 +1216,7 @@ export default function SplitBillPage() {
             </Field>
 
             <Field>
-              <FieldLabel
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-              >
+              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Description (Optional)
               </FieldLabel>
               <textarea
@@ -1249,9 +1245,7 @@ export default function SplitBillPage() {
             </Field>
 
             <Field>
-              <FieldLabel
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-              >
+              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Organizer Name *
               </FieldLabel>
               <FieldInput
@@ -1279,9 +1273,7 @@ export default function SplitBillPage() {
             </Field>
 
             <Field>
-              <FieldLabel
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-              >
+              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Bank Account Number (Optional)
               </FieldLabel>
               <FieldInput
@@ -1309,9 +1301,7 @@ export default function SplitBillPage() {
             </Field>
 
             <Field>
-              <FieldLabel
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-              >
+              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Bank Name (Optional)
               </FieldLabel>
               <FieldInput
@@ -1365,9 +1355,7 @@ export default function SplitBillPage() {
           </h2>
 
           <Field>
-            <FieldLabel
-              className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-            >
+            <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
               Currency
             </FieldLabel>
             <select
@@ -1474,9 +1462,7 @@ export default function SplitBillPage() {
           )}
 
           <Field>
-            <FieldLabel
-              className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-            >
+            <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
               Bill Amount ({currency.symbol})
             </FieldLabel>
             <FieldInput
@@ -1514,9 +1500,7 @@ export default function SplitBillPage() {
                 mb: '2',
               })}
             >
-              <FieldLabel
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-              >
+              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Tip (%)
               </FieldLabel>
               <div className={css({ display: 'flex', gap: '1' })}>
@@ -1563,16 +1547,14 @@ export default function SplitBillPage() {
                 },
               })}
             />
-            <div className={css({ mt: '1', fontSize: 'xs', color: 'gray.400' })}>
+            <div className={css({ mt: '1', fontSize: 'xs', color: 'white' })}>
               Tip Amount: {currency.symbol}
               {formatCurrency(calculations.tipAmount)}
             </div>
           </Field>
 
           <Field>
-            <FieldLabel
-              className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-            >
+            <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
               Tax (%)
             </FieldLabel>
             <FieldInput
@@ -1597,7 +1579,7 @@ export default function SplitBillPage() {
                 },
               })}
             />
-            <div className={css({ mt: '1', fontSize: 'xs', color: 'gray.400' })}>
+            <div className={css({ mt: '1', fontSize: 'xs', color: 'white' })}>
               Tax Amount: {currency.symbol}
               {formatCurrency(calculations.taxAmount)}
             </div>
@@ -1619,7 +1601,7 @@ export default function SplitBillPage() {
                 mb: '2',
               })}
             >
-              <span className={css({ fontSize: 'sm', color: 'gray.300' })}>Subtotal:</span>
+              <span className={css({ fontSize: 'sm', color: 'white' })}>Subtotal:</span>
               <span
                 className={css({
                   fontSize: 'sm',
@@ -1638,9 +1620,7 @@ export default function SplitBillPage() {
                 mb: '2',
               })}
             >
-              <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                Tip ({tipPercent}%):
-              </span>
+              <span className={css({ fontSize: 'sm', color: 'white' })}>Tip ({tipPercent}%):</span>
               <span
                 className={css({
                   fontSize: 'sm',
@@ -1662,9 +1642,7 @@ export default function SplitBillPage() {
                 borderColor: 'green.500/20',
               })}
             >
-              <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
-                Tax ({taxPercent}%):
-              </span>
+              <span className={css({ fontSize: 'sm', color: 'white' })}>Tax ({taxPercent}%):</span>
               <span
                 className={css({
                   fontSize: 'sm',
@@ -1882,7 +1860,7 @@ export default function SplitBillPage() {
                 <Field>
                   <FieldLabel
                     htmlFor="item-name-input"
-                    className={css({ fontSize: 'xs', color: 'gray.400' })}
+                    className={css({ fontSize: 'xs', color: 'white' })}
                   >
                     Item Name
                   </FieldLabel>
@@ -1915,7 +1893,7 @@ export default function SplitBillPage() {
                 <Field>
                   <FieldLabel
                     htmlFor="item-price-input"
-                    className={css({ fontSize: 'xs', color: 'gray.400' })}
+                    className={css({ fontSize: 'xs', color: 'white' })}
                   >
                     Price
                   </FieldLabel>
@@ -1950,7 +1928,7 @@ export default function SplitBillPage() {
                 <Field>
                   <FieldLabel
                     htmlFor="item-quantity-input"
-                    className={css({ fontSize: 'xs', color: 'gray.400' })}
+                    className={css({ fontSize: 'xs', color: 'white' })}
                   >
                     Qty
                   </FieldLabel>
@@ -2009,7 +1987,7 @@ export default function SplitBillPage() {
                       borderColor: 'gray.700',
                     })}
                   >
-                    <span className={css({ fontSize: 'xs', color: 'gray.400', mr: 'auto' })}>
+                    <span className={css({ fontSize: 'xs', color: 'white', mr: 'auto' })}>
                       Bulk assign:
                     </span>
                     {people.map((person) => (
@@ -2043,7 +2021,7 @@ export default function SplitBillPage() {
                                 h: '6',
                                 px: '2',
                                 fontSize: 'xs',
-                                color: 'gray.500',
+                                color: 'white',
                                 _hover: { bg: 'gray.700' },
                               })}
                             >
@@ -2098,7 +2076,7 @@ export default function SplitBillPage() {
                             >
                               {item.name} × {item.quantity}
                             </div>
-                            <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                            <div className={css({ fontSize: 'xs', color: 'white' })}>
                               {currency.symbol}
                               {formatCurrency(item.price)} each = {currency.symbol}
                               {formatCurrency(item.price * item.quantity)}
@@ -2135,7 +2113,7 @@ export default function SplitBillPage() {
 
                         {/* Assign to people */}
                         <div>
-                          <div className={css({ fontSize: 'xs', color: 'gray.400', mb: '1' })}>
+                          <div className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                             Assigned to:
                           </div>
                           <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '1' })}>
@@ -2178,7 +2156,7 @@ export default function SplitBillPage() {
                 <div
                   className={css({
                     fontSize: 'xs',
-                    color: 'gray.500',
+                    color: 'white',
                     textAlign: 'center',
                     py: '2',
                   })}
@@ -2213,7 +2191,7 @@ export default function SplitBillPage() {
               <div
                 className={css({
                   fontSize: 'xs',
-                  color: 'gray.400',
+                  color: 'white',
                 })}
               >
                 Percentages must total 100% (currently {totalPercentage.toFixed(1)}%)
@@ -2387,7 +2365,7 @@ export default function SplitBillPage() {
                     <span
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.400',
+                        color: 'white',
                         flex: '1',
                       })}
                     >
@@ -2424,7 +2402,7 @@ export default function SplitBillPage() {
                       <span
                         className={css({
                           fontSize: 'xs',
-                          color: 'gray.400',
+                          color: 'white',
                         })}
                       >
                         %
@@ -2444,7 +2422,7 @@ export default function SplitBillPage() {
                   <span
                     className={css({
                       fontSize: 'xs',
-                      color: 'gray.400',
+                      color: 'white',
                     })}
                   >
                     Amount to pay:
@@ -2530,7 +2508,7 @@ export default function SplitBillPage() {
               <div
                 className={css({
                   fontSize: 'xs',
-                  color: 'gray.400',
+                  color: 'white',
                 })}
               >
                 {calculations.unpaidCount} {calculations.unpaidCount === 1 ? 'person' : 'people'}{' '}
@@ -2564,7 +2542,7 @@ export default function SplitBillPage() {
               <div
                 className={css({
                   fontSize: 'xs',
-                  color: 'gray.400',
+                  color: 'white',
                 })}
               >
                 Everyone has paid their share
@@ -2771,7 +2749,7 @@ export default function SplitBillPage() {
           <p
             className={css({
               fontSize: 'sm',
-              color: 'gray.300',
+              color: 'white',
               mb: '4',
             })}
           >
@@ -2791,7 +2769,7 @@ export default function SplitBillPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Receipt Scanner Magic:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Take a clear, well-lit photo of your receipt to automatically extract items and
                 amounts using OCR technology - saves time and reduces errors
               </p>
@@ -2808,7 +2786,7 @@ export default function SplitBillPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Shareable Links:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Create unique URLs that let participants view and track payment status in real-time
                 - perfect for group dinners and events
               </p>
@@ -2825,7 +2803,7 @@ export default function SplitBillPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Item-Based Splitting:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Add individual items and assign who ordered what for precise splitting - tip and tax
                 are distributed proportionally
               </p>
@@ -2842,7 +2820,7 @@ export default function SplitBillPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Multi-Currency Support:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Choose from 30+ currencies with proper formatting - automatically remembers your
                 preference for future use
               </p>
@@ -2859,7 +2837,7 @@ export default function SplitBillPage() {
               })}
             >
               <strong className={css({ color: 'cyan.400' })}>Payment Tracking:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'gray.400' })}>
+              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
                 Mark participants as paid in real-time to see who still owes money at a glance -
                 eliminates confusion
               </p>
@@ -2899,7 +2877,7 @@ export default function SplitBillPage() {
           <p
             className={css({
               fontSize: 'sm',
-              color: 'gray.400',
+              color: 'white',
               mb: '4',
             })}
           >
@@ -2945,7 +2923,7 @@ export default function SplitBillPage() {
                 >
                   Enter Bill Details
                 </h4>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Input the total amount, select currency, and set tip & tax percentages with quick
                   presets
                 </p>
@@ -2983,7 +2961,7 @@ export default function SplitBillPage() {
                 >
                   Add Participants & Split
                 </h4>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Add people and choose equal split, percentage split, or item-based splitting
                 </p>
               </div>
@@ -3020,7 +2998,7 @@ export default function SplitBillPage() {
                 >
                   Track & Share
                 </h4>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Mark payments as complete and share the summary or create a shareable link
                 </p>
               </div>

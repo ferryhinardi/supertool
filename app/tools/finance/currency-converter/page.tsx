@@ -249,7 +249,7 @@ function CurrencyConverterContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Convert between 150+ world currencies with real-time exchange rates. Fast, accurate, and
@@ -297,7 +297,7 @@ function CurrencyConverterContent() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.700', color: 'emerald.400' },
                     _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                   })}
@@ -318,7 +318,7 @@ function CurrencyConverterContent() {
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'yellow.400' },
                     })}
                   >
@@ -350,7 +350,7 @@ function CurrencyConverterContent() {
             <div className={css({ spaceY: '3' })}>
               <label
                 htmlFor="from-value"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
               >
                 From
               </label>
@@ -418,8 +418,8 @@ function CurrencyConverterContent() {
               </div>
               {fromCurrencyInfo && (
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <Info className={css({ h: '4', w: '4', color: 'gray.500' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                  <Info className={css({ h: '4', w: '4', color: 'white' })} />
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     {fromCurrencyInfo.name} ({fromCurrencyInfo.symbol})
                   </span>
                 </div>
@@ -455,7 +455,7 @@ function CurrencyConverterContent() {
             <div className={css({ spaceY: '3' })}>
               <label
                 htmlFor="to-value"
-                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
               >
                 To
               </label>
@@ -518,8 +518,8 @@ function CurrencyConverterContent() {
               </div>
               {toCurrencyInfo && (
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <Info className={css({ h: '4', w: '4', color: 'gray.500' })} />
-                  <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                  <Info className={css({ h: '4', w: '4', color: 'white' })} />
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     {toCurrencyInfo.name} ({toCurrencyInfo.symbol})
                   </span>
                 </div>
@@ -547,7 +547,7 @@ function CurrencyConverterContent() {
                     Exchange Rate
                   </span>
                 </div>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   1 {fromCurrencyInfo?.code} = {exchangeRate.toFixed(6)} {toCurrencyInfo?.code}
                 </p>
               </motion.div>
@@ -632,22 +632,22 @@ function CurrencyConverterContent() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'semibold',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           {fromInfo?.code}
                         </span>
-                        <ArrowRight className={css({ h: '4', w: '4', color: 'gray.500' })} />
+                        <ArrowRight className={css({ h: '4', w: '4', color: 'white' })} />
                         <span
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'semibold',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           {toInfo?.code}
                         </span>
-                        <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <span className={css({ fontSize: 'xs', color: 'white' })}>
                           {fromInfo?.name} to {toInfo?.name}
                         </span>
                       </button>
@@ -660,7 +660,7 @@ function CurrencyConverterContent() {
                         className={css({
                           gap: '2',
                           bg: 'transparent',
-                          color: 'gray.500',
+                          color: 'white',
                           _hover: { bg: 'red.500/20', color: 'red.400' },
                         })}
                       >
@@ -696,7 +696,7 @@ function CurrencyConverterContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Exchange rates are updated in real-time for accuracy</li>
                   <li>• Save frequently used currency pairs as favorites</li>
                   <li>• Use the swap button to quickly reverse conversions</li>

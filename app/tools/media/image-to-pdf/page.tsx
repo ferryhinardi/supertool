@@ -426,7 +426,7 @@ export default function ImageToPdfPage() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Convert JPG, PNG, WebP, and other image formats to PDF instantly. Combine multiple images
@@ -483,7 +483,7 @@ export default function ImageToPdfPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       {images.length} image{images.length > 1 ? 's' : ''} selected
@@ -628,7 +628,7 @@ export default function ImageToPdfPage() {
                               className={css({
                                 fontSize: 'xs',
                                 fontWeight: 'medium',
-                                color: 'gray.300',
+                                color: 'white',
                                 truncate: true,
                               })}
                             >
@@ -640,7 +640,7 @@ export default function ImageToPdfPage() {
                                 alignItems: 'center',
                                 gap: '2',
                                 fontSize: 'xs',
-                                color: 'gray.500',
+                                color: 'white',
                               })}
                             >
                               <span>
@@ -708,7 +708,7 @@ export default function ImageToPdfPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Page Size
@@ -752,7 +752,7 @@ export default function ImageToPdfPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Orientation
@@ -793,7 +793,7 @@ export default function ImageToPdfPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Image Fit
@@ -836,7 +836,7 @@ export default function ImageToPdfPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Margin: {margin}mm
@@ -883,7 +883,7 @@ export default function ImageToPdfPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                         cursor: 'pointer',
                       })}
                     >
@@ -892,7 +892,7 @@ export default function ImageToPdfPage() {
                     <p
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.500',
+                        color: 'white',
                       })}
                     >
                       Convert image text to searchable PDF text
@@ -963,7 +963,7 @@ export default function ImageToPdfPage() {
                 className={css({
                   textAlign: 'center',
                   fontSize: 'sm',
-                  color: 'gray.400',
+                  color: 'white',
                 })}
               >
                 {ocrProgress || `Generating PDF... ${Math.round(progress)}%`}
@@ -1021,7 +1021,7 @@ export default function ImageToPdfPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Drag and drop multiple images to add them all at once</li>
                   <li>• Images are processed in the order they appear in the grid</li>
                   <li>• Choose "Contain" to fit images without cropping</li>

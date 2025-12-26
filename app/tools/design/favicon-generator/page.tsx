@@ -214,7 +214,7 @@ export default function FaviconGeneratorPage() {
         <p
           className={css({
             fontSize: { base: 'lg', md: 'xl' },
-            color: 'gray.400',
+            color: 'white',
             maxW: '2xl',
             mx: 'auto',
           })}
@@ -312,7 +312,7 @@ export default function FaviconGeneratorPage() {
                       borderRadius: 'md',
                     })}
                   />
-                  <p className={css({ color: 'gray.400' })}>{uploadedImage.name}</p>
+                  <p className={css({ color: 'white' })}>{uploadedImage.name}</p>
                 </div>
               ) : (
                 <div>
@@ -322,13 +322,13 @@ export default function FaviconGeneratorPage() {
                       h: '12',
                       mx: 'auto',
                       mb: '4',
-                      color: 'gray.500',
+                      color: 'white',
                     })}
                   />
-                  <p className={css({ color: 'gray.300', mb: '2' })}>
+                  <p className={css({ color: 'white', mb: '2' })}>
                     Drag and drop an image here, or click to select
                   </p>
-                  <p className={css({ color: 'gray.500', fontSize: 'sm' })}>
+                  <p className={css({ color: 'white', fontSize: 'sm' })}>
                     Supports PNG, JPEG, GIF, SVG, WebP (max 5MB)
                   </p>
                 </div>
@@ -341,7 +341,7 @@ export default function FaviconGeneratorPage() {
               htmlFor="custom-emoji-input"
               className={css({
                 display: 'block',
-                color: 'gray.300',
+                color: 'white',
                 mb: '2',
                 fontSize: 'sm',
                 fontWeight: 'medium',
@@ -500,7 +500,7 @@ export default function FaviconGeneratorPage() {
                     })}
                   />
                 </div>
-                <p className={css({ color: 'gray.400', fontSize: 'sm', mb: '2' })}>
+                <p className={css({ color: 'white', fontSize: 'sm', mb: '2' })}>
                   {favicon.size}×{favicon.size}
                 </p>
                 <Button
@@ -583,7 +583,7 @@ export default function FaviconGeneratorPage() {
                 borderRadius: 'md',
                 overflow: 'auto',
                 fontSize: 'sm',
-                color: 'gray.300',
+                color: 'white',
                 fontFamily: 'mono',
               })}
             >
@@ -606,7 +606,7 @@ export default function FaviconGeneratorPage() {
         <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', mb: '3', color: 'white' })}>
           About Favicons
         </h3>
-        <div className={css({ color: 'gray.400', fontSize: 'sm', lineHeight: '1.6' })}>
+        <div className={css({ color: 'white', fontSize: 'sm', lineHeight: '1.6' })}>
           <p className={css({ mb: '2' })}>
             Favicons are small icons that appear in browser tabs, bookmarks, and address bars. This
             tool generates all the sizes you need:

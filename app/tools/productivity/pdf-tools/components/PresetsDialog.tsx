@@ -121,10 +121,10 @@ export function PresetsDialog({ onSelect, onClose }: PresetsDialogProps) {
                     {preset.level}
                   </span>
                 </div>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>
                   {preset.description}
                 </p>
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>{preset.useCase}</p>
+                <p className={css({ fontSize: 'xs', color: 'white' })}>{preset.useCase}</p>
               </button>
             ))}
             <Button

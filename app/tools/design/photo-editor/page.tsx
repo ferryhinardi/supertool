@@ -417,7 +417,7 @@ export default function PhotoEditorPage() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Professional photo editing with advanced filters, adjustments, and AI-powered image
@@ -519,7 +519,7 @@ export default function PhotoEditorPage() {
                   <p className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                     Upload a photo to start editing
                   </p>
-                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  <p className={css({ fontSize: 'sm', color: 'white' })}>
                     Supports JPG, PNG, WebP (Max 10MB)
                   </p>
                 </div>
@@ -575,7 +575,7 @@ export default function PhotoEditorPage() {
                       >
                         AI Image Generation
                       </h3>
-                      <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                      <p className={css({ fontSize: 'sm', color: 'white' })}>
                         Describe the image you want to create and our AI will generate it for you.
                         Premium feature powered by OpenAI DALL-E.
                       </p>
@@ -586,7 +586,7 @@ export default function PhotoEditorPage() {
                 <div className={css({ spaceY: '3' })}>
                   <label
                     htmlFor="ai-prompt"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Image Description
                   </label>
@@ -774,7 +774,7 @@ export default function PhotoEditorPage() {
                             className={css({
                               fontSize: 'sm',
                               fontWeight: 'medium',
-                              color: 'gray.300',
+                              color: 'white',
                             })}
                           >
                             {adj.name}
@@ -813,7 +813,7 @@ export default function PhotoEditorPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'semibold',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Rotate
@@ -851,7 +851,7 @@ export default function PhotoEditorPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'semibold',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Flip
@@ -975,7 +975,7 @@ export default function PhotoEditorPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Premium Features
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• AI-powered image generation with DALL-E</li>
                   <li>• Professional filters: Vintage, Cool, Warm, and more</li>
                   <li>• Advanced adjustments: Brightness, Contrast, Saturation</li>

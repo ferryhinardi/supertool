@@ -448,7 +448,7 @@ function KeywordDensityContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Analyze keyword usage and density in your content for SEO optimization. Track keyword
@@ -493,7 +493,7 @@ function KeywordDensityContent() {
                   color: 'gray.200',
                   resize: 'vertical',
                   transition: 'all 0.2s',
-                  _placeholder: { color: 'gray.500' },
+                  _placeholder: { color: 'white' },
                   _focus: {
                     outline: 'none',
                     borderColor: 'orange.500',
@@ -509,7 +509,7 @@ function KeywordDensityContent() {
                   alignItems: 'center',
                 })}
               >
-                <span className={css({ fontSize: 'sm', color: 'gray.500' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   {text.length} characters •{' '}
                   {
                     text
@@ -526,7 +526,7 @@ function KeywordDensityContent() {
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'red.400' },
                     })}
                   >
@@ -597,9 +597,7 @@ function KeywordDensityContent() {
                   >
                     {analysis.seoScore}
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
-                    SEO Score
-                  </div>
+                  <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>SEO Score</div>
                 </CardContent>
               </Card>
 
@@ -614,7 +612,7 @@ function KeywordDensityContent() {
                   <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'blue.400' })}>
                     {analysis.totalWords}
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                  <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
                     Total Words
                   </div>
                 </CardContent>
@@ -633,7 +631,7 @@ function KeywordDensityContent() {
                   >
                     {analysis.uniqueWords}
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                  <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
                     Unique Words
                   </div>
                 </CardContent>
@@ -650,9 +648,7 @@ function KeywordDensityContent() {
                   <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'cyan.400' })}>
                     {((analysis.uniqueWords / analysis.totalWords) * 100).toFixed(1)}%
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
-                    Diversity
-                  </div>
+                  <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>Diversity</div>
                 </CardContent>
               </Card>
             </div>
@@ -685,7 +681,7 @@ function KeywordDensityContent() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.300' })}>
+                    <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                       {analysis.warnings.map((warning) => (
                         <li key={warning}>• {warning}</li>
                       ))}
@@ -709,7 +705,7 @@ function KeywordDensityContent() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.300' })}>
+                    <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                       {analysis.recommendations.map((rec) => (
                         <li key={rec}>• {rec}</li>
                       ))}
@@ -755,7 +751,7 @@ function KeywordDensityContent() {
                       className={css({
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'gray.400',
+                        color: 'white',
                         _hover: { bg: 'gray.700', color: 'blue.400' },
                       })}
                     >
@@ -805,7 +801,7 @@ function KeywordDensityContent() {
                           </span>
                         </div>
                         <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
-                          <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                          <span className={css({ fontSize: 'sm', color: 'white' })}>
                             {keyword.count} times
                           </span>
                           <Badge
@@ -910,7 +906,7 @@ function KeywordDensityContent() {
                             display: 'flex',
                             justifyContent: 'space-between',
                             fontSize: 'xs',
-                            color: 'gray.400',
+                            color: 'white',
                           })}
                         >
                           <span>{phrase.count} times</span>
@@ -973,7 +969,7 @@ function KeywordDensityContent() {
                           <span className={css({ fontSize: 'sm' })}>{phrase.keyword}</span>
                         </div>
                         <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-                          <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                          <span className={css({ fontSize: 'sm', color: 'white' })}>
                             {phrase.count}x
                           </span>
                           <span className={css({ fontSize: 'sm', color: 'purple.400' })}>
@@ -1011,7 +1007,7 @@ function KeywordDensityContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   SEO Best Practices
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Target keyword density should be between 2-5% for main keywords</li>
                   <li>• Aim for at least 300 words for blog posts, 500+ for landing pages</li>
                   <li>

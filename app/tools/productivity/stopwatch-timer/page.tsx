@@ -650,7 +650,7 @@ function StopwatchTimerContent() {
                       px: '8',
                       fontSize: 'lg',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: { bg: 'gray.700', color: 'red.400' },
                     })}
                   >
@@ -727,7 +727,7 @@ function StopwatchTimerContent() {
                           border: '1px solid',
                           borderColor: 'gray.700',
                           bg: 'gray.800/50',
-                          color: 'gray.300',
+                          color: 'white',
                           fontSize: 'xs',
                           _hover: {
                             bg: 'gray.700',
@@ -747,7 +747,7 @@ function StopwatchTimerContent() {
                           border: '1px solid',
                           borderColor: 'gray.700',
                           bg: 'gray.800/50',
-                          color: 'gray.300',
+                          color: 'white',
                           fontSize: 'xs',
                           _hover: {
                             bg: 'gray.700',
@@ -801,7 +801,7 @@ function StopwatchTimerContent() {
                             <Badge
                               className={css({
                                 bg: 'gray.700',
-                                color: 'gray.300',
+                                color: 'white',
                                 fontVariantNumeric: 'tabular-nums',
                               })}
                             >
@@ -1068,7 +1068,7 @@ function StopwatchTimerContent() {
                           <div
                             className={css({
                               fontSize: 'xs',
-                              color: 'gray.500',
+                              color: 'white',
                               fontVariantNumeric: 'tabular-nums',
                             })}
                           >
@@ -1083,7 +1083,7 @@ function StopwatchTimerContent() {
                           size="sm"
                           className={css({
                             bg: 'transparent',
-                            color: 'gray.500',
+                            color: 'white',
                             _hover: { bg: 'red.500/20', color: 'red.400' },
                           })}
                         >
@@ -1218,7 +1218,7 @@ function StopwatchTimerContent() {
                                 size="sm"
                                 className={css({
                                   bg: 'gray.700',
-                                  color: 'gray.400',
+                                  color: 'white',
                                   _hover: { bg: 'gray.600' },
                                 })}
                               >
@@ -1229,7 +1229,7 @@ function StopwatchTimerContent() {
                                 size="sm"
                                 className={css({
                                   bg: 'transparent',
-                                  color: 'gray.500',
+                                  color: 'white',
                                   _hover: { bg: 'red.500/20', color: 'red.400' },
                                 })}
                               >

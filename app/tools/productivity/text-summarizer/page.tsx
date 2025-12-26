@@ -212,7 +212,7 @@ function TextSummarizerContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Transform long articles, documents, and text into concise summaries with AI. Generate
@@ -262,7 +262,7 @@ function TextSummarizerContent() {
             />
 
             {/* Stats */}
-            <div className={css({ display: 'flex', gap: '4', fontSize: 'sm', color: 'gray.400' })}>
+            <div className={css({ display: 'flex', gap: '4', fontSize: 'sm', color: 'white' })}>
               <span>
                 <Type className={css({ display: 'inline', h: '4', w: '4', mr: '1' })} />
                 {wordCount} words
@@ -275,7 +275,7 @@ function TextSummarizerContent() {
 
             {/* Length Selection */}
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Summary Length
               </div>
               <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
@@ -309,7 +309,7 @@ function TextSummarizerContent() {
 
             {/* Format Selection */}
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Summary Format
               </div>
               <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
@@ -386,7 +386,7 @@ function TextSummarizerContent() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.300',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -470,7 +470,7 @@ function TextSummarizerContent() {
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: {
                         bg: 'gray.700',
                         color: 'blue.400',
@@ -486,7 +486,7 @@ function TextSummarizerContent() {
                     className={css({
                       gap: '2',
                       bg: 'gray.800',
-                      color: 'gray.400',
+                      color: 'white',
                       _hover: {
                         bg: 'gray.700',
                         color: 'blue.400',
@@ -530,7 +530,7 @@ function TextSummarizerContent() {
                   gap: '4',
                   flexWrap: 'wrap',
                   fontSize: 'sm',
-                  color: 'gray.400',
+                  color: 'white',
                 })}
               >
                 <span>
@@ -573,7 +573,7 @@ function TextSummarizerContent() {
                       >
                         Key Highlights
                       </h4>
-                      <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                      <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                         {result.highlights.map((highlight, index) => (
                           <li key={index}>• {highlight}</li>
                         ))}
@@ -610,7 +610,7 @@ function TextSummarizerContent() {
                 >
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
                     • For best results, provide text with at least 50 words - longer content
                     generates more comprehensive summaries

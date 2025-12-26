@@ -365,7 +365,7 @@ export default function EncryptionToolPage() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Secure your data with AES-256-GCM encryption. All encryption happens in your browser -
@@ -476,7 +476,7 @@ export default function EncryptionToolPage() {
                 {/* Input Text */}
                 {action === 'encrypt' && (
                   <Field>
-                    <FieldLabel className={css({ color: 'gray.300' })}>Text to Encrypt</FieldLabel>
+                    <FieldLabel className={css({ color: 'white' })}>Text to Encrypt</FieldLabel>
                     <Textarea
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
@@ -488,7 +488,7 @@ export default function EncryptionToolPage() {
 
                 {/* Password Input */}
                 <Field>
-                  <FieldLabel className={css({ color: 'gray.300' })}>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'white' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -552,7 +552,7 @@ export default function EncryptionToolPage() {
                             key={suggestion}
                             className={css({
                               fontSize: 'xs',
-                              color: 'gray.400',
+                              color: 'white',
                             })}
                           >
                             • {suggestion}
@@ -770,7 +770,7 @@ export default function EncryptionToolPage() {
 
                 {/* Password Input */}
                 <Field>
-                  <FieldLabel className={css({ color: 'gray.300' })}>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'white' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -964,7 +964,7 @@ export default function EncryptionToolPage() {
             <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 <Field>
-                  <FieldLabel className={css({ color: 'gray.300' })}>Encrypted Link</FieldLabel>
+                  <FieldLabel className={css({ color: 'white' })}>Encrypted Link</FieldLabel>
                   <Textarea
                     value={encryptedLink}
                     onChange={(e) => setEncryptedLink(e.target.value)}
@@ -974,7 +974,7 @@ export default function EncryptionToolPage() {
                 </Field>
 
                 <Field>
-                  <FieldLabel className={css({ color: 'gray.300' })}>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'white' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -1100,7 +1100,7 @@ export default function EncryptionToolPage() {
             <ul
               className={css({
                 fontSize: 'sm',
-                color: 'gray.400',
+                color: 'white',
                 pl: 5,
                 display: 'flex',
                 flexDir: 'column',
@@ -1162,7 +1162,7 @@ export default function EncryptionToolPage() {
                   className={css({
                     spaceY: '2',
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   <li>• Use long, complex passwords with mixed characters for maximum security</li>

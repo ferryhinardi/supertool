@@ -424,7 +424,7 @@ function ColorPickerContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Pick colors, generate harmonious palettes, and convert between HEX, RGB, HSL, and HSV
@@ -589,7 +589,7 @@ function ColorPickerContent() {
                   })}
                 >
                   <div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>HEX</div>
+                    <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>HEX</div>
                     <div className={css({ fontSize: 'lg', fontFamily: 'mono', color: 'gray.200' })}>
                       {color}
                     </div>
@@ -622,7 +622,7 @@ function ColorPickerContent() {
                   })}
                 >
                   <div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>RGB</div>
+                    <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>RGB</div>
                     <div className={css({ fontSize: 'lg', fontFamily: 'mono', color: 'gray.200' })}>
                       rgb({rgb.r}, {rgb.g}, {rgb.b})
                     </div>
@@ -655,7 +655,7 @@ function ColorPickerContent() {
                   })}
                 >
                   <div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>HSL</div>
+                    <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>HSL</div>
                     <div className={css({ fontSize: 'lg', fontFamily: 'mono', color: 'gray.200' })}>
                       hsl({hsl.h}, {hsl.s}%, {hsl.l}%)
                     </div>
@@ -688,7 +688,7 @@ function ColorPickerContent() {
                   })}
                 >
                   <div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>HSV</div>
+                    <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>HSV</div>
                     <div className={css({ fontSize: 'lg', fontFamily: 'mono', color: 'gray.200' })}>
                       hsv({hsv.h}°, {hsv.s}%, {hsv.v}%)
                     </div>
@@ -747,7 +747,7 @@ function ColorPickerContent() {
                       mb: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>
                       Contrast with White
                     </div>
                     <Badge
@@ -788,7 +788,7 @@ function ColorPickerContent() {
                     ) : (
                       <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
                     )}
-                    <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    <span className={css({ fontSize: 'sm', color: 'white' })}>
                       {contrastWithWhite >= 7
                         ? 'AAA - Enhanced contrast'
                         : contrastWithWhite >= 4.5
@@ -816,7 +816,7 @@ function ColorPickerContent() {
                       mb: '3',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>
                       Contrast with Black
                     </div>
                     <Badge
@@ -857,7 +857,7 @@ function ColorPickerContent() {
                     ) : (
                       <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
                     )}
-                    <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                    <span className={css({ fontSize: 'sm', color: 'white' })}>
                       {contrastWithBlack >= 7
                         ? 'AAA - Enhanced contrast'
                         : contrastWithBlack >= 4.5
@@ -906,7 +906,7 @@ function ColorPickerContent() {
               <CardContent className={css({ spaceY: '4' })}>
                 {/* Palette Type Selector */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '3' })}>
+                  <div className={css({ fontSize: 'sm', color: 'white', mb: '3' })}>
                     Palette Type
                   </div>
                   <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
@@ -938,7 +938,7 @@ function ColorPickerContent() {
 
                 {/* Palette Colors */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '3' })}>
+                  <div className={css({ fontSize: 'sm', color: 'white', mb: '3' })}>
                     Generated Palette
                   </div>
                   <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
@@ -974,7 +974,7 @@ function ColorPickerContent() {
                             flex: '1',
                             fontFamily: 'mono',
                             fontSize: 'sm',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           {paletteColor}
@@ -1042,7 +1042,7 @@ function ColorPickerContent() {
                       className={css({
                         spaceY: '2',
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                       })}
                     >
                       <li>• Complementary colors create high contrast and vibrant designs</li>

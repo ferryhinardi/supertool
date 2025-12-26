@@ -339,7 +339,7 @@ export function OperationGrid({
               mb: '3',
               fontSize: 'sm',
               fontWeight: 'semibold',
-              color: 'gray.400',
+              color: 'white',
               textTransform: 'uppercase',
               letterSpacing: 'wider',
             })}

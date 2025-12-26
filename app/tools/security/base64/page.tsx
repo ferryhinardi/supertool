@@ -245,7 +245,7 @@ function Base64Content() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Convert text and files to Base64 encoding or decode Base64 strings back to original format
@@ -274,7 +274,7 @@ function Base64Content() {
             </CardTitle>
           </CardHeader>
           <CardContent className={css({ spaceY: '3' })}>
-            <ul className={css({ spaceY: '3', pl: '0', fontSize: 'sm', color: 'gray.300' })}>
+            <ul className={css({ spaceY: '3', pl: '0', fontSize: 'sm', color: 'white' })}>
               <li className={css({ display: 'flex', gap: '2' })}>
                 <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
                 <span>
@@ -427,7 +427,7 @@ function Base64Content() {
                     className={css({ cursor: 'pointer' })}
                     accept="*/*"
                   />
-                  <p className={css({ mt: '2', fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ mt: '2', fontSize: 'xs', color: 'white' })}>
                     Upload any file to encode
                   </p>
                 </div>
@@ -498,7 +498,7 @@ function Base64Content() {
                       mb: '2',
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.400',
+                      color: 'white',
                     })}
                   >
                     Image Preview:
@@ -597,7 +597,7 @@ function Base64Content() {
                 >
                   {feature.title}
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.desc}</p>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.desc}</p>
               </div>
             </CardContent>
           </Card>
@@ -659,7 +659,7 @@ function Base64Content() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Choose Encode or Decode Mode
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                   Select "Encode" to convert text or files to Base64 format, or "Decode" to convert
                   Base64 strings back to their original format. The mode toggle switches between
                   both operations.
@@ -687,7 +687,7 @@ function Base64Content() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Enter Text or Upload File
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                   Type or paste your text directly, or upload any file (images, documents, audio,
                   etc.) to encode. For decoding, paste the Base64 string including data URI prefix
                   if present.
@@ -715,7 +715,7 @@ function Base64Content() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Convert and View Results
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                   Click the encode/decode button to convert. The result appears instantly in the
                   output panel. Images are automatically detected and previewed when decoding data
                   URIs.
@@ -743,7 +743,7 @@ function Base64Content() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Copy or Download Output
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                   Use the "Copy" button to copy the result to clipboard, or "Download" to save as a
                   text file. Perfect for embedding in code, APIs, data URIs, or data transmission.
                 </p>
@@ -823,7 +823,7 @@ export default function Base64Page() {
             alignItems: 'center',
             justifyContent: 'center',
             minH: 'screen',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Loading...

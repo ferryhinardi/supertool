@@ -324,7 +324,7 @@ function SVGOptimizerContent() {
             maxW: '3xl',
             mx: 'auto',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Minify and optimize SVG files with live preview. Remove unnecessary metadata, compress
@@ -393,7 +393,7 @@ function SVGOptimizerContent() {
                       cursor: 'pointer',
                     })}
                   />
-                  <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <span className={css({ fontSize: 'sm', color: 'white' })}>
                     {key
                       .replace(/([A-Z])/g, ' $1')
                       .replace(/^./, (str) => str.toUpperCase())
@@ -500,7 +500,7 @@ function SVGOptimizerContent() {
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {formatBytes(stats.originalSize)}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Original Size</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Original Size</div>
             </CardContent>
           </Card>
 
@@ -512,7 +512,7 @@ function SVGOptimizerContent() {
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {formatBytes(stats.optimizedSize)}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Optimized Size</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Optimized Size</div>
             </CardContent>
           </Card>
 
@@ -526,7 +526,7 @@ function SVGOptimizerContent() {
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {stats.reduction.toFixed(1)}%
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.500' })}>Size Reduction</div>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>Size Reduction</div>
             </CardContent>
           </Card>
 
@@ -538,7 +538,7 @@ function SVGOptimizerContent() {
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {stats.optimizedElements}
               </div>
-              <div className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <div className={css({ fontSize: 'sm', color: 'white' })}>
                 Elements (was {stats.originalElements})
               </div>
             </CardContent>
@@ -652,7 +652,7 @@ function SVGOptimizerContent() {
             <CardTitle className={css({ fontSize: 'lg' })}>Optimization Benefits</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'gray.400' })}>
+            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'white' })}>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
                 <CheckCircle2
                   className={css({
@@ -664,8 +664,8 @@ function SVGOptimizerContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Faster loading:</strong> Smaller
-                  file sizes mean faster page loads
+                  <strong className={css({ color: 'white' })}>Faster loading:</strong> Smaller file
+                  sizes mean faster page loads
                 </div>
               </li>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -679,8 +679,8 @@ function SVGOptimizerContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Better performance:</strong>{' '}
-                  Optimized SVGs render faster in browsers
+                  <strong className={css({ color: 'white' })}>Better performance:</strong> Optimized
+                  SVGs render faster in browsers
                 </div>
               </li>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -694,7 +694,7 @@ function SVGOptimizerContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Reduced bandwidth:</strong> Save on
+                  <strong className={css({ color: 'white' })}>Reduced bandwidth:</strong> Save on
                   hosting and CDN costs
                 </div>
               </li>
@@ -709,7 +709,7 @@ function SVGOptimizerContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Cleaner code:</strong> Remove
+                  <strong className={css({ color: 'white' })}>Cleaner code:</strong> Remove
                   unnecessary metadata and attributes
                 </div>
               </li>
@@ -722,7 +722,7 @@ function SVGOptimizerContent() {
             <CardTitle className={css({ fontSize: 'lg' })}>Best Practices</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'gray.400' })}>
+            <ul className={css({ spaceY: '3', fontSize: 'sm', color: 'white' })}>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
                 <Info
                   className={css({
@@ -734,8 +734,8 @@ function SVGOptimizerContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Test before deploying:</strong>{' '}
-                  Always check the preview to ensure nothing broke
+                  <strong className={css({ color: 'white' })}>Test before deploying:</strong> Always
+                  check the preview to ensure nothing broke
                 </div>
               </li>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -749,8 +749,8 @@ function SVGOptimizerContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Keep originals:</strong> Save a
-                  backup of the original SVG before optimizing
+                  <strong className={css({ color: 'white' })}>Keep originals:</strong> Save a backup
+                  of the original SVG before optimizing
                 </div>
               </li>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -764,8 +764,8 @@ function SVGOptimizerContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Use viewBox:</strong> Prefer
-                  viewBox over width/height for responsive SVGs
+                  <strong className={css({ color: 'white' })}>Use viewBox:</strong> Prefer viewBox
+                  over width/height for responsive SVGs
                 </div>
               </li>
               <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -779,7 +779,7 @@ function SVGOptimizerContent() {
                   })}
                 />
                 <div>
-                  <strong className={css({ color: 'gray.300' })}>Gzip compression:</strong> Combine
+                  <strong className={css({ color: 'white' })}>Gzip compression:</strong> Combine
                   with server-side gzip for maximum savings
                 </div>
               </li>

@@ -529,7 +529,7 @@ export default function HashGeneratorPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Generate cryptographic hashes using multiple algorithms. Hash text or files, and verify
@@ -558,7 +558,7 @@ export default function HashGeneratorPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className={css({ spaceY: '3' })}>
-            <ul className={css({ spaceY: '3', pl: '0', fontSize: 'sm', color: 'gray.300' })}>
+            <ul className={css({ spaceY: '3', pl: '0', fontSize: 'sm', color: 'white' })}>
               <li className={css({ display: 'flex', gap: '2' })}>
                 <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
                 <span>
@@ -879,15 +879,13 @@ export default function HashGeneratorPage() {
                         >
                           {file.name}
                         </div>
-                        <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <div className={css({ fontSize: 'xs', color: 'white' })}>
                           {formatFileSize(file.size)}
                         </div>
                       </div>
                       <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                         {file.status === 'pending' && (
-                          <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
-                            Pending
-                          </span>
+                          <span className={css({ fontSize: 'xs', color: 'white' })}>Pending</span>
                         )}
                         {file.status === 'processing' && (
                           <Loader2
@@ -923,7 +921,7 @@ export default function HashGeneratorPage() {
                             className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
                           >
                             <span
-                              className={css({ fontSize: 'xs', color: 'gray.400', minW: '[60px]' })}
+                              className={css({ fontSize: 'xs', color: 'white', minW: '[60px]' })}
                             >
                               {algo}:
                             </span>
@@ -932,7 +930,7 @@ export default function HashGeneratorPage() {
                                 flex: '1',
                                 fontSize: 'xs',
                                 fontFamily: 'mono',
-                                color: 'gray.300',
+                                color: 'white',
                               })}
                             >
                               {file.hashes?.[algo]?.substring(0, 32)}...
@@ -1025,7 +1023,7 @@ export default function HashGeneratorPage() {
                         mb: '2',
                       })}
                     >
-                      <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                      <span className={css({ fontSize: 'xs', color: 'white' })}>
                         {new Date(entry.timestamp).toLocaleString()}
                       </span>
                       <span
@@ -1038,10 +1036,10 @@ export default function HashGeneratorPage() {
                         {entry.type}
                       </span>
                     </div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.300', mb: '2' })}>
+                    <div className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
                       {entry.input}
                     </div>
-                    <div className={css({ fontSize: 'xs', fontFamily: 'mono', color: 'gray.500' })}>
+                    <div className={css({ fontSize: 'xs', fontFamily: 'mono', color: 'white' })}>
                       SHA-256: {entry.hashes['SHA-256'].substring(0, 48)}...
                     </div>
                   </button>
@@ -1105,7 +1103,7 @@ export default function HashGeneratorPage() {
               >
                 {feature.title}
               </h3>
-              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.desc}</p>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.desc}</p>
             </CardContent>
           </Card>
         ))}
@@ -1165,7 +1163,7 @@ export default function HashGeneratorPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Enter Text or Upload File
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                   Type or paste your text into the input field, or click the upload button to hash a
                   file. The tool supports any file type and processes data locally in your browser
                   for complete privacy.
@@ -1193,7 +1191,7 @@ export default function HashGeneratorPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Generate Hashes
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                   Click the "Generate Hashes" button to create cryptographic hashes using multiple
                   algorithms simultaneously: MD5, SHA-1, SHA-256, SHA-384, and SHA-512. Each
                   algorithm produces a unique hash signature.
@@ -1221,7 +1219,7 @@ export default function HashGeneratorPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Copy Hash Values
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                   Click the copy button next to any hash to copy it to your clipboard. The hash
                   remains available for use in verification, documentation, or integration with your
                   applications and workflows.
@@ -1249,7 +1247,7 @@ export default function HashGeneratorPage() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
                   Verify Hashes (Optional)
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: 'relaxed' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
                   To verify data integrity, paste a reference hash into the comparison field. The
                   tool will automatically check if it matches any generated hash and display whether
                   the data is identical or has been modified.

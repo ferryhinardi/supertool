@@ -163,7 +163,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                 AI-Powered PDF Summary
               </h2>
               {result && (
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   {result.metadata.fileName}
                 </p>
               )}
@@ -221,7 +221,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                     <div className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                       {result.documentType}
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Document Type</div>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>Document Type</div>
                   </CardContent>
                 </Card>
 
@@ -233,7 +233,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                     <div className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                       {result.metadata.pageCount} pages
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>
                       {result.metadata.wordCount.toLocaleString()} words
                     </div>
                   </CardContent>
@@ -247,7 +247,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                     <div className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                       {result.metadata.estimatedReadingTime} min
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Reading Time</div>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>Reading Time</div>
                   </CardContent>
                 </Card>
 
@@ -259,7 +259,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                     <div className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                       {result.keyPoints.length} points
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Key Highlights</div>
+                    <div className={css({ fontSize: 'xs', color: 'white' })}>Key Highlights</div>
                   </CardContent>
                 </Card>
               </div>
@@ -274,7 +274,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                   <CardDescription>AI-generated overview of your document</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className={css({ color: 'gray.300', lineHeight: '1.8', fontSize: 'sm' })}>
+                  <p className={css({ color: 'white', lineHeight: '1.8', fontSize: 'sm' })}>
                     {result.summary}
                   </p>
                   <Button
@@ -307,7 +307,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                             display: 'flex',
                             gap: 3,
                             fontSize: 'sm',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           <span
@@ -389,7 +389,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                             alignItems: 'start',
                             gap: 2,
                             fontSize: 'sm',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           <span className={css({ color: 'green.400', mt: 0.5 })}>☑</span>
@@ -443,7 +443,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                     <CardTitle>Document Analysis</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className={css({ color: 'gray.300', fontSize: 'sm', lineHeight: '1.6' })}>
+                    <p className={css({ color: 'white', fontSize: 'sm', lineHeight: '1.6' })}>
                       {result.pageAnalysis}
                     </p>
                   </CardContent>

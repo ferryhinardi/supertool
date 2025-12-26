@@ -337,7 +337,7 @@ export default function BatchRenamePage() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Rename multiple files at once with powerful pattern rules. Add prefix/suffix, find &
@@ -406,13 +406,13 @@ export default function BatchRenamePage() {
                 className={css({
                   fontSize: 'lg',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                   mb: '2',
                 })}
               >
                 Drop files here or click to browse
               </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>
                 Supports all file types • No file size limit
               </p>
               <input
@@ -442,7 +442,7 @@ export default function BatchRenamePage() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'red.500/20', color: 'red.400' },
                   })}
                 >
@@ -488,7 +488,7 @@ export default function BatchRenamePage() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -509,7 +509,7 @@ export default function BatchRenamePage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="prefix"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Prefix
                   </label>
@@ -535,7 +535,7 @@ export default function BatchRenamePage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="suffix"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                   >
                     Suffix
                   </label>
@@ -568,9 +568,7 @@ export default function BatchRenamePage() {
                     justifyContent: 'space-between',
                   })}
                 >
-                  <span
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
-                  >
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Find & Replace
                   </span>
                   <label
@@ -587,7 +585,7 @@ export default function BatchRenamePage() {
                       onChange={(e) => setPattern((p) => ({ ...p, useRegex: e.target.checked }))}
                       className={css({ cursor: 'pointer' })}
                     />
-                    <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Use Regex</span>
+                    <span className={css({ fontSize: 'sm', color: 'white' })}>Use Regex</span>
                   </label>
                 </div>
 
@@ -635,9 +633,9 @@ export default function BatchRenamePage() {
 
               {/* Sequential Numbering */}
               <div className={css({ spaceY: '3' })}>
-                <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Sequential Numbering
-                  <span className={css({ ml: '2', fontSize: 'xs', color: 'gray.500' })}>
+                  <span className={css({ ml: '2', fontSize: 'xs', color: 'white' })}>
                     Use {'{n}'} in prefix/suffix
                   </span>
                 </span>
@@ -650,10 +648,7 @@ export default function BatchRenamePage() {
                   })}
                 >
                   <div className={css({ spaceY: '2' })}>
-                    <label
-                      htmlFor="seq-start"
-                      className={css({ fontSize: 'xs', color: 'gray.400' })}
-                    >
+                    <label htmlFor="seq-start" className={css({ fontSize: 'xs', color: 'white' })}>
                       Start
                     </label>
                     <Input
@@ -677,10 +672,7 @@ export default function BatchRenamePage() {
                   </div>
 
                   <div className={css({ spaceY: '2' })}>
-                    <label
-                      htmlFor="seq-step"
-                      className={css({ fontSize: 'xs', color: 'gray.400' })}
-                    >
+                    <label htmlFor="seq-step" className={css({ fontSize: 'xs', color: 'white' })}>
                       Step
                     </label>
                     <Input
@@ -706,7 +698,7 @@ export default function BatchRenamePage() {
                   <div className={css({ spaceY: '2' })}>
                     <label
                       htmlFor="seq-padding"
-                      className={css({ fontSize: 'xs', color: 'gray.400' })}
+                      className={css({ fontSize: 'xs', color: 'white' })}
                     >
                       Padding
                     </label>
@@ -737,7 +729,7 @@ export default function BatchRenamePage() {
               <div className={css({ spaceY: '2' })}>
                 <label
                   htmlFor="case-transform"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                 >
                   Case Transform
                 </label>
@@ -868,7 +860,7 @@ export default function BatchRenamePage() {
                           py: '3',
                           textAlign: 'left',
                           fontWeight: 'semibold',
-                          color: 'gray.400',
+                          color: 'white',
                         })}
                       >
                         Original Name
@@ -879,7 +871,7 @@ export default function BatchRenamePage() {
                           py: '3',
                           textAlign: 'center',
                           fontWeight: 'semibold',
-                          color: 'gray.400',
+                          color: 'white',
                           w: '12',
                         })}
                       ></th>
@@ -889,7 +881,7 @@ export default function BatchRenamePage() {
                           py: '3',
                           textAlign: 'left',
                           fontWeight: 'semibold',
-                          color: 'gray.400',
+                          color: 'white',
                         })}
                       >
                         New Name
@@ -900,7 +892,7 @@ export default function BatchRenamePage() {
                           py: '3',
                           textAlign: 'center',
                           fontWeight: 'semibold',
-                          color: 'gray.400',
+                          color: 'white',
                           w: '16',
                         })}
                       >
@@ -912,7 +904,7 @@ export default function BatchRenamePage() {
                           py: '3',
                           textAlign: 'center',
                           fontWeight: 'semibold',
-                          color: 'gray.400',
+                          color: 'white',
                           w: '20',
                         })}
                       >
@@ -931,7 +923,7 @@ export default function BatchRenamePage() {
                           _hover: { bg: 'gray.800/30' },
                         })}
                       >
-                        <td className={css({ px: '4', py: '3', color: 'gray.400' })}>
+                        <td className={css({ px: '4', py: '3', color: 'white' })}>
                           <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                             <FileText className={css({ h: '4', w: '4', flexShrink: '0' })} />
                             <span className={css({ wordBreak: 'break-all' })}>
@@ -982,7 +974,7 @@ export default function BatchRenamePage() {
                             className={css({
                               gap: '2',
                               bg: 'transparent',
-                              color: 'gray.500',
+                              color: 'white',
                               _hover: { bg: 'red.500/20', color: 'red.400' },
                             })}
                           >
@@ -1022,7 +1014,7 @@ export default function BatchRenamePage() {
                 >
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
                     • Use {'{n}'} in prefix or suffix to add sequential numbers (e.g., "file-{'{n}'}
                     .jpg")

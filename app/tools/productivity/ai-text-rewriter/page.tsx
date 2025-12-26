@@ -276,7 +276,7 @@ function AITextRewriterContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Transform your text with AI-powered tone and style control. Rewrite content for different
@@ -348,7 +348,7 @@ function AITextRewriterContent() {
                   <span
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.300',
+                      color: 'white',
                       lineClamp: '3',
                     })}
                   >
@@ -498,7 +498,7 @@ function AITextRewriterContent() {
                       <div className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                         {tone.label}
                       </div>
-                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <div className={css({ fontSize: 'xs', color: 'white' })}>
                         {tone.description}
                       </div>
                     </div>
@@ -535,7 +535,7 @@ function AITextRewriterContent() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Language Style
@@ -575,7 +575,7 @@ function AITextRewriterContent() {
                       <div className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                         {style.label}
                       </div>
-                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <div className={css({ fontSize: 'xs', color: 'white' })}>
                         {style.description}
                       </div>
                     </Button>
@@ -591,7 +591,7 @@ function AITextRewriterContent() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 Number of Variants: {numVariants}
@@ -642,7 +642,7 @@ function AITextRewriterContent() {
                   },
                 })}
               />
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>
                 Generate {numVariants} different {numVariants > 1 ? 'versions' : 'version'} of the
                 rewritten text
               </p>
@@ -760,7 +760,7 @@ function AITextRewriterContent() {
                     >
                       Key Improvements
                     </h3>
-                    <ul className={css({ spaceY: '1', fontSize: 'sm', color: 'gray.300' })}>
+                    <ul className={css({ spaceY: '1', fontSize: 'sm', color: 'white' })}>
                       {result.improvements.map((improvement) => (
                         <li key={improvement}>• {improvement}</li>
                       ))}
@@ -850,7 +850,7 @@ function AITextRewriterContent() {
                     borderTop: '1px solid',
                     borderColor: 'gray.800',
                     fontSize: 'xs',
-                    color: 'gray.500',
+                    color: 'white',
                   })}
                 >
                   {variant.length} characters ({result.originalLength} original)
@@ -889,7 +889,7 @@ function AITextRewriterContent() {
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>
                     • Experiment with different tones to find the perfect voice for your audience
                   </li>

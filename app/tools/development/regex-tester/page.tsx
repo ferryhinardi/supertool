@@ -391,7 +391,7 @@ function RegexTesterContent() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Interactive regular expression tester with real-time matching and group capturing. Explore
@@ -438,7 +438,7 @@ function RegexTesterContent() {
               >
                 {matchResult.matchCount}
               </div>
-              <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Matches Found</div>
+              <div className={css({ fontSize: 'xs', color: 'white' })}>Matches Found</div>
             </div>
           </CardContent>
         </Card>
@@ -471,7 +471,7 @@ function RegexTesterContent() {
               >
                 {flags.length || '0'}
               </div>
-              <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Flags Active</div>
+              <div className={css({ fontSize: 'xs', color: 'white' })}>Flags Active</div>
             </div>
           </CardContent>
         </Card>
@@ -496,7 +496,7 @@ function RegexTesterContent() {
               >
                 {matchResult.error ? '✗' : '✓'}
               </div>
-              <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Pattern Status</div>
+              <div className={css({ fontSize: 'xs', color: 'white' })}>Pattern Status</div>
             </div>
           </CardContent>
         </Card>
@@ -529,7 +529,7 @@ function RegexTesterContent() {
               >
                 {pattern.length}
               </div>
-              <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Pattern Length</div>
+              <div className={css({ fontSize: 'xs', color: 'white' })}>Pattern Length</div>
             </div>
           </CardContent>
         </Card>
@@ -652,7 +652,7 @@ function RegexTesterContent() {
 
                 {/* Flags */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                     Flags
                   </div>
                   <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '3' })}>
@@ -696,7 +696,7 @@ function RegexTesterContent() {
                             },
                           })}
                         />
-                        <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                        <span className={css({ fontSize: 'sm', color: 'white' })}>
                           {flag.label}
                         </span>
                       </label>
@@ -791,7 +791,7 @@ function RegexTesterContent() {
                         </span>
                       ))
                     ) : (
-                      <span className={css({ color: 'gray.300' })}>{highlightedText}</span>
+                      <span className={css({ color: 'white' })}>{highlightedText}</span>
                     )}
                   </div>
                 </div>
@@ -861,9 +861,7 @@ function RegexTesterContent() {
                         </span>
                       </div>
                       <div className={css({ spaceY: '1' })}>
-                        <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
-                          Full Match:
-                        </div>
+                        <div className={css({ fontSize: 'sm', color: 'white' })}>Full Match:</div>
                         <div
                           className={css({
                             fontFamily: 'mono',
@@ -877,7 +875,7 @@ function RegexTesterContent() {
                       </div>
                       {match.groups.length > 0 && match.groups.some((g) => g !== undefined) && (
                         <div className={css({ spaceY: '1' })}>
-                          <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                          <div className={css({ fontSize: 'sm', color: 'white' })}>
                             Capture Groups:
                           </div>
                           {match.groups.map((group, gIdx) =>
@@ -956,7 +954,7 @@ function RegexTesterContent() {
                         <div className={css({ fontWeight: 'semibold', color: 'gray.200' })}>
                           {patternData.name}
                         </div>
-                        <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                        <div className={css({ fontSize: 'xs', color: 'white' })}>
                           {patternData.description}
                         </div>
                         <div
@@ -1001,7 +999,7 @@ export default function RegexTesterPage() {
             justifyContent: 'center',
           })}
         >
-          <div className={css({ color: 'gray.400' })}>Loading...</div>
+          <div className={css({ color: 'white' })}>Loading...</div>
         </div>
       }
     >

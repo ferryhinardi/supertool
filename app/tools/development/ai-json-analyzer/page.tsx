@@ -220,7 +220,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Understand complex JSON structures with AI-powered analysis. Get natural language
@@ -315,7 +315,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                 className={css({
                   gap: '2',
                   bg: 'gray.800',
-                  color: 'gray.300',
+                  color: 'white',
                   _hover: { bg: 'gray.700' },
                   _disabled: { opacity: '0.5' },
                 })}
@@ -329,7 +329,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'gray.300',
+                    color: 'white',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -418,7 +418,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                 >
                   Summary
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                   {analysis.summary}
                 </p>
               </div>
@@ -443,7 +443,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                 >
                   Structure Analysis
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                   {analysis.structure}
                 </p>
               </div>
@@ -475,7 +475,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                         key={pattern}
                         className={css({
                           fontSize: 'sm',
-                          color: 'gray.300',
+                          color: 'white',
                           pl: '4',
                           position: 'relative',
                           _before: {
@@ -522,7 +522,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                         key={insight}
                         className={css({
                           fontSize: 'sm',
-                          color: 'gray.300',
+                          color: 'white',
                           pl: '4',
                           position: 'relative',
                           _before: {
@@ -567,7 +567,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                         key={relationship}
                         className={css({
                           fontSize: 'sm',
-                          color: 'gray.300',
+                          color: 'white',
                           pl: '4',
                           position: 'relative',
                           _before: {
@@ -612,7 +612,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                 >
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                   <li>• Works best with structured JSON data from APIs, configs, or databases</li>
                   <li>
                     • AI can detect nested relationships, array patterns, and data inconsistencies

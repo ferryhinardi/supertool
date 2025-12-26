@@ -2182,12 +2182,12 @@ export default function PDFToolsPage() {
           className={css({
             h: '5',
             w: '5',
-            color: 'gray.500',
+            color: 'white',
             flexShrink: 0,
           })}
         />
         <PDFThumbnail file={pdfs[0].file} pageNumber={pageNum} width={60} height={80} />
-        <div className={css({ fontSize: 'sm', color: 'gray.300' })}>Page {pageNum}</div>
+        <div className={css({ fontSize: 'sm', color: 'white' })}>Page {pageNum}</div>
       </div>
     )
   }
@@ -2292,7 +2292,7 @@ export default function PDFToolsPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: 'lg',
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Merge, split, compress, watermark, and convert PDFs. Convert images to PDF with powerful
@@ -2343,7 +2343,7 @@ export default function PDFToolsPage() {
                 <div
                   className={css({
                     fontSize: 'xs',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   Total PDFs
@@ -2373,7 +2373,7 @@ export default function PDFToolsPage() {
                 <div
                   className={css({
                     fontSize: 'xs',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   Total Pages
@@ -2403,7 +2403,7 @@ export default function PDFToolsPage() {
                 <div
                   className={css({
                     fontSize: 'xs',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   Total Size
@@ -2492,7 +2492,7 @@ export default function PDFToolsPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Split at Page
@@ -2522,7 +2522,7 @@ export default function PDFToolsPage() {
                     <p
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.500',
+                        color: 'white',
                       })}
                     >
                       Pages 1-N will be in part 1
@@ -2536,7 +2536,7 @@ export default function PDFToolsPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Compression Level
@@ -2577,7 +2577,7 @@ export default function PDFToolsPage() {
                           <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                             {level.label}
                           </span>
-                          <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                          <span className={css({ fontSize: 'xs', color: 'white' })}>
                             {level.desc}
                           </span>
                         </Button>
@@ -2586,7 +2586,7 @@ export default function PDFToolsPage() {
                     <p
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.500',
+                        color: 'white',
                       })}
                     >
                       {compressionLevel === 'high'
@@ -2634,7 +2634,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Watermark Type
@@ -2690,7 +2690,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Watermark Text
@@ -2729,7 +2729,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Upload Image
@@ -2758,7 +2758,7 @@ export default function PDFToolsPage() {
                           <div
                             className={css({
                               fontSize: 'xs',
-                              color: 'gray.400',
+                              color: 'white',
                             })}
                           >
                             Selected: {watermarkImage.name}
@@ -2774,7 +2774,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           QR Code Text/URL
@@ -2837,7 +2837,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Opacity
@@ -2885,7 +2885,7 @@ export default function PDFToolsPage() {
                             className={css({
                               fontSize: 'sm',
                               fontWeight: 'medium',
-                              color: 'gray.300',
+                              color: 'white',
                             })}
                           >
                             Font Size
@@ -2931,7 +2931,7 @@ export default function PDFToolsPage() {
                             className={css({
                               fontSize: 'sm',
                               fontWeight: 'medium',
-                              color: 'gray.300',
+                              color: 'white',
                             })}
                           >
                             Image Scale
@@ -2979,7 +2979,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Rotation
@@ -3018,7 +3018,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Position
@@ -3071,7 +3071,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Color
@@ -3124,7 +3124,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                           cursor: 'pointer',
                         })}
                       >
@@ -3154,7 +3154,7 @@ export default function PDFToolsPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Page Range
@@ -3174,7 +3174,7 @@ export default function PDFToolsPage() {
                             mb: '1',
                             display: 'block',
                             fontSize: 'xs',
-                            color: 'gray.400',
+                            color: 'white',
                           })}
                         >
                           From
@@ -3209,7 +3209,7 @@ export default function PDFToolsPage() {
                             mb: '1',
                             display: 'block',
                             fontSize: 'xs',
-                            color: 'gray.400',
+                            color: 'white',
                           })}
                         >
                           To
@@ -3247,7 +3247,7 @@ export default function PDFToolsPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Rotation Angle
@@ -3298,7 +3298,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Select Pages to Delete ({selectedPages.size} selected)
@@ -3480,7 +3480,7 @@ export default function PDFToolsPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       PDF Password
@@ -3502,7 +3502,7 @@ export default function PDFToolsPage() {
                         color: 'gray.200',
                         fontSize: 'sm',
                         _placeholder: {
-                          color: 'gray.500',
+                          color: 'white',
                         },
                         _focus: {
                           outline: 'none',
@@ -3512,7 +3512,7 @@ export default function PDFToolsPage() {
                         },
                       })}
                     />
-                    <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <p className={css({ fontSize: 'xs', color: 'white' })}>
                       Enter the password to unlock and remove protection from the PDF
                     </p>
                   </div>
@@ -3527,7 +3527,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Copies to Create
@@ -3557,7 +3557,7 @@ export default function PDFToolsPage() {
                           },
                         })}
                       />
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Each selected page will be duplicated {duplicateCount} time
                         {duplicateCount === 1 ? '' : 's'}
                       </p>
@@ -3574,7 +3574,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Select Pages to Duplicate ({selectedPages.size} selected)
@@ -3763,7 +3763,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Drag Pages to Reorder ({pageOrder.length} pages)
@@ -3837,7 +3837,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Position
@@ -3895,7 +3895,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Format
@@ -3957,7 +3957,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                           })}
                         >
                           Font Size
@@ -3991,7 +3991,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Start From
@@ -4099,7 +4099,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                             display: 'block',
                           })}
                         >
@@ -4121,7 +4121,7 @@ export default function PDFToolsPage() {
                             borderColor: 'rgba(255, 255, 255, 0.1)',
                             color: 'white',
                             fontSize: 'sm',
-                            _placeholder: { color: 'gray.500' },
+                            _placeholder: { color: 'white' },
                             _focus: {
                               outline: 'none',
                               borderColor: 'cyan.500',
@@ -4137,7 +4137,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                             display: 'block',
                           })}
                         >
@@ -4159,7 +4159,7 @@ export default function PDFToolsPage() {
                             borderColor: 'rgba(255, 255, 255, 0.1)',
                             color: 'white',
                             fontSize: 'sm',
-                            _placeholder: { color: 'gray.500' },
+                            _placeholder: { color: 'white' },
                             _focus: {
                               outline: 'none',
                               borderColor: 'cyan.500',
@@ -4175,7 +4175,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                             display: 'block',
                           })}
                         >
@@ -4197,7 +4197,7 @@ export default function PDFToolsPage() {
                             borderColor: 'rgba(255, 255, 255, 0.1)',
                             color: 'white',
                             fontSize: 'sm',
-                            _placeholder: { color: 'gray.500' },
+                            _placeholder: { color: 'white' },
                             _focus: {
                               outline: 'none',
                               borderColor: 'cyan.500',
@@ -4213,7 +4213,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                             display: 'block',
                           })}
                         >
@@ -4235,14 +4235,14 @@ export default function PDFToolsPage() {
                             borderColor: 'rgba(255, 255, 255, 0.1)',
                             color: 'white',
                             fontSize: 'sm',
-                            _placeholder: { color: 'gray.500' },
+                            _placeholder: { color: 'white' },
                             _focus: {
                               outline: 'none',
                               borderColor: 'cyan.500',
                             },
                           })}
                         />
-                        <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                        <p className={css({ fontSize: 'xs', color: 'white' })}>
                           Separate keywords with commas
                         </p>
                       </div>
@@ -4254,7 +4254,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                             display: 'block',
                           })}
                         >
@@ -4276,7 +4276,7 @@ export default function PDFToolsPage() {
                             borderColor: 'rgba(255, 255, 255, 0.1)',
                             color: 'white',
                             fontSize: 'sm',
-                            _placeholder: { color: 'gray.500' },
+                            _placeholder: { color: 'white' },
                             _focus: {
                               outline: 'none',
                               borderColor: 'cyan.500',
@@ -4292,7 +4292,7 @@ export default function PDFToolsPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                             display: 'block',
                           })}
                         >
@@ -4314,7 +4314,7 @@ export default function PDFToolsPage() {
                             borderColor: 'rgba(255, 255, 255, 0.1)',
                             color: 'white',
                             fontSize: 'sm',
-                            _placeholder: { color: 'gray.500' },
+                            _placeholder: { color: 'white' },
                             _focus: {
                               outline: 'none',
                               borderColor: 'cyan.500',
@@ -4417,7 +4417,7 @@ export default function PDFToolsPage() {
                         <option value="vie">Vietnamese</option>
                         <option value="tha">Thai</option>
                       </select>
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Select the language of the text in your scanned document for better accuracy
                       </p>
                     </div>
@@ -4536,7 +4536,7 @@ export default function PDFToolsPage() {
                           },
                         })}
                       />
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Minimum 4 characters required
                       </p>
                     </div>
@@ -4576,7 +4576,7 @@ export default function PDFToolsPage() {
                           },
                         })}
                       />
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         For advanced permission control
                       </p>
                     </div>
@@ -4608,7 +4608,7 @@ export default function PDFToolsPage() {
                             onChange={(e) => setAllowPrinting(e.target.checked)}
                             className={css({ w: '4', h: '4', rounded: 'sm', cursor: 'pointer' })}
                           />
-                          <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                          <span className={css({ fontSize: 'sm', color: 'white' })}>
                             Allow Printing
                           </span>
                         </label>
@@ -4626,7 +4626,7 @@ export default function PDFToolsPage() {
                             onChange={(e) => setAllowModifying(e.target.checked)}
                             className={css({ w: '4', h: '4', rounded: 'sm', cursor: 'pointer' })}
                           />
-                          <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                          <span className={css({ fontSize: 'sm', color: 'white' })}>
                             Allow Modifying
                           </span>
                         </label>
@@ -4644,7 +4644,7 @@ export default function PDFToolsPage() {
                             onChange={(e) => setAllowCopying(e.target.checked)}
                             className={css({ w: '4', h: '4', rounded: 'sm', cursor: 'pointer' })}
                           />
-                          <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                          <span className={css({ fontSize: 'sm', color: 'white' })}>
                             Allow Copying
                           </span>
                         </label>
@@ -4838,7 +4838,7 @@ export default function PDFToolsPage() {
                           onChange={(e) => setIncludePageNumbers(e.target.checked)}
                           className={css({ w: '4', h: '4', rounded: 'sm', cursor: 'pointer' })}
                         />
-                        <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                        <span className={css({ fontSize: 'sm', color: 'white' })}>
                           Replace {'{page}'} and {'{total}'} with actual page numbers
                         </span>
                       </label>
@@ -5046,9 +5046,7 @@ export default function PDFToolsPage() {
                         >
                           Extract Embedded Images
                         </div>
-                        <p
-                          className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: '1.5' })}
-                        >
+                        <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.5' })}>
                           All embedded images will be extracted from the PDF and saved as individual
                           PNG files. Original image quality will be preserved.
                         </p>
@@ -5087,9 +5085,7 @@ export default function PDFToolsPage() {
                         >
                           Optimize for Web Viewing
                         </div>
-                        <p
-                          className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: '1.5' })}
-                        >
+                        <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.5' })}>
                           Optimizes your PDF for faster loading on websites by removing unused
                           objects and creating an efficient document structure. All content and
                           metadata will be preserved.
@@ -5129,9 +5125,7 @@ export default function PDFToolsPage() {
                         >
                           Split by Bookmarks
                         </div>
-                        <p
-                          className={css({ fontSize: 'sm', color: 'gray.400', lineHeight: '1.5' })}
-                        >
+                        <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.5' })}>
                           Splits your PDF into separate files at each top-level bookmark. Your PDF
                           must have existing bookmarks. Each file will be automatically named based
                           on the bookmark title.
@@ -5148,7 +5142,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Page Size
@@ -5194,7 +5188,7 @@ export default function PDFToolsPage() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                         })}
                       >
                         Fit Mode
@@ -5235,7 +5229,7 @@ export default function PDFToolsPage() {
                             <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
                               {mode.label}
                             </span>
-                            <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                            <span className={css({ fontSize: 'xs', color: 'white' })}>
                               {mode.desc}
                             </span>
                           </Button>
@@ -5244,7 +5238,7 @@ export default function PDFToolsPage() {
                       <p
                         className={css({
                           fontSize: 'xs',
-                          color: 'gray.500',
+                          color: 'white',
                         })}
                       >
                         {imageToPdfFitMode === 'contain'
@@ -5573,7 +5567,7 @@ export default function PDFToolsPage() {
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.500',
+                    color: 'white',
                   })}
                 >
                   {feature.description}

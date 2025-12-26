@@ -194,7 +194,7 @@ export default function WebsiteScreenshotPage() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: { base: 'base', sm: 'lg' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Capture high-resolution screenshots of any website. Choose device size, full-page or
@@ -256,7 +256,7 @@ export default function WebsiteScreenshotPage() {
 
             {/* Device Size Selection */}
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Device Size
               </div>
               <div
@@ -329,7 +329,7 @@ export default function WebsiteScreenshotPage() {
 
             {/* Capture Mode Selection */}
             <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+              <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                 Capture Mode
               </div>
               <div
@@ -572,7 +572,7 @@ export default function WebsiteScreenshotPage() {
               <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'gray.200' })}>
                 {feature.title}
               </h3>
-              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>{feature.desc}</p>
+              <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.desc}</p>
             </CardContent>
           </Card>
         ))}

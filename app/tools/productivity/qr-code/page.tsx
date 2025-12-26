@@ -2239,7 +2239,7 @@ url,https://github.com,GitHub,#000000`
                     display: 'flex',
                     justifyContent: 'space-between',
                     fontSize: 'xs',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   <span>128px</span>
@@ -2277,7 +2277,7 @@ url,https://github.com,GitHub,#000000`
                     className={css({
                       mt: '1',
                       fontSize: 'xs',
-                      color: 'gray.400',
+                      color: 'white',
                     })}
                   >
                     Track scans with privacy-friendly analytics
@@ -2293,7 +2293,7 @@ url,https://github.com,GitHub,#000000`
                         bg: 'rgba(139, 92, 246, 0.1)',
                       })}
                     >
-                      <p className={css({ fontSize: 'xs', color: 'gray.300', mb: '1' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>
                         Tracking URL created:
                       </p>
                       <p
@@ -2429,7 +2429,7 @@ url,https://github.com,GitHub,#000000`
                     className={css({
                       mt: '2',
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                       textAlign: 'center',
                     })}
                   >
@@ -2539,7 +2539,7 @@ url,https://github.com,GitHub,#000000`
             >
               Bulk QR Generation
             </h2>
-            <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+            <p className={css({ fontSize: 'sm', color: 'white' })}>
               Generate up to 500 QR codes at once from a CSV file
             </p>
 
@@ -2582,9 +2582,7 @@ url,https://github.com,GitHub,#000000`
                       bg: 'rgba(139, 92, 246, 0.05)',
                     })}
                   >
-                    <p className={css({ fontSize: 'sm', color: 'gray.300', mb: '2' })}>
-                      CSV Format:
-                    </p>
+                    <p className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>CSV Format:</p>
                     <code
                       className={css({
                         fontSize: 'xs',
@@ -2771,11 +2769,11 @@ url,https://github.com,GitHub,#000000`
                       mx: 'auto',
                       h: '16',
                       w: '16',
-                      color: 'gray.400',
+                      color: 'white',
                       opacity: 0.5,
                     })}
                   />
-                  <p className={css({ mt: '2', color: 'gray.400' })}>
+                  <p className={css({ mt: '2', color: 'white' })}>
                     Enter content to generate QR code
                   </p>
                 </div>
@@ -2885,7 +2883,7 @@ url,https://github.com,GitHub,#000000`
 
             {showExportOptions && (
               <>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Export your QR code in various formats with professional quality settings for
                   printing and digital use.
                 </p>
@@ -2897,7 +2895,7 @@ url,https://github.com,GitHub,#000000`
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'white',
                         display: 'flex',
                         alignItems: 'center',
                       })}
@@ -2943,7 +2941,7 @@ url,https://github.com,GitHub,#000000`
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                           display: 'flex',
                           alignItems: 'center',
                         })}
@@ -2976,7 +2974,7 @@ url,https://github.com,GitHub,#000000`
                         <span
                           className={css({
                             fontSize: 'xs',
-                            color: 'gray.400',
+                            color: 'white',
                             minW: '20',
                             textAlign: 'right',
                           })}
@@ -2990,7 +2988,7 @@ url,https://github.com,GitHub,#000000`
                           {exportDPI === 600 && 'Max (600)'}
                         </span>
                       </div>
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         72 DPI for screens, 150+ for standard printing, 300+ for professional
                         printing
                       </p>
@@ -3004,7 +3002,7 @@ url,https://github.com,GitHub,#000000`
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                           display: 'flex',
                           alignItems: 'center',
                         })}
@@ -3037,7 +3035,7 @@ url,https://github.com,GitHub,#000000`
                         <span
                           className={css({
                             fontSize: 'xs',
-                            color: 'gray.400',
+                            color: 'white',
                             minW: '20',
                             textAlign: 'right',
                           })}
@@ -3047,7 +3045,7 @@ url,https://github.com,GitHub,#000000`
                           {exportQuality >= 0.8 && 'High'}
                         </span>
                       </div>
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Higher quality = larger file size. Recommended: 80% or higher
                       </p>
                     </div>
@@ -3060,7 +3058,7 @@ url,https://github.com,GitHub,#000000`
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                           display: 'flex',
                           alignItems: 'center',
                         })}
@@ -3102,7 +3100,7 @@ url,https://github.com,GitHub,#000000`
                         <option value="product-label">Product Label (4" × 6")</option>
                         <option value="a4-sheet">A4 Sheet (210mm × 297mm)</option>
                       </select>
-                      <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Choose a template optimized for your printing needs
                       </p>
                     </div>
@@ -3120,7 +3118,7 @@ url,https://github.com,GitHub,#000000`
                   >
                     <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                       <PackageOpen className="h-4 w-4 text-emerald.400" />
-                      <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                      <span className={css({ fontSize: 'sm', color: 'white' })}>
                         Estimated File Size:{' '}
                         <strong className={css({ color: 'emerald.400' })}>
                           {exportFormat === 'png' &&
@@ -3210,7 +3208,7 @@ url,https://github.com,GitHub,#000000`
 
             {showScanner && (
               <>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   Scan QR codes using your webcam or upload an image. Validate your generated QR
                   codes for scannability and get optimization recommendations.
                 </p>
@@ -3288,7 +3286,7 @@ url,https://github.com,GitHub,#000000`
                       })}
                     >
                       {!isScanning && (
-                        <div className={css({ textAlign: 'center', color: 'gray.500', p: '6' })}>
+                        <div className={css({ textAlign: 'center', color: 'white', p: '6' })}>
                           <ScanLine className="mx-auto h-12 w-12 mb-3" />
                           <p>Click Start Scanner to begin</p>
                         </div>
@@ -3343,10 +3341,10 @@ url,https://github.com,GitHub,#000000`
                       })}
                     >
                       <Upload className="h-12 w-12 text-cyan.400 mb-3" />
-                      <p className={css({ color: 'gray.300', fontSize: 'sm' })}>
+                      <p className={css({ color: 'white', fontSize: 'sm' })}>
                         Click to upload QR code image
                       </p>
-                      <p className={css({ color: 'gray.500', fontSize: 'xs', mt: '2' })}>
+                      <p className={css({ color: 'white', fontSize: 'xs', mt: '2' })}>
                         PNG, JPG, or WebP
                       </p>
                     </button>
@@ -3385,13 +3383,13 @@ url,https://github.com,GitHub,#000000`
                     </div>
                     <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
                       <div>
-                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>Type: </span>
+                        <span className={css({ fontSize: 'xs', color: 'white' })}>Type: </span>
                         <Badge variant="outline" className={css({ ml: '2' })}>
                           {parseQRData(scanResult.data).type.toUpperCase()}
                         </Badge>
                       </div>
                       <div>
-                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>Data: </span>
+                        <span className={css({ fontSize: 'xs', color: 'white' })}>Data: </span>
                         <span
                           className={css({
                             fontSize: 'sm',
@@ -3405,7 +3403,7 @@ url,https://github.com,GitHub,#000000`
                         </span>
                       </div>
                       <div>
-                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>Parsed: </span>
+                        <span className={css({ fontSize: 'xs', color: 'white' })}>Parsed: </span>
                         <span className={css({ fontSize: 'sm', color: 'cyan.300' })}>
                           {parseQRData(scanResult.data).displayText}
                         </span>
@@ -3494,7 +3492,7 @@ url,https://github.com,GitHub,#000000`
                           className={css({
                             fontSize: 'xs',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                             mb: '2',
                           })}
                         >
@@ -3505,7 +3503,7 @@ url,https://github.com,GitHub,#000000`
                             listStyle: 'disc',
                             pl: '5',
                             fontSize: 'xs',
-                            color: 'gray.400',
+                            color: 'white',
                           })}
                         >
                           {validationResult.issues.map((issue) => (
@@ -3521,7 +3519,7 @@ url,https://github.com,GitHub,#000000`
                           className={css({
                             fontSize: 'xs',
                             fontWeight: 'medium',
-                            color: 'gray.300',
+                            color: 'white',
                             mb: '2',
                           })}
                         >
@@ -3532,7 +3530,7 @@ url,https://github.com,GitHub,#000000`
                             listStyle: 'disc',
                             pl: '5',
                             fontSize: 'xs',
-                            color: 'gray.400',
+                            color: 'white',
                           })}
                         >
                           {validationResult.recommendations.map((rec) => (
@@ -3550,7 +3548,7 @@ url,https://github.com,GitHub,#000000`
                         borderColor: 'gray.700',
                       })}
                     >
-                      <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                      <p className={css({ fontSize: 'xs', color: 'white' })}>
                         Estimated Scan Distance:{' '}
                         <strong className={css({ color: 'gray.200' })}>
                           {validationResult.details.estimatedScanDistance}
@@ -3600,7 +3598,7 @@ url,https://github.com,GitHub,#000000`
 
             {showHistory && (
               <>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <p className={css({ fontSize: 'sm', color: 'white' })}>
                   {history.length === 0
                     ? 'No saved QR codes yet. Generate and save QR codes to see them here.'
                     : `${history.length} saved QR code${history.length !== 1 ? 's' : ''} (max 20)`}
@@ -3619,7 +3617,7 @@ url,https://github.com,GitHub,#000000`
                             transform: 'translateY(-50%)',
                             h: '4',
                             w: '4',
-                            color: 'gray.400',
+                            color: 'white',
                           })}
                         />
                         <Input
@@ -3774,7 +3772,7 @@ url,https://github.com,GitHub,#000000`
                             gridColumn: '1 / -1',
                             textAlign: 'center',
                             py: '8',
-                            color: 'gray.400',
+                            color: 'white',
                           })}
                         >
                           No matching QR codes found
@@ -3864,7 +3862,7 @@ url,https://github.com,GitHub,#000000`
                               <p
                                 className={css({
                                   fontSize: 'xs',
-                                  color: 'gray.300',
+                                  color: 'white',
                                   overflow: 'hidden',
                                   textOverflow: 'ellipsis',
                                   whiteSpace: 'nowrap',
@@ -3873,7 +3871,7 @@ url,https://github.com,GitHub,#000000`
                                 {item.label || item.content}
                               </p>
 
-                              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                              <p className={css({ fontSize: 'xs', color: 'white' })}>
                                 {new Date(item.timestamp).toLocaleDateString()}
                               </p>
                             </div>
@@ -3938,27 +3936,25 @@ url,https://github.com,GitHub,#000000`
             <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge>Multiple Types</Badge>
-                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   URL, Text, WiFi, vCard support
                 </span>
               </div>
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge>Customizable</Badge>
-                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   Colors, size, and margins
                 </span>
               </div>
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge>High Resolution</Badge>
-                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>
                   Up to 512px with error correction
                 </span>
               </div>
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge>Multiple Formats</Badge>
-                <span className={css({ fontSize: 'sm', color: 'gray.400' })}>
-                  PNG and SVG exports
-                </span>
+                <span className={css({ fontSize: 'sm', color: 'white' })}>PNG and SVG exports</span>
               </div>
             </div>
           </div>
@@ -3995,7 +3991,7 @@ url,https://github.com,GitHub,#000000`
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>Optimize for Print:</strong> Always
                 use SVG format for printed materials (business cards, posters, packaging) as they
                 scale infinitely without pixelation. For best results, ensure minimum 2cm × 2cm size
@@ -4011,7 +4007,7 @@ url,https://github.com,GitHub,#000000`
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>Logo Integration Done Right:</strong>{' '}
                 When adding a logo, increase error correction to H (highest) and keep logo size
                 under 20% of the QR code area. Ensure your logo has good contrast with the QR code
@@ -4027,7 +4023,7 @@ url,https://github.com,GitHub,#000000`
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>Color Contrast Matters:</strong> Dark
                 foreground on light background works best (70% contrast minimum). Avoid low contrast
                 combinations, inverted colors on glossy surfaces, or gradient foregrounds that
@@ -4044,7 +4040,7 @@ url,https://github.com,GitHub,#000000`
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>
                   Dynamic QR Codes for Campaigns:
                 </strong>{' '}
@@ -4062,7 +4058,7 @@ url,https://github.com,GitHub,#000000`
                 borderColor: 'cyan.500',
               })}
             >
-              <p className={css({ fontSize: 'sm', color: 'gray.300', lineHeight: '1.6' })}>
+              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
                 <strong className={css({ color: 'cyan.300' })}>Strategic Placement Tips:</strong>{' '}
                 Position QR codes at eye level (4-5 feet), ensure adequate lighting, provide
                 scanning distance guidance (arm's length for 2cm codes), avoid curved surfaces that
@@ -4137,7 +4133,7 @@ url,https://github.com,GitHub,#000000`
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >
@@ -4185,7 +4181,7 @@ url,https://github.com,GitHub,#000000`
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >
@@ -4233,7 +4229,7 @@ url,https://github.com,GitHub,#000000`
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >
@@ -4281,7 +4277,7 @@ url,https://github.com,GitHub,#000000`
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >
@@ -4329,7 +4325,7 @@ url,https://github.com,GitHub,#000000`
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                     lineHeight: '1.6',
                   })}
                 >

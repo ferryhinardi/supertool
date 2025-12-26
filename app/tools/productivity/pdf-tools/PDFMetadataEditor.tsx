@@ -81,7 +81,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
                 h: '8',
                 w: '8',
                 p: '0',
-                color: 'gray.400',
+                color: 'white',
                 _hover: { bg: 'gray.800' },
               })}
             >
@@ -101,7 +101,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
                   gap: '2',
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 <Book className={css({ h: '4', w: '4' })} />
@@ -138,7 +138,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
                   gap: '2',
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 <User className={css({ h: '4', w: '4' })} />
@@ -175,7 +175,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
                   gap: '2',
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 <FileText className={css({ h: '4', w: '4' })} />
@@ -212,7 +212,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
                   gap: '2',
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'white',
                 })}
               >
                 <Hash className={css({ h: '4', w: '4' })} />
@@ -248,7 +248,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
                 borderColor: 'gray.800',
               })}
             >
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>Read-only Information</p>
+              <p className={css({ fontSize: 'xs', color: 'white' })}>Read-only Information</p>
 
               {metadata.creationDate && (
                 <div
@@ -257,7 +257,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
                     alignItems: 'center',
                     gap: '2',
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   <Calendar className={css({ h: '4', w: '4' })} />
@@ -272,7 +272,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
                     alignItems: 'center',
                     gap: '2',
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   <Calendar className={css({ h: '4', w: '4' })} />

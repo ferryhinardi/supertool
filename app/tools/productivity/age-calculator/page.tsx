@@ -235,7 +235,7 @@ Zodiac Sign: ${calculation.zodiacSign}
             maxW: '3xl',
             mx: 'auto',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Calculate your exact age from birthdate with precision. See how old you are in years,
@@ -294,7 +294,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                   alignItems: 'center',
                   gap: '2',
                   borderColor: 'gray.700',
-                  color: 'gray.300',
+                  color: 'white',
                   _hover: { borderColor: 'gray.600', bg: 'gray.800' },
                 })}
               >
@@ -348,7 +348,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                       {calculation.years} years, {calculation.months} months, {calculation.days}{' '}
                       days
                     </div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                    <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
                       Born on{' '}
                       {new Date(birthdate).toLocaleDateString('en-US', {
                         weekday: 'long',
@@ -428,7 +428,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                     >
                       {calculation.daysUntilNextBirthday} days left
                     </div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                    <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
                       {calculation.nextBirthday.toLocaleDateString('en-US', {
                         weekday: 'long',
                         year: 'numeric',
@@ -492,7 +492,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                       borderColor: 'gray.700',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Days</div>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>Total Days</div>
                     <div
                       className={css({
                         fontSize: '2xl',
@@ -513,7 +513,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                       borderColor: 'gray.700',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Weeks</div>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>Total Weeks</div>
                     <div
                       className={css({
                         fontSize: '2xl',
@@ -534,7 +534,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                       borderColor: 'gray.700',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Months</div>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>Total Months</div>
                     <div
                       className={css({
                         fontSize: '2xl',
@@ -555,7 +555,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                       borderColor: 'gray.700',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Hours</div>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>Total Hours</div>
                     <div
                       className={css({
                         fontSize: '2xl',
@@ -576,7 +576,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                       borderColor: 'gray.700',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Minutes</div>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>Total Minutes</div>
                     <div
                       className={css({
                         fontSize: '2xl',
@@ -597,7 +597,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                       borderColor: 'pink.500/30',
                     })}
                   >
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Zodiac Sign</div>
+                    <div className={css({ fontSize: 'sm', color: 'white' })}>Zodiac Sign</div>
                     <div
                       className={css({
                         fontSize: '2xl',
@@ -705,9 +705,7 @@ Zodiac Sign: ${calculation.zodiacSign}
         >
           <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', gap: '4' })}>
-              <Info
-                className={css({ h: '5', w: '5', color: 'gray.400', flexShrink: '0', mt: '1' })}
-              />
+              <Info className={css({ h: '5', w: '5', color: 'white', flexShrink: '0', mt: '1' })} />
               <div className={css({ spaceY: '3' })}>
                 <h3
                   className={css({
@@ -718,7 +716,7 @@ Zodiac Sign: ${calculation.zodiacSign}
                 >
                   How Age Calculation Works
                 </h3>
-                <div className={css({ fontSize: 'sm', color: 'gray.400', spaceY: '2' })}>
+                <div className={css({ fontSize: 'sm', color: 'white', spaceY: '2' })}>
                   <p>
                     Your age is calculated by comparing your birthdate with today's date. The
                     calculator accounts for leap years and varying month lengths to give you an

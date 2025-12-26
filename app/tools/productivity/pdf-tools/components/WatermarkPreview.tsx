@@ -185,7 +185,7 @@ export function WatermarkPreview({
           gap: '2',
           fontSize: 'sm',
           fontWeight: 'medium',
-          color: 'gray.300',
+          color: 'white',
         })}
       >
         <Eye className={css({ w: '4', h: '4', color: 'blue.400' })} />
@@ -219,7 +219,7 @@ export function WatermarkPreview({
       <div
         className={css({
           fontSize: 'xs',
-          color: 'gray.500',
+          color: 'white',
           fontStyle: 'italic',
         })}
       >

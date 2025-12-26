@@ -292,7 +292,7 @@ export default function BMICalculator() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'base', sm: 'lg' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Calculate your Body Mass Index and get personalized health insights
@@ -354,7 +354,7 @@ export default function BMICalculator() {
                 <Field>
                   <FieldLabel
                     className={css({
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >{`Weight (${isMetric ? 'kg' : 'lbs'})`}</FieldLabel>
                   <div
@@ -368,7 +368,7 @@ export default function BMICalculator() {
                       className={css({
                         width: '5',
                         height: '5',
-                        color: 'gray.500',
+                        color: 'white',
                       })}
                     />
                     <Input
@@ -386,7 +386,7 @@ export default function BMICalculator() {
                   <Field>
                     <FieldLabel
                       className={css({
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Height (cm)
@@ -402,7 +402,7 @@ export default function BMICalculator() {
                         className={css({
                           width: '5',
                           height: '5',
-                          color: 'gray.500',
+                          color: 'white',
                         })}
                       />
                       <Input
@@ -419,7 +419,7 @@ export default function BMICalculator() {
                   <Field>
                     <FieldLabel
                       className={css({
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       Height (feet & inches)
@@ -435,7 +435,7 @@ export default function BMICalculator() {
                         className={css({
                           width: '5',
                           height: '5',
-                          color: 'gray.500',
+                          color: 'white',
                         })}
                       />
                       <Input
@@ -600,7 +600,7 @@ export default function BMICalculator() {
                 >
                   <span
                     className={css({
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Underweight
@@ -622,7 +622,7 @@ export default function BMICalculator() {
                 >
                   <span
                     className={css({
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Normal Weight
@@ -644,7 +644,7 @@ export default function BMICalculator() {
                 >
                   <span
                     className={css({
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Overweight
@@ -666,7 +666,7 @@ export default function BMICalculator() {
                 >
                   <span
                     className={css({
-                      color: 'gray.300',
+                      color: 'white',
                     })}
                   >
                     Obese
@@ -782,7 +782,7 @@ export default function BMICalculator() {
                     <p
                       className={css({
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                         marginTop: '1',
                       })}
                     >
@@ -847,7 +847,7 @@ export default function BMICalculator() {
                       <li
                         key={tip}
                         className={css({
-                          color: 'gray.400',
+                          color: 'white',
                           lineHeight: '1.6',
                         })}
                       >
@@ -865,10 +865,10 @@ export default function BMICalculator() {
                       borderColor: 'blue.500/20',
                       borderRadius: 'lg',
                       fontSize: 'sm',
-                      color: 'gray.400',
+                      color: 'white',
                     })}
                   >
-                    <strong className={css({ color: 'gray.300' })}>Note:</strong> BMI is a screening
+                    <strong className={css({ color: 'white' })}>Note:</strong> BMI is a screening
                     tool and does not diagnose health conditions. Factors like muscle mass, bone
                     density, and overall body composition are not considered. Always consult with a
                     healthcare professional for personalized health advice.
@@ -925,7 +925,7 @@ export default function BMICalculator() {
                             <div
                               className={css({
                                 fontSize: 'sm',
-                                color: 'gray.400',
+                                color: 'white',
                               })}
                             >
                               {new Date(entry.date).toLocaleDateString()}
@@ -933,7 +933,7 @@ export default function BMICalculator() {
                             <div
                               className={css({
                                 fontSize: 'sm',
-                                color: 'gray.300',
+                                color: 'white',
                               })}
                             >
                               {entry.weight}
@@ -993,7 +993,7 @@ export default function BMICalculator() {
                 </h3>
                 <p
                   className={css({
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   Enter your weight and height to get started
@@ -1038,7 +1038,7 @@ export default function BMICalculator() {
               >
                 Pro Tips
               </h3>
-              <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>
+              <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
                 <li>• Switch between metric and imperial units with one click</li>
                 <li>• Your calculation history is automatically saved in your browser</li>
                 <li>• Export your results as JSON for health tracking apps</li>
@@ -1110,10 +1110,10 @@ export default function BMICalculator() {
               >
                 1
               </Badge>
-              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'gray.300' })}>Choose your unit system:</strong>{' '}
-                Toggle between Metric (kg/cm) or Imperial (lbs/feet-inches) using the unit button at
-                the top.
+              <p className={css({ color: 'white', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'white' })}>Choose your unit system:</strong> Toggle
+                between Metric (kg/cm) or Imperial (lbs/feet-inches) using the unit button at the
+                top.
               </p>
             </div>
 
@@ -1131,9 +1131,9 @@ export default function BMICalculator() {
               >
                 2
               </Badge>
-              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'gray.300' })}>Enter your measurements:</strong>{' '}
-                Input your weight and height accurately. For Imperial units, enter feet and inches
+              <p className={css({ color: 'white', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'white' })}>Enter your measurements:</strong> Input
+                your weight and height accurately. For Imperial units, enter feet and inches
                 separately.
               </p>
             </div>
@@ -1152,8 +1152,8 @@ export default function BMICalculator() {
               >
                 3
               </Badge>
-              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'gray.300' })}>Calculate and view results:</strong>{' '}
+              <p className={css({ color: 'white', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'white' })}>Calculate and view results:</strong>{' '}
                 Click "Calculate BMI" to see your BMI score, category, and position on the visual
                 BMI chart.
               </p>
@@ -1173,10 +1173,8 @@ export default function BMICalculator() {
               >
                 4
               </Badge>
-              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'gray.300' })}>
-                  Review health recommendations:
-                </strong>{' '}
+              <p className={css({ color: 'white', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'white' })}>Review health recommendations:</strong>{' '}
                 Read the personalized health tips and ideal weight range based on your BMI category.
               </p>
             </div>
@@ -1195,8 +1193,8 @@ export default function BMICalculator() {
               >
                 5
               </Badge>
-              <p className={css({ color: 'gray.400', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'gray.300' })}>Track your progress:</strong> Your
+              <p className={css({ color: 'white', lineHeight: '1.6' })}>
+                <strong className={css({ color: 'white' })}>Track your progress:</strong> Your
                 calculation history is automatically saved. Export results as JSON to track changes
                 over time.
               </p>

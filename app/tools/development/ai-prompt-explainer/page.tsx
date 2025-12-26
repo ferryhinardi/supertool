@@ -219,7 +219,7 @@ function AIPromptExplainerContent() {
             mx: 'auto',
             maxW: '3xl',
             fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
+            color: 'white',
           })}
         >
           Analyze and optimize your AI prompts for better results. Get expert insights on clarity,
@@ -319,7 +319,7 @@ function AIPromptExplainerContent() {
                   className={css({
                     gap: '2',
                     borderColor: 'gray.700',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: {
                       bg: 'gray.800',
                       borderColor: 'gray.600',
@@ -399,7 +399,7 @@ function AIPromptExplainerContent() {
                         {example.category}
                       </Badge>
                       <span
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
                       >
                         {example.label}
                       </span>
@@ -407,7 +407,7 @@ function AIPromptExplainerContent() {
                     <p
                       className={css({
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'white',
                         lineHeight: 'relaxed',
                       })}
                     >
@@ -445,7 +445,7 @@ function AIPromptExplainerContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className={css({ fontSize: 'base', color: 'gray.300', lineHeight: 'relaxed' })}>
+              <p className={css({ fontSize: 'base', color: 'white', lineHeight: 'relaxed' })}>
                 {analysis.analysis}
               </p>
             </CardContent>
@@ -482,7 +482,7 @@ function AIPromptExplainerContent() {
                         className={css({
                           fontSize: 'sm',
                           fontWeight: 'medium',
-                          color: 'gray.300',
+                          color: 'white',
                           textTransform: 'capitalize',
                         })}
                       >
@@ -579,7 +579,7 @@ function AIPromptExplainerContent() {
                       <p
                         className={css({
                           fontSize: 'sm',
-                          color: 'gray.300',
+                          color: 'white',
                           lineHeight: 'relaxed',
                         })}
                       >
@@ -619,7 +619,7 @@ function AIPromptExplainerContent() {
                         alignItems: 'start',
                         gap: '3',
                         fontSize: 'sm',
-                        color: 'gray.300',
+                        color: 'white',
                       })}
                     >
                       <Check
@@ -658,7 +658,7 @@ function AIPromptExplainerContent() {
                   className={css({
                     gap: '2',
                     borderColor: 'gray.700',
-                    color: 'gray.400',
+                    color: 'white',
                     _hover: {
                       bg: 'gray.800',
                       borderColor: 'gray.600',
@@ -731,7 +731,7 @@ function AIPromptExplainerContent() {
                     alignItems: 'start',
                     gap: '3',
                     fontSize: 'sm',
-                    color: 'gray.400',
+                    color: 'white',
                   })}
                 >
                   <Check
