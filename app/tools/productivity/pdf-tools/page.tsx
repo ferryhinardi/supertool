@@ -76,6 +76,7 @@ import { type WatermarkTemplate, WatermarkTemplates } from './components/Waterma
 import { useBatchQueue } from './hooks/useBatchQueue'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useOperationHistory } from './hooks/useOperationHistory'
+import { useRecentOperations } from './hooks/useRecentOperations'
 import { PDFBatchProcessor } from './PDFBatchProcessor'
 import PDFPageEditFlow from './PDFPageEditFlow'
 import { extractTextFromPDF } from './utils/pdfTextExtractor'
@@ -359,6 +360,13 @@ export default function PDFToolsPage() {
   // Operation history for undo/redo
   const { addSnapshot, undo, redo, canUndo, canRedo } = useOperationHistory<PDFFile[]>()
 
+  // Track recently used operations
+  const { trackOperation, recentOperations, getRecentOperationTypes } = useRecentOperations()
+
+  // Track operation changes for recently used
+  useEffect(() => {
+    trackOperation(operation)
+  }, [operation, trackOperation])
   // Save snapshot before each operation
   const saveSnapshot = useCallback(
     (operation: string) => {
