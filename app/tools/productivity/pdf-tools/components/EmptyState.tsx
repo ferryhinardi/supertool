@@ -42,6 +42,11 @@ interface EmptyStateProps {
   onLoadSample?: () => void
   onUploadClick: () => void
   onOperationChange?: (operation: OperationType) => void
+  recentOperations?: Array<{
+    operation: OperationType
+    timestamp: number
+    count: number
+  }>
 }
 
 const operationTips: Record<
@@ -264,49 +269,89 @@ const operationTips: Record<
   },
 }
 
-// Popular operations to showcase
-const popularOperations: Array<{
-  operation: OperationType
-  label: string
-  icon: typeof FileText
-  color: string
-  useCase: string
-}> = [
+// Operation metadata for quick access cards
+const operationMetadata: Record<
+  OperationType,
   {
-    operation: 'merge',
-    label: 'Merge PDFs',
-    icon: TrendingUp,
+    label: string
+    icon: typeof FileText
+    color: string
+    useCase: string
+  }
+> = {
+  merge: { label: 'Merge PDFs', icon: Merge, color: '#3b82f6', useCase: 'Combine documents' },
+  split: { label: 'Split PDF', icon: Split, color: '#8b5cf6', useCase: 'Separate pages' },
+  compress: { label: 'Compress', icon: Archive, color: '#10b981', useCase: 'Reduce file size' },
+  toImages: { label: 'To Images', icon: ImageDown, color: '#f59e0b', useCase: 'Extract as PNG' },
+  imagesToPdf: {
+    label: 'Images to PDF',
+    icon: ImageIcon,
+    color: '#f97316',
+    useCase: 'Create from images',
+  },
+  watermark: { label: 'Watermark', icon: Droplet, color: '#06b6d4', useCase: 'Brand documents' },
+  extract: { label: 'Extract Pages', icon: FileOutput, color: '#3b82f6', useCase: 'Select pages' },
+  rotate: { label: 'Rotate', icon: RotateCw, color: '#8b5cf6', useCase: 'Fix orientation' },
+  toWord: { label: 'To Word', icon: FileDown, color: '#2563eb', useCase: 'Convert to DOCX' },
+  edit: { label: 'Edit & Annotate', icon: Pen, color: '#06b6d4', useCase: 'Add notes' },
+  grayscale: { label: 'Grayscale', icon: Palette, color: '#6b7280', useCase: 'Black & white' },
+  deletePages: { label: 'Delete Pages', icon: Trash2, color: '#ef4444', useCase: 'Remove pages' },
+  unlock: { label: 'Unlock PDF', icon: Unlock, color: '#10b981', useCase: 'Remove password' },
+  duplicatePages: { label: 'Duplicate', icon: CopyPlus, color: '#3b82f6', useCase: 'Copy pages' },
+  reorder: { label: 'Reorder', icon: GripVertical, color: '#8b5cf6', useCase: 'Rearrange pages' },
+  addPageNumbers: { label: 'Page Numbers', icon: Hash, color: '#06b6d4', useCase: 'Number pages' },
+  extractText: {
+    label: 'Extract Text',
+    icon: FileText,
+    color: '#10b981',
+    useCase: 'Get text content',
+  },
+  editMetadata: {
+    label: 'Edit Metadata',
+    icon: Settings,
+    color: '#6b7280',
+    useCase: 'Document info',
+  },
+  ocrExtract: { label: 'OCR Extract', icon: FileScan, color: '#8b5cf6', useCase: 'Scan text' },
+  protect: { label: 'Protect', icon: Lock, color: '#ef4444', useCase: 'Add password' },
+  flatten: { label: 'Flatten', icon: Copy, color: '#6b7280', useCase: 'Lock forms' },
+  addHeaderFooter: {
+    label: 'Header/Footer',
+    icon: FileText,
     color: '#3b82f6',
-    useCase: 'Combine documents',
+    useCase: 'Add text',
   },
-  {
-    operation: 'compress',
-    label: 'Compress',
-    icon: Zap,
-    color: '#10b981',
-    useCase: 'Reduce file size',
+  addBookmarks: { label: 'Bookmarks', icon: BookmarkCheck, color: '#8b5cf6', useCase: 'Add TOC' },
+  extractImages: {
+    label: 'Extract Images',
+    icon: ImageDown,
+    color: '#f59e0b',
+    useCase: 'Get images',
   },
-  {
-    operation: 'protect',
-    label: 'Protect',
-    icon: Shield,
-    color: '#10b981',
-    useCase: 'Add password',
+  optimizeWeb: { label: 'Optimize Web', icon: Globe, color: '#10b981', useCase: 'Web ready' },
+  splitByBookmarks: {
+    label: 'Split by TOC',
+    icon: Bookmark,
+    color: '#3b82f6',
+    useCase: 'Auto split',
   },
-  {
-    operation: 'watermark',
-    label: 'Watermark',
-    icon: Palette,
-    color: '#06b6d4',
-    useCase: 'Brand documents',
+  aiSummarize: {
+    label: 'AI Summarize',
+    icon: Sparkles,
+    color: '#a855f7',
+    useCase: 'Smart summary',
   },
-]
+}
+
+// Popular operations to showcase
+const popularOperations: OperationType[] = ['merge', 'compress', 'protect', 'watermark']
 
 export function EmptyState({
   operation,
   onLoadSample,
   onUploadClick,
   onOperationChange,
+  recentOperations,
 }: EmptyStateProps) {
   const tip = operationTips[operation]
 
@@ -563,126 +608,267 @@ export function EmptyState({
         </div>
       </motion.div>
 
-      {/* Popular operations - only show if onOperationChange is provided */}
-      {onOperationChange && operation === 'merge' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className={css({
-            mt: '8',
-            w: 'full',
-            maxW: 'lg',
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '2',
-              mb: '4',
-            })}
-          >
-            <Clock
-              className={css({
-                h: '4',
-                w: '4',
-                color: 'gray.400',
-              })}
-            />
-            <h4
-              className={css({
-                fontSize: 'sm',
-                fontWeight: 'semibold',
-                color: 'gray.300',
-                textTransform: 'uppercase',
-                letterSpacing: 'wider',
-              })}
+      {/* Recently Used & Popular Operations */}
+      {onOperationChange && (
+        <div className={css({ mt: '8', w: 'full', maxW: 'lg', spaceY: '6' })}>
+          {/* Recently Used Operations */}
+          {recentOperations && recentOperations.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
             >
-              Popular Operations
-            </h4>
-          </div>
-
-          <div
-            className={css({
-              display: 'grid',
-              gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-              gap: '3',
-            })}
-          >
-            {popularOperations.map((op, index) => {
-              const Icon = op.icon
-              return (
-                <motion.button
-                  key={op.operation}
-                  type="button"
-                  onClick={() => onOperationChange(op.operation)}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.1 + index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '2',
+                  mb: '4',
+                })}
+              >
+                <Clock
                   className={css({
-                    p: '4',
-                    rounded: 'lg',
-                    bg: 'gray.800/50',
-                    border: '1px solid',
-                    borderColor: 'gray.700',
-                    transition: 'all 0.2s',
-                    cursor: 'pointer',
-                    textAlign: 'center',
-                    _hover: {
-                      borderColor: 'currentColor',
-                      bg: 'gray.800',
-                    },
+                    h: '4',
+                    w: '4',
+                    color: 'yellow.400',
                   })}
-                  style={{ color: op.color }}
+                />
+                <h4
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'semibold',
+                    color: 'gray.300',
+                    textTransform: 'uppercase',
+                    letterSpacing: 'wider',
+                  })}
                 >
-                  <div
-                    className={css({
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      h: '10',
-                      w: '10',
-                      mx: 'auto',
-                      mb: '2',
-                      rounded: 'lg',
-                      bg: 'currentColor/10',
-                    })}
-                  >
-                    <Icon
+                  Recently Used
+                </h4>
+              </div>
+
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                  gap: '3',
+                })}
+              >
+                {recentOperations.slice(0, 4).map((recent, index) => {
+                  const metadata = operationMetadata[recent.operation]
+                  const Icon = metadata.icon
+                  return (
+                    <motion.button
+                      key={recent.operation}
+                      type="button"
+                      onClick={() => onOperationChange(recent.operation)}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1 + index * 0.1 }}
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
                       className={css({
-                        h: '5',
-                        w: '5',
+                        p: '4',
+                        rounded: 'lg',
+                        bg: 'gray.800/50',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        transition: 'all 0.2s',
+                        cursor: 'pointer',
+                        textAlign: 'center',
+                        position: 'relative',
+                        _hover: {
+                          borderColor: 'currentColor',
+                          bg: 'gray.800',
+                        },
                       })}
-                      style={{ color: op.color }}
-                    />
-                  </div>
-                  <div
-                    className={css({
-                      fontSize: 'xs',
-                      fontWeight: 'semibold',
-                      color: 'gray.200',
-                      mb: '1',
-                    })}
-                  >
-                    {op.label}
-                  </div>
-                  <div
-                    className={css({
-                      fontSize: '2xs',
-                      color: 'gray.500',
-                    })}
-                  >
-                    {op.useCase}
-                  </div>
-                </motion.button>
-              )
-            })}
-          </div>
-        </motion.div>
+                      style={{ color: metadata.color }}
+                    >
+                      {/* Usage count badge */}
+                      {recent.count > 1 && (
+                        <div
+                          className={css({
+                            position: 'absolute',
+                            top: '2',
+                            right: '2',
+                            px: '1.5',
+                            py: '0.5',
+                            rounded: 'full',
+                            bg: 'currentColor/20',
+                            fontSize: '2xs',
+                            fontWeight: 'bold',
+                            color: 'white',
+                          })}
+                        >
+                          {recent.count}x
+                        </div>
+                      )}
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          h: '10',
+                          w: '10',
+                          mx: 'auto',
+                          mb: '2',
+                          rounded: 'lg',
+                          bg: 'currentColor/10',
+                        })}
+                      >
+                        <Icon
+                          className={css({
+                            h: '5',
+                            w: '5',
+                          })}
+                          style={{ color: metadata.color }}
+                        />
+                      </div>
+                      <div
+                        className={css({
+                          fontSize: 'xs',
+                          fontWeight: 'semibold',
+                          color: 'gray.200',
+                          mb: '1',
+                        })}
+                      >
+                        {metadata.label}
+                      </div>
+                      <div
+                        className={css({
+                          fontSize: '2xs',
+                          color: 'gray.500',
+                        })}
+                      >
+                        {metadata.useCase}
+                      </div>
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Popular Operations - only show if no recent or on merge page */}
+          {(!recentOperations || recentOperations.length === 0 || operation === 'merge') && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: recentOperations?.length ? 1.5 : 1 }}
+            >
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '2',
+                  mb: '4',
+                })}
+              >
+                <TrendingUp
+                  className={css({
+                    h: '4',
+                    w: '4',
+                    color: 'blue.400',
+                  })}
+                />
+                <h4
+                  className={css({
+                    fontSize: 'sm',
+                    fontWeight: 'semibold',
+                    color: 'gray.300',
+                    textTransform: 'uppercase',
+                    letterSpacing: 'wider',
+                  })}
+                >
+                  Popular Operations
+                </h4>
+              </div>
+
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                  gap: '3',
+                })}
+              >
+                {popularOperations.map((opType, index) => {
+                  const metadata = operationMetadata[opType]
+                  const Icon = metadata.icon
+                  return (
+                    <motion.button
+                      key={opType}
+                      type="button"
+                      onClick={() => onOperationChange(opType)}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: (recentOperations?.length ? 1.6 : 1.1) + index * 0.1,
+                      }}
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={css({
+                        p: '4',
+                        rounded: 'lg',
+                        bg: 'gray.800/50',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        transition: 'all 0.2s',
+                        cursor: 'pointer',
+                        textAlign: 'center',
+                        _hover: {
+                          borderColor: 'currentColor',
+                          bg: 'gray.800',
+                        },
+                      })}
+                      style={{ color: metadata.color }}
+                    >
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          h: '10',
+                          w: '10',
+                          mx: 'auto',
+                          mb: '2',
+                          rounded: 'lg',
+                          bg: 'currentColor/10',
+                        })}
+                      >
+                        <Icon
+                          className={css({
+                            h: '5',
+                            w: '5',
+                          })}
+                          style={{ color: metadata.color }}
+                        />
+                      </div>
+                      <div
+                        className={css({
+                          fontSize: 'xs',
+                          fontWeight: 'semibold',
+                          color: 'gray.200',
+                          mb: '1',
+                        })}
+                      >
+                        {metadata.label}
+                      </div>
+                      <div
+                        className={css({
+                          fontSize: '2xs',
+                          color: 'gray.500',
+                        })}
+                      >
+                        {metadata.useCase}
+                      </div>
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </motion.div>
+          )}
+        </div>
       )}
     </motion.div>
   )

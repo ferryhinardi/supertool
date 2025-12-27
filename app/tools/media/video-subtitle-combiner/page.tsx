@@ -1464,7 +1464,14 @@ export default function VideoSubtitleCombinerPage() {
                 <label className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Position
                 </label>
-                <div className={css({ display: 'grid', gridTemplateColumns: '3', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: '2',
+                    w: 'full',
+                  })}
+                >
                   {(['top', 'center', 'bottom'] as const).map((pos) => (
                     <button
                       key={pos}

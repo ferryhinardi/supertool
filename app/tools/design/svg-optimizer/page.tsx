@@ -355,8 +355,8 @@ function SVGOptimizerContent() {
               className={css({
                 display: 'grid',
                 gap: '3',
-                md: { gridTemplateColumns: '2' },
-                lg: { gridTemplateColumns: '3' },
+                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                w: 'full',
               })}
             >
               {Object.entries(options).map(([key, value]) => (
@@ -488,7 +488,12 @@ function SVGOptimizerContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={css({ display: 'grid', gap: '4', md: { gridTemplateColumns: '4' } })}
+          className={css({
+            display: 'grid',
+            gap: '4',
+            gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+            w: 'full',
+          })}
         >
           <Card
             className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}
@@ -552,7 +557,12 @@ function SVGOptimizerContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className={css({ display: 'grid', gap: '6', lg: { gridTemplateColumns: '2' } })}
+          className={css({
+            display: 'grid',
+            gap: '6',
+            gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
+            w: 'full',
+          })}
         >
           {/* Code Output */}
           <Card
@@ -645,7 +655,12 @@ function SVGOptimizerContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className={css({ display: 'grid', gap: '6', md: { gridTemplateColumns: '2' } })}
+        className={css({
+          display: 'grid',
+          gap: '6',
+          gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+          w: 'full',
+        })}
       >
         <Card className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}>
           <CardHeader>

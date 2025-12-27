@@ -563,7 +563,14 @@ function ImageMetadataContent() {
                 </label>
               </div>
             ) : (
-              <div className={css({ display: 'grid', gap: '4', md: { gridTemplateColumns: '2' } })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gap: '4',
+                  gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+                  w: 'full',
+                })}
+              >
                 <div
                   className={css({
                     position: 'relative',
