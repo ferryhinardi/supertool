@@ -468,6 +468,14 @@ type ToolEvent =
   | 'pdf_generation_started'
   | 'pdf_generated'
   | 'pdf_generation_failed'
+  | 'graphql_playground_open'
+  | 'graphql_query_execute'
+  | 'graphql_query_error'
+  | 'graphql_response_copy'
+  | 'graphql_response_download'
+  | 'graphql_history_load'
+  | 'graphql_history_clear'
+  | 'graphql_sample_load'
 
 // Type-safe gtag wrapper
 declare global {

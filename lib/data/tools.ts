@@ -497,6 +497,17 @@ export const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'GraphQL Playground',
+    description:
+      'Interactive GraphQL playground and API tester. Write queries, explore schemas, test mutations, and inspect responses with real-time validation. Includes sample queries and history tracking.',
+    icon: Network,
+    href: '/tools/development/graphql-playground',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['Query Builder', 'Variables Support', 'History & Favorites', 'Sample Queries'],
+    category: 'development',
+    new: true,
+  },
+  {
     title: 'JWT Decoder & Inspector',
     description:
       'Decode, verify, and validate JSON Web Tokens (JWT) securely in your browser. View header, payload, and signature. Validate token expiry and structure without server calls.',
