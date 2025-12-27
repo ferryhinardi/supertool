@@ -5431,6 +5431,7 @@ export default function PDFToolsPage() {
                     <EmptyState
                       operation={operation}
                       onUploadClick={() => fileInputRef.current?.click()}
+                      onOperationChange={setOperation}
                     />
                     {/* Mobile-specific upload buttons with camera support */}
                     <MobileUploadButton

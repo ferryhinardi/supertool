@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FileText, Sparkles, Upload } from 'lucide-react'
+import { Clock, FileText, Palette, Shield, Sparkles, TrendingUp, Upload, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { css } from '@/styled-system/css'
 import type { OperationType } from './OperationGrid'
@@ -10,6 +10,7 @@ interface EmptyStateProps {
   operation: OperationType
   onLoadSample?: () => void
   onUploadClick: () => void
+  onOperationChange?: (operation: OperationType) => void
 }
 
 const operationTips: Record<
@@ -232,7 +233,50 @@ const operationTips: Record<
   },
 }
 
-export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStateProps) {
+// Popular operations to showcase
+const popularOperations: Array<{
+  operation: OperationType
+  label: string
+  icon: typeof FileText
+  color: string
+  useCase: string
+}> = [
+  {
+    operation: 'merge',
+    label: 'Merge PDFs',
+    icon: TrendingUp,
+    color: '#3b82f6',
+    useCase: 'Combine documents',
+  },
+  {
+    operation: 'compress',
+    label: 'Compress',
+    icon: Zap,
+    color: '#10b981',
+    useCase: 'Reduce file size',
+  },
+  {
+    operation: 'protect',
+    label: 'Protect',
+    icon: Shield,
+    color: '#10b981',
+    useCase: 'Add password',
+  },
+  {
+    operation: 'watermark',
+    label: 'Watermark',
+    icon: Palette,
+    color: '#06b6d4',
+    useCase: 'Brand documents',
+  },
+]
+
+export function EmptyState({
+  operation,
+  onLoadSample,
+  onUploadClick,
+  onOperationChange,
+}: EmptyStateProps) {
   const tip = operationTips[operation]
 
   return (
@@ -443,6 +487,7 @@ export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStat
           border: '1px solid',
           borderColor: 'gray.700',
           maxW: 'md',
+          w: 'full',
         })}
       >
         <div
@@ -486,6 +531,128 @@ export function EmptyState({ operation, onLoadSample, onUploadClick }: EmptyStat
           </div>
         </div>
       </motion.div>
+
+      {/* Popular operations - only show if onOperationChange is provided */}
+      {onOperationChange && operation === 'merge' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1 }}
+          className={css({
+            mt: '8',
+            w: 'full',
+            maxW: 'lg',
+          })}
+        >
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '2',
+              mb: '4',
+            })}
+          >
+            <Clock
+              className={css({
+                h: '4',
+                w: '4',
+                color: 'gray.400',
+              })}
+            />
+            <h4
+              className={css({
+                fontSize: 'sm',
+                fontWeight: 'semibold',
+                color: 'gray.300',
+                textTransform: 'uppercase',
+                letterSpacing: 'wider',
+              })}
+            >
+              Popular Operations
+            </h4>
+          </div>
+
+          <div
+            className={css({
+              display: 'grid',
+              gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+              gap: '3',
+            })}
+          >
+            {popularOperations.map((op, index) => {
+              const Icon = op.icon
+              return (
+                <motion.button
+                  key={op.operation}
+                  type="button"
+                  onClick={() => onOperationChange(op.operation)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.1 + index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={css({
+                    p: '4',
+                    rounded: 'lg',
+                    bg: 'gray.800/50',
+                    border: '1px solid',
+                    borderColor: 'gray.700',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    _hover: {
+                      borderColor: 'currentColor',
+                      bg: 'gray.800',
+                    },
+                  })}
+                  style={{ color: op.color }}
+                >
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      h: '10',
+                      w: '10',
+                      mx: 'auto',
+                      mb: '2',
+                      rounded: 'lg',
+                      bg: 'currentColor/10',
+                    })}
+                  >
+                    <Icon
+                      className={css({
+                        h: '5',
+                        w: '5',
+                      })}
+                      style={{ color: op.color }}
+                    />
+                  </div>
+                  <div
+                    className={css({
+                      fontSize: 'xs',
+                      fontWeight: 'semibold',
+                      color: 'gray.200',
+                      mb: '1',
+                    })}
+                  >
+                    {op.label}
+                  </div>
+                  <div
+                    className={css({
+                      fontSize: '2xs',
+                      color: 'gray.500',
+                    })}
+                  >
+                    {op.useCase}
+                  </div>
+                </motion.button>
+              )
+            })}
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   )
 }
