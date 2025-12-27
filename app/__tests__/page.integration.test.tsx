@@ -802,13 +802,20 @@ describe('HomePage Integration Tests', () => {
       }
     })
 
-    it('should display "Coming Soon" badge for upcoming tools', () => {
+    it('should display "Coming Soon" badge for upcoming tools', async () => {
+      const user = userEvent.setup()
       render(<HomePage />)
 
       const comingSoonTool = tools.find((t) => t.comingSoon)
 
       if (comingSoonTool) {
-        expect(screen.getByText(comingSoonTool.title)).toBeInTheDocument()
+        // Switch to "All Tools" view to see coming soon tools
+        const allToolsButton = screen.getByLabelText(/All tools/i)
+        await user.click(allToolsButton)
+
+        await waitFor(() => {
+          expect(screen.getByText(comingSoonTool.title)).toBeInTheDocument()
+        })
 
         // Check for "Coming Soon" or "Soon" text
         const comingSoonBadges = screen.queryAllByText(/Coming Soon|Soon/i)
@@ -846,16 +853,23 @@ describe('HomePage Integration Tests', () => {
       }
     })
 
-    it('should disable links for coming soon tools', () => {
+    it('should disable links for coming soon tools', async () => {
+      const user = userEvent.setup()
       render(<HomePage />)
 
       const comingSoonTool = tools.find((t) => t.comingSoon)
 
       if (comingSoonTool) {
-        // Use getAllByText to get all instances and pick the first one from main content
-        const toolLinks = screen.getAllByText(comingSoonTool.title)
-        const toolLink = toolLinks[0].closest('a')
-        expect(toolLink).toHaveAttribute('href', '#')
+        // Switch to "All Tools" view to see coming soon tools
+        const allToolsButton = screen.getByLabelText(/All tools/i)
+        await user.click(allToolsButton)
+
+        await waitFor(() => {
+          // Use getAllByText to get all instances and pick the first one from main content
+          const toolLinks = screen.getAllByText(comingSoonTool.title)
+          const toolLink = toolLinks[0].closest('a')
+          expect(toolLink).toHaveAttribute('href', '#')
+        })
       }
     })
   })
