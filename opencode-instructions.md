@@ -128,6 +128,26 @@ You are OpenCode, an AI coding agent specialized in writing, refactoring, debugg
 - Server components by default, client components when needed
 - Responsive design: mobile-first approach
 
+**GraphQL API Integration:**
+
+- Always validate endpoint URLs before execution
+- Parse and validate variables/headers as JSON before sending
+- Format GraphQL errors with message, path, and location
+- Track analytics metadata (query length, timing) without logging PII
+- Never log actual query content, variables, or response data
+- Support introspection queries for schema exploration
+- Handle network timeouts gracefully (abort controllers)
+
+**UI Component Creation:**
+
+- Extract components only when used in 2+ places or for standard UI patterns
+- Extend proper base types (`HTMLAttributes<HTMLDivElement>`)
+- Support composition via `className` prop with `cx()` utility
+- Use `forwardRef` for ref support when needed
+- Context API for shared state (tabs, dialogs, accordions)
+- Meet accessibility requirements (ARIA, keyboard nav, semantic HTML)
+- Create tests achieving >= 95% coverage for new components
+
 ## Project-Specific Adaptation
 
 When entering a new codebase:
@@ -188,6 +208,17 @@ To update this file:
 3. Review data sanitization and validation
 4. Check for exposed secrets or sensitive data
 5. Verify HTTPS/TLS usage for external calls
+
+### Form Accessibility
+
+1. Use semantic HTML (`<button>`, `<input>`, `<label>`) over divs
+2. Associate labels with inputs via `htmlFor` or wrapping
+3. Provide keyboard navigation (Tab, Enter, Space, Arrow keys)
+4. Style focus states clearly (`:focus` visible outline)
+5. Use ARIA attributes correctly (`aria-label`, `aria-required`, `aria-invalid`)
+6. Announce state changes to screen readers
+7. Ensure color contrast meets WCAG AA (4.5:1 minimum)
+8. Minimum 44px touch targets for mobile
 
 ## Anti-Patterns to Avoid
 

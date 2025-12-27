@@ -956,49 +956,56 @@ export default function ToolLayout({
 
 1. Create `app/tools/[tool-name]/page.tsx` with default export
 2. **Follow the Page Layout Pattern** (use `<main>` with standardized Panda CSS classes)
-3. Add route to `navigation` array in `components/layout/Sidebar.tsx` with Lucide icon
-4. Add tool card to `tools` array in `lib/tools.ts` with category, tags, gradient, and features
-5. **Create SEO-optimized metadata and layout** (`app/tools/[tool-name]/layout.tsx`):
+3. **Check if reusable components are needed**:
+   - Extract UI logic only when used in 2+ tools or for standard patterns
+   - Create components in `components/ui/` with TypeScript interfaces
+   - Use Panda CSS (never Tailwind utilities in components)
+   - Meet accessibility requirements (ARIA, keyboard nav, semantic HTML)
+   - Write tests achieving >= 95% coverage for new components
+   - See `.github/skills/ui-components-creation/SKILL.md` for detailed guide
+4. Add route to `navigation` array in `components/layout/Sidebar.tsx` with Lucide icon
+5. Add tool card to `tools` array in `lib/tools.ts` with category, tags, gradient, and features
+6. **Create SEO-optimized metadata and layout** (`app/tools/[tool-name]/layout.tsx`):
    - Use `generateToolMetadata()` from `@/lib/metadata` with proper title, description, and keywords
    - Include structured data (breadcrumbs and FAQs) using `generateBreadcrumbSchema()` and `generateFAQSchema()`
    - Ensure descriptions are 150-160 characters for optimal snippet length
    - Include relevant keywords naturally in title and description
    - Add 3-4 SEO-focused FAQs that answer common user questions
-6. **Optimize tool page content for SEO**:
+7. **Optimize tool page content for SEO**:
    - Use semantic HTML5 elements (`<main>`, `<section>`, `<h1>`, `<h2>`)
    - Include primary keyword in H1 title with natural gradient styling
    - Add descriptive subheadings (H2) for major sections
    - Include help/usage section with keyword-rich content
    - Use descriptive alt text for icons and images
    - Ensure content is at least 300 words when including help sections
-7. **Mobile-first responsive design**:
+8. **Mobile-first responsive design**:
    - **Touch-friendly UI**: Minimum 44px touch targets for buttons and interactive elements
    - **Responsive typography**: Use responsive font sizes with base/sm/md/lg breakpoints
    - **Mobile navigation**: Ensure sidebar/navigation works properly on mobile devices
    - **Viewport optimization**: Add proper viewport meta tags and test on mobile devices
    - **Performance**: Optimize for mobile bandwidth with lazy loading and efficient assets
    - **Accessibility**: Ensure keyboard navigation and screen reader compatibility
-8. **URL and routing optimization**:
+9. **URL and routing optimization**:
    - Use kebab-case for tool names (e.g., `/tools/json-beautify`)
    - Keep URLs short and descriptive (avoid deep nesting)
    - Include primary keyword in URL path when possible
-9. **Create comprehensive tests with >= 95% coverage** (`__tests__/` directory):
+10. **Create comprehensive tests with >= 95% coverage** (`__tests__/` directory):
    - **Unit tests**: Test all functions, utilities, and logic in isolation
    - **Integration tests**: Test component rendering, user interactions, and workflows
    - **API tests**: Test all API routes with request validation and error scenarios
    - **Edge case tests**: Test boundary conditions, empty states, error states
    - **Mock external dependencies**: Mock toast, analytics, fetch, external APIs
    - Run `CI=true pnpm test run --coverage` to verify coverage meets 95% threshold
-10. Add analytics events for all user interactions
-11. Update `ToolEvent` type in `lib/analytics.ts` if needed
-12. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
+11. Add analytics events for all user interactions
+12. Update `ToolEvent` type in `lib/analytics.ts` if needed
+13. **Create comprehensive documentation** in `docs/` with numbered prefix (e.g., `15_TOOL_NAME.md`):
     - Explain how the tool works and its purpose
     - Include creation date and last updated timestamp
     - Document key features, usage instructions, and technical implementation
     - Add analytics events, UI/UX details, and future enhancements
     - Make each documentation unique with different structure and focus areas
-13. **Update tool documentation** whenever implementation changes to keep docs current
-14. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
+14. **Update tool documentation** whenever implementation changes to keep docs current
+15. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
     - `pnpm lint` - ESLint validation
     - `pnpm exec tsc --noEmit` - Type checking
     - `CI=true pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
