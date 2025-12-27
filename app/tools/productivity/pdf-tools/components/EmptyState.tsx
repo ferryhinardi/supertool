@@ -1,7 +1,38 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Clock, FileText, Palette, Shield, Sparkles, TrendingUp, Upload, Zap } from 'lucide-react'
+import {
+  Archive,
+  Bookmark,
+  BookmarkCheck,
+  Clock,
+  Copy,
+  CopyPlus,
+  Droplet,
+  FileDown,
+  FileOutput,
+  FileScan,
+  FileText,
+  Globe,
+  GripVertical,
+  Hash,
+  ImageDown,
+  ImageIcon,
+  Lock,
+  Merge,
+  Palette,
+  Pen,
+  RotateCw,
+  Settings,
+  Shield,
+  Sparkles,
+  Split,
+  Trash2,
+  TrendingUp,
+  Unlock,
+  Upload,
+  Zap,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { css } from '@/styled-system/css'
 import type { OperationType } from './OperationGrid'
