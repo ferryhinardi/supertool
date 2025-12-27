@@ -675,7 +675,11 @@ function JWTDecoderContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className={css({ display: 'grid', gap: '6', md: { gridTemplateColumns: '2' } })}
+        className={css({
+          display: 'grid',
+          gap: '6',
+          gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+        })}
       >
         <Card className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}>
           <CardHeader>

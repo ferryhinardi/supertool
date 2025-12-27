@@ -329,7 +329,7 @@ export default function SignatureGeneratorPage() {
                   value={config.customText}
                   onChange={(e) => setConfig({ ...config, customText: e.target.value })}
                 />
-                <p className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
+                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
                   Leave empty to use your name
                 </p>
               </div>
@@ -363,7 +363,7 @@ export default function SignatureGeneratorPage() {
                       <div className={css({ fontWeight: 'medium', fontSize: 'sm', mb: '1' })}>
                         {style.charAt(0).toUpperCase() + style.slice(1)}
                       </div>
-                      <div className={css({ fontSize: 'xs', color: 'white' })}>
+                      <div className={css({ fontSize: 'xs', color: 'gray.600' })}>
                         {styleDescriptions[style]}
                       </div>
                     </button>
@@ -470,8 +470,10 @@ export default function SignatureGeneratorPage() {
               {config.name || config.customText ? (
                 <canvas ref={canvasRef} className={css({ maxW: 'full', h: 'auto' })} />
               ) : (
-                <div className={css({ textAlign: 'center', color: 'white' })}>
-                  <Type className={css({ w: '16', h: '16', mx: 'auto', mb: '4' })} />
+                <div className={css({ textAlign: 'center', color: 'gray.400' })}>
+                  <Type
+                    className={css({ w: '16', h: '16', mx: 'auto', mb: '4', color: 'gray.300' })}
+                  />
                   <p>Enter your name to generate signature</p>
                 </div>
               )}

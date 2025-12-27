@@ -492,7 +492,11 @@ function DockerfileFormatterContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={css({ display: 'grid', gap: '4', md: { gridTemplateColumns: '4' } })}
+          className={css({
+            display: 'grid',
+            gap: '4',
+            gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+          })}
         >
           <Card
             className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}
@@ -690,7 +694,11 @@ function DockerfileFormatterContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className={css({ display: 'grid', gap: '6', md: { gridTemplateColumns: '2' } })}
+        className={css({
+          display: 'grid',
+          gap: '6',
+          gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+        })}
       >
         <Card className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}>
           <CardHeader>
