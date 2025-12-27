@@ -452,7 +452,6 @@ export const tools: Tool[] = [
     gradient: 'from-teal-500 to-cyan-500',
     features: ['Certificate Details', 'Expiry Alerts', 'Chain Verification', 'Security Score'],
     category: 'security',
-    comingSoon: true,
   },
   {
     title: 'Password Strength Analyzer',

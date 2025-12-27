@@ -476,6 +476,10 @@ type ToolEvent =
   | 'graphql_history_load'
   | 'graphql_history_clear'
   | 'graphql_sample_load'
+  | 'ssl_checker_open'
+  | 'ssl_check_complete'
+  | 'ssl_check_error'
+  | 'ssl_report_copy'
 
 // Type-safe gtag wrapper
 declare global {
