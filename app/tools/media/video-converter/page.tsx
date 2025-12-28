@@ -629,7 +629,7 @@ export default function VideoConverterPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: 'repeat(3, 1fr)' },
           w: 'full',
           maxW: '1400px',
         })}
@@ -641,7 +641,7 @@ export default function VideoConverterPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           style={{ width: '100%' }}
           className={css({
-            lg: { gridColumn: 'span 1 / span 1' },
+            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 1' },
           })}
         >
           <Card
@@ -897,7 +897,7 @@ export default function VideoConverterPage() {
           transition={{ delay: 0.3, duration: 0.5 }}
           style={{ width: '100%' }}
           className={css({
-            lg: { gridColumn: 'span 2 / span 2' },
+            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 2' },
           })}
         >
           <Card
