@@ -61,6 +61,7 @@ import { css } from '@/styled-system/css'
 import { BatchQueue } from './components/BatchQueue'
 import { BatchToolbar } from './components/BatchToolbar'
 import { ComparisonView } from './components/ComparisonView'
+import { DesktopUploadButton } from './components/DesktopUploadButton'
 import { EmptyState } from './components/EmptyState'
 import { KeyboardShortcutsDialog } from './components/KeyboardShortcutsDialog'
 import { MobileOperationPicker } from './components/MobileOperationPicker'
@@ -5494,6 +5495,14 @@ export default function PDFToolsPage() {
 
                     {/* Mobile upload button for adding more files */}
                     <MobileUploadButton
+                      onFilesSelected={handleFilesSelected}
+                      accept="application/pdf,image/jpeg,image/jpg,image/png,image/webp"
+                      multiple
+                      disabled={isProcessing}
+                    />
+
+                    {/* Desktop upload button for adding more files (visible only on lg+ screens) */}
+                    <DesktopUploadButton
                       onFilesSelected={handleFilesSelected}
                       accept="application/pdf,image/jpeg,image/jpg,image/png,image/webp"
                       multiple
