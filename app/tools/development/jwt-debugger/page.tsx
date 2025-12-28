@@ -281,12 +281,17 @@ function JWTDebuggerContent() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: 'repeat(3, 1fr)' },
           gap: '6',
         })}
       >
         {/* Left Column - Input & Controls */}
-        <div className={css({ gridColumn: { lg: 'span 2' }, spaceY: '6' })}>
+        <div
+          className={css({
+            gridColumn: { base: '1', md: '1', lg: 'span 2' },
+            spaceY: '6',
+          })}
+        >
           {/* Token Input */}
           <Card>
             <CardHeader>
@@ -515,7 +520,12 @@ function JWTDebuggerContent() {
         </div>
 
         {/* Right Column - Decoded Output */}
-        <div className={css({ spaceY: '6' })}>
+        <div
+          className={css({
+            gridColumn: { base: '1', md: '2', lg: '1' },
+            spaceY: '6',
+          })}
+        >
           {/* Header */}
           {decodedToken?.isValid && decodedToken.header && (
             <Card>

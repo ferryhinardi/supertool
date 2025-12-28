@@ -344,14 +344,14 @@ function ClipboardFormatterPageContent() {
         transition={{ delay: 0.1, duration: 0.5 }}
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: 'repeat(3, 1fr)' },
           gap: '6',
         })}
       >
         {/* Input Section */}
         <div
           className={css({
-            gridColumn: { base: 'span 1', lg: 'span 2' },
+            gridColumn: { base: '1', md: '1', lg: 'span 2' },
           })}
         >
           <Card
@@ -722,6 +722,9 @@ function ClipboardFormatterPageContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
+        className={css({
+          gridColumn: { base: '1', md: '2', lg: '1' },
+        })}
       >
         <Card
           className={css({

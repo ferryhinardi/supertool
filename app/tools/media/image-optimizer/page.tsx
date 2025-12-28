@@ -442,7 +442,7 @@ export default function ImageOptimizerPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: 'repeat(3, 1fr)' },
           w: 'full',
           maxW: '1400px',
         })}
@@ -452,7 +452,7 @@ export default function ImageOptimizerPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className={css({ w: 'full', lg: { gridColumn: 'span 1' } })}
+          className={css({ w: 'full', gridColumn: { base: '1', md: '1', lg: '1' } })}
         >
           <Card
             className={css({
@@ -751,7 +751,7 @@ export default function ImageOptimizerPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className={css({ w: 'full', lg: { gridColumn: 'span 2' } })}
+          className={css({ w: 'full', gridColumn: { base: '1', md: '2', lg: 'span 2' } })}
         >
           <Card
             className={css({

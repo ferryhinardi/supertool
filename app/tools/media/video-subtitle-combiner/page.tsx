@@ -661,7 +661,7 @@ export default function VideoSubtitleCombinerPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: 'repeat(3, 1fr)' },
           w: 'full',
         })}
       >
@@ -670,7 +670,10 @@ export default function VideoSubtitleCombinerPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className={css({ gridColumn: { base: '1', lg: 'span 2 / span 2' }, spaceY: '6' })}
+          className={css({
+            gridColumn: { base: '1', md: '1', lg: 'span 2 / span 2' },
+            spaceY: '6',
+          })}
         >
           {/* Server Status */}
           <Card>
@@ -845,7 +848,7 @@ export default function VideoSubtitleCombinerPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className={css({ spaceY: '6' })}
+          className={css({ gridColumn: { base: '1', md: '2', lg: 'span 1' }, spaceY: '6' })}
         >
           {/* Video Trimming */}
           {videoFile && videoDuration > 0 && (
