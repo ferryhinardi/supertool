@@ -2426,7 +2426,7 @@ export default function PDFToolsPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
           w: 'full',
           maxW: '1400px',
         })}
@@ -2438,7 +2438,7 @@ export default function PDFToolsPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className={css({
             w: 'full',
-            gridColumn: { base: 'span 1', lg: 'span 1' },
+            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 1' },
           })}
         >
           <Card
@@ -3264,7 +3264,7 @@ export default function PDFToolsPage() {
                     <div
                       className={css({
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
                         gap: '2',
                         w: 'full',
                       })}
@@ -5391,7 +5391,7 @@ export default function PDFToolsPage() {
           transition={{ delay: 0.3, duration: 0.5 }}
           className={css({
             w: 'full',
-            gridColumn: { base: 'span 1', lg: 'span 2' },
+            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 2' },
           })}
         >
           <Card
