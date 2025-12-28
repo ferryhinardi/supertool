@@ -288,7 +288,7 @@ function JWTDebuggerContent() {
         {/* Left Column - Input & Controls */}
         <div
           className={css({
-            gridColumn: { base: '1', md: '1', lg: 'span 2' },
+            gridColumn: { base: '1 / -1', md: '1 / 2', lg: '1 / 3' },
             spaceY: '6',
           })}
         >
@@ -522,7 +522,7 @@ function JWTDebuggerContent() {
         {/* Right Column - Decoded Output */}
         <div
           className={css({
-            gridColumn: { base: '1', md: '2', lg: '1' },
+            gridColumn: { base: '1 / -1', md: '2 / 3', lg: '3 / 4' },
             spaceY: '6',
           })}
         >

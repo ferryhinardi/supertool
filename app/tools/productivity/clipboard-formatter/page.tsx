@@ -351,7 +351,7 @@ function ClipboardFormatterPageContent() {
         {/* Input Section */}
         <div
           className={css({
-            gridColumn: { base: '1', md: '1', lg: 'span 2' },
+            gridColumn: { base: '1 / -1', md: '1 / 2', lg: '1 / 3' },
           })}
         >
           <Card
@@ -723,7 +723,7 @@ function ClipboardFormatterPageContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
         className={css({
-          gridColumn: { base: '1', md: '2', lg: '1' },
+          gridColumn: { base: '1 / -1', md: '2 / 3', lg: '3 / 4' },
         })}
       >
         <Card

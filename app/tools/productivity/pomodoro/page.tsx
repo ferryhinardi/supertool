@@ -517,7 +517,7 @@ export default function PomodoroTimerPage() {
         {/* Timer Card - Takes full width on mobile, 2 columns on desktop */}
         <Card
           className={css({
-            gridColumn: { base: '1', md: '1', lg: 'span 2' },
+            gridColumn: { base: '1 / -1', md: '1 / 2', lg: '1 / 3' },
             border: '1px solid',
             borderColor: 'gray.800',
             bg: 'gray.900/50',
@@ -810,7 +810,7 @@ export default function PomodoroTimerPage() {
         {/* Tasks Sidebar */}
         <Card
           className={css({
-            gridColumn: { base: '1', md: '2', lg: '1' },
+            gridColumn: { base: '1 / -1', md: '2 / 3', lg: '3 / 4' },
             border: '1px solid',
             borderColor: 'gray.800',
             bg: 'gray.900/50',

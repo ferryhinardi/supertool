@@ -671,7 +671,7 @@ export default function VideoSubtitleCombinerPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className={css({
-            gridColumn: { base: '1', md: '1', lg: 'span 2 / span 2' },
+            gridColumn: { base: '1 / -1', md: '1 / 2', lg: '1 / 3' },
             spaceY: '6',
           })}
         >
@@ -848,7 +848,7 @@ export default function VideoSubtitleCombinerPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className={css({ gridColumn: { base: '1', md: '2', lg: 'span 1' }, spaceY: '6' })}
+          className={css({ gridColumn: { base: '1 / -1', md: '2 / 3', lg: '3 / 4' }, spaceY: '6' })}
         >
           {/* Video Trimming */}
           {videoFile && videoDuration > 0 && (
