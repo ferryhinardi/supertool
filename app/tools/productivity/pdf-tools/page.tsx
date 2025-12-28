@@ -2438,7 +2438,7 @@ export default function PDFToolsPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className={css({
             w: 'full',
-            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 1' },
+            gridColumn: { base: '1', md: '1', lg: '1' },
           })}
         >
           <Card
@@ -5391,7 +5391,7 @@ export default function PDFToolsPage() {
           transition={{ delay: 0.3, duration: 0.5 }}
           className={css({
             w: 'full',
-            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 2' },
+            gridColumn: { base: '1', md: '2', lg: 'span 2' },
           })}
         >
           <Card
