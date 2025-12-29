@@ -485,6 +485,12 @@ type ToolEvent =
   | 'ssl_check_complete'
   | 'ssl_check_error'
   | 'ssl_report_copy'
+  | 'meme_template_select'
+  | 'meme_custom_upload'
+  | 'meme_generate'
+  | 'meme_generate_error'
+  | 'meme_download'
+  | 'meme_reset'
 
 // Type-safe gtag wrapper
 declare global {

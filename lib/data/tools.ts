@@ -184,6 +184,17 @@ export const tools: Tool[] = [
     category: 'media',
     new: true,
   },
+  {
+    title: 'Meme Generator',
+    description:
+      'Create viral memes in seconds with 25+ popular templates or upload your own image. Add text, customize fonts, and download instantly. Perfect for social media content creators.',
+    icon: Sparkles,
+    href: '/tools/media/meme-generator',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['25+ Templates', 'Custom Upload', 'Text Customization', 'Instant Download'],
+    category: 'media',
+    new: true,
+  },
 
   // Active tools (not popular or new)
   {
