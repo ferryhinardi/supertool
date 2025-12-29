@@ -161,6 +161,9 @@ importers:
       lucide-react:
         specifier: ^0.547.0
         version: 0.547.0(react@19.2.0)
+      luxon:
+        specifier: ^3.7.2
+        version: 3.7.2
       nanoid:
         specifier: ^5.1.6
         version: 5.1.6
@@ -264,6 +267,9 @@ importers:
       '@types/canvas-confetti':
         specifier: ^1.9.0
         version: 1.9.0
+      '@types/luxon':
+        specifier: ^3.7.1
+        version: 3.7.1
       '@types/mockdate':
         specifier: ^3.0.0
         version: 3.0.0
@@ -2083,6 +2089,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/luxon@3.7.1':
+    resolution: {integrity: sha512-H3iskjFIAn5SlJU7OuxUmTEpebK6TKB8rxZShDslBMZJ5u9S//KM1sbdAisiSrqwLQncVjnpi2OK2J51h+4lsg==}
 
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
@@ -7910,6 +7919,8 @@ snapshots:
   '@types/json-diff@1.0.3': {}
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/luxon@3.7.1': {}
 
   '@types/mdast@4.0.4':
     dependencies:

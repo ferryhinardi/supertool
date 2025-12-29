@@ -573,6 +573,17 @@ export const tools: Tool[] = [
     category: 'development',
     new: true,
   },
+  {
+    title: 'Cron Expression Builder',
+    description:
+      'Visual cron expression generator with human-readable explanations and platform-specific syntax. Build cron schedules with dropdowns, preview next 10 execution times, and validate expressions. Supports Unix, Quartz, AWS, Spring, and Kubernetes formats.',
+    icon: Clock,
+    href: '/tools/development/cron-builder',
+    gradient: 'from-blue-500 to-cyan-500',
+    features: ['Visual Builder', 'Human-Readable', '30+ Presets', 'Multi-Platform'],
+    category: 'development',
+    new: true,
+  },
 
   // Data & Conversion Utilities (Coming Soon)
   {
