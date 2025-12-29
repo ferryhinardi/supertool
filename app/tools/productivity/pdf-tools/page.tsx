@@ -2426,7 +2426,7 @@ export default function PDFToolsPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: '1fr 2fr' },
+          gridTemplateColumns: { base: '1fr', md: '1fr', lg: '1fr', xl: '1fr 2fr' },
           w: 'full',
           maxW: '1400px',
         })}
@@ -2438,7 +2438,7 @@ export default function PDFToolsPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className={css({
             w: 'full',
-            gridColumn: { base: '1 / -1', md: '1 / 2', lg: '1 / 2' },
+            gridColumn: { base: '1 / -1', xl: '1 / 2' },
           })}
         >
           <Card
@@ -5391,7 +5391,7 @@ export default function PDFToolsPage() {
           transition={{ delay: 0.3, duration: 0.5 }}
           className={css({
             w: 'full',
-            gridColumn: { base: '1 / -1', md: '2 / 3', lg: '2 / 3' },
+            gridColumn: { base: '1 / -1', xl: '2 / 3' },
           })}
         >
           <Card
