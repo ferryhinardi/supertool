@@ -97,6 +97,30 @@ export const tools: Tool[] = [
 
   // New tools
   {
+    title: 'Resume Builder Pro',
+    description:
+      'Professional resume builder with 10 ATS-optimized templates. Create stunning resumes with real-time preview, ATS scoring, and export to PDF or JSON. Perfect for job seekers and career changers.',
+    icon: FileText,
+    href: '/tools/productivity/resume-builder',
+    gradient: 'from-blue-500 to-cyan-500',
+    features: ['10 Templates', 'ATS Score', 'Live Preview', 'PDF/JSON Export'],
+    category: 'productivity',
+    new: true,
+    popular: true,
+  },
+  {
+    title: 'Cover Letter Builder',
+    description:
+      'Create professional cover letters with 5 customizable templates. Real-time preview, word count tracking, and export to visual or ATS-friendly PDF. Perfect companion to Resume Builder.',
+    icon: FileText,
+    href: '/tools/productivity/cover-letter-builder',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['5 Templates', 'Word Count', 'Live Preview', 'PDF/JSON Export'],
+    category: 'productivity',
+    new: true,
+    popular: true,
+  },
+  {
     title: 'Code Diff Viewer',
     description:
       'GitHub-style diff comparison tool for text, JSON, and code files. Compare changes side-by-side with split or unified view, perfect for code reviews and version control.',
