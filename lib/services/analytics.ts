@@ -520,6 +520,10 @@ type ToolEvent =
   | 'cover_letter_exported'
   | 'cover_letter_imported'
   | 'cover_letter_cleared'
+  | 'cover_letter_ai_suggestion_requested'
+  | 'cover_letter_ai_suggestion_applied'
+  | 'cover_letter_ai_tone_checked'
+  | 'cover_letter_ai_content_improved'
 
 // Type-safe gtag wrapper
 declare global {

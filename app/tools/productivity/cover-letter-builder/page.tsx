@@ -8,12 +8,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
+import { AISuggestions } from './components/AISuggestions'
 import { CoverLetterForm } from './components/CoverLetterForm'
+import { CoverLetterTips } from './components/CoverLetterTips'
 import { ClassicTemplate } from './components/templates/ClassicTemplate'
 import { CreativeTemplate } from './components/templates/CreativeTemplate'
+import { ExecutiveTemplate } from './components/templates/ExecutiveTemplate'
 import { MinimalTemplate } from './components/templates/MinimalTemplate'
 import { ModernTemplate } from './components/templates/ModernTemplate'
 import { ProfessionalTemplate } from './components/templates/ProfessionalTemplate'
+import { TechTemplate } from './components/templates/TechTemplate'
 import {
   exportCoverLetterToPDF,
   exportCoverLetterToTextPDF,
@@ -158,6 +162,38 @@ export default function CoverLetterBuilderPage() {
     }
   }, [])
 
+  // Handle applying AI suggestions
+  const handleApplyAISuggestion = useCallback((field: string, value: string) => {
+    setCoverLetter((prev) => {
+      const newData = { ...prev }
+      // Support nested field paths like "content.opening"
+      const fieldParts = field.split('.')
+      if (fieldParts.length === 2) {
+        const [parent, child] = fieldParts
+        if (parent === 'content' && child in newData.content) {
+          newData.content = {
+            ...newData.content,
+            [child]: value,
+          }
+        } else if (parent === 'personal' && child in newData.personal) {
+          newData.personal = {
+            ...newData.personal,
+            [child]: value,
+          }
+        } else if (parent === 'recipient' && child in newData.recipient) {
+          newData.recipient = {
+            ...newData.recipient,
+            [child]: value,
+          }
+        }
+      } else {
+        // Handle direct fields
+        ;(newData as Record<string, unknown>)[field] = value
+      }
+      return newData
+    })
+  }, [])
+
   // Template renderer
   const renderTemplate = () => {
     const props = { data: coverLetter }
@@ -172,6 +208,10 @@ export default function CoverLetterBuilderPage() {
         return <CreativeTemplate {...props} />
       case 'minimal':
         return <MinimalTemplate {...props} />
+      case 'executive':
+        return <ExecutiveTemplate {...props} />
+      case 'tech':
+        return <TechTemplate {...props} />
       default:
         return <ModernTemplate {...props} />
     }
@@ -416,6 +456,9 @@ export default function CoverLetterBuilderPage() {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Tips & Best Practices */}
+          <CoverLetterTips />
         </div>
 
         {/* CENTER - Form */}
@@ -485,6 +528,18 @@ export default function CoverLetterBuilderPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* AI Suggestions */}
+          <AISuggestions
+            coverLetter={coverLetter}
+            onApplySuggestion={handleApplyAISuggestion}
+            onAnalyticsEvent={(event, data) =>
+              trackToolEvent(
+                event as Parameters<typeof trackToolEvent>[0],
+                data as Record<string, string | number | boolean | string[]>
+              )
+            }
+          />
 
           {/* Preview */}
           <Card>

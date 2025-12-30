@@ -268,3 +268,18 @@ export function duplicateCoverLetter(data: CoverLetterData): CoverLetterData {
     updatedAt: new Date().toISOString(),
   }
 }
+
+// Format date for display
+export function formatDate(dateString: string): string {
+  if (!dateString) return ''
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  } catch {
+    return dateString
+  }
+}

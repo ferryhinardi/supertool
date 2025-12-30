@@ -1,7 +1,14 @@
 // Cover Letter Builder Types
 // Simplified structure focused on cover letter content
 
-export type TemplateId = 'modern' | 'classic' | 'professional' | 'creative' | 'minimal'
+export type TemplateId =
+  | 'modern'
+  | 'classic'
+  | 'professional'
+  | 'creative'
+  | 'minimal'
+  | 'executive'
+  | 'tech'
 
 export interface PersonalInfo {
   fullName: string
@@ -118,6 +125,20 @@ export const COVER_LETTER_TEMPLATES: Record<TemplateId, Template> = {
     description: 'Simple and elegant with maximum readability',
     features: ['Clean design', 'Minimal styling', 'High readability', 'Simple'],
     preview: 'Black text on white with subtle accents',
+  },
+  executive: {
+    id: 'executive',
+    name: 'Executive',
+    description: 'Professional design for senior-level positions with emphasis on leadership',
+    features: ['Navy Blue Accents', 'Georgia Serif', 'Bold Header', 'Traditional Layout'],
+    preview: 'Corporate executive style with prominent name display',
+  },
+  tech: {
+    id: 'tech',
+    name: 'Tech',
+    description: 'Modern gradient design perfect for tech companies and startups',
+    features: ['Gradient Accents', 'Inter Font', 'Portfolio Link', 'Contemporary Layout'],
+    preview: 'Tech-forward style with blue-purple gradient elements',
   },
 }
 
