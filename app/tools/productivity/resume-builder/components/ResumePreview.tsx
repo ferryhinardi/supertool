@@ -177,6 +177,8 @@ function TemplateWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export function ResumePreview({ data, templateId }: ResumePreviewProps) {
+  console.log('📄 ResumePreview rendering with templateId:', templateId)
+
   // Render the selected template with lazy loading
   const renderTemplate = () => {
     switch (templateId) {

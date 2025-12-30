@@ -116,6 +116,11 @@ export default function ResumeBuilderPage() {
   // Calculate ATS score with memoization to prevent unnecessary recalculations
   const atsScore = useMemo(() => calculateATSScore(resume), [resume])
 
+  // Debug: Log template changes
+  useEffect(() => {
+    console.log('🔄 Preview rendering with template:', selectedTemplate)
+  }, [selectedTemplate])
+
   // Track ATS score changes
   useEffect(() => {
     trackToolEvent('resume_ats_score_calculated', {
@@ -179,6 +184,7 @@ export default function ResumeBuilderPage() {
 
   // Template change handler
   const handleTemplateChange = useCallback((templateId: TemplateId) => {
+    console.log('🎨 Template changed to:', templateId)
     setSelectedTemplate(templateId)
     trackToolEvent('resume_template_change', { template: templateId })
   }, [])
@@ -837,7 +843,7 @@ export default function ResumeBuilderPage() {
                     })}
                     key={`preview-${selectedTemplate}`}
                   >
-                    <ResumePreview data={debouncedResume} templateId={selectedTemplate} />
+                    <ResumePreview data={resume} templateId={selectedTemplate} />
                   </div>
                 </div>
               </div>
@@ -905,7 +911,7 @@ export default function ResumeBuilderPage() {
               </Button>
             </div>
             <div className={css({ p: '4' })}>
-              <ResumePreview data={debouncedResume} templateId={selectedTemplate} />
+              <ResumePreview data={resume} templateId={selectedTemplate} />
             </div>
           </div>
         </button>
