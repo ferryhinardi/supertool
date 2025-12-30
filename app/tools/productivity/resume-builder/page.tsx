@@ -785,220 +785,226 @@ export default function ResumeBuilderPage() {
         </div>
 
         {/* Right Sidebar - Sticky Preview */}
-        <aside
+        <div
           className={css({
             display: { base: 'none', lg: 'block' },
             position: 'sticky',
-            alignSelf: 'start',
             top: '4',
-            maxHeight: 'calc(100vh - 2rem)',
-            overflow: 'auto',
+            alignSelf: 'start',
           })}
         >
-          <Card>
-            <CardHeader>
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '3',
-                })}
-              >
-                {/* Title Row */}
+          <aside
+            className={css({
+              maxHeight: 'calc(100vh - 2rem)',
+              overflow: 'auto',
+            })}
+          >
+            <Card>
+              <CardHeader>
                 <div
                   className={css({
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                    flexDirection: 'column',
+                    gap: '3',
                   })}
                 >
-                  <div>
-                    <CardTitle className={css({ fontSize: 'lg' })}>Preview</CardTitle>
-                    <CardDescription>
-                      {TEMPLATES.find((t) => t.id === selectedTemplate)?.name || 'Modern'} Template
-                    </CardDescription>
-                  </div>
-
-                  {/* Zoom Controls */}
-                  <div className={css({ display: 'flex', gap: '1', alignItems: 'center' })}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setZoom((prev) => Math.max(50, prev - 25))}
-                      disabled={zoom <= 50}
-                      className={css({ h: '8', w: '8' })}
-                      title="Zoom out"
-                    >
-                      <ZoomOut className={css({ h: '4', w: '4' })} />
-                    </Button>
-                    <span
-                      className={css({
-                        fontSize: 'sm',
-                        color: 'gray.400',
-                        minW: '12',
-                        textAlign: 'center',
-                      })}
-                    >
-                      {zoom}%
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setZoom((prev) => Math.min(150, prev + 25))}
-                      disabled={zoom >= 150}
-                      className={css({ h: '8', w: '8' })}
-                      title="Zoom in"
-                    >
-                      <ZoomIn className={css({ h: '4', w: '4' })} />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setZoom(100)}
-                      disabled={zoom === 100}
-                      className={css({ h: '8', w: '8' })}
-                      title="Reset zoom"
-                    >
-                      <Maximize2 className={css({ h: '4', w: '4' })} />
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Sample Data Controls Row */}
-                <div
-                  className={css({
-                    display: 'flex',
-                    gap: '2',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                  })}
-                >
-                  <Button
-                    variant={showSampleData && !hasUserData ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => {
-                      setShowSampleData((prev) => {
-                        const newValue = !prev
-                        trackToolEvent('resume_sample_data_toggle', { show: newValue })
-                        return newValue
-                      })
-                    }}
-                    className={css({ h: '8', fontSize: 'xs', px: '3' })}
-                    title={
-                      showSampleData
-                        ? 'Hide sample data and show empty template'
-                        : 'Show sample data to preview template design'
-                    }
-                  >
-                    <Eye className={css({ h: '3.5', w: '3.5', mr: '1.5' })} />
-                    {showSampleData && !hasUserData ? 'Sample Data' : 'Show Sample'}
-                  </Button>
-
-                  {showSampleData && !hasUserData && (
-                    <>
-                      <select
-                        value={selectedPersona}
-                        onChange={(e) => {
-                          const newPersona = e.target.value as PersonaType
-                          setSelectedPersona(newPersona)
-                          trackToolEvent('resume_persona_view', { persona: newPersona })
-                        }}
-                        className={css({
-                          h: '8',
-                          px: '3',
-                          fontSize: 'xs',
-                          rounded: 'md',
-                          border: '1px solid',
-                          borderColor: 'gray.300',
-                          bg: 'white',
-                          cursor: 'pointer',
-                          _hover: {
-                            borderColor: 'gray.400',
-                          },
-                          _focus: {
-                            outline: 'none',
-                            borderColor: 'blue.500',
-                            ring: '2px',
-                            ringColor: 'blue.200',
-                          },
-                        })}
-                        title="Choose a sample persona to preview"
-                      >
-                        {Object.values(SAMPLE_PERSONAS).map((persona) => (
-                          <option key={persona.id} value={persona.id}>
-                            {persona.name}
-                          </option>
-                        ))}
-                      </select>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleLoadSampleData}
-                        className={css({ h: '8', fontSize: 'xs', px: '3' })}
-                        title="Copy sample data to your resume form"
-                      >
-                        <Users className={css({ h: '3.5', w: '3.5', mr: '1.5' })} />
-                        Load Sample
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div
-                id="resume-preview"
-                className={css({
-                  aspectRatio: '8.5/11',
-                  bg: 'white',
-                  rounded: 'md',
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                  position: 'relative',
-                })}
-              >
-                {/* Template Name Badge - Visible indicator */}
-                <div
-                  className={css({
-                    position: 'absolute',
-                    top: '2',
-                    right: '2',
-                    bg: 'blue.500',
-                    color: 'white',
-                    px: '2',
-                    py: '1',
-                    rounded: 'md',
-                    fontSize: 'xs',
-                    fontWeight: 'bold',
-                    zIndex: 10,
-                    pointerEvents: 'none',
-                  })}
-                >
-                  {TEMPLATES.find((t) => t.id === selectedTemplate)?.name}
-                </div>
-                <div
-                  className={css({
-                    w: 'full',
-                    h: 'full',
-                    overflow: 'auto',
-                  })}
-                >
+                  {/* Title Row */}
                   <div
                     className={css({
-                      transform: `scale(${zoom / 100})`,
-                      transformOrigin: 'top left',
-                      transition: 'transform 0.2s ease-in-out',
-                      w: 'full',
-                      minH: 'full',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
                     })}
                   >
-                    <ResumePreview data={previewData} templateId={selectedTemplate} />
+                    <div>
+                      <CardTitle className={css({ fontSize: 'lg' })}>Preview</CardTitle>
+                      <CardDescription>
+                        {TEMPLATES.find((t) => t.id === selectedTemplate)?.name || 'Modern'}{' '}
+                        Template
+                      </CardDescription>
+                    </div>
+
+                    {/* Zoom Controls */}
+                    <div className={css({ display: 'flex', gap: '1', alignItems: 'center' })}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setZoom((prev) => Math.max(50, prev - 25))}
+                        disabled={zoom <= 50}
+                        className={css({ h: '8', w: '8' })}
+                        title="Zoom out"
+                      >
+                        <ZoomOut className={css({ h: '4', w: '4' })} />
+                      </Button>
+                      <span
+                        className={css({
+                          fontSize: 'sm',
+                          color: 'gray.400',
+                          minW: '12',
+                          textAlign: 'center',
+                        })}
+                      >
+                        {zoom}%
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setZoom((prev) => Math.min(150, prev + 25))}
+                        disabled={zoom >= 150}
+                        className={css({ h: '8', w: '8' })}
+                        title="Zoom in"
+                      >
+                        <ZoomIn className={css({ h: '4', w: '4' })} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setZoom(100)}
+                        disabled={zoom === 100}
+                        className={css({ h: '8', w: '8' })}
+                        title="Reset zoom"
+                      >
+                        <Maximize2 className={css({ h: '4', w: '4' })} />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Sample Data Controls Row */}
+                  <div
+                    className={css({
+                      display: 'flex',
+                      gap: '2',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                    })}
+                  >
+                    <Button
+                      variant={showSampleData && !hasUserData ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => {
+                        setShowSampleData((prev) => {
+                          const newValue = !prev
+                          trackToolEvent('resume_sample_data_toggle', { show: newValue })
+                          return newValue
+                        })
+                      }}
+                      className={css({ h: '8', fontSize: 'xs', px: '3' })}
+                      title={
+                        showSampleData
+                          ? 'Hide sample data and show empty template'
+                          : 'Show sample data to preview template design'
+                      }
+                    >
+                      <Eye className={css({ h: '3.5', w: '3.5', mr: '1.5' })} />
+                      {showSampleData && !hasUserData ? 'Sample Data' : 'Show Sample'}
+                    </Button>
+
+                    {showSampleData && !hasUserData && (
+                      <>
+                        <select
+                          value={selectedPersona}
+                          onChange={(e) => {
+                            const newPersona = e.target.value as PersonaType
+                            setSelectedPersona(newPersona)
+                            trackToolEvent('resume_persona_view', { persona: newPersona })
+                          }}
+                          className={css({
+                            h: '8',
+                            px: '3',
+                            fontSize: 'xs',
+                            rounded: 'md',
+                            border: '1px solid',
+                            borderColor: 'gray.300',
+                            bg: 'white',
+                            cursor: 'pointer',
+                            _hover: {
+                              borderColor: 'gray.400',
+                            },
+                            _focus: {
+                              outline: 'none',
+                              borderColor: 'blue.500',
+                              ring: '2px',
+                              ringColor: 'blue.200',
+                            },
+                          })}
+                          title="Choose a sample persona to preview"
+                        >
+                          {Object.values(SAMPLE_PERSONAS).map((persona) => (
+                            <option key={persona.id} value={persona.id}>
+                              {persona.name}
+                            </option>
+                          ))}
+                        </select>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleLoadSampleData}
+                          className={css({ h: '8', fontSize: 'xs', px: '3' })}
+                          title="Copy sample data to your resume form"
+                        >
+                          <Users className={css({ h: '3.5', w: '3.5', mr: '1.5' })} />
+                          Load Sample
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
+              </CardHeader>
+              <CardContent>
+                <div
+                  id="resume-preview"
+                  className={css({
+                    aspectRatio: '8.5/11',
+                    bg: 'white',
+                    rounded: 'md',
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    position: 'relative',
+                  })}
+                >
+                  {/* Template Name Badge - Visible indicator */}
+                  <div
+                    className={css({
+                      position: 'absolute',
+                      top: '2',
+                      right: '2',
+                      bg: 'blue.500',
+                      color: 'white',
+                      px: '2',
+                      py: '1',
+                      rounded: 'md',
+                      fontSize: 'xs',
+                      fontWeight: 'bold',
+                      zIndex: 10,
+                      pointerEvents: 'none',
+                    })}
+                  >
+                    {TEMPLATES.find((t) => t.id === selectedTemplate)?.name}
+                  </div>
+                  <div
+                    className={css({
+                      w: 'full',
+                      h: 'full',
+                      overflow: 'auto',
+                    })}
+                  >
+                    <div
+                      className={css({
+                        transform: `scale(${zoom / 100})`,
+                        transformOrigin: 'top left',
+                        transition: 'transform 0.2s ease-in-out',
+                        w: 'full',
+                        minH: 'full',
+                      })}
+                    >
+                      <ResumePreview data={previewData} templateId={selectedTemplate} />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
       </div>
 
       {/* Mobile Preview Modal */}
