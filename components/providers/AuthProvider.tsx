@@ -15,14 +15,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(user)
 
       if (user) {
-        // Fetch user profile
-        const { data: profile } = await supabase
+        // Fetch user profile with error handling
+        const { data: profile, error } = await supabase
           .from('user_profiles')
           .select('*')
           .eq('id', user.id)
           .single()
 
-        setProfile(profile as UserProfile | null)
+        if (error) {
+          console.warn('Failed to fetch user profile:', error.message)
+          setProfile(null)
+        } else {
+          setProfile(profile as UserProfile | null)
+        }
       } else {
         setProfile(null)
       }

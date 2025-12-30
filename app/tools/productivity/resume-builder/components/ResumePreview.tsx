@@ -5,7 +5,7 @@
  * Features: Smooth transitions, skeleton loader, error boundary
  */
 
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { css, cx } from '@/styled-system/css'
 import type { ResumeData, TemplateId } from '../types'
 import { TemplateErrorBoundary } from './TemplateErrorBoundary'
@@ -179,8 +179,8 @@ function TemplateWrapper({ children }: { children: React.ReactNode }) {
 export function ResumePreview({ data, templateId }: ResumePreviewProps) {
   console.log('📄 ResumePreview rendering with templateId:', templateId)
 
-  // Render the selected template with lazy loading
-  const renderTemplate = () => {
+  // Memoize template rendering to ensure it updates when templateId changes
+  const template = useMemo(() => {
     switch (templateId) {
       case 'modern':
         return <ModernTemplate data={data} />
@@ -205,12 +205,12 @@ export function ResumePreview({ data, templateId }: ResumePreviewProps) {
       default:
         return <ModernTemplate data={data} />
     }
-  }
+  }, [templateId, data])
 
   return (
     <TemplateErrorBoundary>
       <Suspense fallback={<TemplateSkeleton />}>
-        <TemplateWrapper key={templateId}>{renderTemplate()}</TemplateWrapper>
+        <TemplateWrapper key={templateId}>{template}</TemplateWrapper>
       </Suspense>
     </TemplateErrorBoundary>
   )

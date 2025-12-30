@@ -862,7 +862,6 @@ export default function ResumeBuilderPage() {
                       w: 'full',
                       minH: 'full',
                     })}
-                    key={`preview-${selectedTemplate}`}
                   >
                     <ResumePreview data={resume} templateId={selectedTemplate} />
                   </div>
