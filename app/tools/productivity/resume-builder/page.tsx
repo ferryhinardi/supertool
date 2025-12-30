@@ -295,6 +295,7 @@ export default function ResumeBuilderPage() {
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
       {/* Header */}
@@ -359,10 +360,10 @@ export default function ResumeBuilderPage() {
           alignItems: 'center',
           mb: '6',
           p: '4',
-          bg: 'gray.900',
+          bg: 'gray.800',
           rounded: 'lg',
           border: '1px solid',
-          borderColor: 'gray.800',
+          borderColor: 'gray.700',
         })}
       >
         <div className={css({ display: 'flex', gap: '2', alignItems: 'center', flexWrap: 'wrap' })}>
@@ -401,7 +402,7 @@ export default function ResumeBuilderPage() {
         </div>
 
         {lastSaved && (
-          <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+          <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
             Last saved: {lastSaved.toLocaleTimeString()}
           </p>
         )}
@@ -417,7 +418,7 @@ export default function ResumeBuilderPage() {
             rounded: 'full',
           })}
         >
-          <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.400' })}>
+          <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
             ATS Score:
           </span>
           <span
@@ -432,22 +433,72 @@ export default function ResumeBuilderPage() {
         </div>
       </div>
 
-      {/* Main Layout - 3 Columns */}
+      {/* Mobile Template Selector - Horizontal Scroll */}
+      <Card className={css({ display: { base: 'block', lg: 'none' }, mb: '6' })}>
+        <CardHeader>
+          <CardTitle className={css({ fontSize: 'lg' })}>Templates</CardTitle>
+          <CardDescription>Swipe to see all templates</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div
+            className={css({
+              display: 'flex',
+              gap: '3',
+              overflowX: 'auto',
+              pb: '2',
+              scrollSnapType: 'x mandatory',
+              '&::-webkit-scrollbar': {
+                height: '6px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                bg: 'gray.600',
+                rounded: 'full',
+              },
+            })}
+          >
+            {TEMPLATES.map((template) => (
+              <div
+                key={template.id}
+                className={css({
+                  minW: '120px',
+                  scrollSnapAlign: 'start',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '2',
+                })}
+              >
+                <TemplateThumbnail
+                  templateId={template.id}
+                  isSelected={selectedTemplate === template.id}
+                  onClick={() => handleTemplateChange(template.id)}
+                />
+                <div className={css({ textAlign: 'center' })}>
+                  <div className={css({ fontWeight: 'medium', fontSize: 'sm', color: 'gray.50' })}>
+                    {template.name}
+                  </div>
+                  <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                    ATS: {template.atsScore}/100
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Main Layout - 2 Columns */}
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: '280px 1fr 360px' },
+          gridTemplateColumns: { base: '1fr', lg: 'minmax(0, 1fr) 420px' },
           gap: '6',
           alignItems: 'start',
         })}
       >
-        {/* Left Sidebar - Template Selector */}
-        <aside
-          className={css({
-            display: { base: 'none', lg: 'block' },
-          })}
-        >
-          <Card>
+        {/* Left Side - Templates (Desktop) + Forms + ATS Score */}
+        <div className={css({ display: 'flex', flexDirection: 'column', gap: '6' })}>
+          {/* Desktop Template Selector */}
+          <Card className={css({ display: { base: 'none', lg: 'block' } })}>
             <CardHeader>
               <CardTitle className={css({ fontSize: 'lg' })}>Templates</CardTitle>
               <CardDescription>Choose a professional template</CardDescription>
@@ -456,7 +507,7 @@ export default function ResumeBuilderPage() {
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
                   gap: '3',
                   w: 'full',
                 })}
@@ -477,7 +528,7 @@ export default function ResumeBuilderPage() {
                       >
                         {template.name}
                       </div>
-                      <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                      <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
                         ATS: {template.atsScore}/100
                       </div>
                     </div>
@@ -486,119 +537,6 @@ export default function ResumeBuilderPage() {
               </div>
             </CardContent>
           </Card>
-
-          {/* ATS Score Card */}
-          <Card className={css({ mt: '4' })}>
-            <CardHeader>
-              <CardTitle className={css({ fontSize: 'lg' })}>ATS Analysis</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
-                <div>
-                  <div
-                    className={css({
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      mb: '1',
-                      fontSize: 'sm',
-                    })}
-                  >
-                    <span className={css({ color: 'gray.400' })}>Format</span>
-                    <span className={css({ fontWeight: 'medium' })}>
-                      {atsScore.formatScore}/100
-                    </span>
-                  </div>
-                  <div
-                    className={css({
-                      h: '2',
-                      bg: 'gray.800',
-                      rounded: 'full',
-                      overflow: 'hidden',
-                    })}
-                  >
-                    <div
-                      className={css({
-                        h: 'full',
-                        bg: 'blue.500',
-                        transition: 'width 0.3s',
-                      })}
-                      style={{ width: `${atsScore.formatScore}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div
-                    className={css({
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      mb: '1',
-                      fontSize: 'sm',
-                    })}
-                  >
-                    <span className={css({ color: 'gray.400' })}>Keywords</span>
-                    <span className={css({ fontWeight: 'medium' })}>
-                      {atsScore.keywordScore}/100
-                    </span>
-                  </div>
-                  <div
-                    className={css({
-                      h: '2',
-                      bg: 'gray.800',
-                      rounded: 'full',
-                      overflow: 'hidden',
-                    })}
-                  >
-                    <div
-                      className={css({
-                        h: 'full',
-                        bg: 'green.500',
-                        transition: 'width 0.3s',
-                      })}
-                      style={{ width: `${atsScore.keywordScore}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div
-                    className={css({
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      mb: '1',
-                      fontSize: 'sm',
-                    })}
-                  >
-                    <span className={css({ color: 'gray.400' })}>Content</span>
-                    <span className={css({ fontWeight: 'medium' })}>
-                      {atsScore.contentScore}/100
-                    </span>
-                  </div>
-                  <div
-                    className={css({
-                      h: '2',
-                      bg: 'gray.800',
-                      rounded: 'full',
-                      overflow: 'hidden',
-                    })}
-                  >
-                    <div
-                      className={css({
-                        h: 'full',
-                        bg: 'cyan.500',
-                        transition: 'width 0.3s',
-                      })}
-                      style={{ width: `${atsScore.contentScore}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
-
-        {/* Center - Form Sections */}
-        <div>
           {/* Section Tabs */}
           <div
             className={css({
@@ -607,6 +545,13 @@ export default function ResumeBuilderPage() {
               mb: '4',
               overflowX: 'auto',
               pb: '2',
+              '&::-webkit-scrollbar': {
+                height: '6px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                bg: 'gray.600',
+                rounded: 'full',
+              },
             })}
           >
             {sections.map((section) => {
@@ -630,14 +575,15 @@ export default function ResumeBuilderPage() {
                     fontWeight: 'medium',
                     whiteSpace: 'nowrap',
                     border: '1px solid',
-                    borderColor: activeSection === section.id ? 'blue.500' : 'gray.800',
-                    bg: activeSection === section.id ? 'blue.500/10' : 'gray.900',
-                    color: activeSection === section.id ? 'blue.400' : 'gray.400',
+                    borderColor: activeSection === section.id ? 'blue.500' : 'gray.700',
+                    bg: activeSection === section.id ? 'blue.500/20' : 'gray.800',
+                    color: activeSection === section.id ? 'blue.300' : 'gray.200',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     _hover: {
                       borderColor: 'blue.500',
-                      color: 'blue.400',
+                      color: 'blue.300',
+                      bg: activeSection === section.id ? 'blue.500/20' : 'gray.750',
                     },
                   })}
                 >
@@ -683,14 +629,126 @@ export default function ResumeBuilderPage() {
                 )}
             </CardContent>
           </Card>
+
+          {/* ATS Score Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className={css({ fontSize: 'lg' })}>ATS Analysis</CardTitle>
+              <CardDescription>How well your resume performs with ATS systems</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+                <div>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: '1',
+                      fontSize: 'sm',
+                    })}
+                  >
+                    <span className={css({ color: 'gray.300' })}>Format</span>
+                    <span className={css({ fontWeight: 'medium', color: 'gray.100' })}>
+                      {atsScore.formatScore}/100
+                    </span>
+                  </div>
+                  <div
+                    className={css({
+                      h: '2',
+                      bg: 'gray.800',
+                      rounded: 'full',
+                      overflow: 'hidden',
+                    })}
+                  >
+                    <div
+                      className={css({
+                        h: 'full',
+                        bg: 'blue.500',
+                        transition: 'width 0.3s',
+                      })}
+                      style={{ width: `${atsScore.formatScore}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: '1',
+                      fontSize: 'sm',
+                    })}
+                  >
+                    <span className={css({ color: 'gray.300' })}>Keywords</span>
+                    <span className={css({ fontWeight: 'medium', color: 'gray.100' })}>
+                      {atsScore.keywordScore}/100
+                    </span>
+                  </div>
+                  <div
+                    className={css({
+                      h: '2',
+                      bg: 'gray.800',
+                      rounded: 'full',
+                      overflow: 'hidden',
+                    })}
+                  >
+                    <div
+                      className={css({
+                        h: 'full',
+                        bg: 'green.500',
+                        transition: 'width 0.3s',
+                      })}
+                      style={{ width: `${atsScore.keywordScore}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: '1',
+                      fontSize: 'sm',
+                    })}
+                  >
+                    <span className={css({ color: 'gray.300' })}>Content</span>
+                    <span className={css({ fontWeight: 'medium', color: 'gray.100' })}>
+                      {atsScore.contentScore}/100
+                    </span>
+                  </div>
+                  <div
+                    className={css({
+                      h: '2',
+                      bg: 'gray.800',
+                      rounded: 'full',
+                      overflow: 'hidden',
+                    })}
+                  >
+                    <div
+                      className={css({
+                        h: 'full',
+                        bg: 'cyan.500',
+                        transition: 'width 0.3s',
+                      })}
+                      style={{ width: `${atsScore.contentScore}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Right Sidebar - Preview */}
+        {/* Right Sidebar - Sticky Preview */}
         <aside
           className={css({
             display: { base: 'none', lg: 'block' },
             position: 'sticky',
             top: '4',
+            height: 'fit-content',
+            maxHeight: 'calc(100vh - 2rem)',
           })}
         >
           <Card>
@@ -720,7 +778,7 @@ export default function ResumeBuilderPage() {
                   <span
                     className={css({
                       fontSize: 'sm',
-                      color: 'gray.600',
+                      color: 'gray.400',
                       minW: '12',
                       textAlign: 'center',
                     })}
