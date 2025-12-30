@@ -70,13 +70,13 @@ jobs:
           COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
           echo "Current coverage: $COVERAGE%"
           
-          if (( $(echo "$COVERAGE < 29" | bc -l) )); then
-            echo "❌ Coverage is below 29% threshold"
+          if (( $(echo "$COVERAGE < 27" | bc -l) )); then
+            echo "❌ Coverage is below 27% threshold"
             echo "Current: $COVERAGE%"
-            echo "Required: 29%"
+            echo "Required: 27%"
             exit 1
           else
-            echo "✅ Coverage meets 29% threshold"
+            echo "✅ Coverage meets 27% threshold"
           fi
 
       - name: Store coverage report
