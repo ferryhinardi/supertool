@@ -575,17 +575,7 @@ export const tools: Tool[] = [
     category: 'development',
     new: true,
   },
-  {
-    title: 'Cron Expression Builder',
-    description:
-      'Visual cron schedule builder with human-readable descriptions. Preview next 10 execution times, validate expressions, browse common patterns, and export for various platforms.',
-    icon: Calendar,
-    href: '/tools/development/cron-expression',
-    gradient: 'from-teal-500 to-green-500',
-    features: ['Visual Builder', 'Next 10 Runs', 'Pattern Library', 'Multi-Platform'],
-    category: 'development',
-    new: true,
-  },
+
   {
     title: 'Regex Pattern Library & Tester',
     description:
