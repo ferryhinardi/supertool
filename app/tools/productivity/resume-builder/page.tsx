@@ -295,13 +295,14 @@ export default function ResumeBuilderPage() {
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
+        display: 'flex',
+        flexDirection: 'column',
+        gap: { base: '6', sm: '8', md: '10' },
       })}
     >
       {/* Header */}
       <div
         className={css({
-          mb: { base: '6', sm: '8' },
           textAlign: 'center',
         })}
       >
@@ -358,7 +359,6 @@ export default function ResumeBuilderPage() {
           gap: '3',
           justifyContent: 'space-between',
           alignItems: 'center',
-          mb: '6',
           p: '4',
           bg: 'gray.800',
           rounded: 'lg',
@@ -434,7 +434,7 @@ export default function ResumeBuilderPage() {
       </div>
 
       {/* Mobile Template Selector - Horizontal Scroll */}
-      <Card className={css({ display: { base: 'block', lg: 'none' }, mb: '6' })}>
+      <Card className={css({ display: { base: 'block', lg: 'none' } })}>
         <CardHeader>
           <CardTitle className={css({ fontSize: 'lg' })}>Templates</CardTitle>
           <CardDescription>Swipe to see all templates</CardDescription>
@@ -815,23 +815,30 @@ export default function ResumeBuilderPage() {
                   aspectRatio: '8.5/11',
                   bg: 'white',
                   rounded: 'md',
-                  overflow: 'auto',
+                  overflow: 'hidden',
                   boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  position: 'relative',
                 })}
               >
                 <div
                   className={css({
-                    transform: `scale(${zoom / 100})`,
-                    transformOrigin: 'top center',
-                    transition: 'transform 0.2s ease-in-out',
                     w: 'full',
                     h: 'full',
+                    overflow: 'auto',
                   })}
                 >
-                  <ResumePreview data={debouncedResume} templateId={selectedTemplate} />
+                  <div
+                    className={css({
+                      transform: `scale(${zoom / 100})`,
+                      transformOrigin: 'top left',
+                      transition: 'transform 0.2s ease-in-out',
+                      w: 'full',
+                      minH: 'full',
+                    })}
+                    key={`preview-${selectedTemplate}`}
+                  >
+                    <ResumePreview data={debouncedResume} templateId={selectedTemplate} />
+                  </div>
                 </div>
               </div>
             </CardContent>
