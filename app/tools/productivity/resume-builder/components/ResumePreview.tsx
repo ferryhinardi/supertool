@@ -2,11 +2,13 @@
  * Resume Preview Component
  * Renders the selected template with resume data
  * Templates are lazy-loaded for optimal bundle size
+ * Features: Smooth transitions, skeleton loader, error boundary
  */
 
-import { lazy, Suspense } from 'react'
-import { css } from '@/styled-system/css'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import { css, cx } from '@/styled-system/css'
 import type { ResumeData, TemplateId } from '../types'
+import { TemplateErrorBoundary } from './TemplateErrorBoundary'
 
 // Lazy load templates for optimal bundle size
 const ModernTemplate = lazy(() =>
@@ -47,22 +49,129 @@ interface ResumePreviewProps {
   templateId: TemplateId
 }
 
-// Loading fallback component
-function TemplateLoading() {
+// Skeleton loader with resume-like structure
+function TemplateSkeleton() {
   return (
     <div
       className={css({
         w: 'full',
         h: 'full',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         bg: 'white',
-        color: 'rgb(107, 114, 128)',
-        fontSize: '14px',
+        p: '8',
+        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       })}
     >
-      Loading template...
+      {/* Header skeleton */}
+      <div className={css({ mb: '6' })}>
+        <div
+          className={css({
+            h: '8',
+            w: '60%',
+            bg: 'rgb(229, 231, 235)',
+            rounded: 'md',
+            mb: '2',
+          })}
+        />
+        <div
+          className={css({
+            h: '4',
+            w: '40%',
+            bg: 'rgb(243, 244, 246)',
+            rounded: 'md',
+            mb: '1',
+          })}
+        />
+        <div
+          className={css({
+            h: '4',
+            w: '50%',
+            bg: 'rgb(243, 244, 246)',
+            rounded: 'md',
+          })}
+        />
+      </div>
+
+      {/* Section skeleton */}
+      <div className={css({ mb: '6' })}>
+        <div
+          className={css({
+            h: '5',
+            w: '30%',
+            bg: 'rgb(229, 231, 235)',
+            rounded: 'md',
+            mb: '3',
+          })}
+        />
+        <div className={css({ spaceY: '2' })}>
+          <div className={css({ h: '3', w: '90%', bg: 'rgb(243, 244, 246)', rounded: 'sm' })} />
+          <div className={css({ h: '3', w: '85%', bg: 'rgb(243, 244, 246)', rounded: 'sm' })} />
+          <div className={css({ h: '3', w: '80%', bg: 'rgb(243, 244, 246)', rounded: 'sm' })} />
+        </div>
+      </div>
+
+      {/* Another section skeleton */}
+      <div className={css({ mb: '6' })}>
+        <div
+          className={css({
+            h: '5',
+            w: '35%',
+            bg: 'rgb(229, 231, 235)',
+            rounded: 'md',
+            mb: '3',
+          })}
+        />
+        <div className={css({ spaceY: '2' })}>
+          <div className={css({ h: '3', w: '95%', bg: 'rgb(243, 244, 246)', rounded: 'sm' })} />
+          <div className={css({ h: '3', w: '88%', bg: 'rgb(243, 244, 246)', rounded: 'sm' })} />
+          <div className={css({ h: '3', w: '92%', bg: 'rgb(243, 244, 246)', rounded: 'sm' })} />
+        </div>
+      </div>
+
+      {/* Skills section skeleton */}
+      <div className={css({ mb: '6' })}>
+        <div
+          className={css({
+            h: '5',
+            w: '25%',
+            bg: 'rgb(229, 231, 235)',
+            rounded: 'md',
+            mb: '3',
+          })}
+        />
+        <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
+          <div className={css({ h: '6', w: '20%', bg: 'rgb(243, 244, 246)', rounded: 'full' })} />
+          <div className={css({ h: '6', w: '25%', bg: 'rgb(243, 244, 246)', rounded: 'full' })} />
+          <div className={css({ h: '6', w: '18%', bg: 'rgb(243, 244, 246)', rounded: 'full' })} />
+          <div className={css({ h: '6', w: '22%', bg: 'rgb(243, 244, 246)', rounded: 'full' })} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Wrapper component with fade transition
+function TemplateWrapper({ children }: { children: React.ReactNode }) {
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    // Trigger fade in animation after mount
+    const timer = setTimeout(() => setIsVisible(true), 50)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <div
+      className={cx(
+        css({
+          w: 'full',
+          h: 'full',
+          opacity: 0,
+          transition: 'opacity 0.3s ease-in-out',
+        }),
+        isVisible && css({ opacity: 1 })
+      )}
+    >
+      {children}
     </div>
   )
 }
@@ -96,5 +205,11 @@ export function ResumePreview({ data, templateId }: ResumePreviewProps) {
     }
   }
 
-  return <Suspense fallback={<TemplateLoading />}>{renderTemplate()}</Suspense>
+  return (
+    <TemplateErrorBoundary>
+      <Suspense fallback={<TemplateSkeleton />}>
+        <TemplateWrapper key={templateId}>{renderTemplate()}</TemplateWrapper>
+      </Suspense>
+    </TemplateErrorBoundary>
+  )
 }

@@ -4,18 +4,23 @@ import {
   ArrowRight,
   Briefcase,
   Download,
+  Eye,
   FileText,
   GraduationCap,
+  Maximize2,
   Save,
   Sparkles,
   User,
   Wrench,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useDebounce } from '@/hooks/common/useDebounce'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -79,6 +84,11 @@ export default function ResumeBuilderPage() {
   })
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>('modern')
   const [activeSection, setActiveSection] = useState<ResumeSection>('personal')
+  const [zoom, setZoom] = useState<number>(100)
+  const [showMobilePreview, setShowMobilePreview] = useState(false)
+
+  // Debounce resume data to prevent excessive re-renders during typing
+  const debouncedResume = useDebounce(resume, 300)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
 
   // Load from localStorage on mount
@@ -103,8 +113,8 @@ export default function ResumeBuilderPage() {
     return () => clearInterval(interval)
   }, [resume])
 
-  // Calculate ATS score
-  const atsScore = calculateATSScore(resume)
+  // Calculate ATS score with memoization to prevent unnecessary recalculations
+  const atsScore = useMemo(() => calculateATSScore(resume), [resume])
 
   // Track ATS score changes
   useEffect(() => {
@@ -359,6 +369,15 @@ export default function ResumeBuilderPage() {
           <Button onClick={handleSave} variant="outline" size="sm">
             <Save className={css({ w: '4', h: '4', mr: '2' })} />
             Save
+          </Button>
+          <Button
+            onClick={() => setShowMobilePreview(true)}
+            variant="outline"
+            size="sm"
+            className={css({ display: { base: 'inline-flex', lg: 'none' } })}
+          >
+            <Eye className={css({ w: '4', h: '4', mr: '2' })} />
+            Preview
           </Button>
           <Button onClick={handleExportPDF} variant="default" size="sm">
             <Download className={css({ w: '4', h: '4', mr: '2' })} />
@@ -676,8 +695,60 @@ export default function ResumeBuilderPage() {
         >
           <Card>
             <CardHeader>
-              <CardTitle className={css({ fontSize: 'lg' })}>Preview</CardTitle>
-              <CardDescription>Real-time resume preview</CardDescription>
+              <div
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                })}
+              >
+                <div>
+                  <CardTitle className={css({ fontSize: 'lg' })}>Preview</CardTitle>
+                  <CardDescription>Real-time resume preview</CardDescription>
+                </div>
+                <div className={css({ display: 'flex', gap: '1', alignItems: 'center' })}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setZoom((prev) => Math.max(50, prev - 25))}
+                    disabled={zoom <= 50}
+                    className={css({ h: '8', w: '8' })}
+                    title="Zoom out"
+                  >
+                    <ZoomOut className={css({ h: '4', w: '4' })} />
+                  </Button>
+                  <span
+                    className={css({
+                      fontSize: 'sm',
+                      color: 'gray.600',
+                      minW: '12',
+                      textAlign: 'center',
+                    })}
+                  >
+                    {zoom}%
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setZoom((prev) => Math.min(150, prev + 25))}
+                    disabled={zoom >= 150}
+                    className={css({ h: '8', w: '8' })}
+                    title="Zoom in"
+                  >
+                    <ZoomIn className={css({ h: '4', w: '4' })} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setZoom(100)}
+                    disabled={zoom === 100}
+                    className={css({ h: '8', w: '8' })}
+                    title="Reset zoom"
+                  >
+                    <Maximize2 className={css({ h: '4', w: '4' })} />
+                  </Button>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
               <div
@@ -688,14 +759,92 @@ export default function ResumeBuilderPage() {
                   rounded: 'md',
                   overflow: 'auto',
                   boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 })}
               >
-                <ResumePreview data={resume} templateId={selectedTemplate} />
+                <div
+                  className={css({
+                    transform: `scale(${zoom / 100})`,
+                    transformOrigin: 'top center',
+                    transition: 'transform 0.2s ease-in-out',
+                    w: 'full',
+                    h: 'full',
+                  })}
+                >
+                  <ResumePreview data={debouncedResume} templateId={selectedTemplate} />
+                </div>
               </div>
             </CardContent>
           </Card>
         </aside>
       </div>
+
+      {/* Mobile Preview Modal */}
+      {showMobilePreview && (
+        <button
+          type="button"
+          className={css({
+            position: 'fixed',
+            inset: 0,
+            bg: 'rgba(0, 0, 0, 0.8)',
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: '4',
+            border: 'none',
+            cursor: 'pointer',
+          })}
+          onClick={() => setShowMobilePreview(false)}
+          aria-label="Close preview"
+        >
+          <div
+            className={css({
+              bg: 'white',
+              rounded: 'lg',
+              maxW: '4xl',
+              w: 'full',
+              maxH: '90vh',
+              overflow: 'auto',
+              position: 'relative',
+            })}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setShowMobilePreview(false)
+            }}
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+          >
+            <div
+              className={css({
+                position: 'sticky',
+                top: 0,
+                bg: 'white',
+                p: '4',
+                borderBottom: '1px solid',
+                borderColor: 'gray.200',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                zIndex: 10,
+              })}
+            >
+              <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'gray.900' })}>
+                Resume Preview
+              </h3>
+              <Button variant="ghost" size="sm" onClick={() => setShowMobilePreview(false)}>
+                Close
+              </Button>
+            </div>
+            <div className={css({ p: '4' })}>
+              <ResumePreview data={debouncedResume} templateId={selectedTemplate} />
+            </div>
+          </div>
+        </button>
+      )}
     </main>
   )
 }
