@@ -768,7 +768,9 @@ export default function ResumeBuilderPage() {
               >
                 <div>
                   <CardTitle className={css({ fontSize: 'lg' })}>Preview</CardTitle>
-                  <CardDescription>Real-time resume preview</CardDescription>
+                  <CardDescription>
+                    {TEMPLATES.find((t) => t.id === selectedTemplate)?.name || 'Modern'} Template
+                  </CardDescription>
                 </div>
                 <div className={css({ display: 'flex', gap: '1', alignItems: 'center' })}>
                   <Button
@@ -826,6 +828,25 @@ export default function ResumeBuilderPage() {
                   position: 'relative',
                 })}
               >
+                {/* Template Name Badge - Visible indicator */}
+                <div
+                  className={css({
+                    position: 'absolute',
+                    top: '2',
+                    right: '2',
+                    bg: 'blue.500',
+                    color: 'white',
+                    px: '2',
+                    py: '1',
+                    rounded: 'md',
+                    fontSize: 'xs',
+                    fontWeight: 'bold',
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                  })}
+                >
+                  {TEMPLATES.find((t) => t.id === selectedTemplate)?.name}
+                </div>
                 <div
                   className={css({
                     w: 'full',
