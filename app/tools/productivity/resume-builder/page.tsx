@@ -789,9 +789,10 @@ export default function ResumeBuilderPage() {
           className={css({
             display: { base: 'none', lg: 'block' },
             position: 'sticky',
+            alignSelf: 'start',
             top: '4',
-            height: 'fit-content',
             maxHeight: 'calc(100vh - 2rem)',
+            overflow: 'auto',
           })}
         >
           <Card>
@@ -799,67 +800,81 @@ export default function ResumeBuilderPage() {
               <div
                 className={css({
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
+                  flexDirection: 'column',
+                  gap: '3',
                 })}
               >
-                <div>
-                  <CardTitle className={css({ fontSize: 'lg' })}>Preview</CardTitle>
-                  <CardDescription>
-                    {TEMPLATES.find((t) => t.id === selectedTemplate)?.name || 'Modern'} Template
-                  </CardDescription>
+                {/* Title Row */}
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  })}
+                >
+                  <div>
+                    <CardTitle className={css({ fontSize: 'lg' })}>Preview</CardTitle>
+                    <CardDescription>
+                      {TEMPLATES.find((t) => t.id === selectedTemplate)?.name || 'Modern'} Template
+                    </CardDescription>
+                  </div>
+
+                  {/* Zoom Controls */}
+                  <div className={css({ display: 'flex', gap: '1', alignItems: 'center' })}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setZoom((prev) => Math.max(50, prev - 25))}
+                      disabled={zoom <= 50}
+                      className={css({ h: '8', w: '8' })}
+                      title="Zoom out"
+                    >
+                      <ZoomOut className={css({ h: '4', w: '4' })} />
+                    </Button>
+                    <span
+                      className={css({
+                        fontSize: 'sm',
+                        color: 'gray.400',
+                        minW: '12',
+                        textAlign: 'center',
+                      })}
+                    >
+                      {zoom}%
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setZoom((prev) => Math.min(150, prev + 25))}
+                      disabled={zoom >= 150}
+                      className={css({ h: '8', w: '8' })}
+                      title="Zoom in"
+                    >
+                      <ZoomIn className={css({ h: '4', w: '4' })} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setZoom(100)}
+                      disabled={zoom === 100}
+                      className={css({ h: '8', w: '8' })}
+                      title="Reset zoom"
+                    >
+                      <Maximize2 className={css({ h: '4', w: '4' })} />
+                    </Button>
+                  </div>
                 </div>
-                <div className={css({ display: 'flex', gap: '1', alignItems: 'center' })}>
+
+                {/* Sample Data Controls Row */}
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: '2',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                  })}
+                >
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setZoom((prev) => Math.max(50, prev - 25))}
-                    disabled={zoom <= 50}
-                    className={css({ h: '8', w: '8' })}
-                    title="Zoom out"
-                  >
-                    <ZoomOut className={css({ h: '4', w: '4' })} />
-                  </Button>
-                  <span
-                    className={css({
-                      fontSize: 'sm',
-                      color: 'gray.400',
-                      minW: '12',
-                      textAlign: 'center',
-                    })}
-                  >
-                    {zoom}%
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setZoom((prev) => Math.min(150, prev + 25))}
-                    disabled={zoom >= 150}
-                    className={css({ h: '8', w: '8' })}
-                    title="Zoom in"
-                  >
-                    <ZoomIn className={css({ h: '4', w: '4' })} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setZoom(100)}
-                    disabled={zoom === 100}
-                    className={css({ h: '8', w: '8' })}
-                    title="Reset zoom"
-                  >
-                    <Maximize2 className={css({ h: '4', w: '4' })} />
-                  </Button>
-                  <div
-                    className={css({
-                      h: '6',
-                      w: '1px',
-                      bg: 'gray.300',
-                      mx: '2',
-                    })}
-                  />
-                  <Button
-                    variant={showSampleData && !hasUserData ? 'default' : 'ghost'}
+                    variant={showSampleData && !hasUserData ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => {
                       setShowSampleData((prev) => {
@@ -878,48 +893,43 @@ export default function ResumeBuilderPage() {
                     <Eye className={css({ h: '3.5', w: '3.5', mr: '1.5' })} />
                     {showSampleData && !hasUserData ? 'Sample Data' : 'Show Sample'}
                   </Button>
+
                   {showSampleData && !hasUserData && (
                     <>
-                      <div
+                      <select
+                        value={selectedPersona}
+                        onChange={(e) => {
+                          const newPersona = e.target.value as PersonaType
+                          setSelectedPersona(newPersona)
+                          trackToolEvent('resume_persona_view', { persona: newPersona })
+                        }}
                         className={css({
-                          position: 'relative',
+                          h: '8',
+                          px: '3',
+                          fontSize: 'xs',
+                          rounded: 'md',
+                          border: '1px solid',
+                          borderColor: 'gray.300',
+                          bg: 'white',
+                          cursor: 'pointer',
+                          _hover: {
+                            borderColor: 'gray.400',
+                          },
+                          _focus: {
+                            outline: 'none',
+                            borderColor: 'blue.500',
+                            ring: '2px',
+                            ringColor: 'blue.200',
+                          },
                         })}
+                        title="Choose a sample persona to preview"
                       >
-                        <select
-                          value={selectedPersona}
-                          onChange={(e) => {
-                            const newPersona = e.target.value as PersonaType
-                            setSelectedPersona(newPersona)
-                            trackToolEvent('resume_persona_view', { persona: newPersona })
-                          }}
-                          className={css({
-                            h: '8',
-                            px: '3',
-                            fontSize: 'xs',
-                            rounded: 'md',
-                            border: '1px solid',
-                            borderColor: 'gray.300',
-                            bg: 'white',
-                            cursor: 'pointer',
-                            _hover: {
-                              borderColor: 'gray.400',
-                            },
-                            _focus: {
-                              outline: 'none',
-                              borderColor: 'blue.500',
-                              ring: '2px',
-                              ringColor: 'blue.200',
-                            },
-                          })}
-                          title="Choose a sample persona to preview"
-                        >
-                          {Object.values(SAMPLE_PERSONAS).map((persona) => (
-                            <option key={persona.id} value={persona.id}>
-                              {persona.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                        {Object.values(SAMPLE_PERSONAS).map((persona) => (
+                          <option key={persona.id} value={persona.id}>
+                            {persona.name}
+                          </option>
+                        ))}
+                      </select>
                       <Button
                         variant="outline"
                         size="sm"
