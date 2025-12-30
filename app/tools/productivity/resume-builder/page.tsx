@@ -20,7 +20,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useDebounce } from '@/hooks/common/useDebounce'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -58,6 +57,174 @@ const AUTO_SAVE_INTERVAL = 30000 // 30 seconds
 // Convert templates object to array
 const TEMPLATES = Object.values(RESUME_TEMPLATES)
 
+// Sample resume data to showcase template design
+const SAMPLE_RESUME_DATA: Omit<ResumeData, 'id' | 'createdAt' | 'updatedAt'> = {
+  name: 'Sample Resume',
+  personal: {
+    fullName: 'Alex Johnson',
+    professionalTitle: 'Senior Software Engineer',
+    email: 'alex.johnson@email.com',
+    phone: '+1 (555) 123-4567',
+    location: 'San Francisco, CA',
+    linkedin: 'linkedin.com/in/alexjohnson',
+    github: 'github.com/alexjohnson',
+    website: 'alexjohnson.dev',
+    summary:
+      'Results-driven Senior Software Engineer with 8+ years of experience building scalable web applications. Expert in React, Node.js, and cloud architecture. Passionate about clean code, performance optimization, and mentoring junior developers.',
+  },
+  experience: [
+    {
+      id: '1',
+      company: 'Tech Innovation Corp',
+      position: 'Senior Software Engineer',
+      location: 'San Francisco, CA',
+      startDate: '2021-03',
+      endDate: 'Present',
+      current: true,
+      achievements: [
+        'Led development of microservices architecture serving 5M+ daily active users, improving system reliability by 40%',
+        'Architected and implemented real-time data pipeline processing 2TB+ daily, reducing latency by 60%',
+        'Mentored team of 5 junior engineers, establishing code review practices that reduced bugs by 35%',
+        'Optimized database queries and caching strategies, decreasing API response time from 800ms to 120ms',
+      ],
+      technologies: ['React', 'Node.js', 'TypeScript', 'PostgreSQL', 'AWS', 'Docker', 'Kubernetes'],
+    },
+    {
+      id: '2',
+      company: 'Digital Solutions Inc',
+      position: 'Software Engineer',
+      location: 'Austin, TX',
+      startDate: '2018-06',
+      endDate: '2021-02',
+      current: false,
+      achievements: [
+        'Developed and shipped 15+ customer-facing features using React and Redux, increasing user engagement by 25%',
+        'Built RESTful APIs serving 100K+ requests per day with 99.9% uptime',
+        'Implemented comprehensive test coverage (85%+) using Jest and React Testing Library',
+        'Collaborated with design team to create responsive UI components used across 20+ product pages',
+      ],
+      technologies: ['React', 'Redux', 'Node.js', 'MongoDB', 'Express', 'Jest'],
+    },
+    {
+      id: '3',
+      company: 'StartupXYZ',
+      position: 'Junior Developer',
+      location: 'Remote',
+      startDate: '2016-08',
+      endDate: '2018-05',
+      current: false,
+      achievements: [
+        'Built customer dashboard from scratch using React and Material-UI, onboarding 500+ users in first month',
+        'Integrated third-party payment APIs (Stripe, PayPal) processing $2M+ in transactions',
+        'Automated deployment pipeline using GitHub Actions, reducing deployment time by 70%',
+      ],
+      technologies: ['JavaScript', 'React', 'Python', 'Django', 'MySQL'],
+    },
+  ],
+  education: [
+    {
+      id: '1',
+      institution: 'University of California, Berkeley',
+      degree: 'Bachelor of Science in Computer Science',
+      field: 'Computer Science',
+      location: 'Berkeley, CA',
+      startDate: '2012-09',
+      endDate: '2016-05',
+      current: false,
+      gpa: '3.8',
+      honors: "Dean's List (4 semesters)",
+      achievements: [
+        'President of Computer Science Club',
+        'Published research paper on machine learning algorithms',
+      ],
+    },
+  ],
+  skills: [
+    {
+      category: 'Frontend Development',
+      skills: [
+        'React',
+        'TypeScript',
+        'Next.js',
+        'Redux',
+        'Vue.js',
+        'HTML5',
+        'CSS3',
+        'Tailwind CSS',
+      ],
+    },
+    {
+      category: 'Backend Development',
+      skills: [
+        'Node.js',
+        'Python',
+        'Django',
+        'Express.js',
+        'GraphQL',
+        'REST APIs',
+        'Microservices',
+      ],
+    },
+    {
+      category: 'Database & Tools',
+      skills: ['PostgreSQL', 'MongoDB', 'Redis', 'Docker', 'Kubernetes', 'AWS', 'Git', 'CI/CD'],
+    },
+    {
+      category: 'Soft Skills',
+      skills: ['Team Leadership', 'Code Review', 'Agile/Scrum', 'Technical Writing', 'Mentoring'],
+    },
+  ],
+  projects: [
+    {
+      id: '1',
+      name: 'DevTools Pro',
+      description:
+        'Open-source developer productivity suite with 30+ tools for everyday tasks. Built with Next.js and TypeScript.',
+      role: 'Creator & Maintainer',
+      startDate: '2023-01',
+      technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Supabase'],
+      url: 'devtools.pro',
+      github: 'github.com/alexj/devtools-pro',
+      highlights: [
+        '10K+ GitHub stars and 500+ contributors',
+        'Featured on Product Hunt (Top 5 Product of the Day)',
+        'Used by developers at Google, Amazon, and Microsoft',
+      ],
+    },
+    {
+      id: '2',
+      name: 'Real-Time Analytics Dashboard',
+      description:
+        'Enterprise analytics platform processing millions of events per second with sub-100ms latency.',
+      role: 'Lead Engineer',
+      startDate: '2022-06',
+      endDate: '2023-12',
+      technologies: ['React', 'Node.js', 'Kafka', 'TimescaleDB', 'WebSockets'],
+      highlights: [
+        'Handles 10M+ events per day with 99.99% uptime',
+        'Reduced infrastructure costs by 45% through optimization',
+      ],
+    },
+  ],
+  certifications: [],
+  languages: [],
+  awards: [],
+  volunteer: [],
+  publications: [],
+  sectionOrder: ['personal', 'experience', 'education', 'skills', 'projects'],
+  template: 'modern',
+  theme: {
+    primaryColor: '#2563eb',
+    textColor: '#1f2937',
+    headingColor: '#111827',
+    backgroundColor: '#ffffff',
+    fontFamily: 'Calibri',
+    fontSize: 11,
+    lineHeight: 1.5,
+    spacing: 'normal',
+  },
+}
+
 export default function ResumeBuilderPage() {
   useTrackToolView({
     toolId: 'resume-builder',
@@ -86,10 +253,34 @@ export default function ResumeBuilderPage() {
   const [activeSection, setActiveSection] = useState<ResumeSection>('personal')
   const [zoom, setZoom] = useState<number>(100)
   const [showMobilePreview, setShowMobilePreview] = useState(false)
-
-  // Debounce resume data to prevent excessive re-renders during typing
-  const debouncedResume = useDebounce(resume, 300)
+  const [showSampleData, setShowSampleData] = useState(true) // Show sample data by default
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
+
+  // Determine if user has any real data
+  const hasUserData = useMemo(() => {
+    return (
+      resume.personal.fullName.trim() !== '' ||
+      resume.experience.length > 0 ||
+      resume.education.length > 0 ||
+      resume.skills.length > 0 ||
+      resume.projects.length > 0
+    )
+  }, [resume])
+
+  // Use sample data for preview if user has no data and toggle is on
+  const previewData = useMemo(() => {
+    if (hasUserData || !showSampleData) {
+      return resume
+    }
+    // Merge sample data with user's template selection
+    return {
+      ...SAMPLE_RESUME_DATA,
+      id: resume.id,
+      createdAt: resume.createdAt,
+      updatedAt: resume.updatedAt,
+      template: selectedTemplate,
+    } as ResumeData
+  }, [resume, selectedTemplate, hasUserData, showSampleData])
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -813,6 +1004,28 @@ export default function ResumeBuilderPage() {
                   >
                     <Maximize2 className={css({ h: '4', w: '4' })} />
                   </Button>
+                  <div
+                    className={css({
+                      h: '6',
+                      w: '1px',
+                      bg: 'gray.300',
+                      mx: '2',
+                    })}
+                  />
+                  <Button
+                    variant={showSampleData && !hasUserData ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setShowSampleData((prev) => !prev)}
+                    className={css({ h: '8', fontSize: 'xs', px: '3' })}
+                    title={
+                      showSampleData
+                        ? 'Hide sample data and show empty template'
+                        : 'Show sample data to preview template design'
+                    }
+                  >
+                    <Eye className={css({ h: '3.5', w: '3.5', mr: '1.5' })} />
+                    {showSampleData && !hasUserData ? 'Sample Data' : 'Show Sample'}
+                  </Button>
                 </div>
               </div>
             </CardHeader>
@@ -863,7 +1076,7 @@ export default function ResumeBuilderPage() {
                       minH: 'full',
                     })}
                   >
-                    <ResumePreview data={resume} templateId={selectedTemplate} />
+                    <ResumePreview data={previewData} templateId={selectedTemplate} />
                   </div>
                 </div>
               </div>
