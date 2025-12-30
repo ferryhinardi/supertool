@@ -1050,7 +1050,7 @@ export default function ResumeBuilderPage() {
               </Button>
             </div>
             <div className={css({ p: '4' })}>
-              <ResumePreview data={resume} templateId={selectedTemplate} />
+              <ResumePreview data={previewData} templateId={selectedTemplate} />
             </div>
           </div>
         </button>
