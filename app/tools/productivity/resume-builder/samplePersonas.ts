@@ -10,6 +10,10 @@ export type PersonaType =
   | 'marketing-manager'
   | 'product-designer'
   | 'data-scientist'
+  | 'sales-executive'
+  | 'registered-nurse'
+  | 'financial-analyst'
+  | 'high-school-teacher'
 
 export interface Persona {
   id: PersonaType
@@ -740,12 +744,452 @@ const DATA_SCIENTIST: Persona = {
   },
 }
 
+// Sales Executive Persona
+const SALES_EXECUTIVE: Persona = {
+  id: 'sales-executive',
+  name: 'Sales Executive',
+  description: 'Enterprise B2B sales leader',
+  data: {
+    name: 'Sample Resume',
+    personal: {
+      fullName: 'Michael Chen',
+      professionalTitle: 'Senior Sales Executive',
+      email: 'michael.chen@email.com',
+      phone: '+1 (555) 987-6543',
+      location: 'Chicago, IL',
+      linkedin: 'linkedin.com/in/michaelchen',
+      website: '',
+      summary:
+        'Results-driven Senior Sales Executive with 9+ years in enterprise B2B sales. Consistently exceeded quotas by 150%+. Expert in consultative selling, relationship management, and closing multi-million dollar SaaS deals.',
+    },
+    experience: [
+      {
+        id: '1',
+        company: 'TechSolutions Enterprise',
+        position: 'Senior Sales Executive',
+        location: 'Chicago, IL',
+        startDate: '2020-01',
+        endDate: 'Present',
+        current: true,
+        achievements: [
+          'Exceeded annual quota by 175%, generating $12.5M in new ARR across enterprise accounts',
+          'Closed largest deal in company history ($2.8M contract) with Fortune 100 client',
+          'Achieved 92% customer retention rate through strategic account management',
+        ],
+        technologies: ['Salesforce', 'HubSpot', 'Gong', 'Outreach'],
+      },
+      {
+        id: '2',
+        company: 'CloudCorp Inc',
+        position: 'Account Executive',
+        location: 'Chicago, IL',
+        startDate: '2017-03',
+        endDate: '2019-12',
+        current: false,
+        achievements: [
+          'Ranked in top 5% of sales team, exceeding quota by average of 160%',
+          'Generated $8.2M in revenue over 3 years across 40+ mid-market accounts',
+          "Won President's Club award 3 consecutive years",
+        ],
+        technologies: ['Salesforce', 'ZoomInfo', 'DocuSign'],
+      },
+    ],
+    education: [
+      {
+        id: '1',
+        institution: 'University of Illinois',
+        degree: 'Bachelor of Science',
+        field: 'Business Administration',
+        location: 'Champaign, IL',
+        startDate: '2011-08',
+        endDate: '2015-05',
+        current: false,
+        gpa: '3.6',
+        honors: "Dean's List",
+      },
+    ],
+    skills: [
+      {
+        category: 'Sales Skills',
+        skills: [
+          'Enterprise B2B Sales',
+          'Account Management',
+          'Contract Negotiation',
+          'Pipeline Management',
+        ],
+      },
+      {
+        category: 'Sales Tools',
+        skills: ['Salesforce CRM', 'HubSpot', 'LinkedIn Sales Navigator', 'Gong', 'Outreach'],
+      },
+    ],
+    projects: [
+      {
+        id: '1',
+        name: 'Enterprise Sales Playbook',
+        description: 'Comprehensive sales methodology adopted company-wide.',
+        role: 'Lead Author',
+        technologies: ['MEDDIC', 'Challenger Sale'],
+        highlights: ['Increased win rate from 22% to 38%', 'Reduced sales cycle by 25%'],
+      },
+    ],
+    certifications: [],
+    languages: [],
+    awards: [],
+    volunteer: [],
+    publications: [],
+    sectionOrder: ['personal', 'experience', 'education', 'skills', 'projects'],
+    template: 'modern',
+    theme: {
+      primaryColor: '#f59e0b',
+      textColor: '#1f2937',
+      headingColor: '#111827',
+      backgroundColor: '#ffffff',
+      fontFamily: 'Calibri',
+      fontSize: 11,
+      lineHeight: 1.5,
+      spacing: 'normal',
+    },
+  },
+}
+
+// Registered Nurse Persona
+const REGISTERED_NURSE: Persona = {
+  id: 'registered-nurse',
+  name: 'Registered Nurse',
+  description: 'Critical care nurse with leadership experience',
+  data: {
+    name: 'Sample Resume',
+    personal: {
+      fullName: 'Jennifer Rodriguez, RN, BSN',
+      professionalTitle: 'Registered Nurse - Critical Care',
+      email: 'jennifer.rodriguez@email.com',
+      phone: '+1 (555) 234-8901',
+      location: 'Houston, TX',
+      linkedin: 'linkedin.com/in/jenniferrodriguez',
+      website: '',
+      summary:
+        'Compassionate RN with 7+ years in critical care and emergency medicine. Expert in patient assessment, care planning, and interdisciplinary collaboration. BLS, ACLS, and PALS certified. Committed to exceptional patient outcomes.',
+    },
+    experience: [
+      {
+        id: '1',
+        company: 'Memorial Hospital - Level I Trauma Center',
+        position: 'Senior Critical Care Nurse',
+        location: 'Houston, TX',
+        startDate: '2019-06',
+        endDate: 'Present',
+        current: true,
+        achievements: [
+          'Provide advanced nursing care to 4-6 critically ill patients in 24-bed ICU',
+          'Achieved 98% patient satisfaction score (target: 90%)',
+          'Mentor 8 new graduate nurses through preceptorship program',
+          'Led initiative reducing central line infections by 40%',
+        ],
+        technologies: ['Epic EMR', 'Ventilator Management', 'CRRT'],
+      },
+      {
+        id: '2',
+        company: 'City General Hospital',
+        position: 'Emergency Department Nurse',
+        location: 'Houston, TX',
+        startDate: '2017-05',
+        endDate: '2019-05',
+        current: false,
+        achievements: [
+          'Triaged 30+ patients per shift in high-volume Level II ED',
+          '100% compliance with trauma documentation and JCAHO standards',
+          'Nurse of the Quarter award (Q3 2018)',
+        ],
+        technologies: ['Meditech', 'Trauma Protocols'],
+      },
+    ],
+    education: [
+      {
+        id: '1',
+        institution: 'UT Health Science Center',
+        degree: 'Bachelor of Science in Nursing',
+        field: 'Nursing (BSN)',
+        location: 'Houston, TX',
+        startDate: '2012-08',
+        endDate: '2016-05',
+        current: false,
+        gpa: '3.7',
+        honors: 'Cum Laude',
+      },
+    ],
+    skills: [
+      {
+        category: 'Clinical Skills',
+        skills: ['Critical Care', 'Patient Assessment', 'Ventilator Management', 'IV Therapy'],
+      },
+      {
+        category: 'Certifications',
+        skills: ['RN License (TX)', 'BLS', 'ACLS', 'PALS', 'TNCC'],
+      },
+    ],
+    projects: [
+      {
+        id: '1',
+        name: 'CLABSI Prevention Initiative',
+        description: 'Quality improvement project reducing central line infections.',
+        role: 'Project Lead',
+        technologies: ['Quality Improvement', 'Evidence-Based Practice'],
+        highlights: ['Reduced CLABSI rate by 40%', 'Trained 45 ICU nurses'],
+      },
+    ],
+    certifications: [],
+    languages: [],
+    awards: [],
+    volunteer: [],
+    publications: [],
+    sectionOrder: ['personal', 'experience', 'education', 'skills', 'projects'],
+    template: 'modern',
+    theme: {
+      primaryColor: '#06b6d4',
+      textColor: '#1f2937',
+      headingColor: '#111827',
+      backgroundColor: '#ffffff',
+      fontFamily: 'Calibri',
+      fontSize: 11,
+      lineHeight: 1.5,
+      spacing: 'normal',
+    },
+  },
+}
+
+// Financial Analyst Persona
+const FINANCIAL_ANALYST: Persona = {
+  id: 'financial-analyst',
+  name: 'Financial Analyst',
+  description: 'CFA with investment analysis expertise',
+  data: {
+    name: 'Sample Resume',
+    personal: {
+      fullName: 'David Kim, CFA',
+      professionalTitle: 'Senior Financial Analyst',
+      email: 'david.kim@email.com',
+      phone: '+1 (555) 456-7890',
+      location: 'New York, NY',
+      linkedin: 'linkedin.com/in/davidkim',
+      website: '',
+      summary:
+        'CFA Charterholder with 6+ years in financial modeling, investment analysis, and strategic planning. Expert in valuation, forecasting, and data-driven decision making. Strong track record delivering insights that drive growth.',
+    },
+    experience: [
+      {
+        id: '1',
+        company: 'Global Investment Partners',
+        position: 'Senior Financial Analyst',
+        location: 'New York, NY',
+        startDate: '2021-01',
+        endDate: 'Present',
+        current: true,
+        achievements: [
+          'Built models for $500M+ portfolio, achieving 18% returns (vs 12% benchmark)',
+          'Led due diligence on 15+ acquisition targets supporting $200M investments',
+          'Developed automated dashboard reducing monthly close by 40%',
+        ],
+        technologies: ['Excel', 'Bloomberg', 'Python', 'SQL', 'Tableau'],
+      },
+      {
+        id: '2',
+        company: 'TechVenture Capital',
+        position: 'Investment Analyst',
+        location: 'New York, NY',
+        startDate: '2019-03',
+        endDate: '2020-12',
+        current: false,
+        achievements: [
+          'Analyzed 100+ early-stage tech companies for investment',
+          'Built DCF and comparable company models for valuations',
+          'Supported 8 successful investments totaling $75M',
+        ],
+        technologies: ['Excel', 'PitchBook', 'CapIQ', 'Python'],
+      },
+    ],
+    education: [
+      {
+        id: '1',
+        institution: 'Columbia University',
+        degree: 'Master of Business Administration',
+        field: 'Finance',
+        location: 'New York, NY',
+        startDate: '2015-08',
+        endDate: '2017-05',
+        current: false,
+        gpa: '3.8',
+        honors: 'Beta Gamma Sigma',
+      },
+    ],
+    skills: [
+      {
+        category: 'Financial Analysis',
+        skills: [
+          'Financial Modeling',
+          'Valuation (DCF, Comps)',
+          'Investment Analysis',
+          'Forecasting',
+        ],
+      },
+      {
+        category: 'Technical Skills',
+        skills: ['Excel & VBA', 'Python', 'SQL', 'Tableau', 'Bloomberg Terminal'],
+      },
+    ],
+    projects: [
+      {
+        id: '1',
+        name: 'Automated Financial Dashboard',
+        description: 'Python dashboard automating monthly reporting.',
+        role: 'Lead Developer',
+        technologies: ['Python', 'Pandas', 'Tableau', 'SQL'],
+        highlights: ['Reduced close from 10 to 6 days', 'Automated 50+ hours/month'],
+      },
+    ],
+    certifications: [],
+    languages: [],
+    awards: [],
+    volunteer: [],
+    publications: [],
+    sectionOrder: ['personal', 'experience', 'education', 'skills', 'projects'],
+    template: 'modern',
+    theme: {
+      primaryColor: '#0ea5e9',
+      textColor: '#1f2937',
+      headingColor: '#111827',
+      backgroundColor: '#ffffff',
+      fontFamily: 'Calibri',
+      fontSize: 11,
+      lineHeight: 1.5,
+      spacing: 'normal',
+    },
+  },
+}
+
+// High School Teacher Persona
+const HIGH_SCHOOL_TEACHER: Persona = {
+  id: 'high-school-teacher',
+  name: 'High School Teacher',
+  description: 'English teacher with curriculum expertise',
+  data: {
+    name: 'Sample Resume',
+    personal: {
+      fullName: 'Emily Thompson, M.Ed.',
+      professionalTitle: 'High School English Teacher',
+      email: 'emily.thompson@email.com',
+      phone: '+1 (555) 345-6789',
+      location: 'Portland, OR',
+      linkedin: 'linkedin.com/in/emilythompson',
+      website: 'emilythompsonteaching.com',
+      summary:
+        'Passionate English Teacher with 8+ years inspiring students through literature and writing. M.Ed. with expertise in curriculum design, differentiated instruction, and technology integration. Committed to fostering critical thinking and academic excellence.',
+    },
+    experience: [
+      {
+        id: '1',
+        company: 'Lincoln High School',
+        position: 'Senior English Teacher & Dept Chair',
+        location: 'Portland, OR',
+        startDate: '2019-08',
+        endDate: 'Present',
+        current: true,
+        achievements: [
+          'Teach AP English Literature and Creative Writing to 125+ students',
+          'Increased AP exam pass rate from 68% to 87%',
+          'Lead 12-member English department coordinating curriculum',
+          'Implemented project-based learning improving engagement 30%',
+        ],
+        technologies: ['Google Classroom', 'Canvas LMS', 'Turnitin'],
+      },
+      {
+        id: '2',
+        company: 'Roosevelt Middle School',
+        position: 'English Language Arts Teacher',
+        location: 'Portland, OR',
+        startDate: '2016-08',
+        endDate: '2019-06',
+        current: false,
+        achievements: [
+          'Taught 6th-8th grade ELA to diverse learners including 15% ELL',
+          'Developed differentiated curriculum for multiple reading levels',
+          'Achieved 92% student growth vs 78% district average',
+        ],
+        technologies: ['Google Suite', 'Schoology', 'Newsela'],
+      },
+    ],
+    education: [
+      {
+        id: '1',
+        institution: 'Portland State University',
+        degree: 'Master of Education',
+        field: 'Curriculum & Instruction',
+        location: 'Portland, OR',
+        startDate: '2017-08',
+        endDate: '2019-06',
+        current: false,
+        gpa: '4.0',
+        honors: 'Outstanding Graduate Student',
+      },
+    ],
+    skills: [
+      {
+        category: 'Teaching Skills',
+        skills: [
+          'Lesson Planning',
+          'Differentiated Instruction',
+          'Classroom Management',
+          'Assessment',
+        ],
+      },
+      {
+        category: 'Technology',
+        skills: ['Google Classroom', 'Canvas LMS', 'Turnitin', 'CommonLit', 'Nearpod'],
+      },
+    ],
+    projects: [
+      {
+        id: '1',
+        name: 'Community Writing Project',
+        description: 'Students interviewed community members and published anthology.',
+        role: 'Project Director',
+        technologies: ['Project-Based Learning', 'Community Engagement'],
+        highlights: [
+          '85 students interviewed 60+ community members',
+          'Published 200-page anthology',
+        ],
+      },
+    ],
+    certifications: [],
+    languages: [],
+    awards: [],
+    volunteer: [],
+    publications: [],
+    sectionOrder: ['personal', 'experience', 'education', 'skills', 'projects'],
+    template: 'modern',
+    theme: {
+      primaryColor: '#a855f7',
+      textColor: '#1f2937',
+      headingColor: '#111827',
+      backgroundColor: '#ffffff',
+      fontFamily: 'Calibri',
+      fontSize: 11,
+      lineHeight: 1.5,
+      spacing: 'normal',
+    },
+  },
+}
+
 // Export all personas
 export const SAMPLE_PERSONAS: Record<PersonaType, Persona> = {
   'software-engineer': SOFTWARE_ENGINEER,
   'marketing-manager': MARKETING_MANAGER,
   'product-designer': PRODUCT_DESIGNER,
   'data-scientist': DATA_SCIENTIST,
+  'sales-executive': SALES_EXECUTIVE,
+  'registered-nurse': REGISTERED_NURSE,
+  'financial-analyst': FINANCIAL_ANALYST,
+  'high-school-teacher': HIGH_SCHOOL_TEACHER,
 }
 
 // Default persona

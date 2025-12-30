@@ -177,8 +177,6 @@ function TemplateWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export function ResumePreview({ data, templateId }: ResumePreviewProps) {
-  console.log('📄 ResumePreview rendering with templateId:', templateId)
-
   // Memoize template rendering to ensure it updates when templateId changes
   const template = useMemo(() => {
     switch (templateId) {

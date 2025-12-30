@@ -144,11 +144,6 @@ export default function ResumeBuilderPage() {
   // Calculate ATS score with memoization to prevent unnecessary recalculations
   const atsScore = useMemo(() => calculateATSScore(resume), [resume])
 
-  // Debug: Log template changes
-  useEffect(() => {
-    console.log('🔄 Preview rendering with template:', selectedTemplate)
-  }, [selectedTemplate])
-
   // Track ATS score changes
   useEffect(() => {
     trackToolEvent('resume_ats_score_calculated', {
@@ -212,7 +207,6 @@ export default function ResumeBuilderPage() {
 
   // Template change handler
   const handleTemplateChange = useCallback((templateId: TemplateId) => {
-    console.log('🎨 Template changed to:', templateId)
     setSelectedTemplate(templateId)
     trackToolEvent('resume_template_change', { template: templateId })
   }, [])
@@ -228,6 +222,7 @@ export default function ResumeBuilderPage() {
       template: selectedTemplate,
     } as ResumeData)
     setShowSampleData(false) // Hide sample toggle after loading
+    trackToolEvent('resume_persona_load_sample', { persona: selectedPersona })
     toast.success(`${SAMPLE_PERSONAS[selectedPersona].name} sample data loaded! Feel free to edit.`)
   }, [selectedPersona, resume.id, resume.createdAt, selectedTemplate])
 
@@ -866,7 +861,13 @@ export default function ResumeBuilderPage() {
                   <Button
                     variant={showSampleData && !hasUserData ? 'default' : 'ghost'}
                     size="sm"
-                    onClick={() => setShowSampleData((prev) => !prev)}
+                    onClick={() => {
+                      setShowSampleData((prev) => {
+                        const newValue = !prev
+                        trackToolEvent('resume_sample_data_toggle', { show: newValue })
+                        return newValue
+                      })
+                    }}
                     className={css({ h: '8', fontSize: 'xs', px: '3' })}
                     title={
                       showSampleData
@@ -889,6 +890,7 @@ export default function ResumeBuilderPage() {
                           onChange={(e) => {
                             const newPersona = e.target.value as PersonaType
                             setSelectedPersona(newPersona)
+                            trackToolEvent('resume_persona_view', { persona: newPersona })
                           }}
                           className={css({
                             h: '8',
