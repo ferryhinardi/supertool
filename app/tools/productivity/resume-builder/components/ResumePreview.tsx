@@ -5,8 +5,8 @@
  * Features: Smooth transitions, skeleton loader, error boundary
  */
 
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
-import { css, cx } from '@/styled-system/css'
+import { lazy, Suspense, useMemo } from 'react'
+import { css } from '@/styled-system/css'
 import type { ResumeData, TemplateId } from '../types'
 import { TemplateErrorBoundary } from './TemplateErrorBoundary'
 
@@ -149,33 +149,6 @@ function TemplateSkeleton() {
   )
 }
 
-// Wrapper component with fade transition
-function TemplateWrapper({ children }: { children: React.ReactNode }) {
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    // Trigger fade in animation after mount
-    const timer = setTimeout(() => setIsVisible(true), 50)
-    return () => clearTimeout(timer)
-  }, [])
-
-  return (
-    <div
-      className={cx(
-        css({
-          w: 'full',
-          h: 'full',
-          opacity: 0,
-          transition: 'opacity 0.3s ease-in-out',
-        }),
-        isVisible && css({ opacity: 1 })
-      )}
-    >
-      {children}
-    </div>
-  )
-}
-
 export function ResumePreview({ data, templateId }: ResumePreviewProps) {
   // Memoize template rendering to ensure it updates when templateId changes
   const template = useMemo(() => {
@@ -208,7 +181,9 @@ export function ResumePreview({ data, templateId }: ResumePreviewProps) {
   return (
     <TemplateErrorBoundary>
       <Suspense fallback={<TemplateSkeleton />}>
-        <TemplateWrapper key={templateId}>{template}</TemplateWrapper>
+        <div key={templateId} className={css({ w: 'full', h: 'full' })}>
+          {template}
+        </div>
       </Suspense>
     </TemplateErrorBoundary>
   )
