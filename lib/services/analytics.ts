@@ -536,6 +536,13 @@ type ToolEvent =
   | 'icon_copy_svg'
   | 'icon_copy_react'
   | 'icon_customize'
+  | 'mockup_generator_open'
+  | 'mockup_image_upload'
+  | 'mockup_device_select'
+  | 'mockup_orientation_toggle'
+  | 'mockup_generate_success'
+  | 'mockup_export'
+  | 'mockup_background_change'
 
 // Type-safe gtag wrapper
 declare global {

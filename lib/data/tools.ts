@@ -707,6 +707,18 @@ export const tools: Tool[] = [
     popular: true,
   },
   {
+    title: 'Device Mockup Generator',
+    description:
+      'Create professional device mockups instantly. Add screenshots to realistic iPhone, MacBook, iPad, and Android frames. Customize backgrounds with gradients or solid colors. Export high-resolution mockups perfect for presentations, portfolios, and app store previews.',
+    icon: Smartphone,
+    href: '/tools/design/device-mockup',
+    gradient: 'from-blue-500 to-purple-500',
+    features: ['15+ Device Frames', 'Custom Backgrounds', 'High-Res Export', 'Landscape/Portrait'],
+    category: 'design',
+    new: true,
+    popular: true,
+  },
+  {
     title: 'Digital Signature Generator',
     description:
       'Create beautiful digital signatures for documents, emails, and professional use. Choose from 6 elegant fonts, customize colors, size, underline and italic styles. Download as PNG, SVG, or JPG.',
