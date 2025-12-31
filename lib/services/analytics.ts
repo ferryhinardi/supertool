@@ -527,6 +527,15 @@ type ToolEvent =
   | 'cover_letter_ai_suggestion_applied'
   | 'cover_letter_ai_tone_checked'
   | 'cover_letter_ai_content_improved'
+  | 'icon_search_open'
+  | 'icon_search_query'
+  | 'icon_select'
+  | 'icon_favorite'
+  | 'icon_download_svg'
+  | 'icon_download_png'
+  | 'icon_copy_svg'
+  | 'icon_copy_react'
+  | 'icon_customize'
 
 // Type-safe gtag wrapper
 declare global {

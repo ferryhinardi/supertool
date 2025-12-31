@@ -40,6 +40,7 @@ import {
   QrCode,
   Repeat,
   Scissors,
+  Search,
   Shield,
   ShieldAlert,
   ShieldCheck,
@@ -693,6 +694,18 @@ export const tools: Tool[] = [
   },
 
   // Design & Visual Tools
+  {
+    title: 'Icon Search & Download Hub',
+    description:
+      'Search and download 1000+ free Lucide icons instantly. Customize size, color, and stroke width. Export as SVG or copy React component code. Perfect for web designers and developers.',
+    icon: Search,
+    href: '/tools/design/icon-search',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['1000+ Icons', 'Customizable', 'SVG Export', 'React Code'],
+    category: 'design',
+    new: true,
+    popular: true,
+  },
   {
     title: 'Digital Signature Generator',
     description:
