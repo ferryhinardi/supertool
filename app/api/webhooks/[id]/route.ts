@@ -8,9 +8,10 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 // Handle all HTTP methods
-async function handleWebhook(request: NextRequest, context: { params: { id: string } }) {
+async function handleWebhook(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const startTime = Date.now()
-  const endpointId = context.params.id
+  const params = await context.params
+  const endpointId = params.id
 
   try {
     // Fetch webhook endpoint
