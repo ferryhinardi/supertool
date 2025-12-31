@@ -551,6 +551,16 @@ type ToolEvent =
   | 'privacy_policy_copy'
   | 'privacy_policy_download_html'
   | 'privacy_policy_download_pdf'
+  | 'code_converter_open'
+  | 'code_converter_source_select'
+  | 'code_converter_target_select'
+  | 'code_converter_option_toggle'
+  | 'code_converter_convert'
+  | 'code_converter_success'
+  | 'code_converter_error'
+  | 'code_converter_copy'
+  | 'code_converter_download'
+  | 'code_converter_swap'
 
 // Type-safe gtag wrapper
 declare global {

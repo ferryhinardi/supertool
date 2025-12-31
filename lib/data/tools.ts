@@ -145,6 +145,18 @@ export const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'AI Code Converter',
+    description:
+      'Convert code between 12+ programming languages instantly with AI. Translate Python, JavaScript, TypeScript, Java, C++, Go, Rust, and more. Includes syntax highlighting, explanations, and optimization options.',
+    icon: Sparkles,
+    href: '/tools/development/ai-code-converter',
+    gradient: 'from-yellow-500 to-orange-500',
+    features: ['12+ Languages', 'AI-Powered', 'Syntax Highlighting', 'Code Optimization'],
+    category: 'development',
+    new: true,
+    popular: true,
+  },
+  {
     title: 'Markdown Editor & Preview',
     description:
       'GitHub-flavored markdown editor with live preview. Write README files, PR summaries, and documentation with support for tables, task lists, code highlighting, and more.',
