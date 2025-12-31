@@ -55,6 +55,8 @@ describe('useDebounce', () => {
   })
 
   it('should use custom delay when provided', async () => {
+    vi.useFakeTimers()
+
     const { result, rerender } = renderHook(({ value }) => useDebounce(value, 100), {
       initialProps: { value: 'initial' },
     })
@@ -63,12 +65,13 @@ describe('useDebounce', () => {
     expect(result.current).toBe('initial')
 
     // Should update after custom 100ms delay
-    await waitFor(
-      () => {
-        expect(result.current).toBe('updated')
-      },
-      { timeout: 150 }
-    )
+    act(() => {
+      vi.advanceTimersByTime(100)
+    })
+
+    expect(result.current).toBe('updated')
+
+    vi.useRealTimers()
   })
 
   it('should cancel previous timeout on rapid updates', async () => {
@@ -117,6 +120,8 @@ describe('useDebounce', () => {
   })
 
   it('should work with different data types', async () => {
+    vi.useFakeTimers()
+
     // Test with number
     const { result: numberResult, rerender: numberRerender } = renderHook(
       ({ value }) => useDebounce(value, 100),
@@ -124,12 +129,10 @@ describe('useDebounce', () => {
     )
 
     numberRerender({ value: 42 })
-    await waitFor(
-      () => {
-        expect(numberResult.current).toBe(42)
-      },
-      { timeout: 150 }
-    )
+    act(() => {
+      vi.advanceTimersByTime(100)
+    })
+    expect(numberResult.current).toBe(42)
 
     // Test with boolean
     const { result: boolResult, rerender: boolRerender } = renderHook(
@@ -138,12 +141,10 @@ describe('useDebounce', () => {
     )
 
     boolRerender({ value: true })
-    await waitFor(
-      () => {
-        expect(boolResult.current).toBe(true)
-      },
-      { timeout: 150 }
-    )
+    act(() => {
+      vi.advanceTimersByTime(100)
+    })
+    expect(boolResult.current).toBe(true)
 
     // Test with object
     const { result: objResult, rerender: objRerender } = renderHook(
@@ -153,15 +154,17 @@ describe('useDebounce', () => {
 
     const newObj = { name: 'Jane' }
     objRerender({ value: newObj })
-    await waitFor(
-      () => {
-        expect(objResult.current).toEqual(newObj)
-      },
-      { timeout: 150 }
-    )
+    act(() => {
+      vi.advanceTimersByTime(100)
+    })
+    expect(objResult.current).toEqual(newObj)
+
+    vi.useRealTimers()
   })
 
   it('should handle zero delay', async () => {
+    vi.useFakeTimers()
+
     const { result, rerender } = renderHook(({ value }) => useDebounce(value, 0), {
       initialProps: { value: 'initial' },
     })
@@ -169,12 +172,13 @@ describe('useDebounce', () => {
     rerender({ value: 'updated' })
 
     // With 0 delay, should update almost immediately
-    await waitFor(
-      () => {
-        expect(result.current).toBe('updated')
-      },
-      { timeout: 50 }
-    )
+    act(() => {
+      vi.advanceTimersByTime(0)
+    })
+
+    expect(result.current).toBe('updated')
+
+    vi.useRealTimers()
   })
 
   it('should handle same value updates', async () => {

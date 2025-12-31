@@ -54,6 +54,8 @@ export class TemplateErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
       // Default error UI
       return (
         <div
+          role="alert"
+          aria-live="assertive"
           className={css({
             w: 'full',
             h: 'full',
