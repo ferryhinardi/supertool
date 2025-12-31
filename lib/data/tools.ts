@@ -157,6 +157,17 @@ export const tools: Tool[] = [
     popular: true,
   },
   {
+    title: 'Webhook Tester',
+    description:
+      'Test and debug webhooks in real-time. Generate unique webhook URLs, inspect incoming requests with headers and payloads, customize responses, and view request history. Perfect for webhook development.',
+    icon: Activity,
+    href: '/tools/development/webhook-tester',
+    gradient: 'from-green-500 to-cyan-500',
+    features: ['Unique URLs', 'Real-Time Updates', 'Request Inspector', 'Custom Responses'],
+    category: 'development',
+    new: true,
+  },
+  {
     title: 'Markdown Editor & Preview',
     description:
       'GitHub-flavored markdown editor with live preview. Write README files, PR summaries, and documentation with support for tables, task lists, code highlighting, and more.',

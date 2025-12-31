@@ -561,6 +561,11 @@ type ToolEvent =
   | 'code_converter_copy'
   | 'code_converter_download'
   | 'code_converter_swap'
+  | 'webhook_tester_open'
+  | 'webhook_tester_create'
+  | 'webhook_tester_copy_url'
+  | 'webhook_tester_request_received'
+  | 'webhook_tester_inspect'
 
 // Type-safe gtag wrapper
 declare global {
