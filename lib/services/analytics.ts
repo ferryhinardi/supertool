@@ -543,6 +543,14 @@ type ToolEvent =
   | 'mockup_generate_success'
   | 'mockup_export'
   | 'mockup_background_change'
+  | 'privacy_policy_generator_open'
+  | 'privacy_policy_document_type_select'
+  | 'privacy_policy_industry_select'
+  | 'privacy_policy_jurisdiction_select'
+  | 'privacy_policy_option_toggle'
+  | 'privacy_policy_copy'
+  | 'privacy_policy_download_html'
+  | 'privacy_policy_download_pdf'
 
 // Type-safe gtag wrapper
 declare global {

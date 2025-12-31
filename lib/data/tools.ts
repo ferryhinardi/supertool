@@ -122,6 +122,18 @@ export const tools: Tool[] = [
     popular: true,
   },
   {
+    title: 'Privacy Policy Generator',
+    description:
+      'Generate GDPR & CCPA compliant privacy policies, cookie policies, and terms of service instantly. Professional templates for SaaS, e-commerce, blogs, and mobile apps. Download as HTML or PDF.',
+    icon: FileCheck,
+    href: '/tools/productivity/privacy-policy-generator',
+    gradient: 'from-green-500 to-emerald-500',
+    features: ['GDPR & CCPA', '3 Document Types', 'PDF/HTML Export', '5 Industries'],
+    category: 'productivity',
+    new: true,
+    popular: true,
+  },
+  {
     title: 'Code Diff Viewer',
     description:
       'GitHub-style diff comparison tool for text, JSON, and code files. Compare changes side-by-side with split or unified view, perfect for code reviews and version control.',
