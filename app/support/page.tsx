@@ -2,6 +2,9 @@ import DonationForm from '@/components/features/support/DonationForm'
 import RecentSupporters from '@/components/features/support/RecentSupporters'
 import { css } from '@/styled-system/css'
 
+// Force dynamic rendering since we fetch data from Supabase at request time
+export const dynamic = 'force-dynamic'
+
 export default function SupportPage() {
   return (
     <main
