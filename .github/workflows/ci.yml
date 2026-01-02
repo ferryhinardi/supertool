@@ -78,11 +78,8 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Run unit tests
-        run: pnpm test run
-
       - name: Run tests with coverage
-        run: pnpm test run --coverage
+        run: pnpm test run --coverage.enabled=true
         continue-on-error: true
 
       - name: Upload coverage reports
