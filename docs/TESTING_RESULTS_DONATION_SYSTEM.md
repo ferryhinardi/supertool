@@ -244,7 +244,7 @@ if (customerEmail && data.amount > 0) {
 ### Development (.env.local) ✅
 ```bash
 # Resend (Email Service)
-RESEND_API_KEY=re_8ADBFpxn_CZ3YDHVmbhFBzt8f5cQfFL7Y
+RESEND_API_KEY=re_YOUR_API_KEY_HERE
 RESEND_FROM_EMAIL=onboarding@resend.dev
 # RESEND_REPLY_TO_EMAIL=support@supertool.id  # Optional
 
