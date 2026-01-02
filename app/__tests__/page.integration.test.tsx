@@ -133,6 +133,7 @@ vi.mock('lucide-react', () => {
     EyeOff: createMockIcon('EyeOff'),
     FileCheck: createMockIcon('FileCheck'),
     FileDown: createMockIcon('FileDown'),
+    FileImage: createMockIcon('FileImage'),
     FileSearch: createMockIcon('FileSearch'),
     FileSpreadsheet: createMockIcon('FileSpreadsheet'),
     FileText: createMockIcon('FileText'),
