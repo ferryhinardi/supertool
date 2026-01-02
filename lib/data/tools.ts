@@ -1153,6 +1153,17 @@ export const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'Image to Text Converter',
+    description:
+      'Extract text from images using OCR. Upload photos, screenshots, or documents and convert them to editable text. Supports 12+ languages including English, Spanish, Chinese, and Japanese. Copy or download extracted text instantly.',
+    icon: FileText,
+    href: '/tools/media/image-to-text',
+    gradient: 'from-green-500 to-emerald-500',
+    features: ['OCR Technology', '12+ Languages', 'Copy Text', 'Download .txt'],
+    category: 'media',
+    new: true,
+  },
+  {
     title: 'AI Snippet Generator',
     description:
       'Generate code snippets instantly with AI. Create functions, classes, regex patterns, SQL queries, and more. Free tier includes basic snippets, unlimited generation with Pro subscription.',
