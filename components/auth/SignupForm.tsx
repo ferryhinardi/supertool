@@ -6,6 +6,7 @@ import { useAuthStore } from '@/lib/auth/auth-store'
 import { supabase } from '@/lib/auth/supabaseClient'
 import { css } from '@/styled-system/css'
 import { vstack } from '@/styled-system/patterns'
+import { GitHubButton } from './GitHubButton'
 import { GoogleButton } from './GoogleButton'
 
 export function SignupForm() {
@@ -57,8 +58,11 @@ export function SignupForm() {
 
   return (
     <div className={vstack({ gap: 4, alignItems: 'stretch' })}>
-      {/* Google Sign In */}
-      <GoogleButton />
+      {/* OAuth Sign In Buttons */}
+      <div className={vstack({ gap: 3, alignItems: 'stretch' })}>
+        <GoogleButton />
+        <GitHubButton />
+      </div>
 
       {/* Divider */}
       <div
