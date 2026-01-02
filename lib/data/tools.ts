@@ -224,6 +224,17 @@ export const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'Lorem Ipsum Generator',
+    description:
+      'Generate placeholder text for your designs and mockups. Create paragraphs, sentences, or words with customizable count and HTML formatting.',
+    icon: FileText,
+    href: '/tools/productivity/lorem-ipsum',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['Paragraphs/Sentences/Words', 'HTML Format', 'Text Statistics', 'Copy to Clipboard'],
+    category: 'productivity',
+    new: true,
+  },
+  {
     title: 'Image Optimizer & Converter',
     description:
       'Professional image compression tool that reduces file size by up to 80% without visible quality loss. Supports JPG, PNG, WebP formats with bulk processing and dimension resizing.',
