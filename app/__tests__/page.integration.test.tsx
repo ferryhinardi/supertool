@@ -557,10 +557,11 @@ describe('HomePage Integration Tests', () => {
     it('should render category sections', () => {
       render(<HomePage />)
 
-      // Check for some category names (updated to match actual labels in app/page.tsx)
+      // Check for category names that have popular tools (default view is "popular")
+      // Categories with popular tools: data, design, development, finance, productivity, security
       expect(screen.getByText(/Data Processing/i)).toBeInTheDocument()
       expect(screen.getByText(/Developer Tools/i)).toBeInTheDocument()
-      expect(screen.getByText(/Media Tools/i)).toBeInTheDocument()
+      expect(screen.getByText(/Design & Visual Tools/i)).toBeInTheDocument()
     })
 
     it('should render tool cards', () => {
