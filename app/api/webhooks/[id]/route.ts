@@ -1,11 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import { type NextRequest, NextResponse } from 'next/server'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-
-// Create admin client for server-side operations
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+import { getSupabaseServer } from '@/lib/auth/supabaseServer'
 
 // Handle all HTTP methods
 async function handleWebhook(request: NextRequest, context: { params: Promise<{ id: string }> }) {
@@ -14,6 +8,9 @@ async function handleWebhook(request: NextRequest, context: { params: Promise<{ 
   const endpointId = params.id
 
   try {
+    // Get Supabase admin client
+    const supabaseAdmin = getSupabaseServer()
+
     // Fetch webhook endpoint
     const { data: endpoint, error: fetchError } = await supabaseAdmin
       .from('webhook_endpoints')
