@@ -671,17 +671,6 @@ export const tools: Tool[] = [
   },
 
   {
-    title: 'Regex Pattern Library & Tester',
-    description:
-      'Interactive regular expression tester with real-time matching and group capturing. Explore pre-built pattern templates for emails, URLs, phone numbers, and more. Includes detailed regex explanations.',
-    icon: Terminal,
-    href: '/tools/development/regex-tester',
-    gradient: 'from-fuchsia-500 to-pink-500',
-    features: ['Live Testing', 'Pattern Templates', 'Match Groups', 'Regex Explainer'],
-    category: 'development',
-    new: true,
-  },
-  {
     title: 'JWT Debugger & Decoder',
     description:
       'Decode, verify, and debug JSON Web Tokens (JWT) with full support for multiple algorithms. Generate new tokens, validate signatures, check expiration, and inspect claims. Perfect for API debugging and authentication troubleshooting.',
