@@ -12,6 +12,7 @@
 import { validateEvent, WebhookVerificationError } from '@polar-sh/sdk/webhooks'
 import { type NextRequest, NextResponse } from 'next/server'
 import { supabaseServer } from '@/lib/auth/supabaseServer'
+import { sendDonationThankYou } from '@/lib/services/email'
 import { POLAR_CONFIG } from '@/lib/services/polar'
 
 export const runtime = 'nodejs'
@@ -288,6 +289,8 @@ async function handleSubscriptionRevoked(data: any) {
 async function handleOrderCreated(data: any) {
   try {
     const customerEmail = data.customer?.email || data.user?.email || ''
+    const customerName =
+      data.customer?.name || data.customer?.public_name || data.user?.username || 'Valued Supporter'
 
     // Note: Polar amounts are in cents (verified from SDK)
     const { error } = await supabaseServer.from('orders').upsert(
@@ -318,7 +321,17 @@ async function handleOrderCreated(data: any) {
 
     console.log('✓ Order created/updated:', data.id)
 
-    // TODO: Send receipt email
+    // Send thank you email if we have a valid email and amount
+    if (customerEmail && data.amount > 0) {
+      try {
+        await sendDonationThankYou(customerEmail, customerName, data.amount, data.currency || 'USD')
+        console.log('✓ Thank you email sent to:', customerEmail)
+      } catch (emailError) {
+        // Log email errors but don't fail the webhook
+        console.error('Failed to send thank you email:', emailError)
+        // Consider: Store failed email attempts for retry later
+      }
+    }
   } catch (error) {
     console.error('handleOrderCreated error:', error)
     throw error
