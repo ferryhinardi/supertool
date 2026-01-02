@@ -227,8 +227,10 @@ describe('ImageToPdfPage', () => {
       const generateBtn = screen.getByText('Generate PDF')
       await userEvent.click(generateBtn)
 
-      // Button should be disabled during generation
-      expect(generateBtn).toBeDisabled()
+      // Button should be disabled during generation (use waitFor to handle async state updates)
+      await waitFor(() => {
+        expect(generateBtn).toBeDisabled()
+      })
     })
 
     it('should track analytics event when generating PDF', async () => {
