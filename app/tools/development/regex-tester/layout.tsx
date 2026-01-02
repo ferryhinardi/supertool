@@ -1,40 +1,36 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Regex Pattern Library & Tester - Test Regular Expressions Online | SuperTool',
+  title: 'Regex Tester - Test Regular Expressions Online | SuperTool',
   description:
-    'Interactive regex tester with real-time matching, capture group display, and 12+ pre-built patterns. Test email, URL, phone, IP address validation patterns and more. Learn regex with instant visual feedback.',
+    'Free online regex tester with live matching, syntax highlighting, and code generation. Test regular expressions with common patterns library for JavaScript, Python, PHP, and more.',
   keywords: [
     'regex tester',
-    'regular expression tester',
-    'regex online',
-    'regex pattern library',
+    'regular expression',
     'regex validator',
-    'test regex',
-    'regex match groups',
-    'regex flags',
-    'regex patterns',
-    'email regex',
-    'url regex',
-    'phone regex',
-    'regex tutorial',
+    'pattern matcher',
+    'regex tool',
     'regex debugger',
-    'regex explainer',
+    'regex builder',
+    'online regex',
+    'regex testing',
+    'regex patterns',
+    'email validation',
+    'url validation',
+    'regex javascript',
+    'regex python',
   ],
   openGraph: {
-    title: 'Regex Pattern Library & Tester - Test Regular Expressions Online',
+    title: 'Regex Tester - Test Regular Expressions Online',
     description:
-      'Interactive regex tester with real-time matching and 12+ pre-built patterns. Test and learn regex with instant visual feedback.',
+      'Free online regex tester with live matching, syntax highlighting, and code generation. Test regular expressions with common patterns library.',
     type: 'website',
-    url: 'https://supertool.app/tools/regex-tester',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Regex Pattern Library & Tester',
-    description: 'Test regular expressions in real-time with visual match highlighting',
-  },
-  alternates: {
-    canonical: 'https://supertool.app/tools/regex-tester',
+    title: 'Regex Tester - Test Regular Expressions Online',
+    description:
+      'Free online regex tester with live matching, syntax highlighting, and code generation.',
   },
 }
 

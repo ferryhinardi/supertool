@@ -168,6 +168,17 @@ export const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'Regex Tester',
+    description:
+      'Test and validate regular expressions with live matching and syntax highlighting. Comprehensive pattern library, multi-language code generation, and detailed match results. Perfect for regex development.',
+    icon: Search,
+    href: '/tools/development/regex-tester',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['Live Matching', 'Pattern Library', 'Code Generation', 'Match Highlighting'],
+    category: 'development',
+    new: true,
+  },
+  {
     title: 'Markdown Editor & Preview',
     description:
       'GitHub-flavored markdown editor with live preview. Write README files, PR summaries, and documentation with support for tables, task lists, code highlighting, and more.',
