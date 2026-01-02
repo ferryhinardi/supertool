@@ -16,6 +16,7 @@ import {
   EyeOff,
   FileCheck,
   FileDown,
+  FileImage,
   FileJson,
   FileSearch,
   FileSpreadsheet,
@@ -1127,6 +1128,17 @@ export const tools: Tool[] = [
     ],
     category: 'media',
     premium: true,
+  },
+  {
+    title: 'Image Format Converter',
+    description:
+      'Convert images between PNG, JPEG, WEBP, and GIF formats instantly. Adjust quality, preview results, compare file sizes, and download converted images. Free online converter.',
+    icon: FileImage,
+    href: '/tools/media/image-format-converter',
+    gradient: 'from-purple-500 to-indigo-500',
+    features: ['Format Conversion', 'Quality Control', 'Size Comparison', 'Live Preview'],
+    category: 'media',
+    new: true,
   },
   {
     title: 'AI Snippet Generator',
