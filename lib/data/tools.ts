@@ -906,6 +906,17 @@ export const tools: Tool[] = [
     new: true,
     popular: true,
   },
+  {
+    title: 'Placeholder Image Generator',
+    description:
+      'Generate custom placeholder images with custom dimensions, colors, and text overlay. Perfect for mockups, prototypes, and design work. Download as SVG or PNG with 30+ preset sizes.',
+    icon: ImagePlus,
+    href: '/tools/design/placeholder-generator',
+    gradient: 'from-pink-500 to-rose-500',
+    features: ['Custom Sizes', 'Color Picker', 'Text Overlay', 'SVG & PNG Export'],
+    category: 'design',
+    new: true,
+  },
 
   // Productivity & Workflow Tools
   {
