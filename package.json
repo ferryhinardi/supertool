@@ -76,6 +76,7 @@
     "json-diff": "^1.0.6",
     "jsonpath-plus": "^10.3.0",
     "jspdf": "^3.0.3",
+    "jsqr": "^1.4.0",
     "jszip": "^3.10.1",
     "lucide-react": "^0.547.0",
     "luxon": "^3.7.2",

@@ -1,6 +1,6 @@
 'use client'
 
-import { Github, Home, LogIn, LogOut, Menu, User, X } from 'lucide-react'
+import { Github, Heart, Home, LogIn, LogOut, Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
@@ -11,6 +11,7 @@ import { css, cva } from '@/styled-system/css'
 // Generate navigation from tools data, filtering out coming soon tools
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
+  { name: 'Support Us', href: '/support', icon: Heart },
   ...tools
     .filter((tool) => !tool.comingSoon)
     .map((tool) => ({

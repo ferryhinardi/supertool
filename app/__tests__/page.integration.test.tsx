@@ -156,6 +156,7 @@ vi.mock('lucide-react', () => {
     Percent: createMockIcon('Percent'),
     QrCode: createMockIcon('QrCode'),
     Repeat: createMockIcon('Repeat'),
+    ScanLine: createMockIcon('ScanLine'),
     Scissors: createMockIcon('Scissors'),
     Shield: createMockIcon('Shield'),
     ShieldAlert: createMockIcon('ShieldAlert'),
