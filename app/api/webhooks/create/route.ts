@@ -1,15 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
 import { type NextRequest, NextResponse } from 'next/server'
 import type { CreateEndpointRequest } from '@/app/tools/development/webhook-tester/templates'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-
-// Create admin client for server-side operations
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+import { getSupabaseServer } from '@/lib/auth/supabaseServer'
 
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseServer()
+
     // Get user from Authorization header
     const authHeader = request.headers.get('authorization')
     if (!authHeader) {
@@ -67,6 +63,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseServer()
+
     // Get user from Authorization header
     const authHeader = request.headers.get('authorization')
     if (!authHeader) {

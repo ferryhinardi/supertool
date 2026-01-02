@@ -11,8 +11,18 @@
 
 import { Resend } from 'resend'
 
-// Initialize Resend client (throws if API key missing)
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Lazy initialization to avoid build-time failures
+let resend: Resend | null = null
+
+function getResendClient(): Resend {
+  if (!resend) {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY is not configured. Get one at https://resend.com/api-keys')
+    }
+    resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resend
+}
 
 /**
  * Default sender email
@@ -41,7 +51,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<{ id: string
   }
 
   try {
-    const { data, error } = await resend.emails.send({
+    const client = getResendClient()
+    const { data, error } = await client.emails.send({
       from: options.from || `${DEFAULT_FROM_NAME} <${DEFAULT_FROM_EMAIL}>`,
       to: options.to,
       subject: options.subject,

@@ -130,7 +130,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/browser": "^4.0.5",
     "@vitest/browser-playwright": "^4.0.5",
-    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/coverage-v8": "^4.0.13",
     "@vitest/ui": "^4.0.5",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.38.0",

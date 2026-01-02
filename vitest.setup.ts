@@ -106,6 +106,11 @@ beforeAll(async () => {
     })
   }
 
+  // Mock window.scrollTo for JSDOM
+  if (typeof window !== 'undefined' && !window.scrollTo) {
+    window.scrollTo = vi.fn()
+  }
+
   // Mock canvas for browser fingerprinting
   if (typeof HTMLCanvasElement !== 'undefined') {
     HTMLCanvasElement.prototype.getContext = (() =>

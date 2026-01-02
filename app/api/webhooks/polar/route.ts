@@ -18,16 +18,90 @@ import { POLAR_CONFIG } from '@/lib/services/polar'
 export const runtime = 'nodejs'
 
 /**
+ * Polar customer data structure
+ */
+interface PolarCustomer {
+  id: string
+  email?: string
+  name?: string
+  public_name?: string
+}
+
+/**
+ * Polar product/price data structure
+ */
+interface PolarProduct {
+  id: string
+}
+
+interface PolarPrice {
+  id: string
+}
+
+/**
+ * Polar subscription data from webhook
+ */
+interface PolarSubscriptionData {
+  id: string
+  customer?: PolarCustomer
+  customer_id?: string
+  product?: PolarProduct
+  product_id?: string
+  price?: PolarPrice
+  price_id?: string
+  user?: { email?: string; username?: string }
+  status?: string
+  amount?: number
+  currency?: string
+  recurring_interval?: string
+  recurringInterval?: string
+  recurring_interval_count?: number
+  recurringIntervalCount?: number
+  current_period_start?: string
+  current_period_end?: string
+  trial_start?: string | null
+  trial_end?: string | null
+  cancel_at_period_end?: boolean
+  metadata?: Record<string, unknown>
+}
+
+/**
+ * Polar order data from webhook
+ */
+interface PolarOrderData {
+  id: string
+  customer?: PolarCustomer
+  customer_id?: string
+  product?: PolarProduct
+  product_id?: string
+  user?: { email?: string; username?: string }
+  amount?: number
+  currency?: string
+  status?: string
+  payment_processor?: string | null
+  payment_processor_order_id?: string | null
+  metadata?: Record<string, unknown>
+}
+
+/**
+ * Polar checkout data from webhook
+ */
+interface PolarCheckoutData {
+  id: string
+  [key: string]: unknown
+}
+
+/**
  * Polar webhook event types we handle
  */
 type WebhookEvent =
-  | { type: 'subscription.created'; data: any }
-  | { type: 'subscription.updated'; data: any }
-  | { type: 'subscription.canceled'; data: any }
-  | { type: 'subscription.revoked'; data: any }
-  | { type: 'order.created'; data: any }
-  | { type: 'checkout.created'; data: any }
-  | { type: 'checkout.updated'; data: any }
+  | { type: 'subscription.created'; data: PolarSubscriptionData }
+  | { type: 'subscription.updated'; data: PolarSubscriptionData }
+  | { type: 'subscription.canceled'; data: PolarSubscriptionData }
+  | { type: 'subscription.revoked'; data: PolarSubscriptionData }
+  | { type: 'order.created'; data: PolarOrderData }
+  | { type: 'checkout.created'; data: PolarCheckoutData }
+  | { type: 'checkout.updated'; data: PolarCheckoutData }
 
 export async function POST(request: NextRequest) {
   try {
@@ -115,7 +189,7 @@ export async function POST(request: NextRequest) {
  * Handle subscription created event
  * Uses UPSERT for idempotency - handles duplicate webhook deliveries gracefully
  */
-async function handleSubscriptionCreated(data: any) {
+async function handleSubscriptionCreated(data: PolarSubscriptionData) {
   try {
     // Extract customer email from subscription customer object
     const customerEmail = data.customer?.email || data.user?.email || ''
@@ -195,7 +269,7 @@ async function handleSubscriptionCreated(data: any) {
 /**
  * Handle subscription updated event
  */
-async function handleSubscriptionUpdated(data: any) {
+async function handleSubscriptionUpdated(data: PolarSubscriptionData) {
   try {
     const { error } = await supabaseServer
       .from('subscriptions')
@@ -228,7 +302,7 @@ async function handleSubscriptionUpdated(data: any) {
 /**
  * Handle subscription canceled event
  */
-async function handleSubscriptionCanceled(data: any) {
+async function handleSubscriptionCanceled(data: PolarSubscriptionData) {
   try {
     const { error } = await supabaseServer
       .from('subscriptions')
@@ -257,7 +331,7 @@ async function handleSubscriptionCanceled(data: any) {
 /**
  * Handle subscription revoked event (forced cancellation)
  */
-async function handleSubscriptionRevoked(data: any) {
+async function handleSubscriptionRevoked(data: PolarSubscriptionData) {
   try {
     const { error } = await supabaseServer
       .from('subscriptions')
@@ -286,7 +360,7 @@ async function handleSubscriptionRevoked(data: any) {
  * Handle order created event (one-time payment)
  * Uses UPSERT for idempotency
  */
-async function handleOrderCreated(data: any) {
+async function handleOrderCreated(data: PolarOrderData) {
   try {
     const customerEmail = data.customer?.email || data.user?.email || ''
     const customerName =
@@ -322,7 +396,7 @@ async function handleOrderCreated(data: any) {
     console.log('✓ Order created/updated:', data.id)
 
     // Send thank you email if we have a valid email and amount
-    if (customerEmail && data.amount > 0) {
+    if (customerEmail && data.amount && data.amount > 0) {
       try {
         await sendDonationThankYou(customerEmail, customerName, data.amount, data.currency || 'USD')
         console.log('✓ Thank you email sent to:', customerEmail)
