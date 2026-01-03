@@ -53,22 +53,73 @@ vi.mock('next/navigation', () => ({
 }))
 
 // Mock Framer Motion to disable animations in tests
-vi.mock('framer-motion', async () => {
-  const actual = await vi.importActual('framer-motion')
+vi.mock('framer-motion', () => {
+  const React = require('react')
+
+  // Create a simple passthrough component for each motion element
+  const createMotionComponent = (element: string) => {
+    return React.forwardRef(({ children, ...props }: any, ref: any) => {
+      // Filter out Framer Motion specific props
+      const {
+        initial,
+        animate,
+        exit,
+        transition,
+        variants,
+        whileHover,
+        whileTap,
+        whileFocus,
+        whileDrag,
+        whileInView,
+        drag,
+        dragConstraints,
+        dragElastic,
+        dragMomentum,
+        layout,
+        layoutId,
+        onAnimationStart,
+        onAnimationComplete,
+        ...filteredProps
+      } = props
+
+      return React.createElement(element, { ...filteredProps, ref }, children)
+    })
+  }
+
   return {
-    ...actual,
-    motion: new Proxy(
-      {},
-      {
-        get: (_target, prop) => {
-          // Return a component that renders its children without animation
-          return ({ children, ...props }: any) => {
-            const React = require('react')
-            return React.createElement(prop as string, props, children)
-          }
-        },
-      }
-    ),
+    motion: {
+      div: createMotionComponent('div'),
+      span: createMotionComponent('span'),
+      button: createMotionComponent('button'),
+      p: createMotionComponent('p'),
+      h1: createMotionComponent('h1'),
+      h2: createMotionComponent('h2'),
+      h3: createMotionComponent('h3'),
+      section: createMotionComponent('section'),
+      article: createMotionComponent('article'),
+      ul: createMotionComponent('ul'),
+      li: createMotionComponent('li'),
+      form: createMotionComponent('form'),
+      input: createMotionComponent('input'),
+      textarea: createMotionComponent('textarea'),
+      a: createMotionComponent('a'),
+    },
+    AnimatePresence: ({ children }: any) => children,
+    useAnimation: () => ({
+      start: vi.fn(),
+      stop: vi.fn(),
+      set: vi.fn(),
+    }),
+    useMotionValue: (initial: any) => ({
+      get: () => initial,
+      set: vi.fn(),
+      onChange: vi.fn(),
+    }),
+    useTransform: () => ({
+      get: () => 0,
+      set: vi.fn(),
+      onChange: vi.fn(),
+    }),
   }
 })
 
