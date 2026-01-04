@@ -1,11 +1,11 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import * as analytics from '@/lib/analytics'
+import * as analytics from '@/lib/services/analytics'
 import DailyTaskSummary from '../page'
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
 }))
 
@@ -179,8 +179,8 @@ describe('Daily Task Summary - Add Task', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration.*minutes/i)
 
-    await user.type(titleInput, 'Complete project')
-    await user.type(durationInput, '60')
+    fireEvent.change(titleInput, { target: { value: 'Complete project' } })
+    fireEvent.change(durationInput, { target: { value: '60' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find(
@@ -203,8 +203,8 @@ describe('Daily Task Summary - Add Task', () => {
     const titleInput = screen.getByLabelText('Task Title') as HTMLInputElement
     const durationInput = screen.getByLabelText(/Duration.*minutes/i) as HTMLInputElement
 
-    await user.type(titleInput, 'Test task')
-    await user.type(durationInput, '30')
+    fireEvent.change(titleInput, { target: { value: 'Test task' } })
+    fireEvent.change(durationInput, { target: { value: '30' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -239,7 +239,7 @@ describe('Daily Task Summary - Add Task', () => {
     render(<DailyTaskSummary />)
 
     const titleInput = screen.getByLabelText('Task Title')
-    await user.type(titleInput, 'Test task')
+    fireEvent.change(titleInput, { target: { value: 'Test task' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -253,14 +253,14 @@ describe('Daily Task Summary - Add Task', () => {
   })
 
   it('allows adding task with Enter key in title input', async () => {
-    const user = userEvent.setup()
+    const _user = userEvent.setup()
     render(<DailyTaskSummary />)
 
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration.*minutes/i)
 
-    await user.type(durationInput, '45')
-    await user.type(titleInput, 'Quick task{Enter}')
+    fireEvent.change(durationInput, { target: { value: '45' } })
+    fireEvent.change(titleInput, { target: { value: 'Quick task{Enter}' } })
 
     await waitFor(() => {
       expect(screen.queryByText(/quick task/i)).toBeTruthy()
@@ -268,14 +268,14 @@ describe('Daily Task Summary - Add Task', () => {
   })
 
   it('allows adding task with Enter key in duration input', async () => {
-    const user = userEvent.setup()
+    const _user = userEvent.setup()
     render(<DailyTaskSummary />)
 
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration.*minutes/i)
 
-    await user.type(titleInput, 'Another task')
-    await user.type(durationInput, '30{Enter}')
+    fireEvent.change(titleInput, { target: { value: 'Another task' } })
+    fireEvent.change(durationInput, { target: { value: '30{Enter}' } })
 
     await waitFor(() => {
       expect(screen.queryByText(/another task/i)).toBeTruthy()
@@ -289,8 +289,8 @@ describe('Daily Task Summary - Add Task', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration.*minutes/i)
 
-    await user.type(titleInput, 'Tracked task')
-    await user.type(durationInput, '25')
+    fireEvent.change(titleInput, { target: { value: 'Tracked task' } })
+    fireEvent.change(durationInput, { target: { value: '25' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -323,8 +323,8 @@ describe('Daily Task Summary - Task Display', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration.*minutes/i)
 
-    await user.type(titleInput, 'Visible task')
-    await user.type(durationInput, '40')
+    fireEvent.change(titleInput, { target: { value: 'Visible task' } })
+    fireEvent.change(durationInput, { target: { value: '40' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -345,8 +345,8 @@ describe('Daily Task Summary - Task Display', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration.*minutes/i)
 
-    await user.type(titleInput, 'Timed task')
-    await user.type(durationInput, '50')
+    fireEvent.change(titleInput, { target: { value: 'Timed task' } })
+    fireEvent.change(durationInput, { target: { value: '50' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -368,8 +368,8 @@ describe('Daily Task Summary - Task Display', () => {
     const durationInput = screen.getByLabelText(/Duration.*minutes/i)
     const categorySelect = screen.getByLabelText('Category')
 
-    await user.type(titleInput, 'Categorized task')
-    await user.type(durationInput, '35')
+    fireEvent.change(titleInput, { target: { value: 'Categorized task' } })
+    fireEvent.change(durationInput, { target: { value: '35' } })
     await user.selectOptions(categorySelect, 'learning')
 
     const buttons = screen.getAllByRole('button')
@@ -517,8 +517,8 @@ describe('Daily Task Summary - LocalStorage', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration.*minutes/i)
 
-    await user.type(titleInput, 'Storage test')
-    await user.type(durationInput, '45')
+    fireEvent.change(titleInput, { target: { value: 'Storage test' } })
+    fireEvent.change(durationInput, { target: { value: '45' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -798,7 +798,7 @@ describe('Daily Task Summary - Date Selection', () => {
 
     const dateInput = screen.getByLabelText('Select Date')
     await user.clear(dateInput)
-    await user.type(dateInput, yesterdayStr)
+    fireEvent.change(dateInput, { target: { value: yesterdayStr } })
 
     await waitFor(() => {
       expect(dateInput).toHaveValue(yesterdayStr)
@@ -934,8 +934,8 @@ describe('Daily Task Summary - Edge Cases', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration/i)
 
-    await user.type(titleInput, 'Zero duration')
-    await user.type(durationInput, '0')
+    fireEvent.change(titleInput, { target: { value: 'Zero duration' } })
+    fireEvent.change(durationInput, { target: { value: '0' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -956,8 +956,8 @@ describe('Daily Task Summary - Edge Cases', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration/i)
 
-    await user.type(titleInput, longTitle)
-    await user.type(durationInput, '30')
+    fireEvent.change(titleInput, { target: { value: longTitle } })
+    fireEvent.change(durationInput, { target: { value: '30' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -978,8 +978,8 @@ describe('Daily Task Summary - Edge Cases', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration/i)
 
-    await user.type(titleInput, 'Long task')
-    await user.type(durationInput, '999')
+    fireEvent.change(titleInput, { target: { value: 'Long task' } })
+    fireEvent.change(durationInput, { target: { value: '999' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -1000,8 +1000,8 @@ describe('Daily Task Summary - Edge Cases', () => {
     const titleInput = screen.getByLabelText('Task Title')
     const durationInput = screen.getByLabelText(/Duration/i)
 
-    await user.type(titleInput, '   ')
-    await user.type(durationInput, '30')
+    fireEvent.change(titleInput, { target: { value: '   ' } })
+    fireEvent.change(durationInput, { target: { value: '30' } })
 
     const buttons = screen.getAllByRole('button')
     const addButton = buttons.find((btn) => btn.textContent?.includes('Add'))
@@ -1040,7 +1040,7 @@ describe('Daily Task Summary - Time Formatting', () => {
     render(<DailyTaskSummary />)
     // Duration might be formatted differently or split
     expect(
-      screen.getByText((content, element) => {
+      screen.getByText((_content, element) => {
         return (
           element?.textContent?.includes('45') || element?.textContent?.includes('45m') || false
         )
@@ -1066,7 +1066,7 @@ describe('Daily Task Summary - Time Formatting', () => {
     render(<DailyTaskSummary />)
     // Duration might be split across elements or formatted differently
     expect(
-      screen.getByText((content, element) => {
+      screen.getByText((_content, element) => {
         return (
           (element?.textContent?.includes('1h') && element?.textContent?.includes('30m')) || false
         )

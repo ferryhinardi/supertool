@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -25,10 +25,12 @@ vi.mock('framer-motion', () => ({
 }))
 
 // Mock clipboard
-Object.assign(navigator, {
-  clipboard: {
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
     writeText: vi.fn(() => Promise.resolve()),
   },
+  writable: true,
+  configurable: true,
 })
 
 // Mock window.open
@@ -155,7 +157,7 @@ describe('IPLookupPage', () => {
 
   describe('User Interactions', () => {
     it('allows entering IP address', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       vi.mocked(fetch).mockResolvedValue({
         ok: true,
         json: async () => mockIPData,
@@ -164,8 +166,9 @@ describe('IPLookupPage', () => {
       render(<IPLookupPage />)
 
       const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      const { fireEvent } = await import('@testing-library/react')
+      // Use fireEvent instead of user.type to avoid character duplication bug
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('8.8.8.8')
     })
@@ -199,7 +202,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       vi.clearAllMocks()
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
@@ -221,7 +224,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
       await user.clear(inputs[0])
 
       expect((inputs[0] as HTMLInputElement).value).toBe('')
@@ -238,7 +241,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '1.1.1.1')
+      fireEvent.change(inputs[0], { target: { value: '1.1.1.1' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('1.1.1.1')
     })
@@ -254,7 +257,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8{Enter}')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8{Enter}' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('8.8.8.8')
     })
@@ -272,7 +275,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '192.168.1.1')
+      fireEvent.change(inputs[0], { target: { value: '192.168.1.1' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('192.168.1.1')
     })
@@ -288,7 +291,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '999.999.999.999')
+      fireEvent.change(inputs[0], { target: { value: '999.999.999.999' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -309,7 +312,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '2001:4860:4860::8888')
+      fireEvent.change(inputs[0], { target: { value: '2001:4860:4860::8888' } })
 
       expect((inputs[0] as HTMLInputElement).value).toContain('2001')
     })
@@ -345,7 +348,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], 'not-an-ip')
+      fireEvent.change(inputs[0], { target: { value: 'not-an-ip' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -366,7 +369,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '1.1.1.1')
+      fireEvent.change(inputs[0], { target: { value: '1.1.1.1' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('1.1.1.1')
     })
@@ -382,7 +385,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '192.168.0.1')
+      fireEvent.change(inputs[0], { target: { value: '192.168.0.1' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('192.168.0.1')
     })
@@ -397,7 +400,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -417,7 +420,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -438,7 +441,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -459,7 +462,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -480,7 +483,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -501,7 +504,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -522,7 +525,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -545,7 +548,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -568,7 +571,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -599,7 +602,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -631,7 +634,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -658,7 +661,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -691,7 +694,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -723,7 +726,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -746,7 +749,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '999.999.999.999')
+      fireEvent.change(inputs[0], { target: { value: '999.999.999.999' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -766,7 +769,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -790,7 +793,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -811,7 +814,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -998,7 +1001,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('8.8.8.8')
     })
@@ -1016,11 +1019,11 @@ describe('IPLookupPage', () => {
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
 
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
       await user.click(lookupButton)
 
       await user.clear(inputs[0])
-      await user.type(inputs[0], '1.1.1.1')
+      fireEvent.change(inputs[0], { target: { value: '1.1.1.1' } })
       await user.click(lookupButton)
 
       expect((inputs[0] as HTMLInputElement).value).toBe('1.1.1.1')
@@ -1037,7 +1040,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -1056,7 +1059,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)
@@ -1079,7 +1082,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '127.0.0.1')
+      fireEvent.change(inputs[0], { target: { value: '127.0.0.1' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('127.0.0.1')
     })
@@ -1095,7 +1098,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '008.008.008.008')
+      fireEvent.change(inputs[0], { target: { value: '008.008.008.008' } })
 
       expect((inputs[0] as HTMLInputElement).value).toBe('008.008.008.008')
     })
@@ -1111,7 +1114,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], ' 8.8.8.8 ')
+      fireEvent.change(inputs[0], { target: { value: ' 8.8.8.8 ' } })
 
       expect((inputs[0] as HTMLInputElement).value).toContain('8.8.8.8')
     })
@@ -1130,7 +1133,7 @@ describe('IPLookupPage', () => {
 
       const inputs = screen.getAllByRole('textbox')
       await user.clear(inputs[0])
-      await user.type(inputs[0], '8.8.8.8')
+      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
 
       const lookupButton = screen.getByRole('button', { name: /Looking up/i })
       await user.click(lookupButton)

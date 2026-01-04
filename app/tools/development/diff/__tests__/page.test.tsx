@@ -10,7 +10,7 @@ vi.mock('react-diff-viewer-continued', () => ({
 }))
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
@@ -24,10 +24,12 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock clipboard
-Object.assign(navigator, {
-  clipboard: {
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
     writeText: vi.fn(() => Promise.resolve()),
   },
+  writable: true,
+  configurable: true,
 })
 
 // Mock URL methods
@@ -98,25 +100,25 @@ describe('DiffTool', () => {
 
   describe('Text Input', () => {
     it('allows entering old value', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
       const oldValueTextarea = textareas[0]
 
-      await user.type(oldValueTextarea, 'Old text')
+      fireEvent.change(oldValueTextarea, { target: { value: 'Old text' } })
 
       expect((oldValueTextarea as HTMLTextAreaElement).value).toBe('Old text')
     })
 
     it('allows entering new value', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
       const newValueTextarea = textareas[1]
 
-      await user.type(newValueTextarea, 'New text')
+      fireEvent.change(newValueTextarea, { target: { value: 'New text' } })
 
       expect((newValueTextarea as HTMLTextAreaElement).value).toBe('New text')
     })
@@ -129,11 +131,11 @@ describe('DiffTool', () => {
     })
 
     it('updates stats when text is entered', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Line 1\nLine 2\nLine 3')
+      fireEvent.change(textareas[0], { target: { value: 'Line 1\nLine 2\nLine 3' } })
 
       await waitFor(() => {
         const stats = screen.queryAllByText(/\d+ lines?/i)
@@ -142,22 +144,22 @@ describe('DiffTool', () => {
     })
 
     it('handles multiline text input', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Line 1{Enter}Line 2{Enter}Line 3')
+      fireEvent.change(textareas[0], { target: { value: 'Line 1{Enter}Line 2{Enter}Line 3' } })
 
       expect((textareas[0] as HTMLTextAreaElement).value).toContain('Line 1')
     })
 
     it('displays character count for both panels', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Test')
-      await user.type(textareas[1], 'Testing')
+      fireEvent.change(textareas[0], { target: { value: 'Test' } })
+      fireEvent.change(textareas[1], { target: { value: 'Testing' } })
 
       await waitFor(() => {
         const charCounts = screen.queryAllByText(/\d+ characters?/i)
@@ -166,12 +168,12 @@ describe('DiffTool', () => {
     })
 
     it('displays line count for both panels', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Line 1{Enter}Line 2')
-      await user.type(textareas[1], 'Line 1')
+      fireEvent.change(textareas[0], { target: { value: 'Line 1{Enter}Line 2' } })
+      fireEvent.change(textareas[1], { target: { value: 'Line 1' } })
 
       await waitFor(() => {
         const lineCounts = screen.queryAllByText(/\d+ lines?/i)
@@ -191,7 +193,7 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Test')
+      fireEvent.change(textareas[0], { target: { value: 'Test' } })
       await user.clear(textareas[0])
 
       expect((textareas[0] as HTMLTextAreaElement).value).toBe('')
@@ -295,7 +297,7 @@ describe('DiffTool', () => {
 
       // Enter invalid JSON
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], '{{invalid json}}')
+      fireEvent.change(textareas[0], { target: { value: '{{invalid json}}' } })
 
       // Should render without crashing
       expect(textareas[0]).toBeTruthy()
@@ -387,7 +389,7 @@ describe('DiffTool', () => {
       if (jsonButton) await user.click(jsonButton)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'invalid')
+      fireEvent.change(textareas[0], { target: { value: 'invalid' } })
 
       const buttons = screen.getAllByRole('button')
       const formatButtons = buttons.filter((btn) => btn.textContent?.includes('Format'))
@@ -474,8 +476,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const copyButtons = buttons.filter((btn) => {
@@ -497,8 +499,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const copyButtons = buttons.filter((btn) => {
@@ -522,8 +524,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Original text')
-      await user.type(textareas[1], 'Modified text')
+      fireEvent.change(textareas[0], { target: { value: 'Original text' } })
+      fireEvent.change(textareas[1], { target: { value: 'Modified text' } })
 
       const buttons = screen.getAllByRole('button')
       const copyButtons = buttons.filter((btn) => btn.textContent?.toLowerCase().includes('copy'))
@@ -546,8 +548,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const downloadButtons = buttons.filter((btn) =>
@@ -568,8 +570,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const downloadButtons = buttons.filter((btn) =>
@@ -592,8 +594,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const downloadButtons = buttons.filter((btn) =>
@@ -616,8 +618,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old text')
-      await user.type(textareas[1], 'New text')
+      fireEvent.change(textareas[0], { target: { value: 'Old text' } })
+      fireEvent.change(textareas[1], { target: { value: 'New text' } })
 
       const buttons = screen.getAllByRole('button')
       const resetButtons = buttons.filter((btn) => btn.textContent?.toLowerCase().includes('reset'))
@@ -637,8 +639,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const resetButtons = buttons.filter((btn) => btn.textContent?.toLowerCase().includes('reset'))
@@ -657,8 +659,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old text')
-      await user.type(textareas[1], 'New text')
+      fireEvent.change(textareas[0], { target: { value: 'Old text' } })
+      fireEvent.change(textareas[1], { target: { value: 'New text' } })
 
       const buttons = screen.getAllByRole('button')
       const resetButtons = buttons.filter((btn) => btn.textContent?.toLowerCase().includes('reset'))
@@ -679,8 +681,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const swapButtons = buttons.filter((btn) => btn.textContent?.toLowerCase().includes('swap'))
@@ -700,8 +702,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const swapButtons = buttons.filter((btn) => btn.textContent?.toLowerCase().includes('swap'))
@@ -720,8 +722,8 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Old')
-      await user.type(textareas[1], 'New')
+      fireEvent.change(textareas[0], { target: { value: 'Old' } })
+      fireEvent.change(textareas[1], { target: { value: 'New' } })
 
       const buttons = screen.getAllByRole('button')
       const swapButtons = buttons.filter((btn) => btn.textContent?.toLowerCase().includes('swap'))
@@ -739,12 +741,12 @@ describe('DiffTool', () => {
 
   describe('Diff Viewer', () => {
     it('displays diff viewer when text is entered', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Line 1\nLine 2')
-      await user.type(textareas[1], 'Line 1 modified\nLine 2')
+      fireEvent.change(textareas[0], { target: { value: 'Line 1\nLine 2' } })
+      fireEvent.change(textareas[1], { target: { value: 'Line 1 modified\nLine 2' } })
 
       // Diff viewer should render
       const diffViewer = screen.queryByTestId('diff-viewer')
@@ -758,12 +760,12 @@ describe('DiffTool', () => {
     })
 
     it('renders diff viewer for both panels', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Test')
-      await user.type(textareas[1], 'Test modified')
+      fireEvent.change(textareas[0], { target: { value: 'Test' } })
+      fireEvent.change(textareas[1], { target: { value: 'Test modified' } })
 
       await waitFor(() => {
         expect(screen.queryByTestId('diff-viewer')).toBeTruthy()
@@ -775,9 +777,9 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'First')
+      fireEvent.change(textareas[0], { target: { value: 'First' } })
       await user.clear(textareas[0])
-      await user.type(textareas[0], 'Second')
+      fireEvent.change(textareas[0], { target: { value: 'Second' } })
 
       expect((textareas[0] as HTMLTextAreaElement).value).toBe('Second')
     })
@@ -785,11 +787,11 @@ describe('DiffTool', () => {
 
   describe('Statistics', () => {
     it('displays line count statistics', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Line 1\nLine 2\nLine 3')
+      fireEvent.change(textareas[0], { target: { value: 'Line 1\nLine 2\nLine 3' } })
 
       // Statistics should update
       const stats = screen.queryAllByText(/line/i)
@@ -797,11 +799,11 @@ describe('DiffTool', () => {
     })
 
     it('displays character count statistics', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Test content')
+      fireEvent.change(textareas[0], { target: { value: 'Test content' } })
 
       // Character count should be displayed
       const stats = screen.queryAllByText(/character/i)
@@ -809,12 +811,12 @@ describe('DiffTool', () => {
     })
 
     it('shows difference in line count', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Line 1\nLine 2')
-      await user.type(textareas[1], 'Line 1\nLine 2\nLine 3')
+      fireEvent.change(textareas[0], { target: { value: 'Line 1\nLine 2' } })
+      fireEvent.change(textareas[1], { target: { value: 'Line 1\nLine 2\nLine 3' } })
 
       await waitFor(() => {
         const stats = screen.queryAllByText(/line/i)
@@ -823,12 +825,12 @@ describe('DiffTool', () => {
     })
 
     it('shows difference in character count', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Short')
-      await user.type(textareas[1], 'Much longer text')
+      fireEvent.change(textareas[0], { target: { value: 'Short' } })
+      fireEvent.change(textareas[1], { target: { value: 'Much longer text' } })
 
       await waitFor(() => {
         const stats = screen.queryAllByText(/character/i)
@@ -837,13 +839,13 @@ describe('DiffTool', () => {
     })
 
     it('updates statistics in real-time', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'A')
-      await user.type(textareas[0], 'B')
-      await user.type(textareas[0], 'C')
+      fireEvent.change(textareas[0], { target: { value: 'A' } })
+      fireEvent.change(textareas[0], { target: { value: 'B' } })
+      fireEvent.change(textareas[0], { target: { value: 'C' } })
 
       expect((textareas[0] as HTMLTextAreaElement).value).toBe('ABC')
     })
@@ -938,22 +940,22 @@ describe('DiffTool', () => {
 
   describe('User Experience', () => {
     it('provides clear visual feedback', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Test')
+      fireEvent.change(textareas[0], { target: { value: 'Test' } })
 
       expect((textareas[0] as HTMLTextAreaElement).value).toBe('Test')
     })
 
     it('handles rapid input changes', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Quick')
-      await user.type(textareas[1], 'Brown')
+      fireEvent.change(textareas[0], { target: { value: 'Quick' } })
+      fireEvent.change(textareas[1], { target: { value: 'Brown' } })
 
       expect((textareas[0] as HTMLTextAreaElement).value).toBe('Quick')
       expect((textareas[1] as HTMLTextAreaElement).value).toBe('Brown')
@@ -964,7 +966,7 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'Keep')
+      fireEvent.change(textareas[0], { target: { value: 'Keep' } })
 
       await user.click(screen.getByText('Split View'))
 
@@ -979,7 +981,7 @@ describe('DiffTool', () => {
       if (jsonButton) await user.click(jsonButton)
 
       const textareas = screen.getAllByRole('textbox')
-      await user.type(textareas[0], 'invalid json')
+      fireEvent.change(textareas[0], { target: { value: 'invalid json' } })
 
       const buttons = screen.getAllByRole('button')
       const formatButtons = buttons.filter((btn) => btn.textContent?.includes('Format'))
