@@ -1,8 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import imageCompression from 'browser-image-compression'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import ImageOptimizerPage from '../page'
 
 // Mock dependencies
@@ -13,7 +13,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
   trackToolEvent: vi.fn(),
 }))
@@ -181,7 +181,7 @@ describe('Image Optimizer Page', () => {
 
       const slider = screen.getByLabelText(/Quality/i)
       await user.clear(slider)
-      await user.type(slider, '50')
+      fireEvent.change(slider, { target: { value: '50' } })
 
       // Quality value should update
       await waitFor(() => {
@@ -195,7 +195,7 @@ describe('Image Optimizer Page', () => {
 
       const input = screen.getByLabelText(/Width \(px\)/i)
       await user.clear(input)
-      await user.type(input, '1024')
+      fireEvent.change(input, { target: { value: '1024' } })
 
       expect(input).toHaveValue(1024)
     })
@@ -206,7 +206,7 @@ describe('Image Optimizer Page', () => {
 
       const input = screen.getByLabelText(/Height \(px\)/i)
       await user.clear(input)
-      await user.type(input, '768')
+      fireEvent.change(input, { target: { value: '768' } })
 
       expect(input).toHaveValue(768)
     })

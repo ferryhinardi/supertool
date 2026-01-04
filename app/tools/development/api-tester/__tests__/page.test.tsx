@@ -116,11 +116,11 @@ describe('API Tester Page - Component Tests', () => {
   })
 
   it('should enter URL', async () => {
-    const user = userEvent.setup()
+    const _user = userEvent.setup()
     render(<ApiTesterPage />)
 
     const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
-    await user.type(urlInput, 'https://api.example.com/users')
+    fireEvent.change(urlInput, { target: { value: 'https://api.example.com/users' } })
 
     expect(urlInput).toHaveValue('https://api.example.com/users')
   })

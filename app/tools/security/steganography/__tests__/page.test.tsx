@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { setupUserEvent } from '@/test-utils/userEvent'
 import '@testing-library/jest-dom/vitest'
@@ -132,7 +132,7 @@ describe('Steganography Page', () => {
       render(<SteganographyPage />)
 
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
-      await user.type(coverTextInput, 'Cover text')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover text' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
@@ -149,8 +149,8 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await user.type(coverTextInput, 'This is cover text')
-      await user.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'This is cover text' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
@@ -168,8 +168,8 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await user.type(coverTextInput, 'Cover')
-      await user.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
@@ -187,8 +187,8 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await user.type(coverTextInput, 'Cover')
-      await user.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
@@ -242,7 +242,7 @@ describe('Steganography Page', () => {
       const textInput = screen.getByPlaceholderText(
         /Paste text that might contain a hidden message/i
       )
-      await user.type(textInput, 'Just plain text')
+      fireEvent.change(textInput, { target: { value: 'Just plain text' } })
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
@@ -260,8 +260,8 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await user.type(coverTextInput, 'Cover')
-      await user.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1]
@@ -290,7 +290,7 @@ describe('Steganography Page', () => {
         /Paste text that might contain a hidden message/i
       )
       await user.clear(decodeTextInput)
-      await user.type(decodeTextInput, encodedText)
+      fireEvent.change(decodeTextInput, { target: { value: encodedText } })
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
@@ -309,8 +309,8 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await user.type(coverTextInput, 'Cover')
-      await user.type(secretInput, 'TestSecret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'TestSecret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1]
@@ -337,7 +337,7 @@ describe('Steganography Page', () => {
         /Paste text that might contain a hidden message/i
       )
       await user.clear(decodeTextInput)
-      await user.type(decodeTextInput, encodedText)
+      fireEvent.change(decodeTextInput, { target: { value: encodedText } })
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
@@ -360,8 +360,8 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await user.type(coverTextInput, 'Cover')
-      await user.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1]
@@ -390,8 +390,8 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await user.type(coverTextInput, 'Cover')
-      await user.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1]
@@ -418,7 +418,7 @@ describe('Steganography Page', () => {
         /Paste text that might contain a hidden message/i
       )
       await user.clear(decodeTextInput)
-      await user.type(decodeTextInput, encodedText)
+      fireEvent.change(decodeTextInput, { target: { value: encodedText } })
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
@@ -451,8 +451,8 @@ describe('Steganography Page', () => {
         /Enter your secret message to hide/i
       ) as HTMLTextAreaElement
 
-      await user.type(coverTextInput, 'Cover')
-      await user.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       expect(coverTextInput.value).toBe('Cover')
       expect(secretInput.value).toBe('Secret')
@@ -483,7 +483,7 @@ describe('Steganography Page', () => {
       const textInput = screen.getByPlaceholderText(
         /Paste text that might contain a hidden message/i
       ) as HTMLTextAreaElement
-      await user.type(textInput, 'Some text')
+      fireEvent.change(textInput, { target: { value: 'Some text' } })
 
       expect(textInput.value).toBe('Some text')
 
