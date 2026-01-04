@@ -50,7 +50,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   })
 
   afterEach(() => {
-    vi.restoreAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('Page Rendering', () => {
@@ -354,16 +354,6 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
   describe('Copy to Clipboard', () => {
     it('should copy output to clipboard', async () => {
-      // Mock clipboard API
-      const writeTextMock = vi.fn().mockResolvedValue(undefined)
-      Object.defineProperty(navigator, 'clipboard', {
-        value: {
-          writeText: writeTextMock,
-        },
-        writable: true,
-        configurable: true,
-      })
-
       render(<YamlJsonConverterPage />)
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -380,7 +370,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       await userEvent.click(copyButton)
 
       await waitFor(() => {
-        expect(writeTextMock).toHaveBeenCalled()
+        expect(navigator.clipboard.writeText).toHaveBeenCalled()
         expect(toast.success).toHaveBeenCalledWith('Copied to clipboard!')
         expect(trackToolEvent).toHaveBeenCalledWith('yaml_json_converter_copy', {
           direction: 'yaml-to-json',
@@ -389,16 +379,6 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should show copied confirmation', async () => {
-      // Mock clipboard API
-      const writeTextMock = vi.fn().mockResolvedValue(undefined)
-      Object.defineProperty(navigator, 'clipboard', {
-        value: {
-          writeText: writeTextMock,
-        },
-        writable: true,
-        configurable: true,
-      })
-
       render(<YamlJsonConverterPage />)
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -427,15 +407,10 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should handle clipboard write error gracefully', async () => {
-      // Mock clipboard API to fail
-      const writeTextMock = vi.fn().mockRejectedValue(new Error('Clipboard write failed'))
-      Object.defineProperty(navigator, 'clipboard', {
-        value: {
-          writeText: writeTextMock,
-        },
-        writable: true,
-        configurable: true,
-      })
+      // Mock clipboard to fail
+      vi.mocked(navigator.clipboard.writeText).mockRejectedValueOnce(
+        new Error('Clipboard write failed')
+      )
 
       render(<YamlJsonConverterPage />)
 

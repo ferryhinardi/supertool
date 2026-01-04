@@ -53,13 +53,6 @@ vi.mock('@/lib/split-bill-service', () => ({
 describe('Split Bill Calculator Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    Object.defineProperty(navigator, 'clipboard', {
-      value: {
-        writeText: vi.fn(() => Promise.resolve()),
-      },
-      writable: true,
-      configurable: true,
-    })
   })
 
   describe('Basic Rendering', () => {

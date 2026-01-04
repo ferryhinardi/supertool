@@ -41,14 +41,6 @@ vi.mock('nuqs', () => ({
   }),
 }))
 
-// Mock clipboard
-Object.assign(navigator, {
-  clipboard: {
-    writeText: vi.fn(() => Promise.resolve()),
-    readText: vi.fn(() => Promise.resolve('')),
-  },
-})
-
 describe('JSON Beautifier Page', () => {
   let queryClient: QueryClient
 

@@ -43,15 +43,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 // Mock FileReader
 class MockFileReader {
   result: string | ArrayBuffer | null = null
@@ -485,7 +476,6 @@ describe('AI Image Caption Generator - Copy Functionality Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetch.mockClear()
-    mockWriteText.mockClear()
   })
 
   it('should copy caption to clipboard', async () => {
@@ -534,7 +524,7 @@ describe('AI Image Caption Generator - Copy Functionality Tests', () => {
         await userEvent.click(copyButton)
 
         await waitFor(() => {
-          expect(mockWriteText).toHaveBeenCalledWith('Test caption to copy')
+          expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Test caption to copy')
           expect(toast.success).toHaveBeenCalledWith('Caption copied to clipboard')
         })
       }

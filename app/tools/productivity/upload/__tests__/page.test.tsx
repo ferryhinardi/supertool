@@ -46,11 +46,6 @@ describe('Cloud File Upload Page', () => {
     mockGetPublicUrl.mockReturnValue({
       data: { publicUrl: 'https://example.com/test-file.pdf' },
     })
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: vi.fn(() => Promise.resolve()),
-      },
-    })
   })
 
   describe('Basic Rendering', () => {

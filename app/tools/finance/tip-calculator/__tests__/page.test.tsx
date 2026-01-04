@@ -61,9 +61,6 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-
 describe('Tip Calculator - Component Rendering', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -699,15 +696,6 @@ describe('Tip Calculator - Visual Feedback', () => {
 describe('Tip Calculator - Copy Functionality', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockWriteText.mockResolvedValue(undefined)
-    // Define clipboard API in beforeEach to avoid conflicts with userEvent.setup()
-    Object.defineProperty(navigator, 'clipboard', {
-      value: {
-        writeText: mockWriteText,
-      },
-      writable: true,
-      configurable: true,
-    })
   })
 
   it('should display copy button', () => {

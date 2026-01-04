@@ -73,8 +73,6 @@ vi.mock('@codemirror/lang-json', () => ({
 describe('JSON to Markdown Table Page - Component Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Restore any spies that might have been created
-    vi.restoreAllMocks()
   })
 
   it('should render page with heading', async () => {
@@ -175,16 +173,6 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
   })
 
   it('should copy markdown to clipboard when copy button is clicked', async () => {
-    const mockClipboard = {
-      writeText: vi.fn().mockResolvedValue(undefined),
-    }
-    // Properly mock the clipboard
-    Object.defineProperty(navigator, 'clipboard', {
-      value: mockClipboard,
-      writable: true,
-      configurable: true,
-    })
-
     const { toast } = await import('sonner')
     const { trackToolEvent } = await import('@/lib/services/analytics')
 
@@ -194,7 +182,7 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
     await userEvent.click(copyButton)
 
     await waitFor(() => {
-      expect(mockClipboard.writeText).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
       expect(toast.success).toHaveBeenCalledWith('Markdown table copied to clipboard')
       expect(trackToolEvent).toHaveBeenCalledWith('json_markdown_copy', expect.any(Object))
     })

@@ -45,13 +45,6 @@ vi.mock('nuqs', () => ({
   }),
 }))
 
-// Mock clipboard
-Object.assign(navigator, {
-  clipboard: {
-    writeText: vi.fn(),
-  },
-})
-
 describe('Text Transformer Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()

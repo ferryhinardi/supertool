@@ -27,15 +27,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 // Mock fetch API
 const mockFetch = vi.fn()
 globalThis.fetch = mockFetch
@@ -449,7 +440,6 @@ describe('AI Command Explainer - Copy Functionality Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetch.mockClear()
-    mockWriteText.mockClear()
   })
 
   it('should copy command to clipboard', async () => {
@@ -467,7 +457,7 @@ describe('AI Command Explainer - Copy Functionality Tests', () => {
       await userEvent.click(copyButton)
 
       await waitFor(() => {
-        expect(mockWriteText).toHaveBeenCalledWith(testCommand)
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(testCommand)
         expect(toast.success).toHaveBeenCalledWith('Command copied to clipboard!')
       })
     }

@@ -38,15 +38,6 @@ vi.mock('nuqs', () => ({
   }),
 }))
 
-// Mock clipboard
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: vi.fn(() => Promise.resolve()),
-  },
-  writable: true,
-  configurable: true,
-})
-
 describe('JSON Schema Generator Page', () => {
   let queryClient: QueryClient
 

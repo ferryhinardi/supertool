@@ -73,13 +73,6 @@ vi.mock('@/lib/qr-types', () => ({
   generateSocialQR: vi.fn(),
 }))
 
-// Mock clipboard
-Object.assign(navigator, {
-  clipboard: {
-    writeText: vi.fn(),
-  },
-})
-
 describe('QR Code Generator Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()

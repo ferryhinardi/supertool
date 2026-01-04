@@ -38,13 +38,6 @@ vi.mock('framer-motion', () => ({
 }))
 
 // Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
 
 // Mock WebCrypto API
 const mockDigest = vi.fn()
@@ -233,7 +226,7 @@ describe('File Integrity Verifier - Logic Tests', () => {
 
     if (copyButton) {
       fireEvent.click(copyButton)
-      expect(mockWriteText).toHaveBeenCalledWith(
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
         '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
       )
     }

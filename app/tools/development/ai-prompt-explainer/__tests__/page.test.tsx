@@ -25,16 +25,8 @@ vi.mock('sonner', () => ({
 // Mock analytics
 vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
+  trackToolEvent: vi.fn(),
 }))
-
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
 
 // Mock fetch API
 const mockFetch = vi.fn()
@@ -459,7 +451,6 @@ describe('AI Prompt Explainer - Copy Functionality Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetch.mockClear()
-    mockWriteText.mockClear()
   })
 
   it('should copy optimized prompt to clipboard', async () => {
@@ -501,7 +492,9 @@ describe('AI Prompt Explainer - Copy Functionality Tests', () => {
         await userEvent.click(copyButton)
 
         await waitFor(() => {
-          expect(mockWriteText).toHaveBeenCalledWith('This is the optimized prompt text')
+          expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+            'This is the optimized prompt text'
+          )
           expect(toast.success).toHaveBeenCalledWith('Copied to clipboard')
         })
       }

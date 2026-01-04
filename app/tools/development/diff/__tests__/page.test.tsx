@@ -37,15 +37,6 @@ vi.mock('next/link', () => ({
   ),
 }))
 
-// Mock clipboard
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: vi.fn(() => Promise.resolve()),
-  },
-  writable: true,
-  configurable: true,
-})
-
 // Mock URL methods
 global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
 global.URL.revokeObjectURL = vi.fn()

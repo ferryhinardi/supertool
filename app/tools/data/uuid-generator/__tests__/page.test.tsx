@@ -4,11 +4,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import UUIDGeneratorPage from '../page'
 
-// Mock navigator.clipboard
-const mockClipboard = {
-  writeText: vi.fn(),
-}
-
 // Mock crypto.randomUUID - use type assertion for vi.fn
 const mockRandomUUID = vi.fn(() => '550e8400-e29b-41d4-a716-446655440000')
 
@@ -16,13 +11,6 @@ describe('UUID Generator Page', () => {
   beforeEach(() => {
     // Reset mocks
     vi.clearAllMocks()
-
-    // Mock clipboard
-    Object.defineProperty(navigator, 'clipboard', {
-      value: mockClipboard,
-      writable: true,
-      configurable: true,
-    })
 
     // Type assertion for crypto mock
     Object.defineProperty(globalThis, 'crypto', {
@@ -33,7 +21,6 @@ describe('UUID Generator Page', () => {
       writable: true,
       configurable: true,
     })
-    mockClipboard.writeText.mockResolvedValue(undefined)
   })
 
   describe('Initial Render', () => {
@@ -89,7 +76,9 @@ describe('UUID Generator Page', () => {
       await userEvent.click(copyButtons[0])
 
       await waitFor(() => {
-        expect(mockClipboard.writeText).toHaveBeenCalledWith('550e8400-e29b-41d4-a716-446655440000')
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+          '550e8400-e29b-41d4-a716-446655440000'
+        )
       })
     })
 
@@ -227,9 +216,10 @@ describe('UUID Generator Page', () => {
 
       await waitFor(() => {
         // Check that clipboard was called
-        expect(mockClipboard.writeText).toHaveBeenCalled()
+        expect(navigator.clipboard.writeText).toHaveBeenCalled()
         // Check that it was called with a string containing newlines (multiple UUIDs)
-        const callArg = mockClipboard.writeText.mock.calls[0][0]
+        const writeTextMock = navigator.clipboard.writeText as ReturnType<typeof vi.fn>
+        const callArg = writeTextMock.mock.calls[0][0]
         expect(callArg).toContain('\n')
         expect(callArg.split('\n')).toHaveLength(2)
       })

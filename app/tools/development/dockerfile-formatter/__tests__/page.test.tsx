@@ -37,15 +37,6 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 // Sample Dockerfiles for testing
 const SIMPLE_DOCKERFILE = `FROM node:18
 WORKDIR /app
@@ -417,7 +408,7 @@ RUN echo "done"`
 
     if (copyButton) {
       fireEvent.click(copyButton)
-      expect(mockWriteText).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
     }
   })
 

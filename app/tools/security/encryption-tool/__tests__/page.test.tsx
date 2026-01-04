@@ -52,13 +52,6 @@ Object.defineProperty(globalThis, 'crypto', {
   writable: true,
 })
 
-// Mock clipboard
-Object.assign(navigator, {
-  clipboard: {
-    writeText: vi.fn(() => Promise.resolve()),
-  },
-})
-
 describe('Encryption Tool Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()

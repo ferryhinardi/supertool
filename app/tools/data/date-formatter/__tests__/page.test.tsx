@@ -42,15 +42,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: vi.fn().mockResolvedValue(undefined),
-  },
-  writable: true,
-  configurable: true,
-})
-
 describe('Date Formatter Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()

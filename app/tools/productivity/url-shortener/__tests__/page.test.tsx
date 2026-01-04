@@ -38,13 +38,6 @@ vi.mock('@/lib/supabaseClient', () => ({
 describe('URL Shortener Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    Object.defineProperty(navigator, 'clipboard', {
-      value: {
-        writeText: vi.fn(() => Promise.resolve()),
-      },
-      writable: true,
-      configurable: true,
-    })
     localStorage.clear()
   })
 

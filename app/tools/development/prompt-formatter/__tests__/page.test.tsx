@@ -29,15 +29,6 @@ vi.mock('framer-motion', () => ({
   },
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn(() => Promise.resolve())
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 // Mock URL.createObjectURL and revokeObjectURL
 globalThis.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
 globalThis.URL.revokeObjectURL = vi.fn()
@@ -374,7 +365,7 @@ describe('Prompt Formatter Page', () => {
       await userEvent.click(copyButton)
 
       await waitFor(() => {
-        expect(mockWriteText).toHaveBeenCalled()
+        expect(navigator.clipboard.writeText).toHaveBeenCalled()
       })
     })
 
@@ -387,7 +378,7 @@ describe('Prompt Formatter Page', () => {
       fireEvent.click(copyButton)
 
       // Should show error toast (would need toast mock to verify fully)
-      expect(mockWriteText).not.toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).not.toHaveBeenCalled()
     })
   })
 

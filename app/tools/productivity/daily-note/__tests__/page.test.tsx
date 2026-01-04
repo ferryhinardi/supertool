@@ -45,13 +45,6 @@ vi.mock('@/lib/services/analytics', () => ({
 }))
 
 // Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
 
 // Mock URL.createObjectURL and URL.revokeObjectURL
 Object.defineProperty(URL, 'createObjectURL', {
@@ -351,7 +344,6 @@ describe('Daily Note Page - Copy Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     localStorage.clear()
-    mockWriteText.mockClear()
   })
 
   afterEach(() => {
@@ -370,7 +362,7 @@ describe('Daily Note Page - Copy Tests', () => {
     // Copy
     await userEvent.click(copyButton as HTMLElement)
 
-    expect(mockWriteText).toHaveBeenCalledWith('# My Note\n\nContent here')
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('# My Note\n\nContent here')
     expect(toast.success).toHaveBeenCalledWith('Note copied to clipboard! 📋')
     expect(analytics.trackEvent).toHaveBeenCalledWith({
       action: 'daily_note_copied',

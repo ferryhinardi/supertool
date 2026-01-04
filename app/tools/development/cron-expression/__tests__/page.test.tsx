@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { trackToolEvent } from '@/lib/services/analytics'
 import CronExpressionPage from '../page'
 
@@ -33,17 +33,6 @@ vi.mock('@/lib/supabaseClient', () => ({
     })),
   },
 }))
-
-// Mock clipboard API once before all tests
-beforeAll(() => {
-  Object.defineProperty(navigator, 'clipboard', {
-    value: {
-      writeText: vi.fn(() => Promise.resolve()),
-    },
-    writable: true,
-    configurable: true,
-  })
-})
 
 describe('CronExpressionPage', () => {
   beforeEach(() => {

@@ -29,13 +29,6 @@ vi.mock('@/lib/supabaseClient', () => ({
 describe('Markdown Editor Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    Object.defineProperty(navigator, 'clipboard', {
-      value: {
-        writeText: vi.fn(() => Promise.resolve()),
-      },
-      writable: true,
-      configurable: true,
-    })
     localStorage.clear()
   })
 
@@ -201,7 +194,9 @@ describe('Markdown Editor Page', () => {
 
       if (copyButton) {
         await user.click(copyButton)
-        expect(navigator.clipboard.writeText).toHaveBeenCalled()
+        await waitFor(() => {
+          expect(navigator.clipboard.writeText).toHaveBeenCalled()
+        })
       }
     })
   })

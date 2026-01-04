@@ -24,15 +24,6 @@ vi.mock('framer-motion', () => ({
   },
 }))
 
-// Mock clipboard
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: vi.fn(() => Promise.resolve()),
-  },
-  writable: true,
-  configurable: true,
-})
-
 // Mock window.open
 global.window.open = vi.fn()
 
