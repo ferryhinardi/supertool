@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import JSONBeautifierPage from '../page'
 
 // Mock dependencies
@@ -13,7 +13,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))
@@ -121,7 +121,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"name":"test"}')
+      fireEvent.change(textarea, { target: { value: '{"name":"test"}' } })
 
       expect(textarea.value).toContain('name')
     })
@@ -166,7 +166,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"name":"test","age":30}')
+      fireEvent.change(textarea, { target: { value: '{"name":"test","age":30}' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -182,7 +182,9 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"user":{"name":"test","details":{"age":30}}}')
+      fireEvent.change(textarea, {
+        target: { value: '{"user":{"name":"test","details":{"age":30}}}' },
+      })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -198,7 +200,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '[1,2,3,4,5]')
+      fireEvent.change(textarea, { target: { value: '[1,2,3,4,5]' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -216,7 +218,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{\n  "name": "test",\n  "age": 30\n}')
+      fireEvent.change(textarea, { target: { value: '{\n  "name": "test",\n  "age": 30\n}' } })
 
       const minifyButton = screen.getByText(/Minify|Compress/i)
       await user.click(minifyButton)
@@ -232,7 +234,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{\n  "key"  :  "value"\n}')
+      fireEvent.change(textarea, { target: { value: '{\n  "key"  :  "value"\n}' } })
 
       const minifyButton = screen.getByText(/Minify|Compress/i)
       await user.click(minifyButton)
@@ -250,7 +252,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"valid":"json"}')
+      fireEvent.change(textarea, { target: { value: '{"valid":"json"}' } })
 
       const validateButton = screen.getByText(/Validate/i)
       await user.click(validateButton)
@@ -265,7 +267,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{invalid json}')
+      fireEvent.change(textarea, { target: { value: '{invalid json}' } })
 
       const validateButton = screen.getByText(/Validate/i)
       await user.click(validateButton)
@@ -280,7 +282,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"key": value}')
+      fireEvent.change(textarea, { target: { value: '{"key": value}' } })
 
       const validateButton = screen.getByText(/Validate/i)
       await user.click(validateButton)
@@ -330,7 +332,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -350,7 +352,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const clearButton = screen.getByText(/Clear/i)
       await user.click(clearButton)
@@ -365,7 +367,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -386,7 +388,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"key":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"key":"value"}' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -453,7 +455,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -472,7 +474,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'not json')
+      fireEvent.change(textarea, { target: { value: 'not json' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -487,7 +489,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"key": }')
+      fireEvent.change(textarea, { target: { value: '{"key": }' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -551,7 +553,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       await waitFor(() => {
         const counter = screen.queryByText(/character|char|count/i)
@@ -614,7 +616,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)
@@ -640,7 +642,7 @@ describe('JSON Beautifier Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value","items":[1,2,3]}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value","items":[1,2,3]}' } })
 
       const beautifyButton = screen.getByText(/Beautify|Format/i)
       await user.click(beautifyButton)

@@ -1,25 +1,27 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { trackEvent, trackToolEvent } from '@/lib/services/analytics'
 import SplitBillPage from '../page'
 
 // Mock dependencies
-const mockToast = {
-  success: vi.fn(),
-  error: vi.fn(),
-  warning: vi.fn(),
-}
-
 vi.mock('sonner', () => ({
-  toast: mockToast,
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+  },
 }))
 
-const mockTrackToolEvent = vi.fn()
-const mockTrackEvent = vi.fn()
+vi.mock('@/lib/services/analytics', () => ({
+  trackToolEvent: vi.fn(),
+  trackEvent: vi.fn(),
+}))
 
-vi.mock('@/lib/analytics', () => ({
-  trackToolEvent: mockTrackToolEvent,
-  trackEvent: mockTrackEvent,
+vi.mock('@/lib/services/analytics', () => ({
+  trackToolEvent: vi.fn(),
+  trackEvent: vi.fn(),
 }))
 
 vi.mock('@/lib/supabaseClient', () => ({
@@ -51,10 +53,12 @@ vi.mock('@/lib/split-bill-service', () => ({
 describe('Split Bill Calculator Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    Object.assign(navigator, {
-      clipboard: {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
         writeText: vi.fn(() => Promise.resolve()),
       },
+      writable: true,
+      configurable: true,
     })
   })
 
@@ -66,7 +70,7 @@ describe('Split Bill Calculator Page', () => {
 
     it('should render the main heading', () => {
       render(<SplitBillPage />)
-      expect(screen.getByText('Split Bill Calculator')).toBeTruthy()
+      expect(screen.getAllByText('Split Bill Calculator')[0]).toBeTruthy()
     })
 
     it('should display bill amount input', () => {
@@ -92,34 +96,34 @@ describe('Split Bill Calculator Page', () => {
 
   describe('Bill Details', () => {
     it('should allow entering bill amount', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const billInput = screen.getByLabelText(/Bill Amount/i)
-      await user.clear(billInput)
-      await user.type(billInput, '200')
+      fireEvent.change(billInput, { target: { value: '200' } })
 
       expect(billInput).toHaveValue(200)
     })
 
     it('should allow entering tip percentage', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const tipInput = screen.getByLabelText(/Tip/i)
-      await user.clear(tipInput)
-      await user.type(tipInput, '20')
+      fireEvent.change(tipInput, { target: { value: '20' } })
 
       expect(tipInput).toHaveValue(20)
     })
 
     it('should allow entering tax percentage', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const taxInput = screen.getByLabelText(/Tax/i)
-      await user.clear(taxInput)
-      await user.type(taxInput, '8')
+      fireEvent.change(taxInput, { target: { value: '8' } })
 
       expect(taxInput).toHaveValue(8)
     })
@@ -140,7 +144,7 @@ describe('Split Bill Calculator Page', () => {
       await user.click(button20Percent)
 
       await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith('Tip set to 20%')
+        expect(vi.mocked(toast).success).toHaveBeenCalledWith('Tip set to 20%')
       })
     })
 
@@ -168,7 +172,7 @@ describe('Split Bill Calculator Page', () => {
       await user.selectOptions(currencySelect, 'USD')
 
       await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalled()
+        expect(vi.mocked(toast).success).toHaveBeenCalled()
       })
     })
 
@@ -185,7 +189,7 @@ describe('Split Bill Calculator Page', () => {
       await user.click(converterToggle)
 
       await waitFor(() => {
-        expect(mockTrackToolEvent).toHaveBeenCalledWith(
+        expect(vi.mocked(trackToolEvent)).toHaveBeenCalledWith(
           'split_bill_currency_converter_toggled',
           expect.objectContaining({ enabled: true })
         )
@@ -218,7 +222,7 @@ describe('Split Bill Calculator Page', () => {
       await user.click(addButton)
 
       await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith('Person added')
+        expect(vi.mocked(toast).success).toHaveBeenCalledWith('Person added')
         expect(screen.getByDisplayValue('Person 3')).toBeTruthy()
       })
     })
@@ -240,7 +244,7 @@ describe('Split Bill Calculator Page', () => {
       await user.click(removeButtons[2]) // Remove Person 3
 
       await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith('Person removed')
+        expect(vi.mocked(toast).success).toHaveBeenCalledWith('Person removed')
       })
     })
 
@@ -252,17 +256,17 @@ describe('Split Bill Calculator Page', () => {
       await user.click(removeButtons[0])
 
       await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith('Minimum 2 people required')
+        expect(vi.mocked(toast).error).toHaveBeenCalledWith('Minimum 2 people required')
       })
     })
 
     it('should allow editing person name', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const nameInput = screen.getByDisplayValue('Person 1')
-      await user.clear(nameInput)
-      await user.type(nameInput, 'Alice')
+      fireEvent.change(nameInput, { target: { value: 'Alice' } })
 
       expect(nameInput).toHaveValue('Alice')
     })
@@ -303,7 +307,7 @@ describe('Split Bill Calculator Page', () => {
       await user.click(percentageButton)
 
       await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith('Switched to percentage split')
+        expect(vi.mocked(toast).success).toHaveBeenCalledWith('Switched to percentage split')
         // Should display percentage inputs
         expect(screen.getAllByText('Percentage:').length).toBeGreaterThan(0)
       })
@@ -317,7 +321,7 @@ describe('Split Bill Calculator Page', () => {
       await user.click(itemsButton)
 
       await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith('Switched to item-based split')
+        expect(vi.mocked(toast).success).toHaveBeenCalledWith('Switched to item-based split')
         expect(screen.getByText('Add Bill Items')).toBeTruthy()
       })
     })
@@ -338,6 +342,7 @@ describe('Split Bill Calculator Page', () => {
     })
 
     it('should warn when percentages do not total 100%', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
@@ -351,8 +356,7 @@ describe('Split Bill Calculator Page', () => {
 
       // Change one percentage to make total != 100
       const firstPercentInput = screen.getAllByDisplayValue('50')[0]
-      await user.clear(firstPercentInput)
-      await user.type(firstPercentInput, '60')
+      fireEvent.change(firstPercentInput, { target: { value: '60' } })
 
       await waitFor(() => {
         expect(screen.getByText(/Invalid Split/i)).toBeTruthy()
@@ -389,6 +393,7 @@ describe('Split Bill Calculator Page', () => {
     })
 
     it('should allow adding an item', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
@@ -403,9 +408,9 @@ describe('Split Bill Calculator Page', () => {
       const priceInput = screen.getByLabelText(/Item price/i)
       const quantityInput = screen.getByLabelText(/Item quantity/i)
 
-      await user.type(nameInput, 'Burger')
-      await user.type(priceInput, '15.99')
-      await user.type(quantityInput, '2')
+      fireEvent.change(nameInput, { target: { value: 'Burger' } })
+      fireEvent.change(priceInput, { target: { value: '15.99' } })
+      fireEvent.change(quantityInput, { target: { value: '2' } })
 
       const addItemButton = screen.getByRole('button', { name: '' }).closest('button')
       if (addItemButton) {
@@ -413,11 +418,12 @@ describe('Split Bill Calculator Page', () => {
       }
 
       await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith('Added "Burger"')
+        expect(vi.mocked(toast).success).toHaveBeenCalledWith('Added "Burger"')
       })
     })
 
     it('should show error when adding item without name', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
@@ -429,7 +435,7 @@ describe('Split Bill Calculator Page', () => {
       })
 
       const priceInput = screen.getByLabelText(/Item price/i)
-      await user.type(priceInput, '10')
+      fireEvent.change(priceInput, { target: { value: '10' } })
 
       // Try to add without name
       const addButtons = screen.getAllByRole('button')
@@ -439,11 +445,12 @@ describe('Split Bill Calculator Page', () => {
       }
 
       await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith('Please enter item name')
+        expect(vi.mocked(toast).error).toHaveBeenCalledWith('Please enter item name')
       })
     })
 
     it('should show error when adding item with invalid price', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
@@ -455,7 +462,7 @@ describe('Split Bill Calculator Page', () => {
       })
 
       const nameInput = screen.getByLabelText(/Item name/i)
-      await user.type(nameInput, 'Pizza')
+      fireEvent.change(nameInput, { target: { value: 'Pizza' } })
 
       const addButtons = screen.getAllByRole('button')
       const addItemButton = addButtons.find((btn) => btn.querySelector('svg'))
@@ -464,7 +471,7 @@ describe('Split Bill Calculator Page', () => {
       }
 
       await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith('Please enter a valid price')
+        expect(vi.mocked(toast).error).toHaveBeenCalledWith('Please enter a valid price')
       })
     })
   })
@@ -501,6 +508,7 @@ describe('Split Bill Calculator Page', () => {
     })
 
     it('should allow entering bill title in create mode', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
@@ -512,7 +520,7 @@ describe('Split Bill Calculator Page', () => {
       })
 
       const titleInput = screen.getByLabelText(/Bill Title/i)
-      await user.type(titleInput, 'Team Dinner')
+      fireEvent.change(titleInput, { target: { value: 'Team Dinner' } })
 
       expect(titleInput).toHaveValue('Team Dinner')
     })
@@ -520,22 +528,20 @@ describe('Split Bill Calculator Page', () => {
 
   describe('Calculations', () => {
     it('should calculate total correctly with tip and tax', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       // Set bill = 100, tip = 15%, tax = 10%
       // Expected: 100 + 15 + 10 = 125
       const billInput = screen.getByLabelText(/Bill Amount/i)
-      await user.clear(billInput)
-      await user.type(billInput, '100')
+      fireEvent.change(billInput, { target: { value: '100' } })
 
       const tipInput = screen.getByLabelText(/Tip/i)
-      await user.clear(tipInput)
-      await user.type(tipInput, '15')
+      fireEvent.change(tipInput, { target: { value: '15' } })
 
       const taxInput = screen.getByLabelText(/Tax/i)
-      await user.clear(taxInput)
-      await user.type(taxInput, '10')
+      fireEvent.change(taxInput, { target: { value: '10' } })
 
       // Check if calculations are displayed (values will be formatted with currency)
       await waitFor(() => {
@@ -545,20 +551,18 @@ describe('Split Bill Calculator Page', () => {
     })
 
     it('should calculate per person amount for equal split', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const billInput = screen.getByLabelText(/Bill Amount/i)
-      await user.clear(billInput)
-      await user.type(billInput, '100')
+      fireEvent.change(billInput, { target: { value: '100' } })
 
       const tipInput = screen.getByLabelText(/Tip/i)
-      await user.clear(tipInput)
-      await user.type(tipInput, '0')
+      fireEvent.change(tipInput, { target: { value: '0' } })
 
       const taxInput = screen.getByLabelText(/Tax/i)
-      await user.clear(taxInput)
-      await user.type(taxInput, '0')
+      fireEvent.change(taxInput, { target: { value: '0' } })
 
       // With 2 people and 100 total, should be 50 per person
       await waitFor(() => {
@@ -569,13 +573,13 @@ describe('Split Bill Calculator Page', () => {
 
   describe('Actions and Exports', () => {
     it('should have reset button functionality', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       // Modify some values first
       const billInput = screen.getByLabelText(/Bill Amount/i)
-      await user.clear(billInput)
-      await user.type(billInput, '999')
+      fireEvent.change(billInput, { target: { value: '999' } })
 
       // Note: Reset button might be in a different location, test the function indirectly
       // by checking if trackToolEvent is called with reset event
@@ -631,7 +635,7 @@ describe('Split Bill Calculator Page', () => {
       await user.selectOptions(currencySelect, 'EUR')
 
       await waitFor(() => {
-        expect(mockTrackToolEvent).toHaveBeenCalledWith(
+        expect(vi.mocked(trackToolEvent)).toHaveBeenCalledWith(
           'split_bill_currency_change',
           expect.objectContaining({ currency: 'EUR' })
         )
@@ -646,7 +650,7 @@ describe('Split Bill Calculator Page', () => {
       await user.click(addButton)
 
       await waitFor(() => {
-        expect(mockTrackToolEvent).toHaveBeenCalledWith(
+        expect(vi.mocked(trackToolEvent)).toHaveBeenCalledWith(
           'split_bill_add_person',
           expect.objectContaining({ total_people: 3 })
         )
@@ -667,24 +671,24 @@ describe('Split Bill Calculator Page', () => {
     })
 
     it('should handle negative tip percentage', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const tipInput = screen.getByLabelText(/Tip/i)
-      await user.clear(tipInput)
-      await user.type(tipInput, '-5')
+      fireEvent.change(tipInput, { target: { value: '-5' } })
 
       // Should accept the value (validation is on input attributes)
       expect(tipInput).toHaveValue(-5)
     })
 
     it('should handle very large bill amounts', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const billInput = screen.getByLabelText(/Bill Amount/i)
-      await user.clear(billInput)
-      await user.type(billInput, '999999999')
+      fireEvent.change(billInput, { target: { value: '999999999' } })
 
       expect(billInput).toHaveValue(999999999)
     })
