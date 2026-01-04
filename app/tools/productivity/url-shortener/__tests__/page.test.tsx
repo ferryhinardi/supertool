@@ -1,8 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import * as analytics from '@/lib/analytics'
+import * as analytics from '@/lib/services/analytics'
 import URLShortenerPage from '../page'
 
 // Mock dependencies
@@ -13,7 +13,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))
@@ -38,10 +38,12 @@ vi.mock('@/lib/supabaseClient', () => ({
 describe('URL Shortener Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    Object.assign(navigator, {
-      clipboard: {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
         writeText: vi.fn(() => Promise.resolve()),
       },
+      writable: true,
+      configurable: true,
     })
     localStorage.clear()
   })
@@ -74,14 +76,14 @@ describe('URL Shortener Page', () => {
 
   describe('URL Input', () => {
     it('accepts URL input', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<URLShortenerPage />)
 
       const inputs = screen.getAllByRole('textbox')
       const urlInput = inputs[0]
 
       if (urlInput) {
-        await user.type(urlInput, 'https://example.com')
+        fireEvent.change(urlInput, { target: { value: 'https://example.com' } })
         expect(urlInput).toHaveValue('https://example.com')
       }
     })
@@ -92,7 +94,7 @@ describe('URL Shortener Page', () => {
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'invalid-url')
+        fireEvent.change(inputs[0], { target: { value: 'invalid-url' } })
 
         const buttons = screen.getAllByRole('button')
         const shortenButton = buttons.find((btn) => btn.textContent?.includes('Shorten'))
@@ -112,7 +114,7 @@ describe('URL Shortener Page', () => {
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com' } })
         await user.clear(inputs[0])
         expect(inputs[0]).toHaveValue('')
       }
@@ -126,7 +128,7 @@ describe('URL Shortener Page', () => {
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com' } })
 
         const buttons = screen.getAllByRole('button')
         const shortenButton = buttons.find((btn) => btn.textContent?.includes('Shorten'))
@@ -146,7 +148,7 @@ describe('URL Shortener Page', () => {
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com' } })
 
         const buttons = screen.getAllByRole('button')
         const shortenButton = buttons.find((btn) => btn.textContent?.includes('Shorten'))
@@ -165,7 +167,7 @@ describe('URL Shortener Page', () => {
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com' } })
 
         const buttons = screen.getAllByRole('button')
         const shortenButton = buttons.find((btn) => btn.textContent?.includes('Shorten'))
@@ -180,12 +182,12 @@ describe('URL Shortener Page', () => {
 
   describe('Custom Alias', () => {
     it('allows custom alias input', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<URLShortenerPage />)
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs.length > 1) {
-        await user.type(inputs[1], 'my-custom-link')
+        fireEvent.change(inputs[1], { target: { value: 'my-custom-link' } })
         expect(inputs[1]).toHaveValue('my-custom-link')
       }
     })
@@ -196,10 +198,10 @@ describe('URL Shortener Page', () => {
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com' } })
 
         if (inputs[1]) {
-          await user.type(inputs[1], 'custom-alias')
+          fireEvent.change(inputs[1], { target: { value: 'custom-alias' } })
         }
 
         const buttons = screen.getAllByRole('button')
@@ -297,7 +299,7 @@ describe('URL Shortener Page', () => {
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com' } })
 
         const buttons = screen.getAllByRole('button')
         const shortenButton = buttons.find((btn) => btn.textContent?.includes('Shorten'))
@@ -312,45 +314,45 @@ describe('URL Shortener Page', () => {
 
   describe('URL Validation', () => {
     it('accepts http URLs', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<URLShortenerPage />)
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'http://example.com')
+        fireEvent.change(inputs[0], { target: { value: 'http://example.com' } })
         expect(inputs[0]).toHaveValue('http://example.com')
       }
     })
 
     it('accepts https URLs', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<URLShortenerPage />)
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com' } })
         expect(inputs[0]).toHaveValue('https://example.com')
       }
     })
 
     it('handles URLs with paths', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<URLShortenerPage />)
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com/path/to/page')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com/path/to/page' } })
         expect(inputs[0]).toHaveValue('https://example.com/path/to/page')
       }
     })
 
     it('handles URLs with query parameters', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<URLShortenerPage />)
 
       const inputs = screen.getAllByRole('textbox')
       if (inputs[0]) {
-        await user.type(inputs[0], 'https://example.com?param=value')
+        fireEvent.change(inputs[0], { target: { value: 'https://example.com?param=value' } })
         expect(inputs[0]).toHaveValue('https://example.com?param=value')
       }
     })

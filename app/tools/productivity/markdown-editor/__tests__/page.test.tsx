@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import * as analytics from '@/lib/analytics'
+import * as analytics from '@/lib/services/analytics'
 import MarkdownEditorPage from '../page'
 
 // Mock dependencies
@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))
@@ -29,10 +29,12 @@ vi.mock('@/lib/supabaseClient', () => ({
 describe('Markdown Editor Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    Object.assign(navigator, {
-      clipboard: {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
         writeText: vi.fn(() => Promise.resolve()),
       },
+      writable: true,
+      configurable: true,
     })
     localStorage.clear()
   })
@@ -120,7 +122,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '# Hello World')
+        fireEvent.change(textareas[0], { target: { value: '# Hello World' } })
         expect(textareas[0]).toHaveValue('# Hello World')
       }
     })
@@ -132,7 +134,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '# Test Heading')
+        fireEvent.change(textareas[0], { target: { value: '# Test Heading' } })
 
         await waitFor(() => {
           expect(screen.queryByText('Test Heading')).toBeTruthy()
@@ -236,7 +238,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], 'Custom content')
+        fireEvent.change(textareas[0], { target: { value: 'Custom content' } })
 
         const buttons = screen.getAllByRole('button')
         const resetButton = buttons.find((btn) => btn.textContent?.includes('Reset'))
@@ -259,7 +261,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '# Heading 1')
+        fireEvent.change(textareas[0], { target: { value: '# Heading 1' } })
 
         await waitFor(() => {
           expect(screen.queryByText('Heading 1')).toBeTruthy()
@@ -274,7 +276,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '**bold text**')
+        fireEvent.change(textareas[0], { target: { value: '**bold text**' } })
         expect(textareas[0]).toHaveValue('**bold text**')
       }
     })
@@ -286,7 +288,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '- Item 1{Enter}- Item 2')
+        fireEvent.change(textareas[0], { target: { value: '- Item 1{Enter}- Item 2' } })
         expect(textareas[0]).toBeTruthy()
       }
     })
@@ -298,7 +300,9 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '```javascript{Enter}const x = 1;{Enter}```')
+        fireEvent.change(textareas[0], {
+          target: { value: '```javascript{Enter}const x = 1;{Enter}```' },
+        })
         expect(textareas[0]).toBeTruthy()
       }
     })
@@ -310,7 +314,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '[Link](https://example.com)')
+        fireEvent.change(textareas[0], { target: { value: '[Link](https://example.com)' } })
         expect(textareas[0]).toHaveValue('[Link](https://example.com)')
       }
     })
@@ -322,7 +326,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '| Column 1 | Column 2 |')
+        fireEvent.change(textareas[0], { target: { value: '| Column 1 | Column 2 |' } })
         expect(textareas[0]).toBeTruthy()
       }
     })
@@ -336,7 +340,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], 'Test content')
+        fireEvent.change(textareas[0], { target: { value: 'Test content' } })
 
         await waitFor(() => {
           const saved = localStorage.getItem('markdown-editor-content')
@@ -393,7 +397,7 @@ describe('Markdown Editor Page', () => {
       const textareas = screen.getAllByRole('textbox')
       if (textareas[0]) {
         await user.clear(textareas[0])
-        await user.type(textareas[0], '# New Heading')
+        fireEvent.change(textareas[0], { target: { value: '# New Heading' } })
 
         await waitFor(() => {
           expect(screen.queryByText('New Heading')).toBeTruthy()

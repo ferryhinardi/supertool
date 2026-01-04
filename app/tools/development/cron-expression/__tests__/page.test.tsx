@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import CronExpressionPage from '../page'
 
 // Mock framer-motion to avoid animation issues in tests
@@ -83,7 +83,7 @@ describe('CronExpressionPage', () => {
 
       const input = screen.getByDisplayValue('0 9 * * 1-5') as HTMLInputElement
       await user.clear(input)
-      await user.type(input, '0 12 * * *')
+      fireEvent.change(input, { target: { value: '0 12 * * *' } })
 
       expect(input.value).toBe('0 12 * * *')
     })
@@ -107,7 +107,7 @@ describe('CronExpressionPage', () => {
 
       const input = screen.getByDisplayValue('0 9 * * 1-5') as HTMLInputElement
       await user.clear(input)
-      await user.type(input, '0 0 * * *')
+      fireEvent.change(input, { target: { value: '0 0 * * *' } })
 
       await waitFor(() => {
         expect(screen.queryByText(/midnight|00:00/i)).toBeTruthy()
@@ -147,12 +147,12 @@ describe('CronExpressionPage', () => {
     })
 
     it('should allow selecting specific minute', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<CronExpressionPage />)
 
       const minuteInputs = document.querySelectorAll('input[type="number"]')
       if (minuteInputs.length > 0) {
-        await user.type(minuteInputs[0], '30')
+        fireEvent.change(minuteInputs[0], { target: { value: '30' } })
         expect(minuteInputs[0]).toBeTruthy()
       }
     })
@@ -276,7 +276,7 @@ describe('CronExpressionPage', () => {
 
       const input = screen.getByDisplayValue('0 9 * * 1-5') as HTMLInputElement
       await user.clear(input)
-      await user.type(input, 'invalid cron')
+      fireEvent.change(input, { target: { value: 'invalid cron' } })
 
       await waitFor(() => {
         expect(screen.queryByText(/invalid|error/i)).toBeTruthy()
@@ -294,7 +294,7 @@ describe('CronExpressionPage', () => {
 
       const input = screen.getByDisplayValue('0 9 * * 1-5') as HTMLInputElement
       await user.clear(input)
-      await user.type(input, '999 999 * * *')
+      fireEvent.change(input, { target: { value: '999 999 * * *' } })
 
       await waitFor(() => {
         expect(screen.queryByText(/invalid|error/i)).toBeTruthy()
@@ -497,7 +497,7 @@ describe('CronExpressionPage', () => {
 
       const input = screen.getByDisplayValue('0 9 * * 1-5') as HTMLInputElement
       await user.clear(input)
-      await user.type(input, '*/15 * * * *')
+      fireEvent.change(input, { target: { value: '*/15 * * * *' } })
 
       expect(input.value).toContain('*/15')
     })

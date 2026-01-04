@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import JSONSchemaPage from '../page'
 
 // Mock dependencies
@@ -13,7 +13,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))
@@ -39,10 +39,12 @@ vi.mock('nuqs', () => ({
 }))
 
 // Mock clipboard
-Object.assign(navigator, {
-  clipboard: {
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
     writeText: vi.fn(() => Promise.resolve()),
   },
+  writable: true,
+  configurable: true,
 })
 
 describe('JSON Schema Generator Page', () => {
@@ -107,11 +109,11 @@ describe('JSON Schema Generator Page', () => {
     })
 
     it('should allow typing JSON', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"name":"test"}')
+      fireEvent.change(textarea, { target: { value: '{"name":"test"}' } })
 
       expect(textarea.value).toContain('name')
     })
@@ -134,7 +136,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"name":"test","age":30}')
+      fireEvent.change(textarea, { target: { value: '{"name":"test","age":30}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -152,7 +154,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"name":"John","age":30}')
+      fireEvent.change(textarea, { target: { value: '{"name":"John","age":30}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -168,7 +170,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"name":"test"}')
+      fireEvent.change(textarea, { target: { value: '{"name":"test"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -184,7 +186,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"age":30}')
+      fireEvent.change(textarea, { target: { value: '{"age":30}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -200,7 +202,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"active":true}')
+      fireEvent.change(textarea, { target: { value: '{"active":true}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -216,7 +218,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"items":[1,2,3]}')
+      fireEvent.change(textarea, { target: { value: '{"items":[1,2,3]}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -232,7 +234,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"user":{"name":"test","age":30}}')
+      fireEvent.change(textarea, { target: { value: '{"user":{"name":"test","age":30}}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -248,7 +250,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"value":null}')
+      fireEvent.change(textarea, { target: { value: '{"value":null}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -288,7 +290,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -313,7 +315,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const clearButton = screen.getByText(/Clear/i)
       await user.click(clearButton)
@@ -335,7 +337,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -376,7 +378,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"name":"test"}')
+      fireEvent.change(textarea, { target: { value: '{"name":"test"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -394,7 +396,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'invalid json')
+      fireEvent.change(textarea, { target: { value: 'invalid json' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -409,7 +411,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{invalid}')
+      fireEvent.change(textarea, { target: { value: '{invalid}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -431,7 +433,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -517,10 +519,12 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(
-        textarea,
-        '{"string":"text","number":42,"boolean":true,"array":[1,2],"object":{"key":"value"}}'
-      )
+      fireEvent.change(textarea, {
+        target: {
+          value:
+            '{"string":"text","number":42,"boolean":true,"array":[1,2],"object":{"key":"value"}}',
+        },
+      })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -538,7 +542,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"test":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"test":"value"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -598,7 +602,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"name":"required"}')
+      fireEvent.change(textarea, { target: { value: '{"name":"required"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -616,7 +620,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"field":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"field":"value"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
@@ -634,7 +638,7 @@ describe('JSON Schema Generator Page', () => {
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, '{"key":"value"}')
+      fireEvent.change(textarea, { target: { value: '{"key":"value"}' } })
 
       const generateButton = screen.getByText(/Generate Schema/i)
       await user.click(generateButton)
