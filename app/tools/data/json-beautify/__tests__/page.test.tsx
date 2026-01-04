@@ -117,7 +117,6 @@ describe('JSON Beautifier Page', () => {
     })
 
     it('should allow typing JSON in input', async () => {
-      const user = userEvent.setup()
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
@@ -178,7 +177,6 @@ describe('JSON Beautifier Page', () => {
     })
 
     it('should format nested JSON objects', async () => {
-      const user = userEvent.setup()
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
@@ -549,7 +547,6 @@ describe('JSON Beautifier Page', () => {
 
   describe('Character Counter', () => {
     it('should display character count', async () => {
-      const user = userEvent.setup()
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement

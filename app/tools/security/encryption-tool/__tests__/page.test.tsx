@@ -132,7 +132,6 @@ describe('Encryption Tool Page', () => {
     })
 
     it('should allow typing in textarea', async () => {
-      const user = userEvent.setup()
       render(<EncryptionToolPage />)
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
@@ -142,7 +141,6 @@ describe('Encryption Tool Page', () => {
     })
 
     it('should allow entering password', async () => {
-      const user = userEvent.setup()
       render(<EncryptionToolPage />)
 
       const passwordInput = screen.getByPlaceholderText(
@@ -274,7 +272,6 @@ describe('Encryption Tool Page', () => {
 
   describe('Password Strength Indicator', () => {
     it('should display password strength', async () => {
-      const user = userEvent.setup()
       render(<EncryptionToolPage />)
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)
@@ -286,7 +283,6 @@ describe('Encryption Tool Page', () => {
     })
 
     it('should show strong password indicator', async () => {
-      const user = userEvent.setup()
       render(<EncryptionToolPage />)
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)

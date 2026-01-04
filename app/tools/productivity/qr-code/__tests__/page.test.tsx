@@ -171,7 +171,6 @@ describe('QR Code Generator Page', () => {
     })
 
     it('should allow typing in input field', async () => {
-      const user = userEvent.setup()
       render(<QRCodePage />)
 
       const input = screen.getByPlaceholderText(/Enter URL/i)

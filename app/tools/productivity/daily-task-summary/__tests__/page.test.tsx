@@ -418,8 +418,6 @@ describe('Daily Task Summary - Task Interactions', () => {
   })
 
   it('allows deleting a task', async () => {
-    const user = userEvent.setup()
-
     localStorageMock.setItem(
       'dailyTaskSummary',
       JSON.stringify([

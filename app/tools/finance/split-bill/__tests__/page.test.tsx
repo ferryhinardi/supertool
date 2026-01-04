@@ -97,7 +97,6 @@ describe('Split Bill Calculator Page', () => {
   describe('Bill Details', () => {
     it('should allow entering bill amount', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const billInput = screen.getByLabelText(/Bill Amount/i)
@@ -108,7 +107,6 @@ describe('Split Bill Calculator Page', () => {
 
     it('should allow entering tip percentage', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const tipInput = screen.getByLabelText(/Tip/i)
@@ -119,7 +117,6 @@ describe('Split Bill Calculator Page', () => {
 
     it('should allow entering tax percentage', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const taxInput = screen.getByLabelText(/Tax/i)
@@ -262,7 +259,6 @@ describe('Split Bill Calculator Page', () => {
 
     it('should allow editing person name', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const nameInput = screen.getByDisplayValue('Person 1')
@@ -529,7 +525,6 @@ describe('Split Bill Calculator Page', () => {
   describe('Calculations', () => {
     it('should calculate total correctly with tip and tax', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       // Set bill = 100, tip = 15%, tax = 10%
@@ -552,7 +547,6 @@ describe('Split Bill Calculator Page', () => {
 
     it('should calculate per person amount for equal split', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const billInput = screen.getByLabelText(/Bill Amount/i)
@@ -574,7 +568,6 @@ describe('Split Bill Calculator Page', () => {
   describe('Actions and Exports', () => {
     it('should have reset button functionality', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       // Modify some values first
@@ -672,7 +665,6 @@ describe('Split Bill Calculator Page', () => {
 
     it('should handle negative tip percentage', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const tipInput = screen.getByLabelText(/Tip/i)
@@ -684,7 +676,6 @@ describe('Split Bill Calculator Page', () => {
 
     it('should handle very large bill amounts', async () => {
       const { fireEvent } = await import('@testing-library/react')
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
       const billInput = screen.getByLabelText(/Bill Amount/i)

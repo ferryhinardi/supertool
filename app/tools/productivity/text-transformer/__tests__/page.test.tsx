@@ -90,7 +90,6 @@ describe('Text Transformer Page', () => {
     })
 
     it('should allow typing text in textarea', async () => {
-      const user = userEvent.setup()
       render(<TextTransformerPage />)
 
       const textarea = screen.getByPlaceholderText(/Enter or paste your text here/i)
@@ -257,7 +256,6 @@ describe('Text Transformer Page', () => {
     })
 
     it('should allow typing in find field', async () => {
-      const user = userEvent.setup()
       render(<TextTransformerPage />)
 
       const input = screen.getByPlaceholderText(/Find text/i)
@@ -267,7 +265,6 @@ describe('Text Transformer Page', () => {
     })
 
     it('should allow typing in replace field', async () => {
-      const user = userEvent.setup()
       render(<TextTransformerPage />)
 
       const input = screen.getByPlaceholderText(/Replace with/i)

@@ -472,7 +472,6 @@ describe('DiffTool', () => {
 
   describe('Copy Functionality', () => {
     it('copies diff to clipboard', async () => {
-      const user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -495,7 +494,6 @@ describe('DiffTool', () => {
     })
 
     it('shows success toast after copying', async () => {
-      const user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
