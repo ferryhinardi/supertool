@@ -23,6 +23,20 @@ vi.mock('sonner', () => ({
   },
 }))
 
+// Mock ToolRating to prevent async state updates
+vi.mock('@/components/ui/tool-rating', () => ({
+  ToolRating: () => null,
+}))
+
+// Mock Next.js Link to prevent navigation errors in JSDOM
+vi.mock('next/link', () => ({
+  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href} onClick={(e) => e.preventDefault()}>
+      {children}
+    </a>
+  ),
+}))
+
 // Mock clipboard
 Object.defineProperty(navigator, 'clipboard', {
   value: {
@@ -472,6 +486,7 @@ describe('DiffTool', () => {
 
   describe('Copy Functionality', () => {
     it('copies diff to clipboard', async () => {
+      const user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -494,6 +509,7 @@ describe('DiffTool', () => {
     })
 
     it('shows success toast after copying', async () => {
+      const user = userEvent.setup()
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -841,10 +857,14 @@ describe('DiffTool', () => {
       render(<DiffTool />)
 
       const textareas = screen.getAllByRole('textbox')
-      fireEvent.change(textareas[0], { target: { value: 'A' } })
-      fireEvent.change(textareas[0], { target: { value: 'B' } })
-      fireEvent.change(textareas[0], { target: { value: 'C' } })
 
+      fireEvent.change(textareas[0], { target: { value: 'A' } })
+      expect((textareas[0] as HTMLTextAreaElement).value).toBe('A')
+
+      fireEvent.change(textareas[0], { target: { value: 'AB' } })
+      expect((textareas[0] as HTMLTextAreaElement).value).toBe('AB')
+
+      fireEvent.change(textareas[0], { target: { value: 'ABC' } })
       expect((textareas[0] as HTMLTextAreaElement).value).toBe('ABC')
     })
   })
