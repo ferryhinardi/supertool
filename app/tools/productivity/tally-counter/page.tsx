@@ -1,7 +1,7 @@
 'use client'
 'use no memo'
 
-import { Minus, Plus, RotateCcw, Sparkles, Star, Trash2 } from 'lucide-react'
+import { Minus, Plus, RotateCcw, Star, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -518,116 +518,49 @@ export default function TallyCounterPage() {
       </div>
 
       {/* Pro Tips */}
-      <Card
+      <div
         className={css({
+          rounded: { base: 'xl', sm: '2xl' },
           border: '2px solid',
           borderColor: 'cyan.500/20',
-          bg: 'cyan.500/5',
-          animation: 'fadeInUp 0.4s ease-out 0.1s both',
+          bg: 'rgba(6, 182, 212, 0.05)',
+          p: { base: '4', sm: '5', md: '6' },
+          backdropFilter: 'blur(16px)',
         })}
       >
-        <CardHeader>
-          <CardTitle
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '2',
-              fontSize: 'xl',
-            })}
-          >
-            <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-            Pro Tips
-          </CardTitle>
-          <CardDescription>Expert techniques for effective counting</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className={css({ spaceY: '3' })}>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'md',
-                border: '1px solid',
-                borderColor: 'gray.800',
-                borderLeft: '3px solid',
-                borderLeftColor: 'cyan.500',
-                bg: 'gray.900/50',
-              })}
-            >
-              <strong className={css({ color: 'cyan.400' })}>Custom Step Values:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
-                Set step values to 5 or 10 for faster counting of large quantities like inventory or
-                attendance
-              </p>
-            </div>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'md',
-                border: '1px solid',
-                borderColor: 'gray.800',
-                borderLeft: '3px solid',
-                borderLeftColor: 'cyan.500',
-                bg: 'gray.900/50',
-              })}
-            >
-              <strong className={css({ color: 'cyan.400' })}>Multiple Counters:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
-                Create separate counters for different categories to track multiple metrics
-                simultaneously
-              </p>
-            </div>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'md',
-                border: '1px solid',
-                borderColor: 'gray.800',
-                borderLeft: '3px solid',
-                borderLeftColor: 'cyan.500',
-                bg: 'gray.900/50',
-              })}
-            >
-              <strong className={css({ color: 'cyan.400' })}>Keyboard Shortcuts:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
-                Use arrow keys and spacebar for hands-free counting when using a single counter
-              </p>
-            </div>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'md',
-                border: '1px solid',
-                borderColor: 'gray.800',
-                borderLeft: '3px solid',
-                borderLeftColor: 'cyan.500',
-                bg: 'gray.900/50',
-              })}
-            >
-              <strong className={css({ color: 'cyan.400' })}>Total Count Feature:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
-                Monitor the combined total of all counters to track overall progress at a glance
-              </p>
-            </div>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'md',
-                border: '1px solid',
-                borderColor: 'gray.800',
-                borderLeft: '3px solid',
-                borderLeftColor: 'cyan.500',
-                bg: 'gray.900/50',
-              })}
-            >
-              <strong className={css({ color: 'cyan.400' })}>Persistent Storage:</strong>
-              <p className={css({ mt: '1', fontSize: 'sm', color: 'white' })}>
-                Your counters are saved automatically - close and reopen the page without losing
-                data
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <h3
+          className={css({
+            mb: '3',
+            fontSize: { base: 'base', sm: 'lg' },
+            fontWeight: 'bold',
+            color: 'cyan.300',
+          })}
+        >
+          Pro Tips
+        </h3>
+        <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Custom Step Values:</strong> Set step values to 5 or 10 for faster counting of
+            large quantities like inventory or attendance
+          </li>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Multiple Counters:</strong> Create separate counters for different categories to
+            track multiple metrics simultaneously
+          </li>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Keyboard Shortcuts:</strong> Use arrow keys and spacebar for hands-free counting
+            when using a single counter
+          </li>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Total Count Feature:</strong> Monitor the combined total of all counters to
+            track overall progress at a glance
+          </li>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Persistent Storage:</strong> Your counters are saved automatically - close and
+            reopen the page without losing data
+          </li>
+        </ul>
+      </div>
 
       {/* How to Use */}
       <Card

@@ -48,9 +48,13 @@ jobs:
         run: pnpm exec tsc --noEmit
 
   test:
-    name: Unit & Integration Tests
+    name: Unit & Integration Tests (Shard ${{ matrix.shard }})
     runs-on: ubuntu-latest
     needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
 
     steps:
       - name: Checkout code
@@ -78,9 +82,10 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Run tests with coverage
-        run: pnpm test run --coverage.enabled=true
-        continue-on-error: true
+      - name: Run unit tests with coverage (Shard ${{ matrix.shard }}/4)
+        run: pnpm exec vitest run --shard=${{ matrix.shard }}/4 --coverage.enabled=true
+        env:
+          CI: true
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
@@ -91,13 +96,14 @@ jobs:
           name: ci-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
+          flags: shard-${{ matrix.shard }}
           verbose: true
 
       - name: Upload test screenshots (on failure)
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: test-screenshots
+          name: test-screenshots-shard-${{ matrix.shard }}
           path: |
             components/ui/__tests__/__screenshots__/
             components/features/__tests__/__screenshots__/

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ApiTesterPage from '../page'
 
@@ -116,10 +116,11 @@ describe('API Tester Page - Component Tests', () => {
   })
 
   it('should enter URL', async () => {
+    const _user = userEvent.setup()
     render(<ApiTesterPage />)
 
     const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
-    await userEvent.type(urlInput, 'https://api.example.com/users')
+    fireEvent.change(urlInput, { target: { value: 'https://api.example.com/users' } })
 
     expect(urlInput).toHaveValue('https://api.example.com/users')
   })

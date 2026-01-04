@@ -1001,117 +1001,58 @@ export default function URLShortenerPage() {
       </Card>
 
       {/* Pro Tips Section */}
-      <Card
+      <div
         className={css({
+          rounded: { base: 'xl', sm: '2xl' },
           border: '2px solid',
           borderColor: 'cyan.500/20',
           bg: 'rgba(6, 182, 212, 0.05)',
+          p: { base: '4', sm: '5', md: '6' },
           backdropFilter: 'blur(16px)',
         })}
       >
-        <CardHeader>
-          <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-            <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-            Pro Tips
-          </CardTitle>
-          <CardDescription>
-            Expert strategies for creating effective short links that drive results
-          </CardDescription>
-        </CardHeader>
-        <CardContent className={css({ spaceY: '3' })}>
-          <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'lg',
-                bg: 'cyan.500/5',
-                borderLeft: '3px solid',
-                borderColor: 'cyan.500',
-              })}
-            >
-              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'cyan.300' })}>
-                  Custom Aliases for Brand Recognition:
-                </strong>{' '}
-                Use memorable, descriptive aliases that match your campaign (e.g.,
-                "spring-promo-2025" instead of random codes). Keep it short (8-15 characters), use
-                hyphens for readability, and include relevant keywords for better recall and
-                click-through rates.
-              </p>
-            </div>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'lg',
-                bg: 'cyan.500/5',
-                borderLeft: '3px solid',
-                borderColor: 'cyan.500',
-              })}
-            >
-              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'cyan.300' })}>
-                  Track and Analyze Performance:
-                </strong>{' '}
-                Monitor your link analytics to understand audience behavior. Track click patterns,
-                geographic distribution, device types, and traffic sources. Use this data to
-                optimize timing, targeting, and content for future campaigns.
-              </p>
-            </div>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'lg',
-                bg: 'cyan.500/5',
-                borderLeft: '3px solid',
-                borderColor: 'cyan.500',
-              })}
-            >
-              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'cyan.300' })}>
-                  QR Codes for Physical Marketing:
-                </strong>{' '}
-                Generate QR codes for print materials, product packaging, business cards, and event
-                signage. Test scannability at actual size, ensure adequate contrast, and position
-                codes at eye level. Include a shortened URL underneath as a fallback.
-              </p>
-            </div>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'lg',
-                bg: 'cyan.500/5',
-                borderLeft: '3px solid',
-                borderColor: 'cyan.500',
-              })}
-            >
-              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'cyan.300' })}>
-                  Link Management Best Practices:
-                </strong>{' '}
-                Organize links by campaign or category in the history dashboard. Delete expired
-                promotional links to keep your workspace clean. Review analytics regularly to
-                identify top-performing content and distribution channels.
-              </p>
-            </div>
-            <div
-              className={css({
-                p: '3',
-                rounded: 'lg',
-                bg: 'cyan.500/5',
-                borderLeft: '3px solid',
-                borderColor: 'cyan.500',
-              })}
-            >
-              <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                <strong className={css({ color: 'cyan.300' })}>Social Media Optimization:</strong>{' '}
-                Short links save character count on Twitter, look cleaner on Instagram, and improve
-                click-through rates across all platforms. Test links before posting, use link
-                preview cards when available, and track which platforms drive the most engagement.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <h3
+          className={css({
+            mb: '3',
+            fontSize: { base: 'base', sm: 'lg' },
+            fontWeight: 'bold',
+            color: 'cyan.300',
+          })}
+        >
+          Pro Tips
+        </h3>
+        <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Custom Aliases for Brand Recognition:</strong> Use memorable, descriptive
+            aliases that match your campaign (e.g., "spring-promo-2025" instead of random codes).
+            Keep it short (8-15 characters), use hyphens for readability, and include relevant
+            keywords for better recall and click-through rates.
+          </li>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Track and Analyze Performance:</strong> Monitor your link analytics to
+            understand audience behavior. Track click patterns, geographic distribution, device
+            types, and traffic sources. Use this data to optimize timing, targeting, and content for
+            future campaigns.
+          </li>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>QR Codes for Physical Marketing:</strong> Generate QR codes for print materials,
+            product packaging, business cards, and event signage. Test scannability at actual size,
+            ensure adequate contrast, and position codes at eye level. Include a shortened URL
+            underneath as a fallback.
+          </li>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Link Management Best Practices:</strong> Organize links by campaign or category
+            in the history dashboard. Delete expired promotional links to keep your workspace clean.
+            Review analytics regularly to identify top-performing content and distribution channels.
+          </li>
+          <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+            <strong>Social Media Optimization:</strong> Short links save character count on Twitter,
+            look cleaner on Instagram, and improve click-through rates across all platforms. Test
+            links before posting, use link preview cards when available, and track which platforms
+            drive the most engagement.
+          </li>
+        </ul>
+      </div>
 
       {/* How to Use Section */}
       <Card

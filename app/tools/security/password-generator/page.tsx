@@ -419,60 +419,52 @@ function PasswordGeneratorContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
-            w: 'full',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ spaceY: '4' })}>
-              <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-                <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400' })} />
-                <h2
-                  className={css({
-                    fontSize: { base: 'xl', md: '2xl' },
-                    fontWeight: 'bold',
-                    color: 'white',
-                  })}
-                >
-                  Pro Tips
-                </h2>
-              </div>
-              <ul className={css({ spaceY: '3', pl: '4', fontSize: 'sm', color: 'white' })}>
-                <li>
-                  • <strong className={css({ color: 'white' })}>Cryptographic Security:</strong> All
-                  passwords use Web Crypto API's crypto.getRandomValues() for cryptographically
-                  secure random number generation - no predictable patterns.
-                </li>
-                <li>
-                  • <strong className={css({ color: 'white' })}>Multiple Generation Modes:</strong>{' '}
-                  Choose from Random (traditional), Diceware (word-based passphrases), Pronounceable
-                  (easy to type), or Template (optimized for specific use cases like banking or
-                  WiFi).
-                </li>
-                <li>
-                  • <strong className={css({ color: 'white' })}>HIBP Breach Checking:</strong>{' '}
-                  Verify your password hasn't been exposed in data breaches using Have I Been Pwned
-                  with k-anonymity (only first 5 hash characters sent).
-                </li>
-                <li>
-                  • <strong className={css({ color: 'white' })}>Bulk Generation:</strong> Generate
-                  up to 100 unique passwords at once with CSV export - perfect for provisioning
-                  multiple accounts or API keys.
-                </li>
-                <li>
-                  • <strong className={css({ color: 'white' })}>Browser-Only Processing:</strong>{' '}
-                  All generation and analysis happens locally in your browser - passwords are never
-                  transmitted to any server for maximum privacy.
-                </li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Cryptographic Security:</strong> All passwords use Web Crypto API's
+              crypto.getRandomValues() for cryptographically secure random number generation - no
+              predictable patterns.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Multiple Generation Modes:</strong> Choose from Random (traditional), Diceware
+              (word-based passphrases), Pronounceable (easy to type), or Template (optimized for
+              specific use cases like banking or WiFi).
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>HIBP Breach Checking:</strong> Verify your password hasn't been exposed in
+              data breaches using Have I Been Pwned with k-anonymity (only first 5 hash characters
+              sent).
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Bulk Generation:</strong> Generate up to 100 unique passwords at once with CSV
+              export - perfect for provisioning multiple accounts or API keys.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Browser-Only Processing:</strong> All generation and analysis happens locally
+              in your browser - passwords are never transmitted to any server for maximum privacy.
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* How to Use Section */}

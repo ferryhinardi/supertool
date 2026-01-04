@@ -10,7 +10,6 @@ import {
   Link as LinkIcon,
   Lock,
   Shield,
-  Sparkles,
   Unlock,
   Upload,
 } from 'lucide-react'
@@ -1124,57 +1123,44 @@ export default function EncryptionToolPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'amber.500/20',
-            bg: 'amber.500/5',
+            bg: 'rgba(251, 191, 36, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'start',
-                gap: '4',
-              })}
-            >
-              <Sparkles
-                className={css({
-                  h: '6',
-                  w: '6',
-                  color: 'amber.400',
-                  flexShrink: '0',
-                })}
-              />
-              <div className={css({ spaceY: '2' })}>
-                <h3
-                  className={css({
-                    fontSize: 'lg',
-                    fontWeight: 'semibold',
-                    color: 'amber.300',
-                  })}
-                >
-                  Pro Tips
-                </h3>
-                <ul
-                  className={css({
-                    spaceY: '2',
-                    fontSize: 'sm',
-                    color: 'white',
-                  })}
-                >
-                  <li>• Use long, complex passwords with mixed characters for maximum security</li>
-                  <li>• Never share your password in the same channel as your encrypted data</li>
-                  <li>• Save encrypted data and password separately for better security</li>
-                  <li>• All encryption happens locally - your data never leaves your browser</li>
-                  <li>• Use the shareable link feature to securely send encrypted messages</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'amber.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use long, complex passwords with mixed characters for maximum security
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Never share your password in the same channel as your encrypted data
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Save encrypted data and password separately for better security
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All encryption happens locally - your data never leaves your browser
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use the shareable link feature to securely send encrypted messages
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Affiliate Suggestions */}

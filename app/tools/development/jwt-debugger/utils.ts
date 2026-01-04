@@ -86,17 +86,26 @@ export function decodeJWT(token: string): DecodedJWT {
 /**
  * Verify a JWT token with a secret
  */
-export function verifyJWT(
+export async function verifyJWT(
   token: string,
   secret: string,
   algorithm: JWTAlgorithm = 'HS256'
-): { isValid: boolean; error?: string } {
+): Promise<{ isValid: boolean; error?: string }> {
   try {
-    // Create secret key
+    // Create secret key - use SubtleCrypto API for browser compatibility
     const secretKey = new TextEncoder().encode(secret)
 
+    // Import key using SubtleCrypto for jsdom/browser environment compatibility
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      secretKey,
+      { name: 'HMAC', hash: { name: `SHA-${algorithm.slice(2)}` } },
+      false,
+      ['verify']
+    )
+
     // Verify the token
-    jose.jwtVerify(token, secretKey, {
+    await jose.jwtVerify(token, cryptoKey, {
       algorithms: [algorithm],
     })
 

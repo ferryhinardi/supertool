@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Copy, Download, ImageIcon, Lightbulb, Lock, Sparkles, Unlock, Upload } from 'lucide-react'
+import { Copy, Download, ImageIcon, Lightbulb, Lock, Unlock, Upload } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
@@ -259,69 +259,54 @@ function Base64Content() {
         transition={{ delay: 0.1 }}
         className={css({ w: 'full', maxW: '1400px' })}
       >
-        <Card
+        <div
           className={css({
+            rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
-            borderColor: 'cyan.500/30',
+            borderColor: 'cyan.500/20',
             bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-              Pro Tips
-            </CardTitle>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '3' })}>
-            <ul className={css({ spaceY: '3', pl: '0', fontSize: 'sm', color: 'white' })}>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Text & File Encoding:</strong> Convert
-                  any text or file to Base64 format. Supports images, documents, audio, video, and
-                  any file type up to browser memory limits - perfect for API payloads and data
-                  URIs.
-                </span>
-              </li>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Binary-to-Text Conversion:</strong>{' '}
-                  Base64 encoding converts binary data into ASCII text using 64 printable characters
-                  (A-Z, a-z, 0-9, +, /), making it safe for text-based transmission protocols like
-                  JSON and email.
-                </span>
-              </li>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Image Preview:</strong> Automatically
-                  detects and displays image previews when decoding Base64 strings with data URI
-                  format (data:image/...), supporting PNG, JPEG, GIF, WebP, and SVG formats.
-                </span>
-              </li>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Data URI Support:</strong> Generate
-                  complete data URIs for direct embedding in HTML (img src) and CSS
-                  (background-image). Eliminates HTTP requests for small assets like icons and
-                  logos.
-                </span>
-              </li>
-              <li className={css({ display: 'flex', gap: '2' })}>
-                <span className={css({ color: 'cyan.400', fontWeight: 'bold' })}>•</span>
-                <span>
-                  <strong className={css({ color: 'white' })}>Browser-Only Processing:</strong> All
-                  encoding and decoding happens locally in your browser using native JavaScript APIs
-                  - your files and data never leave your device, ensuring complete privacy and
-                  security.
-                </span>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Text & File Encoding:</strong> Convert any text or file to Base64 format.
+              Supports images, documents, audio, video, and any file type up to browser memory
+              limits - perfect for API payloads and data URIs.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Binary-to-Text Conversion:</strong> Base64 encoding converts binary data into
+              ASCII text using 64 printable characters (A-Z, a-z, 0-9, +, /), making it safe for
+              text-based transmission protocols like JSON and email.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Image Preview:</strong> Automatically detects and displays image previews when
+              decoding Base64 strings with data URI format (data:image/...), supporting PNG, JPEG,
+              GIF, WebP, and SVG formats.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Data URI Support:</strong> Generate complete data URIs for direct embedding in
+              HTML (img src) and CSS (background-image). Eliminates HTTP requests for small assets
+              like icons and logos.
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Browser-Only Processing:</strong> All encoding and decoding happens locally in
+              your browser using native JavaScript APIs - your files and data never leave your
+              device, ensuring complete privacy and security.
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Mode Toggle */}

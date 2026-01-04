@@ -641,56 +641,56 @@ function AIImageCaptionContent() {
         </motion.div>
       )}
 
-      {/* Info Card */}
+      {/* Pro Tips */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>
-                    • Use <strong>Alt Text</strong> for WCAG-compliant accessibility (ideal for
-                    screen readers)
-                  </li>
-                  <li>
-                    • Choose <strong>Detailed</strong> for comprehensive product descriptions or
-                    documentation
-                  </li>
-                  <li>
-                    • Select <strong>SEO</strong> to improve image search rankings with keyword-rich
-                    captions
-                  </li>
-                  <li>
-                    • Pick <strong>Social Media</strong> for engaging, shareable content on
-                    platforms
-                  </li>
-                  <li>
-                    • Generate multiple caption types for the same image to compare and choose the
-                    best
-                  </li>
-                  <li>
-                    • All processing uses OpenAI Vision API - ensure your API key is configured
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Alt Text:</strong> Use this mode for WCAG-compliant accessibility (ideal for
+              screen readers)
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Detailed:</strong> Choose for comprehensive product descriptions or
+              documentation
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>SEO:</strong> Select to improve image search rankings with keyword-rich
+              captions
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              <strong>Social Media:</strong> Pick for engaging, shareable content on platforms
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Generate multiple caption types for the same image to compare and choose the best
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All processing uses OpenAI Vision API - ensure your API key is configured
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

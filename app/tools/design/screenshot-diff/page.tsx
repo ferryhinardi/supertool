@@ -12,7 +12,6 @@ import {
   Layers,
   RotateCcw,
   Settings,
-  Sparkles,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -791,32 +790,44 @@ export default function ScreenshotDiffPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>• Lower threshold values (0-0.1) detect subtle color differences</li>
-                  <li>• Images with different dimensions will be automatically resized to match</li>
-                  <li>• Magenta highlights show pixel differences in the diff view</li>
-                  <li>• Use overlay mode to see differences in context with the original image</li>
-                  <li>• All processing happens in your browser - no server uploads required</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Lower threshold values (0-0.1) detect subtle color differences
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Images with different dimensions will be automatically resized to match
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Magenta highlights show pixel differences in the diff view
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use overlay mode to see differences in context with the original image
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All processing happens in your browser - no server uploads required
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

@@ -593,51 +593,51 @@ function TextSummarizerContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: result ? 0.3 : 0.2, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'purple.500/20',
-            bg: 'purple.500/5',
+            bg: 'rgba(168, 85, 247, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'purple.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3
-                  className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'purple.300' })}
-                >
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>
-                    • For best results, provide text with at least 50 words - longer content
-                    generates more comprehensive summaries
-                  </li>
-                  <li>
-                    • Choose "Bullet Points" for quick takeaways and action items, "Paragraph" for
-                    narrative summaries
-                  </li>
-                  <li>
-                    • Adjust length based on your needs: Short for quick overviews, Long for
-                    detailed analysis
-                  </li>
-                  <li>
-                    • The AI extracts key highlights automatically - perfect for meeting notes and
-                    research papers
-                  </li>
-                  <li>
-                    • Download summaries in TXT or Markdown format for easy sharing and storage
-                  </li>
-                  <li>
-                    • All processing uses OpenAI GPT models - ensure your API key is configured
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'purple.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              For best results, provide text with at least 50 words - longer content generates more
+              comprehensive summaries
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Choose "Bullet Points" for quick takeaways and action items, "Paragraph" for narrative
+              summaries
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Adjust length based on your needs: Short for quick overviews, Long for detailed
+              analysis
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              The AI extracts key highlights automatically - perfect for meeting notes and research
+              papers
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Download summaries in TXT or Markdown format for easy sharing and storage
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All processing uses OpenAI GPT models - ensure your API key is configured
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

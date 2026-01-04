@@ -11,7 +11,6 @@ import {
   Plus,
   RotateCcw,
   Save,
-  Sparkles,
   Timer,
   Trash2,
   X,
@@ -926,32 +925,44 @@ function TaskTimerContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'pink.500/20',
-            bg: 'pink.500/5',
+            bg: 'rgba(236, 72, 153, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'pink.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'pink.300' })}>
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>• Start a session to organize multiple task timers together</li>
-                  <li>• Run multiple timers concurrently to track different tasks</li>
-                  <li>• Export session reports to CSV or JSON for analysis</li>
-                  <li>• Enable notifications to stay updated on your progress</li>
-                  <li>• All session data is saved locally and works offline</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'pink.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Start a session to organize multiple task timers together
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Run multiple timers concurrently to track different tasks
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Export session reports to CSV or JSON for analysis
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Enable notifications to stay updated on your progress
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All session data is saved locally and works offline
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

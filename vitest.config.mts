@@ -12,10 +12,18 @@ export default defineConfig({
     globals: true,
     setupFiles: './vitest.setup.ts',
     testTimeout: 60000,
+    hookTimeout: 30000,
     env: {
       NEXT_PUBLIC_SUPABASE_URL: 'https://test.supabase.co',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
     },
+    exclude: [
+      '**/node_modules/**',
+      '**/.git/**',
+      '**/__screenshots__/**',
+      '**/dist/**',
+      '**/.next/**',
+    ],
     // Browser mode is only enabled for specific tests that need it (e.g., screenshot tests)
     // Most tests will use jsdom environment for better performance and compatibility
     // To use browser mode in a test file, add: // @vitest-environment browser

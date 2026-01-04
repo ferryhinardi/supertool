@@ -7,7 +7,6 @@ import {
   Coins,
   Info,
   RefreshCw,
-  Sparkles,
   Star,
   Trash2,
   TrendingUp,
@@ -681,31 +680,41 @@ function CurrencyConverterContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>• Exchange rates are updated in real-time for accuracy</li>
-                  <li>• Save frequently used currency pairs as favorites</li>
-                  <li>• Use the swap button to quickly reverse conversions</li>
-                  <li>• Rates are sourced from reliable financial data providers</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Exchange rates are updated in real-time for accuracy
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Save frequently used currency pairs as favorites
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use the swap button to quickly reverse conversions
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Rates are sourced from reliable financial data providers
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

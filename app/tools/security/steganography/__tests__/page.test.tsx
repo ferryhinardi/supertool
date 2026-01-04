@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { setupUserEvent } from '@/test-utils/userEvent'
 import '@testing-library/jest-dom/vitest'
 import SteganographyPage from '../page'
 
@@ -58,12 +58,13 @@ describe('Steganography Page', () => {
 
   describe('Mode Switching', () => {
     it('switches to decode mode when decode button is clicked', async () => {
+      const user = setupUserEvent()
       render(<SteganographyPage />)
 
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -71,12 +72,13 @@ describe('Steganography Page', () => {
     })
 
     it('renders decode mode input', async () => {
+      const user = setupUserEvent()
       render(<SteganographyPage />)
 
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(
@@ -86,13 +88,14 @@ describe('Steganography Page', () => {
     })
 
     it('switches back to encode mode', async () => {
+      const user = setupUserEvent()
       render(<SteganographyPage />)
 
       // Switch to decode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -102,7 +105,7 @@ describe('Steganography Page', () => {
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const encodeButton = encodeButtons.find((el) => el.textContent === 'Encode Message')!
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Encode Secret Message')).toBeInTheDocument()
@@ -112,43 +115,46 @@ describe('Steganography Page', () => {
 
   describe('Encode Functionality', () => {
     it('shows error when encoding without cover text', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       expect(toast.error).toHaveBeenCalledWith('Please enter cover text')
     })
 
     it('shows error when encoding without secret message', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
-      await userEvent.type(coverTextInput, 'Cover text')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover text' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       expect(toast.error).toHaveBeenCalledWith('Please enter a secret message')
     })
 
     it('encodes message successfully', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await userEvent.type(coverTextInput, 'This is cover text')
-      await userEvent.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'This is cover text' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith('Message encoded successfully!')
@@ -156,17 +162,18 @@ describe('Steganography Page', () => {
     })
 
     it('displays encoded result', async () => {
+      const user = setupUserEvent()
       render(<SteganographyPage />)
 
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await userEvent.type(coverTextInput, 'Cover')
-      await userEvent.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       await waitFor(() => {
         expect(screen.getByText(/Encoded Text.*contains hidden message/i)).toBeInTheDocument()
@@ -174,17 +181,18 @@ describe('Steganography Page', () => {
     })
 
     it('shows copy button after encoding', async () => {
+      const user = setupUserEvent()
       render(<SteganographyPage />)
 
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await userEvent.type(coverTextInput, 'Cover')
-      await userEvent.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1] // Get the action button
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       await waitFor(() => {
         const copyButtons = screen.getAllByText('Copy')
@@ -195,6 +203,7 @@ describe('Steganography Page', () => {
 
   describe('Decode Functionality', () => {
     it('shows error when decoding empty text', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
@@ -202,7 +211,7 @@ describe('Steganography Page', () => {
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -210,12 +219,13 @@ describe('Steganography Page', () => {
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
-      await userEvent.click(decodeActionButton)
+      await user.click(decodeActionButton)
 
       expect(toast.error).toHaveBeenCalledWith('Please paste text to decode')
     })
 
     it('shows error when no hidden message is detected', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
@@ -223,7 +233,7 @@ describe('Steganography Page', () => {
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -232,16 +242,17 @@ describe('Steganography Page', () => {
       const textInput = screen.getByPlaceholderText(
         /Paste text that might contain a hidden message/i
       )
-      await userEvent.type(textInput, 'Just plain text')
+      fireEvent.change(textInput, { target: { value: 'Just plain text' } })
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
-      await userEvent.click(decodeActionButton)
+      await user.click(decodeActionButton)
 
       expect(toast.error).toHaveBeenCalledWith('No hidden message detected in this text')
     })
 
     it('decodes message successfully', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
@@ -249,12 +260,12 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await userEvent.type(coverTextInput, 'Cover')
-      await userEvent.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1]
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       await waitFor(() => {
         expect(screen.getByText(/Encoded Text.*contains hidden message/i)).toBeInTheDocument()
@@ -268,7 +279,7 @@ describe('Steganography Page', () => {
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -278,12 +289,12 @@ describe('Steganography Page', () => {
       const decodeTextInput = screen.getByPlaceholderText(
         /Paste text that might contain a hidden message/i
       )
-      await userEvent.clear(decodeTextInput)
-      await userEvent.type(decodeTextInput, encodedText)
+      await user.clear(decodeTextInput)
+      fireEvent.change(decodeTextInput, { target: { value: encodedText } })
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
-      await userEvent.click(decodeActionButton)
+      await user.click(decodeActionButton)
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith('Message decoded successfully!')
@@ -291,18 +302,19 @@ describe('Steganography Page', () => {
     })
 
     it('displays decoded result', async () => {
+      const user = setupUserEvent()
       render(<SteganographyPage />)
 
       // Encode first
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await userEvent.type(coverTextInput, 'Cover')
-      await userEvent.type(secretInput, 'TestSecret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'TestSecret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1]
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       await waitFor(() => {
         expect(screen.getByText(/Encoded Text.*contains hidden message/i)).toBeInTheDocument()
@@ -315,7 +327,7 @@ describe('Steganography Page', () => {
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -324,12 +336,12 @@ describe('Steganography Page', () => {
       const decodeTextInput = screen.getByPlaceholderText(
         /Paste text that might contain a hidden message/i
       )
-      await userEvent.clear(decodeTextInput)
-      await userEvent.type(decodeTextInput, encodedText)
+      await user.clear(decodeTextInput)
+      fireEvent.change(decodeTextInput, { target: { value: encodedText } })
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
-      await userEvent.click(decodeActionButton)
+      await user.click(decodeActionButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decoded Secret Message')).toBeInTheDocument()
@@ -341,18 +353,19 @@ describe('Steganography Page', () => {
 
   describe('Copy Functionality', () => {
     it('copies encoded text to clipboard', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await userEvent.type(coverTextInput, 'Cover')
-      await userEvent.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1]
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       await waitFor(() => {
         const copyButtons = screen.getAllByText('Copy')
@@ -360,7 +373,7 @@ describe('Steganography Page', () => {
       })
 
       const copyButtons = screen.getAllByText('Copy')
-      await userEvent.click(copyButtons[0])
+      await user.click(copyButtons[0])
 
       await waitFor(() => {
         expect(navigator.clipboard.writeText).toHaveBeenCalled()
@@ -369,6 +382,7 @@ describe('Steganography Page', () => {
     })
 
     it('copies decoded message to clipboard', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
@@ -376,12 +390,12 @@ describe('Steganography Page', () => {
       const coverTextInput = screen.getByPlaceholderText(/Enter normal text that will be visible/i)
       const secretInput = screen.getByPlaceholderText(/Enter your secret message to hide/i)
 
-      await userEvent.type(coverTextInput, 'Cover')
-      await userEvent.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       const encodeButtons = screen.getAllByText(/Encode Message/i)
       const encodeButton = encodeButtons[encodeButtons.length - 1]
-      await userEvent.click(encodeButton)
+      await user.click(encodeButton)
 
       await waitFor(() => {
         expect(screen.getByText(/Encoded Text.*contains hidden message/i)).toBeInTheDocument()
@@ -394,7 +408,7 @@ describe('Steganography Page', () => {
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -403,12 +417,12 @@ describe('Steganography Page', () => {
       const decodeTextInput = screen.getByPlaceholderText(
         /Paste text that might contain a hidden message/i
       )
-      await userEvent.clear(decodeTextInput)
-      await userEvent.type(decodeTextInput, encodedText)
+      await user.clear(decodeTextInput)
+      fireEvent.change(decodeTextInput, { target: { value: encodedText } })
 
       const decodeActionButtons = screen.getAllByText(/Decode Message/i)
       const decodeActionButton = decodeActionButtons[decodeActionButtons.length - 1]
-      await userEvent.click(decodeActionButton)
+      await user.click(decodeActionButton)
 
       await waitFor(() => {
         const copyButtons = screen.getAllByText('Copy')
@@ -416,7 +430,7 @@ describe('Steganography Page', () => {
       })
 
       const copyButtons = screen.getAllByText('Copy')
-      await userEvent.click(copyButtons[0])
+      await user.click(copyButtons[0])
 
       await waitFor(() => {
         expect(navigator.clipboard.writeText).toHaveBeenCalled()
@@ -427,6 +441,7 @@ describe('Steganography Page', () => {
 
   describe('Clear Functionality', () => {
     it('clears encode mode inputs', async () => {
+      const user = setupUserEvent()
       render(<SteganographyPage />)
 
       const coverTextInput = screen.getByPlaceholderText(
@@ -436,14 +451,14 @@ describe('Steganography Page', () => {
         /Enter your secret message to hide/i
       ) as HTMLTextAreaElement
 
-      await userEvent.type(coverTextInput, 'Cover')
-      await userEvent.type(secretInput, 'Secret')
+      fireEvent.change(coverTextInput, { target: { value: 'Cover' } })
+      fireEvent.change(secretInput, { target: { value: 'Secret' } })
 
       expect(coverTextInput.value).toBe('Cover')
       expect(secretInput.value).toBe('Secret')
 
       const clearButton = screen.getByText('Clear')
-      await userEvent.click(clearButton)
+      await user.click(clearButton)
 
       await waitFor(() => {
         expect(coverTextInput.value).toBe('')
@@ -452,13 +467,14 @@ describe('Steganography Page', () => {
     })
 
     it('clears decode mode inputs', async () => {
+      const user = setupUserEvent()
       render(<SteganographyPage />)
 
       // Switch to decode mode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       // biome-ignore lint/style/noNonNullAssertion: Element is guaranteed to exist in test DOM
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')!
-      await userEvent.click(decodeButton)
+      await user.click(decodeButton)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
@@ -467,12 +483,12 @@ describe('Steganography Page', () => {
       const textInput = screen.getByPlaceholderText(
         /Paste text that might contain a hidden message/i
       ) as HTMLTextAreaElement
-      await userEvent.type(textInput, 'Some text')
+      fireEvent.change(textInput, { target: { value: 'Some text' } })
 
       expect(textInput.value).toBe('Some text')
 
       const clearButton = screen.getByText('Clear')
-      await userEvent.click(clearButton)
+      await user.click(clearButton)
 
       await waitFor(() => {
         expect(textInput.value).toBe('')
@@ -482,11 +498,12 @@ describe('Steganography Page', () => {
 
   describe('Load Example Functionality', () => {
     it('loads example in encode mode', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
       const loadExampleButton = screen.getByText('Load Example')
-      await userEvent.click(loadExampleButton)
+      await user.click(loadExampleButton)
 
       await waitFor(() => {
         const coverTextInput = screen.getByPlaceholderText(
@@ -503,20 +520,21 @@ describe('Steganography Page', () => {
     })
 
     it('loads example in decode mode', async () => {
+      const user = setupUserEvent()
       const { toast } = await import('sonner')
       render(<SteganographyPage />)
 
       // Switch to decode mode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
-      await userEvent.click(decodeButton!)
+      await user.click(decodeButton!)
 
       await waitFor(() => {
         expect(screen.getByText('Decode Hidden Message')).toBeInTheDocument()
       })
 
       const loadExampleButton = screen.getByText('Load Example')
-      await userEvent.click(loadExampleButton)
+      await user.click(loadExampleButton)
 
       await waitFor(() => {
         const textInput = screen.getByPlaceholderText(

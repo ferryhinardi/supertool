@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { AlertCircle, CheckCircle2, Copy, Lightbulb, Loader2, Sparkles, Type } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Copy, Loader2, Type } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -609,79 +609,41 @@ export default function GrammarCheckerPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'teal.500/20',
-            bg: 'teal.500/5',
+            bg: 'rgba(20, 184, 166, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'teal.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'teal.300' })}>
-                  Pro Tips
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
-                    <Lightbulb
-                      className={css({
-                        h: '4',
-                        w: '4',
-                        color: 'teal.400',
-                        mt: '0.5',
-                        flexShrink: '0',
-                      })}
-                    />
-                    <span>Click on any issue to see detailed explanations and suggested fixes</span>
-                  </li>
-                  <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
-                    <Lightbulb
-                      className={css({
-                        h: '4',
-                        w: '4',
-                        color: 'teal.400',
-                        mt: '0.5',
-                        flexShrink: '0',
-                      })}
-                    />
-                    <span>
-                      Apply fixes individually to maintain control over your writing style
-                    </span>
-                  </li>
-                  <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
-                    <Lightbulb
-                      className={css({
-                        h: '4',
-                        w: '4',
-                        color: 'teal.400',
-                        mt: '0.5',
-                        flexShrink: '0',
-                      })}
-                    />
-                    <span>
-                      Use the corrected text as a reference or copy it directly to your clipboard
-                    </span>
-                  </li>
-                  <li className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
-                    <Lightbulb
-                      className={css({
-                        h: '4',
-                        w: '4',
-                        color: 'teal.400',
-                        mt: '0.5',
-                        flexShrink: '0',
-                      })}
-                    />
-                    <span>Maximum text length: 10,000 characters per check</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'teal.300',
+            })}
+          >
+            Pro Tips
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Click on any issue to see detailed explanations and suggested fixes
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Apply fixes individually to maintain control over your writing style
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use the corrected text as a reference or copy it directly to your clipboard
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Maximum text length: 10,000 characters per check
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

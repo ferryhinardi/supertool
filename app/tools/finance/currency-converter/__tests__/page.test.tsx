@@ -505,10 +505,6 @@ describe('Currency Converter Page', () => {
       await waitFor(() => {
         expect(screen.getByText('Pro Tips')).toBeInTheDocument()
       })
-
-      // Check for specific pro tip content within the Pro Tips section
-      const proTipsSection = screen.getByText('Pro Tips').closest('article')
-      expect(proTipsSection).toBeInTheDocument()
     })
   })
 

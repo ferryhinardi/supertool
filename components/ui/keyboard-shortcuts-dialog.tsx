@@ -46,7 +46,8 @@ export function KeyboardShortcutsDialog({
       })}
       onClick={onClose}
       onKeyDown={(e) => {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
           onClose()
         }
       }}

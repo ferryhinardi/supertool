@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
@@ -38,9 +38,9 @@ describe('Keyword Density Analyzer Page', () => {
     it('updates character and word count when typing', async () => {
       render(<KeywordDensityPage />)
       const textarea = screen.getByPlaceholderText(/Paste your content here/i)
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
 
-      await user.type(textarea, 'Hello world test')
+      fireEvent.change(textarea, { target: { value: 'Hello world test' } })
 
       expect(screen.getByText(/16 characters/)).toBeInTheDocument()
       expect(screen.getByText(/3 words/)).toBeInTheDocument()
@@ -50,11 +50,11 @@ describe('Keyword Density Analyzer Page', () => {
       render(<KeywordDensityPage />)
       const textarea = screen.getByPlaceholderText(/Paste your content here/i)
       const analyzeBtn = screen.getByRole('button', { name: /Analyze/i })
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
 
       expect(analyzeBtn).toBeDisabled()
 
-      await user.type(textarea, 'Test content')
+      fireEvent.change(textarea, { target: { value: 'Test content' } })
 
       expect(analyzeBtn).not.toBeDisabled()
     })
@@ -69,7 +69,7 @@ describe('Keyword Density Analyzer Page', () => {
 
       const sampleText =
         'SEO optimization is important for SEO. Good SEO practices help with content optimization and SEO ranking.'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -86,7 +86,7 @@ describe('Keyword Density Analyzer Page', () => {
       const user = userEvent.setup()
 
       const sampleText = 'keyword keyword keyword test test optimization optimization optimization'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -102,7 +102,7 @@ describe('Keyword Density Analyzer Page', () => {
 
       // 10 words total, "test" appears 3 times = 30% density
       const sampleText = 'test word test word test word word word word word'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -117,7 +117,7 @@ describe('Keyword Density Analyzer Page', () => {
       const user = userEvent.setup()
 
       const sampleText = 'keyword density keyword density analysis keyword density optimization'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -132,7 +132,7 @@ describe('Keyword Density Analyzer Page', () => {
       const user = userEvent.setup()
 
       const sampleText = 'seo keyword density seo keyword density analysis seo keyword density tool'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -150,7 +150,7 @@ describe('Keyword Density Analyzer Page', () => {
 
       // Create text with high keyword density (>5%)
       const sampleText = 'keyword keyword keyword keyword keyword test'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -165,7 +165,7 @@ describe('Keyword Density Analyzer Page', () => {
       const user = userEvent.setup()
 
       const sampleText = 'short text'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -183,7 +183,7 @@ describe('Keyword Density Analyzer Page', () => {
       const clearBtn = screen.getByRole('button', { name: /Clear/i })
       const user = userEvent.setup()
 
-      await user.type(textarea, 'Test content')
+      fireEvent.change(textarea, { target: { value: 'Test content' } })
       expect(textarea.value).toBe('Test content')
 
       await user.click(clearBtn)
@@ -201,7 +201,7 @@ describe('Keyword Density Analyzer Page', () => {
       // Use longer text with actual keywords to ensure analysis generates results
       const sampleText =
         'keyword optimization test keyword analysis content keyword density keyword frequency measurement'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -223,7 +223,7 @@ describe('Keyword Density Analyzer Page', () => {
       const user = userEvent.setup()
 
       const sampleText = 'test content for analysis with keywords'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -258,7 +258,7 @@ describe('Keyword Density Analyzer Page', () => {
       const user = userEvent.setup()
 
       const sampleText = 'test!@# content$%^ with&*() special (characters)'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -273,7 +273,7 @@ describe('Keyword Density Analyzer Page', () => {
       const user = userEvent.setup()
 
       const sampleText = 'test    content     with      multiple       spaces'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {
@@ -289,7 +289,7 @@ describe('Keyword Density Analyzer Page', () => {
 
       // Text with common stop words
       const sampleText = 'the and but keyword optimization the and but keyword analysis'
-      await user.type(textarea, sampleText)
+      fireEvent.change(textarea, { target: { value: sampleText } })
       await user.click(analyzeBtn)
 
       await waitFor(() => {

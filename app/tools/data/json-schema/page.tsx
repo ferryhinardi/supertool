@@ -665,40 +665,50 @@ function JSONSchemaContent() {
           </Card>
         </motion.div>
 
-        {/* Info Card */}
+        {/* Pro Tips Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <Card
+          <div
             className={css({
-              border: '1px solid',
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
               borderColor: 'cyan.500/20',
-              bg: 'cyan.500/5',
+              bg: 'rgba(6, 182, 212, 0.05)',
+              p: { base: '4', sm: '5', md: '6' },
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-                <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
-                <div className={css({ spaceY: '2' })}>
-                  <h3
-                    className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}
-                  >
-                    Pro Tips
-                  </h3>
-                  <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                    <li>• Automatic type inference from sample JSON data</li>
-                    <li>• Detects string formats (email, URI, date-time, UUID)</li>
-                    <li>• Identifies required fields based on non-null values</li>
-                    <li>• Supports nested objects and arrays</li>
-                    <li>• Generates JSON Schema Draft 2020-12 compatible output</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            <h3
+              className={css({
+                mb: '3',
+                fontSize: { base: 'base', sm: 'lg' },
+                fontWeight: 'bold',
+                color: 'cyan.300',
+              })}
+            >
+              Pro Tips
+            </h3>
+            <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Automatic type inference from sample JSON data
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Detects string formats (email, URI, date-time, UUID)
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Identifies required fields based on non-null values
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Supports nested objects and arrays
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                Generates JSON Schema Draft 2020-12 compatible output
+              </li>
+            </ul>
+          </div>
         </motion.div>
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

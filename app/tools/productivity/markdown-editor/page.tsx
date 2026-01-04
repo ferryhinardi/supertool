@@ -10,7 +10,6 @@ import {
   FileText,
   Lightbulb,
   RotateCcw,
-  Sparkles,
   SplitSquareHorizontal,
   Upload,
 } from 'lucide-react'
@@ -1106,112 +1105,53 @@ export default function MarkdownEditorPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
         >
-          <Card
+          <div
             className={css({
+              rounded: { base: 'xl', sm: '2xl' },
               border: '2px solid',
               borderColor: 'cyan.500/20',
               bg: 'rgba(6, 182, 212, 0.05)',
+              p: { base: '4', sm: '5', md: '6' },
               backdropFilter: 'blur(16px)',
             })}
           >
-            <CardHeader>
-              <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <Sparkles className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-                Pro Tips
-              </CardTitle>
-              <CardDescription>
-                Expert techniques for writing better Markdown content faster
-              </CardDescription>
-            </CardHeader>
-            <CardContent className={css({ spaceY: '3' })}>
-              <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
-                <div
-                  className={css({
-                    p: '3',
-                    rounded: 'lg',
-                    bg: 'cyan.500/5',
-                    borderLeft: '3px solid',
-                    borderColor: 'cyan.500',
-                  })}
-                >
-                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                    <strong className={css({ color: 'cyan.300' })}>
-                      Master GitHub-Flavored Markdown:
-                    </strong>{' '}
-                    Take advantage of advanced features like tables (| Header | Header |), task
-                    lists (- [ ] Todo), strikethrough (~~text~~), and auto-linked URLs for
-                    documentation that looks professional on GitHub.
-                  </p>
-                </div>
-                <div
-                  className={css({
-                    p: '3',
-                    rounded: 'lg',
-                    bg: 'cyan.500/5',
-                    borderLeft: '3px solid',
-                    borderColor: 'cyan.500',
-                  })}
-                >
-                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                    <strong className={css({ color: 'cyan.300' })}>Optimize Your Workflow:</strong>{' '}
-                    Use Editor Only mode for distraction-free writing, Split View for simultaneous
-                    editing and verification, or Preview Only mode for final review and
-                    presentation. Switch modes based on your current task.
-                  </p>
-                </div>
-                <div
-                  className={css({
-                    p: '3',
-                    rounded: 'lg',
-                    bg: 'cyan.500/5',
-                    borderLeft: '3px solid',
-                    borderColor: 'cyan.500',
-                  })}
-                >
-                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                    <strong className={css({ color: 'cyan.300' })}>Code Blocks Done Right:</strong>{' '}
-                    Use fenced code blocks with language identifiers (```javascript) for automatic
-                    syntax highlighting. Supports 180+ languages. Add line numbers or highlights for
-                    technical documentation and tutorials.
-                  </p>
-                </div>
-                <div
-                  className={css({
-                    p: '3',
-                    rounded: 'lg',
-                    bg: 'cyan.500/5',
-                    borderLeft: '3px solid',
-                    borderColor: 'cyan.500',
-                  })}
-                >
-                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                    <strong className={css({ color: 'cyan.300' })}>Export Flexibility:</strong>{' '}
-                    Download as .md for version control and collaboration, or export as styled HTML
-                    for embedding in websites, blogs, or documentation sites. HTML exports include
-                    syntax highlighting and responsive styling.
-                  </p>
-                </div>
-                <div
-                  className={css({
-                    p: '3',
-                    rounded: 'lg',
-                    bg: 'cyan.500/5',
-                    borderLeft: '3px solid',
-                    borderColor: 'cyan.500',
-                  })}
-                >
-                  <p className={css({ fontSize: 'sm', color: 'white', lineHeight: '1.6' })}>
-                    <strong className={css({ color: 'cyan.300' })}>
-                      Documentation Best Practices:
-                    </strong>{' '}
-                    Structure content with clear headings (# ## ###), use bullet points for
-                    scannability, add code examples liberally, and include a table of contents for
-                    long documents. Preview regularly to ensure formatting consistency.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            <h3
+              className={css({
+                mb: '3',
+                fontSize: { base: 'base', sm: 'lg' },
+                fontWeight: 'bold',
+                color: 'cyan.300',
+              })}
+            >
+              Pro Tips
+            </h3>
+            <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                <strong>Master GitHub-Flavored Markdown:</strong> Take advantage of advanced
+                features like tables, task lists (- [ ] Todo), strikethrough (~~text~~), and
+                auto-linked URLs for professional documentation
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                <strong>Optimize Your Workflow:</strong> Use Editor Only mode for distraction-free
+                writing, Split View for simultaneous editing and verification, or Preview Only mode
+                for final review
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                <strong>Code Blocks Done Right:</strong> Use fenced code blocks with language
+                identifiers (```javascript) for automatic syntax highlighting - supports 180+
+                languages
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                <strong>Export Flexibility:</strong> Download as .md for version control and
+                collaboration, or export as styled HTML for embedding in websites and blogs
+              </li>
+              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+                <strong>Documentation Best Practices:</strong> Structure content with clear
+                headings, use bullet points for scannability, add code examples, and preview
+                regularly for formatting consistency
+              </li>
+            </ul>
+          </div>
         </motion.div>
 
         {/* How to Use Section */}

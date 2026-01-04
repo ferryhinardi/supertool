@@ -1,18 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import {
-  AlertCircle,
-  Check,
-  Copy,
-  Eye,
-  Fingerprint,
-  Info,
-  Monitor,
-  Shield,
-  Sparkles,
-  X,
-} from 'lucide-react'
+import { AlertCircle, Check, Copy, Eye, Fingerprint, Info, Monitor, Shield, X } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -770,34 +759,44 @@ function BrowserFingerprintContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.1, duration: 0.5 }}
       >
-        <Card
+        <div
           className={css({
-            border: '1px solid',
+            rounded: { base: 'xl', sm: '2xl' },
+            border: '2px solid',
             borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
+            bg: 'rgba(6, 182, 212, 0.05)',
+            p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
           })}
         >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
-                  Understanding Your Fingerprint
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>• Click on each section to expand and view detailed information</li>
-                  <li>• The uniqueness score shows how easily you can be tracked online</li>
-                  <li>
-                    • Your fingerprint ID is a unique hash representing your browser configuration
-                  </li>
-                  <li>• All data is collected locally - nothing is sent to any server</li>
-                  <li>• Use this tool to understand your digital privacy posture</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <h3
+            className={css({
+              mb: '3',
+              fontSize: { base: 'base', sm: 'lg' },
+              fontWeight: 'bold',
+              color: 'cyan.300',
+            })}
+          >
+            Understanding Your Fingerprint
+          </h3>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Click on each section to expand and view detailed information
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              The uniqueness score shows how easily you can be tracked online
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Your fingerprint ID is a unique hash representing your browser configuration
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              All data is collected locally - nothing is sent to any server
+            </li>
+            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
+              Use this tool to understand your digital privacy posture
+            </li>
+          </ul>
+        </div>
       </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

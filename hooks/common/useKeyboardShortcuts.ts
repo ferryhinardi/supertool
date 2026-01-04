@@ -167,12 +167,12 @@ export function useKeyboardShortcuts(
         if (actions.onHelp) {
           actions.onHelp()
         } else {
-          setShowHelp(!showHelp)
+          setShowHelp((prev) => !prev)
         }
         return
       }
     },
-    [enabled, preventDefault, allowInInputs, actions, showHelp]
+    [enabled, preventDefault, allowInInputs, actions]
   )
 
   useEffect(() => {
