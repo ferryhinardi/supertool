@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import QRCodePage from '../page'
 
 // Mock dependencies
@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))
@@ -175,7 +175,7 @@ describe('QR Code Generator Page', () => {
       render(<QRCodePage />)
 
       const input = screen.getByPlaceholderText(/Enter URL/i)
-      await user.type(input, 'https://example.com')
+      fireEvent.change(input, { target: { value: 'https://example.com' } })
 
       expect(input).toHaveValue('https://example.com')
     })
@@ -194,7 +194,7 @@ describe('QR Code Generator Page', () => {
       const input = screen.getByPlaceholderText(/Enter URL/i)
       const generateButton = screen.getByText(/Generate QR Code/i)
 
-      await user.type(input, 'https://example.com')
+      fireEvent.change(input, { target: { value: 'https://example.com' } })
       await user.click(generateButton)
 
       // QR code should be displayed
@@ -475,7 +475,7 @@ describe('QR Code Generator Page', () => {
       const input = screen.getByPlaceholderText(/Enter URL/i)
       const clearButton = screen.getByText(/Clear/i)
 
-      await user.type(input, 'test')
+      fireEvent.change(input, { target: { value: 'test' } })
       await user.click(clearButton)
 
       expect(input).toHaveValue('')

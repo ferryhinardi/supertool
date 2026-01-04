@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import EncryptionToolPage from '../page'
 
 // Mock dependencies
@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
   trackEvent: vi.fn(),
 }))
@@ -136,7 +136,7 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'Secret message')
+      fireEvent.change(textarea, { target: { value: 'Secret message' } })
 
       expect(textarea.value).toContain('Secret')
     })
@@ -148,7 +148,7 @@ describe('Encryption Tool Page', () => {
       const passwordInput = screen.getByPlaceholderText(
         /password|passphrase|key/i
       ) as HTMLInputElement
-      await user.type(passwordInput, 'mypassword')
+      fireEvent.change(passwordInput, { target: { value: 'mypassword' } })
 
       expect(passwordInput.value).toBe('mypassword')
     })
@@ -183,10 +183,10 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'Secret message')
+      fireEvent.change(textarea, { target: { value: 'Secret message' } })
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)
-      await user.type(passwordInput, 'password123')
+      fireEvent.change(passwordInput, { target: { value: 'password123' } })
 
       const encryptButton = screen.getByText(/Encrypt Text|Encrypt$/i)
       await user.click(encryptButton)
@@ -207,10 +207,10 @@ describe('Encryption Tool Page', () => {
       await user.click(decryptButton)
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'encrypted_text')
+      fireEvent.change(textarea, { target: { value: 'encrypted_text' } })
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)
-      await user.type(passwordInput, 'password123')
+      fireEvent.change(passwordInput, { target: { value: 'password123' } })
 
       const decryptActionButton = screen.getByText(/Decrypt Text|Decrypt$/i)
       await user.click(decryptActionButton)
@@ -233,10 +233,10 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'Secret')
+      fireEvent.change(textarea, { target: { value: 'Secret' } })
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)
-      await user.type(passwordInput, 'pass')
+      fireEvent.change(passwordInput, { target: { value: 'pass' } })
 
       const encryptButton = screen.getByText(/Encrypt Text|Encrypt$/i)
       await user.click(encryptButton)
@@ -261,7 +261,7 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'Test message')
+      fireEvent.change(textarea, { target: { value: 'Test message' } })
 
       const clearButton = screen.getByText(/Clear|Reset/i)
       await user.click(clearButton)
@@ -278,7 +278,7 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)
-      await user.type(passwordInput, 'weak')
+      fireEvent.change(passwordInput, { target: { value: 'weak' } })
 
       await waitFor(() => {
         expect(screen.queryByText(/weak|strong|strength/i)).toBeTruthy()
@@ -290,7 +290,7 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)
-      await user.type(passwordInput, 'StrongP@ssw0rd!')
+      fireEvent.change(passwordInput, { target: { value: 'StrongP@ssw0rd!' } })
 
       await waitFor(() => {
         expect(screen.queryByText(/strong/i)).toBeTruthy()
@@ -304,7 +304,7 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'Message')
+      fireEvent.change(textarea, { target: { value: 'Message' } })
 
       const encryptButton = screen.getByText(/Encrypt Text|Encrypt$/i)
       await user.click(encryptButton)
@@ -319,7 +319,7 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)
-      await user.type(passwordInput, 'password')
+      fireEvent.change(passwordInput, { target: { value: 'password' } })
 
       const encryptButton = screen.getByText(/Encrypt Text|Encrypt$/i)
       await user.click(encryptButton)
@@ -422,10 +422,10 @@ describe('Encryption Tool Page', () => {
       render(<EncryptionToolPage />)
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-      await user.type(textarea, 'Test')
+      fireEvent.change(textarea, { target: { value: 'Test' } })
 
       const passwordInput = screen.getByPlaceholderText(/password|passphrase|key/i)
-      await user.type(passwordInput, 'pass')
+      fireEvent.change(passwordInput, { target: { value: 'pass' } })
 
       const encryptButton = screen.getByText(/Encrypt Text|Encrypt$/i)
       await user.click(encryptButton)

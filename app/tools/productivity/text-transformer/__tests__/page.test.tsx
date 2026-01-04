@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import TextTransformerPage from '../page'
 
 // Mock dependencies
@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
   trackToolEvent: vi.fn(),
 }))
@@ -94,7 +94,7 @@ describe('Text Transformer Page', () => {
       render(<TextTransformerPage />)
 
       const textarea = screen.getByPlaceholderText(/Enter or paste your text here/i)
-      await user.type(textarea, 'Hello World')
+      fireEvent.change(textarea, { target: { value: 'Hello World' } })
 
       expect(textarea).toHaveValue('Hello World')
     })
@@ -261,7 +261,7 @@ describe('Text Transformer Page', () => {
       render(<TextTransformerPage />)
 
       const input = screen.getByPlaceholderText(/Find text/i)
-      await user.type(input, 'hello')
+      fireEvent.change(input, { target: { value: 'hello' } })
 
       expect(input).toHaveValue('hello')
     })
@@ -271,7 +271,7 @@ describe('Text Transformer Page', () => {
       render(<TextTransformerPage />)
 
       const input = screen.getByPlaceholderText(/Replace with/i)
-      await user.type(input, 'world')
+      fireEvent.change(input, { target: { value: 'world' } })
 
       expect(input).toHaveValue('world')
     })
@@ -497,7 +497,7 @@ describe('Text Transformer Page', () => {
       const textarea = screen.getByPlaceholderText(/Enter or paste your text here/i)
       const clearButton = screen.getByText('Clear')
 
-      await user.type(textarea, 'Test text')
+      fireEvent.change(textarea, { target: { value: 'Test text' } })
       await user.click(clearButton)
 
       await waitFor(() => {
