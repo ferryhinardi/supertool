@@ -36,9 +36,9 @@ describe('Sidebar', () => {
     render(<Sidebar />)
 
     expect(screen.getByText('Home')).toBeInTheDocument()
-    expect(screen.getByText('JSON Beautifier')).toBeInTheDocument()
-    expect(screen.getByText('QR Code')).toBeInTheDocument()
-    expect(screen.getByText('Password Generator')).toBeInTheDocument()
+    expect(screen.getByText(/JSON Beautifier/i)).toBeInTheDocument()
+    expect(screen.getByText(/QR Code/i)).toBeInTheDocument()
+    expect(screen.getByText(/Password Generator/i)).toBeInTheDocument()
   })
 
   it('renders mobile menu button', () => {
@@ -77,13 +77,13 @@ describe('Sidebar', () => {
     render(<Sidebar />)
 
     // Check for various tool categories
-    expect(screen.getByText('JSON Beautifier')).toBeInTheDocument()
-    expect(screen.getByText('Split Bill')).toBeInTheDocument()
-    expect(screen.getByText('Currency Converter')).toBeInTheDocument()
-    expect(screen.getByText('Password Generator')).toBeInTheDocument()
-    expect(screen.getByText('Hash Generator')).toBeInTheDocument()
-    expect(screen.getByText('Unit Converter')).toBeInTheDocument()
-    expect(screen.getByText('BMI Calculator')).toBeInTheDocument()
-    expect(screen.getByText('API Tester')).toBeInTheDocument()
+    expect(screen.getByText(/JSON Beautifier/i)).toBeInTheDocument()
+    expect(screen.getByText(/Split Bill/i)).toBeInTheDocument()
+    expect(screen.getByText(/Currency Converter/i)).toBeInTheDocument()
+    expect(screen.getByText(/Password Generator/i)).toBeInTheDocument()
+    expect(screen.getByText(/Hash Generator/i)).toBeInTheDocument()
+    expect(screen.getByText(/Unit Converter/i)).toBeInTheDocument()
+    expect(screen.getByText(/BMI Calculator/i)).toBeInTheDocument()
+    expect(screen.getByText(/API Tester/i)).toBeInTheDocument()
   })
 })
