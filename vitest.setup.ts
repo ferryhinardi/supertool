@@ -161,6 +161,33 @@ vi.mock('@/lib/supabaseClient', () => ({
   },
 }))
 
+// Mock idb (IndexedDB wrapper library)
+vi.mock('idb', () => ({
+  openDB: vi.fn(() =>
+    Promise.resolve({
+      put: vi.fn(() => Promise.resolve()),
+      get: vi.fn(() => Promise.resolve(null)),
+      getAll: vi.fn(() => Promise.resolve([])),
+      getAllFromIndex: vi.fn(() => Promise.resolve([])),
+      delete: vi.fn(() => Promise.resolve()),
+      clear: vi.fn(() => Promise.resolve()),
+      transaction: vi.fn(() => ({
+        store: {
+          add: vi.fn(),
+          put: vi.fn(),
+          get: vi.fn(),
+          delete: vi.fn(),
+          clear: vi.fn(),
+          getAll: vi.fn(),
+        },
+        done: Promise.resolve(),
+      })),
+      createObjectStore: vi.fn(),
+      close: vi.fn(),
+    })
+  ),
+}))
+
 // Mock localStorage
 class LocalStorageMock {
   private store: Map<string, string>
@@ -248,8 +275,32 @@ beforeAll(async () => {
   }
   // Mock indexedDB
   if (typeof globalThis.indexedDB === 'undefined') {
+    const mockIndexedDB = {
+      open: vi.fn(() => ({
+        onsuccess: null,
+        onerror: null,
+        onupgradeneeded: null,
+        result: {
+          transaction: vi.fn(() => ({
+            objectStore: vi.fn(() => ({
+              add: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              get: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              put: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              delete: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              clear: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              getAll: vi.fn(() => ({ onsuccess: null, onerror: null })),
+            })),
+          })),
+          createObjectStore: vi.fn(() => ({
+            createIndex: vi.fn(),
+          })),
+          close: vi.fn(),
+        },
+      })),
+      deleteDatabase: vi.fn(),
+    }
     Object.defineProperty(globalThis, 'indexedDB', {
-      value: {},
+      value: mockIndexedDB,
       writable: true,
       configurable: true,
     })
