@@ -14,7 +14,7 @@ vi.mock('next/navigation', () => ({
 }))
 
 // Mock auth store
-vi.mock('@/lib/auth-store', () => ({
+vi.mock('@/lib/auth/auth-store', () => ({
   useAuthStore: vi.fn(() => ({
     user: null,
     profile: null,
@@ -37,7 +37,7 @@ describe('Sidebar', () => {
 
     expect(screen.getByText('Home')).toBeInTheDocument()
     expect(screen.getByText(/JSON Beautifier/i)).toBeInTheDocument()
-    expect(screen.getByText(/QR Code/i)).toBeInTheDocument()
+    expect(screen.getByText(/QR Code Generator/i)).toBeInTheDocument()
     expect(screen.getByText(/Password Generator/i)).toBeInTheDocument()
   })
 
@@ -63,7 +63,7 @@ describe('Sidebar', () => {
   it('renders sign in button when user is not authenticated', () => {
     render(<Sidebar />)
 
-    expect(screen.getByText('Sign In')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
   })
 
   it('displays footer information', () => {
@@ -83,7 +83,7 @@ describe('Sidebar', () => {
     expect(screen.getByText(/Password Generator/i)).toBeInTheDocument()
     expect(screen.getByText(/Hash Generator/i)).toBeInTheDocument()
     expect(screen.getByText(/Unit Converter/i)).toBeInTheDocument()
-    expect(screen.getByText(/BMI Calculator/i)).toBeInTheDocument()
-    expect(screen.getByText(/API Tester/i)).toBeInTheDocument()
+    expect(screen.getByText(/BMI.*Health Calculator/i)).toBeInTheDocument()
+    expect(screen.getByText(/API Request Tester/i)).toBeInTheDocument()
   })
 })
