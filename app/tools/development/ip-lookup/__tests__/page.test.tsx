@@ -1120,6 +1120,7 @@ describe('IPLookupPage', () => {
     })
 
     it('handles missing data fields', async () => {
+      const user = userEvent.setup()
       vi.mocked(fetch).mockResolvedValue({
         ok: true,
         json: async () => ({

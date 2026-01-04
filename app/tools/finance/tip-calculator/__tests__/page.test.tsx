@@ -518,6 +518,7 @@ describe('Tip Calculator - Analytics', () => {
   })
 
   it('should track multiple events', async () => {
+    const user = userEvent.setup()
     render(<TipCalculatorPage />)
 
     await waitFor(() => {

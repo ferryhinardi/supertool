@@ -515,6 +515,7 @@ describe('JSON Schema Generator Page', () => {
 
   describe('Schema Types', () => {
     it('should generate schema with correct types', async () => {
+      const user = userEvent.setup()
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement

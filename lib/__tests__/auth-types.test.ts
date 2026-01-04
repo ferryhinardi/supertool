@@ -1,5 +1,6 @@
+import type { User } from '@supabase/supabase-js'
 import { describe, expect, it } from 'vitest'
-import type { AuthState, AuthStore, UserProfile } from '../auth-types'
+import type { AuthState, AuthStore, UserProfile } from '../auth/auth-types'
 
 describe('auth-types', () => {
   describe('UserProfile', () => {
@@ -87,7 +88,7 @@ describe('auth-types', () => {
         user: {
           id: 'user-123',
           email: 'user@example.com',
-        } as any,
+        } as User,
         profile: null,
         isLoading: false,
         isAuthModalOpen: false,
@@ -170,7 +171,7 @@ describe('auth-types', () => {
     })
 
     it('should have setUser method', () => {
-      const setUser = (user: any) => user
+      const setUser = (user: User | null) => user
       const store: Partial<AuthStore> = {
         setUser,
       }

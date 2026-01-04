@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { trackToolEvent } from '@/lib/services/analytics'
@@ -177,6 +177,7 @@ describe('JSON Beautifier Page', () => {
     })
 
     it('should format nested JSON objects', async () => {
+      const user = userEvent.setup()
       renderPage()
 
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement
