@@ -1,3 +1,4 @@
+import { fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 /**
@@ -21,6 +22,28 @@ export function setupUserEvent(options?: Parameters<typeof userEvent.setup>[0]) 
     delay: 0,
     ...options,
   })
+}
+
+/**
+ * Type text into an input element, working around Framer Motion event handling issues.
+ *
+ * This function uses fireEvent.change instead of userEvent.type to avoid character
+ * duplication bugs that occur when Framer Motion wraps input elements.
+ *
+ * @param element - The input element to type into
+ * @param text - The text to type
+ *
+ * @example
+ * const input = screen.getByRole('textbox')
+ * await typeIntoInput(input, '8.8.8.8')
+ */
+export async function typeIntoInput(element: Element, text: string) {
+  // Clear the input first
+  fireEvent.change(element, { target: { value: '' } })
+  // Set the new value
+  fireEvent.change(element, { target: { value: text } })
+  // Trigger input event for React controlled components
+  fireEvent.input(element, { target: { value: text } })
 }
 
 // Re-export userEvent for convenience

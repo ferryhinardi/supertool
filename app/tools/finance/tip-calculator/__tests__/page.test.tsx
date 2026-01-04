@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import type * as React from 'react'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
 import TipCalculatorPage from '../page'
 
 // Mock sonner toast
@@ -63,12 +63,6 @@ vi.mock('framer-motion', () => ({
 
 // Mock clipboard API
 const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
 
 describe('Tip Calculator - Component Rendering', () => {
   beforeEach(() => {
@@ -706,6 +700,14 @@ describe('Tip Calculator - Copy Functionality', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockWriteText.mockResolvedValue(undefined)
+    // Define clipboard API in beforeEach to avoid conflicts with userEvent.setup()
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: mockWriteText,
+      },
+      writable: true,
+      configurable: true,
+    })
   })
 
   it('should display copy button', () => {

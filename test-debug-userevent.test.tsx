@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { render, screen } from '@testing-library/react'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { setupUserEvent } from '@/test-utils/userEvent'
 
 function ControlledTextareaWithMotion() {

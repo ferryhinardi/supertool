@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/services/analytics'
 import BMICalculatorPage from '../page'
 
 // Mock dependencies
@@ -12,7 +12,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
   trackToolEvent: vi.fn(),
 }))
@@ -211,30 +211,31 @@ describe('BMI Calculator Page', () => {
 
   describe('User Interactions - Form Input', () => {
     it('should allow entering weight value', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
       const input = screen.getByPlaceholderText(/Enter weight in kg/i) as HTMLInputElement
       await user.click(input)
-      await user.clear(input)
-      await user.type(input, '70')
+      fireEvent.change(input, { target: { value: '70' } })
 
       expect(input.value).toBe('70')
     })
 
     it('should allow entering height value', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
       const input = screen.getByPlaceholderText(/Enter height in cm/i) as HTMLInputElement
       await user.click(input)
-      await user.clear(input)
-      await user.type(input, '175')
+      fireEvent.change(input, { target: { value: '175' } })
 
       expect(input.value).toBe('175')
     })
 
     it('should clear inputs when Reset is clicked', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -243,9 +244,9 @@ describe('BMI Calculator Page', () => {
       const resetButton = screen.getByText('Reset')
 
       await user.click(weightInput)
-      await user.type(weightInput, '70')
+      fireEvent.change(weightInput, { target: { value: '70' } })
       await user.click(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(resetButton)
 
       expect(weightInput.value).toBe('')
@@ -268,6 +269,7 @@ describe('BMI Calculator Page', () => {
 
   describe('BMI Calculation', () => {
     it('should calculate BMI when Calculate button is clicked', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -276,11 +278,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.clear(weightInput)
-      await user.type(weightInput, '70')
+      fireEvent.change(weightInput, { target: { value: '70' } })
       await user.click(heightInput)
-      await user.clear(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -289,6 +289,7 @@ describe('BMI Calculator Page', () => {
     })
 
     it('should display BMI value after calculation', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -297,11 +298,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.clear(weightInput)
-      await user.type(weightInput, '70')
+      fireEvent.change(weightInput, { target: { value: '70' } })
       await user.click(heightInput)
-      await user.clear(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -312,6 +311,7 @@ describe('BMI Calculator Page', () => {
     })
 
     it('should display Normal Weight category for BMI 22.9', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<BMICalculatorPage />)
 
@@ -321,8 +321,8 @@ describe('BMI Calculator Page', () => {
 
       await user.clear(weightInput)
       await user.clear(heightInput)
-      await user.type(weightInput, '70')
-      await user.type(heightInput, '175')
+      fireEvent.change(weightInput, { target: { value: '70' } })
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -332,6 +332,7 @@ describe('BMI Calculator Page', () => {
     })
 
     it('should track calculation event', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -340,9 +341,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.type(weightInput, '70')
+      fireEvent.change(weightInput, { target: { value: '70' } })
       await user.click(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -359,6 +360,7 @@ describe('BMI Calculator Page', () => {
 
   describe('BMI Categories', () => {
     it('should show Underweight category for low BMI', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<BMICalculatorPage />)
 
@@ -366,8 +368,8 @@ describe('BMI Calculator Page', () => {
       const heightInput = screen.getByPlaceholderText(/Enter height in cm/i)
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
-      await user.type(weightInput, '50')
-      await user.type(heightInput, '175')
+      fireEvent.change(weightInput, { target: { value: '50' } })
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -377,6 +379,7 @@ describe('BMI Calculator Page', () => {
     })
 
     it('should show Overweight category for BMI 25-30', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -385,11 +388,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.clear(weightInput)
-      await user.type(weightInput, '85')
+      fireEvent.change(weightInput, { target: { value: '85' } })
       await user.click(heightInput)
-      await user.clear(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -399,6 +400,7 @@ describe('BMI Calculator Page', () => {
     })
 
     it('should show Obese category for high BMI', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -407,11 +409,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.clear(weightInput)
-      await user.type(weightInput, '100')
+      fireEvent.change(weightInput, { target: { value: '100' } })
       await user.click(heightInput)
-      await user.clear(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -423,6 +423,7 @@ describe('BMI Calculator Page', () => {
 
   describe('Results Display', () => {
     it('should display ideal weight range', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup()
       render(<BMICalculatorPage />)
 
@@ -430,8 +431,8 @@ describe('BMI Calculator Page', () => {
       const heightInput = screen.getByPlaceholderText(/Enter height in cm/i)
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
-      await user.type(weightInput, '70')
-      await user.type(heightInput, '175')
+      fireEvent.change(weightInput, { target: { value: '70' } })
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -441,6 +442,7 @@ describe('BMI Calculator Page', () => {
     })
 
     it('should display health tips section', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -449,9 +451,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.type(weightInput, '70')
+      fireEvent.change(weightInput, { target: { value: '70' } })
       await user.click(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -460,6 +462,7 @@ describe('BMI Calculator Page', () => {
     })
 
     it('should display export button after calculation', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -468,9 +471,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.type(weightInput, '70')
+      fireEvent.change(weightInput, { target: { value: '70' } })
       await user.click(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       await waitFor(() => {
@@ -740,6 +743,7 @@ describe('BMI Calculator Page', () => {
 
   describe('Edge Cases', () => {
     it('should handle zero weight gracefully', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -748,11 +752,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.clear(weightInput)
-      await user.type(weightInput, '0')
+      fireEvent.change(weightInput, { target: { value: '0' } })
       await user.click(heightInput)
-      await user.clear(heightInput)
-      await user.type(heightInput, '175')
+      fireEvent.change(heightInput, { target: { value: '175' } })
       await user.click(calculateButton)
 
       // Should not show results for invalid input
@@ -760,6 +762,7 @@ describe('BMI Calculator Page', () => {
     })
 
     it('should handle zero height gracefully', async () => {
+      const { fireEvent } = await import('@testing-library/react')
       const user = userEvent.setup({ delay: null })
       render(<BMICalculatorPage />)
 
@@ -768,11 +771,9 @@ describe('BMI Calculator Page', () => {
       const calculateButton = screen.getByRole('button', { name: /Calculate BMI/i })
 
       await user.click(weightInput)
-      await user.clear(weightInput)
-      await user.type(weightInput, '70')
+      fireEvent.change(weightInput, { target: { value: '70' } })
       await user.click(heightInput)
-      await user.clear(heightInput)
-      await user.type(heightInput, '0')
+      fireEvent.change(heightInput, { target: { value: '0' } })
       await user.click(calculateButton)
 
       // Should not show results for invalid input
