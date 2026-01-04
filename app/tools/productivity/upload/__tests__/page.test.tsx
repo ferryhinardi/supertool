@@ -1,17 +1,16 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import UploadPage from '../page'
 
 // Mock dependencies
-const mockToast = {
-  success: vi.fn(),
-  error: vi.fn(),
-  info: vi.fn(),
-}
-
 vi.mock('sonner', () => ({
-  toast: mockToast,
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
+  },
 }))
 
 const mockTrackToolEvent = vi.fn()
@@ -131,7 +130,7 @@ describe('Cloud File Upload Page', () => {
       await user.upload(fileInput, file)
 
       await waitFor(() => {
-        expect(mockToast.info).toHaveBeenCalledWith('Selected: test-file.pdf')
+        expect(toast.info).toHaveBeenCalledWith('Selected: test-file.pdf')
       })
     })
 
@@ -247,7 +246,7 @@ describe('Cloud File Upload Page', () => {
       await user.click(uploadButton)
 
       await waitFor(() => {
-        expect(mockToast.success).toHaveBeenCalledWith('File uploaded successfully! 🎉')
+        expect(toast.success).toHaveBeenCalledWith('File uploaded successfully! 🎉')
       })
     })
 
@@ -354,7 +353,7 @@ describe('Cloud File Upload Page', () => {
       await user.click(uploadButton)
 
       await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith('Upload failed: Storage quota exceeded')
+        expect(toast.error).toHaveBeenCalledWith('Upload failed: Storage quota exceeded')
       })
     })
 
@@ -381,7 +380,7 @@ describe('Cloud File Upload Page', () => {
       await user.click(uploadButton)
 
       await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith('Upload failed: Unknown error')
+        expect(toast.error).toHaveBeenCalledWith('Upload failed: Unknown error')
       })
     })
   })
@@ -510,7 +509,7 @@ describe('Cloud File Upload Page', () => {
         await user.click(copyButton)
 
         await waitFor(() => {
-          expect(mockToast.success).toHaveBeenCalledWith('URL copied to clipboard! 📋')
+          expect(toast.success).toHaveBeenCalledWith('URL copied to clipboard! 📋')
         })
       }
     })
@@ -543,7 +542,7 @@ describe('Cloud File Upload Page', () => {
         await user.click(copyButton)
         // Check icon should appear (component state changes)
         await waitFor(() => {
-          expect(mockToast.success).toHaveBeenCalled()
+          expect(toast.success).toHaveBeenCalled()
         })
       }
     })
