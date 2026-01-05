@@ -55,15 +55,6 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn(() => Promise.resolve())
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 describe('Age Calculator - Page Rendering', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -386,7 +377,7 @@ describe('Age Calculator - User Interactions', () => {
     fireEvent.click(copyButton)
 
     await waitFor(() => {
-      expect(mockWriteText).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
     })
   })
 
@@ -421,7 +412,7 @@ describe('Age Calculator - User Interactions', () => {
     fireEvent.click(copyButton)
 
     await waitFor(() => {
-      expect(mockWriteText).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
     })
   })
 

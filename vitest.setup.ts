@@ -5,6 +5,25 @@ import '@testing-library/jest-dom/vitest'
 // Mock Supabase client globally
 vi.mock('@/lib/auth/supabaseClient', () => ({
   supabase: {
+    auth: {
+      getSession: vi.fn(() =>
+        Promise.resolve({
+          data: { session: null },
+          error: null,
+        })
+      ),
+      onAuthStateChange: vi.fn((callback) => {
+        // Immediately call callback with null session for tests
+        callback('SIGNED_OUT', null)
+        return {
+          data: {
+            subscription: {
+              unsubscribe: vi.fn(),
+            },
+          },
+        }
+      }),
+    },
     from: (table: string) => ({
       select: () => ({
         eq: () => ({
@@ -120,6 +139,9 @@ vi.mock('framer-motion', () => {
       set: vi.fn(),
       onChange: vi.fn(),
     }),
+    useDragControls: () => ({
+      start: vi.fn(),
+    }),
   }
 })
 
@@ -159,6 +181,48 @@ vi.mock('@/lib/supabaseClient', () => ({
       })),
     },
   },
+}))
+
+// Mock idb (IndexedDB wrapper library)
+vi.mock('idb', () => ({
+  openDB: vi.fn(() =>
+    Promise.resolve({
+      put: vi.fn(() => Promise.resolve()),
+      get: vi.fn(() => Promise.resolve(null)),
+      getAll: vi.fn(() => Promise.resolve([])),
+      getAllFromIndex: vi.fn(() => Promise.resolve([])),
+      delete: vi.fn(() => Promise.resolve()),
+      clear: vi.fn(() => Promise.resolve()),
+      transaction: vi.fn(() => ({
+        store: {
+          add: vi.fn(),
+          put: vi.fn(),
+          get: vi.fn(),
+          delete: vi.fn(),
+          clear: vi.fn(),
+          getAll: vi.fn(),
+        },
+        done: Promise.resolve(),
+      })),
+      createObjectStore: vi.fn(),
+      close: vi.fn(),
+    })
+  ),
+}))
+
+// Mock sonner toast library
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
+    warning: vi.fn(),
+    loading: vi.fn(),
+    message: vi.fn(),
+    promise: vi.fn(),
+    custom: vi.fn(),
+  },
+  Toaster: () => null,
 }))
 
 // Mock localStorage
@@ -248,8 +312,32 @@ beforeAll(async () => {
   }
   // Mock indexedDB
   if (typeof globalThis.indexedDB === 'undefined') {
+    const mockIndexedDB = {
+      open: vi.fn(() => ({
+        onsuccess: null,
+        onerror: null,
+        onupgradeneeded: null,
+        result: {
+          transaction: vi.fn(() => ({
+            objectStore: vi.fn(() => ({
+              add: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              get: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              put: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              delete: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              clear: vi.fn(() => ({ onsuccess: null, onerror: null })),
+              getAll: vi.fn(() => ({ onsuccess: null, onerror: null })),
+            })),
+          })),
+          createObjectStore: vi.fn(() => ({
+            createIndex: vi.fn(),
+          })),
+          close: vi.fn(),
+        },
+      })),
+      deleteDatabase: vi.fn(),
+    }
     Object.defineProperty(globalThis, 'indexedDB', {
-      value: {},
+      value: mockIndexedDB,
       writable: true,
       configurable: true,
     })
@@ -258,6 +346,28 @@ beforeAll(async () => {
   // Mock window.scrollTo for JSDOM
   if (typeof window !== 'undefined' && !window.scrollTo) {
     window.scrollTo = vi.fn()
+  }
+
+  // Mock ResizeObserver
+  if (typeof globalThis.ResizeObserver === 'undefined') {
+    globalThis.ResizeObserver = class ResizeObserver {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+  }
+
+  // Mock global fetch
+  if (typeof globalThis.fetch === 'undefined') {
+    globalThis.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      return Promise.resolve(
+        new Response(JSON.stringify({}), {
+          status: 200,
+          statusText: 'OK',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    })
   }
 
   // Mock canvas for browser fingerprinting

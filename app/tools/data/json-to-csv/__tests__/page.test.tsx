@@ -70,21 +70,8 @@ vi.mock('@codemirror/lang-json', () => ({
 }))
 
 describe('JSON to CSV Converter Page', () => {
-  let clipboardWriteTextSpy: ReturnType<typeof vi.fn>
-
   beforeEach(() => {
     vi.clearAllMocks()
-
-    // Setup clipboard mock
-    clipboardWriteTextSpy = vi.fn(() => Promise.resolve())
-    const mockClipboard = {
-      writeText: clipboardWriteTextSpy,
-    }
-    Object.defineProperty(navigator, 'clipboard', {
-      value: mockClipboard,
-      writable: true,
-      configurable: true,
-    })
 
     // Mock URL.createObjectURL and revokeObjectURL
     global.URL.createObjectURL = vi.fn(() => 'mock-url')
@@ -419,7 +406,7 @@ describe('JSON to CSV Converter Page', () => {
       // Wait for async clipboard operation
       await waitFor(
         () => {
-          expect(clipboardWriteTextSpy).toHaveBeenCalled()
+          expect(navigator.clipboard.writeText).toHaveBeenCalled()
           expect(vi.mocked(toast.success)).toHaveBeenCalledWith('CSV copied to clipboard 📋')
         },
         { timeout: 3000 }

@@ -43,15 +43,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 // Mock fetch API
 const mockFetch = vi.fn()
 globalThis.fetch = mockFetch
@@ -541,7 +532,6 @@ describe('AI Text Rewriter - Copy Functionality Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetch.mockClear()
-    mockWriteText.mockClear()
   })
 
   it('should copy rewritten text to clipboard', async () => {
@@ -554,8 +544,6 @@ describe('AI Text Rewriter - Copy Functionality Tests', () => {
         originalLength: 12,
       })
     )
-
-    mockWriteText.mockResolvedValue(undefined)
 
     render(<AITextRewriterPage />)
 
@@ -591,7 +579,7 @@ describe('AI Text Rewriter - Copy Functionality Tests', () => {
         await userEvent.click(copyButton)
 
         await waitFor(() => {
-          expect(mockWriteText).toHaveBeenCalledWith('Rewritten text')
+          expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Rewritten text')
           expect(toast.success).toHaveBeenCalledWith('Copied to clipboard!')
         })
       }
@@ -608,8 +596,6 @@ describe('AI Text Rewriter - Copy Functionality Tests', () => {
         originalLength: 12,
       })
     )
-
-    mockWriteText.mockResolvedValue(undefined)
 
     render(<AITextRewriterPage />)
 

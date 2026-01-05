@@ -218,16 +218,6 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     const { toast } = await import('sonner')
     const { trackToolEvent } = await import('@/lib/services/analytics')
 
-    // Mock clipboard API
-    const writeTextMock = vi.fn().mockResolvedValue(undefined)
-    Object.defineProperty(navigator, 'clipboard', {
-      value: {
-        writeText: writeTextMock,
-      },
-      writable: true,
-      configurable: true,
-    })
-
     render(<BrowserFingerprintPage />)
 
     await waitFor(() => {
@@ -242,7 +232,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     }
 
     await waitFor(() => {
-      expect(writeTextMock).toHaveBeenCalledWith('abc123def456789')
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('abc123def456789')
       expect(toast.success).toHaveBeenCalledWith('Copied Fingerprint ID to clipboard')
       expect(trackToolEvent).toHaveBeenCalledWith('browser_fingerprint_copy', {
         field: 'Fingerprint ID',
@@ -254,16 +244,6 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     const { toast } = await import('sonner')
     const { trackToolEvent } = await import('@/lib/services/analytics')
 
-    // Mock clipboard API
-    const writeTextMock = vi.fn().mockResolvedValue(undefined)
-    Object.defineProperty(navigator, 'clipboard', {
-      value: {
-        writeText: writeTextMock,
-      },
-      writable: true,
-      configurable: true,
-    })
-
     render(<BrowserFingerprintPage />)
 
     await waitFor(() => {
@@ -274,7 +254,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     await userEvent.click(copyAllButton)
 
     await waitFor(() => {
-      expect(writeTextMock).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
       expect(toast.success).toHaveBeenCalledWith('Copied all fingerprint data to clipboard')
       expect(trackToolEvent).toHaveBeenCalledWith('browser_fingerprint_copy_all', {})
     })

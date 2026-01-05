@@ -27,15 +27,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 // Mock fetch API
 const mockFetch = vi.fn()
 globalThis.fetch = mockFetch
@@ -405,7 +396,6 @@ describe('AI JSON Analyzer - Copy Functionality Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetch.mockClear()
-    mockWriteText.mockClear()
   })
 
   it('should copy analysis to clipboard', async () => {
@@ -447,7 +437,7 @@ describe('AI JSON Analyzer - Copy Functionality Tests', () => {
         await userEvent.click(copyButton)
 
         await waitFor(() => {
-          expect(mockWriteText).toHaveBeenCalled()
+          expect(navigator.clipboard.writeText).toHaveBeenCalled()
           expect(toast.success).toHaveBeenCalledWith('Analysis copied to clipboard')
         })
       }

@@ -417,14 +417,6 @@ describe('Clipboard History Page - Component Tests', () => {
   })
 
   it('should display item count info', async () => {
-    // Mock clipboard API
-    Object.assign(navigator, {
-      clipboard: {
-        readText: vi.fn().mockResolvedValue('Test item'),
-        writeText: vi.fn().mockResolvedValue(undefined),
-      },
-    })
-
     render(<ClipboardHistoryPage />)
 
     // Add item
@@ -467,14 +459,6 @@ describe('Clipboard History Page - Component Tests', () => {
       type: 'text' as const,
     }))
     localStorage.setItem('clipboard-history', JSON.stringify(maxItems))
-
-    // Mock clipboard API
-    Object.assign(navigator, {
-      clipboard: {
-        readText: vi.fn().mockResolvedValue('New item'),
-        writeText: vi.fn().mockResolvedValue(undefined),
-      },
-    })
 
     render(<ClipboardHistoryPage />)
 

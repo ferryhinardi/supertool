@@ -18,14 +18,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock clipboard API
-const mockClipboard = {
-  writeText: vi.fn(),
-}
-Object.assign(navigator, {
-  clipboard: mockClipboard,
-})
-
 // Mock URL.createObjectURL
 global.URL.createObjectURL = vi.fn(() => 'mock-url')
 global.URL.revokeObjectURL = vi.fn()
@@ -431,7 +423,7 @@ describe('SVGOptimizerPage', () => {
       if (copyButton) {
         fireEvent.click(copyButton)
         await waitFor(() => {
-          expect(mockClipboard.writeText).toHaveBeenCalled()
+          expect(navigator.clipboard.writeText).toHaveBeenCalled()
         })
       }
     })

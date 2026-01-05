@@ -418,11 +418,6 @@ describe('Password Generator - Bulk Generation', () => {
 describe('Password Generator - Copy Functionality', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: vi.fn(() => Promise.resolve()),
-      },
-    })
   })
 
   it('copies password to clipboard', async () => {

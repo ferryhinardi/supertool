@@ -37,15 +37,6 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 // Valid JWT token for testing (expires in year 2030)
 const VALID_JWT =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE5MDAwMDAwMDB9.4Adcj0mI-_hH7fMbVMEBCBlAMZq3jZNYQBxg2YJQ1IY'
@@ -280,7 +271,7 @@ describe('JWT Decoder - Logic Tests', () => {
 
     if (copyButton) {
       fireEvent.click(copyButton)
-      expect(mockWriteText).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
     }
   })
 
@@ -303,7 +294,7 @@ describe('JWT Decoder - Logic Tests', () => {
 
     if (copyButtons.length > 1) {
       fireEvent.click(copyButtons[1])
-      expect(mockWriteText).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
     }
   })
 
@@ -325,7 +316,7 @@ describe('JWT Decoder - Logic Tests', () => {
 
     if (copyButtons.length > 2) {
       fireEvent.click(copyButtons[copyButtons.length - 1])
-      expect(mockWriteText).toHaveBeenCalled()
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
     }
   })
 

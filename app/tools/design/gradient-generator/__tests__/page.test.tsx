@@ -31,15 +31,6 @@ vi.mock('@/components/ui/tool-rating', () => ({
   ToolRating: () => null,
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 describe('Gradient Generator Page - Component Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()

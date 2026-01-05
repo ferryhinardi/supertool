@@ -50,7 +50,9 @@ describe('KeyboardShortcutsDialog', () => {
       <KeyboardShortcutsDialog open={true} onOpenChange={onOpenChange} shortcuts={mockShortcuts} />
     )
 
-    const closeButton = screen.getByRole('button')
+    // Get all buttons and find the X close button (should be the last button)
+    const buttons = screen.getAllByRole('button')
+    const closeButton = buttons[buttons.length - 1]
     await user.click(closeButton)
 
     expect(onOpenChange).toHaveBeenCalledWith(false)

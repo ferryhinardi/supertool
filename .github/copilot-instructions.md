@@ -1006,10 +1006,94 @@ export default function ToolLayout({
     - Make each documentation unique with different structure and focus areas
 14. **Update tool documentation** whenever implementation changes to keep docs current
 15. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
-    - `pnpm lint` - ESLint validation
-    - `pnpm exec tsc --noEmit` - Type checking
-    - `CI=true pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
-    - `pnpm build` - Production build verification
+     - `pnpm lint` - ESLint validation
+     - `pnpm exec tsc --noEmit` - Type checking
+     - `CI=true pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
+     - `pnpm build` - Production build verification
+16. **Update the changelog** (`docs/CHANGE_LOG.md`) whenever you add, change, fix, or remove functionality:
+    - Add entries under the `[Unreleased]` section during development
+    - Use appropriate categories: Added, Changed, Fixed, Removed, Security, Performance
+    - Provide clear, concise descriptions of changes
+    - Link to related documentation (e.g., `[Reference: docs/15_TOOL_NAME.md]`)
+    - Follow semantic versioning for version bumps (MAJOR.MINOR.PATCH)
+    - See `docs/CHANGE_LOG.md` for format guidelines and examples
+
+### Changelog Maintenance
+
+**IMPORTANT**: Always update `docs/CHANGE_LOG.md` as part of your development workflow.
+
+#### When to Update the Changelog
+
+Update the changelog whenever you:
+- ✅ Add a new tool or feature
+- ✅ Fix a bug or issue
+- ✅ Make performance improvements
+- ✅ Apply security updates
+- ✅ Remove deprecated features
+- ✅ Make breaking changes
+- ✅ Change existing functionality
+
+#### How to Update the Changelog
+
+1. **Open** `docs/CHANGE_LOG.md`
+2. **Locate** the `[Unreleased]` section at the top
+3. **Add** your changes under the appropriate category:
+   - **Added**: New features, tools, or functionality
+   - **Changed**: Changes in existing functionality
+   - **Fixed**: Bug fixes and error corrections
+   - **Removed**: Deprecated or removed features
+   - **Security**: Security vulnerability fixes
+   - **Performance**: Performance improvements
+
+4. **Format** your entry:
+   ```markdown
+   #### Added
+   - New Tool: JSON Beautifier with syntax highlighting [Reference: docs/01_JSON_BEAUTIFIER.md]
+   - Analytics tracking for all user interactions
+   
+   #### Fixed
+   - Fixed mobile responsiveness issue in Split Bill Calculator (issue #123)
+   - Corrected timezone conversion edge case in Date Formatter
+   ```
+
+5. **Best practices**:
+   - Use past tense ("Added", "Fixed", not "Add", "Fix")
+   - Be specific and clear
+   - Link to documentation files when applicable
+   - Reference GitHub issues/PRs if available
+   - Group related changes together
+
+#### Example Changelog Entry
+
+```markdown
+## [Unreleased]
+
+### Added
+- New Tool: Password Generator with customizable options [Reference: docs/04_PASSWORD_GENERATOR.md]
+- Copy-to-clipboard functionality with visual feedback
+- Character type selection (uppercase, lowercase, numbers, symbols)
+- Password strength indicator with real-time validation
+
+### Fixed
+- Fixed QR code generation failing for long URLs (issue #456)
+- Corrected Base64 encoding for special UTF-8 characters
+
+### Performance
+- Optimized image compression algorithm (30% faster processing)
+- Reduced bundle size by lazy-loading heavy dependencies
+```
+
+#### Versioning Strategy
+
+Follow [Semantic Versioning](https://semver.org/):
+- **MAJOR** (X.0.0): Breaking changes, major feature rewrites
+- **MINOR** (0.X.0): New features/tools, backwards-compatible additions
+- **PATCH** (0.0.X): Bug fixes only, backwards-compatible fixes
+
+**On release**:
+1. Rename `[Unreleased]` to `[Version] - Date` (e.g., `[1.2.0] - 2025-01-05`)
+2. Create a new empty `[Unreleased]` section at the top
+3. Tag the release in git with the version number
 
 #### SEO Tool Layout Example
 

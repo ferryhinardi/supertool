@@ -34,15 +34,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 // Mock FileReader
 class MockFileReader {
   result: string | ArrayBuffer | null = null
@@ -262,7 +253,6 @@ describe('Image Metadata Viewer - Metadata Parsing Tests', () => {
 describe('Image Metadata Viewer - Copy Functionality Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockWriteText.mockClear()
   })
 
   it('should copy metadata value to clipboard', async () => {
@@ -294,7 +284,7 @@ describe('Image Metadata Viewer - Copy Functionality Tests', () => {
       await userEvent.click(copyButton)
 
       await waitFor(() => {
-        expect(mockWriteText).toHaveBeenCalledWith('Canon')
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Canon')
         expect(toast.success).toHaveBeenCalledWith('Copied to clipboard')
       })
     }

@@ -16,7 +16,7 @@ import type {
   SplitBillWithParticipants,
   SplitType,
   TransactionStatus,
-} from '../split-bill-types'
+} from '../tools/split-bill/split-bill-types'
 
 describe('split-bill-types', () => {
   describe('SplitType', () => {

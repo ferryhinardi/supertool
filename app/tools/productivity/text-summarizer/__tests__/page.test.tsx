@@ -28,13 +28,6 @@ vi.mock('@/lib/services/analytics', () => ({
 }))
 
 // Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
 
 // Mock fetch API
 const mockFetch = vi.fn()
@@ -427,7 +420,6 @@ describe('Text Summarizer - Copy Functionality Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetch.mockClear()
-    mockWriteText.mockClear()
   })
 
   const longText =
@@ -476,7 +468,7 @@ describe('Text Summarizer - Copy Functionality Tests', () => {
         await userEvent.click(copyButton)
 
         await waitFor(() => {
-          expect(mockWriteText).toHaveBeenCalledWith(testSummary)
+          expect(navigator.clipboard.writeText).toHaveBeenCalledWith(testSummary)
           expect(toast.success).toHaveBeenCalledWith('Summary copied to clipboard')
         })
       }

@@ -27,15 +27,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 describe('Color Picker - Component Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -260,7 +251,6 @@ describe('Color Picker - Contrast Tests', () => {
 describe('Color Picker - Copy Functionality Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockWriteText.mockClear()
   })
 
   it('should copy HEX color to clipboard', async () => {
@@ -277,7 +267,7 @@ describe('Color Picker - Copy Functionality Tests', () => {
       await userEvent.click(hexCopyButton)
 
       await waitFor(() => {
-        expect(mockWriteText).toHaveBeenCalledWith('#667EEA')
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('#667EEA')
       })
 
       expect(toast.success).toHaveBeenCalledWith('HEX copied!')

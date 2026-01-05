@@ -18,15 +18,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolUsage: vi.fn(),
 }))
 
-// Mock clipboard API
-const mockWriteText = vi.fn()
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-  },
-  writable: true,
-})
-
 describe('Color Contrast Checker - Component Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()

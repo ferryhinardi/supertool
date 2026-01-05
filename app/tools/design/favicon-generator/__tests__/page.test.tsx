@@ -440,16 +440,6 @@ describe('Favicon Generator Page - Component Tests', () => {
     it('should track HTML copy event', async () => {
       const { trackEvent } = await import('@/lib/services/analytics')
 
-      // Mock clipboard API
-      const writeTextMock = vi.fn().mockResolvedValue(undefined)
-      Object.defineProperty(navigator, 'clipboard', {
-        value: {
-          writeText: writeTextMock,
-        },
-        writable: true,
-        configurable: true,
-      })
-
       render(<FaviconGeneratorPage />)
 
       // Switch to emoji mode and generate
@@ -476,16 +466,6 @@ describe('Favicon Generator Page - Component Tests', () => {
     })
 
     it('should show copied confirmation after copying HTML', async () => {
-      // Mock clipboard API
-      const writeTextMock = vi.fn().mockResolvedValue(undefined)
-      Object.defineProperty(navigator, 'clipboard', {
-        value: {
-          writeText: writeTextMock,
-        },
-        writable: true,
-        configurable: true,
-      })
-
       render(<FaviconGeneratorPage />)
 
       // Switch to emoji mode and generate
