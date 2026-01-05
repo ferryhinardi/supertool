@@ -5,6 +5,25 @@ import '@testing-library/jest-dom/vitest'
 // Mock Supabase client globally
 vi.mock('@/lib/auth/supabaseClient', () => ({
   supabase: {
+    auth: {
+      getSession: vi.fn(() =>
+        Promise.resolve({
+          data: { session: null },
+          error: null,
+        })
+      ),
+      onAuthStateChange: vi.fn((callback) => {
+        // Immediately call callback with null session for tests
+        callback('SIGNED_OUT', null)
+        return {
+          data: {
+            subscription: {
+              unsubscribe: vi.fn(),
+            },
+          },
+        }
+      }),
+    },
     from: (table: string) => ({
       select: () => ({
         eq: () => ({
