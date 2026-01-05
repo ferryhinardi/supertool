@@ -120,6 +120,9 @@ vi.mock('framer-motion', () => {
       set: vi.fn(),
       onChange: vi.fn(),
     }),
+    useDragControls: () => ({
+      start: vi.fn(),
+    }),
   }
 })
 
@@ -186,6 +189,21 @@ vi.mock('idb', () => ({
       close: vi.fn(),
     })
   ),
+}))
+
+// Mock sonner toast library
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
+    warning: vi.fn(),
+    loading: vi.fn(),
+    message: vi.fn(),
+    promise: vi.fn(),
+    custom: vi.fn(),
+  },
+  Toaster: () => null,
 }))
 
 // Mock localStorage
@@ -309,6 +327,80 @@ beforeAll(async () => {
   // Mock window.scrollTo for JSDOM
   if (typeof window !== 'undefined' && !window.scrollTo) {
     window.scrollTo = vi.fn()
+  }
+
+  // Mock ResizeObserver
+  if (typeof globalThis.ResizeObserver === 'undefined') {
+    globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
+      observe: vi.fn(),
+      unobserve: vi.fn(),
+      disconnect: vi.fn(),
+    }))
+  }
+
+  // Mock global fetch
+  if (typeof globalThis.fetch === 'undefined') {
+    globalThis.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      return Promise.resolve(
+        new Response(JSON.stringify({}), {
+          status: 200,
+          statusText: 'OK',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    })
+  }
+
+  // Mock ResizeObserver
+  if (typeof globalThis.ResizeObserver === 'undefined') {
+    globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
+      observe: vi.fn(),
+      unobserve: vi.fn(),
+      disconnect: vi.fn(),
+    }))
+  }
+
+  // Mock global fetch
+  if (typeof globalThis.fetch === 'undefined') {
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        headers: new Headers(),
+        redirected: false,
+        type: 'basic',
+        url: '',
+        json: () => Promise.resolve({}),
+        text: () => Promise.resolve(''),
+        blob: () => Promise.resolve(new Blob()),
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+        formData: () => Promise.resolve(new FormData()),
+        clone: vi.fn(),
+      } as unknown as Response)
+    ) as typeof fetch
+  }
+
+  // Mock ResizeObserver
+  if (typeof globalThis.ResizeObserver === 'undefined') {
+    globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
+      observe: vi.fn(),
+      unobserve: vi.fn(),
+      disconnect: vi.fn(),
+    }))
+  }
+
+  // Mock global fetch
+  if (typeof globalThis.fetch === 'undefined') {
+    globalThis.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      return Promise.resolve(
+        new Response(JSON.stringify({}), {
+          status: 200,
+          statusText: 'OK',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    })
   }
 
   // Mock canvas for browser fingerprinting
