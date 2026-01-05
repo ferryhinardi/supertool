@@ -331,11 +331,11 @@ beforeAll(async () => {
 
   // Mock ResizeObserver
   if (typeof globalThis.ResizeObserver === 'undefined') {
-    globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
-      observe: vi.fn(),
-      unobserve: vi.fn(),
-      disconnect: vi.fn(),
-    }))
+    globalThis.ResizeObserver = class ResizeObserver {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
   }
 
   // Mock global fetch
