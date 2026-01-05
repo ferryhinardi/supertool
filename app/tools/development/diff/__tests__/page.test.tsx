@@ -849,14 +849,23 @@ describe('DiffTool', () => {
 
       const textareas = screen.getAllByRole('textbox')
 
+      // Initial state - should show 0 chars
+      const initialStats = screen.queryAllByText(/0 chars/i)
+      expect(initialStats.length).toBeGreaterThan(0)
+
+      // Add single character
       fireEvent.change(textareas[0], { target: { value: 'A' } })
-      expect((textareas[0] as HTMLTextAreaElement).value).toBe('A')
+      await waitFor(() => {
+        const stats = screen.queryAllByText(/1 chars/i)
+        expect(stats.length).toBeGreaterThan(0)
+      })
 
-      fireEvent.change(textareas[0], { target: { value: 'AB' } })
-      expect((textareas[0] as HTMLTextAreaElement).value).toBe('AB')
-
+      // Add more characters
       fireEvent.change(textareas[0], { target: { value: 'ABC' } })
-      expect((textareas[0] as HTMLTextAreaElement).value).toBe('ABC')
+      await waitFor(() => {
+        const stats = screen.queryAllByText(/3 chars/i)
+        expect(stats.length).toBeGreaterThan(0)
+      })
     })
   })
 

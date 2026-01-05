@@ -351,58 +351,6 @@ beforeAll(async () => {
     })
   }
 
-  // Mock ResizeObserver
-  if (typeof globalThis.ResizeObserver === 'undefined') {
-    globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
-      observe: vi.fn(),
-      unobserve: vi.fn(),
-      disconnect: vi.fn(),
-    }))
-  }
-
-  // Mock global fetch
-  if (typeof globalThis.fetch === 'undefined') {
-    globalThis.fetch = vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        status: 200,
-        statusText: 'OK',
-        headers: new Headers(),
-        redirected: false,
-        type: 'basic',
-        url: '',
-        json: () => Promise.resolve({}),
-        text: () => Promise.resolve(''),
-        blob: () => Promise.resolve(new Blob()),
-        arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
-        formData: () => Promise.resolve(new FormData()),
-        clone: vi.fn(),
-      } as unknown as Response)
-    ) as typeof fetch
-  }
-
-  // Mock ResizeObserver
-  if (typeof globalThis.ResizeObserver === 'undefined') {
-    globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
-      observe: vi.fn(),
-      unobserve: vi.fn(),
-      disconnect: vi.fn(),
-    }))
-  }
-
-  // Mock global fetch
-  if (typeof globalThis.fetch === 'undefined') {
-    globalThis.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
-      return Promise.resolve(
-        new Response(JSON.stringify({}), {
-          status: 200,
-          statusText: 'OK',
-          headers: { 'Content-Type': 'application/json' },
-        })
-      )
-    })
-  }
-
   // Mock canvas for browser fingerprinting
   if (typeof HTMLCanvasElement !== 'undefined') {
     HTMLCanvasElement.prototype.getContext = (() =>
