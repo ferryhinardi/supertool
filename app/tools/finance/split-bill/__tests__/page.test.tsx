@@ -102,7 +102,7 @@ describe('Split Bill Calculator Page', () => {
       const { fireEvent } = await import('@testing-library/react')
       render(<SplitBillPage />)
 
-      const tipInput = screen.getByLabelText(/Tip/i)
+      const tipInput = screen.getByLabelText(/Tip \(%\)/i)
       fireEvent.change(tipInput, { target: { value: '20' } })
 
       expect(tipInput).toHaveValue(20)
@@ -141,8 +141,8 @@ describe('Split Bill Calculator Page', () => {
     it('should display subtotal, tip, tax breakdown', () => {
       render(<SplitBillPage />)
       expect(screen.getByText('Subtotal:')).toBeTruthy()
-      expect(screen.getByText(/Tip \(/)).toBeTruthy()
-      expect(screen.getByText(/Tax \(/)).toBeTruthy()
+      expect(screen.getAllByText(/Tip \(/).length).toBeGreaterThan(0)
+      expect(screen.getAllByText(/Tax \(/).length).toBeGreaterThan(0)
       expect(screen.getByText('Total:')).toBeTruthy()
     })
   })
@@ -150,7 +150,7 @@ describe('Split Bill Calculator Page', () => {
   describe('Currency Selection', () => {
     it('should display currency dropdown', () => {
       render(<SplitBillPage />)
-      const currencySelect = screen.getByLabelText(/Currency/i)
+      const currencySelect = screen.getByRole('combobox', { name: /Currency/i })
       expect(currencySelect).toBeTruthy()
     })
 
@@ -158,8 +158,8 @@ describe('Split Bill Calculator Page', () => {
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
-      const currencySelect = screen.getByLabelText(/Currency/i)
-      await user.selectOptions(currencySelect, 'USD')
+      const currencySelect = screen.getByRole('combobox', { name: /Currency/i })
+      await user.selectOptions(currencySelect, 'EUR')
 
       await waitFor(() => {
         expect(vi.mocked(toast).success).toHaveBeenCalled()
@@ -239,15 +239,12 @@ describe('Split Bill Calculator Page', () => {
     })
 
     it('should not allow removing person when only 2 remain', async () => {
-      const user = userEvent.setup()
       render(<SplitBillPage />)
 
+      // When only 2 people remain, all remove buttons should be disabled
       const removeButtons = screen.getAllByLabelText(/Remove .* from bill/i)
-      await user.click(removeButtons[0])
-
-      await waitFor(() => {
-        expect(vi.mocked(toast).error).toHaveBeenCalledWith('Minimum 2 people required')
-      })
+      expect(removeButtons[0]).toBeDisabled()
+      expect(removeButtons[1]).toBeDisabled()
     })
 
     it('should allow editing person name', async () => {
@@ -401,10 +398,8 @@ describe('Split Bill Calculator Page', () => {
       fireEvent.change(priceInput, { target: { value: '15.99' } })
       fireEvent.change(quantityInput, { target: { value: '2' } })
 
-      const addItemButton = screen.getByRole('button', { name: '' }).closest('button')
-      if (addItemButton) {
-        await user.click(addItemButton)
-      }
+      const addItemButton = screen.getByRole('button', { name: /Add item/i })
+      await user.click(addItemButton)
 
       await waitFor(() => {
         expect(vi.mocked(toast).success).toHaveBeenCalledWith('Added "Burger"')
@@ -427,11 +422,8 @@ describe('Split Bill Calculator Page', () => {
       fireEvent.change(priceInput, { target: { value: '10' } })
 
       // Try to add without name
-      const addButtons = screen.getAllByRole('button')
-      const addItemButton = addButtons.find((btn) => btn.querySelector('svg'))
-      if (addItemButton) {
-        await user.click(addItemButton)
-      }
+      const addItemButton = screen.getByRole('button', { name: /Add item/i })
+      await user.click(addItemButton)
 
       await waitFor(() => {
         expect(vi.mocked(toast).error).toHaveBeenCalledWith('Please enter item name')
@@ -453,11 +445,8 @@ describe('Split Bill Calculator Page', () => {
       const nameInput = screen.getByLabelText(/Item name/i)
       fireEvent.change(nameInput, { target: { value: 'Pizza' } })
 
-      const addButtons = screen.getAllByRole('button')
-      const addItemButton = addButtons.find((btn) => btn.querySelector('svg'))
-      if (addItemButton) {
-        await user.click(addItemButton)
-      }
+      const addItemButton = screen.getByRole('button', { name: /Add item/i })
+      await user.click(addItemButton)
 
       await waitFor(() => {
         expect(vi.mocked(toast).error).toHaveBeenCalledWith('Please enter a valid price')
@@ -525,7 +514,7 @@ describe('Split Bill Calculator Page', () => {
       const billInput = screen.getByLabelText(/Bill Amount/i)
       fireEvent.change(billInput, { target: { value: '100' } })
 
-      const tipInput = screen.getByLabelText(/Tip/i)
+      const tipInput = screen.getByLabelText(/Tip \(%\)/i)
       fireEvent.change(tipInput, { target: { value: '15' } })
 
       const taxInput = screen.getByLabelText(/Tax/i)
@@ -545,7 +534,7 @@ describe('Split Bill Calculator Page', () => {
       const billInput = screen.getByLabelText(/Bill Amount/i)
       fireEvent.change(billInput, { target: { value: '100' } })
 
-      const tipInput = screen.getByLabelText(/Tip/i)
+      const tipInput = screen.getByLabelText(/Tip \(%\)/i)
       fireEvent.change(tipInput, { target: { value: '0' } })
 
       const taxInput = screen.getByLabelText(/Tax/i)
@@ -617,7 +606,7 @@ describe('Split Bill Calculator Page', () => {
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
-      const currencySelect = screen.getByLabelText(/Currency/i)
+      const currencySelect = screen.getByRole('combobox', { name: /Currency/i })
       await user.selectOptions(currencySelect, 'EUR')
 
       await waitFor(() => {
@@ -660,7 +649,7 @@ describe('Split Bill Calculator Page', () => {
       const { fireEvent } = await import('@testing-library/react')
       render(<SplitBillPage />)
 
-      const tipInput = screen.getByLabelText(/Tip/i)
+      const tipInput = screen.getByLabelText(/Tip \(%\)/i)
       fireEvent.change(tipInput, { target: { value: '-5' } })
 
       // Should accept the value (validation is on input attributes)

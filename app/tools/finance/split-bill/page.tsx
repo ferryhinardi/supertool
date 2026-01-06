@@ -1216,10 +1216,14 @@ export default function SplitBillPage() {
             </Field>
 
             <Field>
-              <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
+              <FieldLabel
+                htmlFor="bill-description"
+                className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+              >
                 Description (Optional)
               </FieldLabel>
               <textarea
+                id="bill-description"
                 value={billDescription}
                 onChange={(e) => setBillDescription(e.target.value)}
                 placeholder="Add notes about this bill..."
@@ -1355,10 +1359,14 @@ export default function SplitBillPage() {
           </h2>
 
           <Field>
-            <FieldLabel className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
+            <FieldLabel
+              htmlFor="currency-select"
+              className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+            >
               Currency
             </FieldLabel>
             <select
+              id="currency-select"
               value={currency.code}
               onChange={(e) => {
                 const selected = CURRENCIES.find((c) => c.code === e.target.value)
@@ -1961,6 +1969,7 @@ export default function SplitBillPage() {
                 <Button
                   onClick={addItem}
                   size="sm"
+                  aria-label="Add item"
                   className={css({
                     bg: 'purple.600',
                     _hover: { bg: 'purple.500' },
