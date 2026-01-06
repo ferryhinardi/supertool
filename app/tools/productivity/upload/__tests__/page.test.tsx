@@ -72,9 +72,9 @@ describe('Cloud File Upload Page', () => {
 
     it('should display drag and drop zone', () => {
       render(<UploadPage />)
-      // DragDropZone component should be rendered
-      const dropZone = screen.getAllByText(/click to upload|drag and drop/i)[0]
-      expect(dropZone).toBeTruthy()
+      // DragDropZone component should be rendered - it shows "Click to upload" and "or drag and drop"
+      const dropZones = screen.getAllByText(/Click to upload|or drag and drop/i)
+      expect(dropZones.length).toBeGreaterThan(0)
     })
   })
 
@@ -331,7 +331,7 @@ describe('Cloud File Upload Page', () => {
       const user = userEvent.setup()
       mockUpload.mockResolvedValue({
         data: null,
-        error: { message: 'Storage quota exceeded' },
+        error: new Error('Storage quota exceeded'),
       })
 
       render(<UploadPage />)
@@ -664,6 +664,7 @@ describe('Cloud File Upload Page', () => {
       await user.upload(fileInput, file)
 
       await waitFor(() => {
+        // Multiple elements may contain "MB" (info section shows "10 MB", file shows "2 MB")
         const mbElements = screen.getAllByText(/MB/i)
         expect(mbElements.length).toBeGreaterThan(0)
       })
@@ -688,7 +689,8 @@ describe('Cloud File Upload Page', () => {
       await user.upload(fileInput, file)
 
       await waitFor(() => {
-        expect(screen.getByText(/0.*bytes/i)).toBeTruthy()
+        // File size is displayed in a string like "0 Bytes • text/plain"
+        expect(screen.getByText(/0 Bytes/i)).toBeTruthy()
       })
     })
 
