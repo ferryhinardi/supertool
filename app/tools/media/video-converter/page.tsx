@@ -50,6 +50,8 @@ export default function VideoConverterPage() {
   const [audioCodec, setAudioCodec] = useState<AudioCodec>('aac')
   const [quality, setQuality] = useState(23) // CRF value (lower = better quality)
   const [resolution, setResolution] = useState<string>('original')
+  const [maxCompression, setMaxCompression] = useState(false) // Maximum compression mode
+  const [targetSizeMB, setTargetSizeMB] = useState(10) // Target file size in MB
   const [isProcessing, setIsProcessing] = useState(false)
   const [ffmpegLoaded, setFfmpegLoaded] = useState(false)
   const [loadingFFmpeg, setLoadingFFmpeg] = useState(false)
@@ -204,27 +206,62 @@ export default function VideoConverterPage() {
       // Build FFmpeg command
       const args: string[] = ['-i', inputName]
 
-      // Video codec
-      if (videoCodec === 'h264') {
-        args.push('-c:v', 'libx264', '-crf', quality.toString())
-      } else if (videoCodec === 'h265') {
-        args.push('-c:v', 'libx265', '-crf', quality.toString())
-      } else if (videoCodec === 'vp9') {
-        args.push('-c:v', 'libvpx-vp9', '-crf', quality.toString())
-      }
+      // Maximum compression mode - optimized for smallest file size
+      if (maxCompression) {
+        // Calculate target bitrate based on target size and duration
+        const targetBytes = targetSizeMB * 1024 * 1024
+        const duration = videoFile.duration || 60 // fallback to 60 seconds
+        const audioBitrate = 32 // very low audio bitrate in kbps
+        const audioBytes = (audioBitrate * 1000 * duration) / 8
+        const videoBytes = targetBytes - audioBytes
+        const videoBitrate = Math.max(50, Math.floor((videoBytes * 8) / duration / 1000)) // in kbps, minimum 50k
 
-      // Audio codec
-      if (audioCodec === 'aac') {
-        args.push('-c:a', 'aac', '-b:a', '128k')
-      } else if (audioCodec === 'mp3') {
-        args.push('-c:a', 'libmp3lame', '-b:a', '128k')
-      } else if (audioCodec === 'opus') {
-        args.push('-c:a', 'libopus', '-b:a', '128k')
-      }
+        // Use H.264 with two-pass encoding for best compression
+        args.push(
+          '-c:v',
+          'libx264',
+          '-preset',
+          'slow', // slower = better compression
+          '-b:v',
+          `${videoBitrate}k`,
+          '-maxrate',
+          `${videoBitrate}k`,
+          '-bufsize',
+          `${videoBitrate * 2}k`,
+          '-crf',
+          '28' // higher CRF = more compression
+        )
 
-      // Resolution
-      if (resolution !== 'original') {
-        args.push('-vf', `scale=${resolution}`)
+        // Scale down to smaller resolution if not already set
+        const compressionScale = resolution !== 'original' ? resolution : '854:-2' // 480p equivalent
+        args.push('-vf', `scale=${compressionScale}`)
+
+        // Very low audio bitrate, mono channel
+        args.push('-c:a', 'aac', '-b:a', `${audioBitrate}k`, '-ac', '1')
+      } else {
+        // Standard conversion mode
+        // Video codec
+        if (videoCodec === 'h264') {
+          args.push('-c:v', 'libx264', '-crf', quality.toString())
+        } else if (videoCodec === 'h265') {
+          args.push('-c:v', 'libx265', '-crf', quality.toString())
+        } else if (videoCodec === 'vp9') {
+          args.push('-c:v', 'libvpx-vp9', '-crf', quality.toString())
+        }
+
+        // Audio codec
+        if (audioCodec === 'aac') {
+          args.push('-c:a', 'aac', '-b:a', '128k')
+        } else if (audioCodec === 'mp3') {
+          args.push('-c:a', 'libmp3lame', '-b:a', '128k')
+        } else if (audioCodec === 'opus') {
+          args.push('-c:a', 'libopus', '-b:a', '128k')
+        }
+
+        // Resolution
+        if (resolution !== 'original') {
+          args.push('-vf', `scale=${resolution}`)
+        }
       }
 
       // Output format
@@ -768,48 +805,144 @@ export default function VideoConverterPage() {
                   </div>
                 </div>
 
-                {/* Quality Slider */}
-                <div className={css({ spaceY: '3' })}>
+                {/* Maximum Compression Toggle */}
+                <div className={css({ spaceY: '2' })}>
                   <div
+                    role="button"
+                    tabIndex={0}
                     className={css({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: maxCompression ? 'indigo.500/50' : 'gray.700',
+                      bg: maxCompression ? 'indigo.500/10' : 'gray.800/50',
+                      px: '4',
+                      py: '3',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
                     })}
+                    onClick={() => setMaxCompression(!maxCompression)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setMaxCompression(!maxCompression)
+                      }
+                    }}
                   >
-                    <label
-                      htmlFor="quality-range"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
-                    >
-                      Quality (CRF)
-                    </label>
-                    <span
-                      className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'indigo.400' })}
-                    >
-                      {quality}
-                    </span>
-                  </div>
-                  <input
-                    id="quality-range"
-                    type="range"
-                    min="0"
-                    max="51"
-                    value={quality}
-                    onChange={(e) => setQuality(Number(e.target.value))}
-                    className={css({ w: 'full', accentColor: 'indigo.500' })}
-                  />
-                  <div
-                    className={css({
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: 'xs',
-                      color: 'white',
-                    })}
-                  >
-                    <span>Best Quality</span>
-                    <span>Smaller Size</span>
+                    <div>
+                      <div
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                      >
+                        Maximum Compression
+                      </div>
+                      <div className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                        Optimize for smallest file size
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={maxCompression}
+                      onChange={(e) => setMaxCompression(e.target.checked)}
+                      className={css({
+                        h: '5',
+                        w: '5',
+                        accentColor: 'indigo.500',
+                        cursor: 'pointer',
+                      })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
                   </div>
                 </div>
+
+                {/* Target Size - only shown in max compression mode */}
+                {maxCompression && (
+                  <div className={css({ spaceY: '2' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      })}
+                    >
+                      <label
+                        htmlFor="target-size"
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                      >
+                        Target Size (MB)
+                      </label>
+                      <span
+                        className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'indigo.400' })}
+                      >
+                        {targetSizeMB} MB
+                      </span>
+                    </div>
+                    <input
+                      id="target-size"
+                      type="range"
+                      min="1"
+                      max="50"
+                      value={targetSizeMB}
+                      onChange={(e) => setTargetSizeMB(Number(e.target.value))}
+                      className={css({ w: 'full', accentColor: 'indigo.500' })}
+                    />
+                    <div
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'gray.400',
+                        textAlign: 'center',
+                      })}
+                    >
+                      Videos will be compressed to approximately {targetSizeMB}MB
+                    </div>
+                  </div>
+                )}
+
+                {/* Quality Slider - hidden in max compression mode */}
+                {!maxCompression && (
+                  <div className={css({ spaceY: '3' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      })}
+                    >
+                      <label
+                        htmlFor="quality-range"
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                      >
+                        Quality (CRF)
+                      </label>
+                      <span
+                        className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'indigo.400' })}
+                      >
+                        {quality}
+                      </span>
+                    </div>
+                    <input
+                      id="quality-range"
+                      type="range"
+                      min="0"
+                      max="51"
+                      value={quality}
+                      onChange={(e) => setQuality(Number(e.target.value))}
+                      className={css({ w: 'full', accentColor: 'indigo.500' })}
+                    />
+                    <div
+                      className={css({
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        fontSize: 'xs',
+                        color: 'white',
+                      })}
+                    >
+                      <span>Best Quality</span>
+                      <span>Smaller Size</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Resolution */}
                 <div className={css({ spaceY: '2' })}>
@@ -928,6 +1061,7 @@ export default function VideoConverterPage() {
                     accept="video/*"
                     maxSize={500 * 1024 * 1024}
                     multiple
+                    disabled={isProcessing}
                   />
                 ) : (
                   <>
@@ -936,6 +1070,7 @@ export default function VideoConverterPage() {
                       accept="video/*"
                       maxSize={500 * 1024 * 1024}
                       multiple
+                      disabled={isProcessing}
                       className={css({ py: '8' })}
                     />
 
