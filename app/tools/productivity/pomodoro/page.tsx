@@ -135,7 +135,12 @@ export default function PomodoroTimerPage() {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('pomodoro_tasks')
       if (saved) {
-        return JSON.parse(saved)
+        try {
+          return JSON.parse(saved)
+        } catch {
+          // Handle corrupted localStorage data
+          localStorage.removeItem('pomodoro_tasks')
+        }
       }
     }
     return []
@@ -584,7 +589,7 @@ export default function PomodoroTimerPage() {
                   onOpenChange={(details) => setShowSettings(details.open)}
                 >
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" aria-label="Open settings">
                       <Settings className={css({ h: '4', w: '4' })} />
                     </Button>
                   </DialogTrigger>
@@ -595,7 +600,7 @@ export default function PomodoroTimerPage() {
 
                 <Dialog open={showStats} onOpenChange={(details) => setShowStats(details.open)}>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" aria-label="View statistics">
                       <BarChart3 className={css({ h: '4', w: '4' })} />
                     </Button>
                   </DialogTrigger>
@@ -914,6 +919,7 @@ export default function PomodoroTimerPage() {
                           e.stopPropagation()
                           toggleTaskComplete(task.id)
                         }}
+                        aria-label={task.completed ? 'Mark as incomplete' : 'Mark as complete'}
                         className={css({
                           flexShrink: 0,
                           mt: '0.5',
@@ -952,6 +958,7 @@ export default function PomodoroTimerPage() {
                           e.stopPropagation()
                           deleteTask(task.id)
                         }}
+                        aria-label="Delete task"
                         className={css({
                           flexShrink: 0,
                           color: 'gray.600',
