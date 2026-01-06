@@ -928,7 +928,6 @@ export default function VideoConverterPage() {
                     accept="video/*"
                     maxSize={500 * 1024 * 1024}
                     multiple
-                    disabled={!ffmpegLoaded}
                   />
                 ) : (
                   <>
@@ -937,7 +936,6 @@ export default function VideoConverterPage() {
                       accept="video/*"
                       maxSize={500 * 1024 * 1024}
                       multiple
-                      disabled={!ffmpegLoaded}
                       className={css({ py: '8' })}
                     />
 

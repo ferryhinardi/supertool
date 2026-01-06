@@ -107,7 +107,6 @@ export function DragDropZone({
     borderColor: isDragOver ? '#a855f7' : 'rgba(55, 65, 81, 0.5)',
     backgroundColor: isDragOver ? 'rgba(168, 85, 247, 0.1)' : 'rgba(17, 24, 39, 0.4)',
     transform: isDragOver ? 'scale(1.02)' : 'scale(1)',
-    pointerEvents: 'none',
   }
 
   // Icon container styles
