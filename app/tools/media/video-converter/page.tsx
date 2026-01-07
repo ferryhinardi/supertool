@@ -213,10 +213,13 @@ export default function VideoConverterPage() {
         const duration = videoFile.duration || 60 // fallback to 60 seconds
         const audioBitrate = 32 // very low audio bitrate in kbps
         const audioBytes = (audioBitrate * 1000 * duration) / 8
-        const videoBytes = targetBytes - audioBytes
-        const videoBitrate = Math.max(50, Math.floor((videoBytes * 8) / duration / 1000)) // in kbps, minimum 50k
+        // Ensure videoBytes is positive - if target is too small for audio alone, use minimum
+        const videoBytes = Math.max(0, targetBytes - audioBytes)
+        // Calculate video bitrate in kbps, minimum 50k to ensure usable output
+        const videoBitrate = Math.max(50, Math.floor((videoBytes * 8) / duration / 1000))
 
-        // Use H.264 with two-pass encoding for best compression
+        // Use H.264 with constrained quality encoding for best compression
+        // -b:v sets target bitrate, -crf provides quality floor, -maxrate caps peaks
         args.push(
           '-c:v',
           'libx264',
@@ -233,7 +236,9 @@ export default function VideoConverterPage() {
         )
 
         // Scale down to smaller resolution if not already set
-        const compressionScale = resolution !== 'original' ? resolution : '854:-2' // 480p equivalent
+        // Use -2 to ensure even dimensions (required for H.264)
+        const compressionScale =
+          resolution !== 'original' ? resolution.replace(':-1', ':-2') : '854:-2'
         args.push('-vf', `scale=${compressionScale}`)
 
         // Very low audio bitrate, mono channel
