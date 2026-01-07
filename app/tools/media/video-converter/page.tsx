@@ -149,11 +149,19 @@ export default function VideoConverterPage() {
     const newVideos: VideoFile[] = await Promise.all(
       videoFiles.map(async (file) => {
         const preview = URL.createObjectURL(file)
-        // Get video duration
+        // Get video duration with timeout fallback for corrupt/invalid files
         const video = document.createElement('video')
         video.src = preview
-        await new Promise((resolve) => {
-          video.onloadedmetadata = resolve
+        await new Promise<void>((resolve) => {
+          const timeout = setTimeout(() => resolve(), 5000) // fallback after 5s
+          video.onloadedmetadata = () => {
+            clearTimeout(timeout)
+            resolve()
+          }
+          video.onerror = () => {
+            clearTimeout(timeout)
+            resolve() // resolve anyway, duration will be undefined
+          }
         })
 
         return {
@@ -218,8 +226,8 @@ export default function VideoConverterPage() {
         // Calculate video bitrate in kbps, minimum 50k to ensure usable output
         const videoBitrate = Math.max(50, Math.floor((videoBytes * 8) / duration / 1000))
 
-        // Use H.264 with constrained quality encoding for best compression
-        // -b:v sets target bitrate, -crf provides quality floor, -maxrate caps peaks
+        // Use H.264 with target bitrate encoding for predictable file size
+        // -b:v sets average bitrate, -maxrate/-bufsize enforce CBR-like behavior
         args.push(
           '-c:v',
           'libx264',
@@ -230,9 +238,7 @@ export default function VideoConverterPage() {
           '-maxrate',
           `${videoBitrate}k`,
           '-bufsize',
-          `${videoBitrate * 2}k`,
-          '-crf',
-          '28' // higher CRF = more compression
+          `${videoBitrate * 2}k`
         )
 
         // Scale down to smaller resolution if not already set
