@@ -112,7 +112,12 @@ export default function PomodoroTimerPage() {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('pomodoro_settings')
       if (saved) {
-        return JSON.parse(saved)
+        try {
+          return JSON.parse(saved)
+        } catch {
+          // Handle corrupted localStorage data
+          localStorage.removeItem('pomodoro_settings')
+        }
       }
     }
     return DEFAULT_SETTINGS
@@ -122,7 +127,12 @@ export default function PomodoroTimerPage() {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('pomodoro_settings')
       if (saved) {
-        return JSON.parse(saved).workDuration * 60
+        try {
+          return JSON.parse(saved).workDuration * 60
+        } catch {
+          // Handle corrupted localStorage data
+          localStorage.removeItem('pomodoro_settings')
+        }
       }
     }
     return DEFAULT_SETTINGS.workDuration * 60
@@ -158,19 +168,24 @@ export default function PomodoroTimerPage() {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('pomodoro_statistics')
       if (saved) {
-        const loaded = JSON.parse(saved)
-        const today = new Date().toDateString()
-        // Reset daily count if new day
-        if (loaded.todayDate !== today) {
-          const updated = {
-            ...loaded,
-            sessionsToday: 0,
-            todayDate: today,
+        try {
+          const loaded = JSON.parse(saved)
+          const today = new Date().toDateString()
+          // Reset daily count if new day
+          if (loaded.todayDate !== today) {
+            const updated = {
+              ...loaded,
+              sessionsToday: 0,
+              todayDate: today,
+            }
+            localStorage.setItem('pomodoro_statistics', JSON.stringify(updated))
+            return updated
           }
-          localStorage.setItem('pomodoro_statistics', JSON.stringify(updated))
-          return updated
+          return loaded
+        } catch {
+          // Handle corrupted localStorage data
+          localStorage.removeItem('pomodoro_statistics')
         }
-        return loaded
       }
     }
     return {
