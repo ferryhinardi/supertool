@@ -110,6 +110,7 @@ vi.mock('lucide-react', () => {
     LayoutGrid: createMockIcon('LayoutGrid'),
     LayoutList: createMockIcon('LayoutList'),
     Lock: createMockIcon('Lock'),
+    Mail: createMockIcon('Mail'),
     Search: createMockIcon('Search'),
     Sparkles: createMockIcon('Sparkles'),
     Star: createMockIcon('Star'),
