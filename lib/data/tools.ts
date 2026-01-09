@@ -529,6 +529,17 @@ export const tools: Tool[] = [
     new: true,
   },
   {
+    title: 'Markdown Table Generator',
+    description:
+      'Create and edit Markdown tables visually. Import from CSV or JSON, customize column alignment, and export to Markdown, HTML, JSON, or CSV formats.',
+    icon: Table,
+    href: '/tools/data/markdown-table',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['Visual Editor', 'CSV/JSON Import', 'Multiple Exports', 'Column Alignment'],
+    category: 'data',
+    new: true,
+  },
+  {
     title: 'Encryption & Decryption Tool',
     description:
       'Encrypt and decrypt text using AES-256 encryption. Create password-protected notes, generate secure sharing links, with all processing done locally in your browser.',

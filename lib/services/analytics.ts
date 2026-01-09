@@ -618,6 +618,15 @@ type ToolEvent =
   | 'webhook_tester_copy_url'
   | 'webhook_tester_request_received'
   | 'webhook_tester_inspect'
+  | 'markdown_table_add_column'
+  | 'markdown_table_remove_column'
+  | 'markdown_table_add_row'
+  | 'markdown_table_remove_row'
+  | 'markdown_table_alignment'
+  | 'markdown_table_import'
+  | 'markdown_table_copy'
+  | 'markdown_table_download'
+  | 'markdown_table_reset'
 
 // Type-safe gtag wrapper
 declare global {
