@@ -627,6 +627,10 @@ type ToolEvent =
   | 'markdown_table_copy'
   | 'markdown_table_download'
   | 'markdown_table_reset'
+  | 'email_signature_template'
+  | 'email_signature_copy'
+  | 'email_signature_download'
+  | 'email_signature_reset'
 
 // Type-safe gtag wrapper
 declare global {
