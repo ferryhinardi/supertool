@@ -371,6 +371,7 @@ export default function SvgToPngConverter() {
                 >
                   <div>
                     <label
+                      htmlFor="svg-width-input"
                       className={css({
                         display: 'block',
                         fontSize: 'sm',
@@ -381,6 +382,7 @@ export default function SvgToPngConverter() {
                       Width (px)
                     </label>
                     <input
+                      id="svg-width-input"
                       type="number"
                       value={settings.width}
                       onChange={(e) => setSettings({ ...settings, width: Number(e.target.value) })}
@@ -405,6 +407,7 @@ export default function SvgToPngConverter() {
                   </div>
                   <div>
                     <label
+                      htmlFor="svg-height-input"
                       className={css({
                         display: 'block',
                         fontSize: 'sm',
@@ -415,6 +418,7 @@ export default function SvgToPngConverter() {
                       Height (px)
                     </label>
                     <input
+                      id="svg-height-input"
                       type="number"
                       value={settings.height}
                       onChange={(e) => setSettings({ ...settings, height: Number(e.target.value) })}
@@ -473,6 +477,7 @@ export default function SvgToPngConverter() {
               {/* Background Color */}
               <div>
                 <label
+                  htmlFor="svg-bg-color"
                   className={css({ display: 'block', fontSize: 'sm', color: 'gray.400', mb: '2' })}
                 >
                   Background Color
@@ -526,6 +531,7 @@ export default function SvgToPngConverter() {
                     </button>
                   ))}
                   <input
+                    id="svg-bg-color"
                     type="color"
                     value={
                       settings.backgroundColor === 'transparent'
@@ -551,11 +557,13 @@ export default function SvgToPngConverter() {
               {/* Quality Slider */}
               <div>
                 <label
+                  htmlFor="svg-quality"
                   className={css({ display: 'block', fontSize: 'sm', color: 'gray.400', mb: '2' })}
                 >
                   Quality: {Math.round(settings.quality * 100)}%
                 </label>
                 <input
+                  id="svg-quality"
                   type="range"
                   min="0.1"
                   max="1"
@@ -626,6 +634,7 @@ export default function SvgToPngConverter() {
                   justifyContent: 'center',
                   overflow: 'hidden',
                 })}
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: SVG content is user-uploaded for preview purposes
                 dangerouslySetInnerHTML={{ __html: svgPreview }}
               />
             </div>

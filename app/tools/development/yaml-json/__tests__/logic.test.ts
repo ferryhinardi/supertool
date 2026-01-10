@@ -623,7 +623,7 @@ volumes:
         noRefs: true,
       })
 
-      const result = yaml.load(yamlOutput) as any
+      const result = yaml.load(yamlOutput) as { status: string; data: { users: unknown[] } }
 
       expect(result).toHaveProperty('status', 'success')
       expect(result.data).toHaveProperty('users')
