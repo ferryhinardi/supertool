@@ -39,12 +39,18 @@ async function getFFmpegPath(): Promise<string> {
         const { createGunzip } = await import('node:zlib')
         const { createWriteStream } = await import('node:fs')
         const { pipeline } = await import('node:stream/promises')
+        const { Readable } = await import('node:stream')
 
         // Download, gunzip, and save to /tmp
         const gunzip = createGunzip()
         const writeStream = createWriteStream(tmpFFmpegPath, { mode: 0o755 })
 
-        await pipeline(response.body as any, gunzip, writeStream)
+        // Convert Web ReadableStream to Node.js Readable stream
+        if (!response.body) {
+          throw new Error('Response body is null')
+        }
+        const nodeReadable = Readable.fromWeb(response.body as import('stream/web').ReadableStream)
+        await pipeline(nodeReadable, gunzip, writeStream)
 
         FFMPEG_PATH = tmpFFmpegPath
         console.log('✅ FFmpeg downloaded and cached to /tmp')

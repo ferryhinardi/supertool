@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Currency } from '../../currency/currency'
 import {
@@ -15,16 +15,14 @@ const mockCurrency: Currency = {
   code: 'USD',
   name: 'US Dollar',
   symbol: '$',
-  decimals: 2,
-  symbolPosition: 'before',
+  iconName: 'DollarSign',
 }
 
 const mockCurrencyEUR: Currency = {
   code: 'EUR',
   name: 'Euro',
   symbol: '€',
-  decimals: 2,
-  symbolPosition: 'before',
+  iconName: 'Euro',
 }
 
 // Base mock data for export tests

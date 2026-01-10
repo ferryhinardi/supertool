@@ -77,32 +77,37 @@ vi.mock('framer-motion', () => {
 
   // Create a simple passthrough component for each motion element
   const createMotionComponent = (element: string) => {
-    return React.forwardRef(({ children, ...props }: any, ref: any) => {
-      // Filter out Framer Motion specific props
-      const {
-        initial,
-        animate,
-        exit,
-        transition,
-        variants,
-        whileHover,
-        whileTap,
-        whileFocus,
-        whileDrag,
-        whileInView,
-        drag,
-        dragConstraints,
-        dragElastic,
-        dragMomentum,
-        layout,
-        layoutId,
-        onAnimationStart,
-        onAnimationComplete,
-        ...filteredProps
-      } = props
+    return React.forwardRef(
+      (
+        { children, ...props }: React.PropsWithChildren<Record<string, unknown>>,
+        ref: React.ForwardedRef<unknown>
+      ) => {
+        // Filter out Framer Motion specific props
+        const {
+          initial: _initial,
+          animate: _animate,
+          exit: _exit,
+          transition: _transition,
+          variants: _variants,
+          whileHover: _whileHover,
+          whileTap: _whileTap,
+          whileFocus: _whileFocus,
+          whileDrag: _whileDrag,
+          whileInView: _whileInView,
+          drag: _drag,
+          dragConstraints: _dragConstraints,
+          dragElastic: _dragElastic,
+          dragMomentum: _dragMomentum,
+          layout: _layout,
+          layoutId: _layoutId,
+          onAnimationStart: _onAnimationStart,
+          onAnimationComplete: _onAnimationComplete,
+          ...filteredProps
+        } = props
 
-      return React.createElement(element, { ...filteredProps, ref }, children)
-    })
+        return React.createElement(element, { ...filteredProps, ref }, children)
+      }
+    )
   }
 
   return {
@@ -123,13 +128,13 @@ vi.mock('framer-motion', () => {
       textarea: createMotionComponent('textarea'),
       a: createMotionComponent('a'),
     },
-    AnimatePresence: ({ children }: any) => children,
+    AnimatePresence: ({ children }: { children?: React.ReactNode }) => children,
     useAnimation: () => ({
       start: vi.fn(),
       stop: vi.fn(),
       set: vi.fn(),
     }),
-    useMotionValue: (initial: any) => ({
+    useMotionValue: (initial: number) => ({
       get: () => initial,
       set: vi.fn(),
       onChange: vi.fn(),
@@ -359,7 +364,7 @@ beforeAll(async () => {
 
   // Mock global fetch
   if (typeof globalThis.fetch === 'undefined') {
-    globalThis.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    globalThis.fetch = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) => {
       return Promise.resolve(
         new Response(JSON.stringify({}), {
           status: 200,

@@ -23,7 +23,7 @@ describe('analytics', () => {
   describe('trackToolEvent', () => {
     it('should call gtag when GA is enabled', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -39,7 +39,7 @@ describe('analytics', () => {
 
     it('should not call gtag when GA_MEASUREMENT_ID is missing', async () => {
       delete process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -52,7 +52,7 @@ describe('analytics', () => {
 
     it('should not call gtag when window.gtag is undefined', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', {})
 
@@ -66,7 +66,7 @@ describe('analytics', () => {
 
     it('should log to console in development mode when GA is disabled', async () => {
       delete process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-      process.env.NODE_ENV = 'development'
+      vi.stubEnv('NODE_ENV', 'development')
 
       vi.stubGlobal('window', {})
 
@@ -81,7 +81,7 @@ describe('analytics', () => {
 
     it('should handle event without params', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -96,7 +96,7 @@ describe('analytics', () => {
 
     it('should handle params with different types', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -122,7 +122,7 @@ describe('analytics', () => {
   describe('trackEvent', () => {
     it('should call gtag with event category and label', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -144,7 +144,7 @@ describe('analytics', () => {
 
     it('should not call gtag when GA is disabled', async () => {
       delete process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -160,7 +160,7 @@ describe('analytics', () => {
 
     it('should log to console in development when GA is disabled', async () => {
       delete process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-      process.env.NODE_ENV = 'development'
+      vi.stubEnv('NODE_ENV', 'development')
 
       vi.stubGlobal('window', {})
 
@@ -185,7 +185,7 @@ describe('analytics', () => {
 
     it('should handle event without optional label and value', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -207,7 +207,7 @@ describe('analytics', () => {
   describe('trackPageView', () => {
     it('should call gtag config with page path', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -222,7 +222,7 @@ describe('analytics', () => {
 
     it('should not call gtag when GA is disabled', async () => {
       delete process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -235,7 +235,7 @@ describe('analytics', () => {
 
     it('should not call gtag when window.gtag is undefined', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', {})
 
@@ -248,7 +248,7 @@ describe('analytics', () => {
 
     it('should handle root path', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -263,7 +263,7 @@ describe('analytics', () => {
 
     it('should handle path with query params', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -280,7 +280,7 @@ describe('analytics', () => {
   describe('reportWebVitals', () => {
     it('should report CLS metric with multiplied value', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -302,7 +302,7 @@ describe('analytics', () => {
 
     it('should report LCP metric with rounded value', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -324,7 +324,7 @@ describe('analytics', () => {
 
     it('should report FID metric with rounded value', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -346,7 +346,7 @@ describe('analytics', () => {
 
     it('should report TTFB metric', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -368,7 +368,7 @@ describe('analytics', () => {
 
     it('should not report when GA is disabled', async () => {
       delete process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -386,7 +386,7 @@ describe('analytics', () => {
 
     it('should not report when window.gtag is undefined', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', {})
 
@@ -404,7 +404,7 @@ describe('analytics', () => {
 
     it('should report INP metric', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       vi.stubGlobal('window', { gtag: mockGtag })
 
@@ -428,7 +428,7 @@ describe('analytics', () => {
   describe('development warning', () => {
     it('should log warning in development when GA_MEASUREMENT_ID is missing', async () => {
       delete process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-      process.env.NODE_ENV = 'development'
+      vi.stubEnv('NODE_ENV', 'development')
 
       const consoleSpy = vi.spyOn(console, 'warn')
       vi.stubGlobal('window', {})
@@ -444,7 +444,7 @@ describe('analytics', () => {
   describe('edge cases', () => {
     it('should handle undefined window gracefully', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       // Don't stub window - let it be undefined in this test context
       vi.stubGlobal('window', undefined)
@@ -457,7 +457,7 @@ describe('analytics', () => {
 
     it('should handle gtag being called with optional chaining', async () => {
       process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
 
       // Window exists but gtag is null
       vi.stubGlobal('window', { gtag: null })

@@ -357,8 +357,17 @@ describe('structured-data', () => {
       }
 
       const schema = generateToolWithRatingSchema(tool, ratingData, baseUrl)
+      const schemaWithRating = schema as {
+        aggregateRating?: {
+          '@type': string
+          ratingValue: string
+          ratingCount: string
+          bestRating: string
+          worstRating: string
+        }
+      }
 
-      expect(schema.aggregateRating).toEqual({
+      expect(schemaWithRating.aggregateRating).toEqual({
         '@type': 'AggregateRating',
         ratingValue: '4.5',
         ratingCount: '100',
@@ -374,14 +383,16 @@ describe('structured-data', () => {
       }
 
       const schema = generateToolWithRatingSchema(tool, ratingData, baseUrl)
+      const schemaWithRating = schema as { aggregateRating?: { ratingValue: string } }
 
-      expect(schema.aggregateRating?.ratingValue).toBe('4.6')
+      expect(schemaWithRating.aggregateRating?.ratingValue).toBe('4.6')
     })
 
     it('should not include aggregateRating when rating data is null', () => {
       const schema = generateToolWithRatingSchema(tool, null, baseUrl)
+      const schemaWithRating = schema as { aggregateRating?: unknown }
 
-      expect(schema.aggregateRating).toBeUndefined()
+      expect(schemaWithRating.aggregateRating).toBeUndefined()
     })
 
     it('should not include aggregateRating when totalRatings is 0', () => {
@@ -391,8 +402,9 @@ describe('structured-data', () => {
       }
 
       const schema = generateToolWithRatingSchema(tool, ratingData, baseUrl)
+      const schemaWithRating = schema as { aggregateRating?: unknown }
 
-      expect(schema.aggregateRating).toBeUndefined()
+      expect(schemaWithRating.aggregateRating).toBeUndefined()
     })
 
     it('should include base software application schema properties', () => {
@@ -416,8 +428,9 @@ describe('structured-data', () => {
       }
 
       const schema = generateToolWithRatingSchema(tool, ratingData, baseUrl)
+      const schemaWithRating = schema as { aggregateRating?: { ratingCount: string } }
 
-      expect(schema.aggregateRating?.ratingCount).toBe('1')
+      expect(schemaWithRating.aggregateRating?.ratingCount).toBe('1')
     })
 
     it('should handle large number of ratings', () => {
@@ -427,8 +440,9 @@ describe('structured-data', () => {
       }
 
       const schema = generateToolWithRatingSchema(tool, ratingData, baseUrl)
+      const schemaWithRating = schema as { aggregateRating?: { ratingCount: string } }
 
-      expect(schema.aggregateRating?.ratingCount).toBe('999999')
+      expect(schemaWithRating.aggregateRating?.ratingCount).toBe('999999')
     })
   })
 })

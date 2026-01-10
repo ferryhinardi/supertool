@@ -85,7 +85,7 @@ describe('metadata', () => {
         expect(metadata.openGraph?.description).toBe('Format and beautify JSON data online')
         expect(metadata.openGraph?.url).toBe('https://supertool.id/tools/json-beautifier')
         expect(metadata.openGraph?.siteName).toBe('SuperTool')
-        expect(metadata.openGraph?.type).toBe('website')
+        expect((metadata.openGraph as { type?: string })?.type).toBe('website')
         expect(metadata.openGraph?.locale).toBe('en_US')
       })
 
@@ -155,7 +155,7 @@ describe('metadata', () => {
       it('generates twitter card metadata', () => {
         const metadata = generateToolMetadata(baseParams)
 
-        expect(metadata.twitter?.card).toBe('summary_large_image')
+        expect((metadata.twitter as { card?: string })?.card).toBe('summary_large_image')
         expect(metadata.twitter?.site).toBe('@SuperToolID')
       })
 
