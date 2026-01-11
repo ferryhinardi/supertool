@@ -218,13 +218,70 @@ export default function VideoConverterPage() {
       if (maxCompression) {
         // Calculate target bitrate based on target size and duration
         const targetBytes = targetSizeMB * 1024 * 1024
-        const duration = videoFile.duration || 60 // fallback to 60 seconds
+        const duration = videoFile.duration
+
+        // Validate duration is available for max compression
+        if (!duration || duration <= 0) {
+          setVideos((prev) =>
+            prev.map((v) =>
+              v.id === videoFile.id
+                ? {
+                    ...v,
+                    status: 'error',
+                    error:
+                      'Unable to determine video duration. Max compression requires valid duration.',
+                  }
+                : v
+            )
+          )
+          trackEvent({
+            action: 'max_compression_error',
+            category: 'video_converter',
+            label: 'missing_duration',
+          })
+          return
+        }
+
         const audioBitrate = 32 // very low audio bitrate in kbps
         const audioBytes = (audioBitrate * 1000 * duration) / 8
+        const minVideoBitrate = 50 // minimum 50kbps for usable video
+        const minVideoBytes = (minVideoBitrate * 1000 * duration) / 8
+        const minTargetBytes = audioBytes + minVideoBytes
+        const minTargetMB = Math.ceil(minTargetBytes / (1024 * 1024))
+
+        // Validate target size is achievable for this video duration
+        if (targetSizeMB < minTargetMB) {
+          setVideos((prev) =>
+            prev.map((v) =>
+              v.id === videoFile.id
+                ? {
+                    ...v,
+                    status: 'error',
+                    error: `Target size too small for ${Math.round(duration)}s video. Minimum: ${minTargetMB}MB (audio: 32kbps + video: 50kbps minimum)`,
+                  }
+                : v
+            )
+          )
+          trackEvent({
+            action: 'max_compression_error',
+            category: 'video_converter',
+            label: 'target_too_small',
+            value: targetSizeMB,
+          })
+          return
+        }
+
         // Ensure videoBytes is positive - if target is too small for audio alone, use minimum
         const videoBytes = Math.max(0, targetBytes - audioBytes)
         // Calculate video bitrate in kbps, minimum 50k to ensure usable output
         const videoBitrate = Math.max(50, Math.floor((videoBytes * 8) / duration / 1000))
+
+        trackEvent({
+          action: 'max_compression_started',
+          category: 'video_converter',
+          label: `target_${targetSizeMB}mb`,
+          value: Math.round(duration),
+        })
 
         // Use H.264 with target bitrate encoding for predictable file size
         // -b:v sets average bitrate, -maxrate/-bufsize enforce CBR-like behavior
