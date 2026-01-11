@@ -325,8 +325,22 @@ vi.mock('@ark-ui/react', () => {
     },
   })
 
+  // Portal component
+  const Portal = ({ children }: { children: React.ReactNode }) => children
+
+  // Progress component
+  const Progress = {
+    Root: createArkComponent('div'),
+    Track: createArkComponent('div'),
+    Range: createArkComponent('div'),
+    Label: createArkComponent('span'),
+    ValueText: createArkComponent('span'),
+  }
+
   return {
     ark,
+    Portal,
+    Progress,
     // Export common Ark UI components as simple passthrough components
     Button: createArkComponent('button'),
     Dialog: {
@@ -393,6 +407,67 @@ vi.mock('@ark-ui/react', () => {
       Arrow: createArkComponent('div'),
       ArrowTip: createArkComponent('div'),
     },
+  }
+})
+
+// Mock @ark-ui/react/field subpath
+vi.mock('@ark-ui/react/field', () => {
+  const React = require('react')
+
+  const createArkComponent = (element: string) => {
+    return React.forwardRef(
+      (
+        { children, ...props }: React.PropsWithChildren<Record<string, unknown>>,
+        ref: React.ForwardedRef<unknown>
+      ) => React.createElement(element, { ...props, ref }, children)
+    )
+  }
+
+  return {
+    Field: {
+      Root: createArkComponent('div'),
+      Label: createArkComponent('label'),
+      Input: createArkComponent('input'),
+      Textarea: createArkComponent('textarea'),
+      HelperText: createArkComponent('span'),
+      ErrorText: createArkComponent('span'),
+    },
+  }
+})
+
+// Mock @ark-ui/react/dialog subpath
+vi.mock('@ark-ui/react/dialog', () => {
+  const React = require('react')
+
+  const createArkComponent = (element: string) => {
+    return React.forwardRef(
+      (
+        { children, ...props }: React.PropsWithChildren<Record<string, unknown>>,
+        ref: React.ForwardedRef<unknown>
+      ) => React.createElement(element, { ...props, ref }, children)
+    )
+  }
+
+  return {
+    Dialog: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Portal: ({ children }: { children: React.ReactNode }) => children,
+      Backdrop: createArkComponent('div'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Title: createArkComponent('h2'),
+      Description: createArkComponent('p'),
+      CloseTrigger: createArkComponent('button'),
+    },
+  }
+})
+
+// Mock @ark-ui/react/portal subpath
+vi.mock('@ark-ui/react/portal', () => {
+  const React = require('react')
+  return {
+    Portal: ({ children }: { children: React.ReactNode }) => children,
   }
 })
 

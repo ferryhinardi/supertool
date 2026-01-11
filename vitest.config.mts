@@ -2,12 +2,43 @@ import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { defineConfig } from 'vitest/config'
+import { defineConfig, type Plugin } from 'vitest/config'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+// Custom plugin to intercept @ark-ui/react imports and redirect to mock
+// This prevents the massive dependency tree from being parsed and causing OOM
+function arkUiMockPlugin(): Plugin {
+  const mockPath = path.resolve(__dirname, './__mocks__/@ark-ui/react.ts')
+  const fieldMockPath = path.resolve(__dirname, './__mocks__/@ark-ui/react/field.ts')
+  const dialogMockPath = path.resolve(__dirname, './__mocks__/@ark-ui/react/dialog.ts')
+  const portalMockPath = path.resolve(__dirname, './__mocks__/@ark-ui/react/portal.ts')
+
+  return {
+    name: 'ark-ui-mock-plugin',
+    enforce: 'pre', // Run before other plugins
+    resolveId(id) {
+      // Handle subpath imports first (more specific matches)
+      if (id === '@ark-ui/react/field') {
+        return fieldMockPath
+      }
+      if (id === '@ark-ui/react/dialog') {
+        return dialogMockPath
+      }
+      if (id === '@ark-ui/react/portal') {
+        return portalMockPath
+      }
+      // Handle main import and any other subpaths
+      if (id === '@ark-ui/react' || id.startsWith('@ark-ui/react/')) {
+        return mockPath
+      }
+      return null
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [arkUiMockPlugin(), react()],
   test: {
     globals: true,
     setupFiles: './vitest.setup.ts',
@@ -64,10 +95,25 @@ export default defineConfig({
         'hooks/**/*.{ts,tsx}',
       ],
     },
+    // Externalize @ark-ui/react to prevent OOM issues in jsdom environment
+    // Note: The arkUiMockPlugin() above handles the actual mocking
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './'),
     },
+  },
+  // Prevent Vite from pre-bundling @ark-ui/react which causes OOM in jsdom
+  optimizeDeps: {
+    exclude: [
+      '@ark-ui/react',
+      '@ark-ui/react/field',
+      '@ark-ui/react/dialog',
+      '@ark-ui/react/portal',
+    ],
+  },
+  // Mark @ark-ui/react as external for SSR/test environments
+  ssr: {
+    external: ['@ark-ui/react'],
   },
 })
