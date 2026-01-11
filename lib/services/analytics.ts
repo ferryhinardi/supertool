@@ -631,6 +631,10 @@ type ToolEvent =
   | 'email_signature_copy'
   | 'email_signature_download'
   | 'email_signature_reset'
+  | 'logo_apply_palette'
+  | 'logo_generate_random'
+  | 'logo_download'
+  | 'logo_select_icon'
 
 // Type-safe gtag wrapper
 declare global {

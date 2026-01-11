@@ -1,34 +1,9 @@
 import type { MetadataRoute } from 'next'
+import { type ToolCategory, tools } from '@/lib/data/tools'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
   const currentDate = new Date()
-
-  // List of all tools with priority levels
-  const popularTools = ['json-beautify', 'password-generator', 'split-bill']
-
-  const activeTools = [
-    'qr-code',
-    'diff',
-    'markdown-editor',
-    'url-shortener',
-    'text-transformer',
-    'image-optimizer',
-    'video-converter',
-    'upload',
-    'base64',
-    'hash-generator',
-    'json-to-csv',
-    'unit-converter',
-    'pdf-tools',
-    'daily-task-summary',
-    'bmi-calculator',
-    'pomodoro',
-    'encryption-tool',
-    'gradient-generator',
-    'website-screenshot',
-    'ip-lookup',
-  ]
 
   // Home page
   const routes: MetadataRoute.Sitemap = [
@@ -40,23 +15,40 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
-  // Add popular tool pages (higher priority)
-  popularTools.forEach((tool) => {
+  // Category landing pages
+  const categories: ToolCategory[] = [
+    'data',
+    'development',
+    'media',
+    'productivity',
+    'security',
+    'finance',
+    'design',
+  ]
+  categories.forEach((category) => {
     routes.push({
-      url: `${baseUrl}/tools/${tool}`,
+      url: `${baseUrl}/tools/${category}`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
-      priority: 0.9,
+      priority: 0.8,
     })
   })
 
-  // Add active tool pages
-  activeTools.forEach((tool) => {
+  // Add ALL tool pages dynamically from the tools registry
+  tools.forEach((tool) => {
+    // Skip coming soon tools that don't have pages yet
+    if (tool.comingSoon) return
+
+    // Determine priority based on tool attributes
+    let priority = 0.6
+    if (tool.popular) priority = 0.9
+    else if (tool.new) priority = 0.8
+
     routes.push({
-      url: `${baseUrl}/tools/${tool}`,
+      url: `${baseUrl}${tool.href}`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
-      priority: 0.7,
+      priority,
     })
   })
 
