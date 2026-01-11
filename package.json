@@ -36,6 +36,7 @@
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@graphiql/toolkit": "^0.11.3",
+    "@imgly/background-removal": "^1.7.0",
     "@polar-sh/sdk": "^0.42.1",
     "@radix-ui/react-slot": "^1.2.3",
     "@react-pdf/renderer": "^4.3.1",
