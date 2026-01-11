@@ -618,6 +618,23 @@ type ToolEvent =
   | 'webhook_tester_copy_url'
   | 'webhook_tester_request_received'
   | 'webhook_tester_inspect'
+  | 'markdown_table_add_column'
+  | 'markdown_table_remove_column'
+  | 'markdown_table_add_row'
+  | 'markdown_table_remove_row'
+  | 'markdown_table_alignment'
+  | 'markdown_table_import'
+  | 'markdown_table_copy'
+  | 'markdown_table_download'
+  | 'markdown_table_reset'
+  | 'email_signature_template'
+  | 'email_signature_copy'
+  | 'email_signature_download'
+  | 'email_signature_reset'
+  | 'logo_apply_palette'
+  | 'logo_generate_random'
+  | 'logo_download'
+  | 'logo_select_icon'
 
 // Type-safe gtag wrapper
 declare global {

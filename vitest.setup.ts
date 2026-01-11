@@ -77,32 +77,37 @@ vi.mock('framer-motion', () => {
 
   // Create a simple passthrough component for each motion element
   const createMotionComponent = (element: string) => {
-    return React.forwardRef(({ children, ...props }: any, ref: any) => {
-      // Filter out Framer Motion specific props
-      const {
-        initial,
-        animate,
-        exit,
-        transition,
-        variants,
-        whileHover,
-        whileTap,
-        whileFocus,
-        whileDrag,
-        whileInView,
-        drag,
-        dragConstraints,
-        dragElastic,
-        dragMomentum,
-        layout,
-        layoutId,
-        onAnimationStart,
-        onAnimationComplete,
-        ...filteredProps
-      } = props
+    return React.forwardRef(
+      (
+        { children, ...props }: React.PropsWithChildren<Record<string, unknown>>,
+        ref: React.ForwardedRef<unknown>
+      ) => {
+        // Filter out Framer Motion specific props
+        const {
+          initial: _initial,
+          animate: _animate,
+          exit: _exit,
+          transition: _transition,
+          variants: _variants,
+          whileHover: _whileHover,
+          whileTap: _whileTap,
+          whileFocus: _whileFocus,
+          whileDrag: _whileDrag,
+          whileInView: _whileInView,
+          drag: _drag,
+          dragConstraints: _dragConstraints,
+          dragElastic: _dragElastic,
+          dragMomentum: _dragMomentum,
+          layout: _layout,
+          layoutId: _layoutId,
+          onAnimationStart: _onAnimationStart,
+          onAnimationComplete: _onAnimationComplete,
+          ...filteredProps
+        } = props
 
-      return React.createElement(element, { ...filteredProps, ref }, children)
-    })
+        return React.createElement(element, { ...filteredProps, ref }, children)
+      }
+    )
   }
 
   return {
@@ -123,13 +128,13 @@ vi.mock('framer-motion', () => {
       textarea: createMotionComponent('textarea'),
       a: createMotionComponent('a'),
     },
-    AnimatePresence: ({ children }: any) => children,
+    AnimatePresence: ({ children }: { children?: React.ReactNode }) => children,
     useAnimation: () => ({
       start: vi.fn(),
       stop: vi.fn(),
       set: vi.fn(),
     }),
-    useMotionValue: (initial: any) => ({
+    useMotionValue: (initial: number) => ({
       get: () => initial,
       set: vi.fn(),
       onChange: vi.fn(),
@@ -224,6 +229,247 @@ vi.mock('sonner', () => ({
   },
   Toaster: () => null,
 }))
+
+// Mock @/styled-system/recipes to return empty string for styling functions
+vi.mock('@/styled-system/recipes', () => ({
+  button: () => '',
+  input: () => '',
+  card: () => '',
+  badge: () => '',
+  dialog: () => '',
+  // Add more recipe mocks as needed
+}))
+
+// Mock @/styled-system/css to return empty string for styling
+vi.mock('@/styled-system/css', () => ({
+  css: () => '',
+  cva: () => () => '',
+  cx: (...args: unknown[]) => args.filter(Boolean).join(' '),
+}))
+
+// Mock @/components/ui/button to avoid @ark-ui/react dependency
+vi.mock('@/components/ui/button', () => {
+  const React = require('react')
+  const Button = React.forwardRef(
+    (
+      props: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+        children?: React.ReactNode
+        variant?: string
+        size?: string
+        asChild?: boolean
+      },
+      ref: React.Ref<HTMLButtonElement>
+    ) => {
+      const { children, variant: _variant, size: _size, asChild: _asChild, ...rest } = props
+      return React.createElement('button', { ...rest, ref }, children)
+    }
+  )
+  Button.displayName = 'Button'
+  return { Button }
+})
+
+// Mock @radix-ui/react-slot to prevent issues in tests
+vi.mock('@radix-ui/react-slot', () => {
+  const React = require('react')
+
+  const Slot = React.forwardRef(
+    (
+      { children, ...props }: React.PropsWithChildren<Record<string, unknown>>,
+      ref: React.ForwardedRef<unknown>
+    ) => {
+      if (React.isValidElement(children)) {
+        return React.cloneElement(children, { ...props, ref })
+      }
+      return React.createElement('span', { ...props, ref }, children)
+    }
+  )
+  Slot.displayName = 'Slot'
+
+  const Slottable = ({ children }: { children: React.ReactNode }) => children
+
+  return { Slot, Slottable }
+})
+
+// Mock @ark-ui/react to prevent hanging in tests
+// This library has initialization code that hangs in jsdom environment
+vi.mock('@ark-ui/react', () => {
+  const React = require('react')
+
+  // Create a simple passthrough component factory
+  const createArkComponent = (element: string) => {
+    return React.forwardRef(
+      (
+        {
+          children,
+          asChild,
+          ...props
+        }: React.PropsWithChildren<{ asChild?: boolean } & Record<string, unknown>>,
+        ref: React.ForwardedRef<unknown>
+      ) => {
+        // If asChild is true, just render children (similar to Radix Slot behavior)
+        if (asChild && React.isValidElement(children)) {
+          return React.cloneElement(children, { ...props, ref })
+        }
+        return React.createElement(element, { ...props, ref }, children)
+      }
+    )
+  }
+
+  // Create the ark proxy object with common elements
+  const ark = new Proxy({} as Record<string, unknown>, {
+    get: (_target, prop: string) => {
+      if (typeof prop === 'string') {
+        return createArkComponent(prop)
+      }
+      return undefined
+    },
+  })
+
+  // Portal component
+  const Portal = ({ children }: { children: React.ReactNode }) => children
+
+  // Progress component
+  const Progress = {
+    Root: createArkComponent('div'),
+    Track: createArkComponent('div'),
+    Range: createArkComponent('div'),
+    Label: createArkComponent('span'),
+    ValueText: createArkComponent('span'),
+  }
+
+  return {
+    ark,
+    Portal,
+    Progress,
+    // Export common Ark UI components as simple passthrough components
+    Button: createArkComponent('button'),
+    Dialog: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Portal: ({ children }: { children: React.ReactNode }) => children,
+      Backdrop: createArkComponent('div'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Title: createArkComponent('h2'),
+      Description: createArkComponent('p'),
+      CloseTrigger: createArkComponent('button'),
+    },
+    Menu: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Item: createArkComponent('div'),
+      ItemGroup: createArkComponent('div'),
+      ItemGroupLabel: createArkComponent('div'),
+      Separator: createArkComponent('hr'),
+    },
+    Select: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Item: createArkComponent('div'),
+      ItemText: createArkComponent('span'),
+      ItemIndicator: createArkComponent('span'),
+      ValueText: createArkComponent('span'),
+    },
+    Tooltip: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Arrow: createArkComponent('div'),
+      ArrowTip: createArkComponent('div'),
+    },
+    Tabs: {
+      Root: createArkComponent('div'),
+      List: createArkComponent('div'),
+      Trigger: createArkComponent('button'),
+      Content: createArkComponent('div'),
+      Indicator: createArkComponent('div'),
+    },
+    Accordion: {
+      Root: createArkComponent('div'),
+      Item: createArkComponent('div'),
+      ItemTrigger: createArkComponent('button'),
+      ItemContent: createArkComponent('div'),
+      ItemIndicator: createArkComponent('span'),
+    },
+    Popover: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Title: createArkComponent('h3'),
+      Description: createArkComponent('p'),
+      CloseTrigger: createArkComponent('button'),
+      Arrow: createArkComponent('div'),
+      ArrowTip: createArkComponent('div'),
+    },
+  }
+})
+
+// Mock @ark-ui/react/field subpath
+vi.mock('@ark-ui/react/field', () => {
+  const React = require('react')
+
+  const createArkComponent = (element: string) => {
+    return React.forwardRef(
+      (
+        { children, ...props }: React.PropsWithChildren<Record<string, unknown>>,
+        ref: React.ForwardedRef<unknown>
+      ) => React.createElement(element, { ...props, ref }, children)
+    )
+  }
+
+  return {
+    Field: {
+      Root: createArkComponent('div'),
+      Label: createArkComponent('label'),
+      Input: createArkComponent('input'),
+      Textarea: createArkComponent('textarea'),
+      HelperText: createArkComponent('span'),
+      ErrorText: createArkComponent('span'),
+    },
+  }
+})
+
+// Mock @ark-ui/react/dialog subpath
+vi.mock('@ark-ui/react/dialog', () => {
+  const React = require('react')
+
+  const createArkComponent = (element: string) => {
+    return React.forwardRef(
+      (
+        { children, ...props }: React.PropsWithChildren<Record<string, unknown>>,
+        ref: React.ForwardedRef<unknown>
+      ) => React.createElement(element, { ...props, ref }, children)
+    )
+  }
+
+  return {
+    Dialog: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Portal: ({ children }: { children: React.ReactNode }) => children,
+      Backdrop: createArkComponent('div'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Title: createArkComponent('h2'),
+      Description: createArkComponent('p'),
+      CloseTrigger: createArkComponent('button'),
+    },
+  }
+})
+
+// Mock @ark-ui/react/portal subpath
+vi.mock('@ark-ui/react/portal', () => {
+  const React = require('react')
+  return {
+    Portal: ({ children }: { children: React.ReactNode }) => children,
+  }
+})
 
 // Mock localStorage
 class LocalStorageMock {
@@ -359,7 +605,7 @@ beforeAll(async () => {
 
   // Mock global fetch
   if (typeof globalThis.fetch === 'undefined') {
-    globalThis.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    globalThis.fetch = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) => {
       return Promise.resolve(
         new Response(JSON.stringify({}), {
           status: 200,

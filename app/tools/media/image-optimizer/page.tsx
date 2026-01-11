@@ -2,9 +2,11 @@
 
 import imageCompression from 'browser-image-compression'
 import { AnimatePresence, motion } from 'framer-motion'
+import JSZip from 'jszip'
 import {
   CheckCircle,
   Download,
+  Eye,
   FileImage,
   Image as ImageIcon,
   Lightbulb,
@@ -36,12 +38,52 @@ interface ImageFile {
   originalSize: number
   compressedSize?: number
   compressedBlob?: Blob
+  compressedPreview?: string
   status: 'pending' | 'processing' | 'completed' | 'error'
   progress: number
   error?: string
 }
 
-type OutputFormat = 'jpeg' | 'png' | 'webp'
+type OutputFormat = 'jpeg' | 'png' | 'webp' | 'avif'
+
+interface QualityPreset {
+  name: string
+  quality: number
+  maxWidth: number
+  maxHeight: number
+  description: string
+}
+
+const QUALITY_PRESETS: QualityPreset[] = [
+  {
+    name: 'Web',
+    quality: 70,
+    maxWidth: 1920,
+    maxHeight: 1080,
+    description: 'Optimized for websites',
+  },
+  {
+    name: 'Print',
+    quality: 95,
+    maxWidth: 4096,
+    maxHeight: 4096,
+    description: 'High quality for printing',
+  },
+  {
+    name: 'Email',
+    quality: 60,
+    maxWidth: 1200,
+    maxHeight: 800,
+    description: 'Small size for emails',
+  },
+  {
+    name: 'Social',
+    quality: 80,
+    maxWidth: 1080,
+    maxHeight: 1080,
+    description: 'Perfect for social media',
+  },
+]
 
 export default function ImageOptimizerPage() {
   const [images, setImages] = useState<ImageFile[]>([])
@@ -50,7 +92,10 @@ export default function ImageOptimizerPage() {
   const [maxHeight, setMaxHeight] = useState(1080)
   const [outputFormat, setOutputFormat] = useState<OutputFormat>('jpeg')
   const [maintainAspectRatio, setMaintainAspectRatio] = useState(true)
+  const [stripMetadata, setStripMetadata] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [expandedCompare, setExpandedCompare] = useState<string | null>(null)
+  const [comparePosition, setComparePosition] = useState(50)
 
   // Track page visit
   useEffect(() => {
@@ -100,6 +145,7 @@ export default function ImageOptimizerPage() {
         useWebWorker: true,
         fileType: `image/${outputFormat}`,
         initialQuality: quality / 100,
+        preserveExif: !stripMetadata,
         onProgress: (progress: number) => {
           setImages((prev) =>
             prev.map((img) => (img.id === imageFile.id ? { ...img, progress } : img))
@@ -108,6 +154,7 @@ export default function ImageOptimizerPage() {
       }
 
       const compressedBlob = await imageCompression(imageFile.file, options)
+      const compressedPreview = URL.createObjectURL(compressedBlob)
 
       const processingTime = Date.now() - startTime
 
@@ -117,6 +164,7 @@ export default function ImageOptimizerPage() {
             ? {
                 ...img,
                 compressedBlob,
+                compressedPreview,
                 compressedSize: compressedBlob.size,
                 status: 'completed',
                 progress: 100,
@@ -184,18 +232,59 @@ export default function ImageOptimizerPage() {
     })
   }
 
-  const handleDownloadAll = () => {
-    const completedImages = images.filter((img) => img.status === 'completed')
-    completedImages.forEach((img) => {
-      setTimeout(() => handleDownload(img), 100)
-    })
+  const handleDownloadAll = async () => {
+    const completedImages = images.filter((img) => img.status === 'completed' && img.compressedBlob)
 
-    trackEvent({
-      action: 'batch_download',
-      category: 'image_optimizer',
-      label: 'download_all',
-      value: completedImages.length,
-    })
+    if (completedImages.length === 0) return
+
+    // If only one image, download directly
+    if (completedImages.length === 1) {
+      handleDownload(completedImages[0])
+      return
+    }
+
+    // For multiple images, create a ZIP file
+    const zip = new JSZip()
+
+    for (const img of completedImages) {
+      if (img.compressedBlob) {
+        const originalName = img.file.name.split('.').slice(0, -1).join('.')
+        const fileName = `${originalName}_optimized.${outputFormat}`
+        zip.file(fileName, img.compressedBlob)
+      }
+    }
+
+    try {
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const url = URL.createObjectURL(zipBlob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `optimized_images_${Date.now()}.zip`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      trackEvent({
+        action: 'batch_download_zip',
+        category: 'image_optimizer',
+        label: 'download_all_zip',
+        value: completedImages.length,
+      })
+    } catch (error) {
+      console.error('Error creating ZIP file:', error)
+      // Fallback to individual downloads if ZIP creation fails
+      for (const img of completedImages) {
+        setTimeout(() => handleDownload(img), 100)
+      }
+
+      trackEvent({
+        action: 'batch_download_fallback',
+        category: 'image_optimizer',
+        label: 'download_all_individual',
+        value: completedImages.length,
+      })
+    }
   }
 
   const handleRemove = (id: string) => {
@@ -495,11 +584,11 @@ export default function ImageOptimizerPage() {
                     id="output-format"
                     className={css({
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gridTemplateColumns: 'repeat(4, 1fr)',
                       gap: '2',
                     })}
                   >
-                    {(['jpeg', 'png', 'webp'] as OutputFormat[]).map((format) => (
+                    {(['jpeg', 'png', 'webp', 'avif'] as OutputFormat[]).map((format) => (
                       <Button
                         key={format}
                         variant={outputFormat === format ? 'default' : 'outline'}
@@ -567,6 +656,46 @@ export default function ImageOptimizerPage() {
                   >
                     <span>Lower size</span>
                     <span>Higher quality</span>
+                  </div>
+
+                  {/* Quality Presets */}
+                  <div
+                    className={css({
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: '2',
+                      pt: '2',
+                    })}
+                  >
+                    {QUALITY_PRESETS.map((preset) => (
+                      <Button
+                        key={preset.name}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setQuality(preset.quality)
+                          setMaxWidth(preset.maxWidth)
+                          setMaxHeight(preset.maxHeight)
+                          trackEvent({
+                            action: 'preset_applied',
+                            category: 'image_optimizer',
+                            label: preset.name.toLowerCase(),
+                          })
+                        }}
+                        className={css({
+                          border: '1px solid',
+                          borderColor: 'gray.700',
+                          fontSize: 'xs',
+                          _hover: {
+                            borderColor: 'teal.500/50',
+                            bg: 'teal.500/10',
+                          },
+                        })}
+                        title={preset.description}
+                      >
+                        {preset.name}
+                      </Button>
+                    ))}
                   </div>
                 </div>
 
@@ -693,6 +822,49 @@ export default function ImageOptimizerPage() {
                       })}
                     />
                     Maintain aspect ratio
+                  </label>
+                  <label
+                    className={css({
+                      display: 'flex',
+                      cursor: 'pointer',
+                      alignItems: 'center',
+                      gap: '2',
+                      fontSize: 'sm',
+                      color: 'white',
+                    })}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={stripMetadata}
+                      onChange={(e) => setStripMetadata(e.target.checked)}
+                      className={css({
+                        h: '4',
+                        w: '4',
+                        rounded: 'sm',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800',
+                        color: 'teal.500',
+                        _focus: {
+                          ring: '2',
+                          ringColor: 'teal.500',
+                          ringOffset: '0',
+                        },
+                      })}
+                    />
+                    <span>
+                      Strip metadata (EXIF, GPS, etc.)
+                      <span
+                        className={css({
+                          display: 'block',
+                          fontSize: 'xs',
+                          color: 'gray.400',
+                          mt: '0.5',
+                        })}
+                      >
+                        Removes location and camera data for privacy
+                      </span>
+                    </span>
                   </label>
                 </div>
 
@@ -925,6 +1097,38 @@ export default function ImageOptimizerPage() {
 
                                   {/* Action Buttons */}
                                   <div className={css({ display: 'flex', gap: '1' })}>
+                                    {image.status === 'completed' && image.compressedPreview && (
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => {
+                                          setExpandedCompare(
+                                            expandedCompare === image.id ? null : image.id
+                                          )
+                                          setComparePosition(50)
+                                          trackEvent({
+                                            action: 'compare_view_toggled',
+                                            category: 'image_optimizer',
+                                            label:
+                                              expandedCompare === image.id ? 'closed' : 'opened',
+                                          })
+                                        }}
+                                        className={css({
+                                          h: '8',
+                                          w: '8',
+                                          p: '0',
+                                          color:
+                                            expandedCompare === image.id ? 'cyan.400' : 'gray.400',
+                                          _hover: {
+                                            bg: 'cyan.500/20',
+                                            color: 'cyan.400',
+                                          },
+                                        })}
+                                        title="Compare before/after"
+                                      >
+                                        <Eye className={css({ h: '4', w: '4' })} />
+                                      </Button>
+                                    )}
                                     {image.status === 'completed' && (
                                       <Button
                                         size="sm"
@@ -987,6 +1191,246 @@ export default function ImageOptimizerPage() {
                                 )}
                               </div>
                             </div>
+
+                            {/* Before/After Comparison Slider */}
+                            <AnimatePresence>
+                              {expandedCompare === image.id && image.compressedPreview && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={{ duration: 0.3 }}
+                                  className={css({
+                                    mt: '4',
+                                    overflow: 'hidden',
+                                  })}
+                                >
+                                  <div
+                                    className={css({
+                                      rounded: 'lg',
+                                      border: '1px solid',
+                                      borderColor: 'cyan.500/30',
+                                      bg: 'gray.800/50',
+                                      p: '4',
+                                    })}
+                                  >
+                                    <div
+                                      className={css({
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        mb: '3',
+                                      })}
+                                    >
+                                      <span
+                                        className={css({
+                                          fontSize: 'sm',
+                                          fontWeight: 'medium',
+                                          color: 'cyan.300',
+                                        })}
+                                      >
+                                        Before/After Comparison
+                                      </span>
+                                      <span
+                                        className={css({
+                                          fontSize: 'xs',
+                                          color: 'gray.400',
+                                        })}
+                                      >
+                                        Drag slider to compare
+                                      </span>
+                                    </div>
+
+                                    {/* Comparison Container */}
+                                    {/* biome-ignore lint/a11y/useSemanticElements: Custom slider comparison UI requires div with role */}
+                                    <div
+                                      role="slider"
+                                      aria-label="Image comparison slider"
+                                      aria-valuenow={Math.round(comparePosition)}
+                                      aria-valuemin={0}
+                                      aria-valuemax={100}
+                                      tabIndex={0}
+                                      className={css({
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        rounded: 'md',
+                                        bg: 'gray.900',
+                                        aspectRatio: '16 / 9',
+                                        userSelect: 'none',
+                                        cursor: 'ew-resize',
+                                        _focus: {
+                                          outline: '2px solid',
+                                          outlineColor: 'cyan.500',
+                                          outlineOffset: '2px',
+                                        },
+                                      })}
+                                      onMouseMove={(e) => {
+                                        if (e.buttons === 1) {
+                                          const rect = e.currentTarget.getBoundingClientRect()
+                                          const x = e.clientX - rect.left
+                                          const percentage = Math.max(
+                                            0,
+                                            Math.min(100, (x / rect.width) * 100)
+                                          )
+                                          setComparePosition(percentage)
+                                        }
+                                      }}
+                                      onTouchMove={(e) => {
+                                        const touch = e.touches[0]
+                                        const rect = e.currentTarget.getBoundingClientRect()
+                                        const x = touch.clientX - rect.left
+                                        const percentage = Math.max(
+                                          0,
+                                          Math.min(100, (x / rect.width) * 100)
+                                        )
+                                        setComparePosition(percentage)
+                                      }}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'ArrowLeft') {
+                                          setComparePosition((prev) => Math.max(0, prev - 5))
+                                        } else if (e.key === 'ArrowRight') {
+                                          setComparePosition((prev) => Math.min(100, prev + 5))
+                                        }
+                                      }}
+                                    >
+                                      {/* Original Image (Background - Full) */}
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img
+                                        src={image.preview}
+                                        alt="Original"
+                                        className={css({
+                                          position: 'absolute',
+                                          inset: '0',
+                                          h: 'full',
+                                          w: 'full',
+                                          objectFit: 'contain',
+                                        })}
+                                        draggable={false}
+                                      />
+
+                                      {/* Optimized Image (Foreground - Clipped) */}
+                                      <div
+                                        className={css({
+                                          position: 'absolute',
+                                          inset: '0',
+                                          overflow: 'hidden',
+                                        })}
+                                        style={{
+                                          clipPath: `inset(0 ${100 - comparePosition}% 0 0)`,
+                                        }}
+                                      >
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                          src={image.compressedPreview}
+                                          alt="Optimized"
+                                          className={css({
+                                            h: 'full',
+                                            w: 'full',
+                                            objectFit: 'contain',
+                                          })}
+                                          draggable={false}
+                                        />
+                                      </div>
+
+                                      {/* Slider Handle */}
+                                      <div
+                                        className={css({
+                                          position: 'absolute',
+                                          top: '0',
+                                          bottom: '0',
+                                          w: '1',
+                                          bg: 'cyan.400',
+                                          cursor: 'ew-resize',
+                                          zIndex: '10',
+                                          _after: {
+                                            content: '""',
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                            w: '8',
+                                            h: '8',
+                                            rounded: 'full',
+                                            bg: 'cyan.400',
+                                            border: '2px solid',
+                                            borderColor: 'white',
+                                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+                                          },
+                                        })}
+                                        style={{ left: `${comparePosition}%` }}
+                                      />
+
+                                      {/* Labels */}
+                                      <div
+                                        className={css({
+                                          position: 'absolute',
+                                          top: '2',
+                                          left: '2',
+                                          rounded: 'md',
+                                          bg: 'gray.900/80',
+                                          px: '2',
+                                          py: '1',
+                                          fontSize: 'xs',
+                                          fontWeight: 'medium',
+                                          color: 'gray.300',
+                                          backdropFilter: 'blur(4px)',
+                                        })}
+                                      >
+                                        Optimized
+                                      </div>
+                                      <div
+                                        className={css({
+                                          position: 'absolute',
+                                          top: '2',
+                                          right: '2',
+                                          rounded: 'md',
+                                          bg: 'gray.900/80',
+                                          px: '2',
+                                          py: '1',
+                                          fontSize: 'xs',
+                                          fontWeight: 'medium',
+                                          color: 'gray.300',
+                                          backdropFilter: 'blur(4px)',
+                                        })}
+                                      >
+                                        Original
+                                      </div>
+                                    </div>
+
+                                    {/* Slider Control */}
+                                    <div className={css({ mt: '3' })}>
+                                      <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        value={comparePosition}
+                                        onChange={(e) => setComparePosition(Number(e.target.value))}
+                                        className={css({
+                                          w: 'full',
+                                          accentColor: 'cyan.500',
+                                          cursor: 'pointer',
+                                        })}
+                                        aria-label="Comparison slider"
+                                      />
+                                      <div
+                                        className={css({
+                                          display: 'flex',
+                                          justifyContent: 'space-between',
+                                          mt: '1',
+                                          fontSize: 'xs',
+                                          color: 'gray.400',
+                                        })}
+                                      >
+                                        <span>
+                                          Optimized ({formatBytes(image.compressedSize || 0)})
+                                        </span>
+                                        <span>Original ({formatBytes(image.originalSize)})</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </motion.div>
                         ))}
                       </AnimatePresence>

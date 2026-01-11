@@ -326,9 +326,9 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
                     mb: '2',
                   })}
                 >
-                  <label className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
+                  <span className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
                     Key Achievements <span className={css({ color: 'red.400' })}>*</span>
-                  </label>
+                  </span>
                   <Button
                     onClick={() => handleAddAchievement(experience.id)}
                     size="sm"

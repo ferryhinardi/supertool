@@ -179,7 +179,7 @@ export function formatSQL(sql: string, options: FormatOptions): string {
   formatted = formatted.replace(/\s+/g, ' ')
 
   // Handle keywords based on case preference
-  const keywords = options.uppercaseKeywords
+  const _keywords = options.uppercaseKeywords
     ? SQL_KEYWORDS
     : SQL_KEYWORDS.map((k) => k.toLowerCase())
   const keywordPattern = new RegExp(`\\b(${SQL_KEYWORDS.join('|')})\\b`, 'gi')
@@ -193,7 +193,7 @@ export function formatSQL(sql: string, options: FormatOptions): string {
   let result = ''
 
   // Keywords that increase indent
-  const indentIncrease = [
+  const _indentIncrease = [
     'SELECT',
     'FROM',
     'WHERE',
@@ -209,7 +209,7 @@ export function formatSQL(sql: string, options: FormatOptions): string {
     'CASE',
   ]
   // Keywords that decrease indent
-  const indentDecrease = [')', 'END']
+  const _indentDecrease = [')', 'END']
   // Keywords that should be on new lines
   const newLineKeywords = [
     'SELECT',
