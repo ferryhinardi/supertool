@@ -35,7 +35,7 @@ vi.mock('sonner', () => ({
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: (props: any) => {
+    div: (props: { children?: React.ReactNode; [key: string]: unknown }) => {
       const { children, ...rest } = props
       return createElement('div', rest, children)
     },
@@ -466,7 +466,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
       const _removeChildSpy = vi
         .spyOn(document.body, 'removeChild')
-        .mockImplementation(() => null as any)
+        .mockImplementation(() => null as unknown as Node)
 
       const downloadButton = screen.getByText('Download')
       await userEvent.click(downloadButton)
@@ -524,7 +524,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
       const _removeChildSpy = vi
         .spyOn(document.body, 'removeChild')
-        .mockImplementation(() => null as any)
+        .mockImplementation(() => null as unknown as Node)
 
       const downloadButton = screen.getByText('Download')
       await userEvent.click(downloadButton)
@@ -583,7 +583,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
       const _removeChildSpy = vi
         .spyOn(document.body, 'removeChild')
-        .mockImplementation(() => null as any)
+        .mockImplementation(() => null as unknown as Node)
 
       const downloadButton = screen.getByText('Download')
       await userEvent.click(downloadButton)

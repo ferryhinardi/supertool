@@ -39,12 +39,18 @@ async function getFFmpegPath(): Promise<string> {
         const { createGunzip } = await import('node:zlib')
         const { createWriteStream } = await import('node:fs')
         const { pipeline } = await import('node:stream/promises')
+        const { Readable } = await import('node:stream')
 
         // Download, gunzip, and save to /tmp
         const gunzip = createGunzip()
         const writeStream = createWriteStream(tmpFFmpegPath, { mode: 0o755 })
 
-        await pipeline(response.body as any, gunzip, writeStream)
+        // Convert Web ReadableStream to Node.js Readable stream
+        if (!response.body) {
+          throw new Error('Response body is null')
+        }
+        const nodeReadable = Readable.fromWeb(response.body as import('stream/web').ReadableStream)
+        await pipeline(nodeReadable, gunzip, writeStream)
 
         FFMPEG_PATH = tmpFFmpegPath
         console.log('✅ FFmpeg downloaded and cached to /tmp')
@@ -221,13 +227,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Parse options
+    // Parse options (convert null to undefined so defaults are applied)
     const options: SubtitleOptions = {
       fontSize: fontSize ? parseInt(fontSize as string, 10) : undefined,
-      fontColor: fontColor as string,
-      backgroundColor: backgroundColor as string,
+      fontColor: fontColor ? (fontColor as string) : undefined,
+      backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
       backgroundOpacity: backgroundOpacity ? parseFloat(backgroundOpacity as string) : undefined,
-      position: subtitlePosition as 'bottom' | 'top' | 'center',
+      position: subtitlePosition ? (subtitlePosition as 'bottom' | 'top' | 'center') : undefined,
       trimStart: trimStart ? parseFloat(trimStart as string) : undefined,
       trimEnd: trimEnd ? parseFloat(trimEnd as string) : undefined,
       brightness: brightness ? parseFloat(brightness as string) : undefined,
@@ -237,7 +243,9 @@ export async function POST(request: NextRequest) {
       sharpen: sharpen ? parseFloat(sharpen as string) : undefined,
       vignette: vignette ? parseFloat(vignette as string) : undefined,
       temperature: temperature ? parseFloat(temperature as string) : undefined,
-      exportPreset: exportPreset as 'instagram' | 'tiktok' | 'youtube' | 'twitter' | undefined,
+      exportPreset: exportPreset
+        ? (exportPreset as 'instagram' | 'tiktok' | 'youtube' | 'twitter')
+        : undefined,
     }
 
     // Create temporary directory for processing

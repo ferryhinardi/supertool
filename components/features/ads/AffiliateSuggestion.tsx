@@ -1,6 +1,6 @@
 'use client'
 
-import { getAdsConfig } from '@/lib/services/ads-config'
+import { type AdsConfig, getAdsConfig } from '@/lib/services/ads-config'
 import { css } from '@/styled-system/css'
 
 /**
@@ -11,8 +11,10 @@ export type AffiliateTool =
   | 'password-strength'
   | 'encryption-tool'
   | 'image-optimizer'
+  | 'background-remover'
   | 'api-tester'
   | 'upload'
+  | 'logo-maker'
 
 interface AffiliateProduct {
   name: string
@@ -40,7 +42,7 @@ interface AffiliateSuggestionProps {
 /**
  * Get affiliate suggestions based on tool type
  */
-function getAffiliateProducts(tool: AffiliateTool, config: any): AffiliateProduct[] {
+function getAffiliateProducts(tool: AffiliateTool, config: AdsConfig): AffiliateProduct[] {
   const { partners } = config.affiliates
 
   switch (tool) {
@@ -89,6 +91,7 @@ function getAffiliateProducts(tool: AffiliateTool, config: any): AffiliateProduc
       ].filter(Boolean) as AffiliateProduct[]
 
     case 'image-optimizer':
+    case 'background-remover':
       return [
         partners.imageCdn.cloudinary && {
           name: 'Cloudinary',
@@ -139,6 +142,31 @@ function getAffiliateProducts(tool: AffiliateTool, config: any): AffiliateProduc
           url: `https://supabase.com${partners.hosting.supabase}`,
           cta: 'Try Supabase',
           icon: '⚡',
+        },
+      ].filter(Boolean) as AffiliateProduct[]
+
+    case 'logo-maker':
+      return [
+        partners.imageCdn.cloudinary && {
+          name: 'Canva',
+          description: 'Professional design tools for logos, graphics, and more',
+          url: 'https://www.canva.com',
+          cta: 'Try Canva Pro',
+          icon: '🎨',
+        },
+        partners.developerTools.postman && {
+          name: 'Figma',
+          description: 'Collaborative design tool for teams',
+          url: 'https://www.figma.com',
+          cta: 'Try Figma',
+          icon: '✨',
+        },
+        partners.imageCdn.tinypng && {
+          name: 'Adobe Express',
+          description: 'Quick and easy logo and graphic design',
+          url: 'https://www.adobe.com/express',
+          cta: 'Try Adobe Express',
+          icon: '🔷',
         },
       ].filter(Boolean) as AffiliateProduct[]
 

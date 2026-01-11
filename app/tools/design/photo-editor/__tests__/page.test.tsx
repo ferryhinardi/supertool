@@ -18,7 +18,12 @@ vi.mock('@/lib/services/analytics', () => ({
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    div: ({
+      children,
+      ...props
+    }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
+      <div {...props}>{children}</div>
+    ),
   },
 }))
 
@@ -37,7 +42,7 @@ class MockImage {
   }
 }
 
-global.Image = MockImage as any
+global.Image = MockImage as unknown as typeof Image
 
 // Mock canvas context
 const mockGetContext = vi.fn(() => ({
@@ -58,7 +63,8 @@ const mockGetContext = vi.fn(() => ({
   filter: 'none',
 }))
 
-HTMLCanvasElement.prototype.getContext = mockGetContext as any
+HTMLCanvasElement.prototype.getContext =
+  mockGetContext as unknown as typeof HTMLCanvasElement.prototype.getContext
 HTMLCanvasElement.prototype.toBlob = vi.fn((callback) => {
   const blob = new Blob(['fake-image-data'], { type: 'image/png' })
   callback(blob)
@@ -66,20 +72,20 @@ HTMLCanvasElement.prototype.toBlob = vi.fn((callback) => {
 
 // Mock FileReader
 class MockFileReader {
-  onload: ((event: any) => void) | null = null
+  onload: ((event: ProgressEvent<FileReader>) => void) | null = null
   result: string | null = null
 
   readAsDataURL(_file: Blob) {
     setTimeout(() => {
       this.result = 'data:image/png;base64,fake-image-data'
       if (this.onload) {
-        this.onload({ target: { result: this.result } })
+        this.onload({ target: { result: this.result } } as unknown as ProgressEvent<FileReader>)
       }
     }, 0)
   }
 }
 
-global.FileReader = MockFileReader as any
+global.FileReader = MockFileReader as unknown as typeof FileReader
 
 describe('PhotoEditorPage', () => {
   beforeEach(() => {
@@ -184,7 +190,7 @@ describe('PhotoEditorPage', () => {
             }),
         })
       )
-      global.fetch = mockFetch as any
+      global.fetch = mockFetch as unknown as typeof fetch
 
       render(<PhotoEditorPage />)
 
@@ -226,7 +232,7 @@ describe('PhotoEditorPage', () => {
             )
           })
       )
-      global.fetch = mockFetch as any
+      global.fetch = mockFetch as unknown as typeof fetch
 
       render(<PhotoEditorPage />)
 
