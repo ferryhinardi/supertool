@@ -230,6 +230,172 @@ vi.mock('sonner', () => ({
   Toaster: () => null,
 }))
 
+// Mock @/styled-system/recipes to return empty string for styling functions
+vi.mock('@/styled-system/recipes', () => ({
+  button: () => '',
+  input: () => '',
+  card: () => '',
+  badge: () => '',
+  dialog: () => '',
+  // Add more recipe mocks as needed
+}))
+
+// Mock @/styled-system/css to return empty string for styling
+vi.mock('@/styled-system/css', () => ({
+  css: () => '',
+  cva: () => () => '',
+  cx: (...args: unknown[]) => args.filter(Boolean).join(' '),
+}))
+
+// Mock @/components/ui/button to avoid @ark-ui/react dependency
+vi.mock('@/components/ui/button', () => {
+  const React = require('react')
+  const Button = React.forwardRef(
+    (
+      props: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+        children?: React.ReactNode
+        variant?: string
+        size?: string
+        asChild?: boolean
+      },
+      ref: React.Ref<HTMLButtonElement>
+    ) => {
+      const { children, variant: _variant, size: _size, asChild: _asChild, ...rest } = props
+      return React.createElement('button', { ...rest, ref }, children)
+    }
+  )
+  Button.displayName = 'Button'
+  return { Button }
+})
+
+// Mock @radix-ui/react-slot to prevent issues in tests
+vi.mock('@radix-ui/react-slot', () => {
+  const React = require('react')
+
+  const Slot = React.forwardRef(
+    (
+      { children, ...props }: React.PropsWithChildren<Record<string, unknown>>,
+      ref: React.ForwardedRef<unknown>
+    ) => {
+      if (React.isValidElement(children)) {
+        return React.cloneElement(children, { ...props, ref })
+      }
+      return React.createElement('span', { ...props, ref }, children)
+    }
+  )
+  Slot.displayName = 'Slot'
+
+  const Slottable = ({ children }: { children: React.ReactNode }) => children
+
+  return { Slot, Slottable }
+})
+
+// Mock @ark-ui/react to prevent hanging in tests
+// This library has initialization code that hangs in jsdom environment
+vi.mock('@ark-ui/react', () => {
+  const React = require('react')
+
+  // Create a simple passthrough component factory
+  const createArkComponent = (element: string) => {
+    return React.forwardRef(
+      (
+        {
+          children,
+          asChild,
+          ...props
+        }: React.PropsWithChildren<{ asChild?: boolean } & Record<string, unknown>>,
+        ref: React.ForwardedRef<unknown>
+      ) => {
+        // If asChild is true, just render children (similar to Radix Slot behavior)
+        if (asChild && React.isValidElement(children)) {
+          return React.cloneElement(children, { ...props, ref })
+        }
+        return React.createElement(element, { ...props, ref }, children)
+      }
+    )
+  }
+
+  // Create the ark proxy object with common elements
+  const ark = new Proxy({} as Record<string, unknown>, {
+    get: (_target, prop: string) => {
+      if (typeof prop === 'string') {
+        return createArkComponent(prop)
+      }
+      return undefined
+    },
+  })
+
+  return {
+    ark,
+    // Export common Ark UI components as simple passthrough components
+    Button: createArkComponent('button'),
+    Dialog: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Portal: ({ children }: { children: React.ReactNode }) => children,
+      Backdrop: createArkComponent('div'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Title: createArkComponent('h2'),
+      Description: createArkComponent('p'),
+      CloseTrigger: createArkComponent('button'),
+    },
+    Menu: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Item: createArkComponent('div'),
+      ItemGroup: createArkComponent('div'),
+      ItemGroupLabel: createArkComponent('div'),
+      Separator: createArkComponent('hr'),
+    },
+    Select: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Item: createArkComponent('div'),
+      ItemText: createArkComponent('span'),
+      ItemIndicator: createArkComponent('span'),
+      ValueText: createArkComponent('span'),
+    },
+    Tooltip: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Arrow: createArkComponent('div'),
+      ArrowTip: createArkComponent('div'),
+    },
+    Tabs: {
+      Root: createArkComponent('div'),
+      List: createArkComponent('div'),
+      Trigger: createArkComponent('button'),
+      Content: createArkComponent('div'),
+      Indicator: createArkComponent('div'),
+    },
+    Accordion: {
+      Root: createArkComponent('div'),
+      Item: createArkComponent('div'),
+      ItemTrigger: createArkComponent('button'),
+      ItemContent: createArkComponent('div'),
+      ItemIndicator: createArkComponent('span'),
+    },
+    Popover: {
+      Root: ({ children }: { children: React.ReactNode }) => children,
+      Trigger: createArkComponent('button'),
+      Positioner: createArkComponent('div'),
+      Content: createArkComponent('div'),
+      Title: createArkComponent('h3'),
+      Description: createArkComponent('p'),
+      CloseTrigger: createArkComponent('button'),
+      Arrow: createArkComponent('div'),
+      ArrowTip: createArkComponent('div'),
+    },
+  }
+})
+
 // Mock localStorage
 class LocalStorageMock {
   private store: Map<string, string>
