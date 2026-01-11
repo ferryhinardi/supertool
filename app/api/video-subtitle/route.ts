@@ -227,13 +227,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Parse options
+    // Parse options (convert null to undefined so defaults are applied)
     const options: SubtitleOptions = {
       fontSize: fontSize ? parseInt(fontSize as string, 10) : undefined,
-      fontColor: fontColor as string,
-      backgroundColor: backgroundColor as string,
+      fontColor: fontColor ? (fontColor as string) : undefined,
+      backgroundColor: backgroundColor ? (backgroundColor as string) : undefined,
       backgroundOpacity: backgroundOpacity ? parseFloat(backgroundOpacity as string) : undefined,
-      position: subtitlePosition as 'bottom' | 'top' | 'center',
+      position: subtitlePosition ? (subtitlePosition as 'bottom' | 'top' | 'center') : undefined,
       trimStart: trimStart ? parseFloat(trimStart as string) : undefined,
       trimEnd: trimEnd ? parseFloat(trimEnd as string) : undefined,
       brightness: brightness ? parseFloat(brightness as string) : undefined,
@@ -243,7 +243,9 @@ export async function POST(request: NextRequest) {
       sharpen: sharpen ? parseFloat(sharpen as string) : undefined,
       vignette: vignette ? parseFloat(vignette as string) : undefined,
       temperature: temperature ? parseFloat(temperature as string) : undefined,
-      exportPreset: exportPreset as 'instagram' | 'tiktok' | 'youtube' | 'twitter' | undefined,
+      exportPreset: exportPreset
+        ? (exportPreset as 'instagram' | 'tiktok' | 'youtube' | 'twitter')
+        : undefined,
     }
 
     // Create temporary directory for processing
