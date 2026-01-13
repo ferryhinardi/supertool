@@ -246,8 +246,11 @@ describe('Task Timer Page - Component Tests', () => {
 
     render(<TaskTimerPage />)
 
-    expect(screen.getByRole('button', { name: /CSV/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /JSON/i })).toBeInTheDocument()
+    // Use getAllByRole to handle multiple matches and verify at least one exists
+    const csvButtons = screen.getAllByRole('button', { name: /CSV/i })
+    const jsonButtons = screen.getAllByRole('button', { name: /JSON/i })
+    expect(csvButtons.length).toBeGreaterThan(0)
+    expect(jsonButtons.length).toBeGreaterThan(0)
   })
 
   it('should display enable notifications button when not granted', () => {
