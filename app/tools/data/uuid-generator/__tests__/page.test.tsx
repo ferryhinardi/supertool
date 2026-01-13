@@ -334,7 +334,8 @@ describe('UUID Generator Page', () => {
     it('disables validate button when input is empty', () => {
       render(<UUIDGeneratorPage />)
 
-      const validateButton = screen.getByRole('button', { name: /Validate/i })
+      // Use the getValidateButton helper to find the correct button within the validator section
+      const validateButton = getValidateButton()
       expect(validateButton).toBeDisabled()
     })
   })

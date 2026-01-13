@@ -50,6 +50,23 @@ vi.mock('@/lib/split-bill-service', () => ({
   ),
 }))
 
+// Helper to find input by label text (for labels not properly associated via htmlFor)
+// Uses getAllByText to handle cases where multiple labels with same text exist
+// Traverses up multiple parent levels since Ark UI Field components nest inputs deeply
+const getInputByLabelText = (labelText: RegExp | string) => {
+  const labels = screen.getAllByText(labelText)
+  const label = labels[0] // Take the first matching label
+  // Traverse up multiple levels to find containing element with an input
+  let parent = label.parentElement
+  for (let i = 0; i < 5 && parent; i++) {
+    // Exclude file inputs which cause InvalidStateError when setting value programmatically
+    const input = parent.querySelector('input:not([type="file"]), textarea, select')
+    if (input) return input as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    parent = parent.parentElement
+  }
+  throw new Error(`Could not find input for label: ${labelText}`)
+}
+
 describe('Split Bill Calculator Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -92,7 +109,7 @@ describe('Split Bill Calculator Page', () => {
       const { fireEvent } = await import('@testing-library/react')
       render(<SplitBillPage />)
 
-      const billInput = screen.getByLabelText(/Bill Amount/i)
+      const billInput = getInputByLabelText(/Bill Amount/i)
       fireEvent.change(billInput, { target: { value: '200' } })
 
       expect(billInput).toHaveValue(200)
@@ -102,7 +119,7 @@ describe('Split Bill Calculator Page', () => {
       const { fireEvent } = await import('@testing-library/react')
       render(<SplitBillPage />)
 
-      const tipInput = screen.getByLabelText(/Tip \(%\)/i)
+      const tipInput = getInputByLabelText(/Tip \(%\)/i)
       fireEvent.change(tipInput, { target: { value: '20' } })
 
       expect(tipInput).toHaveValue(20)
@@ -112,7 +129,7 @@ describe('Split Bill Calculator Page', () => {
       const { fireEvent } = await import('@testing-library/react')
       render(<SplitBillPage />)
 
-      const taxInput = screen.getByLabelText(/Tax/i)
+      const taxInput = getInputByLabelText(/Tax \(%\)/i)
       fireEvent.change(taxInput, { target: { value: '8' } })
 
       expect(taxInput).toHaveValue(8)
@@ -464,8 +481,8 @@ describe('Split Bill Calculator Page', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Bill Information')).toBeTruthy()
-        expect(screen.getByLabelText(/Bill Title/i)).toBeTruthy()
-        expect(screen.getByLabelText(/Organizer Name/i)).toBeTruthy()
+        expect(getInputByLabelText(/Bill Title/i)).toBeTruthy()
+        expect(getInputByLabelText(/Organizer Name/i)).toBeTruthy()
       })
     })
 
@@ -477,11 +494,11 @@ describe('Split Bill Calculator Page', () => {
       await user.click(createButton)
 
       await waitFor(() => {
-        expect(screen.getByLabelText(/Bill Title/i)).toBeTruthy()
-        expect(screen.getByLabelText(/Description/i)).toBeTruthy()
-        expect(screen.getByLabelText(/Organizer Name/i)).toBeTruthy()
-        expect(screen.getByLabelText(/Bank Account Number/i)).toBeTruthy()
-        expect(screen.getByLabelText(/Bank Name/i)).toBeTruthy()
+        expect(getInputByLabelText(/Bill Title/i)).toBeTruthy()
+        expect(getInputByLabelText(/Description/i)).toBeTruthy()
+        expect(getInputByLabelText(/Organizer Name/i)).toBeTruthy()
+        expect(getInputByLabelText(/Bank Account Number/i)).toBeTruthy()
+        expect(getInputByLabelText(/Bank Name/i)).toBeTruthy()
       })
     })
 
@@ -494,10 +511,10 @@ describe('Split Bill Calculator Page', () => {
       await user.click(createButton)
 
       await waitFor(() => {
-        expect(screen.getByLabelText(/Bill Title/i)).toBeTruthy()
+        expect(getInputByLabelText(/Bill Title/i)).toBeTruthy()
       })
 
-      const titleInput = screen.getByLabelText(/Bill Title/i)
+      const titleInput = getInputByLabelText(/Bill Title/i)
       fireEvent.change(titleInput, { target: { value: 'Team Dinner' } })
 
       expect(titleInput).toHaveValue('Team Dinner')
@@ -511,13 +528,13 @@ describe('Split Bill Calculator Page', () => {
 
       // Set bill = 100, tip = 15%, tax = 10%
       // Expected: 100 + 15 + 10 = 125
-      const billInput = screen.getByLabelText(/Bill Amount/i)
+      const billInput = getInputByLabelText(/Bill Amount/i)
       fireEvent.change(billInput, { target: { value: '100' } })
 
-      const tipInput = screen.getByLabelText(/Tip \(%\)/i)
+      const tipInput = getInputByLabelText(/Tip \(%\)/i)
       fireEvent.change(tipInput, { target: { value: '15' } })
 
-      const taxInput = screen.getByLabelText(/Tax/i)
+      const taxInput = getInputByLabelText(/Tax/i)
       fireEvent.change(taxInput, { target: { value: '10' } })
 
       // Check if calculations are displayed (values will be formatted with currency)
@@ -531,13 +548,13 @@ describe('Split Bill Calculator Page', () => {
       const { fireEvent } = await import('@testing-library/react')
       render(<SplitBillPage />)
 
-      const billInput = screen.getByLabelText(/Bill Amount/i)
+      const billInput = getInputByLabelText(/Bill Amount/i)
       fireEvent.change(billInput, { target: { value: '100' } })
 
-      const tipInput = screen.getByLabelText(/Tip \(%\)/i)
+      const tipInput = getInputByLabelText(/Tip \(%\)/i)
       fireEvent.change(tipInput, { target: { value: '0' } })
 
-      const taxInput = screen.getByLabelText(/Tax/i)
+      const taxInput = getInputByLabelText(/Tax/i)
       fireEvent.change(taxInput, { target: { value: '0' } })
 
       // With 2 people and 100 total, should be 50 per person
@@ -553,7 +570,7 @@ describe('Split Bill Calculator Page', () => {
       render(<SplitBillPage />)
 
       // Modify some values first
-      const billInput = screen.getByLabelText(/Bill Amount/i)
+      const billInput = getInputByLabelText(/Bill Amount/i)
       fireEvent.change(billInput, { target: { value: '999' } })
 
       // Note: Reset button might be in a different location, test the function indirectly
@@ -638,7 +655,7 @@ describe('Split Bill Calculator Page', () => {
       const user = userEvent.setup()
       render(<SplitBillPage />)
 
-      const billInput = screen.getByLabelText(/Bill Amount/i)
+      const billInput = getInputByLabelText(/Bill Amount/i)
       await user.clear(billInput)
 
       // Should not crash, calculations should handle NaN
@@ -649,7 +666,7 @@ describe('Split Bill Calculator Page', () => {
       const { fireEvent } = await import('@testing-library/react')
       render(<SplitBillPage />)
 
-      const tipInput = screen.getByLabelText(/Tip \(%\)/i)
+      const tipInput = getInputByLabelText(/Tip \(%\)/i)
       fireEvent.change(tipInput, { target: { value: '-5' } })
 
       // Should accept the value (validation is on input attributes)
@@ -660,7 +677,7 @@ describe('Split Bill Calculator Page', () => {
       const { fireEvent } = await import('@testing-library/react')
       render(<SplitBillPage />)
 
-      const billInput = screen.getByLabelText(/Bill Amount/i)
+      const billInput = getInputByLabelText(/Bill Amount/i)
       fireEvent.change(billInput, { target: { value: '999999999' } })
 
       expect(billInput).toHaveValue(999999999)

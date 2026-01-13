@@ -13,8 +13,10 @@ describe('Header', () => {
     render(<Header />)
 
     // FeedbackDialog should be rendered (it renders a button internally)
-    const feedbackButton = screen.getByRole('button', { name: /feedback/i })
-    expect(feedbackButton).toBeInTheDocument()
+    // Use getAllByRole since there may be multiple feedback buttons
+    const feedbackButtons = screen.getAllByRole('button', { name: /feedback/i })
+    expect(feedbackButtons.length).toBeGreaterThan(0)
+    expect(feedbackButtons[0]).toBeInTheDocument()
   })
 
   it('renders theme toggle button', () => {
