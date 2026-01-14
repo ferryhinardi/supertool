@@ -1336,8 +1336,9 @@ describe('API Tester Page - Component Tests', () => {
       )
 
       // Switch to Headers tab - it should have one empty header from initial state
-      const headersTab = screen.getByRole('button', { name: /Headers/i })
-      await userEvent.click(headersTab)
+      // Use getAllByRole since there may be multiple Headers buttons in the UI
+      const headersTabs = screen.getAllByRole('button', { name: /Headers/i })
+      await userEvent.click(headersTabs[0])
 
       const headerInputs = screen.getAllByPlaceholderText(/Header name/i)
       await userEvent.type(headerInputs[0], 'Authorization')
@@ -1345,8 +1346,8 @@ describe('API Tester Page - Component Tests', () => {
       // Headers tab should show count badge with 1
       await waitFor(
         () => {
-          const headers = screen.getByRole('button', { name: /Headers/i })
-          expect(headers.textContent).toContain('1')
+          const headerBtns = screen.getAllByRole('button', { name: /Headers/i })
+          expect(headerBtns[0].textContent).toContain('1')
         },
         { timeout: 3000 }
       )
