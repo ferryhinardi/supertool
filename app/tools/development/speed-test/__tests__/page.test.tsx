@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import { trackToolEvent } from '@/lib/services/analytics'
 import SpeedTestPage from '../page'
@@ -81,6 +81,13 @@ describe('Speed Test Page', () => {
   afterEach(() => {
     vi.useRealTimers()
     vi.restoreAllMocks()
+  })
+
+  // Cleanup all global stubs after all tests complete to prevent memory leaks
+  afterAll(() => {
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('Initial Render', () => {
