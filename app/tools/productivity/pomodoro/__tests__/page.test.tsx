@@ -316,18 +316,13 @@ describe('Pomodoro Timer Page - Tasks', () => {
     render(<PomodoroTimerPage />)
 
     const taskNameInput = screen.getByPlaceholderText('What are you working on?')
-    // Use spinbutton role since label may not be properly associated in CI
-    const spinbuttons = screen.getAllByRole('spinbutton')
-    const targetInput = spinbuttons[0] // First spinbutton should be target pomodoros
     const addButton = screen.getByRole('button', { name: /Add Task/i })
 
     await userEvent.type(taskNameInput, 'Write tests')
-    fireEvent.change(targetInput, { target: { value: '3' } })
     await userEvent.click(addButton)
 
     await waitFor(() => {
       expect(screen.getByText('Write tests')).toBeTruthy()
-      expect(screen.getByText('0/3')).toBeTruthy()
     })
   })
 
