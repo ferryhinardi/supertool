@@ -98,22 +98,10 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps chromium
 
-      - name: Run tests with coverage (Shard ${{ matrix.shard }}/6)
-        run: pnpm exec vitest run --shard=${{ matrix.shard }}/6 --coverage.enabled=true
+      - name: Run tests (Shard ${{ matrix.shard }}/6)
+        run: pnpm exec vitest run --shard=${{ matrix.shard }}/6
         env:
           CI: true
-          NODE_OPTIONS: '--max-old-space-size=8192'
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
-        if: always()
-        with:
-          files: ./coverage/coverage-final.json,./coverage/lcov.info
-          flags: shard-${{ matrix.shard }}
-          name: coverage-shard-${{ matrix.shard }}
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false
-          verbose: true
 
       - name: Upload test screenshots (on failure)
         uses: actions/upload-artifact@v4
