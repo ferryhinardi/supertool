@@ -516,7 +516,9 @@ describe('API Tester Page - Component Tests', () => {
     await userEvent.click(sendButton)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Download/i })).toBeInTheDocument()
+      // Multiple download buttons may exist, just check at least one exists
+      const downloadButtons = screen.getAllByRole('button', { name: /Download/i })
+      expect(downloadButtons.length).toBeGreaterThan(0)
     })
   })
 
@@ -897,9 +899,9 @@ describe('API Tester Page - Component Tests', () => {
         expect(screen.getByText('Development')).toBeInTheDocument()
       })
 
-      // Click Edit button
-      const editButton = screen.getByRole('button', { name: /Edit/i })
-      await userEvent.click(editButton)
+      // Click Edit button - use getAllByRole since there may be multiple Edit buttons
+      const editButtons = screen.getAllByRole('button', { name: /Edit/i })
+      await userEvent.click(editButtons[0])
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /Add Variable/i })).toBeInTheDocument()
@@ -948,9 +950,10 @@ describe('API Tester Page - Component Tests', () => {
 
       render(<ApiTesterPage />)
 
-      // Wait for component to mount and load environment
+      // Wait for component to mount and load environment - may be multiple Production buttons
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Production/i })).toBeInTheDocument()
+        const prodButtons = screen.getAllByRole('button', { name: /Production/i })
+        expect(prodButtons.length).toBeGreaterThan(0)
       })
 
       const urlInput = screen.getByPlaceholderText(/https:\/\/api.example.com\/endpoint/i)
@@ -1215,9 +1218,9 @@ describe('API Tester Page - Component Tests', () => {
         expect(screen.getByText('Development')).toBeInTheDocument()
       })
 
-      // Click Edit button
-      const editButton = screen.getByRole('button', { name: /Edit/i })
-      await userEvent.click(editButton)
+      // Click Edit button - use getAllByRole since there may be multiple Edit buttons
+      const editButtons = screen.getAllByRole('button', { name: /Edit/i })
+      await userEvent.click(editButtons[0])
 
       await waitFor(() => {
         expect(screen.getByDisplayValue('my-secret')).toBeInTheDocument()
@@ -1333,8 +1336,9 @@ describe('API Tester Page - Component Tests', () => {
       )
 
       // Switch to Headers tab - it should have one empty header from initial state
-      const headersTab = screen.getByRole('button', { name: /Headers/i })
-      await userEvent.click(headersTab)
+      // Use getAllByRole since there may be multiple Headers buttons in the UI
+      const headersTabs = screen.getAllByRole('button', { name: /Headers/i })
+      await userEvent.click(headersTabs[0])
 
       const headerInputs = screen.getAllByPlaceholderText(/Header name/i)
       await userEvent.type(headerInputs[0], 'Authorization')
@@ -1342,8 +1346,8 @@ describe('API Tester Page - Component Tests', () => {
       // Headers tab should show count badge with 1
       await waitFor(
         () => {
-          const headers = screen.getByRole('button', { name: /Headers/i })
-          expect(headers.textContent).toContain('1')
+          const headerBtns = screen.getAllByRole('button', { name: /Headers/i })
+          expect(headerBtns[0].textContent).toContain('1')
         },
         { timeout: 3000 }
       )

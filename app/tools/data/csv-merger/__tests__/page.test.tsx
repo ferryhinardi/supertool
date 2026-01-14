@@ -233,17 +233,18 @@ describe('CSV Merger - Split Mode Tests', () => {
       expect(screen.getByText(/Split Options/)).toBeInTheDocument()
     })
 
-    const rowCountButton = screen.getByRole('button', { name: /Row Count/ })
     const filterButton = screen.getByRole('button', { name: /Filter Condition/ })
 
-    // Row Count should be selected by default
-    expect(rowCountButton).toHaveClass('bg_emerald.500/20')
+    // Row Count should be selected by default - verify by checking that row count input is visible
+    expect(screen.getByLabelText(/Rows per file/i)).toBeInTheDocument()
 
     // Click to switch to filter
     await userEvent.click(filterButton as HTMLElement)
 
-    // Filter should now be selected
-    expect(filterButton).toHaveClass('bg_emerald.500/20')
+    // Filter should now be selected - verify by checking that filter options appear
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Filter Column/i)).toBeInTheDocument()
+    })
   })
 
   it('should display row count input when split by rows', async () => {

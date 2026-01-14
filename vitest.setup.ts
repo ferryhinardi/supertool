@@ -234,6 +234,7 @@ vi.mock('sonner', () => ({
 vi.mock('@/styled-system/recipes', () => ({
   button: () => '',
   input: () => '',
+  textarea: () => '',
   card: () => '',
   badge: () => '',
   dialog: () => '',

@@ -50,6 +50,8 @@ export default function VideoConverterPage() {
   const [audioCodec, setAudioCodec] = useState<AudioCodec>('aac')
   const [quality, setQuality] = useState(23) // CRF value (lower = better quality)
   const [resolution, setResolution] = useState<string>('original')
+  const [maxCompression, setMaxCompression] = useState(false) // Maximum compression mode
+  const [targetSizeMB, setTargetSizeMB] = useState(10) // Target file size in MB
   const [isProcessing, setIsProcessing] = useState(false)
   const [ffmpegLoaded, setFfmpegLoaded] = useState(false)
   const [loadingFFmpeg, setLoadingFFmpeg] = useState(false)
@@ -147,11 +149,19 @@ export default function VideoConverterPage() {
     const newVideos: VideoFile[] = await Promise.all(
       videoFiles.map(async (file) => {
         const preview = URL.createObjectURL(file)
-        // Get video duration
+        // Get video duration with timeout fallback for corrupt/invalid files
         const video = document.createElement('video')
         video.src = preview
-        await new Promise((resolve) => {
-          video.onloadedmetadata = resolve
+        await new Promise<void>((resolve) => {
+          const timeout = setTimeout(() => resolve(), 5000) // fallback after 5s
+          video.onloadedmetadata = () => {
+            clearTimeout(timeout)
+            resolve()
+          }
+          video.onerror = () => {
+            clearTimeout(timeout)
+            resolve() // resolve anyway, duration will be undefined
+          }
         })
 
         return {
@@ -204,27 +214,122 @@ export default function VideoConverterPage() {
       // Build FFmpeg command
       const args: string[] = ['-i', inputName]
 
-      // Video codec
-      if (videoCodec === 'h264') {
-        args.push('-c:v', 'libx264', '-crf', quality.toString())
-      } else if (videoCodec === 'h265') {
-        args.push('-c:v', 'libx265', '-crf', quality.toString())
-      } else if (videoCodec === 'vp9') {
-        args.push('-c:v', 'libvpx-vp9', '-crf', quality.toString())
-      }
+      // Maximum compression mode - optimized for smallest file size
+      if (maxCompression) {
+        // Calculate target bitrate based on target size and duration
+        const targetBytes = targetSizeMB * 1024 * 1024
+        const duration = videoFile.duration
 
-      // Audio codec
-      if (audioCodec === 'aac') {
-        args.push('-c:a', 'aac', '-b:a', '128k')
-      } else if (audioCodec === 'mp3') {
-        args.push('-c:a', 'libmp3lame', '-b:a', '128k')
-      } else if (audioCodec === 'opus') {
-        args.push('-c:a', 'libopus', '-b:a', '128k')
-      }
+        // Validate duration is available for max compression
+        if (!duration || duration <= 0) {
+          setVideos((prev) =>
+            prev.map((v) =>
+              v.id === videoFile.id
+                ? {
+                    ...v,
+                    status: 'error',
+                    error:
+                      'Unable to determine video duration. Max compression requires valid duration.',
+                  }
+                : v
+            )
+          )
+          trackEvent({
+            action: 'max_compression_error',
+            category: 'video_converter',
+            label: 'missing_duration',
+          })
+          return
+        }
 
-      // Resolution
-      if (resolution !== 'original') {
-        args.push('-vf', `scale=${resolution}`)
+        const audioBitrate = 32 // very low audio bitrate in kbps
+        const audioBytes = (audioBitrate * 1000 * duration) / 8
+        const minVideoBitrate = 50 // minimum 50kbps for usable video
+        const minVideoBytes = (minVideoBitrate * 1000 * duration) / 8
+        const minTargetBytes = audioBytes + minVideoBytes
+        const minTargetMB = Math.ceil(minTargetBytes / (1024 * 1024))
+
+        // Validate target size is achievable for this video duration
+        if (targetSizeMB < minTargetMB) {
+          setVideos((prev) =>
+            prev.map((v) =>
+              v.id === videoFile.id
+                ? {
+                    ...v,
+                    status: 'error',
+                    error: `Target size too small for ${Math.round(duration)}s video. Minimum: ${minTargetMB}MB (audio: 32kbps + video: 50kbps minimum)`,
+                  }
+                : v
+            )
+          )
+          trackEvent({
+            action: 'max_compression_error',
+            category: 'video_converter',
+            label: 'target_too_small',
+            value: targetSizeMB,
+          })
+          return
+        }
+
+        // Ensure videoBytes is positive - if target is too small for audio alone, use minimum
+        const videoBytes = Math.max(0, targetBytes - audioBytes)
+        // Calculate video bitrate in kbps, minimum 50k to ensure usable output
+        const videoBitrate = Math.max(50, Math.floor((videoBytes * 8) / duration / 1000))
+
+        trackEvent({
+          action: 'max_compression_started',
+          category: 'video_converter',
+          label: `target_${targetSizeMB}mb`,
+          value: Math.round(duration),
+        })
+
+        // Use H.264 with target bitrate encoding for predictable file size
+        // -b:v sets average bitrate, -maxrate/-bufsize enforce CBR-like behavior
+        args.push(
+          '-c:v',
+          'libx264',
+          '-preset',
+          'slow', // slower = better compression
+          '-b:v',
+          `${videoBitrate}k`,
+          '-maxrate',
+          `${videoBitrate}k`,
+          '-bufsize',
+          `${videoBitrate * 2}k`
+        )
+
+        // Scale down to smaller resolution if not already set
+        // Use -2 to ensure even dimensions (required for H.264)
+        const compressionScale =
+          resolution !== 'original' ? resolution.replace(':-1', ':-2') : '854:-2'
+        args.push('-vf', `scale=${compressionScale}`)
+
+        // Very low audio bitrate, mono channel
+        args.push('-c:a', 'aac', '-b:a', `${audioBitrate}k`, '-ac', '1')
+      } else {
+        // Standard conversion mode
+        // Video codec
+        if (videoCodec === 'h264') {
+          args.push('-c:v', 'libx264', '-crf', quality.toString())
+        } else if (videoCodec === 'h265') {
+          args.push('-c:v', 'libx265', '-crf', quality.toString())
+        } else if (videoCodec === 'vp9') {
+          args.push('-c:v', 'libvpx-vp9', '-crf', quality.toString())
+        }
+
+        // Audio codec
+        if (audioCodec === 'aac') {
+          args.push('-c:a', 'aac', '-b:a', '128k')
+        } else if (audioCodec === 'mp3') {
+          args.push('-c:a', 'libmp3lame', '-b:a', '128k')
+        } else if (audioCodec === 'opus') {
+          args.push('-c:a', 'libopus', '-b:a', '128k')
+        }
+
+        // Resolution
+        if (resolution !== 'original') {
+          args.push('-vf', `scale=${resolution}`)
+        }
       }
 
       // Output format
@@ -768,48 +873,144 @@ export default function VideoConverterPage() {
                   </div>
                 </div>
 
-                {/* Quality Slider */}
-                <div className={css({ spaceY: '3' })}>
+                {/* Maximum Compression Toggle */}
+                <div className={css({ spaceY: '2' })}>
                   <div
+                    role="button"
+                    tabIndex={0}
                     className={css({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      rounded: 'lg',
+                      border: '1px solid',
+                      borderColor: maxCompression ? 'indigo.500/50' : 'gray.700',
+                      bg: maxCompression ? 'indigo.500/10' : 'gray.800/50',
+                      px: '4',
+                      py: '3',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
                     })}
+                    onClick={() => setMaxCompression(!maxCompression)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setMaxCompression(!maxCompression)
+                      }
+                    }}
                   >
-                    <label
-                      htmlFor="quality-range"
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
-                    >
-                      Quality (CRF)
-                    </label>
-                    <span
-                      className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'indigo.400' })}
-                    >
-                      {quality}
-                    </span>
-                  </div>
-                  <input
-                    id="quality-range"
-                    type="range"
-                    min="0"
-                    max="51"
-                    value={quality}
-                    onChange={(e) => setQuality(Number(e.target.value))}
-                    className={css({ w: 'full', accentColor: 'indigo.500' })}
-                  />
-                  <div
-                    className={css({
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: 'xs',
-                      color: 'white',
-                    })}
-                  >
-                    <span>Best Quality</span>
-                    <span>Smaller Size</span>
+                    <div>
+                      <div
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                      >
+                        Maximum Compression
+                      </div>
+                      <div className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                        Optimize for smallest file size
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={maxCompression}
+                      onChange={(e) => setMaxCompression(e.target.checked)}
+                      className={css({
+                        h: '5',
+                        w: '5',
+                        accentColor: 'indigo.500',
+                        cursor: 'pointer',
+                      })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
                   </div>
                 </div>
+
+                {/* Target Size - only shown in max compression mode */}
+                {maxCompression && (
+                  <div className={css({ spaceY: '2' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      })}
+                    >
+                      <label
+                        htmlFor="target-size"
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                      >
+                        Target Size (MB)
+                      </label>
+                      <span
+                        className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'indigo.400' })}
+                      >
+                        {targetSizeMB} MB
+                      </span>
+                    </div>
+                    <input
+                      id="target-size"
+                      type="range"
+                      min="1"
+                      max="50"
+                      value={targetSizeMB}
+                      onChange={(e) => setTargetSizeMB(Number(e.target.value))}
+                      className={css({ w: 'full', accentColor: 'indigo.500' })}
+                    />
+                    <div
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'gray.400',
+                        textAlign: 'center',
+                      })}
+                    >
+                      Videos will be compressed to approximately {targetSizeMB}MB
+                    </div>
+                  </div>
+                )}
+
+                {/* Quality Slider - hidden in max compression mode */}
+                {!maxCompression && (
+                  <div className={css({ spaceY: '3' })}>
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      })}
+                    >
+                      <label
+                        htmlFor="quality-range"
+                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                      >
+                        Quality (CRF)
+                      </label>
+                      <span
+                        className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'indigo.400' })}
+                      >
+                        {quality}
+                      </span>
+                    </div>
+                    <input
+                      id="quality-range"
+                      type="range"
+                      min="0"
+                      max="51"
+                      value={quality}
+                      onChange={(e) => setQuality(Number(e.target.value))}
+                      className={css({ w: 'full', accentColor: 'indigo.500' })}
+                    />
+                    <div
+                      className={css({
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        fontSize: 'xs',
+                        color: 'white',
+                      })}
+                    >
+                      <span>Best Quality</span>
+                      <span>Smaller Size</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Resolution */}
                 <div className={css({ spaceY: '2' })}>
@@ -928,6 +1129,7 @@ export default function VideoConverterPage() {
                     accept="video/*"
                     maxSize={500 * 1024 * 1024}
                     multiple
+                    disabled={isProcessing}
                   />
                 ) : (
                   <>
@@ -936,6 +1138,7 @@ export default function VideoConverterPage() {
                       accept="video/*"
                       maxSize={500 * 1024 * 1024}
                       multiple
+                      disabled={isProcessing}
                       className={css({ py: '8' })}
                     />
 

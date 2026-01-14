@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
@@ -227,13 +227,21 @@ describe('UUID Generator Page', () => {
   })
 
   describe('UUID Validation', () => {
+    // Helper to get the validate button within the validator section
+    const getValidateButton = () => {
+      const validatorSection =
+        screen.getByText('UUID Validator').closest('section') ||
+        screen.getByText('UUID Validator').parentElement?.parentElement?.parentElement
+      return within(validatorSection as HTMLElement).getByRole('button', { name: /Validate/i })
+    }
+
     it('validates a correct UUID v4', async () => {
       render(<UUIDGeneratorPage />)
 
       const input = screen.getByPlaceholderText(/Enter UUID to validate/)
       fireEvent.change(input, { target: { value: '550e8400-e29b-41d4-a716-446655440000' } })
 
-      const validateButton = screen.getByRole('button', { name: /Validate/i })
+      const validateButton = getValidateButton()
       await userEvent.click(validateButton)
 
       await waitFor(() => {
@@ -248,7 +256,7 @@ describe('UUID Generator Page', () => {
       const input = screen.getByPlaceholderText(/Enter UUID to validate/)
       fireEvent.change(input, { target: { value: '6ba7b810-9dad-11d1-80b4-00c04fd430c8' } })
 
-      const validateButton = screen.getByRole('button', { name: /Validate/i })
+      const validateButton = getValidateButton()
       await userEvent.click(validateButton)
 
       await waitFor(() => {
@@ -263,7 +271,7 @@ describe('UUID Generator Page', () => {
       const input = screen.getByPlaceholderText(/Enter UUID to validate/)
       fireEvent.change(input, { target: { value: 'invalid-uuid' } })
 
-      const validateButton = screen.getByRole('button', { name: /Validate/i })
+      const validateButton = getValidateButton()
       await userEvent.click(validateButton)
 
       await waitFor(() => {
@@ -280,7 +288,7 @@ describe('UUID Generator Page', () => {
       // First add some text
       fireEvent.change(input, { target: { value: '   ' } })
 
-      const validateButton = screen.getByRole('button', { name: /Validate/i })
+      const validateButton = getValidateButton()
 
       // Button should be disabled for whitespace-only input
       expect(validateButton).toBeDisabled()
@@ -294,7 +302,7 @@ describe('UUID Generator Page', () => {
         target: { value: '  550e8400-e29b-41d4-a716-446655440000  ' },
       })
 
-      const validateButton = screen.getByRole('button', { name: /Validate/i })
+      const validateButton = getValidateButton()
       await userEvent.click(validateButton)
 
       await waitFor(() => {
@@ -308,7 +316,7 @@ describe('UUID Generator Page', () => {
       const input = screen.getByPlaceholderText(/Enter UUID to validate/)
       fireEvent.change(input, { target: { value: '550e8400-e29b-41d4-a716-446655440000' } })
 
-      const validateButton = screen.getByRole('button', { name: /Validate/i })
+      const validateButton = getValidateButton()
       await userEvent.click(validateButton)
 
       await waitFor(() => {
@@ -326,7 +334,8 @@ describe('UUID Generator Page', () => {
     it('disables validate button when input is empty', () => {
       render(<UUIDGeneratorPage />)
 
-      const validateButton = screen.getByRole('button', { name: /Validate/i })
+      // Use the getValidateButton helper to find the correct button within the validator section
+      const validateButton = getValidateButton()
       expect(validateButton).toBeDisabled()
     })
   })

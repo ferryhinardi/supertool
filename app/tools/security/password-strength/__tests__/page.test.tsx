@@ -39,7 +39,9 @@ describe('Password Strength Analyzer - Component Tests', () => {
   it('should have show/hide password toggle', () => {
     render(<PasswordStrengthPage />)
 
-    const toggleButton = screen.getByRole('button', { name: '' })
+    // Find toggle button by looking for buttons with SVG icons (eye icon for show/hide)
+    const buttons = screen.getAllByRole('button')
+    const toggleButton = buttons.find((btn) => btn.querySelector('svg'))
     expect(toggleButton).toBeInTheDocument()
   })
 

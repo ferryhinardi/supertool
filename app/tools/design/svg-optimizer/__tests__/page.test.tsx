@@ -39,7 +39,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should render the textarea for SVG input', () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       expect(textarea).toBeInTheDocument()
       expect(textarea).toHaveAttribute('placeholder')
     })
@@ -113,7 +113,7 @@ describe('SVGOptimizerPage', () => {
   describe('SVG Optimization Logic', () => {
     it('should optimize a basic SVG and show output', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg width="100" height="100">
@@ -131,7 +131,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should remove comments when option is enabled', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><!-- Comment --><circle cx="50" cy="50" r="40"/></svg>`
@@ -149,7 +149,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should keep comments when option is disabled', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const removeCommentsCheckbox = screen.getByText('Remove Comments')
         .previousSibling as HTMLInputElement
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
@@ -170,7 +170,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should remove metadata elements', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><metadata>Some metadata</metadata><circle cx="50" cy="50" r="40"/></svg>`
@@ -188,7 +188,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should remove hidden elements (display:none)', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><rect style="display:none" width="100"/><circle cx="50" cy="50" r="40"/></svg>`
@@ -206,7 +206,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should minify hex colors', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><circle fill="#ff0000" cx="50" cy="50" r="40"/></svg>`
@@ -224,7 +224,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should optimize path data by removing unnecessary spaces', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><path d="M 10 10 L 20 20 L 30 10"/></svg>`
@@ -242,7 +242,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should remove empty attributes', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><circle cx="50" cy="50" r="40" fill="" stroke=""/></svg>`
@@ -260,7 +260,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should remove default fill="black" attribute', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><circle cx="50" cy="50" r="40" fill="black"/></svg>`
@@ -278,7 +278,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should handle invalid SVG gracefully', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const invalidSVG = 'Not valid SVG'
@@ -294,7 +294,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should handle empty input', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       fireEvent.change(textarea, { target: { value: '' } })
@@ -314,7 +314,7 @@ describe('SVGOptimizerPage', () => {
   describe('Stats Calculation', () => {
     it('should show stats after optimization', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg width="100" height="100">
@@ -338,7 +338,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should show reduction percentage', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><!-- Long comment here --><circle cx="50" cy="50" r="40"/></svg>`
@@ -358,7 +358,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should count elements correctly', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><circle cx="50" cy="50" r="40"/><rect x="10" y="10" width="30" height="30"/></svg>`
@@ -382,7 +382,7 @@ describe('SVGOptimizerPage', () => {
   describe('Copy to Clipboard', () => {
     it('should have copy button after optimization', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><circle cx="50" cy="50" r="40"/></svg>`
@@ -403,7 +403,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should copy optimized SVG to clipboard when copy button is clicked', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><circle cx="50" cy="50" r="40"/></svg>`
@@ -436,7 +436,7 @@ describe('SVGOptimizerPage', () => {
   describe('Download', () => {
     it('should have download button after optimization', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><circle cx="50" cy="50" r="40"/></svg>`
@@ -463,7 +463,7 @@ describe('SVGOptimizerPage', () => {
   describe('Clear Functionality', () => {
     it('should clear input when clear button is clicked', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox') as HTMLTextAreaElement
+      const textarea = screen.getAllByRole('textbox')[0] as HTMLTextAreaElement
       const clearButton = screen.getByRole('button', { name: /Clear/i })
 
       const inputSVG = `<svg><circle cx="50" cy="50" r="40"/></svg>`
@@ -480,7 +480,7 @@ describe('SVGOptimizerPage', () => {
 
     it('should clear output and stats after clearing', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getAllByRole('textbox')[0]
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
       const clearButton = screen.getByRole('button', { name: /Clear/i })
 
@@ -543,7 +543,8 @@ describe('SVGOptimizerPage', () => {
   describe('Preview', () => {
     it('should show preview after optimization', async () => {
       render(<SVGOptimizerPage />)
-      const textarea = screen.getByRole('textbox')
+      const textareas = screen.getAllByRole('textbox')
+      const textarea = textareas[0] // Get the first textbox (input)
       const optimizeButton = screen.getByRole('button', { name: /Optimize SVG/i })
 
       const inputSVG = `<svg><circle cx="50" cy="50" r="40" fill="red"/></svg>`

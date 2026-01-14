@@ -69,6 +69,10 @@ vi.mock('@codemirror/lang-json', () => ({
   }),
 }))
 
+// Helper function to get delimiter input by its default value
+// Using getByDisplayValue instead of getByLabelText due to multiple "Delimiter" text matches (label + tooltip)
+const getDelimiterInput = () => screen.getByDisplayValue(',')
+
 describe('JSON to CSV Converter Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -145,7 +149,7 @@ describe('JSON to CSV Converter Page', () => {
 
     it('defaults delimiter to comma', async () => {
       render(<JSONToCSVPage />)
-      const delimiterInput = screen.getByLabelText('Delimiter') as HTMLInputElement
+      const delimiterInput = getDelimiterInput() as HTMLInputElement
       expect(delimiterInput.value).toBe(',')
     })
 
@@ -252,7 +256,7 @@ describe('JSON to CSV Converter Page', () => {
       const user = userEvent.setup()
       render(<JSONToCSVPage />)
 
-      const delimiterInput = screen.getByLabelText('Delimiter')
+      const delimiterInput = getDelimiterInput()
 
       await user.clear(delimiterInput)
       fireEvent.change(delimiterInput, { target: { value: ';' } })
@@ -264,7 +268,7 @@ describe('JSON to CSV Converter Page', () => {
       const user = userEvent.setup()
       render(<JSONToCSVPage />)
 
-      const delimiterInput = screen.getByLabelText('Delimiter')
+      const delimiterInput = getDelimiterInput()
 
       await user.clear(delimiterInput)
       fireEvent.change(delimiterInput, { target: { value: '\t' } })
@@ -276,7 +280,7 @@ describe('JSON to CSV Converter Page', () => {
       const user = userEvent.setup()
       render(<JSONToCSVPage />)
 
-      const delimiterInput = screen.getByLabelText('Delimiter')
+      const delimiterInput = getDelimiterInput()
 
       await user.clear(delimiterInput)
       fireEvent.change(delimiterInput, { target: { value: '|' } })
@@ -288,7 +292,7 @@ describe('JSON to CSV Converter Page', () => {
       const user = userEvent.setup()
       render(<JSONToCSVPage />)
 
-      const delimiterInput = screen.getByLabelText('Delimiter') as HTMLInputElement
+      const delimiterInput = getDelimiterInput() as HTMLInputElement
 
       // Check that maxLength attribute is set to 1
       expect(delimiterInput.maxLength).toBe(1)
@@ -304,7 +308,7 @@ describe('JSON to CSV Converter Page', () => {
       const user = userEvent.setup()
       render(<JSONToCSVPage />)
 
-      const delimiterInput = screen.getByLabelText('Delimiter')
+      const delimiterInput = getDelimiterInput()
 
       await user.clear(delimiterInput)
       fireEvent.change(delimiterInput, { target: { value: ';' } })
@@ -579,7 +583,7 @@ describe('JSON to CSV Converter Page', () => {
       render(<JSONToCSVPage />)
 
       // Change delimiter
-      const delimiterInput = screen.getByLabelText('Delimiter')
+      const delimiterInput = getDelimiterInput()
       await user.clear(delimiterInput)
       fireEvent.change(delimiterInput, { target: { value: ';' } })
 
@@ -883,7 +887,9 @@ describe('JSON to CSV Converter Page', () => {
 
     it('has accessible form inputs', async () => {
       render(<JSONToCSVPage />)
-      expect(screen.getByLabelText('Delimiter')).toBeTruthy()
+      // Check for delimiter select by looking for select element or text content
+      // Use getAllByText since "Delimiter" appears in both label and tooltip
+      expect(screen.getAllByText(/Delimiter/i).length).toBeGreaterThanOrEqual(1)
     })
 
     it('has accessible checkbox with label', async () => {

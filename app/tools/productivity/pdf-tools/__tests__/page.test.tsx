@@ -579,8 +579,9 @@ describe('PDF Tools Page', () => {
 
     it('should render tool cards', () => {
       render(<PDFToolsPage />)
-      const cards = document.querySelectorAll('[class*="card"]')
-      expect(cards.length).toBeGreaterThan(0)
+      // Verify main tool operations are rendered instead of relying on CSS class selectors
+      expect(screen.getAllByText(/Merge PDFs/i)[0]).toBeTruthy()
+      expect(screen.getByText('Split PDF')).toBeTruthy()
     })
   })
 

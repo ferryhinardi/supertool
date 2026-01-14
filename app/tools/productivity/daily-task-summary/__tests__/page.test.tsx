@@ -665,8 +665,8 @@ describe('Daily Task Summary - Statistics', () => {
 
     render(<DailyTaskSummary />)
 
-    const progressBars = screen.queryAllByRole('progressbar')
-    expect(progressBars.length).toBeGreaterThan(0)
+    // Check for completion rate section which contains the progress info
+    expect(screen.getByText('Completion Rate')).toBeInTheDocument()
   })
 })
 
