@@ -107,8 +107,9 @@ describe('Tally Counter Page - Component Tests', () => {
   it('should display step value input', () => {
     render(<TallyCounterPage />)
 
-    // Check for Step Value text instead of label association
-    expect(screen.getByText(/Step Value/i) || screen.getByText('Custom Steps')).toBeTruthy()
+    // Check for Step Value text using queryAllByText to handle multiple matches
+    const stepValueTexts = screen.queryAllByText(/Step Value/i)
+    expect(stepValueTexts.length > 0 || screen.getByText('Custom Steps')).toBeTruthy()
   })
 
   it('should display total count', () => {
