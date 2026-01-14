@@ -102,6 +102,7 @@ jobs:
         run: pnpm exec vitest run --shard=${{ matrix.shard }}/6
         env:
           CI: true
+          NODE_OPTIONS: '--max-old-space-size=6144'
 
       - name: Upload test screenshots (on failure)
         uses: actions/upload-artifact@v4
