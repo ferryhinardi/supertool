@@ -635,6 +635,20 @@ type ToolEvent =
   | 'logo_generate_random'
   | 'logo_download'
   | 'logo_select_icon'
+  | 'upload_tool_open'
+  | 'upload_files_selected'
+  | 'upload_file_success'
+  | 'upload_file_error'
+  | 'upload_url_copied'
+  | 'upload_favorite_add'
+  | 'upload_favorite_remove'
+  | 'upload_history_clear'
+  | 'upload_history_export'
+  | 'upload_qr_open'
+  | 'upload_qr_download'
+  | 'upload_share_open'
+  | 'upload_expiration_set'
+  | 'upload_share_social'
 
 // Type-safe gtag wrapper
 declare global {

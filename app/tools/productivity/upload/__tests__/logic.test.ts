@@ -137,4 +137,246 @@ describe('Upload Page Logic', () => {
       expect(initialState.copied).toBe(false)
     })
   })
+
+  // === NEW SHARING FEATURES TESTS ===
+
+  describe('Expiration Time Formatting', () => {
+    // Mirror the formatTimeRemaining function from the page
+    const formatTimeRemaining = (expiresAt: number): string => {
+      const now = Date.now()
+      const diff = expiresAt - now
+      if (diff <= 0) return 'Expired'
+      const hours = Math.floor(diff / (1000 * 60 * 60))
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      if (hours > 24) {
+        const days = Math.floor(hours / 24)
+        return `${days} day${days > 1 ? 's' : ''}`
+      }
+      if (hours > 0) {
+        return `${hours}h ${minutes}m`
+      }
+      return `${minutes}m`
+    }
+
+    it('formats expired time correctly', () => {
+      const pastTime = Date.now() - 1000 // 1 second ago
+      expect(formatTimeRemaining(pastTime)).toBe('Expired')
+    })
+
+    it('formats minutes correctly', () => {
+      const futureTime = Date.now() + 30 * 60 * 1000 // 30 minutes
+      const result = formatTimeRemaining(futureTime)
+      expect(result).toMatch(/^\d+m$/)
+    })
+
+    it('formats hours and minutes correctly', () => {
+      const futureTime = Date.now() + 2 * 60 * 60 * 1000 + 30 * 60 * 1000 // 2.5 hours
+      const result = formatTimeRemaining(futureTime)
+      expect(result).toMatch(/^\d+h \d+m$/)
+    })
+
+    it('formats days correctly', () => {
+      const futureTime = Date.now() + 3 * 24 * 60 * 60 * 1000 // 3 days
+      const result = formatTimeRemaining(futureTime)
+      expect(result).toBe('3 days')
+    })
+
+    it('formats single day correctly', () => {
+      // Need slightly more than 24 hours for the > 24 condition
+      const futureTime = Date.now() + 25 * 60 * 60 * 1000 // 25 hours (shows as 1 day)
+      const result = formatTimeRemaining(futureTime)
+      expect(result).toBe('1 day')
+    })
+  })
+
+  describe('Expiration Check', () => {
+    // Mirror the isExpired function from the page
+    const isExpired = (expiresAt: number): boolean => {
+      return expiresAt > 0 && expiresAt < Date.now()
+    }
+
+    it('returns true for past expiration times', () => {
+      const pastTime = Date.now() - 1000 // 1 second ago
+      expect(isExpired(pastTime)).toBe(true)
+    })
+
+    it('returns false for future expiration times', () => {
+      const futureTime = Date.now() + 60 * 1000 // 1 minute from now
+      expect(isExpired(futureTime)).toBe(false)
+    })
+
+    it('returns false for zero (no expiration)', () => {
+      expect(isExpired(0)).toBe(false)
+    })
+
+    it('returns false for negative values', () => {
+      expect(isExpired(-1)).toBe(false)
+    })
+  })
+
+  describe('Expiration Options', () => {
+    const EXPIRATION_OPTIONS = [
+      { label: '1 Hour', value: 60 * 60 * 1000 },
+      { label: '24 Hours', value: 24 * 60 * 60 * 1000 },
+      { label: '7 Days', value: 7 * 24 * 60 * 60 * 1000 },
+      { label: '30 Days', value: 30 * 24 * 60 * 60 * 1000 },
+      { label: 'Never', value: 0 },
+    ]
+
+    it('has correct number of options', () => {
+      expect(EXPIRATION_OPTIONS).toHaveLength(5)
+    })
+
+    it('has correct values for time intervals', () => {
+      expect(EXPIRATION_OPTIONS[0].value).toBe(3600000) // 1 hour in ms
+      expect(EXPIRATION_OPTIONS[1].value).toBe(86400000) // 24 hours in ms
+      expect(EXPIRATION_OPTIONS[2].value).toBe(604800000) // 7 days in ms
+      expect(EXPIRATION_OPTIONS[3].value).toBe(2592000000) // 30 days in ms
+      expect(EXPIRATION_OPTIONS[4].value).toBe(0) // Never
+    })
+
+    it('calculates correct expiration timestamps', () => {
+      const now = Date.now()
+      const oneHourExpiration = now + EXPIRATION_OPTIONS[0].value
+      const sevenDayExpiration = now + EXPIRATION_OPTIONS[2].value
+
+      expect(oneHourExpiration).toBeGreaterThan(now)
+      expect(sevenDayExpiration - now).toBe(7 * 24 * 60 * 60 * 1000)
+    })
+  })
+
+  describe('Social Share URL Generation', () => {
+    const getShareUrls = (url: string, fileName: string) => {
+      const encodedUrl = encodeURIComponent(url)
+      const text = encodeURIComponent(`Check out this file: ${fileName}`)
+      return {
+        twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${text}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+        linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+        whatsapp: `https://wa.me/?text=${text}%20${encodedUrl}`,
+        telegram: `https://t.me/share/url?url=${encodedUrl}&text=${text}`,
+        email: `mailto:?subject=${encodeURIComponent(`Shared file: ${fileName}`)}&body=${text}%0A%0A${encodedUrl}`,
+      }
+    }
+
+    it('generates valid Twitter share URL', () => {
+      const url = 'https://example.com/file.pdf'
+      const fileName = 'test.pdf'
+      const shareUrls = getShareUrls(url, fileName)
+
+      expect(shareUrls.twitter).toContain('https://twitter.com/intent/tweet')
+      expect(shareUrls.twitter).toContain(encodeURIComponent(url))
+    })
+
+    it('generates valid Facebook share URL', () => {
+      const url = 'https://example.com/file.pdf'
+      const fileName = 'test.pdf'
+      const shareUrls = getShareUrls(url, fileName)
+
+      expect(shareUrls.facebook).toContain('https://www.facebook.com/sharer/sharer.php')
+      expect(shareUrls.facebook).toContain(encodeURIComponent(url))
+    })
+
+    it('generates valid LinkedIn share URL', () => {
+      const url = 'https://example.com/file.pdf'
+      const fileName = 'test.pdf'
+      const shareUrls = getShareUrls(url, fileName)
+
+      expect(shareUrls.linkedin).toContain('https://www.linkedin.com/sharing/share-offsite')
+      expect(shareUrls.linkedin).toContain(encodeURIComponent(url))
+    })
+
+    it('generates valid WhatsApp share URL', () => {
+      const url = 'https://example.com/file.pdf'
+      const fileName = 'test.pdf'
+      const shareUrls = getShareUrls(url, fileName)
+
+      expect(shareUrls.whatsapp).toContain('https://wa.me/')
+      expect(shareUrls.whatsapp).toContain(encodeURIComponent(url))
+    })
+
+    it('generates valid Telegram share URL', () => {
+      const url = 'https://example.com/file.pdf'
+      const fileName = 'test.pdf'
+      const shareUrls = getShareUrls(url, fileName)
+
+      expect(shareUrls.telegram).toContain('https://t.me/share/url')
+      expect(shareUrls.telegram).toContain(encodeURIComponent(url))
+    })
+
+    it('generates valid email share URL', () => {
+      const url = 'https://example.com/file.pdf'
+      const fileName = 'test.pdf'
+      const shareUrls = getShareUrls(url, fileName)
+
+      expect(shareUrls.email).toContain('mailto:?subject=')
+      expect(shareUrls.email).toContain(encodeURIComponent(fileName))
+    })
+
+    it('properly encodes special characters in URL', () => {
+      const url = 'https://example.com/file with spaces.pdf'
+      const fileName = 'test file.pdf'
+      const shareUrls = getShareUrls(url, fileName)
+
+      // Should not contain unencoded spaces
+      expect(shareUrls.twitter).not.toContain(' ')
+      expect(shareUrls.facebook).not.toContain(' ')
+    })
+  })
+
+  describe('Upload History Item with Expiration', () => {
+    interface UploadHistoryItem {
+      id: string
+      fileName: string
+      fileSize: number
+      fileType: string
+      publicUrl: string
+      uploadedAt: number
+      expiresAt?: number
+    }
+
+    it('creates history item without expiration', () => {
+      const item: UploadHistoryItem = {
+        id: '1',
+        fileName: 'test.pdf',
+        fileSize: 1024,
+        fileType: 'application/pdf',
+        publicUrl: 'https://example.com/test.pdf',
+        uploadedAt: Date.now(),
+      }
+
+      expect(item.expiresAt).toBeUndefined()
+    })
+
+    it('creates history item with expiration', () => {
+      const expiresAt = Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+      const item: UploadHistoryItem = {
+        id: '1',
+        fileName: 'test.pdf',
+        fileSize: 1024,
+        fileType: 'application/pdf',
+        publicUrl: 'https://example.com/test.pdf',
+        uploadedAt: Date.now(),
+        expiresAt,
+      }
+
+      expect(item.expiresAt).toBe(expiresAt)
+    })
+
+    it('updates expiration on existing item', () => {
+      const item: UploadHistoryItem = {
+        id: '1',
+        fileName: 'test.pdf',
+        fileSize: 1024,
+        fileType: 'application/pdf',
+        publicUrl: 'https://example.com/test.pdf',
+        uploadedAt: Date.now(),
+      }
+
+      const newExpiration = Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+      const updatedItem = { ...item, expiresAt: newExpiration }
+
+      expect(updatedItem.expiresAt).toBe(newExpiration)
+    })
+  })
 })
