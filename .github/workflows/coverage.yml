@@ -46,6 +46,7 @@ jobs:
         env:
           CI: true
           NODE_ENV: test
+          NODE_OPTIONS: --max-old-space-size=8192
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
