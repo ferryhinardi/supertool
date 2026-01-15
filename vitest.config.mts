@@ -71,8 +71,9 @@ export default defineConfig({
     },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov', 'json-summary'],
+      reporter: ['text', 'json', 'lcov', 'json-summary'],
       reportsDirectory: './coverage',
+      processingConcurrency: 4,
       exclude: [
         'node_modules/',
         'vitest.setup.ts',
