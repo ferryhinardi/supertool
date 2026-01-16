@@ -48,6 +48,10 @@ export default defineConfig({
       NEXT_PUBLIC_SUPABASE_URL: 'https://test.supabase.co',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
     },
+    // Use forks pool with isolation to prevent cumulative memory leaks in CI
+    // Each test file runs in a separate process, preventing OOM in shards
+    pool: 'forks',
+    isolate: true,
     exclude: [
       '**/node_modules/**',
       '**/.git/**',

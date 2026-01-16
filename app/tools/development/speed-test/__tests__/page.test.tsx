@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
@@ -79,6 +79,8 @@ describe('Speed Test Page', () => {
   })
 
   afterEach(() => {
+    cleanup() // Explicit React cleanup to prevent memory leaks
+    vi.clearAllTimers() // Clear any pending timers
     vi.useRealTimers()
     vi.restoreAllMocks()
   })
@@ -345,7 +347,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
     })
   })
@@ -361,7 +363,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       // Results should be visible
@@ -379,7 +381,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       // Quality badges should be visible
@@ -402,7 +404,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 20000 }
+        { timeout: 5000 }
       )
 
       await waitFor(() => {
@@ -429,7 +431,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       expect(screen.getByText('Run Test Again')).toBeTruthy()
@@ -445,7 +447,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       // Click Run Test Again
@@ -466,7 +468,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       // Run second test
@@ -494,7 +496,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
     })
 
@@ -516,7 +518,7 @@ describe('Speed Test Page', () => {
             screen.queryByText('Testing Download Speed...') || screen.queryByText('Test Complete!')
           expect(downloadOrComplete).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
     })
 
@@ -531,7 +533,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
     })
   })
@@ -547,7 +549,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       expect(screen.getByText(/How fast you can receive data/)).toBeTruthy()
@@ -563,7 +565,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       expect(screen.getByText(/How fast you can send data/)).toBeTruthy()
@@ -579,7 +581,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       expect(screen.getByText(/Response time/)).toBeTruthy()
@@ -595,7 +597,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
 
       expect(screen.getByText(/Variation in latency/)).toBeTruthy()
@@ -631,7 +633,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
     })
   })
@@ -658,7 +660,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Run Test Again')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
     })
   })
@@ -751,7 +753,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 10000 }
+        { timeout: 5000 }
       )
     })
 
