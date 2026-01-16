@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -35,9 +36,13 @@ function CronExpressionContent() {
   >('crontab')
 
   // Track page visit
-  useEffect(() => {
-    trackToolEvent('cron_expression_open', {})
-  }, [])
+  useTrackToolView({
+    toolId: 'cron-expression',
+    title: 'Cron Expression Parser',
+    href: '/tools/development/cron-expression',
+    iconName: 'Clock',
+    gradient: 'from-orange-500 to-red-500',
+  })
 
   // Validate and update expression
   const validation = useMemo(() => validateCronExpression(expression), [expression])
