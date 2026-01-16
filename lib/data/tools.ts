@@ -717,6 +717,22 @@ export const tools: Tool[] = [
     category: 'development',
     new: true,
   },
+  {
+    title: 'Cron Expression Parser',
+    description:
+      'Parse and validate cron expressions with live execution previews. Export configurations for Kubernetes CronJobs, GitHub Actions, GitLab CI/CD, AWS, and standard crontab. Ideal for DevOps workflows.',
+    icon: Calendar,
+    href: '/tools/development/cron-expression',
+    gradient: 'from-teal-500 to-green-500',
+    features: [
+      'Expression Validation',
+      'Execution Preview',
+      'Multi-Platform Export',
+      'Config Generator',
+    ],
+    category: 'development',
+    new: true,
+  },
 
   // Data & Conversion Utilities (Coming Soon)
   {
@@ -941,6 +957,18 @@ export const tools: Tool[] = [
     features: ['Custom Sizes', 'Color Picker', 'Text Overlay', 'SVG & PNG Export'],
     category: 'design',
     new: true,
+  },
+  {
+    title: 'Logo Maker',
+    description:
+      'Create professional logos with 1000+ icons, custom fonts, and color palettes. Export as PNG or SVG for free. No design skills required.',
+    icon: PenTool,
+    href: '/tools/design/logo-maker',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['1000+ Icons', 'Custom Fonts', 'Color Palettes', 'PNG/SVG Export'],
+    category: 'design',
+    new: true,
+    popular: true,
   },
 
   // Productivity & Workflow Tools
@@ -1185,6 +1213,29 @@ export const tools: Tool[] = [
     features: ['OCR Technology', '12+ Languages', 'Copy Text', 'Download .txt'],
     category: 'media',
     new: true,
+  },
+  {
+    title: 'SVG to PNG Converter',
+    description:
+      'Convert SVG files to high-quality PNG images with customizable dimensions, background colors, and quality settings. Preview, download, or copy to clipboard instantly.',
+    icon: FileImage,
+    href: '/tools/media/svg-to-png',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['Custom Dimensions', 'Background Colors', 'Quality Control', 'Copy to Clipboard'],
+    category: 'media',
+    new: true,
+  },
+  {
+    title: 'Background Remover',
+    description:
+      'Remove backgrounds from images instantly with AI. 100% free, works entirely in your browser for complete privacy. No upload to servers required.',
+    icon: Wand2,
+    href: '/tools/media/background-remover',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['AI-Powered', '100% Private', 'Instant Results', 'High Quality'],
+    category: 'media',
+    new: true,
+    popular: true,
   },
   {
     title: 'AI Snippet Generator',
