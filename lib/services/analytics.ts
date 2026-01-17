@@ -662,6 +662,10 @@ type ToolEvent =
   | 'hashtag_copied'
   | 'hashtag_platform_changed'
   | 'hashtag_category_filtered'
+  | 'citation_source_type_changed'
+  | 'citation_style_changed'
+  | 'citation_generated'
+  | 'citation_copied'
 
 // Type-safe gtag wrapper
 declare global {
