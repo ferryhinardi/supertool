@@ -1,0 +1,854 @@
+name: Copilot AI Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_security_scan:
+        description: 'Run security scan'
+        required: false
+        default: 'true'
+        type: boolean
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  security-events: write
+
+concurrency:
+  group: copilot-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9.15.3'
+
+jobs:
+  # ============================================================================
+  # Job 1: Commit Message Validation
+  # ============================================================================
+  commit-validation:
+    name: Validate Commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Conventional Commits
+        id: commit-check
+        run: |
+          echo "## Commit Message Validation" > commit-report.md
+          echo "" >> commit-report.md
+
+          # Get all commits in this PR
+          COMMITS=$(git log --format="%H %s" origin/${{ github.base_ref }}..HEAD)
+          INVALID_COMMITS=""
+          VALID_COUNT=0
+          INVALID_COUNT=0
+
+          # Conventional commit pattern
+          PATTERN="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}"
+
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              HASH=$(echo "$line" | cut -d' ' -f1)
+              MSG=$(echo "$line" | cut -d' ' -f2-)
+              SHORT_HASH="${HASH:0:7}"
+
+              if echo "$MSG" | grep -qE "$PATTERN"; then
+                echo "- \`$SHORT_HASH\` $MSG" >> commit-report.md
+                ((VALID_COUNT++))
+              else
+                echo "- **$SHORT_HASH** $MSG (invalid format)" >> commit-report.md
+                INVALID_COMMITS="$INVALID_COMMITS\n- $SHORT_HASH: $MSG"
+                ((INVALID_COUNT++))
+              fi
+            fi
+          done <<< "$COMMITS"
+
+          echo "" >> commit-report.md
+
+          if [ $INVALID_COUNT -gt 0 ]; then
+            echo "### Invalid Commits Found" >> commit-report.md
+            echo "" >> commit-report.md
+            echo "The following commits do not follow [Conventional Commits](https://www.conventionalcommits.org/):" >> commit-report.md
+            echo -e "$INVALID_COMMITS" >> commit-report.md
+            echo "" >> commit-report.md
+            echo "**Expected format:** \`type(scope): description\`" >> commit-report.md
+            echo "" >> commit-report.md
+            echo "**Valid types:** feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert" >> commit-report.md
+            echo "commit_valid=false" >> $GITHUB_OUTPUT
+          else
+            echo "All $VALID_COUNT commits follow conventional commit format." >> commit-report.md
+            echo "commit_valid=true" >> $GITHUB_OUTPUT
+          fi
+
+          cat commit-report.md
+
+      - name: Upload Commit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: commit-validation-report
+          path: commit-report.md
+          retention-days: 7
+
+    outputs:
+      commit_valid: ${{ steps.commit-check.outputs.commit_valid }}
+
+  # ============================================================================
+  # Job 2: Security Scanning
+  # ============================================================================
+  security-scan:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.run_security_scan == 'true')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Approve build scripts
+        run: |
+          pnpm config set enable-pre-post-scripts true
+          pnpm approve-builds ffmpeg-static || true
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Security Audit
+        id: audit
+        run: |
+          echo "## Security Audit Report" > security-report.md
+          echo "" >> security-report.md
+          echo "Generated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> security-report.md
+          echo "" >> security-report.md
+
+          # Run pnpm audit
+          echo "### Dependency Vulnerabilities" >> security-report.md
+          echo "" >> security-report.md
+          echo "\`\`\`" >> security-report.md
+          pnpm audit --audit-level=moderate >> security-report.md 2>&1 || true
+          echo "\`\`\`" >> security-report.md
+          echo "" >> security-report.md
+
+          # Check for security issues
+          CRITICAL=$(pnpm audit --json 2>/dev/null | jq '.metadata.vulnerabilities.critical // 0' || echo "0")
+          HIGH=$(pnpm audit --json 2>/dev/null | jq '.metadata.vulnerabilities.high // 0' || echo "0")
+
+          echo "critical_count=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high_count=$HIGH" >> $GITHUB_OUTPUT
+
+      - name: Scan for Secrets
+        id: secrets
+        run: |
+          echo "### Secret Detection" >> security-report.md
+          echo "" >> security-report.md
+
+          # Common secret patterns
+          PATTERNS=(
+            "api[_-]?key\s*[:=]"
+            "secret[_-]?key\s*[:=]"
+            "password\s*[:=]"
+            "token\s*[:=].*['\"][a-zA-Z0-9]{20,}['\"]"
+            "aws[_-]?access[_-]?key"
+            "aws[_-]?secret"
+            "private[_-]?key"
+            "-----BEGIN.*PRIVATE KEY-----"
+          )
+
+          SECRETS_FOUND=0
+
+          # Get changed files
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.json' '*.env*' 2>/dev/null || echo "")
+          else
+            FILES=$(git ls-files '*.ts' '*.tsx' '*.js' '*.json' '*.env*' 2>/dev/null || echo "")
+          fi
+
+          for pattern in "${PATTERNS[@]}"; do
+            if [ -n "$FILES" ]; then
+              MATCHES=$(echo "$FILES" | xargs grep -liE "$pattern" 2>/dev/null | grep -v "node_modules" | grep -v ".env.example" || true)
+              if [ -n "$MATCHES" ]; then
+                echo "- Potential secret pattern found: \`$pattern\`" >> security-report.md
+                echo "  Files: $MATCHES" >> security-report.md
+                ((SECRETS_FOUND++))
+              fi
+            fi
+          done
+
+          if [ $SECRETS_FOUND -eq 0 ]; then
+            echo "No potential secrets detected in changed files." >> security-report.md
+          else
+            echo "" >> security-report.md
+            echo "**WARNING:** $SECRETS_FOUND potential secret patterns found. Please review!" >> security-report.md
+          fi
+
+          echo "secrets_found=$SECRETS_FOUND" >> $GITHUB_OUTPUT
+
+      - name: Scan for Security Anti-patterns
+        run: |
+          echo "" >> security-report.md
+          echo "### Security Anti-patterns" >> security-report.md
+          echo "" >> security-report.md
+
+          # Get changed files
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' 2>/dev/null || echo "")
+          else
+            FILES=$(git ls-files '*.ts' '*.tsx' '*.js' 2>/dev/null || echo "")
+          fi
+
+          ISSUES=0
+
+          # Check for eval usage
+          if [ -n "$FILES" ]; then
+            EVAL_FILES=$(echo "$FILES" | xargs grep -l "eval(" 2>/dev/null | grep -v "node_modules" || true)
+            if [ -n "$EVAL_FILES" ]; then
+              echo "- **eval() usage found** (potential code injection risk)" >> security-report.md
+              echo "  Files: $EVAL_FILES" >> security-report.md
+              ((ISSUES++))
+            fi
+
+            # Check for dangerouslySetInnerHTML
+            DANGEROUS_HTML=$(echo "$FILES" | xargs grep -l "dangerouslySetInnerHTML" 2>/dev/null | grep -v "node_modules" || true)
+            if [ -n "$DANGEROUS_HTML" ]; then
+              echo "- **dangerouslySetInnerHTML usage found** (potential XSS risk)" >> security-report.md
+              echo "  Files: $DANGEROUS_HTML" >> security-report.md
+              ((ISSUES++))
+            fi
+
+            # Check for innerHTML assignments
+            INNER_HTML=$(echo "$FILES" | xargs grep -l "\.innerHTML\s*=" 2>/dev/null | grep -v "node_modules" || true)
+            if [ -n "$INNER_HTML" ]; then
+              echo "- **innerHTML assignment found** (potential XSS risk)" >> security-report.md
+              echo "  Files: $INNER_HTML" >> security-report.md
+              ((ISSUES++))
+            fi
+
+            # Check for SQL concatenation patterns
+            SQL_CONCAT=$(echo "$FILES" | xargs grep -lE "(SELECT|INSERT|UPDATE|DELETE).*\+" 2>/dev/null | grep -v "node_modules" || true)
+            if [ -n "$SQL_CONCAT" ]; then
+              echo "- **SQL string concatenation found** (potential SQL injection risk)" >> security-report.md
+              echo "  Files: $SQL_CONCAT" >> security-report.md
+              ((ISSUES++))
+            fi
+          fi
+
+          if [ $ISSUES -eq 0 ]; then
+            echo "No security anti-patterns detected." >> security-report.md
+          fi
+
+          cat security-report.md
+
+      - name: Upload Security Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-report.md
+          retention-days: 30
+
+    outputs:
+      critical_vulns: ${{ steps.audit.outputs.critical_count }}
+      high_vulns: ${{ steps.audit.outputs.high_count }}
+      secrets_found: ${{ steps.secrets.outputs.secrets_found }}
+
+  # ============================================================================
+  # Job 3: AI Code Review
+  # ============================================================================
+  ai-review:
+    name: AI Code Analysis
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [commit-validation, security-scan]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Approve build scripts
+        run: |
+          pnpm config set enable-pre-post-scripts true
+          pnpm approve-builds ffmpeg-static || true
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate MCP Configuration
+        id: mcp-validate
+        run: pnpm mcp:validate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Run Lint Check
+        id: lint
+        run: |
+          pnpm lint > lint-output.txt 2>&1 || true
+          if grep -qE "(error|Error)" lint-output.txt; then
+            echo "lint_passed=false" >> $GITHUB_OUTPUT
+            echo "lint_errors<<EOF" >> $GITHUB_OUTPUT
+            cat lint-output.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "lint_passed=true" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Run Type Check
+        id: typecheck
+        run: |
+          pnpm exec tsc --noEmit > typecheck-output.txt 2>&1 || true
+          if grep -qE "error TS" typecheck-output.txt; then
+            echo "typecheck_passed=false" >> $GITHUB_OUTPUT
+            echo "typecheck_errors<<EOF" >> $GITHUB_OUTPUT
+            cat typecheck-output.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "typecheck_passed=true" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Upload Check Outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-outputs-report
+          path: |
+            lint-output.txt
+            typecheck-output.txt
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Analyze Changed Files
+        id: analyze
+        run: |
+          echo "## AI Code Review Analysis" > ai-review.md
+          echo "" >> ai-review.md
+          echo "**PR:** #${{ github.event.pull_request.number }}" >> ai-review.md
+          echo "**Branch:** ${{ github.head_ref }} -> ${{ github.base_ref }}" >> ai-review.md
+          echo "**Author:** @${{ github.event.pull_request.user.login }}" >> ai-review.md
+          echo "" >> ai-review.md
+
+          # Changed files analysis
+          echo "### Changed Files" >> ai-review.md
+          echo "" >> ai-review.md
+
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          FILE_COUNT=$(echo "$CHANGED_FILES" | wc -l)
+
+          echo "| File | Type | Lines Changed |" >> ai-review.md
+          echo "|------|------|---------------|" >> ai-review.md
+
+          while IFS= read -r file; do
+            if [ -n "$file" ]; then
+              EXT="${file##*.}"
+              STATS=$(git diff --numstat origin/${{ github.base_ref }}...HEAD -- "$file" | awk '{print "+"$1"/-"$2}')
+              echo "| \`$file\` | $EXT | $STATS |" >> ai-review.md
+            fi
+          done <<< "$CHANGED_FILES"
+
+          echo "" >> ai-review.md
+          echo "**Total files changed:** $FILE_COUNT" >> ai-review.md
+          echo "" >> ai-review.md
+
+          # Categorize changes
+          echo "### Change Categories" >> ai-review.md
+          echo "" >> ai-review.md
+
+          COMPONENTS=$(echo "$CHANGED_FILES" | grep -c "^components/" || echo "0")
+          PAGES=$(echo "$CHANGED_FILES" | grep -c "^app/" || echo "0")
+          TESTS=$(echo "$CHANGED_FILES" | grep -c "\.test\." || echo "0")
+          CONFIGS=$(echo "$CHANGED_FILES" | grep -cE "\.(json|yaml|yml|config)$" || echo "0")
+          STYLES=$(echo "$CHANGED_FILES" | grep -cE "\.(css|scss|styled)$" || echo "0")
+
+          echo "- Components: $COMPONENTS files" >> ai-review.md
+          echo "- Pages/Routes: $PAGES files" >> ai-review.md
+          echo "- Tests: $TESTS files" >> ai-review.md
+          echo "- Configs: $CONFIGS files" >> ai-review.md
+          echo "- Styles: $STYLES files" >> ai-review.md
+          echo "" >> ai-review.md
+
+      - name: Code Quality Metrics
+        run: |
+          echo "### Code Quality Metrics" >> ai-review.md
+          echo "" >> ai-review.md
+
+          # Get diff content
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD)
+
+          # Count potential issues
+          TODO_COUNT=$(echo "$DIFF" | grep -c "TODO" || echo "0")
+          FIXME_COUNT=$(echo "$DIFF" | grep -c "FIXME" || echo "0")
+          CONSOLE_COUNT=$(echo "$DIFF" | grep -c "console\." || echo "0")
+          ANY_COUNT=$(echo "$DIFF" | grep -c ": any" || echo "0")
+          ESLINT_DISABLE=$(echo "$DIFF" | grep -c "eslint-disable" || echo "0")
+
+          echo "| Metric | Count | Status |" >> ai-review.md
+          echo "|--------|-------|--------|" >> ai-review.md
+
+          # TODO comments
+          if [ "$TODO_COUNT" -gt 0 ]; then
+            echo "| TODO comments | $TODO_COUNT | Consider addressing before merge |" >> ai-review.md
+          else
+            echo "| TODO comments | $TODO_COUNT | - |" >> ai-review.md
+          fi
+
+          # FIXME comments
+          if [ "$FIXME_COUNT" -gt 0 ]; then
+            echo "| FIXME comments | $FIXME_COUNT | Should be resolved before merge |" >> ai-review.md
+          else
+            echo "| FIXME comments | $FIXME_COUNT | - |" >> ai-review.md
+          fi
+
+          # Console logs
+          if [ "$CONSOLE_COUNT" -gt 0 ]; then
+            echo "| Console statements | $CONSOLE_COUNT | Remove before production |" >> ai-review.md
+          else
+            echo "| Console statements | $CONSOLE_COUNT | - |" >> ai-review.md
+          fi
+
+          # TypeScript any
+          if [ "$ANY_COUNT" -gt 0 ]; then
+            echo "| TypeScript \`any\` | $ANY_COUNT | Avoid using any |" >> ai-review.md
+          else
+            echo "| TypeScript \`any\` | $ANY_COUNT | - |" >> ai-review.md
+          fi
+
+          # ESLint disables
+          if [ "$ESLINT_DISABLE" -gt 0 ]; then
+            echo "| ESLint disables | $ESLINT_DISABLE | Review necessity |" >> ai-review.md
+          else
+            echo "| ESLint disables | $ESLINT_DISABLE | - |" >> ai-review.md
+          fi
+
+          echo "" >> ai-review.md
+
+      - name: Generate AI Suggestions
+        id: suggestions
+        run: |
+          echo "### AI-Powered Suggestions" >> ai-review.md
+          echo "" >> ai-review.md
+
+          # Analyze patterns and generate suggestions
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD)
+          SUGGESTIONS=""
+
+          # Check for missing error handling
+          if echo "$DIFF" | grep -qE "async.*=>" | grep -vE "try\s*{"; then
+            SUGGESTIONS="$SUGGESTIONS\n- **Error Handling:** Consider adding try/catch blocks to async functions"
+          fi
+
+          # Check for missing loading states
+          if echo "$DIFF" | grep -qE "useState.*\[\]" && ! echo "$DIFF" | grep -qE "isLoading|loading"; then
+            SUGGESTIONS="$SUGGESTIONS\n- **UX:** Consider adding loading states for data fetching"
+          fi
+
+          # Check for hardcoded values
+          if echo "$DIFF" | grep -qE "(localhost|127\.0\.0\.1):"; then
+            SUGGESTIONS="$SUGGESTIONS\n- **Config:** Avoid hardcoded URLs, use environment variables"
+          fi
+
+          # Check for missing accessibility
+          if echo "$DIFF" | grep -qE "<(button|a|input)" && ! echo "$DIFF" | grep -qE "aria-|role="; then
+            SUGGESTIONS="$SUGGESTIONS\n- **Accessibility:** Consider adding ARIA attributes for interactive elements"
+          fi
+
+          # Check for large components
+          LARGE_FILES=$(git diff --stat origin/${{ github.base_ref }}...HEAD -- '*.tsx' | grep -E "\+[0-9]{3,}" || true)
+          if [ -n "$LARGE_FILES" ]; then
+            SUGGESTIONS="$SUGGESTIONS\n- **Maintainability:** Large file changes detected, consider splitting into smaller components"
+          fi
+
+          # Check for missing tests
+          CHANGED_COMPONENTS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.tsx' | grep -v "\.test\." | grep -v "\.stories\.")
+          CHANGED_TESTS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.test.tsx' '*.test.ts')
+
+          if [ -n "$CHANGED_COMPONENTS" ] && [ -z "$CHANGED_TESTS" ]; then
+            SUGGESTIONS="$SUGGESTIONS\n- **Testing:** Component changes detected without corresponding test updates"
+          fi
+
+          if [ -n "$SUGGESTIONS" ]; then
+            echo -e "$SUGGESTIONS" >> ai-review.md
+          else
+            echo "No automated suggestions. Code looks good!" >> ai-review.md
+          fi
+
+          echo "" >> ai-review.md
+
+      - name: Download Reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-report*'
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Compile Final Review
+        id: final-review
+        env:
+          LINT_PASSED: ${{ steps.lint.outputs.lint_passed }}
+          TYPECHECK_PASSED: ${{ steps.typecheck.outputs.typecheck_passed }}
+          COMMIT_VALID: ${{ needs.commit-validation.outputs.commit_valid }}
+          CRITICAL_VULNS: ${{ needs.security-scan.outputs.critical_vulns }}
+          HIGH_VULNS: ${{ needs.security-scan.outputs.high_vulns }}
+          SECRETS_FOUND: ${{ needs.security-scan.outputs.secrets_found }}
+        run: |
+          echo "## Summary" >> ai-review.md
+          echo "" >> ai-review.md
+          echo "| Check | Status |" >> ai-review.md
+          echo "|-------|--------|" >> ai-review.md
+
+          # Determine overall status
+          BLOCKING=0
+
+          # Lint status
+          if [ "$LINT_PASSED" == "true" ]; then
+            echo "| Lint | Passed |" >> ai-review.md
+          else
+            echo "| Lint | **Failed** |" >> ai-review.md
+            ((BLOCKING++))
+          fi
+
+          # Type check status
+          if [ "$TYPECHECK_PASSED" == "true" ]; then
+            echo "| Type Check | Passed |" >> ai-review.md
+          else
+            echo "| Type Check | **Failed** |" >> ai-review.md
+            ((BLOCKING++))
+          fi
+
+          # Commit validation
+          if [ "$COMMIT_VALID" == "true" ]; then
+            echo "| Commits | Valid |" >> ai-review.md
+          else
+            echo "| Commits | Warning |" >> ai-review.md
+          fi
+
+          # Security
+          if [ "${CRITICAL_VULNS:-0}" -gt 0 ] || [ "${HIGH_VULNS:-0}" -gt 0 ]; then
+            echo "| Security | **Issues Found** |" >> ai-review.md
+            ((BLOCKING++))
+          elif [ "${SECRETS_FOUND:-0}" -gt 0 ]; then
+            echo "| Security | Warning |" >> ai-review.md
+          else
+            echo "| Security | Passed |" >> ai-review.md
+          fi
+
+          echo "" >> ai-review.md
+
+          # Include lint errors if present
+          if [ "$LINT_PASSED" == "false" ] && [ -f lint-output.txt ]; then
+            echo "### Lint Errors" >> ai-review.md
+            echo "" >> ai-review.md
+            echo "\`\`\`" >> ai-review.md
+            head -50 lint-output.txt >> ai-review.md
+            echo "\`\`\`" >> ai-review.md
+            echo "" >> ai-review.md
+          fi
+
+          # Include type errors if present
+          if [ "$TYPECHECK_PASSED" == "false" ] && [ -f typecheck-output.txt ]; then
+            echo "### Type Errors" >> ai-review.md
+            echo "" >> ai-review.md
+            echo "\`\`\`" >> ai-review.md
+            head -50 typecheck-output.txt >> ai-review.md
+            echo "\`\`\`" >> ai-review.md
+            echo "" >> ai-review.md
+          fi
+
+          # Overall recommendation
+          echo "---" >> ai-review.md
+          echo "" >> ai-review.md
+
+          if [ $BLOCKING -gt 0 ]; then
+            echo "**Recommendation:** Please address the blocking issues above before merging." >> ai-review.md
+            echo "review_status=changes_requested" >> $GITHUB_OUTPUT
+          else
+            echo "**Recommendation:** This PR looks good to merge!" >> ai-review.md
+            echo "review_status=approved" >> $GITHUB_OUTPUT
+          fi
+
+          echo "" >> ai-review.md
+          echo "*This review was generated by AI-powered analysis. Please use your judgment.*" >> ai-review.md
+
+          cat ai-review.md
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            let comment = '## Copilot AI Code Review\n\n';
+
+            try {
+              if (fs.existsSync('ai-review.md')) {
+                comment += fs.readFileSync('ai-review.md', 'utf8');
+              }
+
+              // Add commit validation report if exists
+              if (fs.existsSync('commit-report.md')) {
+                comment += '\n\n---\n\n';
+                comment += fs.readFileSync('commit-report.md', 'utf8');
+              }
+
+              // Add security summary if exists
+              if (fs.existsSync('security-report.md')) {
+                comment += '\n\n---\n\n';
+                comment += fs.readFileSync('security-report.md', 'utf8');
+              }
+            } catch (error) {
+              comment += 'Error reading analysis reports: ' + error.message + '\n';
+            }
+
+            comment += '\n\n---\n';
+            comment += `*Analysis completed at: ${new Date().toISOString()}*`;
+
+            // Find existing bot comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Copilot AI Code Review')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+      - name: Upload AI Review Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-review-report
+          path: ai-review.md
+          retention-days: 30
+
+    outputs:
+      review_status: ${{ steps.final-review.outputs.review_status }}
+
+  # ============================================================================
+  # Job 4: AI Fix Suggestions (on CI failure)
+  # ============================================================================
+  suggest-fixes:
+    name: AI Fix Suggestions
+    runs-on: ubuntu-latest
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      needs.ai-review.result != 'cancelled' &&
+      (needs.ai-review.outputs.review_status == 'changes_requested' || needs.ai-review.result == 'failure')
+    needs: [ai-review]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Error Reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-report*'
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Generate Fix Suggestions
+        id: fixes
+        run: |
+          echo "## AI-Suggested Fixes" > fix-suggestions.md
+          echo "" >> fix-suggestions.md
+          echo "Based on the CI failures, here are suggested fixes:" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+
+          # Parse lint errors and suggest fixes
+          if [ -f lint-output.txt ]; then
+            echo "### Lint Fixes" >> fix-suggestions.md
+            echo "" >> fix-suggestions.md
+
+            # Extract unique error types
+            grep -oE "\([a-zA-Z/]+\)" lint-output.txt | sort -u | while read -r error; do
+              case "$error" in
+                *"no-console"*)
+                  echo "- **console statements:** Remove or replace with proper logging" >> fix-suggestions.md
+                  echo "  \`\`\`bash" >> fix-suggestions.md
+                  echo "  # Run to find all console statements:" >> fix-suggestions.md
+                  echo "  grep -rn 'console\\.' --include='*.ts' --include='*.tsx' ." >> fix-suggestions.md
+                  echo "  \`\`\`" >> fix-suggestions.md
+                  ;;
+                *"no-unused-vars"*)
+                  echo "- **unused variables:** Remove or prefix with underscore (_)" >> fix-suggestions.md
+                  ;;
+                *"prefer-const"*)
+                  echo "- **prefer-const:** Change \`let\` to \`const\` for variables not reassigned" >> fix-suggestions.md
+                  ;;
+                *"no-explicit-any"*)
+                  echo "- **any type:** Replace \`any\` with proper TypeScript types" >> fix-suggestions.md
+                  ;;
+              esac
+            done
+            echo "" >> fix-suggestions.md
+          fi
+
+          # Parse type errors and suggest fixes
+          if [ -f typecheck-output.txt ]; then
+            echo "### Type Error Fixes" >> fix-suggestions.md
+            echo "" >> fix-suggestions.md
+
+            # Common TypeScript errors
+            if grep -q "TS2322" typecheck-output.txt; then
+              echo "- **TS2322 (Type mismatch):** Check that values match expected types" >> fix-suggestions.md
+            fi
+            if grep -q "TS2345" typecheck-output.txt; then
+              echo "- **TS2345 (Argument type):** Ensure function arguments match parameter types" >> fix-suggestions.md
+            fi
+            if grep -q "TS2531" typecheck-output.txt; then
+              echo "- **TS2531 (Possibly null):** Add null checks or use optional chaining (?.)" >> fix-suggestions.md
+            fi
+            if grep -q "TS7006" typecheck-output.txt; then
+              echo "- **TS7006 (Implicit any):** Add explicit type annotations to parameters" >> fix-suggestions.md
+            fi
+            if grep -q "TS2339" typecheck-output.txt; then
+              echo "- **TS2339 (Property missing):** Check object type definitions" >> fix-suggestions.md
+            fi
+            echo "" >> fix-suggestions.md
+          fi
+
+          # Quick fix commands
+          echo "### Quick Fix Commands" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+          echo "\`\`\`bash" >> fix-suggestions.md
+          echo "# Auto-fix lint issues" >> fix-suggestions.md
+          echo "pnpm lint" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+          echo "# Check types" >> fix-suggestions.md
+          echo "pnpm exec tsc --noEmit" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+          echo "# Run tests to verify fixes" >> fix-suggestions.md
+          echo "pnpm test" >> fix-suggestions.md
+          echo "\`\`\`" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+
+          # Copilot CLI suggestions
+          echo "### Using Copilot CLI" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+          echo "If you have Copilot CLI installed, you can use these commands:" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+          echo "\`\`\`bash" >> fix-suggestions.md
+          echo "# Source the aliases" >> fix-suggestions.md
+          echo "source scripts/copilot-aliases.sh" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+          echo "# Get AI help for lint errors" >> fix-suggestions.md
+          echo "cop-lint" >> fix-suggestions.md
+          echo "" >> fix-suggestions.md
+          echo "# Get AI help for test failures" >> fix-suggestions.md
+          echo "cop-test" >> fix-suggestions.md
+          echo "\`\`\`" >> fix-suggestions.md
+
+          cat fix-suggestions.md
+
+      - name: Comment Fix Suggestions
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            let comment = '## AI-Suggested Fixes\n\n';
+            comment += 'The CI checks found issues. Here are some suggestions to help you fix them:\n\n';
+
+            try {
+              if (fs.existsSync('fix-suggestions.md')) {
+                comment += fs.readFileSync('fix-suggestions.md', 'utf8');
+              }
+            } catch (error) {
+              comment += 'Error reading fix suggestions: ' + error.message + '\n';
+            }
+
+            comment += '\n\n---\n';
+            comment += '*These suggestions are AI-generated. Please review and adapt as needed.*';
+
+            // Find existing fix suggestion comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existingComment = comments.find(c =>
+              c.user.type === 'Bot' &&
+              c.body.includes('AI-Suggested Fixes')
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+      - name: Upload Fix Suggestions
+        uses: actions/upload-artifact@v4
+        with:
+          name: fix-suggestions
+          path: fix-suggestions.md
+          retention-days: 7
