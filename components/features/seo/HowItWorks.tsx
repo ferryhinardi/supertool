@@ -70,12 +70,12 @@ export function HowItWorks({ steps, title = 'How It Works', description }: HowIt
               },
             })}
           >
-            {steps.map((step, index) => {
+            {steps.map((step) => {
               const Icon = step.icon || Check
 
               return (
                 <li
-                  key={`step-${index}`}
+                  key={step.name}
                   className={css({
                     display: 'flex',
                     gap: '4',
@@ -149,7 +149,7 @@ export function CompactHowItWorks({ steps }: { steps: HowToStep[] }) {
     <ol className={css({ spaceY: '3' })}>
       {steps.map((step, index) => (
         <li
-          key={`compact-step-${index}`}
+          key={step.name}
           className={css({
             display: 'flex',
             gap: '3',

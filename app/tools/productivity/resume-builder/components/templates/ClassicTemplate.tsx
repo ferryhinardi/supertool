@@ -279,8 +279,8 @@ export function ClassicTemplate({ data }: ClassicTemplateProps) {
             SKILLS
           </h2>
 
-          {skills.map((group, idx) => (
-            <div key={`skill-group-${idx}`} className={css({ mb: '4px' })}>
+          {skills.map((group) => (
+            <div key={group.category} className={css({ mb: '4px' })}>
               <span className={css({ fontSize: '10px', fontWeight: 'bold', color: 'black' })}>
                 {group.category}:
               </span>{' '}

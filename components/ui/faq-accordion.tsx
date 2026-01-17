@@ -53,7 +53,7 @@ export function FAQAccordion({ faqs, className }: FAQAccordionProps) {
       >
         {faqs.map((faq, index) => (
           <Accordion.Item
-            key={`faq-${index}`}
+            key={faq.question}
             value={`faq-${index}`}
             className={css({
               borderBottom: '1px solid',

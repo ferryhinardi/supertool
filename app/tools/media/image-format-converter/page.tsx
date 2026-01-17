@@ -259,6 +259,7 @@ export default function ImageFormatConverterPage() {
         {!originalImage ? (
           <Card>
             <CardContent className={css({ spaceY: '4' })}>
+              {/* biome-ignore lint/a11y/useSemanticElements: Drag-and-drop zone that also acts as click target, button element would break drop functionality */}
               <div
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}

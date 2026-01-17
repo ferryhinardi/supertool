@@ -362,7 +362,7 @@ export default function PDFToolsPage() {
   const { addSnapshot, undo, redo, canUndo, canRedo } = useOperationHistory<PDFFile[]>()
 
   // Track recently used operations
-  const { trackOperation, recentOperations, getRecentOperationTypes } = useRecentOperations()
+  const { trackOperation } = useRecentOperations()
 
   // Track operation changes for recently used
   useEffect(() => {
@@ -2151,6 +2151,7 @@ export default function PDFToolsPage() {
     }
 
     return (
+      // biome-ignore lint/a11y/useSemanticElements: dnd-kit sortable requires div for drag listeners and ref handling
       <div
         ref={setNodeRef}
         style={style}
@@ -4926,6 +4927,7 @@ export default function PDFToolsPage() {
                       <div className={css({ spaceY: '2' })}>
                         {bookmarks.map((bookmark, index) => (
                           <div
+                            // biome-ignore lint/suspicious/noArrayIndexKey: Bookmarks are dynamically created form items without stable IDs
                             key={index}
                             className={css({
                               display: 'flex',
@@ -5663,7 +5665,8 @@ export default function PDFToolsPage() {
           originalSize={comparisonPdf.size}
           processedSize={comparisonPdf.processedSize || comparisonPdf.size}
           onDownload={() => {
-            const url = URL.createObjectURL(comparisonPdf.processedBlob!)
+            if (!comparisonPdf.processedBlob) return
+            const url = URL.createObjectURL(comparisonPdf.processedBlob)
             const a = document.createElement('a')
             a.href = url
             a.download = `${comparisonPdf.name.replace('.pdf', '')}-${operation}.pdf`

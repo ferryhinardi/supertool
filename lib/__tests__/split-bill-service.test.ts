@@ -133,6 +133,7 @@ describe('Split Bill Service', () => {
       }
     })
 
+    // biome-ignore lint/suspicious/noExplicitAny: Mock implementation requires any for flexible return type
     vi.mocked(supabase.from).mockImplementation(mockFrom as unknown as (relation: string) => any)
   })
 

@@ -1261,6 +1261,7 @@ export class PDFBatchProcessor {
 
       // Extract text items
       const pageText = textContent.items
+        // biome-ignore lint/suspicious/noExplicitAny: PDF.js TextItem type is not fully typed
         .map((item: any) => {
           return item.str
         })
@@ -2106,7 +2107,9 @@ export class PDFBatchProcessor {
 
               // Get the image object
               const objs = page.objs
+              // biome-ignore lint/suspicious/noExplicitAny: PDF.js image object type is not exported
               const img = await new Promise<any>((resolve) => {
+                // biome-ignore lint/suspicious/noExplicitAny: PDF.js callback data type is not exported
                 objs.get(imageName, (data: any) => {
                   resolve(data)
                 })

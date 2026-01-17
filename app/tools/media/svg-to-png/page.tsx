@@ -286,6 +286,7 @@ export default function SvgToPngConverter() {
               Upload SVG
             </h2>
 
+            {/* biome-ignore lint/a11y/useSemanticElements: Drop zone requires div for drag-and-drop file upload functionality */}
             <div
               role="button"
               tabIndex={0}

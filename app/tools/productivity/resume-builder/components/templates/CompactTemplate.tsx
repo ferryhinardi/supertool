@@ -125,8 +125,8 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             Experience
           </h2>
           <div className={css({ spaceY: '4px' })}>
-            {experience.map((exp, index) => (
-              <div key={index}>
+            {experience.map((exp) => (
+              <div key={exp.id}>
                 {/* Job Title and Company - Single Line */}
                 <div
                   className={css({
@@ -207,7 +207,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                   >
                     {exp.achievements.map((achievement, i) => (
                       <li
-                        key={i}
+                        key={`${exp.id}-achievement-${i}`}
                         className={css({
                           fontSize: '7.5px',
                           lineHeight: '1.3',
@@ -243,8 +243,8 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             Education
           </h2>
           <div className={css({ spaceY: '3px' })}>
-            {education.map((edu, index) => (
-              <div key={index}>
+            {education.map((edu) => (
+              <div key={edu.id}>
                 {/* Degree and School - Single Line */}
                 <div
                   className={css({
@@ -318,7 +318,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
                   >
                     {edu.achievements.map((achievement, i) => (
                       <li
-                        key={i}
+                        key={`${edu.id}-achievement-${i}`}
                         className={css({
                           fontSize: '7px',
                           lineHeight: '1.3',
@@ -360,8 +360,8 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
               gap: '4px',
             })}
           >
-            {skills.map((skillGroup, index) => (
-              <div key={index}>
+            {skills.map((skillGroup) => (
+              <div key={skillGroup.category}>
                 <span
                   className={css({
                     fontSize: '8px',
@@ -403,8 +403,8 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             Projects
           </h2>
           <div className={css({ spaceY: '3px' })}>
-            {projects.map((project, index) => (
-              <div key={index}>
+            {projects.map((project) => (
+              <div key={project.id}>
                 {/* Project Name and Link - Single Line */}
                 <div
                   className={css({

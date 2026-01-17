@@ -875,9 +875,8 @@ export default function VideoConverterPage() {
 
                 {/* Maximum Compression Toggle */}
                 <div className={css({ spaceY: '2' })}>
-                  <div
-                    role="button"
-                    tabIndex={0}
+                  <button
+                    type="button"
                     className={css({
                       display: 'flex',
                       alignItems: 'center',
@@ -888,16 +887,11 @@ export default function VideoConverterPage() {
                       bg: maxCompression ? 'indigo.500/10' : 'gray.800/50',
                       px: '4',
                       py: '3',
+                      w: 'full',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
                     })}
                     onClick={() => setMaxCompression(!maxCompression)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        setMaxCompression(!maxCompression)
-                      }
-                    }}
                   >
                     <div>
                       <div
@@ -921,7 +915,7 @@ export default function VideoConverterPage() {
                       })}
                       onClick={(e) => e.stopPropagation()}
                     />
-                  </div>
+                  </button>
                 </div>
 
                 {/* Target Size - only shown in max compression mode */}

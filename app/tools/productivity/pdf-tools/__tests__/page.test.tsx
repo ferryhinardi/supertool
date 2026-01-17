@@ -78,6 +78,7 @@ class MockFileReader {
   readAsDataURL = vi.fn(function (this: MockFileReader) {
     setTimeout(() => {
       if (this.onload) {
+        // biome-ignore lint/suspicious/noExplicitAny: Mock event object for testing
         this.onload({ target: { result: 'data:application/pdf;base64,mock' } } as any)
       }
     }, 10)
@@ -85,12 +86,15 @@ class MockFileReader {
   readAsArrayBuffer = vi.fn(function (this: MockFileReader) {
     setTimeout(() => {
       if (this.onload) {
+        // biome-ignore lint/suspicious/noExplicitAny: Mock event object for testing
         this.onload({ target: { result: new ArrayBuffer(8) } } as any)
       }
     }, 10)
   })
+  // biome-ignore lint/suspicious/noExplicitAny: FileReader event type is complex for mocking
   onload: ((event: any) => void) | null = null
 }
+// biome-ignore lint/suspicious/noExplicitAny: Mock class assignment to global
 global.FileReader = MockFileReader as any
 
 describe('PDF Tools Page', () => {

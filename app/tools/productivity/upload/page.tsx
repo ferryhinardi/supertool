@@ -992,6 +992,7 @@ function UploadToolContent() {
                                         variant="ghost"
                                         size="sm"
                                         onClick={() =>
+                                          // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
                                           handleCopy(queuedFile.publicUrl!, queuedFile.id)
                                         }
                                         className={css({ p: '1', h: 'auto' })}
@@ -1022,6 +1023,7 @@ function UploadToolContent() {
                                         variant="ghost"
                                         size="sm"
                                         onClick={() =>
+                                          // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
                                           openQRModal(queuedFile.publicUrl!, queuedFile.file.name)
                                         }
                                         className={css({ p: '1', h: 'auto' })}
@@ -1034,6 +1036,7 @@ function UploadToolContent() {
                                         size="sm"
                                         onClick={() =>
                                           openShareModal(
+                                            // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
                                             queuedFile.publicUrl!,
                                             queuedFile.file.name
                                           )

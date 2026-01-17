@@ -65,8 +65,8 @@
       "env": {
         "BRAVE_API_KEY": "${BRAVE_API_KEY}"
       },
-      "disabled": true,
-      "alwaysAllow": []
+      "disabled": false,
+      "alwaysAllow": ["brave_web_search"]
     },
     "postgres": {
       "command": "npx",

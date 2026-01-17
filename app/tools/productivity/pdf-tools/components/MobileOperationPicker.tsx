@@ -106,14 +106,7 @@ export function MobileOperationPicker({
                   cursor: 'pointer',
                 })}
                 onClick={() => setIsOpen(false)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    setIsOpen(false)
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                aria-label="Close drawer"
+                aria-hidden="true"
               />
 
               {/* Header */}

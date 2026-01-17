@@ -66,7 +66,7 @@ export function FAQSection({
         >
           {faqs.map((faq, index) => (
             <div
-              key={`faq-${index}`}
+              key={faq.question}
               className={css({
                 borderWidth: '1',
                 borderColor: 'gray.800',
@@ -122,7 +122,7 @@ export function FAQSection({
               </button>
 
               {openIndex === index && (
-                <div
+                <section
                   id={`faq-answer-${index}`}
                   className={css({
                     p: '4',
@@ -132,11 +132,10 @@ export function FAQSection({
                     lineHeight: 'relaxed',
                     animation: 'fadeIn 0.2s ease-in',
                   })}
-                  role="region"
                   aria-labelledby={`faq-question-${index}`}
                 >
                   {faq.answer}
-                </div>
+                </section>
               )}
             </div>
           ))}
@@ -156,7 +155,7 @@ export function CompactFAQSection({ faqs }: { faqs: FAQItem[] }) {
     <div className={css({ spaceY: '2' })}>
       {faqs.map((faq, index) => (
         <div
-          key={`compact-faq-${index}`}
+          key={faq.question}
           className={css({
             borderWidth: '1',
             borderColor: 'gray.800',
