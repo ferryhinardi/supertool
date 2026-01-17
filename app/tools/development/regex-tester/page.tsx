@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -42,10 +43,14 @@ export default function RegexTesterPage() {
   const [showPatterns, setShowPatterns] = useState(true)
   const [showCode, setShowCode] = useState(false)
 
-  // Track page view
-  useEffect(() => {
-    trackToolEvent('regex_tester_open')
-  }, [])
+  // Track page view for Recent Tools feature
+  useTrackToolView({
+    toolId: 'regex-tester',
+    title: 'Regex Tester',
+    href: '/tools/development/regex-tester',
+    iconName: 'Search',
+    gradient: 'from-purple-500 to-pink-500',
+  })
 
   // Test regex whenever pattern, flags, or test string changes
   useEffect(() => {

@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createElement } from 'react'
@@ -45,7 +46,21 @@ vi.mock('framer-motion', () => ({
 import YamlJsonConverterPage from '../page'
 
 describe('YAML ↔ JSON Converter Page - Component Tests', () => {
+  let queryClient: QueryClient
+
+  const renderPage = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <YamlJsonConverterPage />
+      </QueryClientProvider>
+    )
+
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    })
     vi.clearAllMocks()
   })
 
@@ -55,7 +70,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
   describe('Page Rendering', () => {
     it('should render page with title and description', () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       expect(
         screen.getByRole('heading', { name: /YAML ↔ JSON Converter/i, level: 1 })
@@ -66,7 +81,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should render conversion direction toggle', () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       expect(screen.getByText('Conversion Direction')).toBeInTheDocument()
       expect(screen.getByText('YAML → JSON')).toBeInTheDocument()
@@ -74,14 +89,14 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should render input and output sections', () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       expect(screen.getByText('YAML Input')).toBeInTheDocument()
       expect(screen.getByText('JSON Output')).toBeInTheDocument()
     })
 
     it('should render action buttons', () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       expect(screen.getByText('Load Example')).toBeInTheDocument()
       expect(screen.getByText('Clear')).toBeInTheDocument()
@@ -90,7 +105,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should render features info card', () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       expect(screen.getByText('Features & Tips')).toBeInTheDocument()
       expect(screen.getByText(/Real-time conversion as you type/i)).toBeInTheDocument()
@@ -98,7 +113,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should track page open event', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       await waitFor(() => {
         expect(trackToolEvent).toHaveBeenCalledWith('yaml_json_converter_open', {})
@@ -108,7 +123,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
   describe('YAML to JSON Conversion', () => {
     it('should convert simple YAML to JSON', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John\nage: 30' } })
@@ -122,7 +137,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should convert nested YAML to JSON', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const yamlInput = `person:
   name: Jane
@@ -141,7 +156,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should convert YAML arrays to JSON', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const yamlInput = `fruits:
   - apple
@@ -160,7 +175,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should show error for invalid YAML', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, {
@@ -173,7 +188,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should track conversion event', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -188,7 +203,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should track error event for invalid YAML', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'invalid: yaml: syntax' } })
@@ -208,7 +223,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
   describe('JSON to YAML Conversion', () => {
     it('should switch to JSON to YAML mode', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const jsonToYamlButton = screen.getByText('JSON → YAML')
       await userEvent.click(jsonToYamlButton)
@@ -220,7 +235,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should convert simple JSON to YAML', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Switch to JSON to YAML
       const jsonToYamlButton = screen.getByText('JSON → YAML')
@@ -244,7 +259,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should convert nested JSON to YAML', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Switch to JSON to YAML
       const jsonToYamlButton = screen.getByText('JSON → YAML')
@@ -268,7 +283,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should show error for invalid JSON', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Switch to JSON to YAML
       const jsonToYamlButton = screen.getByText('JSON → YAML')
@@ -289,7 +304,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
   describe('Direction Swap Functionality', () => {
     it('should swap conversion direction', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Find the swap button (middle button between the two direction buttons)
       const buttons = screen.getAllByRole('button')
@@ -317,7 +332,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should swap input and output when swapping direction', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Enter YAML input
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -354,7 +369,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
   describe('Copy to Clipboard', () => {
     it('should copy output to clipboard', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -379,7 +394,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
     })
 
     it('should show copied confirmation', async () => {
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -412,7 +427,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
         new Error('Clipboard write failed')
       )
 
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -440,7 +455,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       window.URL.createObjectURL = createObjectURLMock
       window.URL.revokeObjectURL = revokeObjectURLMock
 
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -491,7 +506,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       window.URL.createObjectURL = createObjectURLMock
       window.URL.revokeObjectURL = revokeObjectURLMock
 
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Switch to JSON to YAML
       const jsonToYamlButton = screen.getByText('JSON → YAML')
@@ -550,7 +565,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       window.URL.createObjectURL = createObjectURLMock
       window.URL.revokeObjectURL = revokeObjectURLMock
 
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Switch to JSON to YAML
       const jsonToYamlButton = screen.getByText('JSON → YAML')
@@ -603,7 +618,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   describe('Clear Functionality', () => {
     it.skip('should clear input and output', async () => {
       // Skipped: Placeholder text matching in CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -627,7 +642,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should clear error message when clearing input', async () => {
       // Skipped: Placeholder text matching in CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'invalid: yaml: syntax' } })
@@ -648,7 +663,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   describe('Load Example', () => {
     it.skip('should load YAML example when in YAML to JSON mode', async () => {
       // Skipped: Load Example button text matching issue
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const loadExampleButton = screen.getByText('Load Example')
       await userEvent.click(loadExampleButton)
@@ -668,7 +683,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should load JSON example when in JSON to YAML mode', async () => {
       // Skipped: Text matching issue with arrow character
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Switch to JSON to YAML
       const jsonToYamlButton = screen.getByText('JSON → YAML')
@@ -696,7 +711,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should convert example data immediately after loading', async () => {
       // Skipped: Load Example button text matching issue
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const loadExampleButton = screen.getByText('Load Example')
       await userEvent.click(loadExampleButton)
@@ -712,7 +727,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   describe('Button States', () => {
     it.skip('should disable copy button when no output text', () => {
       // Skipped: Copy button text matching issue
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const copyButton = screen.getByText('Copy')
       expect(copyButton).toBeDisabled()
@@ -720,7 +735,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should disable download button when no output text', () => {
       // Skipped: Button state testing with CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const downloadButton = screen.getByText('Download')
       expect(downloadButton).toBeDisabled()
@@ -728,7 +743,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should enable copy button when output is present', async () => {
       // Skipped: Button state testing with CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -743,7 +758,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should enable download button when output is present', async () => {
       // Skipped: Button state testing with CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -758,7 +773,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   describe('Real-time Conversion', () => {
     it.skip('should convert text as user types', async () => {
       // Skipped: Real-time conversion with CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
 
@@ -787,7 +802,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should clear output when input is cleared', async () => {
       // Skipped: Real-time conversion with CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
@@ -810,7 +825,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   describe('Error Display', () => {
     it.skip('should show error message for invalid YAML', async () => {
       // Skipped: Error display with CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'invalid: yaml: : syntax' } })
@@ -824,7 +839,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should show error message for invalid JSON', async () => {
       // Skipped: Error display with CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       // Switch to JSON to YAML
       const jsonToYamlButton = screen.getByText('JSON → YAML')
@@ -844,7 +859,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
     it.skip('should highlight input textarea with error border', async () => {
       // Skipped: Error highlighting with CodeMirror
-      render(<YamlJsonConverterPage />)
+      renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'invalid: yaml: : syntax' } })

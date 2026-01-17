@@ -441,6 +441,10 @@ type ToolEvent =
   | 'word_counter_copied'
   | 'word_counter_sample_loaded'
   | 'word_counter_keywords_viewed'
+  | 'readability_checker_text_changed'
+  | 'readability_checker_cleared'
+  | 'readability_checker_copied'
+  | 'readability_checker_sample_loaded'
   | 'character_map_character_copied'
   | 'character_map_category_changed'
   | 'character_map_searched'
@@ -649,6 +653,15 @@ type ToolEvent =
   | 'upload_share_open'
   | 'upload_expiration_set'
   | 'upload_share_social'
+  | 'cooking_converter_converted'
+  | 'cooking_converter_ingredient_changed'
+  | 'cooking_converter_unit_changed'
+  | 'cooking_converter_scaled'
+  | 'cooking_converter_quick_conversion'
+  | 'hashtag_generated'
+  | 'hashtag_copied'
+  | 'hashtag_platform_changed'
+  | 'hashtag_category_filtered'
 
 // Type-safe gtag wrapper
 declare global {

@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -71,12 +72,26 @@ vi.mock('../utils', async () => {
 })
 
 describe('Browser Fingerprint Page - Component Tests', () => {
+  let queryClient: QueryClient
+
+  const renderPage = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <BrowserFingerprintPage />
+      </QueryClientProvider>
+    )
+
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    })
     vi.clearAllMocks()
   })
 
   it('should render page with title and description', () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     expect(
       screen.getByRole('heading', { name: 'Browser Fingerprint Viewer', level: 1 })
@@ -87,13 +102,13 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should show loading state initially', () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     expect(screen.getByText('Collecting fingerprint data...')).toBeInTheDocument()
   })
 
   it('should display uniqueness score after loading', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('75%')).toBeInTheDocument()
@@ -102,7 +117,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display fingerprint hash after loading', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Your Unique Fingerprint ID')).toBeInTheDocument()
@@ -114,7 +129,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     const { calculateUniquenessScore } = await import('../utils')
     vi.mocked(calculateUniquenessScore).mockReturnValue(85)
 
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Highly Trackable')).toBeInTheDocument()
@@ -125,7 +140,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     const { calculateUniquenessScore } = await import('../utils')
     vi.mocked(calculateUniquenessScore).mockReturnValue(50)
 
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Moderately Trackable')).toBeInTheDocument()
@@ -136,7 +151,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     const { calculateUniquenessScore } = await import('../utils')
     vi.mocked(calculateUniquenessScore).mockReturnValue(30)
 
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Less Trackable')).toBeInTheDocument()
@@ -144,7 +159,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display basic browser information section', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Basic Browser Information')).toBeInTheDocument()
@@ -152,7 +167,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display browser data when basic section is expanded', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('User Agent')).toBeInTheDocument()
@@ -163,7 +178,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display all fingerprint sections', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Basic Browser Information')).toBeInTheDocument()
@@ -176,7 +191,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should toggle section when clicked', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Screen & Display')).toBeInTheDocument()
@@ -196,7 +211,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   it('should track section toggle event', async () => {
     const { trackToolEvent } = await import('@/lib/services/analytics')
 
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Hardware Information')).toBeInTheDocument()
@@ -218,7 +233,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     const { toast } = await import('sonner')
     const { trackToolEvent } = await import('@/lib/services/analytics')
 
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('abc123def456789')).toBeInTheDocument()
@@ -244,7 +259,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
     const { toast } = await import('sonner')
     const { trackToolEvent } = await import('@/lib/services/analytics')
 
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Copy All Fingerprint Data')).toBeInTheDocument()
@@ -261,7 +276,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display font count badge', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       const badges = screen.getAllByText('4')
@@ -270,7 +285,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display fonts when section is expanded', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Installed Fonts')).toBeInTheDocument()
@@ -290,7 +305,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display WebGL information', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Graphics & Rendering')).toBeInTheDocument()
@@ -310,7 +325,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display hardware information', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Hardware Information')).toBeInTheDocument()
@@ -330,7 +345,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display privacy and storage information', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Privacy & Storage')).toBeInTheDocument()
@@ -352,7 +367,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display ad blocker status', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Privacy & Storage')).toBeInTheDocument()
@@ -370,7 +385,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display privacy insights section', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Privacy Insights')).toBeInTheDocument()
@@ -381,7 +396,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display pro tips section', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Understanding Your Fingerprint')).toBeInTheDocument()
@@ -394,7 +409,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   it('should track page open event on mount', async () => {
     const { trackToolEvent } = await import('@/lib/services/analytics')
 
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(trackToolEvent).toHaveBeenCalledWith('browser_fingerprint_open', {})
@@ -407,7 +422,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
 
     vi.mocked(collectFingerprint).mockRejectedValueOnce(new Error('Collection failed'))
 
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Failed to collect fingerprint data')
@@ -415,7 +430,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should display copy all button after data loads', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('Copy All Fingerprint Data')).toBeInTheDocument()
@@ -423,7 +438,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should have basic section expanded by default', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     // Basic section should show its content immediately after loading
     await waitFor(() => {
@@ -433,7 +448,7 @@ describe('Browser Fingerprint Page - Component Tests', () => {
   })
 
   it('should collapse basic section when clicked', async () => {
-    render(<BrowserFingerprintPage />)
+    renderPage()
 
     await waitFor(() => {
       expect(screen.getByText('User Agent')).toBeInTheDocument()

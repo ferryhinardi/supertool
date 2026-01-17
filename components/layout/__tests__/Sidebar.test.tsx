@@ -82,7 +82,7 @@ describe('Sidebar', () => {
     expect(screen.getByText(/Currency Converter/i)).toBeInTheDocument()
     expect(screen.getByText(/Password Generator/i)).toBeInTheDocument()
     expect(screen.getByText(/Hash Generator/i)).toBeInTheDocument()
-    expect(screen.getByText(/Unit Converter/i)).toBeInTheDocument()
+    expect(screen.getByText(/^Unit Converter$/i)).toBeInTheDocument()
     expect(screen.getByText(/BMI.*Health Calculator/i)).toBeInTheDocument()
     expect(screen.getByText(/API Request Tester/i)).toBeInTheDocument()
   })

@@ -25,6 +25,7 @@ import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
@@ -158,6 +159,15 @@ const presets: GradientPreset[] = [
 ]
 
 export default function GradientGeneratorPage() {
+  // Track tool view for Recent Tools feature
+  useTrackToolView({
+    toolId: 'gradient-generator',
+    title: 'Gradient Generator',
+    href: '/tools/design/gradient-generator',
+    iconName: 'Wand2',
+    gradient: 'from-purple-500 via-pink-500 to-orange-500',
+  })
+
   const [gradientType, setGradientType] = useState<GradientType>('linear')
   const [angle, setAngle] = useState(90)
   const [colorStops, setColorStops] = useState<ColorStop[]>([

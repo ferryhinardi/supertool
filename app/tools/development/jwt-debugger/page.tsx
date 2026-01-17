@@ -22,6 +22,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { useToolHistory } from '@/hooks/tools/useToolHistory'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -36,6 +37,14 @@ import {
 } from './utils'
 
 function JWTDebuggerContent() {
+  useTrackToolView({
+    toolId: 'jwt-debugger',
+    title: 'JWT Debugger',
+    href: '/tools/development/jwt-debugger',
+    iconName: 'ShieldCheck',
+    gradient: 'from-blue-500 to-cyan-500',
+  })
+
   const [token, setToken] = useState('')
   const [secret, setSecret] = useState('your-256-bit-secret')
   const [algorithm, setAlgorithm] = useState<JWTAlgorithm>('HS256')
@@ -66,11 +75,6 @@ function JWTDebuggerContent() {
   const [historySearch, setHistorySearch] = useState('')
   const [historySortBy, setHistorySortBy] = useState<'newest' | 'oldest' | 'favorites'>('newest')
   const showFavoritesOnly = false // Reserved for future implementation
-
-  // Track page visit
-  useEffect(() => {
-    trackToolEvent('jwt_debugger_open', {})
-  }, [])
 
   // Decode token automatically
   useEffect(() => {
@@ -772,6 +776,38 @@ function JWTDebuggerContent() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Related Tool */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Just Need Quick Decoding?</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <a
+                href="/tools/development/jwt-decoder"
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3',
+                  p: '4',
+                  borderRadius: 'lg',
+                  bg: 'amber.500/10',
+                  border: '1px solid',
+                  borderColor: 'amber.500/30',
+                  _hover: { bg: 'amber.500/20' },
+                  transition: 'all 0.2s',
+                })}
+              >
+                <Key className={css({ h: '6', w: '6', color: 'amber.400' })} />
+                <div>
+                  <p className={css({ fontWeight: 'semibold', color: 'white' })}>JWT Decoder</p>
+                  <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    Lightweight tool for quick JWT inspection without verification
+                  </p>
+                </div>
+              </a>
             </CardContent>
           </Card>
         </div>

@@ -11,13 +11,15 @@ import {
   Info,
   Key,
   Shield,
+  ShieldCheck,
   X,
 } from 'lucide-react'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
@@ -51,16 +53,19 @@ interface DecodedJWT {
 }
 
 function JWTDecoderContent() {
+  useTrackToolView({
+    toolId: 'jwt-decoder',
+    title: 'JWT Decoder',
+    href: '/tools/development/jwt-decoder',
+    iconName: 'Key',
+    gradient: 'from-amber-500 to-orange-500',
+  })
+
   const [jwtToken, setJwtToken] = useState('')
   const [decodedJWT, setDecodedJWT] = useState<DecodedJWT | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isExpired, setIsExpired] = useState(false)
   const [showSignature, setShowSignature] = useState(false)
-
-  // Track page visit
-  useEffect(() => {
-    trackToolEvent('jwt_decoder_open', {})
-  }, [])
 
   const decodeJWT = (token: string) => {
     try {
@@ -173,6 +178,7 @@ function JWTDecoderContent() {
         <div className={css({ pl: depth > 0 ? '4' : '0' })}>
           <span className={css({ color: 'white' })}>[</span>
           {obj.map((item, idx) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: array items have no unique identifier
             <div key={`arr-item-${depth}-${idx}`} className={css({ pl: '4' })}>
               {renderJSON(item, depth + 1)}
               {idx < obj.length - 1 && <span className={css({ color: 'white' })}>,</span>}
@@ -776,6 +782,46 @@ function JWTDecoderContent() {
                 </div>
               </li>
             </ul>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Related Tool */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <Card
+          className={css({ border: '1px solid', borderColor: 'blue.500/20', bg: 'gray.900/50' })}
+        >
+          <CardHeader>
+            <CardTitle className={css({ fontSize: 'lg' })}>Need More Features?</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <a
+              href="/tools/development/jwt-debugger"
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3',
+                p: '4',
+                borderRadius: 'lg',
+                bg: 'blue.500/10',
+                border: '1px solid',
+                borderColor: 'blue.500/30',
+                _hover: { bg: 'blue.500/20' },
+                transition: 'all 0.2s',
+              })}
+            >
+              <ShieldCheck className={css({ h: '6', w: '6', color: 'blue.400' })} />
+              <div>
+                <p className={css({ fontWeight: 'semibold', color: 'white' })}>JWT Debugger</p>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                  Verify signatures, generate tokens, and access history
+                </p>
+              </div>
+            </a>
           </CardContent>
         </Card>
       </motion.div>

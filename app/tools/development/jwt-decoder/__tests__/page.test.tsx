@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import type * as React from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -46,25 +47,39 @@ const EXPIRED_JWT =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1Nzc4MzY4MDB9.xEr1ITyF6Yj17eI5vLLqIvMNQvIrjkfZE8vPg-nJiWk'
 
 describe('JWT Decoder - Component Tests', () => {
+  let queryClient: QueryClient
+
+  const renderPage = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <JWTDecoderPage />
+      </QueryClientProvider>
+    )
+
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    })
     vi.clearAllMocks()
   })
 
   it('should render JWT decoder page', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     expect(screen.getByRole('heading', { name: 'JWT Decoder & Inspector', level: 1 }))
     expect(screen.getByText(/decode, verify, and validate/i))
   })
 
   it('should display security badge', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     expect(screen.getByText(/Secure • Client-Side • No Server Storage/i))
   })
 
   it('should display JWT token input area', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     expect(screen.getByText('JWT Token Input'))
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
@@ -72,20 +87,20 @@ describe('JWT Decoder - Component Tests', () => {
   })
 
   it('should display clear button', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     expect(screen.getByRole('button', { name: /clear/i }))
   })
 
   it('should display educational sections', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     expect(screen.getByText('What is JWT?'))
     expect(screen.getByText('Common Use Cases'))
   })
 
   it('should display JWT structure information', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     expect(screen.getByText(/Token type and algorithm/i))
     expect(screen.getByText(/Claims and user data/i))
@@ -94,19 +109,33 @@ describe('JWT Decoder - Component Tests', () => {
 })
 
 describe('JWT Decoder - Accessibility Tests', () => {
+  let queryClient: QueryClient
+
+  const renderPage = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <JWTDecoderPage />
+      </QueryClientProvider>
+    )
+
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    })
     vi.clearAllMocks()
   })
 
   it('should have proper heading hierarchy', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const h1 = screen.getByRole('heading', { level: 1 })
     expect(h1).toHaveTextContent('JWT Decoder & Inspector')
   })
 
   it('should have accessible textarea with label', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     expect(screen.getByText('JWT Token'))
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
@@ -114,19 +143,33 @@ describe('JWT Decoder - Accessibility Tests', () => {
   })
 
   it('should have accessible action buttons', () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     expect(screen.getByRole('button', { name: /clear/i })).toBeInTheDocument()
   })
 })
 
 describe('JWT Decoder - Logic Tests', () => {
+  let queryClient: QueryClient
+
+  const renderPage = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <JWTDecoderPage />
+      </QueryClientProvider>
+    )
+
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    })
     vi.clearAllMocks()
   })
 
   it('should decode valid JWT token', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -139,7 +182,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should display header information', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -150,7 +193,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should display payload information', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -161,7 +204,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should show error for invalid JWT format', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: 'invalid-jwt-token' } })
@@ -174,7 +217,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should show error for malformed base64 in JWT', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: 'part1.part2.part3' } })
@@ -187,7 +230,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should clear token and decoded data when clear button clicked', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -206,7 +249,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should show expired token warning', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: EXPIRED_JWT } })
@@ -218,7 +261,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should show valid token message for non-expired tokens', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -230,7 +273,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should toggle signature visibility', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -253,7 +296,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should copy header to clipboard', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -276,7 +319,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should copy payload to clipboard', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -299,7 +342,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should copy signature to clipboard', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -327,7 +370,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should display standard claims when present', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: VALID_JWT } })
@@ -345,7 +388,7 @@ describe('JWT Decoder - Logic Tests', () => {
     const noExpJWT =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
 
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
     fireEvent.change(textarea, { target: { value: noExpJWT } })
@@ -360,7 +403,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should clear error when valid token entered after invalid', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
 
@@ -381,7 +424,7 @@ describe('JWT Decoder - Logic Tests', () => {
   })
 
   it('should clear all data when textarea is emptied', async () => {
-    render(<JWTDecoderPage />)
+    renderPage()
 
     const textarea = screen.getByPlaceholderText(/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/i)
 

@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -59,8 +60,21 @@ vi.stubGlobal('crypto', {
 describe('Speed Test Page', () => {
   // Track performance.now value for duration calculations
   let performanceNowValue = 0
+  let queryClient: QueryClient
+
+  const renderPage = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <SpeedTestPage />
+      </QueryClientProvider>
+    )
 
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    })
     vi.clearAllMocks()
     performanceNowValue = 0
 
@@ -94,22 +108,22 @@ describe('Speed Test Page', () => {
 
   describe('Initial Render', () => {
     it('renders the page title', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Network Speed Test')).toBeTruthy()
     })
 
     it('renders the description', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText(/Test your internet connection speed in real-time/)).toBeTruthy()
     })
 
     it('renders the start test button', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Start Test')).toBeTruthy()
     })
 
     it('displays all speed metrics initially at zero', () => {
-      render(<SpeedTestPage />)
+      renderPage()
 
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
@@ -123,17 +137,17 @@ describe('Speed Test Page', () => {
     })
 
     it('displays badge with accurate testing text', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Accurate & Fast Network Testing')).toBeTruthy()
     })
 
     it('displays Ready to Test status', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Ready to Test')).toBeTruthy()
     })
 
     it('renders all metric icons', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
       expect(screen.getByText('Latency')).toBeTruthy()
@@ -141,7 +155,7 @@ describe('Speed Test Page', () => {
     })
 
     it('displays initial metric values as 0.00', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const zeroValues = screen.getAllByText(/^0\.?0?0?$/)
       expect(zeroValues.length).toBeGreaterThan(0)
     })
@@ -149,13 +163,13 @@ describe('Speed Test Page', () => {
 
   describe('Speed Test Execution', () => {
     it('shows Start Test button when idle', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const startButton = screen.getByText('Start Test')
       expect(startButton).toBeTruthy()
     })
 
     it('tracks page open event on mount', async () => {
-      render(<SpeedTestPage />)
+      renderPage()
       await waitFor(() => {
         expect(vi.mocked(trackToolEvent)).toHaveBeenCalledWith('speed_test_open', {})
       })
@@ -164,7 +178,7 @@ describe('Speed Test Page', () => {
     it('tracks speed test start event when test begins', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       const startButton = screen.getByText('Start Test')
 
       await user.click(startButton)
@@ -177,7 +191,7 @@ describe('Speed Test Page', () => {
     it('hides Start Test button during test execution', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       const startButton = screen.getByText('Start Test')
 
       await user.click(startButton)
@@ -190,27 +204,27 @@ describe('Speed Test Page', () => {
 
   describe('Metric Display', () => {
     it('displays download metric card with correct structure', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const downloadLabel = screen.getByText('Download')
       expect(downloadLabel).toBeTruthy()
       expect(screen.getAllByText('Mbps').length).toBeGreaterThan(0)
     })
 
     it('displays upload metric card with correct structure', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const uploadLabel = screen.getByText('Upload')
       expect(uploadLabel).toBeTruthy()
     })
 
     it('displays latency metric card with correct structure', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const latencyLabel = screen.getByText('Latency')
       expect(latencyLabel).toBeTruthy()
       expect(screen.getAllByText('ms').length).toBeGreaterThan(0)
     })
 
     it('displays jitter metric card with correct structure', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const jitterLabel = screen.getByText('Jitter')
       expect(jitterLabel).toBeTruthy()
     })
@@ -218,12 +232,12 @@ describe('Speed Test Page', () => {
 
   describe('UI States', () => {
     it('shows idle state initially', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Ready to Test')).toBeTruthy()
     })
 
     it('renders metric cards with consistent styling', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
       expect(screen.getByText('Latency')).toBeTruthy()
@@ -235,7 +249,7 @@ describe('Speed Test Page', () => {
     it('transitions from idle to running', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Ready to Test')).toBeTruthy()
 
       await user.click(screen.getByText('Start Test'))
@@ -248,7 +262,7 @@ describe('Speed Test Page', () => {
 
   describe('Analytics Tracking', () => {
     it('tracks page open event', async () => {
-      render(<SpeedTestPage />)
+      renderPage()
       await waitFor(() => {
         expect(vi.mocked(trackToolEvent)).toHaveBeenCalledWith('speed_test_open', {})
       })
@@ -257,7 +271,7 @@ describe('Speed Test Page', () => {
     it('tracks test start event', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(() => {
@@ -268,7 +282,7 @@ describe('Speed Test Page', () => {
 
   describe('Responsive Behavior', () => {
     it('renders correctly on initial load', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Network Speed Test')).toBeTruthy()
       expect(screen.getByText('Start Test')).toBeTruthy()
     })
@@ -276,7 +290,7 @@ describe('Speed Test Page', () => {
     it('maintains layout during test', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       expect(screen.getByText('Download')).toBeTruthy()
@@ -290,7 +304,7 @@ describe('Speed Test Page', () => {
     it('displays Measuring Latency phase', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       // Phase may transition quickly, check for any running phase or completion
@@ -308,7 +322,7 @@ describe('Speed Test Page', () => {
     it('progresses through download phase', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -324,7 +338,7 @@ describe('Speed Test Page', () => {
     it('progresses through upload phase', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -340,7 +354,7 @@ describe('Speed Test Page', () => {
     it('completes test and shows completion status', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -356,7 +370,7 @@ describe('Speed Test Page', () => {
     it('displays results card after test completion', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -374,7 +388,7 @@ describe('Speed Test Page', () => {
     it('displays connection quality badges after test', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -397,7 +411,7 @@ describe('Speed Test Page', () => {
     it('tracks completion event with results', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -424,7 +438,7 @@ describe('Speed Test Page', () => {
     it('shows Run Test Again button after completion', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -440,7 +454,7 @@ describe('Speed Test Page', () => {
     it('allows running test again', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -461,7 +475,7 @@ describe('Speed Test Page', () => {
     it('tracks multiple test starts', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -488,7 +502,7 @@ describe('Speed Test Page', () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       mockFetch.mockRejectedValue(new Error('Network error'))
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       // Should still complete even with errors
@@ -508,7 +522,7 @@ describe('Speed Test Page', () => {
         .mockRejectedValueOnce(new Error('Latency error'))
         .mockImplementation(() => Promise.resolve(createMockFetchResponse()))
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       // Should continue to completion
@@ -526,7 +540,7 @@ describe('Speed Test Page', () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       mockFetch.mockRejectedValue(new Error('All measurements failed'))
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -542,7 +556,7 @@ describe('Speed Test Page', () => {
     it('displays download speed explanation after test', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -558,7 +572,7 @@ describe('Speed Test Page', () => {
     it('displays upload speed explanation after test', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -574,7 +588,7 @@ describe('Speed Test Page', () => {
     it('displays latency explanation after test', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -590,7 +604,7 @@ describe('Speed Test Page', () => {
     it('displays jitter explanation after test', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -608,7 +622,7 @@ describe('Speed Test Page', () => {
     it('displays progress indicator during test execution', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       // Check for any phase text during test execution
@@ -626,7 +640,7 @@ describe('Speed Test Page', () => {
     it('shows completion status after test finishes', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -642,7 +656,7 @@ describe('Speed Test Page', () => {
     it('disables start button during test', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(() => {
@@ -653,7 +667,7 @@ describe('Speed Test Page', () => {
     it('shows retest button with correct text after completion', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -667,14 +681,14 @@ describe('Speed Test Page', () => {
 
   describe('Info Section', () => {
     it('displays tips for accurate testing', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Tips for Accurate Testing')).toBeTruthy()
       expect(screen.getByText(/Close other tabs and applications/)).toBeTruthy()
       expect(screen.getByText(/Connect via ethernet/)).toBeTruthy()
     })
 
     it('displays all testing tips', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText(/Run multiple tests at different times/)).toBeTruthy()
       expect(screen.getByText(/Test results may vary/)).toBeTruthy()
     })
@@ -682,19 +696,19 @@ describe('Speed Test Page', () => {
 
   describe('Accessibility', () => {
     it('has proper heading structure', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const heading = screen.getByText('Network Speed Test')
       expect(heading.tagName).toBe('H1')
     })
 
     it('has accessible button for starting test', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const startButton = screen.getByText('Start Test')
       expect(startButton.closest('button')).toBeTruthy()
     })
 
     it('provides descriptive labels for metrics', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
       expect(screen.getByText('Latency')).toBeTruthy()
@@ -702,7 +716,7 @@ describe('Speed Test Page', () => {
     })
 
     it('shows units for all measurements', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getAllByText('Mbps')).toHaveLength(2)
       expect(screen.getAllByText('ms')).toHaveLength(2)
     })
@@ -710,7 +724,7 @@ describe('Speed Test Page', () => {
     it('provides clear phase descriptions during test', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       // Check for any phase description during or after test
@@ -728,13 +742,13 @@ describe('Speed Test Page', () => {
 
   describe('Responsive Design', () => {
     it('renders metric cards in grid layout', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       const downloadCard = screen.getByText('Download').closest('div')
       expect(downloadCard).toBeTruthy()
     })
 
     it('displays all cards on initial render', () => {
-      render(<SpeedTestPage />)
+      renderPage()
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
       expect(screen.getByText('Latency')).toBeTruthy()
@@ -746,7 +760,7 @@ describe('Speed Test Page', () => {
     it('completes test within reasonable time', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       await user.click(screen.getByText('Start Test'))
 
       await waitFor(
@@ -760,7 +774,7 @@ describe('Speed Test Page', () => {
     it('handles multiple rapid clicks gracefully', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
-      render(<SpeedTestPage />)
+      renderPage()
       const startButton = screen.getByText('Start Test')
 
       // First click starts the test

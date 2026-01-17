@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -50,26 +51,40 @@ globalThis.URL.createObjectURL = vi.fn(() => 'mock-url')
 globalThis.URL.revokeObjectURL = vi.fn()
 
 describe('Website Screenshot Tool - Component Tests', () => {
+  let queryClient: QueryClient
+
+  const renderPage = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <WebsiteScreenshotPage />
+      </QueryClientProvider>
+    )
+
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    })
     vi.clearAllMocks()
   })
 
   it('should render website screenshot page', () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     expect(screen.getByRole('heading', { name: /Website Screenshot Capture/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /Website URL/i })).toBeInTheDocument()
   })
 
   it('should display URL input field', () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     expect(input).toBeInTheDocument()
   })
 
   it('should display capture button', () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const button = screen.getByRole('button', { name: /^Capture$/i })
     expect(button).toBeInTheDocument()
@@ -77,7 +92,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
   })
 
   it('should display all device size options', () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     expect(screen.getByText('Mobile')).toBeInTheDocument()
     expect(screen.getByText('Tablet')).toBeInTheDocument()
@@ -85,14 +100,14 @@ describe('Website Screenshot Tool - Component Tests', () => {
   })
 
   it('should display capture mode options', () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     expect(screen.getByText('Viewport Only')).toBeInTheDocument()
     expect(screen.getByText('Full Page')).toBeInTheDocument()
   })
 
   it('should enable capture button when URL is entered', async () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     await userEvent.type(input, 'example.com')
@@ -104,7 +119,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
   })
 
   it('should allow selecting different device sizes', async () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const mobileButton = screen.getByRole('button', { name: /Mobile 375x667/i })
     await userEvent.click(mobileButton)
@@ -119,7 +134,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
   })
 
   it('should allow switching between capture modes', async () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const viewportButton = screen.getByRole('button', {
       name: /Viewport Only Capture visible area/i,
@@ -135,7 +150,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
 
   it('should show error for invalid URL', async () => {
     const { toast } = await import('sonner')
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
 
@@ -150,7 +165,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
   })
 
   it('should show error when URL is empty', async () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     // Get the button but it should be disabled when empty
     const button = screen.getByRole('button', { name: /^Capture$/i })
@@ -167,7 +182,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       blob: async () => mockBlob,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     await userEvent.type(input, 'example.com')
@@ -189,7 +204,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
         )
     )
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     await userEvent.type(input, 'example.com')
@@ -212,7 +227,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       status: 500,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     await userEvent.type(input, 'example.com')
@@ -232,7 +247,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       blob: async () => mockBlob,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     await userEvent.type(input, 'example.com')
@@ -258,7 +273,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       blob: async () => mockBlob,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     await userEvent.type(input, 'https://example.com')
@@ -278,7 +293,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       blob: async () => mockBlob,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     await userEvent.type(input, 'https://example.com')
@@ -297,7 +312,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
   })
 
   it('should display feature cards', () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     expect(screen.getByText('Multiple Devices')).toBeInTheDocument()
     expect(screen.getByText('Full Page Capture')).toBeInTheDocument()
@@ -306,7 +321,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
   })
 
   it('should display privacy information', () => {
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     expect(screen.getByText('Privacy & Performance')).toBeInTheDocument()
     expect(screen.getByText(/No screenshots are stored on our servers/i)).toBeInTheDocument()
@@ -319,7 +334,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       blob: async () => mockBlob,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
 
@@ -338,7 +353,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       blob: async () => mockBlob,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     // Select mobile device
     const mobileButton = screen.getByRole('button', { name: /Mobile 375x667/i })
@@ -368,7 +383,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       blob: async () => mockBlob,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     // Select full page mode
     const fullPageButton = screen.getByRole('button', { name: /Full Page Capture entire page/i })
@@ -398,7 +413,7 @@ describe('Website Screenshot Tool - Component Tests', () => {
       blob: async () => mockBlob,
     })
 
-    render(<WebsiteScreenshotPage />)
+    renderPage()
 
     const input = screen.getByPlaceholderText(/example.com or https:\/\/example.com/i)
     await userEvent.type(input, 'https://example.com')
