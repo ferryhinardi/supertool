@@ -65,11 +65,11 @@ jobs:
 
               if echo "$MSG" | grep -qE "$PATTERN"; then
                 echo "- \`$SHORT_HASH\` $MSG" >> commit-report.md
-                ((VALID_COUNT++))
+                VALID_COUNT=$((VALID_COUNT + 1))
               else
                 echo "- **$SHORT_HASH** $MSG (invalid format)" >> commit-report.md
                 INVALID_COMMITS="$INVALID_COMMITS\n- $SHORT_HASH: $MSG"
-                ((INVALID_COUNT++))
+                INVALID_COUNT=$((INVALID_COUNT + 1))
               fi
             fi
           done <<< "$COMMITS"
