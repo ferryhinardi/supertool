@@ -52,6 +52,20 @@ export default defineConfig({
     // Each test file runs in a separate process, preventing OOM in shards
     pool: 'forks',
     isolate: true,
+    // Configure fork pool to recycle workers and prevent memory accumulation
+    // Without this, workers can accumulate memory across multiple test files
+    // causing OOM in CI (especially shard 5 which has 27 test files)
+    poolOptions: {
+      forks: {
+        singleFork: false,
+        isolate: true,
+        // Limit concurrent forks to reduce peak memory usage
+        maxForks: 2,
+        minForks: 1,
+      },
+    },
+    // Limit concurrent tests to prevent memory spikes
+    maxConcurrency: 5,
     exclude: [
       '**/node_modules/**',
       '**/.git/**',
