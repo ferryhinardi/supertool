@@ -83,8 +83,9 @@ describe('Speed Test Page', () => {
 
     // Mock performance.now to return incrementing values for proper duration calculation
     // This ensures that (end - start) > 10ms so the component records valid speeds
+    // Using 500ms increments to speed up simulated test phases (10x faster than original 50ms)
     vi.spyOn(performance, 'now').mockImplementation(() => {
-      performanceNowValue += 50 // Increment by 50ms each call
+      performanceNowValue += 500 // Increment by 500ms each call for faster test completion
       return performanceNowValue
     })
 
@@ -315,7 +316,7 @@ describe('Speed Test Page', () => {
           const complete = screen.queryByText('Test Complete!')
           expect(latencyPhase || downloadPhase || complete).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
 
@@ -331,7 +332,7 @@ describe('Speed Test Page', () => {
           const complete = screen.queryByText('Test Complete!')
           expect(downloadPhase || complete).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
 
@@ -347,7 +348,7 @@ describe('Speed Test Page', () => {
           const complete = screen.queryByText('Test Complete!')
           expect(uploadPhase || complete).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
 
@@ -361,7 +362,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
   })
@@ -377,7 +378,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       // Results should be visible
@@ -395,7 +396,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       // Quality badges should be visible
@@ -418,7 +419,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       await waitFor(() => {
@@ -445,7 +446,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       expect(screen.getByText('Run Test Again')).toBeTruthy()
@@ -461,7 +462,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       // Click Run Test Again
@@ -482,7 +483,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       // Run second test
@@ -510,7 +511,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
 
@@ -532,7 +533,7 @@ describe('Speed Test Page', () => {
             screen.queryByText('Testing Download Speed...') || screen.queryByText('Test Complete!')
           expect(downloadOrComplete).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
 
@@ -547,7 +548,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
   })
@@ -563,7 +564,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       expect(screen.getByText(/How fast you can receive data/)).toBeTruthy()
@@ -579,7 +580,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       expect(screen.getByText(/How fast you can send data/)).toBeTruthy()
@@ -595,7 +596,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       expect(screen.getByText(/Response time/)).toBeTruthy()
@@ -611,7 +612,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
 
       expect(screen.getByText(/Variation in latency/)).toBeTruthy()
@@ -633,7 +634,7 @@ describe('Speed Test Page', () => {
           )
           expect(phaseText).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
 
@@ -647,7 +648,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
   })
@@ -674,7 +675,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Run Test Again')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
   })
@@ -735,7 +736,7 @@ describe('Speed Test Page', () => {
           )
           expect(phaseText).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
   })
@@ -767,7 +768,7 @@ describe('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
 
@@ -788,7 +789,7 @@ describe('Speed Test Page', () => {
           )
           expect(phaseText).toBeTruthy()
         },
-        { timeout: 5000 }
+        { timeout: 1000 }
       )
     })
   })

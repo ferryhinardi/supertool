@@ -800,12 +800,16 @@ function RandomGeneratorContent() {
       <FAQAccordion faqs={faqs} />
 
       {/* Related Tools */}
-      <RelatedTools currentToolHref="/tools/data/random-generator" />
+      <RelatedTools currentToolPath="/tools/data/random-generator" />
 
       {/* Social Share & Rating */}
       <div className={css({ spaceY: '6' })}>
-        <SocialShare />
-        <ToolRating toolId="random-generator" />
+        <SocialShare
+          toolName="Random Generator"
+          toolUrl="/tools/data/random-generator"
+          description="Generate random numbers, strings, UUIDs, and passwords"
+        />
+        <ToolRating toolId="random-generator" toolName="Random Generator" />
       </div>
     </main>
   )

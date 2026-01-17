@@ -603,12 +603,16 @@ function URLEncoderContent() {
       <FAQAccordion faqs={faqs} />
 
       {/* Related Tools */}
-      <RelatedTools currentToolHref="/tools/development/url-encoder" />
+      <RelatedTools currentToolPath="/tools/development/url-encoder" />
 
       {/* Social Share & Rating */}
       <div className={css({ spaceY: '6' })}>
-        <SocialShare />
-        <ToolRating toolId="url-encoder" />
+        <SocialShare
+          toolName="URL Encoder/Decoder"
+          toolUrl="/tools/development/url-encoder"
+          description="Encode and decode URLs with multiple methods"
+        />
+        <ToolRating toolId="url-encoder" toolName="URL Encoder/Decoder" />
       </div>
     </main>
   )

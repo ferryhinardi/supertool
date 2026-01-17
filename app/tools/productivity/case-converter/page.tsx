@@ -570,12 +570,16 @@ function CaseConverterContent() {
       <FAQAccordion faqs={faqs} />
 
       {/* Related Tools */}
-      <RelatedTools currentToolHref="/tools/productivity/case-converter" />
+      <RelatedTools currentToolPath="/tools/productivity/case-converter" />
 
       {/* Social Share & Rating */}
       <div className={css({ spaceY: '6' })}>
-        <SocialShare />
-        <ToolRating toolId="case-converter" />
+        <SocialShare
+          toolName="Case Converter"
+          toolUrl="/tools/productivity/case-converter"
+          description="Convert text between different case formats"
+        />
+        <ToolRating toolId="case-converter" toolName="Case Converter" />
       </div>
     </main>
   )

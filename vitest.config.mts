@@ -44,7 +44,7 @@ export default defineConfig({
     setupFiles: './vitest.setup.ts',
     // Reduced timeouts to prevent hanging workers that leak memory
     testTimeout: 30000,
-    hookTimeout: 10000,
+    hookTimeout: 30000,
     // Force faster cleanup - prevents the 31-minute hang seen in CI shard 5
     teardownTimeout: 5000,
     env: {

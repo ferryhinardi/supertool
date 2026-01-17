@@ -681,12 +681,16 @@ function CountdownTimerContent() {
       <FAQAccordion faqs={faqs} />
 
       {/* Related Tools */}
-      <RelatedTools currentToolHref="/tools/productivity/countdown-timer" />
+      <RelatedTools currentToolPath="/tools/productivity/countdown-timer" />
 
       {/* Social Share & Rating */}
       <div className={css({ spaceY: '6' })}>
-        <SocialShare />
-        <ToolRating toolId="countdown-timer" />
+        <SocialShare
+          toolName="Countdown Timer"
+          toolUrl="/tools/productivity/countdown-timer"
+          description="Create countdown timers to any date and time"
+        />
+        <ToolRating toolId="countdown-timer" toolName="Countdown Timer" />
       </div>
     </main>
   )
