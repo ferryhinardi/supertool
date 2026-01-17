@@ -324,13 +324,15 @@ export default function DeviceMockupPage() {
             <CardDescription>Upload your app or website screenshot to get started</CardDescription>
           </CardHeader>
           <CardContent>
-            <div
+            <button
+              type="button"
               className={css({
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 p: '12',
+                w: 'full',
                 border: '2px dashed',
                 borderColor: 'gray.700',
                 rounded: 'lg',
@@ -343,13 +345,6 @@ export default function DeviceMockupPage() {
                 },
               })}
               onClick={() => fileInputRef.current?.click()}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  fileInputRef.current?.click()
-                }
-              }}
-              role="button"
-              tabIndex={0}
             >
               <Upload className={css({ w: '12', h: '12', color: 'gray.500', mb: '4' })} />
               <p className={css({ fontSize: 'lg', fontWeight: 'medium', mb: '2' })}>
@@ -358,7 +353,7 @@ export default function DeviceMockupPage() {
               <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
                 PNG, JPG, WebP (Max 10MB)
               </p>
-            </div>
+            </button>
             <input
               ref={fileInputRef}
               type="file"

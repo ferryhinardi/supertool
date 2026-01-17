@@ -50,7 +50,7 @@ export default function BackgroundRemoverPage() {
     error: null,
   })
   const [backgroundColor, setBackgroundColor] = useState<string>('transparent')
-  const [modelLoaded, setModelLoaded] = useState(false)
+  const [_modelLoaded, setModelLoaded] = useState(false)
   const removeBackgroundRef = useRef<
     typeof import('@imgly/background-removal').removeBackground | null
   >(null)
@@ -130,7 +130,7 @@ export default function BackgroundRemoverPage() {
 
       // Process the image
       const blob = await removeBackground(imageState.originalFile, {
-        progress: (key: string, current: number, total: number) => {
+        progress: (_key: string, current: number, total: number) => {
           const progressPercent = Math.round((current / total) * 80) + 20
           setImageState((prev) => ({
             ...prev,

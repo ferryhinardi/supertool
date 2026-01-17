@@ -729,6 +729,7 @@ export default function AICodeConverterPage() {
               </h3>
               <ul className={css({ listStyleType: 'disc', pl: '5', spaceY: '1' })}>
                 {warnings.map((warning, index) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: warnings are static strings without unique identifiers
                   <li key={index} className={css({ fontSize: 'sm', color: 'gray.300' })}>
                     {warning}
                   </li>

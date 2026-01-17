@@ -1,6 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/services/analytics'
 import URLShortenerPage from '../page'
@@ -82,7 +81,7 @@ describe('URL Shortener Page', () => {
     })
 
     it('validates URL format', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<URLShortenerPage />)
 
       const inputs = screen.getAllByRole('textbox')

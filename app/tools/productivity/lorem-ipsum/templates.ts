@@ -129,7 +129,7 @@ function generateSentence(startWithLorem = false): string {
   // Capitalize first word
   words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1)
 
-  return words.join(' ') + '.'
+  return `${words.join(' ')}.`
 }
 
 /**
@@ -194,7 +194,7 @@ export function generateLoremIpsum(options: GenerateOptions): string {
           )
         }
       }
-      result = words.join(' ') + '.'
+      result = `${words.join(' ')}.`
       break
     }
   }

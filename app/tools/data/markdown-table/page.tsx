@@ -588,6 +588,7 @@ export default function MarkdownTablePage() {
                   <th className={css({ w: '40px', p: '2' })} />
                   {tableData.headers.map((header, colIndex) => (
                     <th
+                      // biome-ignore lint/suspicious/noArrayIndexKey: table columns are identified by index position
                       key={`header-${colIndex}`}
                       className={css({
                         p: '2',
@@ -667,7 +668,10 @@ export default function MarkdownTablePage() {
               </thead>
               <tbody>
                 {tableData.rows.map((row, rowIndex) => (
-                  <tr key={`row-${rowIndex}`}>
+                  <tr
+                    // biome-ignore lint/suspicious/noArrayIndexKey: table rows are identified by index position
+                    key={`row-${rowIndex}`}
+                  >
                     <td className={css({ p: '2', textAlign: 'center' })}>
                       {tableData.rows.length > 0 && (
                         <button
@@ -687,6 +691,7 @@ export default function MarkdownTablePage() {
                     </td>
                     {tableData.headers.map((_, colIndex) => (
                       <td
+                        // biome-ignore lint/suspicious/noArrayIndexKey: table cells are identified by row and column index
                         key={`cell-${rowIndex}-${colIndex}`}
                         className={css({
                           p: '2',

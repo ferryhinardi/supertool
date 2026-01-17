@@ -127,7 +127,7 @@ describe('Hash Generator Page', () => {
 
   describe('Text Hashing', () => {
     it('allows entering text to hash', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<HashGeneratorPage />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -139,7 +139,7 @@ describe('Hash Generator Page', () => {
 
     it.skip('generates hash when text is entered', async () => {
       // Skipped: Hash computation mock timing issue
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<HashGeneratorPage />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -155,7 +155,7 @@ describe('Hash Generator Page', () => {
 
     it.skip('updates hash when text changes', async () => {
       // Skipped: Hash computation mock timing issue
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<HashGeneratorPage />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -171,7 +171,7 @@ describe('Hash Generator Page', () => {
 
     it.skip('clears hash when text is cleared', async () => {
       // Skipped: Hash computation mock timing issue
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<HashGeneratorPage />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -250,7 +250,7 @@ describe('Hash Generator Page', () => {
     // Skip: Web Crypto API mocking doesn't work reliably in browser test environment
     // The crypto.subtle.digest mock is not intercepted by the component's actual crypto calls
     it.skip('displays hash result', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<HashGeneratorPage />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -264,7 +264,7 @@ describe('Hash Generator Page', () => {
     })
 
     it('allows copying hash to clipboard', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<HashGeneratorPage />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -283,7 +283,7 @@ describe('Hash Generator Page', () => {
 
     it.skip('displays hash in hex format', async () => {
       // Skipped: Hash format mock timing issue
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<HashGeneratorPage />)
 
       const textareas = screen.getAllByRole('textbox')
@@ -306,7 +306,7 @@ describe('Hash Generator Page', () => {
     })
 
     it('handles hash computation errors', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       mockDigest.mockRejectedValueOnce(new Error('Hash computation failed'))
 
       render(<HashGeneratorPage />)
@@ -380,7 +380,7 @@ describe('Hash Generator Page', () => {
     })
 
     it('handles rapid text input changes', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<HashGeneratorPage />)
 
       const textareas = screen.getAllByRole('textbox')

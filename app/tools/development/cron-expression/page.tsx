@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Calendar, Clock, Copy, Download, Info, Sparkles, Star, Zap } from 'lucide-react'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

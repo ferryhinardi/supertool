@@ -211,7 +211,7 @@ describe('VideoSubtitleCombinerPage', () => {
     })
 
     it('allows selecting different presets', async () => {
-      const user = userEvent.setup()
+      const _user = userEvent.setup()
       render(<VideoSubtitleCombinerPage />)
 
       const selects = screen.queryAllByRole('combobox')

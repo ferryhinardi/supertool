@@ -292,7 +292,7 @@ describe('chunked-upload', () => {
 
     it('should always show 2 decimal places', () => {
       expect(formatBytes(1500)).toMatch(/\d+\.\d{2}/)
-      expect(formatBytes(1024 * 1024 * 3.141592)).toMatch(/\d+\.\d{2}/)
+      expect(formatBytes(1024 * 1024 * Math.PI)).toMatch(/\d+\.\d{2}/)
     })
   })
 

@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { trackEvent, trackToolEvent } from '@/lib/analytics'
+import { trackEvent } from '@/lib/analytics'
 import PDFToolsPage from '../page'
 
 // Mock dependencies

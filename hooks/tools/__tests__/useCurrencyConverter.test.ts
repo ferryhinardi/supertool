@@ -572,7 +572,7 @@ describe('useCurrencyConverter', () => {
         (call: [string, string]) => call[0] === 'supertool_exchange_rates_EUR'
       )
       expect(setItemCall).toBeDefined()
-      const savedData = JSON.parse(setItemCall![1])
+      const savedData = JSON.parse(setItemCall?.[1])
       expect(savedData.base).toBe('EUR')
       expect(savedData.rates).toEqual(freshRates.rates)
     })

@@ -1266,7 +1266,7 @@ export class PDFBatchProcessor {
         })
         .join(' ')
 
-      extractedText += pageText + '\n'
+      extractedText += `${pageText}\n`
 
       // Update progress
       this.updateCallback(pdf.id, {
@@ -1422,7 +1422,7 @@ export class PDFBatchProcessor {
 
       // Add page header
       extractedText += `\n========== Page ${pageNum} (OCR) ==========\n\n`
-      extractedText += result.data.text + '\n'
+      extractedText += `${result.data.text}\n`
 
       // Update progress
       const pageProgress = 40 + (pageNum / totalPages) * 50
@@ -2271,7 +2271,7 @@ export class PDFBatchProcessor {
         if (typeof item.dest === 'string') {
           // Named destination - need to resolve
           const destination = await pdfDoc.getDestination(item.dest)
-          if (destination && destination[0]) {
+          if (destination?.[0]) {
             const pageRef = destination[0]
             pageIndex = await pdfDoc.getPageIndex(pageRef)
           } else {

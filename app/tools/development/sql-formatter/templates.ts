@@ -251,30 +251,30 @@ export function formatSQL(sql: string, options: FormatOptions): string {
     if (newLineKeywords.includes(upperToken) && i > 0) {
       // Special handling for AND/OR - only new line if not in parentheses
       if (['AND', 'OR'].includes(upperToken)) {
-        result += '\n' + indent.repeat(indentLevel) + token + ' '
+        result += `\n${indent.repeat(indentLevel)}${token} `
       } else if (['JOIN', 'INNER', 'LEFT', 'RIGHT', 'FULL', 'CROSS'].includes(upperToken)) {
         // Handle JOIN keywords
-        result += '\n' + indent.repeat(indentLevel) + token + ' '
+        result += `\n${indent.repeat(indentLevel)}${token} `
       } else if (upperToken === 'ON' && tokens[i - 1]?.toUpperCase() === 'JOIN') {
-        result += token + ' '
+        result += `${token} `
       } else {
         if (['FROM', 'WHERE', 'GROUP', 'ORDER', 'HAVING'].includes(upperToken)) {
-          result += '\n' + indent.repeat(indentLevel) + token + ' '
+          result += `\n${indent.repeat(indentLevel)}${token} `
         } else {
-          result += token + ' '
+          result += `${token} `
         }
       }
     } else {
-      result += token + ' '
+      result += `${token} `
     }
 
     // Handle indentation
     if (token === '(') {
       indentLevel++
-      result += '\n' + indent.repeat(indentLevel)
+      result += `\n${indent.repeat(indentLevel)}`
     } else if (token === ')') {
       indentLevel = Math.max(0, indentLevel - 1)
-      result = result.trimEnd() + '\n' + indent.repeat(indentLevel) + token + ' '
+      result = `${result.trimEnd()}\n${indent.repeat(indentLevel)}${token} `
     }
   }
 
@@ -286,7 +286,7 @@ export function formatSQL(sql: string, options: FormatOptions): string {
     .join('\n')
 
   // Handle commas - put them at end of line
-  result = result.replace(/\s*,\s*/g, ',\n' + indent.repeat(indentLevel))
+  result = result.replace(/\s*,\s*/g, `,\n${indent.repeat(indentLevel)}`)
 
   return result.trim()
 }

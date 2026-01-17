@@ -130,7 +130,7 @@ const faqs = [
 ]
 
 // Related Tools
-const relatedTools = [
+const _relatedTools = [
   {
     name: 'Image Converter',
     href: '/tools/media/image-converter',

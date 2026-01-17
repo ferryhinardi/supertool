@@ -24,14 +24,12 @@ import {
   Pen,
   RotateCw,
   Settings,
-  Shield,
   Sparkles,
   Split,
   Trash2,
   TrendingUp,
   Unlock,
   Upload,
-  Zap,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { css } from '@/styled-system/css'

@@ -76,7 +76,7 @@ describe('TemplateErrorBoundary', () => {
   })
 
   it('should reset error state when retry button is clicked', async () => {
-    const user = userEvent.setup()
+    const _user = userEvent.setup()
 
     const TestComponent = ({ shouldError }: { shouldError: boolean }) => {
       if (shouldError) {
@@ -244,7 +244,7 @@ describe('TemplateErrorBoundary', () => {
   })
 
   it('should reset error state properly', async () => {
-    const user = userEvent.setup()
+    const _user = userEvent.setup()
 
     const TestComponent = ({ shouldError }: { shouldError: boolean }) => {
       if (shouldError) {

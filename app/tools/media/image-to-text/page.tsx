@@ -79,7 +79,7 @@ export default function ImageToTextPage() {
 
         // Clean up object URL after processing
         URL.revokeObjectURL(imageUrl)
-      } catch (err) {
+      } catch (_err) {
         setError('Failed to extract text from image. Please try again.')
         trackToolEvent('image_to_text_error', {
           language: selectedLanguage,

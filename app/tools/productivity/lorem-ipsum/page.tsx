@@ -46,7 +46,7 @@ export default function LoremIpsumPage() {
       setTimeout(() => setCopied(false), 2000)
       trackToolEvent('lorem_ipsum_copied', { length: generatedText.length })
       toast.success('Copied to clipboard!')
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to copy to clipboard')
     }
   }
