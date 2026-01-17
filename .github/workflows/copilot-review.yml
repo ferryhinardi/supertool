@@ -539,7 +539,7 @@ jobs:
             echo "| Lint | Passed |" >> ai-review.md
           else
             echo "| Lint | **Failed** |" >> ai-review.md
-            ((BLOCKING++))
+            BLOCKING=$((BLOCKING + 1))
           fi
 
           # Type check status
@@ -547,7 +547,7 @@ jobs:
             echo "| Type Check | Passed |" >> ai-review.md
           else
             echo "| Type Check | **Failed** |" >> ai-review.md
-            ((BLOCKING++))
+            BLOCKING=$((BLOCKING + 1))
           fi
 
           # Commit validation
@@ -560,7 +560,7 @@ jobs:
           # Security
           if [ "${CRITICAL_VULNS:-0}" -gt 0 ] || [ "${HIGH_VULNS:-0}" -gt 0 ]; then
             echo "| Security | **Issues Found** |" >> ai-review.md
-            ((BLOCKING++))
+            BLOCKING=$((BLOCKING + 1))
           elif [ "${SECRETS_FOUND:-0}" -gt 0 ]; then
             echo "| Security | Warning |" >> ai-review.md
           else
