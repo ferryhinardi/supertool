@@ -666,6 +666,23 @@ type ToolEvent =
   | 'citation_style_changed'
   | 'citation_generated'
   | 'citation_copied'
+  | 'url_encoder_open'
+  | 'url_encoder_encode'
+  | 'url_encoder_decode'
+  | 'url_encoder_copy'
+  | 'url_encoder_clear'
+  | 'case_converter_open'
+  | 'case_converter_convert'
+  | 'case_converter_copy'
+  | 'case_converter_clear'
+  | 'random_generator_open'
+  | 'random_generator_generate'
+  | 'random_generator_copy'
+  | 'random_generator_clear'
+  | 'countdown_timer_open'
+  | 'countdown_timer_start'
+  | 'countdown_timer_share'
+  | 'countdown_timer_copy'
 
 // Type-safe gtag wrapper
 declare global {

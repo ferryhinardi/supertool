@@ -13,6 +13,7 @@ import {
   Code,
   CookingPot,
   Database,
+  Dices,
   Diff,
   DollarSign,
   Eye,
@@ -36,6 +37,7 @@ import {
   Key,
   Layers,
   Lightbulb,
+  Link2,
   Lock,
   Mail,
   MessageSquare,
@@ -106,6 +108,55 @@ export const tools: Tool[] = [
   },
 
   // New tools
+  {
+    title: 'URL Encoder/Decoder',
+    description:
+      'Encode and decode URLs with encodeURI, encodeURIComponent, and their decode counterparts. Handle special characters in URLs and query parameters.',
+    icon: Link2,
+    href: '/tools/development/url-encoder',
+    gradient: 'from-cyan-500 to-blue-500',
+    features: [
+      'encodeURI & encodeURIComponent',
+      'decodeURI & decodeURIComponent',
+      'Swap input/output',
+      'Quick examples',
+    ],
+    category: 'development',
+    new: true,
+  },
+  {
+    title: 'Case Converter',
+    description:
+      'Convert text between camelCase, PascalCase, snake_case, kebab-case, and more. Preview all case formats at once.',
+    icon: Type,
+    href: '/tools/productivity/case-converter',
+    gradient: 'from-purple-500 to-pink-500',
+    features: ['11 case formats', 'Preview all at once', 'One-click copy', 'Smart word detection'],
+    category: 'productivity',
+    new: true,
+  },
+  {
+    title: 'Random Generator',
+    description:
+      'Generate cryptographically secure random numbers, strings, UUIDs, and passwords. Perfect for testing and development.',
+    icon: Dices,
+    href: '/tools/data/random-generator',
+    gradient: 'from-green-500 to-emerald-500',
+    features: ['Numbers & decimals', 'Custom strings', 'UUID v4', 'Secure passwords'],
+    category: 'data',
+    new: true,
+  },
+  {
+    title: 'Countdown Timer',
+    description:
+      'Set a countdown to any date and time. Share the link with others to count down together.',
+    icon: Clock,
+    href: '/tools/productivity/countdown-timer',
+    gradient: 'from-orange-500 to-red-500',
+    features: ['Live countdown', 'Shareable links', 'Quick presets', 'Event naming'],
+    category: 'productivity',
+    new: true,
+  },
   {
     title: 'Resume Builder Pro',
     description:
