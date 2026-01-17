@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Calendar, Check, Link2, RotateCcw, Share2 } from 'lucide-react'
+import { Calendar, Check, Clock, Link2, RotateCcw, Share2 } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
