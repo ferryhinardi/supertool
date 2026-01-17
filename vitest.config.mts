@@ -42,30 +42,32 @@ export default defineConfig({
   test: {
     globals: true,
     setupFiles: './vitest.setup.ts',
-    testTimeout: 60000,
-    hookTimeout: 30000,
+    // Reduced timeouts to prevent hanging workers that leak memory
+    testTimeout: 30000,
+    hookTimeout: 10000,
+    // Force faster cleanup - prevents the 31-minute hang seen in CI shard 5
+    teardownTimeout: 5000,
     env: {
       NEXT_PUBLIC_SUPABASE_URL: 'https://test.supabase.co',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
     },
-    // Use forks pool with isolation to prevent cumulative memory leaks in CI
-    // Each test file runs in a separate process, preventing OOM in shards
+    // Use forks pool with single fork to minimize memory footprint
+    // The OOM occurs during cleanup phase (31 min after tests finish)
+    // Single fork ensures only one worker exists during teardown
     pool: 'forks',
     isolate: true,
-    // Configure fork pool to recycle workers and prevent memory accumulation
-    // Without this, workers can accumulate memory across multiple test files
-    // causing OOM in CI (especially shard 5 which has 27 test files)
+    // Disable parallel file execution to reduce memory pressure
+    // This trades speed for stability in CI environment
+    fileParallelism: false,
+    // Configure fork pool with single fork for predictable memory usage
     poolOptions: {
       forks: {
-        singleFork: false,
+        singleFork: true,
         isolate: true,
-        // Limit concurrent forks to reduce peak memory usage
-        maxForks: 2,
-        minForks: 1,
       },
     },
-    // Limit concurrent tests to prevent memory spikes
-    maxConcurrency: 5,
+    // Limit concurrent tests within a file
+    maxConcurrency: 3,
     exclude: [
       '**/node_modules/**',
       '**/.git/**',
