@@ -101,9 +101,9 @@ jobs:
       - name: Run tests (Shard ${{ matrix.shard }}/8)
         # Using pool: 'forks' + isolate: true in vitest.config.mts
         # Each test file runs in separate forked process to prevent OOM from memory accumulation
-        # 5-minute timeout prevents hanging shards from blocking CI
+        # 8-minute timeout allows for browser tests and Playwright cleanup
         # Timer cleanup in vitest.setup.ts (afterAll) prevents open handle issues
-        timeout-minutes: 5
+        timeout-minutes: 8
         run: pnpm exec vitest run --shard=${{ matrix.shard }}/8 --passWithNoTests
         env:
           CI: true
