@@ -102,8 +102,9 @@ jobs:
         # Using pool: 'forks' + isolate: true in vitest.config.mts
         # Each test file runs in separate forked process to prevent OOM from memory accumulation
         # 5-minute timeout prevents hanging shards from blocking CI
+        # --forceExit ensures process exits even if open handles remain (timer-based tests)
         timeout-minutes: 5
-        run: pnpm exec vitest run --shard=${{ matrix.shard }}/8 --passWithNoTests
+        run: pnpm exec vitest run --shard=${{ matrix.shard }}/8 --passWithNoTests --forceExit
         env:
           CI: true
           NODE_OPTIONS: '--max-old-space-size=8192'
