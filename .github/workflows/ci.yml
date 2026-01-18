@@ -101,8 +101,9 @@ jobs:
       - name: Run tests (Shard ${{ matrix.shard }}/12)
         # Using pool: 'forks' + isolate: true in vitest.config.mts
         # Each test file runs in separate forked process to prevent OOM from memory accumulation
-        # Removed --no-file-parallelism which was forcing all files into single process
-        run: pnpm exec vitest run --shard=${{ matrix.shard }}/12
+        # 5-minute timeout prevents hanging shards from blocking CI
+        timeout-minutes: 5
+        run: pnpm exec vitest run --shard=${{ matrix.shard }}/12 --passWithNoTests
         env:
           CI: true
           NODE_OPTIONS: '--max-old-space-size=8192'
