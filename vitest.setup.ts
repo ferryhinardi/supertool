@@ -1,5 +1,5 @@
 import { cleanup } from '@testing-library/react'
-import { afterEach, beforeAll, beforeEach, expect, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 
 // Mock Supabase client globally
@@ -718,6 +718,15 @@ afterEach(() => {
   cleanup()
   // Clear all mocks after each test
   vi.clearAllMocks()
+})
+
+// Force cleanup after all tests to prevent process from hanging
+// Timer-based tests (speed-test, pomodoro, countdown-timer) may leave open handles
+afterAll(() => {
+  // Restore real timers in case fake timers were used
+  vi.useRealTimers()
+  // Clear any remaining timers to allow process exit
+  vi.clearAllTimers()
 })
 
 // Extend Vitest's expect with jest-dom matchers
