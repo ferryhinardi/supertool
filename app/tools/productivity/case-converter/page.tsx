@@ -532,6 +532,7 @@ function CaseConverterContent() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleCopy(preview.result, preview.id)}
+                        aria-label={copied === preview.id ? 'Copied' : `Copy ${preview.label}`}
                         className={css({
                           h: '6',
                           px: '2',

@@ -146,6 +146,10 @@ function CountdownTimerContent() {
       return
     }
 
+    if (targetDate.getTime() < Date.now()) {
+      toast.warning('Target date is in the past. The countdown will show as completed.')
+    }
+
     setIsStarted(true)
     trackToolEvent('countdown_timer_start', {})
     toast.success('Countdown started!')

@@ -70,6 +70,11 @@ const faqs = [
 
 // Generate cryptographically secure random integer
 function getSecureRandomInt(min: number, max: number): number {
+  // Swap min and max if min > max to prevent infinite loop
+  if (min > max) {
+    ;[min, max] = [max, min]
+  }
+
   const range = max - min + 1
   const bytesNeeded = Math.ceil(Math.log2(range) / 8) || 1
   const maxValid = Math.floor(256 ** bytesNeeded / range) * range - 1
@@ -88,8 +93,8 @@ function getSecureRandomInt(min: number, max: number): number {
 // Generate random decimal
 function getSecureRandomDecimal(min: number, max: number, decimals: number): number {
   const multiplier = 10 ** decimals
-  const minInt = Math.floor(min * multiplier)
-  const maxInt = Math.floor(max * multiplier)
+  const minInt = Math.round(min * multiplier)
+  const maxInt = Math.round(max * multiplier)
   return getSecureRandomInt(minInt, maxInt) / multiplier
 }
 
@@ -178,6 +183,11 @@ function RandomGeneratorContent() {
     const newResults: Array<{ id: string; value: string }> = []
     const actualCount = Math.min(Math.max(1, count), 100)
 
+    // Warn user if min > max for number generation (values will be swapped automatically)
+    if (generatorType === 'number' && minNum > maxNum) {
+      toast.warning('Min is greater than max. Values have been swapped automatically.')
+    }
+
     for (let i = 0; i < actualCount; i++) {
       let value = ''
       switch (generatorType) {
@@ -215,6 +225,9 @@ function RandomGeneratorContent() {
           break
 
         case 'password':
+          if (!pwdUppercase && !pwdLowercase && !pwdNumbers && !pwdSymbols) {
+            toast.warning('No character types selected. Using default alphanumeric charset.')
+          }
           value = generatePassword(passwordLength, {
             uppercase: pwdUppercase,
             lowercase: pwdLowercase,
@@ -776,6 +789,7 @@ function RandomGeneratorContent() {
                       size="sm"
                       type="button"
                       onClick={() => handleCopy(result.value, result.id)}
+                      aria-label={copied === result.id ? 'Copied' : 'Copy to clipboard'}
                       className={css({
                         color: 'gray.400',
                         flexShrink: 0,
