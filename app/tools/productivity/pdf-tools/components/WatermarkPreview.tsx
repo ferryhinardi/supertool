@@ -148,7 +148,6 @@ export function WatermarkPreview({
       // Draw single watermark
       drawWatermark(pos.x, pos.y)
     }
-    // biome-ignore lint/correctness/useExhaustiveDependencies: image is used in the second useEffect
   }, [type, text, opacity, rotation, position, color, fontSize, pattern, imageScale])
 
   // Load image for preview

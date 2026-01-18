@@ -40,12 +40,14 @@ vi.mock('browser-image-compression', () => ({
 }))
 
 // Mock canvas
-HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
+const mockCanvasContext = {
   drawImage: vi.fn(),
   getImageData: vi.fn(() => ({ data: new Uint8ClampedArray(4) })),
   putImageData: vi.fn(),
   canvas: { toBlob: vi.fn((cb) => cb(new Blob())) },
-})) as any
+}
+// biome-ignore lint/suspicious/noExplicitAny: Canvas context mock requires flexible typing for test environment
+HTMLCanvasElement.prototype.getContext = vi.fn(() => mockCanvasContext) as any
 
 // Mock URL.createObjectURL and revokeObjectURL
 global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
@@ -54,6 +56,7 @@ global.URL.revokeObjectURL = vi.fn()
 describe('Image Optimizer Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // biome-ignore lint/suspicious/noExplicitAny: Mock implementation requires flexible parameter types
     vi.mocked(imageCompression).mockImplementation((_file: any, options: any) => {
       // Simulate progress callback
       if (options.onProgress) {

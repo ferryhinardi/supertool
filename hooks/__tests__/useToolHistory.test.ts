@@ -439,6 +439,7 @@ describe('useToolHistory', () => {
       })
 
       const stored = localStorage.getItem('test_history')
+      // biome-ignore lint/style/noNonNullAssertion: Test assertion - stored value verified not null above
       const parsed = JSON.parse(stored!)
       expect(parsed).toHaveLength(1)
       expect(parsed[0].data.text).toBe('Persisted')

@@ -212,149 +212,154 @@ export function SkillsForm({ data, onChange }: SkillsFormProps) {
       )}
 
       {/* Skill Groups */}
-      {data.map((group, groupIndex) => (
-        <div
-          key={`group-${groupIndex}-${group.category || 'empty'}`}
-          className={css({
-            bg: 'gray.900',
-            border: '1px solid',
-            borderColor: 'gray.800',
-            borderRadius: 'lg',
-            p: '6',
-            position: 'relative',
-          })}
-        >
-          {/* Delete button */}
-          <button
-            type="button"
-            onClick={() => handleRemoveGroup(groupIndex)}
+      {data.map((group, groupIndex) => {
+        // Use category as stable identifier, fallback to index for empty categories
+        const groupKey = group.category ? `group-${group.category}` : `group-index-${groupIndex}`
+        return (
+          <div
+            key={groupKey}
             className={css({
-              position: 'absolute',
-              top: '4',
-              right: '4',
-              p: '2',
-              color: 'gray.400',
-              _hover: { color: 'red.400' },
-              borderRadius: 'md',
-              transition: 'colors 0.2s',
+              bg: 'gray.900',
+              border: '1px solid',
+              borderColor: 'gray.800',
+              borderRadius: 'lg',
+              p: '6',
+              position: 'relative',
             })}
-            aria-label="Remove skill category"
           >
-            <Trash2 className={css({ w: '4', h: '4' })} />
-          </button>
-
-          {/* Category name */}
-          <div className={css({ mb: '4', pr: '10' })}>
-            <label
-              htmlFor={`category-${groupIndex}`}
+            {/* Delete button */}
+            <button
+              type="button"
+              onClick={() => handleRemoveGroup(groupIndex)}
               className={css({
-                display: 'block',
-                fontSize: 'sm',
-                fontWeight: 'medium',
-                color: 'gray.300',
-                mb: '2',
+                position: 'absolute',
+                top: '4',
+                right: '4',
+                p: '2',
+                color: 'gray.400',
+                _hover: { color: 'red.400' },
+                borderRadius: 'md',
+                transition: 'colors 0.2s',
               })}
+              aria-label="Remove skill category"
             >
-              Category Name <span className={css({ color: 'red.400' })}>*</span>
-            </label>
-            <Input
-              id={`category-${groupIndex}`}
-              value={group.category}
-              onChange={(e) => handleCategoryChange(groupIndex, e.target.value)}
-              placeholder="e.g., Programming Languages, Frontend Technologies, Soft Skills"
-              required
-            />
-          </div>
+              <Trash2 className={css({ w: '4', h: '4' })} />
+            </button>
 
-          {/* Skills */}
-          <div>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                mb: '3',
-              })}
-            >
-              <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
-                Skills <span className={css({ color: 'red.400' })}>*</span>
-              </span>
-              <Button onClick={() => handleAddSkill(groupIndex)} variant="ghost" size="sm">
-                <Plus className={css({ w: '3', h: '3', mr: '1' })} />
-                Add Skill
-              </Button>
+            {/* Category name */}
+            <div className={css({ mb: '4', pr: '10' })}>
+              <label
+                htmlFor={`category-${groupIndex}`}
+                className={css({
+                  display: 'block',
+                  fontSize: 'sm',
+                  fontWeight: 'medium',
+                  color: 'gray.300',
+                  mb: '2',
+                })}
+              >
+                Category Name <span className={css({ color: 'red.400' })}>*</span>
+              </label>
+              <Input
+                id={`category-${groupIndex}`}
+                value={group.category}
+                onChange={(e) => handleCategoryChange(groupIndex, e.target.value)}
+                placeholder="e.g., Programming Languages, Frontend Technologies, Soft Skills"
+                required
+              />
             </div>
 
-            <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
-              {group.skills.map((skill, skillIndex) => (
-                <div
-                  key={`skill-${groupIndex}-${skillIndex}`}
-                  className={css({ display: 'flex', gap: '2', alignItems: 'center' })}
-                >
-                  <div className={css({ flex: '1' })}>
-                    <Input
-                      value={skill}
-                      onChange={(e) => handleSkillChange(groupIndex, skillIndex, e.target.value)}
-                      placeholder="e.g., JavaScript, React, Leadership"
-                    />
-                  </div>
-                  {group.skills.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveSkill(groupIndex, skillIndex)}
-                      className={css({
-                        p: '2',
-                        color: 'gray.400',
-                        _hover: { color: 'red.400' },
-                        borderRadius: 'md',
-                        transition: 'colors 0.2s',
-                      })}
-                      aria-label="Remove skill"
-                    >
-                      <X className={css({ w: '4', h: '4' })} />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {group.skills.length === 0 && (
+            {/* Skills */}
+            <div>
               <div
                 className={css({
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '2',
-                  p: '3',
-                  bg: 'gray.800/50',
-                  borderRadius: 'md',
-                  fontSize: 'sm',
-                  color: 'gray.400',
+                  justifyContent: 'space-between',
+                  mb: '3',
                 })}
               >
-                <AlertCircle className={css({ w: '4', h: '4' })} />
-                Click "Add Skill" to add skills to this category
+                <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                  Skills <span className={css({ color: 'red.400' })}>*</span>
+                </span>
+                <Button onClick={() => handleAddSkill(groupIndex)} variant="ghost" size="sm">
+                  <Plus className={css({ w: '3', h: '3', mr: '1' })} />
+                  Add Skill
+                </Button>
               </div>
-            )}
-          </div>
 
-          {/* Tips for this category */}
-          <div
-            className={css({
-              mt: '4',
-              p: '3',
-              bg: 'blue.500/10',
-              border: '1px solid',
-              borderColor: 'blue.500/20',
-              borderRadius: 'md',
-              fontSize: 'xs',
-              color: 'blue.300',
-            })}
-          >
-            💡 <strong>Tip:</strong> List {group.skills.length || '3-6'} skills per category. Focus
-            on relevant, in-demand skills that match job requirements.
+              <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
+                {group.skills.map((skill, skillIndex) => (
+                  <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Skills are dynamic form items without stable IDs
+                    key={`${groupKey}-skill-${skillIndex}`}
+                    className={css({ display: 'flex', gap: '2', alignItems: 'center' })}
+                  >
+                    <div className={css({ flex: '1' })}>
+                      <Input
+                        value={skill}
+                        onChange={(e) => handleSkillChange(groupIndex, skillIndex, e.target.value)}
+                        placeholder="e.g., JavaScript, React, Leadership"
+                      />
+                    </div>
+                    {group.skills.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSkill(groupIndex, skillIndex)}
+                        className={css({
+                          p: '2',
+                          color: 'gray.400',
+                          _hover: { color: 'red.400' },
+                          borderRadius: 'md',
+                          transition: 'colors 0.2s',
+                        })}
+                        aria-label="Remove skill"
+                      >
+                        <X className={css({ w: '4', h: '4' })} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {group.skills.length === 0 && (
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                    p: '3',
+                    bg: 'gray.800/50',
+                    borderRadius: 'md',
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                  })}
+                >
+                  <AlertCircle className={css({ w: '4', h: '4' })} />
+                  Click "Add Skill" to add skills to this category
+                </div>
+              )}
+            </div>
+
+            {/* Tips for this category */}
+            <div
+              className={css({
+                mt: '4',
+                p: '3',
+                bg: 'blue.500/10',
+                border: '1px solid',
+                borderColor: 'blue.500/20',
+                borderRadius: 'md',
+                fontSize: 'xs',
+                color: 'blue.300',
+              })}
+            >
+              💡 <strong>Tip:</strong> List {group.skills.length || '3-6'} skills per category.
+              Focus on relevant, in-demand skills that match job requirements.
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
 
       {/* Overall tips */}
       {data.length > 0 && (

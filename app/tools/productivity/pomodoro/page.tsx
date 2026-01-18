@@ -895,6 +895,7 @@ export default function PomodoroTimerPage() {
                 </div>
               ) : (
                 tasks.map((task) => (
+                  // biome-ignore lint/a11y/useSemanticElements: Task item needs div for complex layout with nested interactive elements
                   <div
                     key={task.id}
                     role="button"

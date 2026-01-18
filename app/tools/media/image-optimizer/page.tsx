@@ -1242,7 +1242,6 @@ export default function ImageOptimizerPage() {
                                     </div>
 
                                     {/* Comparison Container */}
-                                    {/* biome-ignore lint/a11y/useSemanticElements: Custom slider comparison UI requires div with role */}
                                     <div
                                       role="slider"
                                       aria-label="Image comparison slider"

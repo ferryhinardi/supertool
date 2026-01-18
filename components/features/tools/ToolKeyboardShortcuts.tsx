@@ -244,6 +244,7 @@ export function ToolKeyboardShortcuts({
                               {formatKey(shortcut.key)
                                 .split('+')
                                 .map((part, i, arr) => (
+                                  // biome-ignore lint/suspicious/noArrayIndexKey: Keyboard key parts may repeat in combinations
                                   <span key={`${part}-${i}`}>
                                     <kbd
                                       className={css({

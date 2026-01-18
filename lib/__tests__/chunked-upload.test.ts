@@ -14,13 +14,16 @@ describe('chunked-upload', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     global.fetch = vi.fn()
     global.FormData = class MockFormData {
+      // biome-ignore lint/suspicious/noExplicitAny: Mock storage accepts any value types for testing
       private data: Map<string, any> = new Map()
+      // biome-ignore lint/suspicious/noExplicitAny: Mock append accepts any value for testing
       append(key: string, value: any) {
         this.data.set(key, value)
       }
       get(key: string) {
         return this.data.get(key)
       }
+      // biome-ignore lint/suspicious/noExplicitAny: Mock class cast required for incomplete FormData implementation
     } as any
   })
 

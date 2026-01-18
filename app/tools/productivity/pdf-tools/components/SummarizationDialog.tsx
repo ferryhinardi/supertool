@@ -300,9 +300,8 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                   <CardContent>
                     <ul className={css({ spaceY: 3 })}>
                       {result.keyPoints.map((point, index) => (
-                        // biome-ignore lint/suspicious/noArrayIndexKey: Key points are static and order matters
                         <li
-                          key={index}
+                          key={point}
                           className={css({
                             display: 'flex',
                             gap: 3,
@@ -346,10 +345,9 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                   </CardHeader>
                   <CardContent>
                     <div className={css({ display: 'flex', flexWrap: 'wrap', gap: 2 })}>
-                      {result.mainTopics.map((topic, index) => (
-                        // biome-ignore lint/suspicious/noArrayIndexKey: Topics are static and order matters
+                      {result.mainTopics.map((topic) => (
                         <span
-                          key={index}
+                          key={topic}
                           className={css({
                             px: 3,
                             py: 1.5,
@@ -380,10 +378,9 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                   </CardHeader>
                   <CardContent>
                     <ul className={css({ spaceY: 2 })}>
-                      {result.actionItems.map((item, index) => (
-                        // biome-ignore lint/suspicious/noArrayIndexKey: Action items are static and order matters
+                      {result.actionItems.map((item) => (
                         <li
-                          key={index}
+                          key={item}
                           className={css({
                             display: 'flex',
                             alignItems: 'start',
@@ -412,10 +409,9 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
                   </CardHeader>
                   <CardContent>
                     <div className={css({ display: 'flex', flexWrap: 'wrap', gap: 2 })}>
-                      {result.technicalTerms.map((term, index) => (
-                        // biome-ignore lint/suspicious/noArrayIndexKey: Technical terms are static and order matters
+                      {result.technicalTerms.map((term) => (
                         <span
-                          key={index}
+                          key={term}
                           className={css({
                             px: 3,
                             py: 1,

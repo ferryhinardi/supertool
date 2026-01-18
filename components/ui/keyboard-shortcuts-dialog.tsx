@@ -29,6 +29,7 @@ export function KeyboardShortcutsDialog({
   const onClose = () => onOpenChange(false)
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: Modal backdrop uses div for layout, button behavior via role
     <div
       className={css({
         position: 'fixed',
@@ -90,6 +91,7 @@ export function KeyboardShortcutsDialog({
           <div className={css({ spaceY: '3' })}>
             {shortcuts.map((shortcut, index) => (
               <div
+                // biome-ignore lint/suspicious/noArrayIndexKey: Shortcuts list is static and index is stable
                 key={index}
                 className={css({
                   display: 'flex',

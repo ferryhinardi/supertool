@@ -139,8 +139,8 @@ export function TechTemplate({ data }: TechTemplateProps) {
             TECH_STACK
           </h2>
 
-          {skills.map((group, idx) => (
-            <div key={`skill-group-${idx}`} className={css({ mb: '3px' })}>
+          {skills.map((group) => (
+            <div key={group.category} className={css({ mb: '3px' })}>
               <span
                 className={css({
                   fontSize: '9px',
@@ -160,7 +160,7 @@ export function TechTemplate({ data }: TechTemplateProps) {
               >
                 {group.skills.filter(Boolean).map((skill, i) => (
                   <span
-                    key={`skill-${i}`}
+                    key={`${group.category}-skill-${i}`}
                     className={css({
                       display: 'inline-block',
                       bg: 'gray.100',
@@ -278,7 +278,7 @@ export function TechTemplate({ data }: TechTemplateProps) {
                 <div className={css({ mt: '3px', display: 'flex', flexWrap: 'wrap', gap: '2px' })}>
                   {project.technologies.map((tech, i) => (
                     <span
-                      key={`tech-${i}`}
+                      key={`${project.id}-tech-${i}`}
                       className={css({
                         fontSize: '7px',
                         bg: 'gray.800',
@@ -379,7 +379,7 @@ export function TechTemplate({ data }: TechTemplateProps) {
                 <div className={css({ mt: '3px', display: 'flex', flexWrap: 'wrap', gap: '2px' })}>
                   {exp.technologies.map((tech, i) => (
                     <span
-                      key={`exp-tech-${i}`}
+                      key={`${exp.id}-tech-${tech}-${i}`}
                       className={css({
                         fontSize: '7px',
                         bg: 'gray.100',

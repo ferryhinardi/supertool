@@ -527,6 +527,7 @@ describe('Steganography Page', () => {
       // Switch to decode mode
       const decodeButtons = screen.getAllByText(/Decode Message/i)
       const decodeButton = decodeButtons.find((el) => el.textContent === 'Decode Message')
+      // biome-ignore lint/style/noNonNullAssertion: Test assertion - button existence verified by getAllByText
       await user.click(decodeButton!)
 
       await waitFor(() => {

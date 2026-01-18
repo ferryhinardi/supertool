@@ -193,8 +193,8 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
             Professional Experience
           </h2>
           <div className={css({ spaceY: '24px', mt: '24px' })}>
-            {experience.map((exp, index) => (
-              <div key={index}>
+            {experience.map((exp) => (
+              <div key={exp.id}>
                 {/* Position and Company */}
                 <div
                   className={css({
@@ -263,7 +263,7 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
                   >
                     {exp.achievements.map((achievement, i) => (
                       <li
-                        key={i}
+                        key={`${exp.id}-achievement-${i}`}
                         className={css({
                           fontSize: '10px',
                           lineHeight: '1.7',
@@ -333,8 +333,8 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
             Education
           </h2>
           <div className={css({ spaceY: '20px', mt: '24px' })}>
-            {education.map((edu, index) => (
-              <div key={index}>
+            {education.map((edu) => (
+              <div key={edu.id}>
                 <div
                   className={css({
                     display: 'flex',
@@ -403,7 +403,7 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
                   >
                     {edu.achievements.map((achievement, i) => (
                       <li
-                        key={i}
+                        key={`${edu.id}-achievement-${i}`}
                         className={css({
                           fontSize: '10px',
                           lineHeight: '1.6',
@@ -465,8 +465,8 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
               mt: '24px',
             })}
           >
-            {skills.map((skillGroup, index) => (
-              <div key={index}>
+            {skills.map((skillGroup) => (
+              <div key={skillGroup.category}>
                 <h3
                   className={css({
                     fontSize: '11px',
@@ -521,8 +521,8 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
             Notable Projects
           </h2>
           <div className={css({ spaceY: '20px', mt: '24px' })}>
-            {projects.map((project, index) => (
-              <div key={index}>
+            {projects.map((project) => (
+              <div key={project.id}>
                 <div
                   className={css({
                     display: 'flex',
@@ -589,7 +589,7 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
                   >
                     {project.highlights.map((highlight, i) => (
                       <li
-                        key={i}
+                        key={`${project.id}-highlight-${i}`}
                         className={css({
                           fontSize: '10px',
                           lineHeight: '1.6',

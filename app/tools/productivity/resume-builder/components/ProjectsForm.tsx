@@ -421,7 +421,10 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
 
               <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
                 {project.technologies.map((tech, techIndex) => (
-                  <div key={techIndex} className={css({ display: 'flex', gap: '2' })}>
+                  <div
+                    key={`${project.id}-tech-${techIndex}`}
+                    className={css({ display: 'flex', gap: '2' })}
+                  >
                     <Input
                       value={tech}
                       onChange={(e) =>
@@ -483,7 +486,10 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
 
               <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
                 {project.highlights.map((highlight, highlightIndex) => (
-                  <div key={highlightIndex} className={css({ display: 'flex', gap: '2' })}>
+                  <div
+                    key={`${project.id}-highlight-${highlightIndex}`}
+                    className={css({ display: 'flex', gap: '2' })}
+                  >
                     <Input
                       value={highlight}
                       onChange={(e) =>

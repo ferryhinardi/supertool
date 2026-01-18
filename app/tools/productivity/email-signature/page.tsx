@@ -845,6 +845,7 @@ export default function EmailSignatureGenerator() {
               <CardContent className={css({ py: '3' })}>
                 <div className={css({ fontSize: 'sm', color: 'red.400' })}>
                   {validation.errors.map((error, idx) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Error messages are static strings without stable IDs
                     <div key={idx}>• {error}</div>
                   ))}
                 </div>

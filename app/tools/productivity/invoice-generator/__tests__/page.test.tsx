@@ -249,7 +249,6 @@ describe('InvoiceGeneratorPage', () => {
   })
 
   it('prevents removing the last line item', async () => {
-    const { toast } = await import('sonner')
     render(<InvoiceGeneratorPage />)
 
     // Try to find a remove button by looking for SVG-only buttons

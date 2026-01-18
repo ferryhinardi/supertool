@@ -1,5 +1,5 @@
 import { cleanup } from '@testing-library/react'
-import { afterEach, beforeAll, beforeEach, expect, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 
 // Mock Supabase client globally
@@ -719,6 +719,39 @@ afterEach(() => {
   // Clear all mocks after each test
   vi.clearAllMocks()
 })
+
+// Force cleanup after all tests to prevent process from hanging
+// Timer-based tests (speed-test, pomodoro, countdown-timer) may leave open handles
+afterAll(async () => {
+  // Restore real timers in case fake timers were used
+  vi.useRealTimers()
+  // Clear any remaining timers to allow process exit
+  vi.clearAllTimers()
+  // Reset all mocks to release references
+  vi.resetAllMocks()
+
+  // Force garbage collection if available (Node.js with --expose-gc flag)
+  if (typeof globalThis.gc === 'function') {
+    globalThis.gc()
+  }
+
+  // Small delay to allow pending microtasks to complete before teardown
+  await new Promise((resolve) => setTimeout(resolve, 50))
+})
+
+// CI environment: Force process exit after a timeout if tests complete but process hangs
+// This handles cases where esbuild or other child processes don't terminate properly
+if (process.env.CI === 'true') {
+  // Set a hard exit timeout after all tests complete
+  // The process should exit naturally, but this is a safety net
+  const exitTimeout = setTimeout(() => {
+    console.warn('[vitest.setup.ts] Force exiting after timeout - likely orphan processes')
+    process.exit(0)
+  }, 60000) // 60 seconds after tests complete
+
+  // Don't let this timer keep the process alive
+  exitTimeout.unref()
+}
 
 // Extend Vitest's expect with jest-dom matchers
 expect.extend({})

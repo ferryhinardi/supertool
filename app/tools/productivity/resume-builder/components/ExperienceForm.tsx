@@ -344,7 +344,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
                   {experience.achievements.map((achievement, achIndex) => {
                     const validation = optimizeBulletPoint(achievement)
                     return (
-                      <div key={achIndex}>
+                      <div key={`${experience.id}-achievement-${achIndex}`}>
                         <div className={css({ display: 'flex', gap: '2' })}>
                           <div
                             className={css({
@@ -427,8 +427,8 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
                                     Suggestions to improve:
                                   </div>
                                   <ul className={css({ pl: '4', spaceY: '0.5' })}>
-                                    {validation.suggestions.map((suggestion, i) => (
-                                      <li key={i}>{suggestion}</li>
+                                    {validation.suggestions.map((suggestion) => (
+                                      <li key={suggestion}>{suggestion}</li>
                                     ))}
                                   </ul>
                                 </div>

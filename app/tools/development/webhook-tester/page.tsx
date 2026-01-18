@@ -653,12 +653,13 @@ export default function WebhookTesterPage() {
                 <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold' })}>Your Webhooks</h2>
                 <div className={css({ spaceY: '3' })}>
                   {endpoints.map((endpoint) => (
-                    <div
+                    <button
+                      type="button"
                       key={endpoint.id}
-                      role="button"
-                      tabIndex={0}
                       className={css({
                         p: '4',
+                        w: 'full',
+                        textAlign: 'left',
                         bg: 'rgba(17, 24, 39, 0.6)',
                         border: '1px solid',
                         borderColor:
@@ -673,12 +674,6 @@ export default function WebhookTesterPage() {
                         },
                       })}
                       onClick={() => setSelectedEndpointId(endpoint.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          setSelectedEndpointId(endpoint.id)
-                        }
-                      }}
                     >
                       <div
                         className={css({
@@ -762,6 +757,7 @@ export default function WebhookTesterPage() {
                           <span>{formatRelativeTime(endpoint.created_at)}</span>
                         </div>
 
+                        {/* biome-ignore lint/a11y/useSemanticElements: Button group container, fieldset not appropriate here */}
                         <div
                           role="group"
                           className={css({ display: 'flex', gap: '2' })}
@@ -842,7 +838,7 @@ export default function WebhookTesterPage() {
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -890,11 +886,12 @@ export default function WebhookTesterPage() {
                 ) : (
                   <div className={css({ spaceY: '2', maxH: '600px', overflowY: 'auto' })}>
                     {requests.map((request) => (
-                      <div
+                      <button
+                        type="button"
                         key={request.id}
-                        role="button"
-                        tabIndex={0}
                         className={css({
+                          w: 'full',
+                          textAlign: 'left',
                           p: '3',
                           bg: 'rgba(17, 24, 39, 0.6)',
                           border: '1px solid',
@@ -907,12 +904,6 @@ export default function WebhookTesterPage() {
                           },
                         })}
                         onClick={() => setSelectedRequest(request)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            setSelectedRequest(request)
-                          }
-                        }}
                       >
                         <div
                           className={css({
@@ -955,7 +946,7 @@ export default function WebhookTesterPage() {
                           </div>
                           {request.body && <div>Body: {formatBytes(request.body_size)}</div>}
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 )}
@@ -967,6 +958,7 @@ export default function WebhookTesterPage() {
 
       {/* Request Inspector Modal */}
       {selectedRequest && (
+        // biome-ignore lint/a11y/useSemanticElements: Modal backdrop overlay for click-to-close, not a true interactive button
         <div
           role="button"
           tabIndex={0}

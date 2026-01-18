@@ -30,6 +30,7 @@ const createMockContext = () => ({
 // Setup canvas mock before each test
 beforeEach(() => {
   const mockContext = createMockContext()
+  // biome-ignore lint/suspicious/noExplicitAny: Canvas prototype mock requires any cast
   HTMLCanvasElement.prototype.getContext = vi.fn(() => mockContext) as any
 })
 
@@ -158,6 +159,7 @@ describe('WatermarkPreview', () => {
   describe('canvas drawing', () => {
     it('should call getContext on mount', () => {
       const mockGetContext = vi.fn(() => createMockContext())
+      // biome-ignore lint/suspicious/noExplicitAny: Canvas prototype mock requires any cast
       HTMLCanvasElement.prototype.getContext = mockGetContext as any
 
       render(<WatermarkPreview {...defaultProps} />)

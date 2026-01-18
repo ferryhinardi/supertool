@@ -65,11 +65,11 @@ jobs:
 
               if echo "$MSG" | grep -qE "$PATTERN"; then
                 echo "- \`$SHORT_HASH\` $MSG" >> commit-report.md
-                ((VALID_COUNT++))
+                VALID_COUNT=$((VALID_COUNT + 1))
               else
                 echo "- **$SHORT_HASH** $MSG (invalid format)" >> commit-report.md
                 INVALID_COMMITS="$INVALID_COMMITS\n- $SHORT_HASH: $MSG"
-                ((INVALID_COUNT++))
+                INVALID_COUNT=$((INVALID_COUNT + 1))
               fi
             fi
           done <<< "$COMMITS"
@@ -192,7 +192,7 @@ jobs:
               if [ -n "$MATCHES" ]; then
                 echo "- Potential secret pattern found: \`$pattern\`" >> security-report.md
                 echo "  Files: $MATCHES" >> security-report.md
-                ((SECRETS_FOUND++))
+                SECRETS_FOUND=$((SECRETS_FOUND + 1))
               fi
             fi
           done
@@ -227,7 +227,7 @@ jobs:
             if [ -n "$EVAL_FILES" ]; then
               echo "- **eval() usage found** (potential code injection risk)" >> security-report.md
               echo "  Files: $EVAL_FILES" >> security-report.md
-              ((ISSUES++))
+              ISSUES=$((ISSUES + 1))
             fi
 
             # Check for dangerouslySetInnerHTML
@@ -235,7 +235,7 @@ jobs:
             if [ -n "$DANGEROUS_HTML" ]; then
               echo "- **dangerouslySetInnerHTML usage found** (potential XSS risk)" >> security-report.md
               echo "  Files: $DANGEROUS_HTML" >> security-report.md
-              ((ISSUES++))
+              ISSUES=$((ISSUES + 1))
             fi
 
             # Check for innerHTML assignments
@@ -243,7 +243,7 @@ jobs:
             if [ -n "$INNER_HTML" ]; then
               echo "- **innerHTML assignment found** (potential XSS risk)" >> security-report.md
               echo "  Files: $INNER_HTML" >> security-report.md
-              ((ISSUES++))
+              ISSUES=$((ISSUES + 1))
             fi
 
             # Check for SQL concatenation patterns
@@ -251,7 +251,7 @@ jobs:
             if [ -n "$SQL_CONCAT" ]; then
               echo "- **SQL string concatenation found** (potential SQL injection risk)" >> security-report.md
               echo "  Files: $SQL_CONCAT" >> security-report.md
-              ((ISSUES++))
+              ISSUES=$((ISSUES + 1))
             fi
           fi
 
@@ -539,7 +539,7 @@ jobs:
             echo "| Lint | Passed |" >> ai-review.md
           else
             echo "| Lint | **Failed** |" >> ai-review.md
-            ((BLOCKING++))
+            BLOCKING=$((BLOCKING + 1))
           fi
 
           # Type check status
@@ -547,7 +547,7 @@ jobs:
             echo "| Type Check | Passed |" >> ai-review.md
           else
             echo "| Type Check | **Failed** |" >> ai-review.md
-            ((BLOCKING++))
+            BLOCKING=$((BLOCKING + 1))
           fi
 
           # Commit validation
@@ -560,7 +560,7 @@ jobs:
           # Security
           if [ "${CRITICAL_VULNS:-0}" -gt 0 ] || [ "${HIGH_VULNS:-0}" -gt 0 ]; then
             echo "| Security | **Issues Found** |" >> ai-review.md
-            ((BLOCKING++))
+            BLOCKING=$((BLOCKING + 1))
           elif [ "${SECRETS_FOUND:-0}" -gt 0 ]; then
             echo "| Security | Warning |" >> ai-review.md
           else

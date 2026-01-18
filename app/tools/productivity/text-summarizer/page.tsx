@@ -574,8 +574,8 @@ function TextSummarizerContent() {
                         Key Highlights
                       </h4>
                       <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                        {result.highlights.map((highlight, index) => (
-                          <li key={index}>• {highlight}</li>
+                        {result.highlights.map((highlight) => (
+                          <li key={highlight}>• {highlight}</li>
                         ))}
                       </ul>
                     </div>

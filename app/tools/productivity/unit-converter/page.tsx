@@ -1339,6 +1339,7 @@ function UnitConverterContent() {
                       <div className={css({ spaceY: '2' })}>
                         {formulaExplanation.steps.map((step, index) => (
                           <div
+                            // biome-ignore lint/suspicious/noArrayIndexKey: Calculation steps are dynamic strings that may repeat
                             key={index}
                             className={css({ display: 'flex', gap: '2', alignItems: 'start' })}
                           >

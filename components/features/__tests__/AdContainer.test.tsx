@@ -4,6 +4,7 @@ import { AdContainer } from '../ads/AdContainer'
 
 // Mock all ad components
 vi.mock('../ads/AdBanner', () => ({
+  // biome-ignore lint/suspicious/noExplicitAny: Mock component accepts any props for testing
   AdBanner: ({ position, className, slot }: any) => (
     <div data-testid="ad-banner" data-position={position} className={className} data-slot={slot}>
       AdBanner Mock
@@ -12,6 +13,7 @@ vi.mock('../ads/AdBanner', () => ({
 }))
 
 vi.mock('../ads/CarbonAd', () => ({
+  // biome-ignore lint/suspicious/noExplicitAny: Mock component accepts any props for testing
   CarbonAd: ({ position, className }: any) => (
     <div data-testid="carbon-ad" data-position={position} className={className}>
       CarbonAd Mock
@@ -20,6 +22,7 @@ vi.mock('../ads/CarbonAd', () => ({
 }))
 
 vi.mock('../ads/EthicalAd', () => ({
+  // biome-ignore lint/suspicious/noExplicitAny: Mock component accepts any props for testing
   EthicalAd: ({ position, className, type }: any) => (
     <div data-testid="ethical-ad" data-position={position} className={className} data-type={type}>
       EthicalAd Mock
