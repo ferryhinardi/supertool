@@ -118,9 +118,9 @@ export function useGitHubPRs({
         if (filters.direction) url.searchParams.set('direction', filters.direction)
         if (filters.per_page) url.searchParams.set('per_page', filters.per_page.toString())
 
-        // Handle pagination
-        const currentPage = page ?? pagination.currentPage
-        url.searchParams.set('page', currentPage.toString())
+        // Handle pagination - use page parameter directly, default to 1
+        const targetPage = page ?? 1
+        url.searchParams.set('page', targetPage.toString())
 
         const response = await fetch(url.toString())
         const data = await response.json()
@@ -136,11 +136,11 @@ export function useGitHubPRs({
             setPagination({
               hasNextPage: data.data.hasNextPage || false,
               hasPreviousPage: data.data.hasPreviousPage || false,
-              currentPage,
+              currentPage: targetPage,
             })
           } else if (Array.isArray(data.data)) {
             setPullRequests(data.data)
-            setPagination((prev) => ({ ...prev, currentPage }))
+            setPagination((prev) => ({ ...prev, currentPage: targetPage }))
           }
         } else {
           throw new Error(data.error || 'Failed to fetch pull requests')
@@ -153,7 +153,7 @@ export function useGitHubPRs({
         setIsLoading(false)
       }
     },
-    [owner, repo, filters, pagination.currentPage]
+    [owner, repo, filters]
   )
 
   /**
