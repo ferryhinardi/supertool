@@ -85,9 +85,10 @@ const useCopilotStore = create<CopilotChatState>((set) => ({
   setStreamContent: (currentStreamContent) => set({ currentStreamContent }),
 
   appendStreamContent: (content) =>
-    set((state) => ({
-      currentStreamContent: state.currentStreamContent + content,
-    })),
+    set((state) => {
+      const newContent = state.currentStreamContent + content
+      return { currentStreamContent: newContent }
+    }),
 
   addToolCall: (toolCall) =>
     set((state) => ({
@@ -127,7 +128,8 @@ function parseSSEEvent(line: string): StreamEvent | null {
   }
 
   try {
-    return JSON.parse(data) as StreamEvent
+    const parsed = JSON.parse(data) as StreamEvent
+    return parsed
   } catch {
     // If parsing fails, treat as token content
     return { type: 'token', content: data }
@@ -302,7 +304,8 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
             break
           }
 
-          buffer += decoder.decode(value, { stream: true })
+          const chunk = decoder.decode(value, { stream: true })
+          buffer += chunk
           const lines = buffer.split('\n')
           buffer = lines.pop() || '' // Keep incomplete line in buffer
 
@@ -316,7 +319,6 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
               case 'token':
                 if (event.content) {
                   appendStreamContent(event.content)
-                  // Get the already-updated content from store (don't add event.content again)
                   const updatedContent = useCopilotStore.getState().currentStreamContent
                   updateLastMessage(updatedContent)
                 }

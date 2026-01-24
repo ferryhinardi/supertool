@@ -33,6 +33,12 @@ const DEFAULT_CONFIG: Required<CopilotClientConfig> = {
   debug: false,
 }
 
+// Global reference for singleton persistence across HMR (Hot Module Reloading)
+// This ensures the same instance is reused in Next.js dev mode
+const globalForCopilot = globalThis as unknown as {
+  copilotManager: CopilotClientManager | undefined
+}
+
 // OpenAI model configuration
 const OPENAI_MODEL = 'gpt-4o-mini'
 const OPENAI_MAX_TOKENS = 2048
@@ -75,7 +81,6 @@ Keep your responses clear and well-formatted. Use markdown when appropriate for 
  * ```
  */
 export class CopilotClientManager {
-  private static instance: CopilotClientManager | null = null
   private store: SessionStore
   private config: Required<CopilotClientConfig>
   private isInitialized = false
@@ -92,21 +97,22 @@ export class CopilotClientManager {
 
   /**
    * Get the singleton instance of CopilotClientManager
+   * Uses globalThis to persist across Next.js HMR in development
    */
   static getInstance(config?: CopilotClientConfig): CopilotClientManager {
-    if (!CopilotClientManager.instance) {
-      CopilotClientManager.instance = new CopilotClientManager(config)
+    if (!globalForCopilot.copilotManager) {
+      globalForCopilot.copilotManager = new CopilotClientManager(config)
     }
-    return CopilotClientManager.instance
+    return globalForCopilot.copilotManager
   }
 
   /**
    * Reset the singleton instance (useful for testing)
    */
   static resetInstance(): void {
-    if (CopilotClientManager.instance) {
-      CopilotClientManager.instance.shutdown()
-      CopilotClientManager.instance = null
+    if (globalForCopilot.copilotManager) {
+      globalForCopilot.copilotManager.shutdown()
+      globalForCopilot.copilotManager = undefined
     }
   }
 
@@ -532,7 +538,7 @@ export class CopilotClientManager {
       for (const word of words) {
         await new Promise((resolve) => setTimeout(resolve, 50))
         yield {
-          type: 'token',
+          type: 'token' as const,
           content: `${word} `,
         }
       }

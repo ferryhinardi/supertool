@@ -98,7 +98,12 @@ export function ChatContainer({ sessionId }: ChatContainerProps) {
       )}
 
       {/* Input area */}
-      <div className={css({ p: '4', borderTop: '1px solid rgba(255, 255, 255, 0.1)' })}>
+      <div
+        className={css({
+          p: '4',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+        })}
+      >
         <ChatInput
           onSend={handleSend}
           disabled={isStreaming}
