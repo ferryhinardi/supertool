@@ -316,9 +316,8 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
               case 'token':
                 if (event.content) {
                   appendStreamContent(event.content)
-                  // Get current content from store to avoid stale closure
-                  const updatedContent =
-                    useCopilotStore.getState().currentStreamContent + event.content
+                  // Get the already-updated content from store (don't add event.content again)
+                  const updatedContent = useCopilotStore.getState().currentStreamContent
                   updateLastMessage(updatedContent)
                 }
                 break
