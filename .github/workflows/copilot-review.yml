@@ -497,8 +497,8 @@ jobs:
           fi
 
           # Check for missing tests
-          CHANGED_COMPONENTS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.tsx' | grep -v "\.test\." | grep -v "\.stories\.")
-          CHANGED_TESTS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.test.tsx' '*.test.ts')
+          CHANGED_COMPONENTS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.tsx' | grep -v "\.test\." | grep -v "\.stories\." || true)
+          CHANGED_TESTS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.test.tsx' '*.test.ts' || true)
 
           if [ -n "$CHANGED_COMPONENTS" ] && [ -z "$CHANGED_TESTS" ]; then
             SUGGESTIONS="$SUGGESTIONS\n- **Testing:** Component changes detected without corresponding test updates"
