@@ -10,6 +10,7 @@ import type {
 } from '@/lib/services/copilot/types'
 import { css } from '@/styled-system/css'
 import { FilePreviewModal } from './file-preview-modal'
+import { MarkdownRenderer } from './markdown-renderer'
 
 interface ChatMessageProps {
   message: CopilotMessage
@@ -85,28 +86,38 @@ export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) 
       </div>
 
       {/* Message content */}
-      <div
-        className={css({
-          color: 'rgba(255, 255, 255, 0.9)',
-          fontSize: 'sm',
-          lineHeight: '1.6',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-        })}
-      >
-        {message.content}
-        {isStreaming && !message.content && (
-          <span
-            className={css({
-              display: 'inline-block',
-              w: '2',
-              h: '4',
-              bg: 'rgba(255, 255, 255, 0.5)',
-              animation: 'blink 1s step-end infinite',
-            })}
-          />
-        )}
-      </div>
+      {isUser ? (
+        // User messages: Plain text (users don't write markdown)
+        <div
+          className={css({
+            color: 'rgba(255, 255, 255, 0.9)',
+            fontSize: 'sm',
+            lineHeight: '1.6',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          })}
+        >
+          {message.content}
+        </div>
+      ) : (
+        // Assistant/System messages: Render markdown with syntax highlighting
+        <div className={css({ position: 'relative' })}>
+          {message.content ? (
+            <MarkdownRenderer content={message.content} />
+          ) : isStreaming ? (
+            // Streaming cursor when no content yet
+            <span
+              className={css({
+                display: 'inline-block',
+                w: '2',
+                h: '4',
+                bg: 'rgba(255, 255, 255, 0.5)',
+                animation: 'blink 1s step-end infinite',
+              })}
+            />
+          ) : null}
+        </div>
+      )}
 
       {/* Attachments */}
       {message.attachments && message.attachments.length > 0 && (
