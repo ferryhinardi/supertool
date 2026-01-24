@@ -18,6 +18,7 @@ import type {
   CopilotClientConfig,
   CopilotMessage,
   CopilotSession,
+  FileAttachment,
   SessionMetadata,
   SessionStore,
   StreamEvent,
@@ -67,6 +68,70 @@ Your role is to:
 5. If you don't know something, admit it rather than making up information
 
 Keep your responses clear and well-formatted. Use markdown when appropriate for code blocks, lists, and emphasis.`
+
+/**
+ * Format message content with attachments for OpenAI Vision API
+ * Images are sent as base64-encoded image_url content parts
+ * Documents are appended as text information
+ */
+function formatMessageContent(
+  message: string,
+  attachments?: FileAttachment[]
+):
+  | string
+  | Array<
+      | { type: 'text'; text: string }
+      | { type: 'image_url'; image_url: { url: string; detail: 'auto' } }
+    > {
+  if (!attachments || attachments.length === 0) {
+    return message
+  }
+
+  const content: Array<
+    | { type: 'text'; text: string }
+    | { type: 'image_url'; image_url: { url: string; detail: 'auto' } }
+  > = []
+
+  // Add document content as text (decode base64 to get actual content)
+  const documentAttachments = attachments.filter((a) => a.type === 'document')
+  const documentContent = documentAttachments
+    .map((a) => {
+      try {
+        // Decode base64 content to get the actual text
+        const decodedContent = Buffer.from(a.data, 'base64').toString('utf-8')
+        // Truncate very large documents to avoid token limits
+        const maxLength = 50000 // ~12.5k tokens approximately
+        const truncatedContent =
+          decodedContent.length > maxLength
+            ? `${decodedContent.slice(0, maxLength)}\n\n[... content truncated, showing first ${maxLength} characters of ${decodedContent.length} total ...]`
+            : decodedContent
+        return `[Document: ${a.name} (${(a.size / 1024).toFixed(1)} KB)]\n\`\`\`\n${truncatedContent}\n\`\`\``
+      } catch {
+        // If decoding fails, just show metadata
+        return `[Attached document: ${a.name} (${(a.size / 1024).toFixed(1)} KB) - unable to decode content]`
+      }
+    })
+    .join('\n\n')
+
+  content.push({
+    type: 'text',
+    text: documentContent ? `${message}\n\n${documentContent}` : message,
+  })
+
+  // Add images as image_url content parts
+  const imageAttachments = attachments.filter((a) => a.type === 'image')
+  for (const attachment of imageAttachments) {
+    content.push({
+      type: 'image_url',
+      image_url: {
+        url: `data:${attachment.mimeType};base64,${attachment.data}`,
+        detail: 'auto',
+      },
+    })
+  }
+
+  return content
+}
 
 /**
  * Singleton class for managing GitHub Copilot SDK interactions
@@ -281,7 +346,8 @@ export class CopilotClientManager {
   async sendMessage(
     sessionId: string,
     message: string,
-    options: ChatOptions = {}
+    options: ChatOptions = {},
+    attachments?: FileAttachment[]
   ): Promise<ChatResponse> {
     this.ensureInitialized()
 
@@ -308,6 +374,7 @@ export class CopilotClientManager {
       role: 'user',
       content: message,
       timestamp: Date.now(),
+      attachments,
     }
 
     // Add user message to session
@@ -317,10 +384,15 @@ export class CopilotClientManager {
       // Execute with retry and timeout
       const response = await CopilotErrorHandler.withRetry(
         async (signal) => {
-          return this.callCopilotAPI(session, userMessage, {
-            ...options,
-            signal: signal ?? options.signal,
-          })
+          return this.callCopilotAPI(
+            session,
+            userMessage,
+            {
+              ...options,
+              signal: signal ?? options.signal,
+            },
+            attachments
+          )
         },
         {
           timeout: options.signal ? undefined : this.config.requestTimeout,
@@ -349,7 +421,8 @@ export class CopilotClientManager {
   async *streamMessage(
     sessionId: string,
     message: string,
-    options: ChatOptions = {}
+    options: ChatOptions = {},
+    attachments?: FileAttachment[]
   ): AsyncGenerator<StreamEvent> {
     this.ensureInitialized()
 
@@ -384,6 +457,7 @@ export class CopilotClientManager {
       role: 'user',
       content: message,
       timestamp: Date.now(),
+      attachments,
     }
 
     // Add user message to session
@@ -396,7 +470,7 @@ export class CopilotClientManager {
 
     try {
       // Stream tokens from Copilot API
-      for await (const event of this.streamCopilotAPI(session, userMessage, options)) {
+      for await (const event of this.streamCopilotAPI(session, userMessage, options, attachments)) {
         if (event.type === 'token' && event.content) {
           fullContent += event.content
         }
@@ -452,7 +526,8 @@ export class CopilotClientManager {
   private async callCopilotAPI(
     session: CopilotSession,
     _userMessage: CopilotMessage,
-    _options: ChatOptions
+    _options: ChatOptions,
+    attachments?: FileAttachment[]
   ): Promise<ChatResponse> {
     // If no OpenAI client, fall back to mock response
     if (!this.openai) {
@@ -482,12 +557,20 @@ export class CopilotClientManager {
     }
 
     // Build messages array from session history
-    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+    // For the last user message, format with attachments for Vision API
+    const historyMessages = session.messages.slice(0, -1)
+    const lastMessage = session.messages[session.messages.length - 1]
+
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: 'system', content: SYSTEM_PROMPT },
-      ...session.messages.map((m) => ({
+      ...historyMessages.map((m) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),
+      {
+        role: 'user' as const,
+        content: formatMessageContent(lastMessage.content, attachments),
+      },
     ]
 
     // Call OpenAI API
@@ -527,7 +610,8 @@ export class CopilotClientManager {
   private async *streamCopilotAPI(
     session: CopilotSession,
     _userMessage: CopilotMessage,
-    _options: ChatOptions
+    _options: ChatOptions,
+    attachments?: FileAttachment[]
   ): AsyncGenerator<StreamEvent> {
     // If no OpenAI client, fall back to mock streaming
     if (!this.openai) {
@@ -555,12 +639,20 @@ export class CopilotClientManager {
     }
 
     // Build messages array from session history
-    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+    // For the last user message, format with attachments for Vision API
+    const historyMessages = session.messages.slice(0, -1)
+    const lastMessage = session.messages[session.messages.length - 1]
+
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: 'system', content: SYSTEM_PROMPT },
-      ...session.messages.map((m) => ({
+      ...historyMessages.map((m) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),
+      {
+        role: 'user' as const,
+        content: formatMessageContent(lastMessage.content, attachments),
+      },
     ]
 
     // Call OpenAI API with streaming

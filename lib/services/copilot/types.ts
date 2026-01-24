@@ -16,11 +16,63 @@
 
 export type MessageRole = 'user' | 'assistant' | 'system'
 
+/**
+ * File attachment for chat messages (images, documents)
+ * Supports OpenAI Vision API for image analysis
+ */
+export interface FileAttachment {
+  /** Unique identifier for the attachment */
+  id: string
+  /** Original file name */
+  name: string
+  /** Attachment type category */
+  type: 'image' | 'document'
+  /** MIME type (e.g., 'image/jpeg', 'application/pdf') */
+  mimeType: string
+  /** File size in bytes */
+  size: number
+  /** Base64 encoded file data */
+  data: string
+  /** Data URL for preview (images only) */
+  preview?: string
+  /** Image dimensions (images only) */
+  dimensions?: {
+    width: number
+    height: number
+  }
+}
+
+/** Supported image MIME types for OpenAI Vision API */
+export const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const
+
+/** Supported document MIME types */
+export const SUPPORTED_DOCUMENT_TYPES = [
+  'application/pdf',
+  'text/plain',
+  'text/markdown',
+  'text/csv',
+] as const
+
+/** All supported file MIME types */
+export const SUPPORTED_FILE_TYPES = [...SUPPORTED_IMAGE_TYPES, ...SUPPORTED_DOCUMENT_TYPES] as const
+
+export type SupportedImageType = (typeof SUPPORTED_IMAGE_TYPES)[number]
+export type SupportedDocumentType = (typeof SUPPORTED_DOCUMENT_TYPES)[number]
+export type SupportedFileType = (typeof SUPPORTED_FILE_TYPES)[number]
+
+/** Maximum file size in bytes (20MB for OpenAI) */
+export const MAX_FILE_SIZE = 20 * 1024 * 1024
+
+/** Maximum number of attachments per message */
+export const MAX_ATTACHMENTS_PER_MESSAGE = 10
+
 export interface CopilotMessage {
   id: string
   role: MessageRole
   content: string
   timestamp: number
+  /** File attachments (images, documents) */
+  attachments?: FileAttachment[]
   metadata?: {
     toolCalls?: ToolCall[]
     usage?: TokenUsage
@@ -72,6 +124,8 @@ export interface SessionMetadata {
 export interface ChatRequest {
   sessionId: string
   message: string
+  /** File attachments to include with the message */
+  attachments?: FileAttachment[]
   context?: CopilotContext
   options?: ChatOptions
 }

@@ -13,6 +13,7 @@ import type {
   CopilotContext,
   CopilotError,
   CopilotMessage,
+  FileAttachment,
   StreamEvent,
   TokenUsage,
   ToolCall,
@@ -158,7 +159,12 @@ interface UseCopilotReturn {
   pendingToolCalls: ToolCall[]
 
   // Actions
-  sendMessage: (sessionId: string, message: string, context?: CopilotContext) => Promise<void>
+  sendMessage: (
+    sessionId: string,
+    message: string,
+    context?: CopilotContext,
+    attachments?: FileAttachment[]
+  ) => Promise<void>
   clearMessages: () => void
   clearError: () => void
   abort: () => void
@@ -204,7 +210,12 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
   }, [setError])
 
   const sendMessage = useCallback(
-    async (sessionId: string, message: string, context?: CopilotContext) => {
+    async (
+      sessionId: string,
+      message: string,
+      context?: CopilotContext,
+      attachments?: FileAttachment[]
+    ) => {
       // Abort any existing request
       abort()
 
@@ -218,6 +229,7 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
         role: 'user',
         content: message,
         timestamp: Date.now(),
+        attachments,
       }
       addMessage(userMessage)
 
@@ -241,6 +253,7 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
             sessionId,
             message,
             context,
+            attachments,
             stream: true,
           }),
           signal,
@@ -264,7 +277,7 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
             retryCountRef.current++
             const delay = copilotError.retryAfter || retryDelay * retryCountRef.current
             await new Promise((resolve) => setTimeout(resolve, delay))
-            return sendMessage(sessionId, message, context)
+            return sendMessage(sessionId, message, context, attachments)
           }
 
           throw copilotError

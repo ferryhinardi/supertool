@@ -7,6 +7,23 @@
  * - Built-in tools for file analysis, PR fetching, and chart generation
  */
 
+import { getGitHubService } from '@/lib/services/github/client'
+import type {
+  CodeSearchItem,
+  FileTree,
+  Issue,
+  IssueComment,
+  IssueDetail,
+  IssueFilters,
+  PaginatedResult,
+  PRFile,
+  PRFilters,
+  PRReview,
+  PRReviewComment,
+  PullRequest,
+  SearchFilters,
+  SearchResult,
+} from '@/lib/services/github/types'
 import { CopilotErrorHandler } from './error-handler'
 import type {
   ChartData,
@@ -20,12 +37,6 @@ import type {
   ToolCall,
   ToolResult,
 } from './types'
-
-// GitHub API base URL
-const GITHUB_API_BASE = 'https://api.github.com'
-
-// GitHub token for API calls (must be set via environment variable)
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN || ''
 
 /**
  * File category mappings for organization suggestions
@@ -230,6 +241,246 @@ export class MCPToolRegistry {
       },
       handler: this.generateChartHandler.bind(this),
     })
+
+    // Tool 5: Browse repository file tree
+    this.register({
+      name: 'browse_repo',
+      description:
+        'Browse the file tree structure of a GitHub repository to explore its contents and organization',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          path: {
+            type: 'string',
+            description: 'Optional path to browse within the repository (defaults to root)',
+          } as MCPPropertySchema,
+          ref: {
+            type: 'string',
+            description: 'Optional branch, tag, or commit SHA (defaults to default branch)',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo'],
+      },
+      handler: this.browseRepoHandler.bind(this),
+    })
+
+    // Tool 6: Read file contents from repository
+    this.register({
+      name: 'read_file',
+      description: 'Read the raw contents of a file from a GitHub repository',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          path: {
+            type: 'string',
+            description: 'The path to the file within the repository',
+          } as MCPPropertySchema,
+          ref: {
+            type: 'string',
+            description: 'Optional branch, tag, or commit SHA (defaults to default branch)',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'path'],
+      },
+      handler: this.readFileHandler.bind(this),
+    })
+
+    // Tool 7: Search code in repository
+    this.register({
+      name: 'search_code',
+      description: 'Search for code within a GitHub repository using keywords and optional filters',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          query: {
+            type: 'string',
+            description: 'The search query string',
+          } as MCPPropertySchema,
+          filters: {
+            type: 'object',
+            description: 'Optional search filters',
+            properties: {
+              language: { type: 'string', description: 'Filter by programming language' },
+              path: { type: 'string', description: 'Filter by file path prefix' },
+              extension: { type: 'string', description: 'Filter by file extension' },
+            },
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'query'],
+      },
+      handler: this.searchCodeHandler.bind(this),
+    })
+
+    // Tool 8: List pull requests
+    this.register({
+      name: 'list_prs',
+      description: 'List pull requests in a GitHub repository with optional filtering and sorting',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          filters: {
+            type: 'object',
+            description: 'Optional filters for pull requests',
+            properties: {
+              state: {
+                type: 'string',
+                description: 'Filter by state: open, closed, or all',
+                enum: ['open', 'closed', 'all'],
+              },
+              sort: {
+                type: 'string',
+                description: 'Sort by: created, updated, popularity, long-running',
+                enum: ['created', 'updated', 'popularity', 'long-running'],
+              },
+              direction: {
+                type: 'string',
+                description: 'Sort direction: asc or desc',
+                enum: ['asc', 'desc'],
+              },
+              per_page: {
+                type: 'number',
+                description: 'Number of results per page (max 100)',
+              },
+            },
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo'],
+      },
+      handler: this.listPRsHandler.bind(this),
+    })
+
+    // Tool 9: Analyze a pull request in detail
+    this.register({
+      name: 'analyze_pr',
+      description:
+        'Get comprehensive analysis of a pull request including files changed, reviews, and comments',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          prNumber: {
+            type: 'number',
+            description: 'The pull request number',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'prNumber'],
+      },
+      handler: this.analyzePRHandler.bind(this),
+    })
+
+    // Tool 10: List issues
+    this.register({
+      name: 'list_issues',
+      description: 'List issues in a GitHub repository with optional filtering and sorting',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          filters: {
+            type: 'object',
+            description: 'Optional filters for issues',
+            properties: {
+              state: {
+                type: 'string',
+                description: 'Filter by state: open, closed, or all',
+                enum: ['open', 'closed', 'all'],
+              },
+              labels: {
+                type: 'string',
+                description: 'Comma-separated list of label names',
+              },
+              sort: {
+                type: 'string',
+                description: 'Sort by: created, updated, comments',
+                enum: ['created', 'updated', 'comments'],
+              },
+              direction: {
+                type: 'string',
+                description: 'Sort direction: asc or desc',
+                enum: ['asc', 'desc'],
+              },
+              per_page: {
+                type: 'number',
+                description: 'Number of results per page (max 100)',
+              },
+            },
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo'],
+      },
+      handler: this.listIssuesHandler.bind(this),
+    })
+
+    // Tool 11: Analyze an issue in detail
+    this.register({
+      name: 'analyze_issue',
+      description: 'Get comprehensive analysis of an issue including details and all comments',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          issueNumber: {
+            type: 'number',
+            description: 'The issue number',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'issueNumber'],
+      },
+      handler: this.analyzeIssueHandler.bind(this),
+    })
   }
 
   /**
@@ -248,65 +499,54 @@ export class MCPToolRegistry {
       )
     }
 
-    try {
-      const response = await fetch(`${GITHUB_API_BASE}/repos/${owner}/${repo}/pulls/${prNumber}`, {
-        headers: {
-          Accept: 'application/vnd.github.v3+json',
-          Authorization: `Bearer ${GITHUB_TOKEN}`,
-          'User-Agent': 'SuperTool-Copilot-Integration',
-        },
-      })
+    const github = getGitHubService()
+    const response = await github.fetchPullRequest(owner, repo, prNumber)
 
-      if (!response.ok) {
-        const errorBody = await response.text()
-        throw CopilotErrorHandler.createError(
-          'TOOL_ERROR',
-          `GitHub API error: ${response.status} ${response.statusText}`,
-          { status: response.status, body: errorBody, owner, repo, prNumber }
-        )
-      }
-
-      const data = await response.json()
-
-      // Transform to PRInfo type
-      const prInfo: PRInfo = {
-        number: data.number,
-        title: data.title,
-        state: data.merged ? 'merged' : data.state,
-        author: data.user?.login || 'unknown',
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
-        mergedAt: data.merged_at,
-        closedAt: data.closed_at,
-        additions: data.additions || 0,
-        deletions: data.deletions || 0,
-        changedFiles: data.changed_files || 0,
-        commits: data.commits || 0,
-        comments: data.comments || 0,
-        reviewComments: data.review_comments || 0,
-        labels: data.labels?.map((l: { name: string }) => l.name) || [],
-        milestone: data.milestone?.title,
-        assignees: data.assignees?.map((a: { login: string }) => a.login) || [],
-        reviewers: data.requested_reviewers?.map((r: { login: string }) => r.login) || [],
-        draft: data.draft || false,
-        mergeable: data.mergeable,
-        baseRef: data.base?.ref || 'unknown',
-        headRef: data.head?.ref || 'unknown',
-        body: data.body,
-      }
-
-      return prInfo
-    } catch (error) {
-      if (CopilotErrorHandler.isCopilotError(error)) {
-        throw error
-      }
+    if (!response.success) {
       throw CopilotErrorHandler.createError(
         'TOOL_ERROR',
-        `Failed to fetch PR: ${error instanceof Error ? error.message : String(error)}`,
-        { owner, repo, prNumber },
-        error instanceof Error ? error : undefined
+        response.error?.message || 'Failed to fetch PR',
+        { owner, repo, prNumber, status: response.error?.status }
       )
     }
+
+    const data = response.data
+
+    if (!data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        prNumber,
+      })
+    }
+
+    const prInfo: PRInfo = {
+      number: data.number,
+      title: data.title,
+      state: data.merged ? 'merged' : data.state,
+      author: data.user?.login || 'unknown',
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+      mergedAt: data.merged_at ?? undefined,
+      closedAt: data.closed_at ?? undefined,
+      additions: data.additions || 0,
+      deletions: data.deletions || 0,
+      changedFiles: data.changed_files || 0,
+      commits: data.commits || 0,
+      comments: data.comments || 0,
+      reviewComments: data.review_comments || 0,
+      labels: data.labels?.map((l: { name: string }) => l.name) || [],
+      milestone: data.milestone?.title ?? undefined,
+      assignees: data.assignees?.map((a: { login: string }) => a.login) || [],
+      reviewers: data.requested_reviewers?.map((r: { login: string }) => r.login) || [],
+      draft: data.draft || false,
+      mergeable: data.mergeable ?? undefined,
+      baseRef: data.base?.ref || 'unknown',
+      headRef: data.head?.ref || 'unknown',
+      body: data.body ?? undefined,
+    }
+
+    return prInfo
   }
 
   /**
@@ -516,6 +756,449 @@ export class MCPToolRegistry {
     }
 
     return chartData
+  }
+
+  /**
+   * Handler: Browse repository file tree
+   */
+  private async browseRepoHandler(args: Record<string, unknown>): Promise<FileTree> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const ref = args.ref as string | undefined
+
+    if (!owner || !repo) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+    const response = await github.fetchFileTree(owner, repo, ref)
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to fetch repository file tree',
+        { owner, repo, ref, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        ref,
+      })
+    }
+
+    return response.data
+  }
+
+  /**
+   * Handler: Read file contents from repository
+   */
+  private async readFileHandler(
+    args: Record<string, unknown>
+  ): Promise<{ content: string; path: string }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const path = args.path as string
+    const ref = args.ref as string | undefined
+
+    if (!owner || !repo || !path) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, path',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+    const response = await github.fetchRawContent(owner, repo, path, ref)
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to read file contents',
+        { owner, repo, path, ref, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        path,
+        ref,
+      })
+    }
+
+    return {
+      content: response.data,
+      path,
+    }
+  }
+
+  /**
+   * Handler: Search code in repository
+   */
+  private async searchCodeHandler(
+    args: Record<string, unknown>
+  ): Promise<SearchResult<CodeSearchItem>> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const query = args.query as string
+    const filters = args.filters as SearchFilters | undefined
+
+    if (!owner || !repo || !query) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, query',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+    const response = await github.searchCode(owner, repo, query, filters)
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to search code',
+        { owner, repo, query, filters, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        query,
+      })
+    }
+    return response.data
+  }
+
+  /**
+   * Handler: List pull requests
+   */
+  private async listPRsHandler(
+    args: Record<string, unknown>
+  ): Promise<PaginatedResult<PullRequest>> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const filters = args.filters as PRFilters | undefined
+
+    if (!owner || !repo) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+    const response = await github.fetchPullRequests(owner, repo, filters)
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to list pull requests',
+        { owner, repo, filters, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+      })
+    }
+    return response.data
+  }
+
+  /**
+   * Handler: Analyze a pull request in detail
+   */
+  private async analyzePRHandler(args: Record<string, unknown>): Promise<{
+    pr: PRInfo
+    files: PRFile[]
+    reviews: PRReview[]
+    comments: PRReviewComment[]
+    summary: {
+      totalFiles: number
+      totalAdditions: number
+      totalDeletions: number
+      reviewCount: number
+      commentCount: number
+      approvalCount: number
+      changesRequestedCount: number
+    }
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const prNumber = args.prNumber as number
+
+    if (!owner || !repo || !prNumber) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, prNumber',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    // Fetch all PR data in parallel
+    const [prResponse, filesResponse, reviewsResponse, commentsResponse] = await Promise.all([
+      github.fetchPullRequest(owner, repo, prNumber),
+      github.fetchPullRequestFiles(owner, repo, prNumber),
+      github.fetchPullRequestReviews(owner, repo, prNumber),
+      github.fetchPullRequestComments(owner, repo, prNumber),
+    ])
+
+    // Check for errors
+    if (!prResponse.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        prResponse.error?.message || 'Failed to fetch pull request',
+        { owner, repo, prNumber, status: prResponse.error?.status }
+      )
+    }
+
+    if (!filesResponse.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        filesResponse.error?.message || 'Failed to fetch PR files',
+        { owner, repo, prNumber, status: filesResponse.error?.status }
+      )
+    }
+
+    if (!reviewsResponse.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        reviewsResponse.error?.message || 'Failed to fetch PR reviews',
+        { owner, repo, prNumber, status: reviewsResponse.error?.status }
+      )
+    }
+
+    if (!commentsResponse.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        commentsResponse.error?.message || 'Failed to fetch PR comments',
+        { owner, repo, prNumber, status: commentsResponse.error?.status }
+      )
+    }
+
+    // Validate all data is present (checked via success flags above)
+    if (
+      !prResponse.data ||
+      !filesResponse.data ||
+      !reviewsResponse.data ||
+      !commentsResponse.data
+    ) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        'Incomplete data returned from GitHub API',
+        {
+          owner,
+          repo,
+          prNumber,
+        }
+      )
+    }
+
+    const prData = prResponse.data
+    const files = filesResponse.data
+    const reviews = reviewsResponse.data
+    const comments = commentsResponse.data
+
+    // Build PRInfo from raw data
+    const pr: PRInfo = {
+      number: prData.number,
+      title: prData.title,
+      state: prData.merged ? 'merged' : prData.state,
+      author: prData.user?.login || 'unknown',
+      createdAt: prData.created_at,
+      updatedAt: prData.updated_at,
+      mergedAt: prData.merged_at ?? undefined,
+      closedAt: prData.closed_at ?? undefined,
+      additions: prData.additions || 0,
+      deletions: prData.deletions || 0,
+      changedFiles: prData.changed_files || 0,
+      commits: prData.commits || 0,
+      comments: prData.comments || 0,
+      reviewComments: prData.review_comments || 0,
+      labels: prData.labels?.map((l: { name: string }) => l.name) || [],
+      milestone: prData.milestone?.title ?? undefined,
+      assignees: prData.assignees?.map((a: { login: string }) => a.login) || [],
+      reviewers: prData.requested_reviewers?.map((r: { login: string }) => r.login) || [],
+      draft: prData.draft || false,
+      mergeable: prData.mergeable ?? undefined,
+      baseRef: prData.base?.ref || 'unknown',
+      headRef: prData.head?.ref || 'unknown',
+      body: prData.body ?? undefined,
+    }
+
+    // Calculate summary statistics
+    const totalAdditions = files.reduce((sum, f) => sum + f.additions, 0)
+    const totalDeletions = files.reduce((sum, f) => sum + f.deletions, 0)
+    const approvalCount = reviews.filter((r) => r.state === 'APPROVED').length
+    const changesRequestedCount = reviews.filter((r) => r.state === 'CHANGES_REQUESTED').length
+
+    return {
+      pr,
+      files,
+      reviews,
+      comments,
+      summary: {
+        totalFiles: files.length,
+        totalAdditions,
+        totalDeletions,
+        reviewCount: reviews.length,
+        commentCount: comments.length,
+        approvalCount,
+        changesRequestedCount,
+      },
+    }
+  }
+
+  /**
+   * Handler: List issues
+   */
+  private async listIssuesHandler(args: Record<string, unknown>): Promise<PaginatedResult<Issue>> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const filters = args.filters as IssueFilters | undefined
+
+    if (!owner || !repo) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+    const response = await github.fetchIssues(owner, repo, filters)
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to list issues',
+        { owner, repo, filters, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+      })
+    }
+
+    return response.data
+  }
+
+  /**
+   * Handler: Analyze an issue in detail
+   */
+  private async analyzeIssueHandler(args: Record<string, unknown>): Promise<{
+    issue: IssueDetail
+    comments: IssueComment[]
+    summary: {
+      commentCount: number
+      participantCount: number
+      labelCount: number
+      isOpen: boolean
+      daysSinceCreation: number
+      daysSinceLastUpdate: number
+    }
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const issueNumber = args.issueNumber as number
+
+    if (!owner || !repo || !issueNumber) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, issueNumber',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    // Fetch issue and comments in parallel
+    const [issueResponse, commentsResponse] = await Promise.all([
+      github.fetchIssue(owner, repo, issueNumber),
+      github.fetchIssueComments(owner, repo, issueNumber),
+    ])
+
+    if (!issueResponse.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        issueResponse.error?.message || 'Failed to fetch issue',
+        { owner, repo, issueNumber, status: issueResponse.error?.status }
+      )
+    }
+
+    if (!commentsResponse.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        commentsResponse.error?.message || 'Failed to fetch issue comments',
+        { owner, repo, issueNumber, status: commentsResponse.error?.status }
+      )
+    }
+
+    // Validate all data is present (checked via success flags above)
+    if (!issueResponse.data || !commentsResponse.data) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        'Incomplete data returned from GitHub API',
+        {
+          owner,
+          repo,
+          issueNumber,
+        }
+      )
+    }
+
+    const issue = issueResponse.data
+    const comments = commentsResponse.data
+
+    // Calculate unique participants
+    const participants = new Set<string>()
+    if (issue.user?.login) {
+      participants.add(issue.user.login)
+    }
+    for (const comment of comments) {
+      if (comment.user?.login) {
+        participants.add(comment.user.login)
+      }
+    }
+
+    // Calculate time-based metrics
+    const now = Date.now()
+    const createdAt = new Date(issue.created_at).getTime()
+    const updatedAt = new Date(issue.updated_at).getTime()
+    const daysSinceCreation = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24))
+    const daysSinceLastUpdate = Math.floor((now - updatedAt) / (1000 * 60 * 60 * 24))
+
+    return {
+      issue,
+      comments,
+      summary: {
+        commentCount: comments.length,
+        participantCount: participants.size,
+        labelCount: issue.labels?.length || 0,
+        isOpen: issue.state === 'open',
+        daysSinceCreation,
+        daysSinceLastUpdate,
+      },
+    }
   }
 
   /**

@@ -5,7 +5,10 @@ import {
   type CopilotError,
   CopilotErrorHandler,
   type ErrorType,
+  type FileAttachment,
   getCopilotManager,
+  MAX_ATTACHMENTS_PER_MESSAGE,
+  MAX_FILE_SIZE,
   type StreamEvent,
 } from '@/lib/services/copilot'
 
@@ -16,6 +19,7 @@ interface ChatRequestBody {
   sessionId?: string
   message: string
   stream?: boolean
+  attachments?: FileAttachment[]
   options?: {
     maxTokens?: number
     temperature?: number
@@ -84,25 +88,32 @@ function validateChatRequest(body: unknown): {
   }
 
   const request = body as Record<string, unknown>
+  const hasAttachments =
+    request.attachments && Array.isArray(request.attachments) && request.attachments.length > 0
 
   if (!request.message || typeof request.message !== 'string') {
-    return {
-      valid: false,
-      error: CopilotErrorHandler.createError(
-        'VALIDATION_ERROR',
-        'Message is required and must be a string'
-      ),
+    // Allow missing message only if there are attachments
+    if (!hasAttachments) {
+      return {
+        valid: false,
+        error: CopilotErrorHandler.createError(
+          'VALIDATION_ERROR',
+          'Message is required and must be a string'
+        ),
+      }
     }
   }
 
-  if (request.message.trim().length === 0) {
+  const message = (request.message as string) || ''
+
+  if (message.trim().length === 0 && !hasAttachments) {
     return {
       valid: false,
       error: CopilotErrorHandler.createError('VALIDATION_ERROR', 'Message cannot be empty'),
     }
   }
 
-  if (request.message.length > 32000) {
+  if (message.length > 32000) {
     return {
       valid: false,
       error: CopilotErrorHandler.createError(
@@ -112,12 +123,38 @@ function validateChatRequest(body: unknown): {
     }
   }
 
+  // Validate attachments if present
+  if (request.attachments && Array.isArray(request.attachments)) {
+    if (request.attachments.length > MAX_ATTACHMENTS_PER_MESSAGE) {
+      return {
+        valid: false,
+        error: CopilotErrorHandler.createError(
+          'VALIDATION_ERROR',
+          `Maximum ${MAX_ATTACHMENTS_PER_MESSAGE} attachments allowed per message`
+        ),
+      }
+    }
+
+    for (const attachment of request.attachments as FileAttachment[]) {
+      if (attachment.size > MAX_FILE_SIZE) {
+        return {
+          valid: false,
+          error: CopilotErrorHandler.createError(
+            'VALIDATION_ERROR',
+            `File "${attachment.name}" exceeds maximum size of 20MB`
+          ),
+        }
+      }
+    }
+  }
+
   return {
     valid: true,
     data: {
       sessionId: request.sessionId as string | undefined,
-      message: request.message as string,
+      message,
       stream: request.stream as boolean | undefined,
+      attachments: request.attachments as FileAttachment[] | undefined,
       options: request.options as ChatRequestBody['options'] | undefined,
     },
   }
@@ -193,11 +230,23 @@ export async function POST(request: NextRequest): Promise<Response> {
 
     // Handle streaming mode
     if (chatRequest.stream) {
-      return handleStreamingResponse(manager, sessionId, chatRequest.message, options)
+      return handleStreamingResponse(
+        manager,
+        sessionId,
+        chatRequest.message,
+        options,
+        chatRequest.attachments
+      )
     }
 
     // Handle non-streaming mode
-    return handleNonStreamingResponse(manager, sessionId, chatRequest.message, options)
+    return handleNonStreamingResponse(
+      manager,
+      sessionId,
+      chatRequest.message,
+      options,
+      chatRequest.attachments
+    )
   } catch (error) {
     const copilotError = CopilotErrorHandler.categorizeError(error)
     return createErrorResponse(copilotError)
@@ -211,7 +260,8 @@ function handleStreamingResponse(
   manager: ReturnType<typeof getCopilotManager>,
   sessionId: string,
   message: string,
-  options: ChatRequestBody['options']
+  options: ChatRequestBody['options'],
+  attachments?: FileAttachment[]
 ): Response {
   const encoder = new TextEncoder()
 
@@ -227,10 +277,15 @@ function handleStreamingResponse(
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(startEvent)}\n\n`))
 
         // Stream the response using the async generator
-        const streamGenerator = manager.streamMessage(sessionId, message, {
-          maxTokens: options?.maxTokens,
-          temperature: options?.temperature,
-        })
+        const streamGenerator = manager.streamMessage(
+          sessionId,
+          message,
+          {
+            maxTokens: options?.maxTokens,
+            temperature: options?.temperature,
+          },
+          attachments
+        )
 
         for await (const event of streamGenerator) {
           try {
@@ -288,13 +343,19 @@ async function handleNonStreamingResponse(
   manager: ReturnType<typeof getCopilotManager>,
   sessionId: string,
   message: string,
-  options: ChatRequestBody['options']
+  options: ChatRequestBody['options'],
+  attachments?: FileAttachment[]
 ): Promise<NextResponse<APIResponse<ChatResponse>>> {
   try {
-    const response = await manager.sendMessage(sessionId, message, {
-      maxTokens: options?.maxTokens,
-      temperature: options?.temperature,
-    })
+    const response = await manager.sendMessage(
+      sessionId,
+      message,
+      {
+        maxTokens: options?.maxTokens,
+        temperature: options?.temperature,
+      },
+      attachments
+    )
 
     // Get updated session for metadata
     const session = await manager.getSession(sessionId)

@@ -1,6 +1,6 @@
 'use client'
 
-import type { CopilotMessage, ToolCall } from '@/lib/services/copilot/types'
+import type { CopilotMessage, FileAttachment, ToolCall } from '@/lib/services/copilot/types'
 import { css } from '@/styled-system/css'
 
 interface ChatMessageProps {
@@ -100,6 +100,22 @@ export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) 
         )}
       </div>
 
+      {/* Attachments */}
+      {message.attachments && message.attachments.length > 0 && (
+        <div
+          className={css({
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '2',
+            mt: '2',
+          })}
+        >
+          {message.attachments.map((attachment) => (
+            <AttachmentCard key={attachment.id} attachment={attachment} />
+          ))}
+        </div>
+      )}
+
       {/* Tool calls */}
       {message.metadata?.toolCalls && message.metadata.toolCalls.length > 0 && (
         <div className={css({ display: 'flex', flexDir: 'column', gap: '2', mt: '2' })}>
@@ -120,6 +136,101 @@ export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) 
         {formatTimestamp(message.timestamp)}
       </div>
     </div>
+  )
+}
+
+interface AttachmentCardProps {
+  attachment: FileAttachment
+}
+
+function AttachmentCard({ attachment }: AttachmentCardProps) {
+  const isImage = attachment.type === 'image'
+
+  if (isImage && attachment.preview) {
+    return (
+      <div
+        className={css({
+          position: 'relative',
+          w: '20',
+          h: '20',
+          rounded: 'lg',
+          overflow: 'hidden',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          bg: 'rgba(0, 0, 0, 0.2)',
+        })}
+      >
+        <img
+          src={attachment.preview}
+          alt={attachment.name}
+          className={css({
+            w: '100%',
+            h: '100%',
+            objectFit: 'cover',
+          })}
+        />
+        <div
+          className={css({
+            position: 'absolute',
+            bottom: '0',
+            left: '0',
+            right: '0',
+            p: '1',
+            bg: 'rgba(0, 0, 0, 0.7)',
+            fontSize: 'xs',
+            color: 'rgba(255, 255, 255, 0.8)',
+            truncate: true,
+          })}
+        >
+          {attachment.name}
+        </div>
+      </div>
+    )
+  }
+
+  // Document attachment
+  return (
+    <div
+      className={css({
+        display: 'flex',
+        alignItems: 'center',
+        gap: '2',
+        p: '2',
+        rounded: 'lg',
+        bg: 'rgba(255, 255, 255, 0.05)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        fontSize: 'xs',
+        color: 'rgba(255, 255, 255, 0.8)',
+        maxW: '48',
+      })}
+    >
+      <DocumentIcon />
+      <div className={css({ flex: '1', minW: '0' })}>
+        <div className={css({ truncate: true, fontWeight: '500' })}>{attachment.name}</div>
+        <div className={css({ color: 'rgba(255, 255, 255, 0.5)' })}>
+          {(attachment.size / 1024).toFixed(1)} KB
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DocumentIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5', flexShrink: '0', color: 'rgb(59, 130, 246)' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      aria-hidden="true"
+    >
+      <title>Document</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+      />
+    </svg>
   )
 }
 

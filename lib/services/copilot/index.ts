@@ -61,6 +61,8 @@ export type {
   DeepPartial,
   // Error types
   ErrorType,
+  // File attachment types
+  FileAttachment,
   // File management types (Recipe 3)
   FileInfo,
   FileOrganizationPreferences,
@@ -85,9 +87,21 @@ export type {
   StreamEvent,
   // Streaming types
   StreamEventType,
+  SupportedDocumentType,
+  SupportedFileType,
+  SupportedImageType,
   TimeoutOptions,
   TokenUsage,
   // MCP Tool types
   ToolCall,
   ToolResult,
+} from './types'
+
+// File attachment constants
+export {
+  MAX_ATTACHMENTS_PER_MESSAGE,
+  MAX_FILE_SIZE,
+  SUPPORTED_DOCUMENT_TYPES,
+  SUPPORTED_FILE_TYPES,
+  SUPPORTED_IMAGE_TYPES,
 } from './types'
