@@ -58,7 +58,7 @@ describe('ChatInput', () => {
     await user.click(sendButton)
 
     expect(mockOnSend).toHaveBeenCalledTimes(1)
-    expect(mockOnSend).toHaveBeenCalledWith('Hello World')
+    expect(mockOnSend).toHaveBeenCalledWith('Hello World', undefined)
   })
 
   it('calls onSend on Enter key without Shift', async () => {
@@ -69,7 +69,7 @@ describe('ChatInput', () => {
     await user.type(textarea, 'Hello{Enter}')
 
     expect(mockOnSend).toHaveBeenCalledTimes(1)
-    expect(mockOnSend).toHaveBeenCalledWith('Hello')
+    expect(mockOnSend).toHaveBeenCalledWith('Hello', undefined)
   })
 
   it('does not call onSend on Shift+Enter (allows newline)', async () => {
