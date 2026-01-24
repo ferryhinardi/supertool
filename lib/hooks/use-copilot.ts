@@ -241,7 +241,7 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
             sessionId,
             message,
             context,
-            options: { stream: true },
+            stream: true,
           }),
           signal,
         })
