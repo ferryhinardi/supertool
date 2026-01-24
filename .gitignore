@@ -55,3 +55,6 @@ styled-system-studiostyled-system/
 
 # biome
 biome-logs/
+
+# opencode
+.opencode/

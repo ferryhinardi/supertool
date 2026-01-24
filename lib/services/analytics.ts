@@ -683,6 +683,9 @@ type ToolEvent =
   | 'countdown_timer_start'
   | 'countdown_timer_share'
   | 'countdown_timer_copy'
+  | 'copilot_tool_open'
+  | 'copilot_session_selected'
+  | 'copilot_session_created'
 
 // Type-safe gtag wrapper
 declare global {
