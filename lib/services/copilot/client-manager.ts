@@ -19,6 +19,7 @@ import type {
   CopilotMessage,
   CopilotSession,
   FileAttachment,
+  GeneratedFile,
   SessionMetadata,
   SessionStore,
   StreamEvent,
@@ -45,6 +46,116 @@ const OPENAI_MODEL = 'gpt-4o-mini'
 const OPENAI_MAX_TOKENS = 2048
 const OPENAI_TEMPERATURE = 0.7
 
+/**
+ * Regex to detect downloadable file markers in AI response
+ * Format: <!-- FILE: filename.ext -->
+ * ```language
+ * content
+ * ```
+ * <!-- /FILE -->
+ */
+const FILE_BLOCK_REGEX =
+  /<!--\s*FILE:\s*([^\s>]+)\s*(?:description="([^"]*)")?\s*-->\s*```(\w*)\n([\s\S]*?)```\s*<!--\s*\/FILE\s*-->/gi
+
+/**
+ * Map file extensions to MIME types
+ */
+function getMimeType(extension: string): string {
+  const mimeTypes: Record<string, string> = {
+    // Code files
+    js: 'text/javascript',
+    jsx: 'text/javascript',
+    ts: 'text/typescript',
+    tsx: 'text/typescript',
+    py: 'text/x-python',
+    rb: 'text/x-ruby',
+    go: 'text/x-go',
+    rs: 'text/x-rust',
+    java: 'text/x-java',
+    c: 'text/x-c',
+    cpp: 'text/x-c++',
+    h: 'text/x-c',
+    cs: 'text/x-csharp',
+    php: 'text/x-php',
+    swift: 'text/x-swift',
+    kt: 'text/x-kotlin',
+    scala: 'text/x-scala',
+    sh: 'text/x-shellscript',
+    bash: 'text/x-shellscript',
+    zsh: 'text/x-shellscript',
+    // Web files
+    html: 'text/html',
+    css: 'text/css',
+    scss: 'text/x-scss',
+    less: 'text/x-less',
+    // Data files
+    json: 'application/json',
+    yaml: 'application/yaml',
+    yml: 'application/yaml',
+    xml: 'application/xml',
+    csv: 'text/csv',
+    tsv: 'text/tab-separated-values',
+    // Config files
+    toml: 'application/toml',
+    ini: 'text/plain',
+    env: 'text/plain',
+    config: 'text/plain',
+    conf: 'text/plain',
+    // Documentation
+    md: 'text/markdown',
+    txt: 'text/plain',
+    // SQL
+    sql: 'application/sql',
+  }
+  return mimeTypes[extension.toLowerCase()] || 'text/plain'
+}
+
+/**
+ * Parse generated files from AI response content
+ * Looks for specially formatted code blocks with FILE markers
+ */
+function parseGeneratedFiles(content: string): {
+  cleanContent: string
+  files: GeneratedFile[]
+} {
+  const files: GeneratedFile[] = []
+  let cleanContent = content
+
+  // Find all file blocks
+  FILE_BLOCK_REGEX.lastIndex = 0
+  let match: RegExpExecArray | null = FILE_BLOCK_REGEX.exec(content)
+
+  while (match !== null) {
+    const [fullMatch, filename, description, _language, fileContent] = match
+
+    const extension = filename.split('.').pop() || ''
+    const trimmedContent = fileContent.trim()
+
+    const file: GeneratedFile = {
+      id: generateSessionId(),
+      name: filename,
+      mimeType: getMimeType(extension),
+      content: trimmedContent,
+      isBase64: false,
+      size: new TextEncoder().encode(trimmedContent).length,
+      description: description || undefined,
+    }
+
+    files.push(file)
+
+    // Remove the file block from content but keep a reference
+    cleanContent = cleanContent.replace(
+      fullMatch,
+      `\n📁 **Generated file: ${filename}** ${description ? `- ${description}` : ''}\n`
+    )
+
+    // Continue searching
+    match = FILE_BLOCK_REGEX.exec(content)
+  }
+
+  return { cleanContent: cleanContent.trim(), files }
+}
+
 // System prompt for the copilot assistant
 const SYSTEM_PROMPT = `You are SuperTool Assistant, a helpful AI assistant integrated into the SuperTool platform.
 
@@ -67,7 +178,30 @@ Your role is to:
 4. Be friendly, concise, and helpful in your responses
 5. If you don't know something, admit it rather than making up information
 
-Keep your responses clear and well-formatted. Use markdown when appropriate for code blocks, lists, and emphasis.`
+Keep your responses clear and well-formatted. Use markdown when appropriate for code blocks, lists, and emphasis.
+
+## Generating Downloadable Files
+
+When a user asks you to create, generate, or write a file (such as code files, configuration files, data files, etc.), you can provide it as a downloadable file. Use the following format:
+
+<!-- FILE: filename.ext description="Brief description of the file" -->
+\`\`\`language
+file content here
+\`\`\`
+<!-- /FILE -->
+
+Examples:
+- For a JavaScript file: <!-- FILE: utils.js description="Utility functions" -->
+- For a JSON config: <!-- FILE: config.json description="Application configuration" -->
+- For a Python script: <!-- FILE: script.py description="Data processing script" -->
+- For a CSV file: <!-- FILE: data.csv description="Sample dataset" -->
+
+The file will appear as a downloadable card in the chat. Use this format when:
+- The user explicitly asks for a file to download
+- You're generating complete, standalone files (not just code snippets)
+- The content is meant to be saved and used as a file
+
+For simple code examples or snippets that are just for explanation, use regular markdown code blocks instead.`
 
 /**
  * Format message content with attachments for OpenAI Vision API
@@ -581,18 +715,22 @@ export class CopilotClientManager {
       temperature: OPENAI_TEMPERATURE,
     })
 
-    const content = response.choices[0]?.message?.content || ''
+    const rawContent = response.choices[0]?.message?.content || ''
     const usage: TokenUsage = {
       promptTokens: response.usage?.prompt_tokens || 0,
       completionTokens: response.usage?.completion_tokens || 0,
       totalTokens: response.usage?.total_tokens || 0,
     }
 
+    // Parse generated files from the response content
+    const { cleanContent, files } = parseGeneratedFiles(rawContent)
+
     const assistantMessage: CopilotMessage = {
       id: generateSessionId(),
       role: 'assistant',
-      content,
+      content: cleanContent,
       timestamp: Date.now(),
+      generatedFiles: files.length > 0 ? files : undefined,
       metadata: { model: OPENAI_MODEL, usage },
     }
 
@@ -665,15 +803,25 @@ export class CopilotClientManager {
     })
 
     let totalTokens = 0
+    let fullContent = ''
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content || ''
       if (content) {
         totalTokens++
+        fullContent += content
         yield { type: 'token', content }
       }
     }
 
-    // Send done event with usage
+    // Parse generated files from the complete content
+    const { cleanContent, files } = parseGeneratedFiles(fullContent)
+
+    // Yield generated file events
+    for (const file of files) {
+      yield { type: 'generated_file', generatedFile: file }
+    }
+
+    // Send done event with usage and parsed content info
     yield {
       type: 'done',
       usage: {
@@ -681,6 +829,8 @@ export class CopilotClientManager {
         completionTokens: totalTokens,
         totalTokens: totalTokens,
       },
+      // Include clean content and files count in done event for reference
+      ...(files.length > 0 && { generatedFilesCount: files.length, cleanContent }),
     }
   }
 

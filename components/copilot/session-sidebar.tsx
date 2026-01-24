@@ -319,16 +319,10 @@ function SessionItem({
   }
 
   return (
-    <div
-      role="button"
+    <button
+      type="button"
       tabIndex={isEditing ? -1 : 0}
       onClick={isEditing ? undefined : onSelect}
-      onKeyDown={(e) => {
-        if (!isEditing && (e.key === 'Enter' || e.key === ' ')) {
-          e.preventDefault()
-          onSelect()
-        }
-      }}
       onMouseEnter={onHover}
       className={css({
         w: 'full',
@@ -339,6 +333,10 @@ function SessionItem({
         transition: 'all 0.2s',
         bg: isActive ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
         borderLeft: isActive ? '2px solid rgb(59, 130, 246)' : '2px solid transparent',
+        border: 'none',
+        fontFamily: 'inherit',
+        fontSize: 'inherit',
+        color: 'inherit',
         _hover: {
           bg: isActive ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.05)',
         },
@@ -520,7 +518,7 @@ function SessionItem({
           </div>
         </>
       )}
-    </div>
+    </button>
   )
 }
 

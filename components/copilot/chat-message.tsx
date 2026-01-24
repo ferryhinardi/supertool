@@ -1,7 +1,15 @@
 'use client'
 
-import type { CopilotMessage, FileAttachment, ToolCall } from '@/lib/services/copilot/types'
+import type React from 'react'
+import { useState } from 'react'
+import type {
+  CopilotMessage,
+  FileAttachment,
+  GeneratedFile,
+  ToolCall,
+} from '@/lib/services/copilot/types'
 import { css } from '@/styled-system/css'
+import { FilePreviewModal } from './file-preview-modal'
 
 interface ChatMessageProps {
   message: CopilotMessage
@@ -112,6 +120,33 @@ export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) 
         >
           {message.attachments.map((attachment) => (
             <AttachmentCard key={attachment.id} attachment={attachment} />
+          ))}
+        </div>
+      )}
+
+      {/* Generated Files */}
+      {message.generatedFiles && message.generatedFiles.length > 0 && (
+        <div
+          className={css({
+            display: 'flex',
+            flexDir: 'column',
+            gap: '2',
+            mt: '3',
+          })}
+        >
+          <div
+            className={css({
+              fontSize: 'xs',
+              color: 'rgba(255, 255, 255, 0.5)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              mb: '1',
+            })}
+          >
+            Generated Files
+          </div>
+          {message.generatedFiles.map((file) => (
+            <DownloadableFileCard key={file.id} file={file} />
           ))}
         </div>
       )}
@@ -232,6 +267,471 @@ function DocumentIcon() {
       />
     </svg>
   )
+}
+
+// ============================================
+// Downloadable File Card
+// ============================================
+
+interface DownloadableFileCardProps {
+  file: GeneratedFile
+}
+
+function DownloadableFileCard({ file }: DownloadableFileCardProps) {
+  const [copied, setCopied] = useState(false)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+
+  const handleDownload = () => {
+    let blob: Blob
+
+    if (file.isBase64) {
+      // Decode base64 content
+      const binaryString = atob(file.content)
+      const bytes = new Uint8Array(binaryString.length)
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
+      blob = new Blob([bytes], { type: file.mimeType })
+    } else {
+      // Plain text content
+      blob = new Blob([file.content], { type: file.mimeType })
+    }
+
+    // Create download link
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = file.name
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const handleCopy = async () => {
+    try {
+      let textContent = file.content
+      if (file.isBase64) {
+        // Decode base64 for text files
+        textContent = atob(file.content)
+      }
+      await navigator.clipboard.writeText(textContent)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
+
+  const handlePreview = () => {
+    setIsPreviewOpen(true)
+  }
+
+  const fileExtension = file.name.split('.').pop()?.toLowerCase() || ''
+  const icon = getFileIcon(fileExtension)
+
+  return (
+    <>
+      <div
+        className={css({
+          display: 'flex',
+          alignItems: 'center',
+          gap: '3',
+          p: '3',
+          rounded: 'lg',
+          bg: 'rgba(34, 197, 94, 0.1)',
+          border: '1px solid rgba(34, 197, 94, 0.3)',
+          transition: 'all 0.2s ease',
+          _hover: {
+            bg: 'rgba(34, 197, 94, 0.15)',
+            borderColor: 'rgba(34, 197, 94, 0.5)',
+          },
+        })}
+      >
+        {/* File icon - clickable for preview */}
+        <button
+          type="button"
+          onClick={handlePreview}
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            w: '10',
+            h: '10',
+            rounded: 'lg',
+            bg: 'rgba(34, 197, 94, 0.2)',
+            color: 'rgb(34, 197, 94)',
+            flexShrink: '0',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            _hover: {
+              bg: 'rgba(34, 197, 94, 0.3)',
+              transform: 'scale(1.05)',
+            },
+            _active: {
+              transform: 'scale(0.95)',
+            },
+          })}
+          aria-label={`Preview ${file.name}`}
+          title="Click to preview"
+        >
+          {icon}
+        </button>
+
+        {/* File info - clickable for preview */}
+        <button
+          type="button"
+          onClick={handlePreview}
+          className={css({
+            flex: '1',
+            minW: '0',
+            textAlign: 'left',
+            bg: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            p: '0',
+          })}
+          aria-label={`Preview ${file.name}`}
+        >
+          <div
+            className={css({
+              fontSize: 'sm',
+              fontWeight: '500',
+              color: 'rgba(255, 255, 255, 0.9)',
+              truncate: true,
+            })}
+          >
+            {file.name}
+          </div>
+          <div
+            className={css({
+              fontSize: 'xs',
+              color: 'rgba(255, 255, 255, 0.5)',
+              mt: '0.5',
+            })}
+          >
+            {formatFileSize(file.size)}
+            {file.description && ` - ${file.description}`}
+          </div>
+        </button>
+
+        {/* Action buttons */}
+        <div className={css({ display: 'flex', gap: '2', flexShrink: '0' })}>
+          {/* Preview button */}
+          <button
+            type="button"
+            onClick={handlePreview}
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              w: '9',
+              h: '9',
+              rounded: 'lg',
+              bg: 'rgba(139, 92, 246, 0.2)',
+              color: 'rgb(139, 92, 246)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              _hover: {
+                bg: 'rgba(139, 92, 246, 0.3)',
+                transform: 'scale(1.05)',
+              },
+              _active: {
+                transform: 'scale(0.95)',
+              },
+            })}
+            aria-label={`Preview ${file.name}`}
+            title="Preview file"
+          >
+            <PreviewIcon />
+          </button>
+
+          {/* Copy button */}
+          <button
+            type="button"
+            onClick={handleCopy}
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              w: '9',
+              h: '9',
+              rounded: 'lg',
+              bg: copied ? 'rgba(34, 197, 94, 0.3)' : 'rgba(255, 255, 255, 0.1)',
+              color: copied ? 'rgb(34, 197, 94)' : 'rgba(255, 255, 255, 0.7)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              _hover: {
+                bg: 'rgba(255, 255, 255, 0.15)',
+                color: 'rgba(255, 255, 255, 0.9)',
+              },
+              _active: {
+                transform: 'scale(0.95)',
+              },
+            })}
+            aria-label={copied ? 'Copied!' : `Copy ${file.name} content`}
+            title={copied ? 'Copied!' : 'Copy to clipboard'}
+          >
+            {copied ? <CheckIcon /> : <CopyIcon />}
+          </button>
+
+          {/* Download button */}
+          <button
+            type="button"
+            onClick={handleDownload}
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              w: '9',
+              h: '9',
+              rounded: 'lg',
+              bg: 'rgba(34, 197, 94, 0.2)',
+              color: 'rgb(34, 197, 94)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              _hover: {
+                bg: 'rgba(34, 197, 94, 0.3)',
+                transform: 'scale(1.05)',
+              },
+              _active: {
+                transform: 'scale(0.95)',
+              },
+            })}
+            aria-label={`Download ${file.name}`}
+            title="Download file"
+          >
+            <DownloadIcon />
+          </button>
+        </div>
+      </div>
+
+      {/* Preview Modal */}
+      <FilePreviewModal
+        file={file}
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        onDownload={handleDownload}
+        onCopy={handleCopy}
+        copied={copied}
+      />
+    </>
+  )
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <title>Download</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+      />
+    </svg>
+  )
+}
+
+function PreviewIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <title>Preview</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  )
+}
+
+function CopyIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <title>Copy</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
+      />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <title>Copied</title>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+    </svg>
+  )
+}
+
+function CodeFileIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      aria-hidden="true"
+    >
+      <title>Code file</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
+      />
+    </svg>
+  )
+}
+
+function DataFileIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      aria-hidden="true"
+    >
+      <title>Data file</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"
+      />
+    </svg>
+  )
+}
+
+function ConfigFileIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      aria-hidden="true"
+    >
+      <title>Config file</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  )
+}
+
+function GenericFileIcon() {
+  return (
+    <svg
+      className={css({ w: '5', h: '5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      aria-hidden="true"
+    >
+      <title>File</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+      />
+    </svg>
+  )
+}
+
+function getFileIcon(extension: string): React.ReactNode {
+  const codeExtensions = [
+    'js',
+    'ts',
+    'jsx',
+    'tsx',
+    'py',
+    'rb',
+    'go',
+    'rs',
+    'java',
+    'c',
+    'cpp',
+    'h',
+    'cs',
+    'php',
+    'swift',
+    'kt',
+    'scala',
+    'sh',
+    'bash',
+    'zsh',
+    'html',
+    'css',
+    'scss',
+    'less',
+    'sql',
+  ]
+  const dataExtensions = ['csv', 'tsv', 'xls', 'xlsx']
+  const configExtensions = ['json', 'yaml', 'yml', 'toml', 'xml', 'ini', 'env', 'config', 'conf']
+
+  if (codeExtensions.includes(extension)) {
+    return <CodeFileIcon />
+  }
+  if (dataExtensions.includes(extension)) {
+    return <DataFileIcon />
+  }
+  if (configExtensions.includes(extension)) {
+    return <ConfigFileIcon />
+  }
+  return <GenericFileIcon />
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} B`
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 interface ToolCallCardProps {

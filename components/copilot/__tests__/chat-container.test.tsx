@@ -40,6 +40,7 @@ describe('ChatContainer', () => {
     error: null,
     currentStreamContent: '',
     pendingToolCalls: [],
+    pendingGeneratedFiles: [],
     sendMessage: mockSendMessage,
     clearMessages: mockClearMessages,
     clearError: mockClearError,

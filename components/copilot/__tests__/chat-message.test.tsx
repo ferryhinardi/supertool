@@ -1,10 +1,25 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { CopilotMessage } from '@/lib/services/copilot/types'
+import type { CopilotMessage, GeneratedFile } from '@/lib/services/copilot/types'
 import { ChatMessage } from '../chat-message'
 
 // Mock Date.now for consistent timestamp testing
 const MOCK_NOW = new Date('2025-01-24T10:00:00Z').getTime()
+
+// Mock clipboard API
+const mockClipboard = {
+  writeText: vi.fn(),
+}
+Object.assign(navigator, {
+  clipboard: mockClipboard,
+})
+
+// Mock URL.createObjectURL and URL.revokeObjectURL
+const mockCreateObjectURL = vi.fn(() => 'blob:mock-url')
+const mockRevokeObjectURL = vi.fn()
+URL.createObjectURL = mockCreateObjectURL
+URL.revokeObjectURL = mockRevokeObjectURL
 
 describe('ChatMessage', () => {
   beforeEach(() => {
@@ -217,6 +232,211 @@ describe('ChatMessage', () => {
       render(<ChatMessage message={message} />)
 
       expect(screen.getByText(longContent)).toBeInTheDocument()
+    })
+  })
+
+  describe('generated files', () => {
+    const createGeneratedFile = (overrides: Partial<GeneratedFile> = {}): GeneratedFile => ({
+      id: 'file-1',
+      name: 'example.js',
+      mimeType: 'text/javascript',
+      content: 'console.log("Hello, world!")',
+      isBase64: false,
+      size: 28,
+      ...overrides,
+    })
+
+    it('renders generated files section when files are present', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Here is your file:',
+        generatedFiles: [createGeneratedFile()],
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.getByText('Generated Files')).toBeInTheDocument()
+      expect(screen.getByText('example.js')).toBeInTheDocument()
+    })
+
+    it('displays file name and size', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Generated a config file',
+        generatedFiles: [
+          createGeneratedFile({
+            name: 'config.json',
+            mimeType: 'application/json',
+            content: '{"key": "value"}',
+            size: 1536, // 1.5 KB
+          }),
+        ],
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.getByText('config.json')).toBeInTheDocument()
+      expect(screen.getByText(/1\.5 KB/)).toBeInTheDocument()
+    })
+
+    it('displays file description when provided', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Here is the utility file',
+        generatedFiles: [
+          createGeneratedFile({
+            name: 'utils.ts',
+            description: 'TypeScript utility functions',
+          }),
+        ],
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.getByText(/TypeScript utility functions/)).toBeInTheDocument()
+    })
+
+    it('renders multiple generated files', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Created multiple files',
+        generatedFiles: [
+          createGeneratedFile({ id: 'file-1', name: 'index.js' }),
+          createGeneratedFile({ id: 'file-2', name: 'styles.css', mimeType: 'text/css' }),
+          createGeneratedFile({ id: 'file-3', name: 'data.json', mimeType: 'application/json' }),
+        ],
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.getByText('index.js')).toBeInTheDocument()
+      expect(screen.getByText('styles.css')).toBeInTheDocument()
+      expect(screen.getByText('data.json')).toBeInTheDocument()
+    })
+
+    it('does not render generated files section when no files', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'No files here',
+        generatedFiles: [],
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.queryByText('Generated Files')).not.toBeInTheDocument()
+    })
+
+    it('does not render generated files section when generatedFiles is undefined', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Simple response',
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.queryByText('Generated Files')).not.toBeInTheDocument()
+    })
+
+    it('renders download button with correct aria-label', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Download this file',
+        generatedFiles: [createGeneratedFile({ name: 'script.py' })],
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.getByRole('button', { name: /Download script\.py/ })).toBeInTheDocument()
+    })
+
+    it('renders copy button with correct aria-label', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Copy this file',
+        generatedFiles: [createGeneratedFile({ name: 'code.ts' })],
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.getByRole('button', { name: /Copy code\.ts content/ })).toBeInTheDocument()
+    })
+
+    it('copies file content to clipboard when copy button is clicked', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      mockClipboard.writeText.mockResolvedValue(undefined)
+
+      const fileContent = 'export const hello = "world"'
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Copy this',
+        generatedFiles: [
+          createGeneratedFile({
+            name: 'module.ts',
+            content: fileContent,
+          }),
+        ],
+      })
+      render(<ChatMessage message={message} />)
+
+      const copyButton = screen.getByRole('button', { name: /Copy module\.ts content/ })
+      await user.click(copyButton)
+
+      expect(mockClipboard.writeText).toHaveBeenCalledWith(fileContent)
+    })
+
+    it('triggers download when download button is clicked', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      // Mock document.createElement and appendChild/removeChild
+      const mockLink = {
+        href: '',
+        download: '',
+        click: vi.fn(),
+      }
+      const createElementSpy = vi
+        .spyOn(document, 'createElement')
+        .mockReturnValue(mockLink as unknown as HTMLAnchorElement)
+      const appendChildSpy = vi
+        .spyOn(document.body, 'appendChild')
+        .mockImplementation(() => mockLink as unknown as HTMLAnchorElement)
+      const removeChildSpy = vi
+        .spyOn(document.body, 'removeChild')
+        .mockImplementation(() => mockLink as unknown as HTMLAnchorElement)
+
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Download this',
+        generatedFiles: [
+          createGeneratedFile({
+            name: 'download.txt',
+            content: 'File content here',
+            mimeType: 'text/plain',
+          }),
+        ],
+      })
+      render(<ChatMessage message={message} />)
+
+      const downloadButton = screen.getByRole('button', { name: /Download download\.txt/ })
+      await user.click(downloadButton)
+
+      expect(mockCreateObjectURL).toHaveBeenCalled()
+      expect(mockLink.click).toHaveBeenCalled()
+      expect(mockLink.download).toBe('download.txt')
+      expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:mock-url')
+
+      // Cleanup
+      createElementSpy.mockRestore()
+      appendChildSpy.mockRestore()
+      removeChildSpy.mockRestore()
+    })
+
+    it('formats file sizes correctly', () => {
+      const message = createMessage({
+        role: 'assistant',
+        content: 'Various file sizes',
+        generatedFiles: [
+          createGeneratedFile({ id: 'f1', name: 'tiny.txt', size: 500 }), // 500 B
+          createGeneratedFile({ id: 'f2', name: 'small.txt', size: 2048 }), // 2 KB
+          createGeneratedFile({ id: 'f3', name: 'large.txt', size: 1572864 }), // 1.5 MB
+        ],
+      })
+      render(<ChatMessage message={message} />)
+
+      expect(screen.getByText(/500 B/)).toBeInTheDocument()
+      expect(screen.getByText(/2\.0 KB/)).toBeInTheDocument()
+      expect(screen.getByText(/1\.5 MB/)).toBeInTheDocument()
     })
   })
 })

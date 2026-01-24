@@ -14,6 +14,7 @@ import type {
   CopilotError,
   CopilotMessage,
   FileAttachment,
+  GeneratedFile,
   StreamEvent,
   TokenUsage,
   ToolCall,
@@ -30,10 +31,12 @@ interface CopilotChatState {
   error: CopilotError | null
   currentStreamContent: string
   pendingToolCalls: ToolCall[]
+  /** Files generated during the current streaming response */
+  pendingGeneratedFiles: GeneratedFile[]
 
   // Actions
   addMessage: (message: CopilotMessage) => void
-  updateLastMessage: (content: string) => void
+  updateLastMessage: (content: string, generatedFiles?: GeneratedFile[]) => void
   setMessages: (messages: CopilotMessage[]) => void
   clearMessages: () => void
   setLoading: (loading: boolean) => void
@@ -43,6 +46,8 @@ interface CopilotChatState {
   appendStreamContent: (content: string) => void
   addToolCall: (toolCall: ToolCall) => void
   clearToolCalls: () => void
+  addGeneratedFile: (file: GeneratedFile) => void
+  clearGeneratedFiles: () => void
   reset: () => void
 }
 
@@ -57,18 +62,23 @@ const useCopilotStore = create<CopilotChatState>((set) => ({
   error: null,
   currentStreamContent: '',
   pendingToolCalls: [],
+  pendingGeneratedFiles: [],
 
   addMessage: (message) =>
     set((state) => ({
       messages: [...state.messages, message],
     })),
 
-  updateLastMessage: (content) =>
+  updateLastMessage: (content, generatedFiles) =>
     set((state) => {
       const messages = [...state.messages]
       const lastMessage = messages[messages.length - 1]
       if (lastMessage && lastMessage.role === 'assistant') {
-        messages[messages.length - 1] = { ...lastMessage, content }
+        messages[messages.length - 1] = {
+          ...lastMessage,
+          content,
+          generatedFiles: generatedFiles ?? lastMessage.generatedFiles,
+        }
       }
       return { messages }
     }),
@@ -98,6 +108,13 @@ const useCopilotStore = create<CopilotChatState>((set) => ({
 
   clearToolCalls: () => set({ pendingToolCalls: [] }),
 
+  addGeneratedFile: (file) =>
+    set((state) => ({
+      pendingGeneratedFiles: [...state.pendingGeneratedFiles, file],
+    })),
+
+  clearGeneratedFiles: () => set({ pendingGeneratedFiles: [] }),
+
   reset: () =>
     set({
       messages: [],
@@ -106,6 +123,7 @@ const useCopilotStore = create<CopilotChatState>((set) => ({
       error: null,
       currentStreamContent: '',
       pendingToolCalls: [],
+      pendingGeneratedFiles: [],
     }),
 }))
 
@@ -144,6 +162,7 @@ function parseSSEEvent(line: string): StreamEvent | null {
 interface UseCopilotOptions {
   onError?: (error: CopilotError) => void
   onToolCall?: (toolCall: ToolCall) => void
+  onGeneratedFile?: (file: GeneratedFile) => void
   onComplete?: (message: CopilotMessage) => void
   maxRetries?: number
   retryDelay?: number
@@ -157,6 +176,7 @@ interface UseCopilotReturn {
   error: CopilotError | null
   currentStreamContent: string
   pendingToolCalls: ToolCall[]
+  pendingGeneratedFiles: GeneratedFile[]
 
   // Actions
   sendMessage: (
@@ -172,7 +192,14 @@ interface UseCopilotReturn {
 }
 
 export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
-  const { onError, onToolCall, onComplete, maxRetries = 3, retryDelay = 1000 } = options
+  const {
+    onError,
+    onToolCall,
+    onGeneratedFile,
+    onComplete,
+    maxRetries = 3,
+    retryDelay = 1000,
+  } = options
 
   const abortControllerRef = useRef<AbortController | null>(null)
   const retryCountRef = useRef(0)
@@ -184,6 +211,7 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
     error,
     currentStreamContent,
     pendingToolCalls,
+    pendingGeneratedFiles,
     addMessage,
     updateLastMessage,
     clearMessages,
@@ -193,6 +221,8 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
     setStreamContent,
     addToolCall,
     clearToolCalls,
+    addGeneratedFile,
+    clearGeneratedFiles,
     reset,
   } = useCopilotStore()
 
@@ -238,10 +268,12 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
       setError(null)
       setStreamContent('')
       clearToolCalls()
+      clearGeneratedFiles()
 
       let assistantMessage: CopilotMessage | null = null
       let usage: TokenUsage | undefined
       const toolCalls: ToolCall[] = []
+      const generatedFiles: GeneratedFile[] = []
 
       try {
         const response = await fetch('/api/copilot/chat', {
@@ -351,6 +383,17 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
                 // Tool results are handled by the API, just update UI if needed
                 break
 
+              case 'generated_file':
+                if (event.generatedFile) {
+                  generatedFiles.push(event.generatedFile)
+                  addGeneratedFile(event.generatedFile)
+                  onGeneratedFile?.(event.generatedFile)
+                  // Update message to include generated files
+                  const currentContent = useCopilotStore.getState().currentStreamContent
+                  updateLastMessage(currentContent, [...generatedFiles])
+                }
+                break
+
               case 'done':
                 if (event.usage) {
                   usage = event.usage
@@ -369,15 +412,20 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
         // Finalize assistant message
         if (assistantMessage) {
           const finalContent = useCopilotStore.getState().currentStreamContent
+          const finalGeneratedFiles = useCopilotStore.getState().pendingGeneratedFiles
           assistantMessage = {
             ...assistantMessage,
             content: finalContent,
+            generatedFiles: finalGeneratedFiles.length > 0 ? finalGeneratedFiles : undefined,
             metadata: {
               toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
               usage,
             },
           }
-          updateLastMessage(finalContent)
+          updateLastMessage(
+            finalContent,
+            finalGeneratedFiles.length > 0 ? finalGeneratedFiles : undefined
+          )
           onComplete?.(assistantMessage)
         }
       } catch (err) {
@@ -407,12 +455,15 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
     },
     [
       abort,
+      addGeneratedFile,
       addMessage,
       addToolCall,
+      clearGeneratedFiles,
       clearToolCalls,
       maxRetries,
       onComplete,
       onError,
+      onGeneratedFile,
       onToolCall,
       retryDelay,
       setError,
@@ -431,6 +482,7 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
     error,
     currentStreamContent,
     pendingToolCalls,
+    pendingGeneratedFiles,
 
     // Actions
     sendMessage,

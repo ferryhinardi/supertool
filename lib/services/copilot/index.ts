@@ -70,6 +70,9 @@ export type {
   FileOrganizationResponse,
   FileOrganizationRule,
   FileSuggestion,
+  // Generated file types
+  GeneratedFile,
+  GeneratedFileType,
   MCPPropertySchema,
   MCPToolDefinition,
   // Core Message types
@@ -99,6 +102,7 @@ export type {
 
 // File attachment constants
 export {
+  GENERATED_FILE_TYPES,
   MAX_ATTACHMENTS_PER_MESSAGE,
   MAX_FILE_SIZE,
   SUPPORTED_DOCUMENT_TYPES,
