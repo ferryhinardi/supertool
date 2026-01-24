@@ -733,6 +733,9 @@ type ToolEvent =
   | 'expense_tracker_category_add'
   | 'expense_tracker_save'
   | 'expense_tracker_load'
+  | 'copilot_tool_open'
+  | 'copilot_session_selected'
+  | 'copilot_session_created'
 
 // Type-safe gtag wrapper
 declare global {
