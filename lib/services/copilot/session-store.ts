@@ -1,13 +1,18 @@
 /**
  * GitHub Copilot SDK Integration - Session Store
  *
- * In-memory session storage implementation with:
+ * Session storage implementations:
+ * - SupabaseSessionStore: Persistent storage using Supabase (recommended for production)
+ * - InMemorySessionStore: Volatile storage for development/testing
+ *
+ * Features:
  * - TTL-based expiration
  * - Automatic cleanup interval
  * - Session metadata extraction
  * - Graceful shutdown support
  */
 
+import { getSupabaseServer } from '@/lib/auth/supabaseServer'
 import type { CopilotSession, SessionMetadata, SessionStore } from './types'
 
 // Default configuration
@@ -44,6 +49,285 @@ function toMetadata(session: CopilotSession, previewLength = 100): SessionMetada
     createdAt: session.createdAt,
     updatedAt: session.updatedAt,
     preview,
+  }
+}
+
+// Database row type for copilot_sessions table
+interface CopilotSessionRow {
+  id: string
+  name: string
+  messages: unknown // JSONB
+  context: unknown // JSONB
+  created_at: string // ISO timestamp
+  updated_at: string // ISO timestamp
+  expires_at: string | null // ISO timestamp or null
+}
+
+/**
+ * Convert JS timestamp (milliseconds) to ISO string for PostgreSQL
+ */
+function jsTimestampToISO(timestamp: number): string {
+  return new Date(timestamp).toISOString()
+}
+
+/**
+ * Convert ISO timestamp string to JS timestamp (milliseconds)
+ */
+function isoToJsTimestamp(isoString: string): number {
+  return new Date(isoString).getTime()
+}
+
+/**
+ * Convert database row to CopilotSession
+ */
+function rowToSession(row: CopilotSessionRow): CopilotSession {
+  return {
+    id: row.id,
+    name: row.name,
+    messages: row.messages as CopilotSession['messages'],
+    context: row.context as CopilotSession['context'],
+    createdAt: isoToJsTimestamp(row.created_at),
+    updatedAt: isoToJsTimestamp(row.updated_at),
+    expiresAt: row.expires_at ? isoToJsTimestamp(row.expires_at) : undefined,
+  }
+}
+
+/**
+ * Supabase implementation of SessionStore
+ *
+ * Features:
+ * - Persistent storage in PostgreSQL via Supabase
+ * - Survives serverless restarts (fixes "Session not found" errors)
+ * - Automatic TTL-based expiration
+ * - Efficient database queries with proper indexes
+ */
+export class SupabaseSessionStore implements SessionStore {
+  private ttl: number
+  private previewLength: number
+
+  constructor(options: SessionStoreOptions = {}) {
+    this.ttl = options.ttl ?? DEFAULT_TTL
+    this.previewLength = options.previewLength ?? 100
+  }
+
+  /**
+   * Get a session by ID
+   * Returns null if session doesn't exist or has expired
+   */
+  async get(sessionId: string): Promise<CopilotSession | null> {
+    try {
+      const supabase = getSupabaseServer()
+      const { data, error } = await supabase
+        .from('copilot_sessions')
+        .select('*')
+        .eq('id', sessionId)
+        .single()
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No rows returned
+          return null
+        }
+        console.error('[SupabaseSessionStore] Error getting session:', error)
+        return null
+      }
+
+      if (!data) {
+        return null
+      }
+
+      const session = rowToSession(data as CopilotSessionRow)
+
+      // Check if session has expired
+      if (session.expiresAt && session.expiresAt <= Date.now()) {
+        // Remove expired session
+        await this.delete(sessionId)
+        return null
+      }
+
+      return session
+    } catch (error) {
+      console.error('[SupabaseSessionStore] Error getting session:', error)
+      return null
+    }
+  }
+
+  /**
+   * Store or update a session
+   * Automatically sets expiresAt based on TTL
+   */
+  async set(session: CopilotSession): Promise<void> {
+    try {
+      const supabase = getSupabaseServer()
+      const now = Date.now()
+
+      const { error } = await supabase.from('copilot_sessions').upsert(
+        {
+          id: session.id,
+          name: session.name,
+          messages: session.messages,
+          context: session.context,
+          created_at: jsTimestampToISO(session.createdAt),
+          updated_at: jsTimestampToISO(now),
+          expires_at: jsTimestampToISO(session.expiresAt ?? now + this.ttl),
+        },
+        {
+          onConflict: 'id',
+        }
+      )
+
+      if (error) {
+        console.error('[SupabaseSessionStore] Error setting session:', error)
+        throw error
+      }
+    } catch (error) {
+      console.error('[SupabaseSessionStore] Error setting session:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Delete a session by ID
+   * Returns true if session was deleted, false if it didn't exist
+   */
+  async delete(sessionId: string): Promise<boolean> {
+    try {
+      const supabase = getSupabaseServer()
+      const { error, count } = await supabase
+        .from('copilot_sessions')
+        .delete({ count: 'exact' })
+        .eq('id', sessionId)
+
+      if (error) {
+        console.error('[SupabaseSessionStore] Error deleting session:', error)
+        return false
+      }
+
+      return (count ?? 0) > 0
+    } catch (error) {
+      console.error('[SupabaseSessionStore] Error deleting session:', error)
+      return false
+    }
+  }
+
+  /**
+   * List all active (non-expired) sessions as metadata
+   * Sorted by updatedAt descending (most recent first)
+   */
+  async list(): Promise<SessionMetadata[]> {
+    try {
+      const supabase = getSupabaseServer()
+      const now = new Date().toISOString()
+
+      const { data, error } = await supabase
+        .from('copilot_sessions')
+        .select('*')
+        .or(`expires_at.is.null,expires_at.gt.${now}`)
+        .order('updated_at', { ascending: false })
+
+      if (error) {
+        console.error('[SupabaseSessionStore] Error listing sessions:', error)
+        return []
+      }
+
+      if (!data) {
+        return []
+      }
+
+      return (data as CopilotSessionRow[]).map((row) =>
+        toMetadata(rowToSession(row), this.previewLength)
+      )
+    } catch (error) {
+      console.error('[SupabaseSessionStore] Error listing sessions:', error)
+      return []
+    }
+  }
+
+  /**
+   * Check if a session exists and is not expired
+   */
+  async exists(sessionId: string): Promise<boolean> {
+    const session = await this.get(sessionId)
+    return session !== null
+  }
+
+  /**
+   * Clean up expired sessions
+   * Returns the number of sessions that were removed
+   */
+  async cleanup(): Promise<number> {
+    try {
+      const supabase = getSupabaseServer()
+
+      // Call the database cleanup function
+      const { data, error } = await supabase.rpc('cleanup_expired_copilot_sessions')
+
+      if (error) {
+        console.error('[SupabaseSessionStore] Error cleaning up sessions:', error)
+        return 0
+      }
+
+      return data ?? 0
+    } catch (error) {
+      console.error('[SupabaseSessionStore] Error cleaning up sessions:', error)
+      return 0
+    }
+  }
+
+  /**
+   * Extend a session's expiration time
+   */
+  async touch(sessionId: string): Promise<boolean> {
+    try {
+      const session = await this.get(sessionId)
+      if (!session) {
+        return false
+      }
+
+      const supabase = getSupabaseServer()
+      const now = Date.now()
+
+      const { error } = await supabase
+        .from('copilot_sessions')
+        .update({
+          updated_at: jsTimestampToISO(now),
+          expires_at: jsTimestampToISO(now + this.ttl),
+        })
+        .eq('id', sessionId)
+
+      if (error) {
+        console.error('[SupabaseSessionStore] Error touching session:', error)
+        return false
+      }
+
+      return true
+    } catch (error) {
+      console.error('[SupabaseSessionStore] Error touching session:', error)
+      return false
+    }
+  }
+
+  /**
+   * Clear all sessions (use with caution!)
+   */
+  async clear(): Promise<void> {
+    try {
+      const supabase = getSupabaseServer()
+      const { error } = await supabase.from('copilot_sessions').delete().neq('id', '')
+
+      if (error) {
+        console.error('[SupabaseSessionStore] Error clearing sessions:', error)
+      }
+    } catch (error) {
+      console.error('[SupabaseSessionStore] Error clearing sessions:', error)
+    }
+  }
+
+  /**
+   * No-op for Supabase store (no cleanup interval to stop)
+   */
+  destroy(): void {
+    // No cleanup interval to stop for Supabase implementation
   }
 }
 
@@ -243,9 +527,32 @@ export class InMemorySessionStore implements SessionStore {
 /**
  * Create a new session store instance
  * Factory function for easier instantiation
+ *
+ * Uses SupabaseSessionStore for persistent storage in production (when Supabase is configured)
+ * Falls back to InMemorySessionStore for development/testing or when Supabase is not available
  */
 export function createSessionStore(options?: SessionStoreOptions): SessionStore {
+  // TODO: Re-enable SupabaseSessionStore after applying migration:
+  // supabase/migrations/20260124000000_copilot_sessions.sql
+  //
+  // Temporarily using in-memory store until migration is applied
+  // to avoid "Could not find the table 'public.copilot_sessions'" error
+  console.warn(
+    '[SessionStore] Using in-memory store (sessions will be lost on restart). Apply Supabase migration to enable persistence.'
+  )
   return new InMemorySessionStore(options)
+
+  // Original code - uncomment after migration is applied:
+  // // Use Supabase for persistent storage when configured
+  // if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  //   return new SupabaseSessionStore(options)
+  // }
+  //
+  // // Fallback to in-memory for environments without Supabase config
+  // console.warn(
+  //   '[SessionStore] Supabase not configured, using in-memory store (sessions will be lost on restart)'
+  // )
+  // return new InMemorySessionStore(options)
 }
 
 /**

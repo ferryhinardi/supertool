@@ -316,7 +316,10 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
               case 'token':
                 if (event.content) {
                   appendStreamContent(event.content)
-                  updateLastMessage(currentStreamContent + event.content)
+                  // Get current content from store to avoid stale closure
+                  const updatedContent =
+                    useCopilotStore.getState().currentStreamContent + event.content
+                  updateLastMessage(updatedContent)
                 }
                 break
 
@@ -392,7 +395,6 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
       addToolCall,
       appendStreamContent,
       clearToolCalls,
-      currentStreamContent,
       maxRetries,
       onComplete,
       onError,

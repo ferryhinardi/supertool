@@ -8,8 +8,9 @@
  * - Graceful shutdown
  */
 
+import OpenAI from 'openai'
 import { CopilotErrorHandler } from './error-handler'
-import { createSession, generateSessionId, InMemorySessionStore } from './session-store'
+import { createSession, createSessionStore, generateSessionId } from './session-store'
 import type {
   ChatOptions,
   ChatResponse,
@@ -32,8 +33,34 @@ const DEFAULT_CONFIG: Required<CopilotClientConfig> = {
   debug: false,
 }
 
-// GitHub Copilot API endpoint (placeholder - will be configured based on actual SDK)
-const _COPILOT_API_BASE = 'https://api.github.com/copilot'
+// OpenAI model configuration
+const OPENAI_MODEL = 'gpt-4o-mini'
+const OPENAI_MAX_TOKENS = 2048
+const OPENAI_TEMPERATURE = 0.7
+
+// System prompt for the copilot assistant
+const SYSTEM_PROMPT = `You are SuperTool Assistant, a helpful AI assistant integrated into the SuperTool platform.
+
+SuperTool is a comprehensive toolkit application that provides various utilities including:
+- Unit Converter: Convert between different units of measurement
+- Color Picker: Select and convert colors between formats
+- QR Code Generator: Create QR codes from text or URLs
+- JSON Formatter: Format and validate JSON data
+- Base64 Encoder/Decoder: Encode and decode Base64 strings
+- UUID Generator: Generate unique identifiers
+- Markdown Preview: Preview markdown content
+- Regex Tester: Test and validate regular expressions
+- AI Code Snippet Generator: Generate code snippets using AI
+- And many more tools
+
+Your role is to:
+1. Help users understand and use the various tools available in SuperTool
+2. Provide guidance on best practices for each tool
+3. Answer questions about coding, development, and general technical topics
+4. Be friendly, concise, and helpful in your responses
+5. If you don't know something, admit it rather than making up information
+
+Keep your responses clear and well-formatted. Use markdown when appropriate for code blocks, lists, and emphasis.`
 
 /**
  * Singleton class for managing GitHub Copilot SDK interactions
@@ -54,10 +81,11 @@ export class CopilotClientManager {
   private isInitialized = false
   private activeSessionId?: string
   private lastError?: ReturnType<typeof CopilotErrorHandler.createError>
+  private openai: OpenAI | null = null
 
   private constructor(config: CopilotClientConfig = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config }
-    this.store = new InMemorySessionStore({
+    this.store = createSessionStore({
       ttl: this.config.sessionTTL * 1000, // Convert to ms
     })
   }
@@ -93,8 +121,15 @@ export class CopilotClientManager {
     }
 
     try {
-      // Future: Initialize Copilot SDK client here
-      // For now, we just mark as initialized
+      // Initialize OpenAI client if API key is available
+      const apiKey = process.env.OPENAI_API_KEY
+      if (apiKey) {
+        this.openai = new OpenAI({ apiKey })
+        this.log('OpenAI client initialized')
+      } else {
+        this.log('OPENAI_API_KEY not set - using mock responses')
+      }
+
       this.isInitialized = true
       this.log('Initialized successfully')
     } catch (error) {
@@ -111,8 +146,8 @@ export class CopilotClientManager {
     this.log('Shutting down...')
 
     try {
-      // Destroy the session store (stops cleanup interval)
-      if (this.store instanceof InMemorySessionStore) {
+      // Destroy the session store if it supports it (stops cleanup interval for in-memory store)
+      if ('destroy' in this.store && typeof this.store.destroy === 'function') {
         this.store.destroy()
       }
 
@@ -132,7 +167,7 @@ export class CopilotClientManager {
     return {
       isInitialized: this.isInitialized,
       activeSessionId: this.activeSessionId,
-      sessionCount: this.store instanceof InMemorySessionStore ? this.store.size : 0,
+      sessionCount: 'size' in this.store ? (this.store as { size: number }).size : 0,
       lastError: this.lastError,
     }
   }
@@ -406,62 +441,137 @@ export class CopilotClientManager {
 
   /**
    * Call the Copilot API (non-streaming)
-   * This is a placeholder that will be replaced with actual SDK calls
+   * Uses OpenAI API when available, falls back to mock responses
    */
   private async callCopilotAPI(
     session: CopilotSession,
     _userMessage: CopilotMessage,
     _options: ChatOptions
   ): Promise<ChatResponse> {
-    // TODO: Replace with actual GitHub Copilot SDK call
-    // For now, return a mock response for development
+    // If no OpenAI client, fall back to mock response
+    if (!this.openai) {
+      this.log('No OpenAI client available, using mock response')
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
-    // Simulate API latency
-    await new Promise((resolve) => setTimeout(resolve, 500))
+      const assistantMessage: CopilotMessage = {
+        id: generateSessionId(),
+        role: 'assistant',
+        content: this.getMockResponse(session),
+        timestamp: Date.now(),
+        metadata: {
+          model: 'mock',
+          usage: {
+            promptTokens: 100,
+            completionTokens: 50,
+            totalTokens: 150,
+          },
+        },
+      }
+
+      return {
+        sessionId: session.id,
+        message: assistantMessage,
+        usage: assistantMessage.metadata?.usage,
+      }
+    }
+
+    // Build messages array from session history
+    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...session.messages.map((m) => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+      })),
+    ]
+
+    // Call OpenAI API
+    const response = await this.openai.chat.completions.create({
+      model: OPENAI_MODEL,
+      messages,
+      max_tokens: OPENAI_MAX_TOKENS,
+      temperature: OPENAI_TEMPERATURE,
+    })
+
+    const content = response.choices[0]?.message?.content || ''
+    const usage: TokenUsage = {
+      promptTokens: response.usage?.prompt_tokens || 0,
+      completionTokens: response.usage?.completion_tokens || 0,
+      totalTokens: response.usage?.total_tokens || 0,
+    }
 
     const assistantMessage: CopilotMessage = {
       id: generateSessionId(),
       role: 'assistant',
-      content: this.getMockResponse(session),
+      content,
       timestamp: Date.now(),
-      metadata: {
-        model: 'gpt-4',
-        usage: {
-          promptTokens: 100,
-          completionTokens: 50,
-          totalTokens: 150,
-        },
-      },
+      metadata: { model: OPENAI_MODEL, usage },
     }
 
     return {
       sessionId: session.id,
       message: assistantMessage,
-      usage: assistantMessage.metadata?.usage,
+      usage,
     }
   }
 
   /**
    * Stream from the Copilot API
-   * This is a placeholder that will be replaced with actual SDK calls
+   * Uses OpenAI API streaming when available, falls back to mock streaming
    */
   private async *streamCopilotAPI(
     session: CopilotSession,
     _userMessage: CopilotMessage,
     _options: ChatOptions
   ): AsyncGenerator<StreamEvent> {
-    // TODO: Replace with actual GitHub Copilot SDK streaming call
-    // For now, simulate streaming response
+    // If no OpenAI client, fall back to mock streaming
+    if (!this.openai) {
+      this.log('No OpenAI client available, using mock streaming')
+      const mockResponse = this.getMockResponse(session)
+      const words = mockResponse.split(' ')
 
-    const mockResponse = this.getMockResponse(session)
-    const words = mockResponse.split(' ')
+      for (const word of words) {
+        await new Promise((resolve) => setTimeout(resolve, 50))
+        yield {
+          type: 'token',
+          content: `${word} `,
+        }
+      }
 
-    // Simulate streaming tokens
-    for (const word of words) {
-      await new Promise((resolve) => setTimeout(resolve, 50))
       yield {
-        type: 'token',
-        content: `${word} `,
+        type: 'done',
+        usage: {
+          promptTokens: 100,
+          completionTokens: words.length * 2,
+          totalTokens: 100 + words.length * 2,
+        },
+      }
+      return
+    }
+
+    // Build messages array from session history
+    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...session.messages.map((m) => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+      })),
+    ]
+
+    // Call OpenAI API with streaming
+    const stream = await this.openai.chat.completions.create({
+      model: OPENAI_MODEL,
+      messages,
+      max_tokens: OPENAI_MAX_TOKENS,
+      temperature: OPENAI_TEMPERATURE,
+      stream: true,
+    })
+
+    let totalTokens = 0
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || ''
+      if (content) {
+        totalTokens++
+        yield { type: 'token', content }
       }
     }
 
@@ -469,9 +579,9 @@ export class CopilotClientManager {
     yield {
       type: 'done',
       usage: {
-        promptTokens: 100,
-        completionTokens: words.length * 2,
-        totalTokens: 100 + words.length * 2,
+        promptTokens: 0, // Not available in streaming mode
+        completionTokens: totalTokens,
+        totalTokens: totalTokens,
       },
     }
   }
