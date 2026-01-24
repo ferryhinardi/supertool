@@ -185,7 +185,6 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
     setStreaming,
     setError,
     setStreamContent,
-    appendStreamContent,
     addToolCall,
     clearToolCalls,
     reset,
@@ -318,9 +317,12 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
             switch (event.type) {
               case 'token':
                 if (event.content) {
-                  appendStreamContent(event.content)
-                  const updatedContent = useCopilotStore.getState().currentStreamContent
-                  updateLastMessage(updatedContent)
+                  // Use getState() to get the current content, append, and update in one operation
+                  // This avoids race conditions with batched state updates
+                  const currentContent = useCopilotStore.getState().currentStreamContent
+                  const newContent = currentContent + event.content
+                  setStreamContent(newContent)
+                  updateLastMessage(newContent)
                 }
                 break
 
@@ -394,7 +396,6 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
       abort,
       addMessage,
       addToolCall,
-      appendStreamContent,
       clearToolCalls,
       maxRetries,
       onComplete,
