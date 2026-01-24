@@ -302,4 +302,67 @@ Paragraph text.
       expect(screen.getByAltText('Description of image')).toBeInTheDocument()
     })
   })
+
+  describe('Security (XSS Protection)', () => {
+    it('does not render script tags', () => {
+      const maliciousContent = '<script>alert("XSS")</script>'
+      const { container } = render(<MarkdownRenderer content={maliciousContent} />)
+      expect(container.querySelector('script')).not.toBeInTheDocument()
+      // Script content should not appear in the output
+      expect(container.textContent).not.toContain('alert')
+    })
+
+    it('does not render onclick handlers', () => {
+      const maliciousContent = '<div onclick="alert(\'XSS\')">Click me</div>'
+      const { container } = render(<MarkdownRenderer content={maliciousContent} />)
+      const div = container.querySelector('div')
+      expect(div).not.toHaveAttribute('onclick')
+    })
+
+    it('does not render javascript: URLs in links', () => {
+      const maliciousContent = '[Click me](javascript:alert("XSS"))'
+      render(<MarkdownRenderer content={maliciousContent} />)
+      const link = screen.queryByRole('link', { name: 'Click me' })
+      // Link should either not exist or not have javascript: href
+      if (link) {
+        expect(link).not.toHaveAttribute('href', expect.stringContaining('javascript:'))
+      }
+    })
+
+    it('sanitizes iframe tags', () => {
+      const maliciousContent = '<iframe src="https://evil.com"></iframe>'
+      const { container } = render(<MarkdownRenderer content={maliciousContent} />)
+      expect(container.querySelector('iframe')).not.toBeInTheDocument()
+    })
+
+    it('sanitizes onerror handlers on images', () => {
+      const maliciousContent = '<img src="x" onerror="alert(\'XSS\')" />'
+      const { container } = render(<MarkdownRenderer content={maliciousContent} />)
+      const img = container.querySelector('img')
+      if (img) {
+        expect(img).not.toHaveAttribute('onerror')
+      }
+    })
+
+    it('sanitizes style tags', () => {
+      const maliciousContent = '<style>body { display: none; }</style>'
+      const { container } = render(<MarkdownRenderer content={maliciousContent} />)
+      expect(container.querySelector('style')).not.toBeInTheDocument()
+    })
+
+    it('preserves safe HTML elements', () => {
+      const safeContent = '<strong>Bold</strong> and <em>italic</em>'
+      render(<MarkdownRenderer content={safeContent} />)
+      expect(screen.getByText('Bold').tagName).toBe('STRONG')
+      expect(screen.getByText('italic').tagName).toBe('EM')
+    })
+
+    it('preserves syntax highlighting classes on code blocks', () => {
+      const codeContent = '```javascript\nconst x = 1;\n```'
+      const { container } = render(<MarkdownRenderer content={codeContent} />)
+      // Syntax highlighting should still work after sanitization
+      const codeElement = container.querySelector('code.hljs')
+      expect(codeElement).toBeInTheDocument()
+    })
+  })
 })

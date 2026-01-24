@@ -6,11 +6,23 @@ import type { Components } from 'react-markdown'
 import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
 import { css, cx } from '@/styled-system/css'
 
 // Import highlight.js theme
 import 'highlight.js/styles/github-dark.css'
+
+// Custom sanitize schema that preserves syntax highlighting classes
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    // Allow className on code and span for syntax highlighting
+    code: [...(defaultSchema.attributes?.code || []), 'className'],
+    span: [...(defaultSchema.attributes?.span || []), 'className'],
+  },
+}
 
 interface MarkdownRendererProps {
   content: string
@@ -69,7 +81,7 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({
     <div className={cx(markdownStyles, className)}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight, rehypeRaw]}
+        rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema], rehypeHighlight]}
         components={components}
       >
         {content}
