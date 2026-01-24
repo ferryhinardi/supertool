@@ -271,8 +271,8 @@ describe('SessionSidebar', () => {
       const activeSessionText = screen.getByText('Active Session')
       expect(activeSessionText).toBeInTheDocument()
 
-      // The parent div element with role="button" should have active styling (borderLeft)
-      const activeButton = activeSessionText.closest('[role="button"]')
+      // The parent button element should have active styling (borderLeft)
+      const activeButton = activeSessionText.closest('button')
       expect(activeButton).toBeInTheDocument()
     })
   })
@@ -335,10 +335,9 @@ describe('SessionSidebar', () => {
 
       render(<SessionSidebar onSessionSelect={mockOnSessionSelect} />)
 
-      const sessionButton = screen.getByText('Clickable Session').closest('[role="button"]')
-      if (sessionButton) {
-        await user.click(sessionButton)
-      }
+      const sessionButton = screen.getByText('Clickable Session').closest('button')
+      expect(sessionButton).toBeInTheDocument()
+      await user.click(sessionButton!)
 
       expect(mockOnSessionSelect).toHaveBeenCalledWith('session-123')
     })
@@ -352,10 +351,9 @@ describe('SessionSidebar', () => {
 
       render(<SessionSidebar onSessionSelect={mockOnSessionSelect} />)
 
-      const sessionButton = screen.getByText('Hover Session').closest('[role="button"]')
-      if (sessionButton) {
-        fireEvent.mouseEnter(sessionButton)
-      }
+      const sessionButton = screen.getByText('Hover Session').closest('button')
+      expect(sessionButton).toBeInTheDocument()
+      fireEvent.mouseEnter(sessionButton!)
 
       expect(mockPrefetchSession).toHaveBeenCalledWith('session-hover-test')
     })
