@@ -534,13 +534,13 @@ export default function BudgetPlannerPage() {
         'Total Expenses',
         '',
         formatCurrency(totalExpenses, currency),
-        `${((totalExpenses / incomeNum) * 100).toFixed(1)}%`,
+        incomeNum > 0 ? `${((totalExpenses / incomeNum) * 100).toFixed(1)}%` : '0%',
       ],
       [
         'Remaining',
         '',
         formatCurrency(remainingBudget, currency),
-        `${((remainingBudget / incomeNum) * 100).toFixed(1)}%`,
+        incomeNum > 0 ? `${((remainingBudget / incomeNum) * 100).toFixed(1)}%` : '0%',
       ],
       ['', '', '', ''],
       ...budgetBreakdown.map((cat) => [
