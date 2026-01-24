@@ -460,6 +460,8 @@ jobs:
       - name: Generate AI Suggestions
         id: suggestions
         run: |
+          set +o pipefail  # Prevent broken pipe errors with grep -q
+          
           echo "### AI-Powered Suggestions" >> ai-review.md
           echo "" >> ai-review.md
 
@@ -468,22 +470,23 @@ jobs:
           SUGGESTIONS=""
 
           # Check for missing error handling
-          if echo "$DIFF" | grep -qE "async.*=>" | grep -vE "try\s*{"; then
+          # Use grep without -q and redirect to /dev/null to avoid broken pipe
+          if echo "$DIFF" | grep -E "async.*=>" > /dev/null 2>&1 && ! echo "$DIFF" | grep -E "try\s*\{" > /dev/null 2>&1; then
             SUGGESTIONS="$SUGGESTIONS\n- **Error Handling:** Consider adding try/catch blocks to async functions"
           fi
 
           # Check for missing loading states
-          if echo "$DIFF" | grep -qE "useState.*\[\]" && ! echo "$DIFF" | grep -qE "isLoading|loading"; then
+          if echo "$DIFF" | grep -E "useState.*\[\]" > /dev/null 2>&1 && ! echo "$DIFF" | grep -E "isLoading|loading" > /dev/null 2>&1; then
             SUGGESTIONS="$SUGGESTIONS\n- **UX:** Consider adding loading states for data fetching"
           fi
 
           # Check for hardcoded values
-          if echo "$DIFF" | grep -qE "(localhost|127\.0\.0\.1):"; then
+          if echo "$DIFF" | grep -E "(localhost|127\.0\.0\.1):" > /dev/null 2>&1; then
             SUGGESTIONS="$SUGGESTIONS\n- **Config:** Avoid hardcoded URLs, use environment variables"
           fi
 
           # Check for missing accessibility
-          if echo "$DIFF" | grep -qE "<(button|a|input)" && ! echo "$DIFF" | grep -qE "aria-|role="; then
+          if echo "$DIFF" | grep -E "<(button|a|input)" > /dev/null 2>&1 && ! echo "$DIFF" | grep -E "aria-|role=" > /dev/null 2>&1; then
             SUGGESTIONS="$SUGGESTIONS\n- **Accessibility:** Consider adding ARIA attributes for interactive elements"
           fi
 
