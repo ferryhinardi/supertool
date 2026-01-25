@@ -214,7 +214,8 @@ function createMockTokenBudget(overrides: Partial<TokenBudget> = {}): TokenBudge
   }
 }
 
-function createMockRepoInfo(overrides: Partial<RepoInfo> = {}): RepoInfo {
+// Kept for future tests
+function _createMockRepoInfo(overrides: Partial<RepoInfo> = {}): RepoInfo {
   return {
     owner: 'facebook',
     repo: 'react',

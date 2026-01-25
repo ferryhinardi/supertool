@@ -32,8 +32,8 @@ describe('useGitHubIssues', () => {
     ...overrides,
   })
 
-  // Helper to create a mock Milestone
-  const createMockMilestone = (overrides: Partial<Milestone> = {}): Milestone => ({
+  // Helper to create a mock Milestone (kept for future tests)
+  const _createMockMilestone = (overrides: Partial<Milestone> = {}): Milestone => ({
     id: 1,
     number: 1,
     title: 'v1.0',

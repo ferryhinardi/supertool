@@ -216,8 +216,6 @@ function getFileStatusInfo(status: PRFile['status']): {
         bgColor: 'rgba(168, 85, 247, 0.2)',
         borderColor: 'rgba(168, 85, 247, 0.3)',
       }
-    case 'modified':
-    case 'changed':
     default:
       return {
         icon: <FileModifiedIcon />,
@@ -227,11 +225,6 @@ function getFileStatusInfo(status: PRFile['status']): {
         borderColor: 'rgba(251, 191, 36, 0.3)',
       }
   }
-}
-
-function getFileExtension(filename: string): string {
-  const parts = filename.split('.')
-  return parts.length > 1 ? parts[parts.length - 1] : ''
 }
 
 function getFileName(path: string): string {

@@ -19,6 +19,18 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ['pdfjs-dist', 'ffmpeg-static', 'canvas-confetti', 'vaul'],
 
+  // Transpile ESM packages that have issues with Next.js
+  transpilePackages: [
+    'react-markdown',
+    'property-information',
+    'hast-util-whitespace',
+    'space-separated-tokens',
+    'comma-separated-tokens',
+    'vfile',
+    'vfile-message',
+    'unist-util-stringify-position',
+  ],
+
   // Performance optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

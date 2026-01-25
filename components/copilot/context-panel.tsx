@@ -398,12 +398,6 @@ const emptyStateStyles = css({
   textAlign: 'center',
 })
 
-const emptyIconStyles = css({
-  w: '8',
-  h: '8',
-  opacity: 0.5,
-})
-
 const statsRowStyles = css({
   display: 'flex',
   alignItems: 'center',

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import { css } from '@/styled-system/css'
 
 // ============================================
@@ -452,7 +452,7 @@ const actionsGridStyles = css({
   gap: '2',
 })
 
-const actionButtonStyles = (isDisabled: boolean, isLoading: boolean) =>
+const actionButtonStyles = (isDisabled: boolean, _isLoading: boolean) =>
   css({
     display: 'flex',
     flexDir: 'column',
@@ -727,23 +727,21 @@ export function QuickActions({
               </span>
             </div>
           ) : (
-            <>
-              {categoryOrder.map((category) => {
-                const actions = groupedActions[category]
-                if (!actions) return null
-                return (
-                  <ActionCategory
-                    key={category}
-                    category={category}
-                    actions={actions}
-                    contextType={contextType}
-                    loadingAction={loadingAction}
-                    disabledActions={disabledActions}
-                    onAction={onAction}
-                  />
-                )
-              })}
-            </>
+            categoryOrder.map((category) => {
+              const actions = groupedActions[category]
+              if (!actions) return null
+              return (
+                <ActionCategory
+                  key={category}
+                  category={category}
+                  actions={actions}
+                  contextType={contextType}
+                  loadingAction={loadingAction}
+                  disabledActions={disabledActions}
+                  onAction={onAction}
+                />
+              )
+            })
           )}
         </div>
       )}
