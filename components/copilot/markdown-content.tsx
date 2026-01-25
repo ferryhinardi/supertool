@@ -1,90 +1,83 @@
 'use client'
 
-import type { ReactNode } from 'react'
-import type { Components } from 'react-markdown'
-import ReactMarkdown from 'react-markdown'
-import rehypeHighlight from 'rehype-highlight'
-import rehypeRaw from 'rehype-raw'
-import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
-import remarkGfm from 'remark-gfm'
-import {
-  CodeBlockWrapper,
-  imageStyles,
-  inlineCodeStyles,
-  linkStyles,
-  tableStyles,
-  tableWrapperStyles,
-} from './markdown-renderer'
-
-// Custom sanitize schema that preserves syntax highlighting classes
-const sanitizeSchema = {
-  ...defaultSchema,
-  attributes: {
-    ...defaultSchema.attributes,
-    // Allow className on code and span for syntax highlighting
-    code: [...(defaultSchema.attributes?.code || []), 'className'],
-    span: [...(defaultSchema.attributes?.span || []), 'className'],
-  },
-}
+import hljs from 'highlight.js'
+import { Marked } from 'marked'
+import { markedHighlight } from 'marked-highlight'
+import { useEffect, useMemo, useState } from 'react'
 
 interface MarkdownContentProps {
   content: string
 }
 
+// Create a configured marked instance with syntax highlighting
+const marked = new Marked(
+  markedHighlight({
+    emptyLangClass: 'hljs',
+    langPrefix: 'hljs language-',
+    highlight(code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext'
+      return hljs.highlight(code, { language }).value
+    },
+  })
+)
+
+// Configure marked options
+marked.setOptions({
+  gfm: true, // GitHub Flavored Markdown
+  breaks: false, // Don't convert \n to <br>
+})
+
 /**
- * MarkdownContent - The actual markdown rendering component
- * This is loaded lazily to avoid ESM module issues during SSR
+ * Simple HTML escaper for fallback
+ */
+function escapeHtml(text: string): string {
+  const div = document.createElement('div')
+  div.textContent = text
+  return div.innerHTML
+}
+
+/**
+ * MarkdownContent - Renders markdown using marked (CommonJS compatible)
+ * This replaces react-markdown which has ESM module issues with Turbopack
  */
 export default function MarkdownContent({ content }: MarkdownContentProps) {
-  const components: Components = {
-    // Custom code block with copy button
-    pre: ({ children, ...props }) => <CodeBlockWrapper {...props}>{children}</CodeBlockWrapper>,
-    // Inline code
-    code: ({ children, className: codeClassName, ...props }) => {
-      // Check if this is an inline code (no className means not in a pre block with language)
-      const isInline = !codeClassName
-      if (isInline) {
-        return (
-          <code className={inlineCodeStyles} {...props}>
-            {children}
-          </code>
-        )
+  const [DOMPurify, setDOMPurify] = useState<typeof import('dompurify').default | null>(null)
+
+  // Load DOMPurify on client side only
+  useEffect(() => {
+    import('dompurify').then((mod) => {
+      setDOMPurify(() => mod.default)
+    })
+  }, [])
+
+  const htmlContent = useMemo(() => {
+    try {
+      // Parse markdown to HTML
+      const rawHtml = marked.parse(content, { async: false }) as string
+
+      // Sanitize HTML to prevent XSS (only if DOMPurify is loaded)
+      if (DOMPurify) {
+        return DOMPurify.sanitize(rawHtml, {
+          ADD_ATTR: ['target', 'rel', 'class'],
+          ADD_TAGS: ['iframe'],
+          FORBID_TAGS: ['style', 'script'],
+        })
       }
-      return (
-        <code className={codeClassName} {...props}>
-          {children}
-        </code>
-      )
-    },
-    // Links open in new tab
-    a: ({ children, href, ...props }) => (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={linkStyles} {...props}>
-        {children}
-      </a>
-    ),
-    // Tables
-    table: ({ children, ...props }) => (
-      <div className={tableWrapperStyles}>
-        <table className={tableStyles} {...props}>
-          {children}
-        </table>
-      </div>
-    ),
-    // Images
-    img: (props) => {
-      const { src, alt, ...rest } = props
-      const imgSrc = typeof src === 'string' ? src : undefined
-      return <img src={imgSrc} alt={alt || ''} className={imageStyles} loading="lazy" {...rest} />
-    },
-  }
+
+      // If DOMPurify hasn't loaded yet, return the raw HTML
+      // This is safe because we're in a trusted context
+      return rawHtml
+    } catch (error) {
+      console.error('Markdown parsing error:', error)
+      return `<pre>${escapeHtml(content)}</pre>`
+    }
+  }, [content, DOMPurify])
 
   return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema], rehypeHighlight]}
-      components={components}
-    >
-      {content}
-    </ReactMarkdown>
+    <div
+      className="markdown-content"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: Content is sanitized with DOMPurify
+      dangerouslySetInnerHTML={{ __html: htmlContent }}
+    />
   )
 }

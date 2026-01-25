@@ -13,8 +13,7 @@ import {
   SplitSquareHorizontal,
   Upload,
 } from 'lucide-react'
-import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import {
   TOOL_COLORS,
@@ -34,9 +33,10 @@ import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
 import { css } from '@/styled-system/css'
+import { MarkdownPreview } from './components/markdown-preview'
 
-// Dynamically import ReactMarkdown with SSR disabled
-const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false })
+// Import highlight.js theme
+import 'highlight.js/styles/github-dark.css'
 
 type ViewMode = 'split' | 'editor' | 'preview'
 
@@ -188,31 +188,6 @@ Happy writing! 🚀
 export default function MarkdownEditorPage() {
   const [value, setValue] = useState(defaultMarkdown)
   const [viewMode, setViewMode] = useState<ViewMode>('split')
-  const [markdownPlugins, setMarkdownPlugins] = useState<{
-    // biome-ignore lint/suspicious/noExplicitAny: remark/rehype plugins are dynamically loaded with complex types
-    remarkGfm: any
-    // biome-ignore lint/suspicious/noExplicitAny: remark/rehype plugins are dynamically loaded with complex types
-    rehypeHighlight: any
-    // biome-ignore lint/suspicious/noExplicitAny: remark/rehype plugins are dynamically loaded with complex types
-    rehypeRaw: any
-  } | null>(null)
-
-  // Load markdown plugins dynamically
-  useEffect(() => {
-    const loadPlugins = async () => {
-      const [remarkGfmModule, rehypeHighlightModule, rehypeRawModule] = await Promise.all([
-        import('remark-gfm'),
-        import('rehype-highlight'),
-        import('rehype-raw'),
-      ])
-      setMarkdownPlugins({
-        remarkGfm: remarkGfmModule.default,
-        rehypeHighlight: rehypeHighlightModule.default,
-        rehypeRaw: rehypeRawModule.default,
-      })
-    }
-    loadPlugins()
-  }, [])
 
   // Calculate stats (derived values - React Compiler handles optimization)
   const lines = value.split('\n').length
@@ -869,229 +844,7 @@ export default function MarkdownEditorPage() {
                       maxW: 'none',
                     })}`}
                   >
-                    {markdownPlugins ? (
-                      <ReactMarkdown
-                        remarkPlugins={[markdownPlugins.remarkGfm]}
-                        rehypePlugins={[markdownPlugins.rehypeHighlight, markdownPlugins.rehypeRaw]}
-                        components={{
-                          // Custom component styling
-                          h1: ({ ...props }) => (
-                            <h1
-                              className={css({
-                                mb: '4',
-                                borderBottom: '1px solid',
-                                borderColor: 'gray.700',
-                                pb: '2',
-                                fontSize: '3xl',
-                                fontWeight: 'bold',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          h2: ({ ...props }) => (
-                            <h2
-                              className={css({
-                                mt: '6',
-                                mb: '3',
-                                borderBottom: '1px solid',
-                                borderColor: 'gray.800',
-                                pb: '2',
-                                fontSize: '2xl',
-                                fontWeight: 'bold',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          h3: ({ ...props }) => (
-                            <h3
-                              className={css({
-                                mt: '5',
-                                mb: '2',
-                                fontSize: 'xl',
-                                fontWeight: 'bold',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          a: ({ ...props }) => (
-                            <a
-                              className={css({
-                                color: 'blue.400',
-                                _hover: {
-                                  color: 'blue.300',
-                                  textDecoration: 'underline',
-                                },
-                              })}
-                              {...props}
-                            />
-                          ),
-                          code: ({ className, children, ...props }) => {
-                            const match = /language-(\w+)/.exec(className || '')
-                            return match ? (
-                              <code className={className} {...props}>
-                                {children}
-                              </code>
-                            ) : (
-                              <code
-                                className={css({
-                                  rounded: 'md',
-                                  bg: 'gray.800',
-                                  px: '1.5',
-                                  py: '0.5',
-                                  fontSize: 'sm',
-                                  color: 'pink.400',
-                                })}
-                                {...props}
-                              >
-                                {children}
-                              </code>
-                            )
-                          },
-                          pre: ({ ...props }) => (
-                            <pre
-                              className={css({
-                                overflowX: 'auto',
-                                rounded: 'lg',
-                                border: '1px solid',
-                                borderColor: 'gray.700',
-                                bg: 'gray.900',
-                                p: '4',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          table: ({ ...props }) => (
-                            <div className={css({ overflowX: 'auto' })}>
-                              <table
-                                className={css({
-                                  minW: 'full',
-                                  borderCollapse: 'collapse',
-                                  border: '1px solid',
-                                  borderColor: 'gray.700',
-                                })}
-                                {...props}
-                              />
-                            </div>
-                          ),
-                          th: ({ ...props }) => (
-                            <th
-                              className={css({
-                                border: '1px solid',
-                                borderColor: 'gray.700',
-                                bg: 'gray.800',
-                                px: '4',
-                                py: '2',
-                                textAlign: 'left',
-                                fontWeight: 'bold',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          td: ({ ...props }) => (
-                            <td
-                              className={css({
-                                border: '1px solid',
-                                borderColor: 'gray.700',
-                                px: '4',
-                                py: '2',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          blockquote: ({ ...props }) => (
-                            <blockquote
-                              className={css({
-                                borderLeft: '4px solid',
-                                borderColor: 'gray.600',
-                                pl: '4',
-                                color: 'white',
-                                fontStyle: 'italic',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          ul: ({ ...props }) => (
-                            <ul
-                              className={css({
-                                listStyleType: 'disc',
-                                pl: '6',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          ol: ({ ...props }) => (
-                            <ol
-                              className={css({
-                                listStyleType: 'decimal',
-                                pl: '6',
-                              })}
-                              {...props}
-                            />
-                          ),
-                          li: ({ children, ...props }) => {
-                            // Check if this is a task list item
-                            const firstChild = Array.isArray(children) ? children[0] : null
-                            if (
-                              firstChild &&
-                              typeof firstChild === 'object' &&
-                              'props' in firstChild
-                            ) {
-                              const input = firstChild.props?.children?.[0]
-                              if (input?.type === 'input' && input?.props?.type === 'checkbox') {
-                                return (
-                                  <li
-                                    className={css({
-                                      display: 'flex',
-                                      listStyleType: 'none',
-                                      alignItems: 'center',
-                                      gap: '2',
-                                    })}
-                                    {...props}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      checked={input.props.checked}
-                                      disabled
-                                      className={css({
-                                        h: '4',
-                                        w: '4',
-                                        rounded: 'md',
-                                        borderColor: 'gray.600',
-                                        bg: 'gray.800',
-                                      })}
-                                    />
-                                    <span>{firstChild.props.children.slice(1)}</span>
-                                  </li>
-                                )
-                              }
-                            }
-                            return <li {...props}>{children}</li>
-                          },
-                          hr: ({ ...props }) => (
-                            <hr
-                              className={css({
-                                my: '4',
-                                borderColor: 'gray.700',
-                              })}
-                              {...props}
-                            />
-                          ),
-                        }}
-                      >
-                        {value}
-                      </ReactMarkdown>
-                    ) : (
-                      <div
-                        className={css({
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                        })}
-                      >
-                        Loading preview...
-                      </div>
-                    )}
+                    <MarkdownPreview content={value} />
                   </div>
                 </div>
               </CardContent>
