@@ -1,28 +1,27 @@
 'use client'
 
-import type { ReactNode } from 'react'
+import dynamic from 'next/dynamic'
+import type { ComponentType, ReactNode } from 'react'
 import { memo, useCallback, useState } from 'react'
-import type { Components } from 'react-markdown'
-import ReactMarkdown from 'react-markdown'
-import rehypeHighlight from 'rehype-highlight'
-import rehypeRaw from 'rehype-raw'
-import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
-import remarkGfm from 'remark-gfm'
 import { css, cx } from '@/styled-system/css'
 
 // Import highlight.js theme
 import 'highlight.js/styles/github-dark.css'
 
-// Custom sanitize schema that preserves syntax highlighting classes
-const sanitizeSchema = {
-  ...defaultSchema,
-  attributes: {
-    ...defaultSchema.attributes,
-    // Allow className on code and span for syntax highlighting
-    code: [...(defaultSchema.attributes?.code || []), 'className'],
-    span: [...(defaultSchema.attributes?.span || []), 'className'],
-  },
+interface MarkdownContentProps {
+  content: string
 }
+
+// Dynamically import the markdown component with SSR disabled
+// This is necessary because react-markdown v10 and its dependencies use ESM exports
+// that cause "ReferenceError: boolean is not defined" during SSR with Turbopack
+const DynamicMarkdownContent = dynamic<MarkdownContentProps>(
+  () => import('./markdown-content') as Promise<{ default: ComponentType<MarkdownContentProps> }>,
+  {
+    ssr: false,
+    loading: () => <div className={css({ whiteSpace: 'pre-wrap', opacity: 0.7 })}>Loading...</div>,
+  }
+)
 
 interface MarkdownRendererProps {
   content: string
@@ -37,55 +36,9 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({
   content,
   className,
 }: MarkdownRendererProps) {
-  const components: Components = {
-    // Custom code block with copy button
-    pre: ({ children, ...props }) => <CodeBlockWrapper {...props}>{children}</CodeBlockWrapper>,
-    // Inline code
-    code: ({ children, className: codeClassName, ...props }) => {
-      // Check if this is an inline code (no className means not in a pre block with language)
-      const isInline = !codeClassName
-      if (isInline) {
-        return (
-          <code className={inlineCodeStyles} {...props}>
-            {children}
-          </code>
-        )
-      }
-      return (
-        <code className={codeClassName} {...props}>
-          {children}
-        </code>
-      )
-    },
-    // Links open in new tab
-    a: ({ children, href, ...props }) => (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={linkStyles} {...props}>
-        {children}
-      </a>
-    ),
-    // Tables
-    table: ({ children, ...props }) => (
-      <div className={tableWrapperStyles}>
-        <table className={tableStyles} {...props}>
-          {children}
-        </table>
-      </div>
-    ),
-    // Images
-    img: ({ src, alt, ...props }) => (
-      <img src={src} alt={alt || ''} className={imageStyles} loading="lazy" {...props} />
-    ),
-  }
-
   return (
     <div className={cx(markdownStyles, className)}>
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema], rehypeHighlight]}
-        components={components}
-      >
-        {content}
-      </ReactMarkdown>
+      <DynamicMarkdownContent content={content} />
     </div>
   )
 })
@@ -98,7 +51,7 @@ interface CodeBlockWrapperProps {
 /**
  * CodeBlockWrapper - Wraps code blocks with a copy button
  */
-function CodeBlockWrapper({ children, className, ...props }: CodeBlockWrapperProps) {
+export function CodeBlockWrapper({ children, className, ...props }: CodeBlockWrapperProps) {
   const [copied, setCopied] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -165,7 +118,7 @@ function CodeBlockWrapper({ children, className, ...props }: CodeBlockWrapperPro
 /**
  * Extract text content from React elements recursively
  */
-function extractTextContent(node: ReactNode): string {
+export function extractTextContent(node: ReactNode): string {
   if (node === null || node === undefined) return ''
   if (typeof node === 'string') return node
   if (typeof node === 'number') return String(node)
@@ -223,10 +176,10 @@ function CheckIcon() {
 }
 
 // ============================================
-// Styles
+// Styles (exported for use in markdown-content)
 // ============================================
 
-const markdownStyles = css({
+export const markdownStyles = css({
   color: 'rgba(255, 255, 255, 0.9)',
   fontSize: 'sm',
   lineHeight: '1.7',
@@ -357,7 +310,7 @@ const markdownStyles = css({
   },
 })
 
-const inlineCodeStyles = css({
+export const inlineCodeStyles = css({
   px: '1.5',
   py: '0.5',
   rounded: 'md',
@@ -368,7 +321,7 @@ const inlineCodeStyles = css({
   fontWeight: '500',
 })
 
-const codeBlockWrapperStyles = css({
+export const codeBlockWrapperStyles = css({
   position: 'relative',
   my: '3',
   rounded: 'lg',
@@ -377,7 +330,7 @@ const codeBlockWrapperStyles = css({
   border: '1px solid rgba(255, 255, 255, 0.1)',
 })
 
-const preStyles = css({
+export const preStyles = css({
   m: '0',
   p: '4',
   overflow: 'auto',
@@ -398,7 +351,7 @@ const preStyles = css({
   },
 })
 
-const linkStyles = css({
+export const linkStyles = css({
   color: 'rgb(96, 165, 250)',
   textDecoration: 'underline',
   textUnderlineOffset: '2px',
@@ -409,14 +362,14 @@ const linkStyles = css({
   },
 })
 
-const tableWrapperStyles = css({
+export const tableWrapperStyles = css({
   overflowX: 'auto',
   my: '3',
   rounded: 'lg',
   border: '1px solid rgba(255, 255, 255, 0.1)',
 })
 
-const tableStyles = css({
+export const tableStyles = css({
   w: 'full',
   borderCollapse: 'collapse',
   fontSize: 'sm',
@@ -442,7 +395,7 @@ const tableStyles = css({
   },
 })
 
-const imageStyles = css({
+export const imageStyles = css({
   maxW: 'full',
   h: 'auto',
   rounded: 'lg',
