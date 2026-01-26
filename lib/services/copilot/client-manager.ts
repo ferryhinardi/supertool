@@ -10,6 +10,7 @@
 
 import OpenAI from 'openai'
 import { CopilotErrorHandler } from './error-handler'
+import { getMCPToolRegistry } from './mcp-tools'
 import { createSession, createSessionStore, generateSessionId } from './session-store'
 import type {
   ChatOptions,
@@ -24,6 +25,7 @@ import type {
   SessionStore,
   StreamEvent,
   TokenUsage,
+  ToolCall,
 } from './types'
 
 // Default configuration
@@ -201,7 +203,29 @@ The file will appear as a downloadable card in the chat. Use this format when:
 - You're generating complete, standalone files (not just code snippets)
 - The content is meant to be saved and used as a file
 
-For simple code examples or snippets that are just for explanation, use regular markdown code blocks instead.`
+For simple code examples or snippets that are just for explanation, use regular markdown code blocks instead.
+
+## GitHub Integration
+
+You have access to GitHub tools that allow you to interact with repositories:
+
+**Read Operations:**
+- List user repositories and get repository details
+- Get file contents from repositories
+- List issues, pull requests, and commits
+- Search code across repositories
+- Get pull request details and reviews
+
+**Write Operations:**
+- Create, update, and delete files in repositories
+- Create new branches
+- Create pull requests
+- Create issues and add comments
+- Submit pull request reviews
+
+When users ask about GitHub repositories, use these tools to fetch real data. For write operations (creating/updating/deleting files, creating PRs, etc.), always confirm with the user before making changes unless they explicitly request the action.
+
+When referencing GitHub data, provide clear summaries and link to relevant resources when helpful.`
 
 /**
  * Format message content with attachments for OpenAI Vision API
@@ -265,6 +289,53 @@ function formatMessageContent(
   }
 
   return content
+}
+
+/**
+ * Convert MCP tool definitions to OpenAI function calling format
+ */
+function convertMcpToolsToOpenAI(): OpenAI.Chat.Completions.ChatCompletionTool[] {
+  const registry = getMCPToolRegistry()
+  const mcpTools = registry.getToolDefinitions()
+
+  return mcpTools.map((tool) => ({
+    type: 'function' as const,
+    function: {
+      name: tool.name,
+      description: tool.description,
+      parameters: tool.inputSchema as Record<string, unknown>,
+    },
+  }))
+}
+
+/**
+ * Execute tool calls from OpenAI response and format results for continuation
+ */
+async function executeToolCalls(
+  toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageFunctionToolCall[]
+): Promise<OpenAI.Chat.Completions.ChatCompletionToolMessageParam[]> {
+  const registry = getMCPToolRegistry()
+  const results: OpenAI.Chat.Completions.ChatCompletionToolMessageParam[] = []
+
+  for (const toolCall of toolCalls) {
+    const call: ToolCall = {
+      id: toolCall.id,
+      name: toolCall.function.name,
+      arguments: JSON.parse(toolCall.function.arguments || '{}'),
+    }
+
+    const result = await registry.execute(call)
+
+    results.push({
+      role: 'tool',
+      tool_call_id: toolCall.id,
+      content: result.error
+        ? JSON.stringify({ error: result.error })
+        : JSON.stringify(result.result),
+    })
+  }
+
+  return results
 }
 
 /**
@@ -707,43 +778,122 @@ export class CopilotClientManager {
       },
     ]
 
-    // Call OpenAI API
-    const response = await this.openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      messages,
-      max_tokens: OPENAI_MAX_TOKENS,
-      temperature: OPENAI_TEMPERATURE,
-    })
+    // Get MCP tools converted to OpenAI format
+    const tools = convertMcpToolsToOpenAI()
 
-    const rawContent = response.choices[0]?.message?.content || ''
-    const usage: TokenUsage = {
-      promptTokens: response.usage?.prompt_tokens || 0,
-      completionTokens: response.usage?.completion_tokens || 0,
-      totalTokens: response.usage?.total_tokens || 0,
+    // Tool call loop - continue until we get a final text response
+    const MAX_TOOL_ITERATIONS = 10
+    let iterations = 0
+    const totalUsage: TokenUsage = { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
+
+    while (iterations < MAX_TOOL_ITERATIONS) {
+      iterations++
+
+      // Call OpenAI API with tools
+      const response = await this.openai.chat.completions.create({
+        model: OPENAI_MODEL,
+        messages,
+        max_tokens: OPENAI_MAX_TOKENS,
+        temperature: OPENAI_TEMPERATURE,
+        tools: tools.length > 0 ? tools : undefined,
+      })
+
+      // Accumulate usage
+      if (response.usage) {
+        totalUsage.promptTokens += response.usage.prompt_tokens || 0
+        totalUsage.completionTokens += response.usage.completion_tokens || 0
+        totalUsage.totalTokens += response.usage.total_tokens || 0
+      }
+
+      const choice = response.choices[0]
+      const responseMessage = choice?.message
+
+      // Check if the model wants to call tools
+      if (
+        choice?.finish_reason === 'tool_calls' &&
+        responseMessage?.tool_calls &&
+        responseMessage.tool_calls.length > 0
+      ) {
+        this.log(
+          `Tool calls requested: ${responseMessage.tool_calls
+            .map((t) => {
+              if (t.type === 'function') {
+                return t.function.name
+              }
+              return 'unknown'
+            })
+            .join(', ')}`
+        )
+
+        // Filter to only function tool calls
+        const functionToolCalls = responseMessage.tool_calls.filter(
+          (t): t is OpenAI.Chat.Completions.ChatCompletionMessageFunctionToolCall =>
+            t.type === 'function'
+        )
+
+        // Add assistant message with tool calls to conversation
+        messages.push({
+          role: 'assistant',
+          content: responseMessage.content || null,
+          tool_calls: functionToolCalls,
+        })
+
+        // Execute all tool calls
+        const toolResults = await executeToolCalls(functionToolCalls)
+
+        // Add tool results to conversation
+        for (const result of toolResults) {
+          messages.push(result)
+        }
+
+        // Continue the loop to get the next response
+        continue
+      }
+
+      // No tool calls - this is the final response
+      const rawContent = responseMessage?.content || ''
+
+      // Parse generated files from the response content
+      const { cleanContent, files } = parseGeneratedFiles(rawContent)
+
+      const assistantMessage: CopilotMessage = {
+        id: generateSessionId(),
+        role: 'assistant',
+        content: cleanContent,
+        timestamp: Date.now(),
+        generatedFiles: files.length > 0 ? files : undefined,
+        metadata: { model: OPENAI_MODEL, usage: totalUsage },
+      }
+
+      return {
+        sessionId: session.id,
+        message: assistantMessage,
+        usage: totalUsage,
+      }
     }
 
-    // Parse generated files from the response content
-    const { cleanContent, files } = parseGeneratedFiles(rawContent)
-
+    // Max iterations reached - return what we have
+    this.log('Max tool iterations reached')
     const assistantMessage: CopilotMessage = {
       id: generateSessionId(),
       role: 'assistant',
-      content: cleanContent,
+      content:
+        'I apologize, but I reached the maximum number of tool calls. Please try a simpler request.',
       timestamp: Date.now(),
-      generatedFiles: files.length > 0 ? files : undefined,
-      metadata: { model: OPENAI_MODEL, usage },
+      metadata: { model: OPENAI_MODEL, usage: totalUsage },
     }
 
     return {
       sessionId: session.id,
       message: assistantMessage,
-      usage,
+      usage: totalUsage,
     }
   }
 
   /**
    * Stream from the Copilot API
    * Uses OpenAI API streaming when available, falls back to mock streaming
+   * Supports MCP tool calls with tool execution between streaming responses
    */
   private async *streamCopilotAPI(
     session: CopilotSession,
@@ -793,44 +943,150 @@ export class CopilotClientManager {
       },
     ]
 
-    // Call OpenAI API with streaming
-    const stream = await this.openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      messages,
-      max_tokens: OPENAI_MAX_TOKENS,
-      temperature: OPENAI_TEMPERATURE,
-      stream: true,
-    })
+    // Get MCP tools converted to OpenAI format
+    const tools = convertMcpToolsToOpenAI()
+    const totalUsage: TokenUsage = { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
 
-    let totalTokens = 0
-    let fullContent = ''
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || ''
-      if (content) {
-        totalTokens++
-        fullContent += content
-        yield { type: 'token', content }
+    // Tool call loop - continue until we get a final text response
+    const MAX_TOOL_ITERATIONS = 10
+    let iterations = 0
+
+    while (iterations < MAX_TOOL_ITERATIONS) {
+      iterations++
+
+      // Call OpenAI API with streaming
+      const stream = await this.openai.chat.completions.create({
+        model: OPENAI_MODEL,
+        messages,
+        max_tokens: OPENAI_MAX_TOKENS,
+        temperature: OPENAI_TEMPERATURE,
+        stream: true,
+        tools: tools.length > 0 ? tools : undefined,
+      })
+
+      let fullContent = ''
+      let finishReason: string | null = null
+
+      // Accumulate tool calls from streaming chunks
+      const accumulatedToolCalls: Map<number, { id: string; name: string; arguments: string }> =
+        new Map()
+
+      for await (const chunk of stream) {
+        const choice = chunk.choices[0]
+        const delta = choice?.delta
+
+        // Track finish reason
+        if (choice?.finish_reason) {
+          finishReason = choice.finish_reason
+        }
+
+        // Accumulate content
+        const content = delta?.content || ''
+        if (content) {
+          totalUsage.completionTokens++
+          totalUsage.totalTokens++
+          fullContent += content
+          yield { type: 'token', content }
+        }
+
+        // Accumulate tool calls from deltas
+        if (delta?.tool_calls) {
+          for (const toolCallDelta of delta.tool_calls) {
+            const index = toolCallDelta.index
+            const existing = accumulatedToolCalls.get(index)
+
+            if (existing) {
+              // Append to existing tool call
+              if (toolCallDelta.function?.arguments) {
+                existing.arguments += toolCallDelta.function.arguments
+              }
+            } else {
+              // Create new tool call entry
+              accumulatedToolCalls.set(index, {
+                id: toolCallDelta.id || '',
+                name: toolCallDelta.function?.name || '',
+                arguments: toolCallDelta.function?.arguments || '',
+              })
+            }
+          }
+        }
       }
+
+      // Check if the model wants to call tools
+      if (finishReason === 'tool_calls' && accumulatedToolCalls.size > 0) {
+        const toolCalls = Array.from(accumulatedToolCalls.values())
+
+        this.log(`Tool calls requested (streaming): ${toolCalls.map((t) => t.name).join(', ')}`)
+
+        // Yield tool execution status to the client
+        yield {
+          type: 'token',
+          content: `\n\n_Executing ${toolCalls.length} tool(s): ${toolCalls.map((t) => t.name).join(', ')}..._\n\n`,
+        }
+
+        // Convert accumulated tool calls to OpenAI format for the message
+        const openAIToolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] =
+          toolCalls.map((tc, idx) => ({
+            id: tc.id || `call_${idx}`,
+            type: 'function' as const,
+            function: {
+              name: tc.name,
+              arguments: tc.arguments,
+            },
+          }))
+
+        // Add assistant message with tool calls to conversation
+        messages.push({
+          role: 'assistant',
+          content: fullContent || null,
+          tool_calls: openAIToolCalls,
+        })
+
+        // Execute all tool calls
+        const functionToolCalls = openAIToolCalls.filter(
+          (t): t is OpenAI.Chat.Completions.ChatCompletionMessageFunctionToolCall =>
+            t.type === 'function'
+        )
+        const toolResults = await executeToolCalls(functionToolCalls)
+
+        // Add tool results to conversation
+        for (const result of toolResults) {
+          messages.push(result)
+        }
+
+        // Continue the loop to get the next response
+        continue
+      }
+
+      // No tool calls - this is the final response
+      // Parse generated files from the complete content
+      const { cleanContent, files } = parseGeneratedFiles(fullContent)
+
+      // Yield generated file events
+      for (const file of files) {
+        yield { type: 'generated_file', generatedFile: file }
+      }
+
+      // Send done event with usage and parsed content info
+      yield {
+        type: 'done',
+        usage: totalUsage,
+        // Include clean content and files count in done event for reference
+        ...(files.length > 0 && { generatedFilesCount: files.length, cleanContent }),
+      }
+      return
     }
 
-    // Parse generated files from the complete content
-    const { cleanContent, files } = parseGeneratedFiles(fullContent)
-
-    // Yield generated file events
-    for (const file of files) {
-      yield { type: 'generated_file', generatedFile: file }
+    // Max iterations reached - notify user
+    this.log('Max tool iterations reached (streaming)')
+    yield {
+      type: 'token',
+      content:
+        '\n\nI apologize, but I reached the maximum number of tool calls. Please try a simpler request.',
     }
-
-    // Send done event with usage and parsed content info
     yield {
       type: 'done',
-      usage: {
-        promptTokens: 0, // Not available in streaming mode
-        completionTokens: totalTokens,
-        totalTokens: totalTokens,
-      },
-      // Include clean content and files count in done event for reference
-      ...(files.length > 0 && { generatedFilesCount: files.length, cleanContent }),
+      usage: totalUsage,
     }
   }
 
