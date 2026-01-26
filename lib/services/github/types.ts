@@ -563,3 +563,163 @@ export interface PaginationParams {
   page?: number
   per_page?: number
 }
+
+// ============================================
+// Write Operation Types
+// ============================================
+
+// File Operations
+export interface CreateFileParams {
+  path: string
+  message: string
+  content: string // base64 encoded
+  branch?: string
+  sha?: string // required for updates, get from fetchFileContent
+  committer?: {
+    name: string
+    email: string
+  }
+  author?: {
+    name: string
+    email: string
+  }
+}
+
+export interface UpdateFileParams extends CreateFileParams {
+  sha: string // required for updates
+}
+
+export interface DeleteFileParams {
+  message: string
+  sha: string // required, get from fetchFileContent
+  branch?: string
+  committer?: {
+    name: string
+    email: string
+  }
+  author?: {
+    name: string
+    email: string
+  }
+}
+
+export interface FileCommitResponse {
+  content: {
+    name: string
+    path: string
+    sha: string
+    size: number
+    url: string
+    html_url: string
+    git_url: string
+    download_url: string | null
+    type: string
+  } | null
+  commit: {
+    sha: string
+    node_id: string
+    url: string
+    html_url: string
+    author: GitHubAuthor
+    committer: GitHubAuthor
+    message: string
+    tree: {
+      sha: string
+      url: string
+    }
+    parents: Array<{
+      sha: string
+      url: string
+      html_url: string
+    }>
+  }
+}
+
+// Branch Operations
+export interface CreateBranchParams {
+  ref: string // format: "refs/heads/branch-name"
+  sha: string // commit SHA to branch from
+}
+
+export interface GitRef {
+  ref: string
+  node_id: string
+  url: string
+  object: {
+    sha: string
+    type: string
+    url: string
+  }
+}
+
+// Pull Request Operations
+export interface CreatePRParams {
+  title: string
+  body?: string
+  head: string // branch containing changes
+  base: string // branch to merge into
+  draft?: boolean
+  maintainer_can_modify?: boolean
+}
+
+export interface UpdatePRParams {
+  title?: string
+  body?: string
+  state?: 'open' | 'closed'
+  base?: string
+  maintainer_can_modify?: boolean
+}
+
+// Issue Operations
+export interface CreateIssueParams {
+  title: string
+  body?: string
+  assignees?: string[]
+  milestone?: number
+  labels?: string[]
+}
+
+export interface UpdateIssueParams {
+  title?: string
+  body?: string
+  state?: 'open' | 'closed'
+  state_reason?: 'completed' | 'not_planned' | 'reopened'
+  assignees?: string[]
+  milestone?: number | null
+  labels?: string[]
+}
+
+// Comment Operations
+export interface CreateCommentParams {
+  body: string
+}
+
+export interface UpdateCommentParams {
+  body: string
+}
+
+// PR Review Operations
+export interface CreatePRReviewParams {
+  body?: string
+  event: 'APPROVE' | 'REQUEST_CHANGES' | 'COMMENT'
+  comments?: Array<{
+    path: string
+    position?: number
+    body: string
+    line?: number
+    side?: 'LEFT' | 'RIGHT'
+    start_line?: number
+    start_side?: 'LEFT' | 'RIGHT'
+  }>
+}
+
+// PR Review Comment Operations
+export interface CreatePRReviewCommentParams {
+  body: string
+  commit_id: string
+  path: string
+  line?: number
+  side?: 'LEFT' | 'RIGHT'
+  start_line?: number
+  start_side?: 'LEFT' | 'RIGHT'
+}

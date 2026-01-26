@@ -17,11 +17,20 @@ import type {
   CodeSearchItem,
   Commit,
   CommitFilters,
+  CreateCommentParams,
+  CreateFileParams,
+  CreateIssueParams,
+  CreatePRParams,
+  CreatePRReviewCommentParams,
+  CreatePRReviewParams,
+  DeleteFileParams,
+  FileCommitResponse,
   FileContent,
   FileTree,
   GitHubAPIError,
   GitHubAPIResponse,
   GitHubServiceConfig,
+  GitRef,
   Issue,
   IssueComment,
   IssueDetail,
@@ -36,6 +45,9 @@ import type {
   Repository,
   SearchFilters,
   SearchResult,
+  UpdateFileParams,
+  UpdateIssueParams,
+  UpdatePRParams,
 } from './types'
 
 // ============================================
@@ -645,6 +657,239 @@ export class GitHubService {
       headers: {
         Accept: 'application/vnd.github.text-match+json',
       },
+    })
+  }
+
+  // ============================================
+  // Write Methods - File Operations
+  // ============================================
+
+  /**
+   * Create or update a file in the repository
+   * For creating new files, omit the sha parameter
+   * For updating existing files, include the sha from fetchFileContent
+   */
+  async createOrUpdateFile(
+    owner: string,
+    repo: string,
+    path: string,
+    params: CreateFileParams | UpdateFileParams
+  ): Promise<GitHubAPIResponse<FileCommitResponse>> {
+    const body = {
+      message: params.message,
+      content: params.content, // must be base64 encoded
+      branch: params.branch,
+      sha: params.sha, // required for updates
+      committer: params.committer,
+      author: params.author,
+    }
+
+    // Clear cache for this file and tree
+    this.cache.delete(generateCacheKey('file', owner, repo, path))
+    this.cache.deletePattern(`tree:${owner}:${repo}:*`)
+
+    return this.request<FileCommitResponse>(`/repos/${owner}/${repo}/contents/${path}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    })
+  }
+
+  /**
+   * Delete a file from the repository
+   */
+  async deleteFile(
+    owner: string,
+    repo: string,
+    path: string,
+    params: DeleteFileParams
+  ): Promise<GitHubAPIResponse<{ commit: FileCommitResponse['commit'] }>> {
+    const body = {
+      message: params.message,
+      sha: params.sha,
+      branch: params.branch,
+      committer: params.committer,
+      author: params.author,
+    }
+
+    // Clear cache for this file and tree
+    this.cache.delete(generateCacheKey('file', owner, repo, path))
+    this.cache.deletePattern(`tree:${owner}:${repo}:*`)
+
+    return this.request<{ commit: FileCommitResponse['commit'] }>(
+      `/repos/${owner}/${repo}/contents/${path}`,
+      {
+        method: 'DELETE',
+        body: JSON.stringify(body),
+      }
+    )
+  }
+
+  // ============================================
+  // Write Methods - Branch Operations
+  // ============================================
+
+  /**
+   * Get a specific git reference (useful for getting branch SHA)
+   */
+  async getRef(owner: string, repo: string, ref: string): Promise<GitHubAPIResponse<GitRef>> {
+    return this.request<GitRef>(`/repos/${owner}/${repo}/git/ref/${ref}`)
+  }
+
+  /**
+   * Create a new branch from a specific commit SHA
+   */
+  async createBranch(
+    owner: string,
+    repo: string,
+    branchName: string,
+    fromSha: string
+  ): Promise<GitHubAPIResponse<GitRef>> {
+    const body = {
+      ref: `refs/heads/${branchName}`,
+      sha: fromSha,
+    }
+
+    // Clear branches cache
+    this.cache.deletePattern(`branches:${owner}:${repo}:*`)
+
+    return this.request<GitRef>(`/repos/${owner}/${repo}/git/refs`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  }
+
+  // ============================================
+  // Write Methods - Pull Request Operations
+  // ============================================
+
+  /**
+   * Create a new pull request
+   */
+  async createPullRequest(
+    owner: string,
+    repo: string,
+    params: CreatePRParams
+  ): Promise<GitHubAPIResponse<PullRequest>> {
+    // Clear PRs cache
+    this.cache.deletePattern(`prs:${owner}:${repo}:*`)
+
+    return this.request<PullRequest>(`/repos/${owner}/${repo}/pulls`, {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
+  /**
+   * Update an existing pull request
+   */
+  async updatePullRequest(
+    owner: string,
+    repo: string,
+    pullNumber: number,
+    params: UpdatePRParams
+  ): Promise<GitHubAPIResponse<PullRequest>> {
+    // Clear cached PR data
+    this.cache.delete(generateCacheKey('pr', owner, repo, pullNumber.toString()))
+    this.cache.deletePattern(`prs:${owner}:${repo}:*`)
+
+    return this.request<PullRequest>(`/repos/${owner}/${repo}/pulls/${pullNumber}`, {
+      method: 'PATCH',
+      body: JSON.stringify(params),
+    })
+  }
+
+  /**
+   * Create a PR review (approve, request changes, or comment)
+   */
+  async createPRReview(
+    owner: string,
+    repo: string,
+    pullNumber: number,
+    params: CreatePRReviewParams
+  ): Promise<GitHubAPIResponse<PRReview>> {
+    // Clear cached reviews
+    this.cache.deletePattern(`pr-reviews:${owner}:${repo}:${pullNumber}:*`)
+
+    return this.request<PRReview>(`/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
+  /**
+   * Create a review comment on a PR
+   */
+  async createPRReviewComment(
+    owner: string,
+    repo: string,
+    pullNumber: number,
+    params: CreatePRReviewCommentParams
+  ): Promise<GitHubAPIResponse<PRReviewComment>> {
+    // Clear cached comments
+    this.cache.deletePattern(`pr-comments:${owner}:${repo}:${pullNumber}:*`)
+
+    return this.request<PRReviewComment>(`/repos/${owner}/${repo}/pulls/${pullNumber}/comments`, {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
+  // ============================================
+  // Write Methods - Issue Operations
+  // ============================================
+
+  /**
+   * Create a new issue
+   */
+  async createIssue(
+    owner: string,
+    repo: string,
+    params: CreateIssueParams
+  ): Promise<GitHubAPIResponse<Issue>> {
+    // Clear issues cache
+    this.cache.deletePattern(`issues:${owner}:${repo}:*`)
+
+    return this.request<Issue>(`/repos/${owner}/${repo}/issues`, {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
+  /**
+   * Update an existing issue
+   */
+  async updateIssue(
+    owner: string,
+    repo: string,
+    issueNumber: number,
+    params: UpdateIssueParams
+  ): Promise<GitHubAPIResponse<Issue>> {
+    // Clear cached issue data
+    this.cache.delete(generateCacheKey('issue', owner, repo, issueNumber.toString()))
+    this.cache.deletePattern(`issues:${owner}:${repo}:*`)
+
+    return this.request<Issue>(`/repos/${owner}/${repo}/issues/${issueNumber}`, {
+      method: 'PATCH',
+      body: JSON.stringify(params),
+    })
+  }
+
+  /**
+   * Create a comment on an issue or PR
+   * Note: PRs are issues in GitHub API, so this works for both
+   */
+  async createIssueComment(
+    owner: string,
+    repo: string,
+    issueNumber: number,
+    params: CreateCommentParams
+  ): Promise<GitHubAPIResponse<IssueComment>> {
+    // Clear cached comments
+    this.cache.deletePattern(`issue-comments:${owner}:${repo}:${issueNumber}:*`)
+
+    return this.request<IssueComment>(`/repos/${owner}/${repo}/issues/${issueNumber}/comments`, {
+      method: 'POST',
+      body: JSON.stringify(params),
     })
   }
 

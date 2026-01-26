@@ -10,6 +10,8 @@
 import { getGitHubService } from '@/lib/services/github/client'
 import type {
   CodeSearchItem,
+  CreatePRParams,
+  CreatePRReviewParams,
   FileTree,
   Issue,
   IssueComment,
@@ -480,6 +482,318 @@ export class MCPToolRegistry {
         required: ['owner', 'repo', 'issueNumber'],
       },
       handler: this.analyzeIssueHandler.bind(this),
+    })
+
+    // ============================================
+    // Write Tools - File Operations
+    // ============================================
+
+    // Tool 12: Create a file in repository
+    this.register({
+      name: 'create_file',
+      description:
+        'Create a new file in a GitHub repository. The file content should be provided as plain text and will be automatically base64 encoded.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          path: {
+            type: 'string',
+            description: 'The path where the file should be created (e.g., "src/utils/helper.ts")',
+          } as MCPPropertySchema,
+          content: {
+            type: 'string',
+            description: 'The content of the file (plain text, will be base64 encoded)',
+          } as MCPPropertySchema,
+          message: {
+            type: 'string',
+            description: 'The commit message for creating the file',
+          } as MCPPropertySchema,
+          branch: {
+            type: 'string',
+            description: 'The branch to create the file in (defaults to default branch)',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'path', 'content', 'message'],
+      },
+      handler: this.createFileHandler.bind(this),
+    })
+
+    // Tool 13: Update a file in repository
+    this.register({
+      name: 'update_file',
+      description:
+        'Update an existing file in a GitHub repository. You must provide the current SHA of the file (get it using read_file or browse_repo first).',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          path: {
+            type: 'string',
+            description: 'The path to the file to update',
+          } as MCPPropertySchema,
+          content: {
+            type: 'string',
+            description: 'The new content for the file (plain text, will be base64 encoded)',
+          } as MCPPropertySchema,
+          message: {
+            type: 'string',
+            description: 'The commit message for the update',
+          } as MCPPropertySchema,
+          sha: {
+            type: 'string',
+            description: 'The current SHA of the file (required for updates)',
+          } as MCPPropertySchema,
+          branch: {
+            type: 'string',
+            description: 'The branch to update the file in (defaults to default branch)',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'path', 'content', 'message', 'sha'],
+      },
+      handler: this.updateFileHandler.bind(this),
+    })
+
+    // Tool 14: Delete a file from repository
+    this.register({
+      name: 'delete_file',
+      description:
+        'Delete a file from a GitHub repository. You must provide the current SHA of the file.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          path: {
+            type: 'string',
+            description: 'The path to the file to delete',
+          } as MCPPropertySchema,
+          message: {
+            type: 'string',
+            description: 'The commit message for the deletion',
+          } as MCPPropertySchema,
+          sha: {
+            type: 'string',
+            description: 'The current SHA of the file (required for deletion)',
+          } as MCPPropertySchema,
+          branch: {
+            type: 'string',
+            description: 'The branch to delete the file from (defaults to default branch)',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'path', 'message', 'sha'],
+      },
+      handler: this.deleteFileHandler.bind(this),
+    })
+
+    // ============================================
+    // Write Tools - Branch Operations
+    // ============================================
+
+    // Tool 15: Create a new branch
+    this.register({
+      name: 'create_branch',
+      description:
+        'Create a new branch in a GitHub repository from an existing branch or commit SHA.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          branchName: {
+            type: 'string',
+            description: 'The name for the new branch',
+          } as MCPPropertySchema,
+          fromBranch: {
+            type: 'string',
+            description:
+              'The source branch to create from (defaults to default branch). Use this OR fromSha.',
+          } as MCPPropertySchema,
+          fromSha: {
+            type: 'string',
+            description: 'The commit SHA to create the branch from. Use this OR fromBranch.',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'branchName'],
+      },
+      handler: this.createBranchHandler.bind(this),
+    })
+
+    // ============================================
+    // Write Tools - Pull Request Operations
+    // ============================================
+
+    // Tool 16: Create a pull request
+    this.register({
+      name: 'create_pull_request',
+      description: 'Create a new pull request in a GitHub repository.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          title: {
+            type: 'string',
+            description: 'The title of the pull request',
+          } as MCPPropertySchema,
+          body: {
+            type: 'string',
+            description: 'The description/body of the pull request',
+          } as MCPPropertySchema,
+          head: {
+            type: 'string',
+            description: 'The branch containing the changes (source branch)',
+          } as MCPPropertySchema,
+          base: {
+            type: 'string',
+            description: 'The branch to merge into (target branch, e.g., "main")',
+          } as MCPPropertySchema,
+          draft: {
+            type: 'boolean',
+            description: 'Whether to create the PR as a draft (default: false)',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'title', 'head', 'base'],
+      },
+      handler: this.createPullRequestHandler.bind(this),
+    })
+
+    // Tool 17: Submit a PR review
+    this.register({
+      name: 'submit_pr_review',
+      description: 'Submit a review on a pull request (approve, request changes, or comment).',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          prNumber: {
+            type: 'number',
+            description: 'The pull request number',
+          } as MCPPropertySchema,
+          event: {
+            type: 'string',
+            description: 'The review action: APPROVE, REQUEST_CHANGES, or COMMENT',
+            enum: ['APPROVE', 'REQUEST_CHANGES', 'COMMENT'],
+          } as MCPPropertySchema,
+          body: {
+            type: 'string',
+            description: 'The review comment/body (required for REQUEST_CHANGES and COMMENT)',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'prNumber', 'event'],
+      },
+      handler: this.submitPRReviewHandler.bind(this),
+    })
+
+    // ============================================
+    // Write Tools - Issue/Comment Operations
+    // ============================================
+
+    // Tool 18: Create an issue
+    this.register({
+      name: 'create_issue',
+      description: 'Create a new issue in a GitHub repository.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          title: {
+            type: 'string',
+            description: 'The title of the issue',
+          } as MCPPropertySchema,
+          body: {
+            type: 'string',
+            description: 'The description/body of the issue',
+          } as MCPPropertySchema,
+          labels: {
+            type: 'array',
+            description: 'Labels to apply to the issue',
+            items: { type: 'string' },
+          } as MCPPropertySchema,
+          assignees: {
+            type: 'array',
+            description: 'GitHub usernames to assign to the issue',
+            items: { type: 'string' },
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'title'],
+      },
+      handler: this.createIssueHandler.bind(this),
+    })
+
+    // Tool 19: Add a comment to an issue or PR
+    this.register({
+      name: 'add_comment',
+      description: 'Add a comment to an issue or pull request.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          owner: {
+            type: 'string',
+            description: 'The owner/organization of the repository',
+          } as MCPPropertySchema,
+          repo: {
+            type: 'string',
+            description: 'The repository name',
+          } as MCPPropertySchema,
+          issueNumber: {
+            type: 'number',
+            description: 'The issue or PR number',
+          } as MCPPropertySchema,
+          body: {
+            type: 'string',
+            description: 'The comment text',
+          } as MCPPropertySchema,
+        },
+        required: ['owner', 'repo', 'issueNumber', 'body'],
+      },
+      handler: this.addCommentHandler.bind(this),
     })
   }
 
@@ -1198,6 +1512,520 @@ export class MCPToolRegistry {
         daysSinceCreation,
         daysSinceLastUpdate,
       },
+    }
+  }
+
+  // ============================================
+  // Write Operation Handlers
+  // ============================================
+
+  /**
+   * Handler: Create a file in repository
+   */
+  private async createFileHandler(args: Record<string, unknown>): Promise<{
+    path: string
+    sha: string
+    commitSha: string
+    commitUrl: string
+    message: string
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const path = args.path as string
+    const content = args.content as string
+    const message = args.message as string
+    const branch = args.branch as string | undefined
+
+    if (!owner || !repo || !path || !content || !message) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, path, content, message',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    // Base64 encode the content
+    const encodedContent = Buffer.from(content, 'utf-8').toString('base64')
+
+    const response = await github.createOrUpdateFile(owner, repo, path, {
+      path,
+      message,
+      content: encodedContent,
+      branch,
+    })
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to create file',
+        { owner, repo, path, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        path,
+      })
+    }
+
+    return {
+      path,
+      sha: response.data.content?.sha || '',
+      commitSha: response.data.commit.sha,
+      commitUrl: response.data.commit.html_url,
+      message: `File created successfully at ${path}`,
+    }
+  }
+
+  /**
+   * Handler: Update a file in repository
+   */
+  private async updateFileHandler(args: Record<string, unknown>): Promise<{
+    path: string
+    sha: string
+    commitSha: string
+    commitUrl: string
+    message: string
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const path = args.path as string
+    const content = args.content as string
+    const message = args.message as string
+    const sha = args.sha as string
+    const branch = args.branch as string | undefined
+
+    if (!owner || !repo || !path || !content || !message || !sha) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, path, content, message, sha',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    // Base64 encode the content
+    const encodedContent = Buffer.from(content, 'utf-8').toString('base64')
+
+    const response = await github.createOrUpdateFile(owner, repo, path, {
+      path,
+      message,
+      content: encodedContent,
+      sha,
+      branch,
+    })
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to update file',
+        { owner, repo, path, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        path,
+      })
+    }
+
+    return {
+      path,
+      sha: response.data.content?.sha || '',
+      commitSha: response.data.commit.sha,
+      commitUrl: response.data.commit.html_url,
+      message: `File updated successfully at ${path}`,
+    }
+  }
+
+  /**
+   * Handler: Delete a file from repository
+   */
+  private async deleteFileHandler(args: Record<string, unknown>): Promise<{
+    path: string
+    commitSha: string
+    commitUrl: string
+    message: string
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const path = args.path as string
+    const message = args.message as string
+    const sha = args.sha as string
+    const branch = args.branch as string | undefined
+
+    if (!owner || !repo || !path || !message || !sha) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, path, message, sha',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    const response = await github.deleteFile(owner, repo, path, {
+      message,
+      sha,
+      branch,
+    })
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to delete file',
+        { owner, repo, path, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        path,
+      })
+    }
+
+    return {
+      path,
+      commitSha: response.data.commit.sha,
+      commitUrl: response.data.commit.html_url,
+      message: `File deleted successfully: ${path}`,
+    }
+  }
+
+  /**
+   * Handler: Create a new branch
+   */
+  private async createBranchHandler(args: Record<string, unknown>): Promise<{
+    branchName: string
+    ref: string
+    sha: string
+    message: string
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const branchName = args.branchName as string
+    const fromBranch = args.fromBranch as string | undefined
+    const fromSha = args.fromSha as string | undefined
+
+    if (!owner || !repo || !branchName) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, branchName',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+    let sha = fromSha
+
+    // If no SHA provided, get SHA from the source branch
+    if (!sha) {
+      const sourceBranch = fromBranch || 'main'
+      const refResponse = await github.getRef(owner, repo, `heads/${sourceBranch}`)
+
+      if (!refResponse.success) {
+        // Try 'master' as fallback
+        const masterResponse = await github.getRef(owner, repo, 'heads/master')
+        if (!masterResponse.success) {
+          throw CopilotErrorHandler.createError(
+            'TOOL_ERROR',
+            refResponse.error?.message || `Failed to get reference for branch: ${sourceBranch}`,
+            { owner, repo, sourceBranch, status: refResponse.error?.status }
+          )
+        }
+        sha = masterResponse.data?.object.sha
+      } else {
+        sha = refResponse.data?.object.sha
+      }
+    }
+
+    if (!sha) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        'Could not determine SHA for new branch',
+        { owner, repo, branchName, fromBranch, fromSha }
+      )
+    }
+
+    const response = await github.createBranch(owner, repo, branchName, sha)
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to create branch',
+        { owner, repo, branchName, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        branchName,
+      })
+    }
+
+    return {
+      branchName,
+      ref: response.data.ref,
+      sha: response.data.object.sha,
+      message: `Branch '${branchName}' created successfully`,
+    }
+  }
+
+  /**
+   * Handler: Create a pull request
+   */
+  private async createPullRequestHandler(args: Record<string, unknown>): Promise<{
+    number: number
+    title: string
+    url: string
+    state: string
+    head: string
+    base: string
+    message: string
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const title = args.title as string
+    const body = args.body as string | undefined
+    const head = args.head as string
+    const base = args.base as string
+    const draft = args.draft as boolean | undefined
+
+    if (!owner || !repo || !title || !head || !base) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, title, head, base',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    const params: CreatePRParams = {
+      title,
+      body,
+      head,
+      base,
+      draft,
+    }
+
+    const response = await github.createPullRequest(owner, repo, params)
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to create pull request',
+        { owner, repo, title, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        title,
+      })
+    }
+
+    return {
+      number: response.data.number,
+      title: response.data.title,
+      url: response.data.html_url,
+      state: response.data.state,
+      head,
+      base,
+      message: `Pull request #${response.data.number} created successfully`,
+    }
+  }
+
+  /**
+   * Handler: Submit a PR review
+   */
+  private async submitPRReviewHandler(args: Record<string, unknown>): Promise<{
+    id: number
+    state: string
+    prNumber: number
+    message: string
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const prNumber = args.prNumber as number
+    const event = args.event as 'APPROVE' | 'REQUEST_CHANGES' | 'COMMENT'
+    const body = args.body as string | undefined
+
+    if (!owner || !repo || !prNumber || !event) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, prNumber, event',
+        { args }
+      )
+    }
+
+    // Validate that body is provided for REQUEST_CHANGES
+    if (event === 'REQUEST_CHANGES' && !body) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Body is required when requesting changes',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    const params: CreatePRReviewParams = {
+      event,
+      body,
+    }
+
+    const response = await github.createPRReview(owner, repo, prNumber, params)
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to submit PR review',
+        { owner, repo, prNumber, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        prNumber,
+      })
+    }
+
+    const eventMessages: Record<string, string> = {
+      APPROVE: 'approved',
+      REQUEST_CHANGES: 'requested changes on',
+      COMMENT: 'commented on',
+    }
+
+    return {
+      id: response.data.id,
+      state: response.data.state,
+      prNumber,
+      message: `Successfully ${eventMessages[event]} PR #${prNumber}`,
+    }
+  }
+
+  /**
+   * Handler: Create an issue
+   */
+  private async createIssueHandler(args: Record<string, unknown>): Promise<{
+    number: number
+    title: string
+    url: string
+    state: string
+    message: string
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const title = args.title as string
+    const body = args.body as string | undefined
+    const labels = args.labels as string[] | undefined
+    const assignees = args.assignees as string[] | undefined
+
+    if (!owner || !repo || !title) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, title',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    const response = await github.createIssue(owner, repo, {
+      title,
+      body,
+      labels,
+      assignees,
+    })
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to create issue',
+        { owner, repo, title, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        title,
+      })
+    }
+
+    return {
+      number: response.data.number,
+      title: response.data.title,
+      url: response.data.html_url,
+      state: response.data.state,
+      message: `Issue #${response.data.number} created successfully`,
+    }
+  }
+
+  /**
+   * Handler: Add a comment to an issue or PR
+   */
+  private async addCommentHandler(args: Record<string, unknown>): Promise<{
+    id: number
+    issueNumber: number
+    url: string
+    message: string
+  }> {
+    const owner = args.owner as string
+    const repo = args.repo as string
+    const issueNumber = args.issueNumber as number
+    const body = args.body as string
+
+    if (!owner || !repo || !issueNumber || !body) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameters: owner, repo, issueNumber, body',
+        { args }
+      )
+    }
+
+    const github = getGitHubService()
+
+    const response = await github.createIssueComment(owner, repo, issueNumber, { body })
+
+    if (!response.success) {
+      throw CopilotErrorHandler.createError(
+        'TOOL_ERROR',
+        response.error?.message || 'Failed to add comment',
+        { owner, repo, issueNumber, status: response.error?.status }
+      )
+    }
+
+    if (!response.data) {
+      throw CopilotErrorHandler.createError('TOOL_ERROR', 'No data returned from GitHub API', {
+        owner,
+        repo,
+        issueNumber,
+      })
+    }
+
+    return {
+      id: response.data.id,
+      issueNumber,
+      url: response.data.html_url,
+      message: `Comment added successfully to #${issueNumber}`,
     }
   }
 

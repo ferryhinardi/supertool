@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import type { PRFilters } from '@/lib/services/github'
+import type { CreatePRParams, PRFilters } from '@/lib/services/github'
 import { getGitHubService } from '@/lib/services/github'
 
 /**
@@ -77,6 +77,54 @@ export async function GET(
     }
 
     return NextResponse.json(result.data)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
+}
+
+/**
+ * POST /api/github/repos/[owner]/[repo]/pulls
+ * Create a new pull request
+ * Body:
+ *   - title: PR title (required)
+ *   - body: PR description (optional)
+ *   - head: Branch containing changes (required)
+ *   - base: Branch to merge into (required)
+ *   - draft: Create as draft PR (optional, default: false)
+ *   - maintainer_can_modify: Allow maintainers to modify (optional)
+ */
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ owner: string; repo: string }> }
+) {
+  try {
+    const { owner, repo } = await params
+    const body = (await request.json()) as CreatePRParams
+
+    if (!body.title) {
+      return NextResponse.json({ error: 'PR title is required' }, { status: 400 })
+    }
+
+    if (!body.head) {
+      return NextResponse.json({ error: 'Head branch is required' }, { status: 400 })
+    }
+
+    if (!body.base) {
+      return NextResponse.json({ error: 'Base branch is required' }, { status: 400 })
+    }
+
+    const github = getGitHubService()
+    const result = await github.createPullRequest(owner, repo, body)
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error?.message || 'Failed to create pull request' },
+        { status: result.error?.status || 500 }
+      )
+    }
+
+    return NextResponse.json(result.data, { status: 201 })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json({ error: message }, { status: 500 })
