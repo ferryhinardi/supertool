@@ -294,7 +294,7 @@ function formatMessageContent(
 /**
  * Convert MCP tool definitions to OpenAI function calling format
  */
-function convertMcpToolsToOpenAI(): OpenAI.Chat.Completions.ChatCompletionTool[] {
+export function convertMcpToolsToOpenAI(): OpenAI.Chat.Completions.ChatCompletionTool[] {
   const registry = getMCPToolRegistry()
   const mcpTools = registry.getToolDefinitions()
 
@@ -311,7 +311,7 @@ function convertMcpToolsToOpenAI(): OpenAI.Chat.Completions.ChatCompletionTool[]
 /**
  * Execute tool calls from OpenAI response and format results for continuation
  */
-async function executeToolCalls(
+export async function executeToolCalls(
   toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageFunctionToolCall[]
 ): Promise<OpenAI.Chat.Completions.ChatCompletionToolMessageParam[]> {
   const registry = getMCPToolRegistry()
