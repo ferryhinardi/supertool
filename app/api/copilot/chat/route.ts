@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit, getRateLimiter, type RateLimitResult } from '@/lib/services/api'
 import {
   type APIResponse,
   type ChatResponse,
@@ -180,6 +181,12 @@ function validateChatRequest(body: unknown): {
  */
 export async function POST(request: NextRequest): Promise<Response> {
   try {
+    // Check rate limit first
+    const { result: rateLimitResult, response: rateLimitResponse } = checkRateLimit(request, 'chat')
+    if (rateLimitResponse) {
+      return rateLimitResponse
+    }
+
     // Parse and validate request body
     let body: unknown
     try {
@@ -235,7 +242,8 @@ export async function POST(request: NextRequest): Promise<Response> {
         sessionId,
         chatRequest.message,
         options,
-        chatRequest.attachments
+        chatRequest.attachments,
+        rateLimitResult
       )
     }
 
@@ -245,7 +253,8 @@ export async function POST(request: NextRequest): Promise<Response> {
       sessionId,
       chatRequest.message,
       options,
-      chatRequest.attachments
+      chatRequest.attachments,
+      rateLimitResult
     )
   } catch (error) {
     const copilotError = CopilotErrorHandler.categorizeError(error)
@@ -261,9 +270,12 @@ function handleStreamingResponse(
   sessionId: string,
   message: string,
   options: ChatRequestBody['options'],
-  attachments?: FileAttachment[]
+  attachments: FileAttachment[] | undefined,
+  rateLimitResult: RateLimitResult
 ): Response {
   const encoder = new TextEncoder()
+  const rateLimiter = getRateLimiter('chat')
+  const rateLimitHeaders = rateLimiter.getHeaders(rateLimitResult)
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -332,6 +344,7 @@ function handleStreamingResponse(
       'Cache-Control': 'no-cache, no-transform',
       Connection: 'keep-alive',
       'X-Accel-Buffering': 'no', // Disable nginx buffering
+      ...rateLimitHeaders,
     },
   })
 }
@@ -344,8 +357,12 @@ async function handleNonStreamingResponse(
   sessionId: string,
   message: string,
   options: ChatRequestBody['options'],
-  attachments?: FileAttachment[]
+  attachments: FileAttachment[] | undefined,
+  rateLimitResult: RateLimitResult
 ): Promise<NextResponse<APIResponse<ChatResponse>>> {
+  const rateLimiter = getRateLimiter('chat')
+  const rateLimitHeaders = rateLimiter.getHeaders(rateLimitResult)
+
   try {
     const response = await manager.sendMessage(
       sessionId,
@@ -360,22 +377,27 @@ async function handleNonStreamingResponse(
     // Get updated session for metadata
     const session = await manager.getSession(sessionId)
 
-    return NextResponse.json<APIResponse<ChatResponse>>({
-      success: true,
-      data: {
-        sessionId,
-        message: response.message,
-        usage: response.usage,
-        // Include additional metadata if needed
-        ...(session && {
-          _metadata: {
-            messageCount: session.messages.length,
-            createdAt: session.createdAt,
-            updatedAt: session.updatedAt,
-          },
-        }),
+    return NextResponse.json<APIResponse<ChatResponse>>(
+      {
+        success: true,
+        data: {
+          sessionId,
+          message: response.message,
+          usage: response.usage,
+          // Include additional metadata if needed
+          ...(session && {
+            _metadata: {
+              messageCount: session.messages.length,
+              createdAt: session.createdAt,
+              updatedAt: session.updatedAt,
+            },
+          }),
+        },
       },
-    })
+      {
+        headers: rateLimitHeaders,
+      }
+    )
   } catch (error) {
     const copilotError = CopilotErrorHandler.categorizeError(error)
     return createErrorResponse(copilotError)

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
+import { checkRateLimit, getRateLimiter } from '@/lib/services/api'
 import {
   type APIResponse,
   type CopilotError,
@@ -139,10 +140,22 @@ function validateUpdateSessionRequest(body: unknown): ValidationResult<UpdateSes
  * Response: APIResponse<CopilotSession>
  */
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: RouteParams
 ): Promise<NextResponse<APIResponse<CopilotSession>>> {
   try {
+    // Check rate limit
+    const { result: rateLimitResult, response: rateLimitResponse } = checkRateLimit(
+      request,
+      'sessionRead'
+    )
+    if (rateLimitResponse) {
+      return rateLimitResponse as NextResponse<APIResponse<CopilotSession>>
+    }
+
+    const rateLimiter = getRateLimiter('sessionRead')
+    const rateLimitHeaders = rateLimiter.getHeaders(rateLimitResult)
+
     const { id } = await params
 
     if (!id || typeof id !== 'string') {
@@ -162,10 +175,15 @@ export async function GET(
       )
     }
 
-    return NextResponse.json({
-      success: true,
-      data: session,
-    })
+    return NextResponse.json(
+      {
+        success: true,
+        data: session,
+      },
+      {
+        headers: rateLimitHeaders,
+      }
+    )
   } catch (error) {
     const copilotError = CopilotErrorHandler.categorizeError(error)
     return createErrorResponse(copilotError)
@@ -187,6 +205,18 @@ export async function PUT(
   { params }: RouteParams
 ): Promise<NextResponse<APIResponse<CopilotSession>>> {
   try {
+    // Check rate limit
+    const { result: rateLimitResult, response: rateLimitResponse } = checkRateLimit(
+      request,
+      'sessionMutate'
+    )
+    if (rateLimitResponse) {
+      return rateLimitResponse as NextResponse<APIResponse<CopilotSession>>
+    }
+
+    const rateLimiter = getRateLimiter('sessionMutate')
+    const rateLimitHeaders = rateLimiter.getHeaders(rateLimitResult)
+
     const { id } = await params
 
     if (!id || typeof id !== 'string') {
@@ -225,10 +255,15 @@ export async function PUT(
       )
     }
 
-    return NextResponse.json({
-      success: true,
-      data: session,
-    })
+    return NextResponse.json(
+      {
+        success: true,
+        data: session,
+      },
+      {
+        headers: rateLimitHeaders,
+      }
+    )
   } catch (error) {
     const copilotError = CopilotErrorHandler.categorizeError(error)
     return createErrorResponse(copilotError)
@@ -243,10 +278,22 @@ export async function PUT(
  * Response: APIResponse<DeleteResponse>
  */
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: RouteParams
 ): Promise<NextResponse<APIResponse<DeleteResponse>>> {
   try {
+    // Check rate limit
+    const { result: rateLimitResult, response: rateLimitResponse } = checkRateLimit(
+      request,
+      'sessionMutate'
+    )
+    if (rateLimitResponse) {
+      return rateLimitResponse as NextResponse<APIResponse<DeleteResponse>>
+    }
+
+    const rateLimiter = getRateLimiter('sessionMutate')
+    const rateLimitHeaders = rateLimiter.getHeaders(rateLimitResult)
+
     const { id } = await params
 
     if (!id || typeof id !== 'string') {
@@ -269,13 +316,18 @@ export async function DELETE(
     // Delete the session
     const deleted = await manager.deleteSession(id)
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        deleted,
-        sessionId: id,
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          deleted,
+          sessionId: id,
+        },
       },
-    })
+      {
+        headers: rateLimitHeaders,
+      }
+    )
   } catch (error) {
     const copilotError = CopilotErrorHandler.categorizeError(error)
     return createErrorResponse(copilotError)
