@@ -13,9 +13,16 @@ import { css } from '@/styled-system/css'
 interface SessionSidebarProps {
   activeSessionId?: string
   onSessionSelect: (id: string) => void
+  triggerRenameSessionId?: string | null
+  onRenameTriggered?: () => void
 }
 
-export function SessionSidebar({ activeSessionId, onSessionSelect }: SessionSidebarProps) {
+export function SessionSidebar({
+  activeSessionId,
+  onSessionSelect,
+  triggerRenameSessionId,
+  onRenameTriggered,
+}: SessionSidebarProps) {
   const { data: sessions, isLoading, isError, error } = useSessions()
   const createSession = useCreateSession()
   const deleteSession = useDeleteSession()
@@ -82,6 +89,17 @@ export function SessionSidebar({ activeSessionId, onSessionSelect }: SessionSide
     },
     [prefetchSession]
   )
+
+  // Handle external rename trigger (from keyboard shortcut)
+  useEffect(() => {
+    if (triggerRenameSessionId && sessions) {
+      const session = sessions.find((s) => s.id === triggerRenameSessionId)
+      if (session) {
+        handleStartRename(triggerRenameSessionId, session.name)
+        onRenameTriggered?.()
+      }
+    }
+  }, [triggerRenameSessionId, sessions, handleStartRename, onRenameTriggered])
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp)

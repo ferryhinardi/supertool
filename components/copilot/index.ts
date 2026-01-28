@@ -13,6 +13,7 @@ export { FilePreviewModal } from './file-preview-modal'
 export type { GitHubPanelProps } from './github-panel'
 export { GitHubPanel } from './github-panel'
 export { IssueList } from './issue-list'
+export { KeyboardShortcutsModal } from './keyboard-shortcuts-modal'
 // Utility components
 export { MarkdownRenderer } from './markdown-renderer'
 export { MessageSearch } from './message-search'

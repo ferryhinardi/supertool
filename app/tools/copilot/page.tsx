@@ -4,20 +4,30 @@ import { motion } from 'framer-motion'
 import { Bot, MessageSquare, Plus, Sparkles } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 
-import { ChatContainer, SessionSidebar } from '@/components/copilot'
+import { ChatContainer, KeyboardShortcutsModal, SessionSidebar } from '@/components/copilot'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { useCreateSession, usePrefetchSessions, useSessions } from '@/lib/hooks'
+import {
+  COPILOT_SHORTCUTS,
+  useCreateSession,
+  useDeleteSession,
+  useKeyboardShortcuts,
+  usePrefetchSessions,
+  useSessions,
+} from '@/lib/hooks'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 function CopilotPageContent() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [showShortcutsModal, setShowShortcutsModal] = useState(false)
+  const [triggerRenameSessionId, setTriggerRenameSessionId] = useState<string | null>(null)
 
   const { data: sessions, isLoading: isLoadingSessions } = useSessions()
   const createSession = useCreateSession()
+  const deleteSession = useDeleteSession()
   const prefetchSessions = usePrefetchSessions()
 
   // Track page visit
@@ -55,6 +65,50 @@ function CopilotPageContent() {
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev)
   }, [])
+
+  // Keyboard shortcut handlers
+  const handleDeleteCurrentSession = useCallback(() => {
+    if (activeSessionId) {
+      deleteSession.mutate(activeSessionId)
+      trackToolEvent('copilot_session_deleted', { sessionId: activeSessionId })
+    }
+  }, [activeSessionId, deleteSession])
+
+  const handlePrevSession = useCallback(() => {
+    if (!sessions || sessions.length === 0 || !activeSessionId) return
+    const currentIndex = sessions.findIndex((s) => s.id === activeSessionId)
+    if (currentIndex > 0) {
+      setActiveSessionId(sessions[currentIndex - 1].id)
+    }
+  }, [sessions, activeSessionId])
+
+  const handleNextSession = useCallback(() => {
+    if (!sessions || sessions.length === 0 || !activeSessionId) return
+    const currentIndex = sessions.findIndex((s) => s.id === activeSessionId)
+    if (currentIndex < sessions.length - 1) {
+      setActiveSessionId(sessions[currentIndex + 1].id)
+    }
+  }, [sessions, activeSessionId])
+
+  const handleRenameCurrentSession = useCallback(() => {
+    if (activeSessionId) {
+      setTriggerRenameSessionId(activeSessionId)
+    }
+  }, [activeSessionId])
+
+  const handleShowShortcuts = useCallback(() => {
+    setShowShortcutsModal(true)
+  }, [])
+
+  // Register keyboard shortcuts
+  useKeyboardShortcuts([
+    { ...COPILOT_SHORTCUTS.NEW_SESSION, handler: handleCreateSession },
+    { ...COPILOT_SHORTCUTS.DELETE_SESSION, handler: handleDeleteCurrentSession },
+    { ...COPILOT_SHORTCUTS.RENAME_SESSION, handler: handleRenameCurrentSession },
+    { ...COPILOT_SHORTCUTS.PREV_SESSION, handler: handlePrevSession },
+    { ...COPILOT_SHORTCUTS.NEXT_SESSION, handler: handleNextSession },
+    { ...COPILOT_SHORTCUTS.HELP, handler: handleShowShortcuts },
+  ])
 
   return (
     <main
@@ -207,6 +261,8 @@ function CopilotPageContent() {
           <SessionSidebar
             activeSessionId={activeSessionId ?? undefined}
             onSessionSelect={handleSessionSelect}
+            triggerRenameSessionId={triggerRenameSessionId}
+            onRenameTriggered={() => setTriggerRenameSessionId(null)}
           />
         </motion.div>
 
@@ -326,6 +382,14 @@ function CopilotPageContent() {
           )}
         </div>
       </div>
+
+      {/* Keyboard Shortcuts Modal */}
+      {showShortcutsModal && (
+        <KeyboardShortcutsModal
+          isOpen={showShortcutsModal}
+          onClose={() => setShowShortcutsModal(false)}
+        />
+      )}
     </main>
   )
 }
