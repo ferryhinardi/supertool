@@ -532,27 +532,16 @@ export class InMemorySessionStore implements SessionStore {
  * Falls back to InMemorySessionStore for development/testing or when Supabase is not available
  */
 export function createSessionStore(options?: SessionStoreOptions): SessionStore {
-  // TODO: Re-enable SupabaseSessionStore after applying migration:
-  // supabase/migrations/20260124000000_copilot_sessions.sql
-  //
-  // Temporarily using in-memory store until migration is applied
-  // to avoid "Could not find the table 'public.copilot_sessions'" error
+  // Use Supabase for persistent storage when configured
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return new SupabaseSessionStore(options)
+  }
+
+  // Fallback to in-memory for environments without Supabase config
   console.warn(
-    '[SessionStore] Using in-memory store (sessions will be lost on restart). Apply Supabase migration to enable persistence.'
+    '[SessionStore] Supabase not configured, using in-memory store (sessions will be lost on restart)'
   )
   return new InMemorySessionStore(options)
-
-  // Original code - uncomment after migration is applied:
-  // // Use Supabase for persistent storage when configured
-  // if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  //   return new SupabaseSessionStore(options)
-  // }
-  //
-  // // Fallback to in-memory for environments without Supabase config
-  // console.warn(
-  //   '[SessionStore] Supabase not configured, using in-memory store (sessions will be lost on restart)'
-  // )
-  // return new InMemorySessionStore(options)
 }
 
 /**
