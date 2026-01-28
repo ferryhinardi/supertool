@@ -3,7 +3,6 @@ export { ChatContainer } from './chat-container'
 export { ChatInput } from './chat-input'
 export { ChatMessage } from './chat-message'
 export type { RepoContext } from './context-panel'
-
 // GitHub integration components
 export { ContextPanel } from './context-panel'
 export type { CopilotWorkspaceProps } from './copilot-workspace'
@@ -16,6 +15,7 @@ export { GitHubPanel } from './github-panel'
 export { IssueList } from './issue-list'
 // Utility components
 export { MarkdownRenderer } from './markdown-renderer'
+export { MessageSearch } from './message-search'
 export { PRChart } from './pr-chart'
 export { PRList } from './pr-list'
 export { QuickActions } from './quick-actions'
