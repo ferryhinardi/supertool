@@ -1,10 +1,15 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Bot, MessageSquare, Plus, Sparkles } from 'lucide-react'
+import { Bot, FolderOpen, MessageSquare, Plus, Sparkles } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useState } from 'react'
-
-import { ChatContainer, KeyboardShortcutsModal, SessionSidebar } from '@/components/copilot'
+import type { SourceType } from '@/components/copilot'
+import {
+  ChatContainer,
+  KeyboardShortcutsModal,
+  SessionSidebar,
+  SourcePanel,
+} from '@/components/copilot'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -17,13 +22,25 @@ import {
   useSessions,
 } from '@/lib/hooks'
 import { trackToolEvent } from '@/lib/services/analytics'
+import type { LocalFileAnalysisResult, LocalFileInfo } from '@/lib/services/local-files'
 import { css } from '@/styled-system/css'
 
 function CopilotPageContent() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSourcePanelOpen, setIsSourcePanelOpen] = useState(false)
   const [showShortcutsModal, setShowShortcutsModal] = useState(false)
   const [triggerRenameSessionId, setTriggerRenameSessionId] = useState<string | null>(null)
+
+  // Local file state
+  const [localFiles, setLocalFiles] = useState<LocalFileInfo[]>([])
+  const [selectedLocalFiles, setSelectedLocalFiles] = useState<LocalFileInfo[]>([])
+  const [localAnalysisResult, setLocalAnalysisResult] = useState<LocalFileAnalysisResult | null>(
+    null
+  )
+  const [isAnalyzingLocal, setIsAnalyzingLocal] = useState(false)
+  const [localError, setLocalError] = useState<string | null>(null)
+  const [activeSource, setActiveSource] = useState<SourceType>('github')
 
   const { data: sessions, isLoading: isLoadingSessions } = useSessions()
   const createSession = useCreateSession()
@@ -64,6 +81,61 @@ function CopilotPageContent() {
 
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev)
+  }, [])
+
+  const toggleSourcePanel = useCallback(() => {
+    setIsSourcePanelOpen((prev) => !prev)
+    trackToolEvent('copilot_source_panel_toggled', { isOpen: !isSourcePanelOpen })
+  }, [isSourcePanelOpen])
+
+  // Local file handlers
+  const handleLocalFilesUpload = useCallback(async (files: LocalFileInfo[]) => {
+    setLocalFiles((prev) => [...prev, ...files])
+    setLocalError(null)
+
+    // Analyze files after upload
+    if (files.length > 0) {
+      setIsAnalyzingLocal(true)
+      try {
+        const response = await fetch('/api/copilot/local-files', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'analyze',
+            files: files.map((f) => ({
+              name: f.name,
+              path: f.path,
+              type: f.type,
+              size: f.size,
+              extension: f.extension,
+              modifiedAt: f.modifiedAt,
+              isDirectory: f.isDirectory,
+            })),
+          }),
+        })
+        if (response.ok) {
+          const result = await response.json()
+          setLocalAnalysisResult(result)
+        }
+      } catch (error) {
+        console.error('Failed to analyze files:', error)
+        setLocalError('Failed to analyze files')
+      } finally {
+        setIsAnalyzingLocal(false)
+      }
+    }
+
+    trackToolEvent('copilot_local_files_uploaded', { count: files.length })
+  }, [])
+
+  const handleLocalFilesSelect = useCallback((files: LocalFileInfo[]) => {
+    setSelectedLocalFiles(files)
+    trackToolEvent('copilot_local_files_selected', { count: files.length })
+  }, [])
+
+  const handleSourceChange = useCallback((source: SourceType) => {
+    setActiveSource(source)
+    trackToolEvent('copilot_source_changed', { source })
   }, [])
 
   // Keyboard shortcut handlers
@@ -207,6 +279,19 @@ function CopilotPageContent() {
               })}
             >
               <MessageSquare className={css({ w: '4', h: '4' })} />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleSourcePanel}
+              className={css({
+                borderColor: isSourcePanelOpen ? 'violet.500' : 'gray.700',
+                color: isSourcePanelOpen ? 'violet.400' : 'gray.300',
+                _hover: { bg: 'gray.800', borderColor: 'gray.600' },
+              })}
+            >
+              <FolderOpen className={css({ w: '4', h: '4', mr: '2' })} />
+              Sources
             </Button>
             <Button
               onClick={handleCreateSession}
@@ -381,6 +466,61 @@ function CopilotPageContent() {
             </motion.div>
           )}
         </div>
+
+        {/* Overlay for mobile when source panel is open */}
+        {isSourcePanelOpen && (
+          <button
+            type="button"
+            onClick={toggleSourcePanel}
+            onKeyDown={(e) => e.key === 'Escape' && toggleSourcePanel()}
+            aria-label="Close source panel"
+            className={css({
+              display: { base: 'block', lg: 'none' },
+              position: 'absolute',
+              inset: '0',
+              bg: 'black/50',
+              zIndex: '15',
+              border: 'none',
+              cursor: 'pointer',
+            })}
+          />
+        )}
+
+        {/* Source Panel - Right Sidebar */}
+        <motion.div
+          initial={{ x: 300, opacity: 0 }}
+          animate={{
+            x: isSourcePanelOpen ? 0 : 300,
+            opacity: isSourcePanelOpen ? 1 : 0,
+          }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          className={css({
+            position: { base: 'absolute', lg: 'relative' },
+            top: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '20',
+            w: { base: '320px', lg: '380px' },
+            borderLeft: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/95',
+            backdropFilter: 'blur(16px)',
+            display: isSourcePanelOpen ? 'block' : 'none',
+            overflow: 'hidden',
+          })}
+        >
+          <SourcePanel
+            initialSource={activeSource}
+            onSourceChange={handleSourceChange}
+            localFiles={localFiles}
+            onLocalFilesSelect={handleLocalFilesSelect}
+            onLocalFilesUpload={handleLocalFilesUpload}
+            localAnalysisResult={localAnalysisResult}
+            isAnalyzingLocal={isAnalyzingLocal}
+            localError={localError}
+            maxHeight="calc(100vh - 140px)"
+          />
+        </motion.div>
       </div>
 
       {/* Keyboard Shortcuts Modal */}
