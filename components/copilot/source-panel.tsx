@@ -168,10 +168,11 @@ export function SourcePanel({
 
   const handleSourceChange = useCallback(
     (source: SourceType) => {
+      if (source === activeSource) return
       setActiveSource(source)
       onSourceChange?.(source)
     },
-    [onSourceChange]
+    [onSourceChange, activeSource]
   )
 
   return (
