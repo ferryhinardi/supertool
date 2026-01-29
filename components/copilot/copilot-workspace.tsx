@@ -24,11 +24,12 @@ import type {
   PullRequest,
   Repository,
 } from '@/lib/services/github'
+import type { LocalFileAnalysisResult, LocalFileInfo } from '@/lib/services/local-files'
 import { css } from '@/styled-system/css'
 import { ChatContainer } from './chat-container'
 import type { RepoContext as PanelRepoContext } from './context-panel'
 import { ContextPanel } from './context-panel'
-import { GitHubPanel } from './github-panel'
+import { SourcePanel, type SourceType } from './source-panel'
 
 // ============================================
 // Types
@@ -208,6 +209,15 @@ export function CopilotWorkspace({
   const [showRightPanel, setShowRightPanel] = useState(true)
   const [contextPanelCollapsed, setContextPanelCollapsed] = useState(false)
 
+  // Local file state
+  const [localFiles, setLocalFiles] = useState<LocalFileInfo[]>([])
+  const [localAnalysisResult, setLocalAnalysisResult] = useState<LocalFileAnalysisResult | null>(
+    null
+  )
+  const [isAnalyzingLocal, setIsAnalyzingLocal] = useState(false)
+  const [localError, setLocalError] = useState<string | null>(null)
+  const [_activeSource, setActiveSource] = useState<SourceType>('github')
+
   // Parse initial repo
   const parsedRepo = useMemo(() => {
     if (!initialRepo) return null
@@ -363,6 +373,36 @@ export function CopilotWorkspace({
     setContextPanelCollapsed((prev) => !prev)
   }, [])
 
+  // Local file handlers
+  const handleLocalFilesUpload = useCallback(async (files: LocalFileInfo[]) => {
+    setLocalFiles(files)
+    setLocalError(null)
+    setIsAnalyzingLocal(true)
+    try {
+      const response = await fetch('/api/copilot/local-files', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'analyze', files }),
+      })
+      if (!response.ok) throw new Error('Failed to analyze files')
+      const result = await response.json()
+      setLocalAnalysisResult(result)
+    } catch (error) {
+      setLocalError(error instanceof Error ? error.message : 'Failed to analyze files')
+    } finally {
+      setIsAnalyzingLocal(false)
+    }
+  }, [])
+
+  const handleLocalFilesSelect = useCallback((files: LocalFileInfo[]) => {
+    // Selected local files - could be added to context in the future
+    console.log('Selected local files:', files)
+  }, [])
+
+  const handleSourceChange = useCallback((source: SourceType) => {
+    setActiveSource(source)
+  }, [])
+
   return (
     <div className={`${workspaceStyles} ${className}`} style={{ maxHeight }}>
       {/* Toolbar */}
@@ -372,7 +412,7 @@ export function CopilotWorkspace({
             type="button"
             onClick={() => setShowLeftPanel((prev) => !prev)}
             className={`${toggleButtonStyles} ${showLeftPanel ? activeToggleStyles : ''}`}
-            aria-label="Toggle GitHub panel"
+            aria-label="Toggle source panel"
             aria-pressed={showLeftPanel}
           >
             <PanelLeftIcon />
@@ -394,18 +434,27 @@ export function CopilotWorkspace({
 
       {/* Main Content */}
       <div className={mainContentStyles}>
-        {/* Left Panel - GitHub Browser */}
+        {/* Left Panel - Source Browser */}
         <div className={showLeftPanel ? leftPanelStyles : leftPanelCollapsedStyles}>
           {showLeftPanel && (
-            <GitHubPanel
+            <SourcePanel
               initialRepo={initialRepo}
-              onFileSelect={handleFileSelect}
-              onPRSelect={handlePRSelect}
-              onIssueSelect={handleIssueSelect}
-              selectedFiles={selectedFiles}
-              selectedPRs={selectedPRs}
-              selectedIssues={selectedIssues}
               maxHeight="100%"
+              // GitHub props
+              onGitHubFileSelect={handleFileSelect}
+              onGitHubPRSelect={handlePRSelect}
+              onGitHubIssueSelect={handleIssueSelect}
+              selectedGitHubFiles={selectedFiles}
+              selectedGitHubPRs={selectedPRs}
+              selectedGitHubIssues={selectedIssues}
+              // Local file props
+              localFiles={localFiles}
+              onLocalFilesSelect={handleLocalFilesSelect}
+              onLocalFilesUpload={handleLocalFilesUpload}
+              localAnalysisResult={localAnalysisResult}
+              isAnalyzingLocal={isAnalyzingLocal}
+              localError={localError}
+              onSourceChange={handleSourceChange}
             />
           )}
         </div>

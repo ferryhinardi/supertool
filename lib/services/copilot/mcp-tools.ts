@@ -26,6 +26,18 @@ import type {
   SearchFilters,
   SearchResult,
 } from '@/lib/services/github/types'
+import {
+  analyzeLocalFiles,
+  type FileMovePreview,
+  type GeneratedScript,
+  generateMoveScript,
+  generateOrganizationSuggestions,
+  type LocalFileAnalysisResult,
+  type LocalFileInfo,
+  type LocalFileOrganizationPreferences,
+  previewFileMoves,
+  type ScriptGenerationOptions,
+} from '../local-files'
 import { CopilotErrorHandler } from './error-handler'
 import type {
   ChartData,
@@ -794,6 +806,170 @@ export class MCPToolRegistry {
         required: ['owner', 'repo', 'issueNumber', 'body'],
       },
       handler: this.addCommentHandler.bind(this),
+    })
+
+    // Tool 20: Analyze local files
+    this.register({
+      name: 'analyze_local_files',
+      description:
+        'Analyze uploaded local files to understand their structure, categories, and suggest organization improvements.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          files: {
+            type: 'array',
+            description: 'Array of local file information objects to analyze',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', description: 'File name' },
+                path: { type: 'string', description: 'File path' },
+                size: { type: 'number', description: 'File size in bytes' },
+                extension: { type: 'string', description: 'File extension' },
+                isDirectory: { type: 'boolean', description: 'Whether this is a directory' },
+              },
+            },
+          } as MCPPropertySchema,
+        },
+        required: ['files'],
+      },
+      handler: this.analyzeLocalFilesHandler.bind(this),
+    })
+
+    // Tool 21: Suggest local file organization
+    this.register({
+      name: 'suggest_local_file_organization',
+      description:
+        'Generate organization suggestions for local files based on preferences like grouping by type, date, or custom categories.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          files: {
+            type: 'array',
+            description: 'Array of local file information objects',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', description: 'File name' },
+                path: { type: 'string', description: 'File path' },
+                size: { type: 'number', description: 'File size in bytes' },
+                extension: { type: 'string', description: 'File extension' },
+                isDirectory: { type: 'boolean', description: 'Whether this is a directory' },
+              },
+            },
+          } as MCPPropertySchema,
+          preferences: {
+            type: 'object',
+            description: 'Organization preferences',
+            properties: {
+              groupBy: {
+                type: 'string',
+                description: 'How to group files: type, date, extension, size, or custom',
+              },
+              basePath: { type: 'string', description: 'Base path for organization' },
+              dateFormat: { type: 'string', description: 'Date format for date-based grouping' },
+              dateSubfolders: {
+                type: 'boolean',
+                description: 'Whether to create subfolders by year/month',
+              },
+              preserveStructure: {
+                type: 'boolean',
+                description: 'Whether to preserve original folder structure within categories',
+              },
+            },
+          } as MCPPropertySchema,
+        },
+        required: ['files', 'preferences'],
+      },
+      handler: this.suggestLocalFileOrganizationHandler.bind(this),
+    })
+
+    // Tool 22: Preview local file moves
+    this.register({
+      name: 'preview_local_file_moves',
+      description:
+        'Preview file move operations before execution. Shows what files will be moved and to where.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          suggestions: {
+            type: 'array',
+            description: 'Array of file suggestions from the organization tool',
+            items: {
+              type: 'object',
+              properties: {
+                file: {
+                  type: 'object',
+                  description: 'File information',
+                  properties: {
+                    name: { type: 'string' },
+                    path: { type: 'string' },
+                    size: { type: 'number' },
+                    extension: { type: 'string' },
+                    isDirectory: { type: 'boolean' },
+                  },
+                },
+                suggestedPath: { type: 'string', description: 'Suggested new path' },
+                reason: { type: 'string', description: 'Reason for the suggestion' },
+                priority: { type: 'string', description: 'Priority level: high, medium, low' },
+              },
+            },
+          } as MCPPropertySchema,
+        },
+        required: ['suggestions'],
+      },
+      handler: this.previewLocalFileMovesHandler.bind(this),
+    })
+
+    // Tool 23: Generate organization script
+    this.register({
+      name: 'generate_organization_script',
+      description:
+        'Generate executable scripts (bash, powershell, or JSON) from the file move preview for actually organizing files.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          preview: {
+            type: 'object',
+            description: 'File move preview from the preview tool',
+            properties: {
+              operations: {
+                type: 'array',
+                description: 'List of operations to perform',
+              },
+              summary: {
+                type: 'object',
+                description: 'Summary statistics',
+              },
+            },
+          } as MCPPropertySchema,
+          options: {
+            type: 'object',
+            description: 'Script generation options',
+            properties: {
+              format: {
+                type: 'string',
+                description: 'Script format: bash, powershell, json, or all',
+              },
+              includeComments: {
+                type: 'boolean',
+                description: 'Whether to include comments explaining each operation',
+              },
+              createBackup: { type: 'boolean', description: 'Whether to create backup commands' },
+              dryRun: {
+                type: 'boolean',
+                description: 'Whether to use dry-run mode (echo commands instead of executing)',
+              },
+              destinationPrefix: {
+                type: 'string',
+                description: 'Custom prefix for destination paths',
+              },
+            },
+          } as MCPPropertySchema,
+        },
+        required: ['preview', 'options'],
+      },
+      handler: this.generateOrganizationScriptHandler.bind(this),
     })
   }
 
@@ -2027,6 +2203,100 @@ export class MCPToolRegistry {
       url: response.data.html_url,
       message: `Comment added successfully to #${issueNumber}`,
     }
+  }
+
+  /**
+   * Handler: Analyze local files
+   */
+  private async analyzeLocalFilesHandler(
+    args: Record<string, unknown>
+  ): Promise<LocalFileAnalysisResult> {
+    const files = args.files as LocalFileInfo[]
+
+    if (!files || !Array.isArray(files)) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameter: files (array)',
+        { args }
+      )
+    }
+
+    return analyzeLocalFiles(files)
+  }
+
+  /**
+   * Handler: Suggest local file organization
+   */
+  private async suggestLocalFileOrganizationHandler(
+    args: Record<string, unknown>
+  ): Promise<FileSuggestion[]> {
+    const files = args.files as LocalFileInfo[]
+    const preferences = args.preferences as LocalFileOrganizationPreferences
+
+    if (!files || !Array.isArray(files)) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameter: files (array)',
+        { args }
+      )
+    }
+
+    if (!preferences) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameter: preferences',
+        { args }
+      )
+    }
+
+    return generateOrganizationSuggestions(files, preferences)
+  }
+
+  /**
+   * Handler: Preview local file moves
+   */
+  private async previewLocalFileMovesHandler(
+    args: Record<string, unknown>
+  ): Promise<FileMovePreview> {
+    const suggestions = args.suggestions as FileSuggestion[]
+
+    if (!suggestions || !Array.isArray(suggestions)) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameter: suggestions (array)',
+        { args }
+      )
+    }
+
+    return previewFileMoves(suggestions)
+  }
+
+  /**
+   * Handler: Generate organization script
+   */
+  private async generateOrganizationScriptHandler(
+    args: Record<string, unknown>
+  ): Promise<GeneratedScript[]> {
+    const preview = args.preview as FileMovePreview
+    const options = args.options as ScriptGenerationOptions
+
+    if (!preview) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameter: preview',
+        { args }
+      )
+    }
+
+    if (!options) {
+      throw CopilotErrorHandler.createError(
+        'VALIDATION_ERROR',
+        'Missing required parameter: options',
+        { args }
+      )
+    }
+
+    return generateMoveScript(preview, options)
   }
 
   /**

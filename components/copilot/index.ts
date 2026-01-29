@@ -14,6 +14,8 @@ export type { GitHubPanelProps } from './github-panel'
 export { GitHubPanel } from './github-panel'
 export { IssueList } from './issue-list'
 export { KeyboardShortcutsModal } from './keyboard-shortcuts-modal'
+// Local file components
+export { LocalFileBrowser } from './local-file-browser'
 // Utility components
 export { MarkdownRenderer } from './markdown-renderer'
 export { MessageSearch } from './message-search'
@@ -23,3 +25,5 @@ export { QuickActions } from './quick-actions'
 export { RepoSelector } from './repo-selector'
 // Session management
 export { SessionSidebar } from './session-sidebar'
+export type { SourcePanelProps, SourceType } from './source-panel'
+export { SourcePanel } from './source-panel'
