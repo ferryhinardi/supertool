@@ -53,6 +53,8 @@ export interface SourcePanelProps {
   onLocalFilesSelect?: (files: LocalFileInfo[]) => void
   /** Callback when local files are uploaded */
   onLocalFilesUpload?: (files: LocalFileInfo[]) => void
+  /** Callback when raw File objects are uploaded (for content access) */
+  onRawFilesUpload?: (files: File[]) => void
   /** Local file analysis result */
   localAnalysisResult?: LocalFileAnalysisResult | null
   /** Whether local files are being analyzed */
@@ -157,6 +159,7 @@ export function SourcePanel({
   localFiles = [],
   onLocalFilesSelect,
   onLocalFilesUpload,
+  onRawFilesUpload,
   localAnalysisResult,
   isAnalyzingLocal = false,
   localError,
@@ -238,6 +241,7 @@ export function SourcePanel({
               files={localFiles}
               onFilesSelect={onLocalFilesSelect}
               onFilesUpload={onLocalFilesUpload}
+              onRawFilesUpload={onRawFilesUpload}
               analysisResult={localAnalysisResult}
               isLoading={isAnalyzingLocal}
               error={localError}

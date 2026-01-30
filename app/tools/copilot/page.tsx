@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Bot, FolderOpen, MessageSquare, Plus, Sparkles } from 'lucide-react'
-import { Suspense, useCallback, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import type { SourceType } from '@/components/copilot'
 import {
   ChatContainer,
@@ -35,6 +35,7 @@ function CopilotPageContent() {
   // Local file state
   const [localFiles, setLocalFiles] = useState<LocalFileInfo[]>([])
   const [selectedLocalFiles, setSelectedLocalFiles] = useState<LocalFileInfo[]>([])
+  const [rawFilesMap, setRawFilesMap] = useState<Map<string, File>>(new Map())
   const [localAnalysisResult, setLocalAnalysisResult] = useState<LocalFileAnalysisResult | null>(
     null
   )
@@ -46,6 +47,13 @@ function CopilotPageContent() {
   const createSession = useCreateSession()
   const deleteSession = useDeleteSession()
   const prefetchSessions = usePrefetchSessions()
+
+  // Compute selected raw files from the map based on selectedLocalFiles
+  const selectedRawFiles = useMemo(() => {
+    return selectedLocalFiles
+      .map((localFile) => rawFilesMap.get(localFile.name))
+      .filter((file): file is File => file !== undefined)
+  }, [selectedLocalFiles, rawFilesMap])
 
   // Track page visit
   useEffect(() => {
@@ -131,6 +139,16 @@ function CopilotPageContent() {
   const handleLocalFilesSelect = useCallback((files: LocalFileInfo[]) => {
     setSelectedLocalFiles(files)
     trackToolEvent('copilot_local_files_selected', { count: files.length })
+  }, [])
+
+  const handleRawFilesUpload = useCallback((files: File[]) => {
+    setRawFilesMap((prev) => {
+      const newMap = new Map(prev)
+      for (const file of files) {
+        newMap.set(file.name, file)
+      }
+      return newMap
+    })
   }, [])
 
   const handleSourceChange = useCallback((source: SourceType) => {
@@ -381,7 +399,7 @@ function CopilotPageContent() {
           })}
         >
           {activeSessionId ? (
-            <ChatContainer sessionId={activeSessionId} />
+            <ChatContainer sessionId={activeSessionId} selectedFiles={selectedRawFiles} />
           ) : (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -515,6 +533,7 @@ function CopilotPageContent() {
             localFiles={localFiles}
             onLocalFilesSelect={handleLocalFilesSelect}
             onLocalFilesUpload={handleLocalFilesUpload}
+            onRawFilesUpload={handleRawFilesUpload}
             localAnalysisResult={localAnalysisResult}
             isAnalyzingLocal={isAnalyzingLocal}
             localError={localError}

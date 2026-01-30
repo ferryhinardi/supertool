@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useCopilot, useCopilotStore } from '@/lib/hooks'
+import type { FileAttachment } from '@/lib/services/copilot/types'
 import { css } from '@/styled-system/css'
 import { ChatInput } from './chat-input'
 import { ChatMessage } from './chat-message'
@@ -9,9 +10,35 @@ import { MessageSearch } from './message-search'
 
 interface ChatContainerProps {
   sessionId: string
+  /** Selected raw files to include as attachments when sending messages */
+  selectedFiles?: File[]
 }
 
-export function ChatContainer({ sessionId }: ChatContainerProps) {
+/**
+ * Convert a File object to a FileAttachment
+ */
+async function fileToAttachment(file: File): Promise<FileAttachment> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const base64 = reader.result as string
+      const isImage = file.type.startsWith('image/')
+      resolve({
+        id: `${file.name}-${Date.now()}`,
+        name: file.name,
+        type: isImage ? 'image' : 'document',
+        mimeType: file.type || 'application/octet-stream',
+        size: file.size,
+        data: base64.split(',')[1] || base64, // Remove data URL prefix if present
+        preview: isImage ? base64 : undefined,
+      })
+    }
+    reader.onerror = () => reject(new Error(`Failed to read file: ${file.name}`))
+    reader.readAsDataURL(file)
+  })
+}
+
+export function ChatContainer({ sessionId, selectedFiles = [] }: ChatContainerProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map())
@@ -73,10 +100,19 @@ export function ChatContainer({ sessionId }: ChatContainerProps) {
   })
 
   const handleSend = useCallback(
-    (content: string) => {
-      sendMessage(sessionId, content)
+    async (content: string) => {
+      // Convert selected files to attachments if any
+      let attachments: FileAttachment[] | undefined
+      if (selectedFiles.length > 0) {
+        try {
+          attachments = await Promise.all(selectedFiles.map(fileToAttachment))
+        } catch (error) {
+          console.error('Failed to process file attachments:', error)
+        }
+      }
+      sendMessage(sessionId, content, undefined, attachments)
     },
-    [sendMessage, sessionId]
+    [sendMessage, sessionId, selectedFiles]
   )
 
   const handleCloseSearch = useCallback(() => {

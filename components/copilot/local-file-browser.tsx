@@ -16,6 +16,8 @@ export interface LocalFileBrowserProps {
   onFilesSelect?: (files: LocalFileInfo[]) => void
   /** Callback when files are dropped/uploaded */
   onFilesUpload?: (files: LocalFileInfo[]) => void
+  /** Callback when raw File objects are uploaded (for content access) */
+  onRawFilesUpload?: (files: File[]) => void
   /** Analysis results if available */
   analysisResult?: LocalFileAnalysisResult | null
   /** Whether the component is in loading state */
@@ -711,6 +713,7 @@ export function LocalFileBrowser({
   files,
   onFilesSelect,
   onFilesUpload,
+  onRawFilesUpload,
   analysisResult,
   isLoading = false,
   error = null,
@@ -851,6 +854,7 @@ export function LocalFileBrowser({
       if (!items || !onFilesUpload) return
 
       const fileInfos: LocalFileInfo[] = []
+      const rawFiles: File[] = []
 
       // Process dropped items
       for (let i = 0; i < items.length; i++) {
@@ -870,15 +874,17 @@ export function LocalFileBrowser({
               relativePath: file.name,
               lastModified: file.lastModified ? new Date(file.lastModified) : undefined,
             })
+            rawFiles.push(file)
           }
         }
       }
 
       if (fileInfos.length > 0) {
         onFilesUpload(fileInfos)
+        onRawFilesUpload?.(rawFiles)
       }
     },
-    [onFilesUpload]
+    [onFilesUpload, onRawFilesUpload]
   )
 
   // Loading state
