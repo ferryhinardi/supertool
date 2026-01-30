@@ -46,7 +46,8 @@ describe('Markdown Editor Page', () => {
 
     it('renders with default markdown content', () => {
       render(<MarkdownEditorPage />)
-      expect(screen.getByText(/Welcome to Markdown Editor/i)).toBeTruthy()
+      // Multiple elements may contain this text (textarea + preview), so use getAllByText
+      expect(screen.getAllByText(/Welcome to Markdown Editor/i).length).toBeGreaterThan(0)
     })
 
     it('displays view mode buttons', () => {
@@ -65,7 +66,8 @@ describe('Markdown Editor Page', () => {
   describe('View Modes', () => {
     it('starts in split view mode', () => {
       render(<MarkdownEditorPage />)
-      expect(screen.getByText(/Welcome to Markdown Editor/i)).toBeTruthy()
+      // Multiple elements may contain this text (textarea + preview), so use getAllByText
+      expect(screen.getAllByText(/Welcome to Markdown Editor/i).length).toBeGreaterThan(0)
     })
 
     it('switches to editor-only mode', async () => {
@@ -389,7 +391,8 @@ describe('Markdown Editor Page', () => {
   describe('Preview Rendering', () => {
     it('renders markdown preview', () => {
       render(<MarkdownEditorPage />)
-      expect(screen.getByText(/Welcome to Markdown Editor/i)).toBeTruthy()
+      // Multiple elements may contain this text (textarea + preview), so use getAllByText
+      expect(screen.getAllByText(/Welcome to Markdown Editor/i).length).toBeGreaterThan(0)
     })
 
     it('updates preview in real-time', async () => {

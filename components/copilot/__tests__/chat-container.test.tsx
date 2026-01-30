@@ -179,7 +179,12 @@ describe('ChatContainer', () => {
       await user.click(sendButton)
 
       expect(mockSendMessage).toHaveBeenCalledTimes(1)
-      expect(mockSendMessage).toHaveBeenCalledWith('session-123', 'Hello Copilot')
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        'session-123',
+        'Hello Copilot',
+        undefined,
+        undefined
+      )
     })
 
     it('passes correct sessionId when sending multiple messages', async () => {
@@ -196,8 +201,20 @@ describe('ChatContainer', () => {
       await user.click(screen.getByRole('button', { name: /send/i }))
 
       expect(mockSendMessage).toHaveBeenCalledTimes(2)
-      expect(mockSendMessage).toHaveBeenNthCalledWith(1, 'different-session', 'First message')
-      expect(mockSendMessage).toHaveBeenNthCalledWith(2, 'different-session', 'Second message')
+      expect(mockSendMessage).toHaveBeenNthCalledWith(
+        1,
+        'different-session',
+        'First message',
+        undefined,
+        undefined
+      )
+      expect(mockSendMessage).toHaveBeenNthCalledWith(
+        2,
+        'different-session',
+        'Second message',
+        undefined,
+        undefined
+      )
     })
   })
 

@@ -271,8 +271,8 @@ describe('SessionSidebar', () => {
       const activeSessionText = screen.getByText('Active Session')
       expect(activeSessionText).toBeInTheDocument()
 
-      // The parent button element should have active styling (borderLeft)
-      const activeButton = activeSessionText.closest('button')
+      // The parent element has role="button" (it's a div, not a button)
+      const activeButton = activeSessionText.closest('[role="button"]')
       expect(activeButton).toBeInTheDocument()
     })
   })
@@ -335,7 +335,8 @@ describe('SessionSidebar', () => {
 
       render(<SessionSidebar onSessionSelect={mockOnSessionSelect} />)
 
-      const sessionButton = screen.getByText('Clickable Session').closest('button')
+      // Session items use role="button" on a div, not <button> elements
+      const sessionButton = screen.getByText('Clickable Session').closest('[role="button"]')
       expect(sessionButton).toBeInTheDocument()
       await user.click(sessionButton!)
 
@@ -351,7 +352,8 @@ describe('SessionSidebar', () => {
 
       render(<SessionSidebar onSessionSelect={mockOnSessionSelect} />)
 
-      const sessionButton = screen.getByText('Hover Session').closest('button')
+      // Session items use role="button" on a div, not <button> elements
+      const sessionButton = screen.getByText('Hover Session').closest('[role="button"]')
       expect(sessionButton).toBeInTheDocument()
       fireEvent.mouseEnter(sessionButton!)
 
