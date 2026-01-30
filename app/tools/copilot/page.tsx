@@ -529,6 +529,7 @@ function CopilotPageContent() {
         >
           <SourcePanel
             initialSource={activeSource}
+            initialRepo="ferryhinardi/supertool"
             onSourceChange={handleSourceChange}
             localFiles={localFiles}
             onLocalFilesSelect={handleLocalFilesSelect}
