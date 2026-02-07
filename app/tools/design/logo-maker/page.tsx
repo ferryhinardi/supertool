@@ -285,9 +285,15 @@ export default function LogoMakerPage() {
     setSelectedFont(randomFont)
 
     const layouts: LayoutOption[] = ['horizontal', 'vertical']
-    setLayout(layouts[Math.floor(Math.random() * layouts.length)])
+    const randomLayout = layouts[Math.floor(Math.random() * layouts.length)]
+    setLayout(randomLayout)
 
-    trackToolEvent('logo_generate_random')
+    trackToolEvent('logo_generate_random', {
+      icon: randomIcon?.name || 'none',
+      palette: randomPalette.name,
+      font: randomFont.name,
+      layout: randomLayout,
+    })
     toast.success('Random logo generated!')
   }, [allIcons])
 
@@ -750,6 +756,7 @@ export default function LogoMakerPage() {
                     <button
                       key={category}
                       type="button"
+                      data-active={selectedCategory === category}
                       onClick={() => setSelectedCategory(category as keyof typeof ICON_CATEGORIES)}
                       className={css({
                         px: '3',
@@ -945,6 +952,7 @@ export default function LogoMakerPage() {
                   <div className={css({ display: 'flex', gap: '2' })}>
                     <button
                       type="button"
+                      data-active={fontWeight === 'normal'}
                       onClick={() => setFontWeight('normal')}
                       className={css({
                         flex: '1',
@@ -959,6 +967,7 @@ export default function LogoMakerPage() {
                     </button>
                     <button
                       type="button"
+                      data-active={fontWeight === 'bold'}
                       onClick={() => setFontWeight('bold')}
                       className={css({
                         flex: '1',
@@ -1163,6 +1172,7 @@ export default function LogoMakerPage() {
                 <div className={css({ display: 'flex', gap: '2' })}>
                   <button
                     type="button"
+                    data-active={backgroundColor === 'transparent'}
                     onClick={() => setBackgroundColor('transparent')}
                     className={css({
                       px: '3',
@@ -1177,6 +1187,7 @@ export default function LogoMakerPage() {
                   </button>
                   <button
                     type="button"
+                    data-active={backgroundColor === '#ffffff'}
                     onClick={() => setBackgroundColor('#ffffff')}
                     className={css({
                       px: '3',
@@ -1191,6 +1202,7 @@ export default function LogoMakerPage() {
                   </button>
                   <button
                     type="button"
+                    data-active={backgroundColor === '#000000'}
                     onClick={() => setBackgroundColor('#000000')}
                     className={css({
                       px: '3',
@@ -1224,6 +1236,8 @@ export default function LogoMakerPage() {
               >
                 <button
                   type="button"
+                  aria-label="Horizontal layout"
+                  data-active={layout === 'horizontal'}
                   onClick={() => setLayout('horizontal')}
                   className={css({
                     p: '3',
@@ -1244,6 +1258,8 @@ export default function LogoMakerPage() {
                 </button>
                 <button
                   type="button"
+                  aria-label="Vertical layout"
+                  data-active={layout === 'vertical'}
                   onClick={() => setLayout('vertical')}
                   className={css({
                     p: '3',
@@ -1265,6 +1281,8 @@ export default function LogoMakerPage() {
                 </button>
                 <button
                   type="button"
+                  aria-label="Icon only layout"
+                  data-active={layout === 'icon-only'}
                   onClick={() => setLayout('icon-only')}
                   className={css({
                     p: '3',
@@ -1282,6 +1300,8 @@ export default function LogoMakerPage() {
                 </button>
                 <button
                   type="button"
+                  aria-label="Text only layout"
+                  data-active={layout === 'text-only'}
                   onClick={() => setLayout('text-only')}
                   className={css({
                     p: '3',
