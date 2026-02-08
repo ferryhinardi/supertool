@@ -493,19 +493,32 @@ describe('Placeholder Generator Templates', () => {
         onerror: null as OnErrorEventHandler,
       } as unknown as HTMLImageElement
 
-      // Use Object.assign to properly mock the Image constructor
+      // Mock Image constructor - properly capture onload callback
       const MockImage = function (this: HTMLImageElement) {
-        Object.assign(mockImage, {
-          src: '',
-          onload: null,
-          onerror: null,
+        Object.defineProperty(this, 'src', {
+          get: () => mockImage.src,
+          set: (value: string) => {
+            mockImage.src = value
+            // Trigger onload asynchronously after src is set
+            setTimeout(() => {
+              if (this.onload) {
+                mockImage.onload = this.onload
+              }
+            }, 0)
+          },
         })
-        setTimeout(() => {
-          mockImage.src = this.src
-          mockImage.onload = this.onload
-          mockImage.onerror = this.onerror
-        }, 0)
-        Object.assign(this, mockImage)
+        Object.defineProperty(this, 'onload', {
+          get: () => mockImage.onload,
+          set: (value: ((ev: Event) => void) | null) => {
+            mockImage.onload = value
+          },
+        })
+        Object.defineProperty(this, 'onerror', {
+          get: () => mockImage.onerror,
+          set: (value: OnErrorEventHandler) => {
+            mockImage.onerror = value
+          },
+        })
       } as unknown as typeof Image
 
       global.Image = MockImage
