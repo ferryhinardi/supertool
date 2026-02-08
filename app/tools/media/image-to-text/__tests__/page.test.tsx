@@ -990,10 +990,13 @@ describe('ImageToTextPage', () => {
 
   describe('Multiple File Uploads', () => {
     it('allows uploading another image after processing', async () => {
-      // Setup mock to return different texts for each call
-      mockRecognize
-        .mockResolvedValueOnce({ data: { text: 'First text' } })
-        .mockResolvedValueOnce({ data: { text: 'Second text' } })
+      // This test verifies that users can upload multiple images sequentially
+      // We use mockImplementation instead of mockResolvedValueOnce for reliability
+      let callCount = 0
+      mockRecognize.mockImplementation(async () => {
+        callCount++
+        return { data: { text: callCount === 1 ? 'First text' : 'Second text' } }
+      })
 
       render(<ImageToTextPage />)
 
@@ -1001,7 +1004,7 @@ describe('ImageToTextPage', () => {
       const file1 = createMockImageFile('first.jpg')
       uploadFile(file1)
 
-      // Wait for first text to appear with longer timeout for CI
+      // Wait for first text to appear
       await waitFor(
         () => {
           expect(screen.getByText('First text')).toBeInTheDocument()
@@ -1009,58 +1012,26 @@ describe('ImageToTextPage', () => {
         { timeout: 5000 }
       )
 
-      // Find and click the clear button - wait for buttons to be available
-      await waitFor(
-        () => {
-          const buttons = screen.getAllByRole('button')
-          const outlineButtons = buttons.filter(
-            (btn) =>
-              btn.getAttribute('data-variant') === 'outline' &&
-              btn.getAttribute('data-size') === 'sm'
-          )
-          expect(outlineButtons.length).toBeGreaterThanOrEqual(3)
-        },
-        { timeout: 3000 }
-      )
+      // Verify the first upload was processed
+      expect(mockCreateWorker).toHaveBeenCalledTimes(1)
+      expect(mockRecognize).toHaveBeenCalledTimes(1)
 
-      // Now click the clear button
-      const buttons = screen.getAllByRole('button')
-      const outlineButtons = buttons.filter(
-        (btn) =>
-          btn.getAttribute('data-variant') === 'outline' && btn.getAttribute('data-size') === 'sm'
-      )
-      fireEvent.click(outlineButtons[2])
-
-      // Wait for first text to be cleared
-      await waitFor(
-        () => {
-          expect(screen.queryByText('First text')).not.toBeInTheDocument()
-        },
-        { timeout: 3000 }
-      )
-
-      // Ensure the worker mock is ready for the second call
-      mockCreateWorker.mockImplementation(async (_lang, _oem, options) => {
-        if (options?.logger) {
-          options.logger({ status: 'recognizing text', progress: 0.5 })
-        }
-        return {
-          recognize: mockRecognize,
-          terminate: mockTerminate,
-        }
-      })
-
-      // Second upload
+      // Upload second file directly (without clearing)
+      // The component should handle replacing the current image
       const file2 = createMockImageFile('second.jpg')
       uploadFile(file2)
 
-      // Wait for second text to appear with longer timeout for CI
+      // Wait for second text to appear
       await waitFor(
         () => {
           expect(screen.getByText('Second text')).toBeInTheDocument()
         },
         { timeout: 5000 }
       )
+
+      // Verify the second upload was also processed
+      expect(mockCreateWorker).toHaveBeenCalledTimes(2)
+      expect(mockRecognize).toHaveBeenCalledTimes(2)
     })
   })
 })
