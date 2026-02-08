@@ -1242,6 +1242,7 @@ padding: 24px;`}
             >
               {tailwindClasses ? (
                 <code
+                  data-testid="tailwind-output"
                   className={css({
                     fontFamily: 'mono',
                     fontSize: 'sm',

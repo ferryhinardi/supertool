@@ -1,9 +1,21 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Bot, FolderOpen, MessageSquare, Plus, Sparkles } from 'lucide-react'
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
-import type { SourceType } from '@/components/copilot'
+import { motion, useReducedMotion } from 'framer-motion'
+import {
+  AlertCircle,
+  Bot,
+  Bug,
+  Code,
+  FileCode,
+  FolderOpen,
+  GitPullRequest,
+  MessageSquare,
+  Plus,
+  Sparkles,
+  X,
+} from 'lucide-react'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import {
   ChatContainer,
   KeyboardShortcutsModal,
@@ -14,46 +26,74 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
+  DEFAULT_COPILOT_REPO,
+  MAIN_CONTENT_HEIGHT,
+  SIDEBAR_ANIMATION_OFFSET,
+  SIDEBAR_WIDTH,
+  SOURCE_PANEL_ANIMATION_OFFSET,
+  SOURCE_PANEL_MAX_HEIGHT,
+  SOURCE_PANEL_WIDTH,
+  Z_INDEX,
+} from '@/lib/constants/layout'
+import {
   COPILOT_SHORTCUTS,
+  useCopilotUI,
   useCreateSession,
   useDeleteSession,
   useKeyboardShortcuts,
+  useLocalFiles,
   usePrefetchSessions,
   useSessions,
 } from '@/lib/hooks'
 import { trackToolEvent } from '@/lib/services/analytics'
-import type { LocalFileAnalysisResult, LocalFileInfo } from '@/lib/services/local-files'
 import { css } from '@/styled-system/css'
 
 function CopilotPageContent() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [isSourcePanelOpen, setIsSourcePanelOpen] = useState(false)
-  const [showShortcutsModal, setShowShortcutsModal] = useState(false)
-  const [triggerRenameSessionId, setTriggerRenameSessionId] = useState<string | null>(null)
 
-  // Local file state
-  const [localFiles, setLocalFiles] = useState<LocalFileInfo[]>([])
-  const [selectedLocalFiles, setSelectedLocalFiles] = useState<LocalFileInfo[]>([])
-  const [rawFilesMap, setRawFilesMap] = useState<Map<string, File>>(new Map())
-  const [localAnalysisResult, setLocalAnalysisResult] = useState<LocalFileAnalysisResult | null>(
-    null
-  )
-  const [isAnalyzingLocal, setIsAnalyzingLocal] = useState(false)
-  const [localError, setLocalError] = useState<string | null>(null)
-  const [activeSource, setActiveSource] = useState<SourceType>('github')
+  // Refs for focus management
+  const mainContentRef = useRef<HTMLDivElement>(null)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const sourcePanelRef = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  // UI state management (sidebar, source panel, modals)
+  const {
+    isSidebarOpen,
+    toggleSidebar,
+    isSourcePanelOpen,
+    toggleSourcePanel,
+    activeSource,
+    handleSourceChange,
+    showShortcutsModal,
+    openShortcutsModal,
+    closeShortcutsModal,
+    triggerRenameSessionId,
+    setTriggerRenameSessionId,
+    clearTriggerRenameSessionId,
+  } = useCopilotUI()
+
+  // Local file state management
+  const {
+    localFiles,
+    selectedRawFiles,
+    localAnalysisResult,
+    isAnalyzingLocal,
+    localError,
+    handleLocalFilesUpload,
+    handleLocalFilesSelect,
+    handleRawFilesUpload,
+    clearError: clearLocalError,
+  } = useLocalFiles()
+
+  // Accessibility: respect user's reduced motion preferences
+  const shouldReduceMotion = useReducedMotion()
+  const noMotion = shouldReduceMotion ?? false
 
   const { data: sessions, isLoading: isLoadingSessions } = useSessions()
   const createSession = useCreateSession()
   const deleteSession = useDeleteSession()
   const prefetchSessions = usePrefetchSessions()
-
-  // Compute selected raw files from the map based on selectedLocalFiles
-  const selectedRawFiles = useMemo(() => {
-    return selectedLocalFiles
-      .map((localFile) => rawFilesMap.get(localFile.name))
-      .filter((file): file is File => file !== undefined)
-  }, [selectedLocalFiles, rawFilesMap])
 
   // Track page visit
   useEffect(() => {
@@ -82,85 +122,26 @@ function CopilotPageContent() {
       })
       setActiveSessionId(newSession.id)
       trackToolEvent('copilot_session_created', { sessionId: newSession.id })
+      toast.success('New chat session created')
     } catch (error) {
       console.error('Failed to create session:', error)
+      toast.error('Failed to create session. Please try again.')
     }
   }, [createSession])
-
-  const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen((prev) => !prev)
-  }, [])
-
-  const toggleSourcePanel = useCallback(() => {
-    setIsSourcePanelOpen((prev) => !prev)
-    trackToolEvent('copilot_source_panel_toggled', { isOpen: !isSourcePanelOpen })
-  }, [isSourcePanelOpen])
-
-  // Local file handlers
-  const handleLocalFilesUpload = useCallback(async (files: LocalFileInfo[]) => {
-    setLocalFiles((prev) => [...prev, ...files])
-    setLocalError(null)
-
-    // Analyze files after upload
-    if (files.length > 0) {
-      setIsAnalyzingLocal(true)
-      try {
-        const response = await fetch('/api/copilot/local-files', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'analyze',
-            files: files.map((f) => ({
-              name: f.name,
-              path: f.path,
-              type: f.type,
-              size: f.size,
-              extension: f.extension,
-              modifiedAt: f.modifiedAt,
-              isDirectory: f.isDirectory,
-            })),
-          }),
-        })
-        if (response.ok) {
-          const result = await response.json()
-          setLocalAnalysisResult(result)
-        }
-      } catch (error) {
-        console.error('Failed to analyze files:', error)
-        setLocalError('Failed to analyze files')
-      } finally {
-        setIsAnalyzingLocal(false)
-      }
-    }
-
-    trackToolEvent('copilot_local_files_uploaded', { count: files.length })
-  }, [])
-
-  const handleLocalFilesSelect = useCallback((files: LocalFileInfo[]) => {
-    setSelectedLocalFiles(files)
-    trackToolEvent('copilot_local_files_selected', { count: files.length })
-  }, [])
-
-  const handleRawFilesUpload = useCallback((files: File[]) => {
-    setRawFilesMap((prev) => {
-      const newMap = new Map(prev)
-      for (const file of files) {
-        newMap.set(file.name, file)
-      }
-      return newMap
-    })
-  }, [])
-
-  const handleSourceChange = useCallback((source: SourceType) => {
-    setActiveSource(source)
-    trackToolEvent('copilot_source_changed', { source })
-  }, [])
 
   // Keyboard shortcut handlers
   const handleDeleteCurrentSession = useCallback(() => {
     if (activeSessionId) {
-      deleteSession.mutate(activeSessionId)
+      deleteSession.mutate(activeSessionId, {
+        onSuccess: () => {
+          toast.success('Session deleted')
+        },
+        onError: () => {
+          toast.error('Failed to delete session')
+        },
+      })
       trackToolEvent('copilot_session_deleted', { sessionId: activeSessionId })
+      trackToolEvent('copilot_keyboard_shortcut_used', { shortcut: 'delete_session' })
     }
   }, [activeSessionId, deleteSession])
 
@@ -169,6 +150,7 @@ function CopilotPageContent() {
     const currentIndex = sessions.findIndex((s) => s.id === activeSessionId)
     if (currentIndex > 0) {
       setActiveSessionId(sessions[currentIndex - 1].id)
+      trackToolEvent('copilot_keyboard_shortcut_used', { shortcut: 'prev_session' })
     }
   }, [sessions, activeSessionId])
 
@@ -177,22 +159,31 @@ function CopilotPageContent() {
     const currentIndex = sessions.findIndex((s) => s.id === activeSessionId)
     if (currentIndex < sessions.length - 1) {
       setActiveSessionId(sessions[currentIndex + 1].id)
+      trackToolEvent('copilot_keyboard_shortcut_used', { shortcut: 'next_session' })
     }
   }, [sessions, activeSessionId])
 
   const handleRenameCurrentSession = useCallback(() => {
     if (activeSessionId) {
       setTriggerRenameSessionId(activeSessionId)
+      trackToolEvent('copilot_keyboard_shortcut_used', { shortcut: 'rename_session' })
     }
-  }, [activeSessionId])
+  }, [activeSessionId, setTriggerRenameSessionId])
 
   const handleShowShortcuts = useCallback(() => {
-    setShowShortcutsModal(true)
-  }, [])
+    openShortcutsModal()
+    trackToolEvent('copilot_keyboard_shortcut_used', { shortcut: 'show_help' })
+  }, [openShortcutsModal])
+
+  // Wrap handleCreateSession for keyboard shortcut tracking
+  const handleCreateSessionWithTracking = useCallback(async () => {
+    trackToolEvent('copilot_keyboard_shortcut_used', { shortcut: 'new_session' })
+    await handleCreateSession()
+  }, [handleCreateSession])
 
   // Register keyboard shortcuts
   useKeyboardShortcuts([
-    { ...COPILOT_SHORTCUTS.NEW_SESSION, handler: handleCreateSession },
+    { ...COPILOT_SHORTCUTS.NEW_SESSION, handler: handleCreateSessionWithTracking },
     { ...COPILOT_SHORTCUTS.DELETE_SESSION, handler: handleDeleteCurrentSession },
     { ...COPILOT_SHORTCUTS.RENAME_SESSION, handler: handleRenameCurrentSession },
     { ...COPILOT_SHORTCUTS.PREV_SESSION, handler: handlePrevSession },
@@ -200,357 +191,653 @@ function CopilotPageContent() {
     { ...COPILOT_SHORTCUTS.HELP, handler: handleShowShortcuts },
   ])
 
+  // Focus management: Move focus to sidebar when opened (mobile), restore when closed
+  useEffect(() => {
+    if (isSidebarOpen && sidebarRef.current) {
+      // Store previous focus
+      previousFocusRef.current = document.activeElement as HTMLElement
+      // Focus first focusable element in sidebar
+      const firstFocusable = sidebarRef.current.querySelector<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      firstFocusable?.focus()
+    } else if (!isSidebarOpen && previousFocusRef.current) {
+      // Restore focus when sidebar closes
+      previousFocusRef.current.focus()
+      previousFocusRef.current = null
+    }
+  }, [isSidebarOpen])
+
+  // Focus management: Move focus to source panel when opened, restore when closed
+  useEffect(() => {
+    if (isSourcePanelOpen && sourcePanelRef.current) {
+      // Store previous focus
+      previousFocusRef.current = document.activeElement as HTMLElement
+      // Focus first focusable element in source panel
+      const firstFocusable = sourcePanelRef.current.querySelector<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      firstFocusable?.focus()
+    } else if (!isSourcePanelOpen && previousFocusRef.current) {
+      // Restore focus when source panel closes
+      previousFocusRef.current.focus()
+      previousFocusRef.current = null
+    }
+  }, [isSourcePanelOpen])
+
+  // Skip to main content handler
+  const handleSkipToMain = useCallback(() => {
+    mainContentRef.current?.focus()
+  }, [])
+
   return (
-    <main
-      className={css({
-        display: 'flex',
-        flexDir: 'column',
-        h: 'calc(100vh - 64px)',
-        overflow: 'hidden',
-      })}
-    >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+    <>
+      {/* Skip to main content link for keyboard users */}
+      <button
+        type="button"
+        onClick={handleSkipToMain}
         className={css({
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '4', sm: '5' },
-          borderBottom: '1px solid',
-          borderColor: 'gray.800',
-          bg: 'gray.900/50',
-          backdropFilter: 'blur(16px)',
+          position: 'absolute',
+          top: '-40px',
+          left: '0',
+          bg: 'violet.500',
+          color: 'white',
+          p: '2',
+          zIndex: 100,
+          border: 'none',
+          cursor: 'pointer',
+          _focus: {
+            top: '0',
+          },
         })}
       >
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            maxW: '7xl',
-            mx: 'auto',
-            w: 'full',
-          })}
-        >
-          <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                w: '12',
-                h: '12',
-                rounded: 'xl',
-                bg: 'linear-gradient(135deg, token(colors.violet.500), token(colors.purple.600))',
-                shadow: 'lg',
-              })}
-            >
-              <Bot className={css({ w: '6', h: '6', color: 'white' })} />
-            </div>
-            <div>
-              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <h1
-                  className={css({
-                    fontSize: { base: 'xl', sm: '2xl' },
-                    fontWeight: 'bold',
-                    color: 'white',
-                  })}
-                >
-                  GitHub Copilot Chat
-                </h1>
-                <Badge
-                  variant="secondary"
-                  className={css({
-                    bg: 'violet.500/20',
-                    color: 'violet.300',
-                    border: '1px solid',
-                    borderColor: 'violet.500/30',
-                  })}
-                >
-                  <Sparkles className={css({ w: '3', h: '3', mr: '1' })} />
-                  AI
-                </Badge>
-              </div>
-              <p
-                className={css({
-                  fontSize: 'sm',
-                  color: 'gray.400',
-                  display: { base: 'none', sm: 'block' },
-                })}
-              >
-                Your AI-powered coding assistant for code review, explanations, and more
-              </p>
-            </div>
-          </div>
+        Skip to main content
+      </button>
 
-          <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleSidebar}
-              className={css({
-                display: { base: 'flex', lg: 'none' },
-                borderColor: 'gray.700',
-                color: 'gray.300',
-                _hover: { bg: 'gray.800', borderColor: 'gray.600' },
-              })}
-            >
-              <MessageSquare className={css({ w: '4', h: '4' })} />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleSourcePanel}
-              className={css({
-                borderColor: isSourcePanelOpen ? 'violet.500' : 'gray.700',
-                color: isSourcePanelOpen ? 'violet.400' : 'gray.300',
-                _hover: { bg: 'gray.800', borderColor: 'gray.600' },
-              })}
-            >
-              <FolderOpen className={css({ w: '4', h: '4', mr: '2' })} />
-              Sources
-            </Button>
-            <Button
-              onClick={handleCreateSession}
-              disabled={createSession.isPending}
-              className={css({
-                bg: 'linear-gradient(135deg, token(colors.violet.500), token(colors.purple.600))',
-                color: 'white',
-                _hover: {
-                  bg: 'linear-gradient(135deg, token(colors.violet.600), token(colors.purple.700))',
-                },
-                _disabled: { opacity: 0.5, cursor: 'not-allowed' },
-              })}
-            >
-              <Plus className={css({ w: '4', h: '4', mr: '2' })} />
-              New Chat
-            </Button>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Main Content */}
-      <div
+      <main
+        aria-label="GitHub Copilot Chat"
         className={css({
           display: 'flex',
-          flex: '1',
+          flexDir: 'column',
+          h: MAIN_CONTENT_HEIGHT,
           overflow: 'hidden',
-          position: 'relative',
         })}
       >
-        {/* Sidebar */}
-        <motion.div
-          initial={{ x: -300, opacity: 0 }}
-          animate={{
-            x: isSidebarOpen ? 0 : -300,
-            opacity: isSidebarOpen ? 1 : 0,
-          }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className={css({
-            position: { base: 'absolute', lg: 'relative' },
-            top: '0',
-            left: '0',
-            bottom: '0',
-            zIndex: '20',
-            w: { base: '280px', lg: '320px' },
-            borderRight: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/95',
-            backdropFilter: 'blur(16px)',
-            display: isSidebarOpen ? 'block' : 'none',
-          })}
-        >
-          <SessionSidebar
-            activeSessionId={activeSessionId ?? undefined}
-            onSessionSelect={handleSessionSelect}
-            triggerRenameSessionId={triggerRenameSessionId}
-            onRenameTriggered={() => setTriggerRenameSessionId(null)}
-          />
-        </motion.div>
+        {/* Live region for dynamic announcements */}
+        <div role="status" aria-live="polite" aria-atomic="true" className={css({ srOnly: true })}>
+          {activeSessionId ? 'Chat session active' : 'No chat session selected'}
+        </div>
 
-        {/* Overlay for mobile when sidebar is open */}
-        {isSidebarOpen && (
-          <button
-            type="button"
-            onClick={toggleSidebar}
-            onKeyDown={(e) => e.key === 'Escape' && toggleSidebar()}
-            aria-label="Close sidebar"
+        {/* Error Banner with alert role for screen readers */}
+        {localError && (
+          <div
+            role="alert"
             className={css({
-              display: { base: 'block', lg: 'none' },
-              position: 'absolute',
-              inset: '0',
-              bg: 'black/50',
-              zIndex: '10',
-              border: 'none',
-              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '3',
+              px: { base: '4', sm: '6', md: '8' },
+              py: '3',
+              bg: 'red.900/50',
+              borderBottom: '1px solid',
+              borderColor: 'red.500/30',
             })}
-          />
-        )}
-
-        {/* Chat Area */}
-        <div
-          className={css({
-            flex: '1',
-            display: 'flex',
-            flexDir: 'column',
-            overflow: 'hidden',
-            bg: 'gray.950',
-          })}
-        >
-          {activeSessionId ? (
-            <ChatContainer sessionId={activeSessionId} selectedFiles={selectedRawFiles} />
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4 }}
+          >
+            <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <AlertCircle
+                aria-hidden="true"
+                className={css({ w: '4', h: '4', color: 'red.400', flexShrink: 0 })}
+              />
+              <p className={css({ fontSize: 'sm', color: 'red.200' })}>{localError}</p>
+            </div>
+            <button
+              type="button"
+              onClick={clearLocalError}
+              aria-label="Dismiss error"
               className={css({
-                display: 'flex',
-                flex: '1',
-                alignItems: 'center',
-                justifyContent: 'center',
-                p: '8',
+                p: '1',
+                rounded: 'md',
+                color: 'red.400',
+                _hover: { bg: 'red.800/50' },
+                cursor: 'pointer',
+                border: 'none',
+                bg: 'transparent',
               })}
             >
-              <Card
+              <X aria-hidden="true" className={css({ w: '4', h: '4' })} />
+            </button>
+          </div>
+        )}
+
+        {/* Header */}
+        <motion.div
+          initial={noMotion ? false : { opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={noMotion ? { duration: 0 } : { duration: 0.4 }}
+          className={css({
+            px: { base: '4', sm: '6', md: '8' },
+            py: { base: '4', sm: '5' },
+            borderBottom: '1px solid',
+            borderColor: 'gray.800',
+            bg: 'gray.900/50',
+            backdropFilter: 'blur(16px)',
+          })}
+        >
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              maxW: '7xl',
+              mx: 'auto',
+              w: 'full',
+            })}
+          >
+            <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
+              <div
                 className={css({
-                  maxW: 'md',
-                  w: 'full',
-                  border: '1px solid',
-                  borderColor: 'gray.800',
-                  bg: 'gray.900/50',
-                  backdropFilter: 'blur(16px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  w: '12',
+                  h: '12',
+                  rounded: 'xl',
+                  bg: 'linear-gradient(135deg, token(colors.violet.500), token(colors.purple.600))',
+                  shadow: 'lg',
                 })}
               >
-                <CardContent
-                  className={css({
-                    display: 'flex',
-                    flexDir: 'column',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                    py: '12',
-                    gap: '4',
-                  })}
-                >
-                  <div
+                <Bot className={css({ w: '6', h: '6', color: 'white' })} />
+              </div>
+              <div>
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                  <h1
                     className={css({
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      w: '16',
-                      h: '16',
-                      rounded: '2xl',
-                      bg: 'linear-gradient(135deg, token(colors.violet.500/20), token(colors.purple.600/20))',
+                      fontSize: { base: 'xl', sm: '2xl' },
+                      fontWeight: 'bold',
+                      color: 'white',
+                    })}
+                  >
+                    GitHub Copilot Chat
+                  </h1>
+                  <Badge
+                    variant="secondary"
+                    className={css({
+                      bg: 'violet.500/20',
+                      color: 'violet.300',
                       border: '1px solid',
                       borderColor: 'violet.500/30',
                     })}
                   >
-                    <Bot className={css({ w: '8', h: '8', color: 'violet.400' })} />
-                  </div>
-                  <div>
-                    <h2
-                      className={css({
-                        fontSize: 'xl',
-                        fontWeight: 'semibold',
-                        color: 'white',
-                        mb: '2',
-                      })}
-                    >
-                      Welcome to Copilot Chat
-                    </h2>
-                    <p className={css({ fontSize: 'sm', color: 'gray.400', mb: '6' })}>
-                      Start a new conversation or select an existing one from the sidebar
-                    </p>
-                  </div>
-                  <Button
-                    onClick={handleCreateSession}
-                    disabled={createSession.isPending}
-                    size="lg"
-                    className={css({
-                      bg: 'linear-gradient(135deg, token(colors.violet.500), token(colors.purple.600))',
-                      color: 'white',
-                      _hover: {
-                        bg: 'linear-gradient(135deg, token(colors.violet.600), token(colors.purple.700))',
-                      },
-                      _disabled: { opacity: 0.5, cursor: 'not-allowed' },
-                    })}
-                  >
-                    <Plus className={css({ w: '5', h: '5', mr: '2' })} />
-                    Start New Chat
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
-        </div>
+                    <Sparkles className={css({ w: '3', h: '3', mr: '1' })} />
+                    AI
+                  </Badge>
+                </div>
+                <p
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                    display: { base: 'none', sm: 'block' },
+                  })}
+                >
+                  Your AI-powered coding assistant for code review, explanations, and more
+                </p>
+              </div>
+            </div>
 
-        {/* Overlay for mobile when source panel is open */}
-        {isSourcePanelOpen && (
-          <button
-            type="button"
-            onClick={toggleSourcePanel}
-            onKeyDown={(e) => e.key === 'Escape' && toggleSourcePanel()}
-            aria-label="Close source panel"
-            className={css({
-              display: { base: 'block', lg: 'none' },
-              position: 'absolute',
-              inset: '0',
-              bg: 'black/50',
-              zIndex: '15',
-              border: 'none',
-              cursor: 'pointer',
-            })}
-          />
-        )}
+            <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleSidebar}
+                className={css({
+                  display: { base: 'flex', lg: 'none' },
+                  borderColor: 'gray.700',
+                  color: 'gray.300',
+                  _hover: { bg: 'gray.800', borderColor: 'gray.600' },
+                  _focusVisible: {
+                    outline: '2px solid',
+                    outlineColor: 'violet.500',
+                    outlineOffset: '2px',
+                  },
+                })}
+              >
+                <MessageSquare className={css({ w: '4', h: '4' })} />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleSourcePanel}
+                className={css({
+                  borderColor: isSourcePanelOpen ? 'violet.500' : 'gray.700',
+                  color: isSourcePanelOpen ? 'violet.400' : 'gray.300',
+                  _hover: { bg: 'gray.800', borderColor: 'gray.600' },
+                  _focusVisible: {
+                    outline: '2px solid',
+                    outlineColor: 'violet.500',
+                    outlineOffset: '2px',
+                  },
+                })}
+              >
+                <FolderOpen className={css({ w: '4', h: '4', mr: '2' })} />
+                Sources
+              </Button>
+              <Button
+                onClick={handleCreateSession}
+                disabled={createSession.isPending}
+                className={css({
+                  bg: 'linear-gradient(135deg, token(colors.violet.500), token(colors.purple.600))',
+                  color: 'white',
+                  _hover: {
+                    bg: 'linear-gradient(135deg, token(colors.violet.600), token(colors.purple.700))',
+                  },
+                  _disabled: { opacity: 0.5, cursor: 'not-allowed' },
+                  _focusVisible: {
+                    outline: '2px solid',
+                    outlineColor: 'violet.500',
+                    outlineOffset: '2px',
+                  },
+                })}
+              >
+                <Plus className={css({ w: '4', h: '4', mr: '2' })} />
+                New Chat
+              </Button>
+            </div>
+          </div>
+        </motion.div>
 
-        {/* Source Panel - Right Sidebar */}
-        <motion.div
-          initial={{ x: 300, opacity: 0 }}
-          animate={{
-            x: isSourcePanelOpen ? 0 : 300,
-            opacity: isSourcePanelOpen ? 1 : 0,
-          }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
+        {/* Main Content */}
+        <div
           className={css({
-            position: { base: 'absolute', lg: 'relative' },
-            top: '0',
-            right: '0',
-            bottom: '0',
-            zIndex: '20',
-            w: { base: '320px', lg: '380px' },
-            borderLeft: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/95',
-            backdropFilter: 'blur(16px)',
-            display: isSourcePanelOpen ? 'block' : 'none',
+            display: 'flex',
+            flex: '1',
             overflow: 'hidden',
+            position: 'relative',
           })}
         >
-          <SourcePanel
-            initialSource={activeSource}
-            initialRepo="ferryhinardi/supertool"
-            onSourceChange={handleSourceChange}
-            localFiles={localFiles}
-            onLocalFilesSelect={handleLocalFilesSelect}
-            onLocalFilesUpload={handleLocalFilesUpload}
-            onRawFilesUpload={handleRawFilesUpload}
-            localAnalysisResult={localAnalysisResult}
-            isAnalyzingLocal={isAnalyzingLocal}
-            localError={localError}
-            maxHeight="calc(100vh - 140px)"
-          />
-        </motion.div>
-      </div>
+          {/* Sidebar - Sessions navigation */}
+          <motion.aside
+            ref={sidebarRef}
+            aria-label="Chat sessions"
+            initial={noMotion ? false : { x: SIDEBAR_ANIMATION_OFFSET, opacity: 0 }}
+            animate={{
+              x: isSidebarOpen ? 0 : SIDEBAR_ANIMATION_OFFSET,
+              opacity: isSidebarOpen ? 1 : 0,
+            }}
+            transition={noMotion ? { duration: 0 } : { duration: 0.3, ease: 'easeInOut' }}
+            className={css({
+              position: { base: 'absolute', lg: 'relative' },
+              top: '0',
+              left: '0',
+              bottom: '0',
+              zIndex: Z_INDEX.sidebar,
+              w: SIDEBAR_WIDTH,
+              borderRight: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/95',
+              backdropFilter: 'blur(16px)',
+              display: isSidebarOpen ? 'block' : 'none',
+            })}
+          >
+            <SessionSidebar
+              activeSessionId={activeSessionId ?? undefined}
+              onSessionSelect={handleSessionSelect}
+              triggerRenameSessionId={triggerRenameSessionId}
+              onRenameTriggered={clearTriggerRenameSessionId}
+            />
+          </motion.aside>
 
-      {/* Keyboard Shortcuts Modal */}
-      {showShortcutsModal && (
-        <KeyboardShortcutsModal
-          isOpen={showShortcutsModal}
-          onClose={() => setShowShortcutsModal(false)}
-        />
-      )}
-    </main>
+          {/* Overlay for mobile when sidebar is open */}
+          {isSidebarOpen && (
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              onKeyDown={(e) => e.key === 'Escape' && toggleSidebar()}
+              aria-label="Close sidebar"
+              className={css({
+                display: { base: 'block', lg: 'none' },
+                position: 'absolute',
+                inset: '0',
+                bg: 'black/50',
+                zIndex: Z_INDEX.overlay,
+                border: 'none',
+                cursor: 'pointer',
+              })}
+            />
+          )}
+
+          {/* Chat Area - Main content region */}
+          <div
+            ref={mainContentRef}
+            id="main-content"
+            tabIndex={-1}
+            role="region"
+            aria-label="Chat conversation"
+            className={css({
+              flex: '1',
+              display: 'flex',
+              flexDir: 'column',
+              overflow: 'hidden',
+              bg: 'gray.950',
+              _focus: { outline: 'none' },
+            })}
+          >
+            {activeSessionId ? (
+              <ChatContainer sessionId={activeSessionId} selectedFiles={selectedRawFiles} />
+            ) : (
+              <motion.div
+                initial={noMotion ? false : { opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={noMotion ? { duration: 0 } : { duration: 0.4 }}
+                className={css({
+                  display: 'flex',
+                  flex: '1',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  p: '8',
+                })}
+              >
+                <Card
+                  className={css({
+                    maxW: 'md',
+                    w: 'full',
+                    border: '1px solid',
+                    borderColor: 'gray.800',
+                    bg: 'gray.900/50',
+                    backdropFilter: 'blur(16px)',
+                  })}
+                >
+                  <CardContent
+                    className={css({
+                      display: 'flex',
+                      flexDir: 'column',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                      py: '12',
+                      gap: '4',
+                    })}
+                  >
+                    <div
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        w: '16',
+                        h: '16',
+                        rounded: '2xl',
+                        bg: 'linear-gradient(135deg, token(colors.violet.500/20), token(colors.purple.600/20))',
+                        border: '1px solid',
+                        borderColor: 'violet.500/30',
+                      })}
+                    >
+                      <Bot className={css({ w: '8', h: '8', color: 'violet.400' })} />
+                    </div>
+                    <div>
+                      <h2
+                        className={css({
+                          fontSize: 'xl',
+                          fontWeight: 'semibold',
+                          color: 'white',
+                          mb: '2',
+                        })}
+                      >
+                        Welcome to Copilot Chat
+                      </h2>
+                      <p className={css({ fontSize: 'sm', color: 'gray.400', mb: '6' })}>
+                        Start a new conversation or select an existing one from the sidebar
+                      </p>
+                    </div>
+                    <Button
+                      onClick={handleCreateSession}
+                      disabled={createSession.isPending}
+                      size="lg"
+                      className={css({
+                        bg: 'linear-gradient(135deg, token(colors.violet.500), token(colors.purple.600))',
+                        color: 'white',
+                        _hover: {
+                          bg: 'linear-gradient(135deg, token(colors.violet.600), token(colors.purple.700))',
+                        },
+                        _disabled: { opacity: 0.5, cursor: 'not-allowed' },
+                      })}
+                    >
+                      <Plus className={css({ w: '5', h: '5', mr: '2' })} />
+                      Start New Chat
+                    </Button>
+
+                    {/* Quick action suggestions */}
+                    <div className={css({ mt: '6', w: 'full' })}>
+                      <p
+                        className={css({
+                          fontSize: 'xs',
+                          color: 'gray.500',
+                          mb: '3',
+                          textTransform: 'uppercase',
+                          letterSpacing: 'wide',
+                        })}
+                      >
+                        Quick Actions
+                      </p>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: '2',
+                          justifyContent: 'center',
+                        })}
+                      >
+                        <button
+                          type="button"
+                          onClick={handleCreateSession}
+                          disabled={createSession.isPending}
+                          className={css({
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '1.5',
+                            px: '3',
+                            py: '1.5',
+                            rounded: 'full',
+                            fontSize: 'sm',
+                            color: 'gray.300',
+                            bg: 'gray.800/50',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            _hover: {
+                              bg: 'gray.800',
+                              borderColor: 'violet.500/50',
+                              color: 'violet.300',
+                            },
+                            _focusVisible: {
+                              outline: '2px solid',
+                              outlineColor: 'violet.500',
+                              outlineOffset: '2px',
+                            },
+                            _disabled: { opacity: 0.5, cursor: 'not-allowed' },
+                          })}
+                        >
+                          <FileCode aria-hidden="true" className={css({ w: '3.5', h: '3.5' })} />
+                          Explain code
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCreateSession}
+                          disabled={createSession.isPending}
+                          className={css({
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '1.5',
+                            px: '3',
+                            py: '1.5',
+                            rounded: 'full',
+                            fontSize: 'sm',
+                            color: 'gray.300',
+                            bg: 'gray.800/50',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            _hover: {
+                              bg: 'gray.800',
+                              borderColor: 'violet.500/50',
+                              color: 'violet.300',
+                            },
+                            _focusVisible: {
+                              outline: '2px solid',
+                              outlineColor: 'violet.500',
+                              outlineOffset: '2px',
+                            },
+                            _disabled: { opacity: 0.5, cursor: 'not-allowed' },
+                          })}
+                        >
+                          <GitPullRequest
+                            aria-hidden="true"
+                            className={css({ w: '3.5', h: '3.5' })}
+                          />
+                          Review PR
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCreateSession}
+                          disabled={createSession.isPending}
+                          className={css({
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '1.5',
+                            px: '3',
+                            py: '1.5',
+                            rounded: 'full',
+                            fontSize: 'sm',
+                            color: 'gray.300',
+                            bg: 'gray.800/50',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            _hover: {
+                              bg: 'gray.800',
+                              borderColor: 'violet.500/50',
+                              color: 'violet.300',
+                            },
+                            _focusVisible: {
+                              outline: '2px solid',
+                              outlineColor: 'violet.500',
+                              outlineOffset: '2px',
+                            },
+                            _disabled: { opacity: 0.5, cursor: 'not-allowed' },
+                          })}
+                        >
+                          <Bug aria-hidden="true" className={css({ w: '3.5', h: '3.5' })} />
+                          Debug issue
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCreateSession}
+                          disabled={createSession.isPending}
+                          className={css({
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '1.5',
+                            px: '3',
+                            py: '1.5',
+                            rounded: 'full',
+                            fontSize: 'sm',
+                            color: 'gray.300',
+                            bg: 'gray.800/50',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            _hover: {
+                              bg: 'gray.800',
+                              borderColor: 'violet.500/50',
+                              color: 'violet.300',
+                            },
+                            _focusVisible: {
+                              outline: '2px solid',
+                              outlineColor: 'violet.500',
+                              outlineOffset: '2px',
+                            },
+                            _disabled: { opacity: 0.5, cursor: 'not-allowed' },
+                          })}
+                        >
+                          <Code aria-hidden="true" className={css({ w: '3.5', h: '3.5' })} />
+                          Generate code
+                        </button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Overlay for mobile when source panel is open */}
+          {isSourcePanelOpen && (
+            <button
+              type="button"
+              onClick={toggleSourcePanel}
+              onKeyDown={(e) => e.key === 'Escape' && toggleSourcePanel()}
+              aria-label="Close source panel"
+              className={css({
+                display: { base: 'block', lg: 'none' },
+                position: 'absolute',
+                inset: '0',
+                bg: 'black/50',
+                zIndex: Z_INDEX.sourcePanelOverlay,
+                border: 'none',
+                cursor: 'pointer',
+              })}
+            />
+          )}
+
+          {/* Source Panel - Right Sidebar (complementary region) */}
+          <motion.aside
+            ref={sourcePanelRef}
+            aria-label="Code sources"
+            initial={noMotion ? false : { x: SOURCE_PANEL_ANIMATION_OFFSET, opacity: 0 }}
+            animate={{
+              x: isSourcePanelOpen ? 0 : SOURCE_PANEL_ANIMATION_OFFSET,
+              opacity: isSourcePanelOpen ? 1 : 0,
+            }}
+            transition={noMotion ? { duration: 0 } : { duration: 0.3, ease: 'easeInOut' }}
+            className={css({
+              position: { base: 'absolute', lg: 'relative' },
+              top: '0',
+              right: '0',
+              bottom: '0',
+              zIndex: Z_INDEX.sidebar,
+              w: SOURCE_PANEL_WIDTH,
+              borderLeft: '1px solid',
+              borderColor: 'gray.800',
+              bg: 'gray.900/95',
+              backdropFilter: 'blur(16px)',
+              display: isSourcePanelOpen ? 'block' : 'none',
+              overflow: 'hidden',
+            })}
+          >
+            <SourcePanel
+              initialSource={activeSource}
+              initialRepo={DEFAULT_COPILOT_REPO}
+              onSourceChange={handleSourceChange}
+              localFiles={localFiles}
+              onLocalFilesSelect={handleLocalFilesSelect}
+              onLocalFilesUpload={handleLocalFilesUpload}
+              onRawFilesUpload={handleRawFilesUpload}
+              localAnalysisResult={localAnalysisResult}
+              isAnalyzingLocal={isAnalyzingLocal}
+              localError={localError}
+              maxHeight={SOURCE_PANEL_MAX_HEIGHT}
+            />
+          </motion.aside>
+        </div>
+
+        {/* Keyboard Shortcuts Modal */}
+        {showShortcutsModal && (
+          <KeyboardShortcutsModal isOpen={showShortcutsModal} onClose={closeShortcutsModal} />
+        )}
+      </main>
+    </>
   )
 }
 
