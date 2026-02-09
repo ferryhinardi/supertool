@@ -7,7 +7,8 @@ on:
 # Permissions - what can this workflow access?
 permissions:
   contents: read
-  pull-requests: write
+  issues: read
+  pull-requests: read
 
 # Outputs - what APIs and tools can the AI use?
 safe-outputs:

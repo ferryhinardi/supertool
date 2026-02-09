@@ -7,13 +7,32 @@ on:
 # Permissions - what can this workflow access?
 permissions:
   contents: read
-  issues: write
+  issues: read
+  pull-requests: read
 
 # Outputs - what APIs and tools can the AI use?
 safe-outputs:
   add-comment:
     max: 1
-  add-labels: true
+  add-labels:
+    allowed:
+      - bug
+      - feature
+      - enhancement
+      - docs
+      - question
+      - performance
+      - security
+      - ai-tools
+      - data-tools
+      - design-tools
+      - dev-tools
+      - finance-tools
+      - media-tools
+      - productivity-tools
+      - security-tools
+      - high-priority
+      - good-first-issue
 
 ---
 
