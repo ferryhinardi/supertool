@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   useCreateSession,
   useDeleteSession,
@@ -8,14 +8,23 @@ import {
   useRenameSession,
   useSessions,
 } from '@/lib/hooks/use-copilot-session'
+import type { CopilotSession } from '@/lib/services/copilot/types'
+import { downloadSessionAsMarkdown } from '@/lib/utils/export-session'
 import { css } from '@/styled-system/css'
 
 interface SessionSidebarProps {
   activeSessionId?: string
   onSessionSelect: (id: string) => void
+  triggerRenameSessionId?: string | null
+  onRenameTriggered?: () => void
 }
 
-export function SessionSidebar({ activeSessionId, onSessionSelect }: SessionSidebarProps) {
+export function SessionSidebar({
+  activeSessionId,
+  onSessionSelect,
+  triggerRenameSessionId,
+  onRenameTriggered,
+}: SessionSidebarProps) {
   const { data: sessions, isLoading, isError, error } = useSessions()
   const createSession = useCreateSession()
   const deleteSession = useDeleteSession()
@@ -25,6 +34,25 @@ export function SessionSidebar({ activeSessionId, onSessionSelect }: SessionSide
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState('')
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [exportingId, setExportingId] = useState<string | null>(null)
+
+  // Filter sessions based on search query
+  const filteredSessions = useMemo(() => {
+    if (!sessions) return []
+    if (!searchQuery.trim()) return sessions
+
+    const query = searchQuery.toLowerCase().trim()
+    return sessions.filter((session) => {
+      const nameMatch = session.name.toLowerCase().includes(query)
+      const previewMatch = session.preview?.toLowerCase().includes(query) ?? false
+      return nameMatch || previewMatch
+    })
+  }, [sessions, searchQuery])
+
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery('')
+  }, [])
 
   const handleCreateSession = useCallback(() => {
     createSession.mutate(
@@ -76,12 +104,41 @@ export function SessionSidebar({ activeSessionId, onSessionSelect }: SessionSide
     setEditingName('')
   }, [])
 
+  const handleExportSession = useCallback(async (id: string) => {
+    setExportingId(id)
+    try {
+      const response = await fetch(`/api/copilot/sessions/${id}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch session')
+      }
+      const result = await response.json()
+      if (result.success && result.data) {
+        downloadSessionAsMarkdown(result.data as CopilotSession)
+      }
+    } catch (error) {
+      console.error('Failed to export session:', error)
+    } finally {
+      setExportingId(null)
+    }
+  }, [])
+
   const handleHover = useCallback(
     (id: string) => {
       prefetchSession(id)
     },
     [prefetchSession]
   )
+
+  // Handle external rename trigger (from keyboard shortcut)
+  useEffect(() => {
+    if (triggerRenameSessionId && sessions) {
+      const session = sessions.find((s) => s.id === triggerRenameSessionId)
+      if (session) {
+        handleStartRename(triggerRenameSessionId, session.name)
+        onRenameTriggered?.()
+      }
+    }
+  }, [triggerRenameSessionId, sessions, handleStartRename, onRenameTriggered])
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp)
@@ -158,6 +215,86 @@ export function SessionSidebar({ activeSessionId, onSessionSelect }: SessionSide
         </button>
       </div>
 
+      {/* Search Input */}
+      {sessions && sessions.length > 0 && (
+        <div
+          className={css({
+            px: '3',
+            pb: '2',
+          })}
+        >
+          <div
+            className={css({
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+            })}
+          >
+            <SearchIcon />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search sessions..."
+              aria-label="Search sessions"
+              className={css({
+                w: 'full',
+                pl: '8',
+                pr: searchQuery ? '8' : '3',
+                py: '2',
+                rounded: 'lg',
+                bg: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: 'rgba(255, 255, 255, 0.9)',
+                fontSize: 'sm',
+                outline: 'none',
+                transition: 'all 0.2s',
+                _placeholder: {
+                  color: 'rgba(255, 255, 255, 0.4)',
+                },
+                _focus: {
+                  borderColor: 'rgba(59, 130, 246, 0.5)',
+                  bg: 'rgba(0, 0, 0, 0.4)',
+                },
+              })}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className={css({
+                  position: 'absolute',
+                  right: '2',
+                  p: '1',
+                  rounded: 'md',
+                  color: 'rgba(255, 255, 255, 0.4)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  _hover: {
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    bg: 'rgba(255, 255, 255, 0.1)',
+                  },
+                })}
+                aria-label="Clear search"
+              >
+                <CloseIcon />
+              </button>
+            )}
+          </div>
+          {searchQuery && (
+            <p
+              className={css({
+                mt: '1',
+                fontSize: 'xs',
+                color: 'rgba(255, 255, 255, 0.4)',
+              })}
+            >
+              {filteredSessions.length} of {sessions.length} sessions
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Sessions List */}
       <div
         className={css({
@@ -171,29 +308,36 @@ export function SessionSidebar({ activeSessionId, onSessionSelect }: SessionSide
         ) : isError ? (
           <ErrorState error={error} />
         ) : sessions && sessions.length > 0 ? (
-          <div className={css({ display: 'flex', flexDir: 'column', gap: '1' })}>
-            {sessions.map((session) => (
-              <SessionItem
-                key={session.id}
-                session={session}
-                isActive={activeSessionId === session.id}
-                isEditing={editingId === session.id}
-                editingName={editingName}
-                isDeleting={deleteConfirmId === session.id}
-                onSelect={() => onSessionSelect(session.id)}
-                onHover={() => handleHover(session.id)}
-                onStartRename={() => handleStartRename(session.id, session.name)}
-                onSaveRename={handleSaveRename}
-                onCancelRename={handleCancelRename}
-                onEditingNameChange={setEditingName}
-                onDeleteConfirm={() => setDeleteConfirmId(session.id)}
-                onDeleteCancel={() => setDeleteConfirmId(null)}
-                onDelete={() => handleDeleteSession(session.id)}
-                formatDate={formatDate}
-                isPendingDelete={deleteSession.isPending}
-              />
-            ))}
-          </div>
+          filteredSessions.length > 0 ? (
+            <div className={css({ display: 'flex', flexDir: 'column', gap: '1' })}>
+              {filteredSessions.map((session) => (
+                <SessionItem
+                  key={session.id}
+                  session={session}
+                  isActive={activeSessionId === session.id}
+                  isEditing={editingId === session.id}
+                  editingName={editingName}
+                  isDeleting={deleteConfirmId === session.id}
+                  isExporting={exportingId === session.id}
+                  onSelect={() => onSessionSelect(session.id)}
+                  onHover={() => handleHover(session.id)}
+                  onStartRename={() => handleStartRename(session.id, session.name)}
+                  onSaveRename={handleSaveRename}
+                  onCancelRename={handleCancelRename}
+                  onEditingNameChange={setEditingName}
+                  onDeleteConfirm={() => setDeleteConfirmId(session.id)}
+                  onDeleteCancel={() => setDeleteConfirmId(null)}
+                  onDelete={() => handleDeleteSession(session.id)}
+                  onExport={() => handleExportSession(session.id)}
+                  formatDate={formatDate}
+                  isPendingDelete={deleteSession.isPending}
+                  searchQuery={searchQuery}
+                />
+              ))}
+            </div>
+          ) : (
+            <NoResultsState query={searchQuery} onClear={handleClearSearch} />
+          )
         ) : (
           <EmptyState onCreateSession={handleCreateSession} />
         )}
@@ -214,6 +358,7 @@ interface SessionItemProps {
   isEditing: boolean
   editingName: string
   isDeleting: boolean
+  isExporting: boolean
   onSelect: () => void
   onHover: () => void
   onStartRename: () => void
@@ -223,8 +368,10 @@ interface SessionItemProps {
   onDeleteConfirm: () => void
   onDeleteCancel: () => void
   onDelete: () => void
+  onExport: () => void
   formatDate: (timestamp: number) => string
   isPendingDelete: boolean
+  searchQuery?: string
 }
 
 function SessionItem({
@@ -233,6 +380,7 @@ function SessionItem({
   isEditing,
   editingName,
   isDeleting,
+  isExporting,
   onSelect,
   onHover,
   onStartRename,
@@ -242,8 +390,10 @@ function SessionItem({
   onDeleteConfirm,
   onDeleteCancel,
   onDelete,
+  onExport,
   formatDate,
   isPendingDelete,
+  searchQuery,
 }: SessionItemProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -433,7 +583,7 @@ function SessionItem({
                   whiteSpace: 'nowrap',
                 })}
               >
-                {session.name}
+                <HighlightText text={session.name} query={searchQuery} />
               </h3>
               {session.preview && (
                 <p
@@ -446,7 +596,7 @@ function SessionItem({
                     mt: '0.5',
                   })}
                 >
-                  {session.preview}
+                  <HighlightText text={session.preview} query={searchQuery} />
                 </p>
               )}
             </div>
@@ -462,6 +612,32 @@ function SessionItem({
               })}
               style={{ opacity: isActive ? 1 : undefined }}
             >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onExport()
+                }}
+                disabled={isExporting}
+                className={css({
+                  p: '1',
+                  rounded: 'md',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  _hover: {
+                    color: 'rgba(167, 139, 250, 1)',
+                    bg: 'rgba(139, 92, 246, 0.1)',
+                  },
+                  _disabled: {
+                    opacity: 0.5,
+                    cursor: 'not-allowed',
+                  },
+                })}
+                aria-label="Export session as Markdown"
+              >
+                {isExporting ? <LoadingSpinner /> : <DownloadIcon />}
+              </button>
               <button
                 type="button"
                 onClick={(e) => {
@@ -644,6 +820,92 @@ function EmptyState({ onCreateSession }: { onCreateSession: () => void }) {
   )
 }
 
+function NoResultsState({ query, onClear }: { query: string; onClear: () => void }) {
+  return (
+    <div
+      className={css({
+        p: '6',
+        textAlign: 'center',
+        color: 'rgba(255, 255, 255, 0.5)',
+      })}
+    >
+      <div
+        className={css({
+          w: '12',
+          h: '12',
+          mx: 'auto',
+          mb: '3',
+          rounded: 'full',
+          bg: 'rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'rgba(255, 255, 255, 0.4)',
+        })}
+      >
+        <SearchIconLarge />
+      </div>
+      <p className={css({ fontSize: 'sm', mb: '1' })}>No sessions found</p>
+      <p className={css({ fontSize: 'xs', color: 'rgba(255, 255, 255, 0.4)', mb: '3' })}>
+        No results for "{query}"
+      </p>
+      <button
+        type="button"
+        onClick={onClear}
+        className={css({
+          px: '3',
+          py: '1.5',
+          rounded: 'md',
+          bg: 'rgba(255, 255, 255, 0.1)',
+          color: 'rgba(255, 255, 255, 0.7)',
+          fontSize: 'xs',
+          fontWeight: '500',
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          _hover: {
+            bg: 'rgba(255, 255, 255, 0.15)',
+          },
+        })}
+      >
+        Clear search
+      </button>
+    </div>
+  )
+}
+
+function HighlightText({ text, query }: { text: string; query?: string }) {
+  if (!query?.trim()) {
+    return <>{text}</>
+  }
+
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escapedQuery})`, 'gi')
+  const parts = text.split(regex)
+
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.toLowerCase() === query.toLowerCase() ? (
+          <mark
+            key={index}
+            className={css({
+              bg: 'rgba(59, 130, 246, 0.3)',
+              color: 'rgb(191, 219, 254)',
+              px: '0.5',
+              rounded: 'sm',
+            })}
+          >
+            {part}
+          </mark>
+        ) : (
+          part
+        )
+      )}
+    </>
+  )
+}
+
 // Icons
 function PlusIcon() {
   return (
@@ -762,6 +1024,114 @@ function ErrorIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+      />
+    </svg>
+  )
+}
+
+function SearchIcon() {
+  return (
+    <svg
+      className={css({
+        w: '4',
+        h: '4',
+        position: 'absolute',
+        left: '2.5',
+        color: 'rgba(255, 255, 255, 0.4)',
+      })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <title>Search</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+      />
+    </svg>
+  )
+}
+
+function SearchIconLarge() {
+  return (
+    <svg
+      className={css({ w: '6', h: '6' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      aria-hidden="true"
+    >
+      <title>Search</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+      />
+    </svg>
+  )
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      className={css({ w: '3.5', h: '3.5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <title>Clear</title>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+    </svg>
+  )
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      className={css({ w: '3.5', h: '3.5' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <title>Export</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+      />
+    </svg>
+  )
+}
+
+function LoadingSpinner() {
+  return (
+    <svg
+      className={css({ w: '3.5', h: '3.5', animation: 'spin 1s linear infinite' })}
+      fill="none"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <title>Loading</title>
+      <circle
+        className={css({ opacity: 0.25 })}
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className={css({ opacity: 0.75 })}
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       />
     </svg>
   )

@@ -736,6 +736,13 @@ type ToolEvent =
   | 'copilot_tool_open'
   | 'copilot_session_selected'
   | 'copilot_session_created'
+  | 'copilot_session_deleted'
+  | 'copilot_session_renamed'
+  | 'copilot_keyboard_shortcut_used'
+  | 'copilot_source_panel_toggled'
+  | 'copilot_local_files_uploaded'
+  | 'copilot_local_files_selected'
+  | 'copilot_source_changed'
 
 // Type-safe gtag wrapper
 declare global {

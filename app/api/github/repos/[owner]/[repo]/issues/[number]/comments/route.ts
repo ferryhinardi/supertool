@@ -28,7 +28,7 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(result.data)
+    return NextResponse.json({ success: true, data: result.data })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json({ error: message }, { status: 500 })
@@ -70,7 +70,7 @@ export async function POST(
       )
     }
 
-    return NextResponse.json(result.data, { status: 201 })
+    return NextResponse.json({ success: true, data: result.data }, { status: 201 })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json({ error: message }, { status: 500 })

@@ -1,20 +1,95 @@
 'use client'
 
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useCopilot, useCopilotStore } from '@/lib/hooks'
+import type { FileAttachment } from '@/lib/services/copilot/types'
 import { css } from '@/styled-system/css'
 import { ChatInput } from './chat-input'
 import { ChatMessage } from './chat-message'
+import { MessageSearch } from './message-search'
 
 interface ChatContainerProps {
   sessionId: string
+  /** Selected raw files to include as attachments when sending messages */
+  selectedFiles?: File[]
 }
 
-export function ChatContainer({ sessionId }: ChatContainerProps) {
+/**
+ * Convert a File object to a FileAttachment
+ */
+async function fileToAttachment(file: File): Promise<FileAttachment> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const base64 = reader.result as string
+      const isImage = file.type.startsWith('image/')
+      resolve({
+        id: `${file.name}-${Date.now()}`,
+        name: file.name,
+        type: isImage ? 'image' : 'document',
+        mimeType: file.type || 'application/octet-stream',
+        size: file.size,
+        data: base64.split(',')[1] || base64, // Remove data URL prefix if present
+        preview: isImage ? base64 : undefined,
+      })
+    }
+    reader.onerror = () => reject(new Error(`Failed to read file: ${file.name}`))
+    reader.readAsDataURL(file)
+  })
+}
+
+export function ChatContainer({ sessionId, selectedFiles = [] }: ChatContainerProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map())
   const prevMessageCountRef = useRef(0)
   const { messages, isStreaming } = useCopilotStore()
   const { sendMessage, error } = useCopilot({})
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0)
+
+  // Compute matching message indices based on search query
+  const matchingIndices = useMemo(() => {
+    if (!searchQuery.trim()) return []
+    const query = searchQuery.toLowerCase()
+    return messages
+      .map((msg, idx) => (msg.content.toLowerCase().includes(query) ? idx : -1))
+      .filter((idx) => idx !== -1)
+  }, [messages, searchQuery])
+
+  // Reset current match when matches change
+  useEffect(() => {
+    if (matchingIndices.length > 0) {
+      setCurrentMatchIndex(0)
+    }
+  }, [matchingIndices.length])
+
+  // Keyboard shortcut for Cmd/Ctrl+F to open search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+        e.preventDefault()
+        setIsSearchOpen(true)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Scroll to current matching message
+  useEffect(() => {
+    if (matchingIndices.length > 0 && currentMatchIndex < matchingIndices.length) {
+      const messageIndex = matchingIndices[currentMatchIndex]
+      const message = messages[messageIndex]
+      if (message) {
+        const element = messageRefs.current.get(message.id)
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
+  }, [currentMatchIndex, matchingIndices, messages])
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -25,11 +100,45 @@ export function ChatContainer({ sessionId }: ChatContainerProps) {
   })
 
   const handleSend = useCallback(
-    (content: string) => {
-      sendMessage(sessionId, content)
+    async (content: string) => {
+      // Convert selected files to attachments if any
+      let attachments: FileAttachment[] | undefined
+      if (selectedFiles.length > 0) {
+        try {
+          attachments = await Promise.all(selectedFiles.map(fileToAttachment))
+        } catch (error) {
+          console.error('Failed to process file attachments:', error)
+        }
+      }
+      sendMessage(sessionId, content, undefined, attachments)
     },
-    [sendMessage, sessionId]
+    [sendMessage, sessionId, selectedFiles]
   )
+
+  const handleCloseSearch = useCallback(() => {
+    setIsSearchOpen(false)
+    setSearchQuery('')
+    setCurrentMatchIndex(0)
+  }, [])
+
+  const handlePrevMatch = useCallback(() => {
+    if (matchingIndices.length === 0) return
+    setCurrentMatchIndex((prev) => (prev === 0 ? matchingIndices.length - 1 : prev - 1))
+  }, [matchingIndices.length])
+
+  const handleNextMatch = useCallback(() => {
+    if (matchingIndices.length === 0) return
+    setCurrentMatchIndex((prev) => (prev === matchingIndices.length - 1 ? 0 : prev + 1))
+  }, [matchingIndices.length])
+
+  // Helper to register message refs
+  const setMessageRef = useCallback((id: string, element: HTMLDivElement | null) => {
+    if (element) {
+      messageRefs.current.set(id, element)
+    } else {
+      messageRefs.current.delete(id)
+    }
+  }, [])
 
   return (
     <div
@@ -42,8 +151,22 @@ export function ChatContainer({ sessionId }: ChatContainerProps) {
         overflow: 'hidden',
       })}
     >
+      {/* Search bar */}
+      {isSearchOpen && (
+        <MessageSearch
+          value={searchQuery}
+          onChange={setSearchQuery}
+          onClose={handleCloseSearch}
+          matchCount={matchingIndices.length}
+          currentMatch={matchingIndices.length > 0 ? currentMatchIndex + 1 : 0}
+          onPrevMatch={handlePrevMatch}
+          onNextMatch={handleNextMatch}
+        />
+      )}
+
       {/* Messages area */}
       <div
+        ref={messagesContainerRef}
         className={css({
           flex: '1',
           overflowY: 'auto',
@@ -59,8 +182,15 @@ export function ChatContainer({ sessionId }: ChatContainerProps) {
           messages.map((message, index) => (
             <ChatMessage
               key={message.id}
+              ref={(el) => setMessageRef(message.id, el)}
               message={message}
               isStreaming={isStreaming && index === messages.length - 1}
+              searchQuery={isSearchOpen ? searchQuery : undefined}
+              isCurrentMatch={
+                isSearchOpen &&
+                matchingIndices.length > 0 &&
+                matchingIndices[currentMatchIndex] === index
+              }
             />
           ))
         )}

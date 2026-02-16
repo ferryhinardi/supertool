@@ -447,6 +447,7 @@ export default function CSVExcelConverterPage() {
                 <TooltipTrigger asChild>
                   <Button
                     onClick={handleSwapMode}
+                    aria-label="Switch conversion mode"
                     className={css({
                       rounded: 'full',
                       p: '3',

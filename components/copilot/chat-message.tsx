@@ -1,7 +1,7 @@
 'use client'
 
 import type React from 'react'
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 import type {
   CopilotMessage,
   FileAttachment,
@@ -15,14 +15,52 @@ import { MarkdownRenderer } from './markdown-renderer'
 interface ChatMessageProps {
   message: CopilotMessage
   isStreaming?: boolean
+  searchQuery?: string
+  isCurrentMatch?: boolean
 }
 
-export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) {
+/**
+ * Helper component to highlight search matches in text
+ */
+function HighlightedText({ text, query }: { text: string; query: string }) {
+  if (!query.trim()) return <>{text}</>
+
+  const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const parts = text.split(new RegExp(`(${escapeRegex(query)})`, 'gi'))
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.toLowerCase() === query.toLowerCase() ? (
+          <mark
+            key={i}
+            className={css({
+              bg: 'rgba(234, 179, 8, 0.4)',
+              color: 'inherit',
+              rounded: 'sm',
+              px: '0.5',
+            })}
+          >
+            {part}
+          </mark>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  )
+}
+
+export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(function ChatMessage(
+  { message, isStreaming = false, searchQuery, isCurrentMatch },
+  ref
+) {
   const isUser = message.role === 'user'
   const isSystem = message.role === 'system'
 
   return (
     <div
+      ref={ref}
       className={css({
         display: 'flex',
         flexDir: 'column',
@@ -42,6 +80,7 @@ export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) 
           : isSystem
             ? 'rgba(234, 179, 8, 0.3)'
             : 'rgba(255, 255, 255, 0.1)',
+        boxShadow: isCurrentMatch ? '0 0 0 2px rgba(234, 179, 8, 0.6)' : undefined,
         backdropFilter: 'blur(10px)',
         transition: 'all 0.2s ease',
         _hover: {
@@ -97,7 +136,11 @@ export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) 
             wordBreak: 'break-word',
           })}
         >
-          {message.content}
+          {searchQuery ? (
+            <HighlightedText text={message.content} query={searchQuery} />
+          ) : (
+            message.content
+          )}
         </div>
       ) : (
         // Assistant/System messages: Render markdown with syntax highlighting
@@ -183,7 +226,7 @@ export function ChatMessage({ message, isStreaming = false }: ChatMessageProps) 
       </div>
     </div>
   )
-}
+})
 
 interface AttachmentCardProps {
   attachment: FileAttachment

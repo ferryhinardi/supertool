@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
+import { checkRateLimit, getRateLimiter } from '@/lib/services/api'
 import {
   type APIResponse,
   type CopilotError,
@@ -116,17 +117,36 @@ function validateCreateSessionRequest(body: unknown): ValidationResult<CreateSes
  *
  * Response: APIResponse<SessionMetadata[]>
  */
-export async function GET(): Promise<NextResponse<APIResponse<SessionMetadata[]>>> {
+export async function GET(
+  request: NextRequest
+): Promise<NextResponse<APIResponse<SessionMetadata[]>>> {
   try {
+    // Check rate limit
+    const { result: rateLimitResult, response: rateLimitResponse } = checkRateLimit(
+      request,
+      'sessionRead'
+    )
+    if (rateLimitResponse) {
+      return rateLimitResponse as NextResponse<APIResponse<SessionMetadata[]>>
+    }
+
+    const rateLimiter = getRateLimiter('sessionRead')
+    const rateLimitHeaders = rateLimiter.getHeaders(rateLimitResult)
+
     const manager = getCopilotManager()
     await manager.initialize()
 
     const sessions = await manager.listSessions()
 
-    return NextResponse.json({
-      success: true,
-      data: sessions,
-    })
+    return NextResponse.json(
+      {
+        success: true,
+        data: sessions,
+      },
+      {
+        headers: rateLimitHeaders,
+      }
+    )
   } catch (error) {
     const copilotError = CopilotErrorHandler.categorizeError(error)
     return createErrorResponse(copilotError)
@@ -147,6 +167,18 @@ export async function POST(
   request: NextRequest
 ): Promise<NextResponse<APIResponse<CopilotSession>>> {
   try {
+    // Check rate limit (more restrictive for session creation)
+    const { result: rateLimitResult, response: rateLimitResponse } = checkRateLimit(
+      request,
+      'sessionCreate'
+    )
+    if (rateLimitResponse) {
+      return rateLimitResponse as NextResponse<APIResponse<CopilotSession>>
+    }
+
+    const rateLimiter = getRateLimiter('sessionCreate')
+    const rateLimitHeaders = rateLimiter.getHeaders(rateLimitResult)
+
     let body: unknown = {}
 
     // Parse request body (empty body is valid)
@@ -183,7 +215,10 @@ export async function POST(
         success: true,
         data: session,
       },
-      { status: 201 }
+      {
+        status: 201,
+        headers: rateLimitHeaders,
+      }
     )
   } catch (error) {
     const copilotError = CopilotErrorHandler.categorizeError(error)

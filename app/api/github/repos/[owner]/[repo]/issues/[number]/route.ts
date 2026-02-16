@@ -38,7 +38,7 @@ export async function GET(
       comments_data: commentsResult.success ? commentsResult.data : [],
     }
 
-    return NextResponse.json(response)
+    return NextResponse.json({ success: true, data: response })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json({ error: message }, { status: 500 })
