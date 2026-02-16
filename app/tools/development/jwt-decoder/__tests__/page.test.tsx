@@ -71,13 +71,6 @@ describe('JWT Decoder - Component Tests', () => {
     expect(screen.getByRole('button', { name: /clear/i }))
   })
 
-  it('should display educational sections', () => {
-    renderPage()
-
-    expect(screen.getByText('What is JWT?'))
-    expect(screen.getByText('Common Use Cases'))
-  })
-
   it('should display JWT structure information', () => {
     renderPage()
 

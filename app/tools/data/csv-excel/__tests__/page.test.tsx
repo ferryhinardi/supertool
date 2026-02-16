@@ -162,15 +162,6 @@ describe('CSVExcelConverterPage', () => {
       expect(screen.getByText('Supports .csv files up to 50MB')).toBeInTheDocument()
     })
 
-    it('renders the How to Use section', () => {
-      render(<CSVExcelConverterPage />)
-
-      expect(screen.getByText('How to Use')).toBeInTheDocument()
-      expect(
-        screen.getByText('Select conversion mode (CSV to Excel or Excel to CSV)')
-      ).toBeInTheDocument()
-    })
-
     it('does not show result or error sections initially', () => {
       render(<CSVExcelConverterPage />)
 

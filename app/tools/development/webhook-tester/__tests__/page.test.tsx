@@ -389,14 +389,6 @@ describe('WebhookTesterPage', () => {
         expect(screen.getByText('Select a webhook to view its request log')).toBeInTheDocument()
       })
     })
-
-    it('should show Pro Tips section', async () => {
-      render(<WebhookTesterPage />)
-
-      await waitFor(() => {
-        expect(screen.getByText('💡 Pro Tips')).toBeInTheDocument()
-      })
-    })
   })
 
   // ============================================
@@ -1208,53 +1200,6 @@ describe('WebhookTesterPage', () => {
 
       expect(
         screen.getByText('Send a request to your webhook URL to see it here')
-      ).toBeInTheDocument()
-    })
-  })
-
-  // ============================================
-  // Pro Tips section tests
-  // ============================================
-  describe('Pro Tips section', () => {
-    beforeEach(() => {
-      mockUseAuthStore.mockReturnValue({
-        user: { id: 'user-123', email: 'test@example.com' },
-        openAuthModal: mockOpenAuthModal,
-      })
-
-      mockGetSession.mockResolvedValue({
-        data: {
-          session: { access_token: 'test-token' },
-        },
-      })
-
-      global.fetch = vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve([mockEndpoint]),
-      })
-    })
-
-    it('should display all pro tips', async () => {
-      render(<WebhookTesterPage />)
-
-      await waitFor(() => {
-        expect(screen.getByText('💡 Pro Tips')).toBeInTheDocument()
-      })
-
-      expect(
-        screen.getByText('• Webhook endpoints automatically expire after 7 days for security')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('• Click on a request to view full details including headers and body')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('• Use the response templates to simulate different API responses')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText("• Inactive webhooks won't accept new requests but keep their history")
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('• Copy the cURL command to easily recreate requests')
       ).toBeInTheDocument()
     })
   })

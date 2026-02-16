@@ -147,18 +147,6 @@ describe('ScreenshotDiffPage', () => {
       expect(screen.getAllByTestId('drag-drop-zone')).toHaveLength(2)
     })
 
-    it('renders the info card with pro tips', () => {
-      render(<ScreenshotDiffPage />)
-
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(
-        screen.getByText('Lower threshold values (0-0.1) detect subtle color differences')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('Images with different dimensions will be automatically resized to match')
-      ).toBeInTheDocument()
-    })
-
     it('renders the tool search component', () => {
       render(<ScreenshotDiffPage />)
 

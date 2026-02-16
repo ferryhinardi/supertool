@@ -381,20 +381,6 @@ describe('Encryption Tool Page', () => {
     })
   })
 
-  describe.skip('FAQ Section', () => {
-    // Skipped: FAQ section not in component
-    it('should render FAQ section', () => {
-      render(<EncryptionToolPage />)
-      expect(screen.getByText(/Frequently Asked Questions|FAQ/i)).toBeTruthy()
-    })
-
-    it('should display FAQ items', () => {
-      render(<EncryptionToolPage />)
-      const faqItems = screen.queryAllByText(/\?/)
-      expect(faqItems.length).toBeGreaterThan(0)
-    })
-  })
-
   describe('Social Share', () => {
     it('should render social share section', () => {
       render(<EncryptionToolPage />)

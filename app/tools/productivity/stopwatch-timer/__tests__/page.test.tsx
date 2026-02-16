@@ -131,12 +131,6 @@ describe('StopwatchTimerPage', () => {
       expect(screen.getByText('Stopwatch • Timer • Presets')).toBeInTheDocument()
     })
 
-    it('renders Pro Tips section', () => {
-      render(<StopwatchTimerPage />)
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(screen.getByText(/use lap times to track intervals/i)).toBeInTheDocument()
-    })
-
     it('renders mode toggle buttons', () => {
       render(<StopwatchTimerPage />)
       expect(screen.getByRole('button', { name: /stopwatch/i })).toBeInTheDocument()

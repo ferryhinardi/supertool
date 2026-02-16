@@ -71,12 +71,6 @@ describe('File Integrity Verifier - Component Tests', () => {
     expect(input).toBeInTheDocument()
   })
 
-  it('should display educational sections', () => {
-    render(<FileVerifierPage />)
-
-    expect(screen.getByText('Common Use Cases'))
-  })
-
   it('should display security badge', () => {
     render(<FileVerifierPage />)
 

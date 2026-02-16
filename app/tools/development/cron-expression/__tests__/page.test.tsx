@@ -379,20 +379,6 @@ describe('CronExpressionPage', () => {
     })
   })
 
-  describe.skip('FAQ Section', () => {
-    // Skipped: Section not in component
-    it('should render FAQ section', () => {
-      renderPage()
-      expect(screen.getByText(/Frequently Asked Questions|FAQ/i)).toBeTruthy()
-    })
-
-    it('should display FAQ items', () => {
-      renderPage()
-      const faqItems = screen.queryAllByText(/\?/)
-      expect(faqItems.length).toBeGreaterThan(0)
-    })
-  })
-
   describe.skip('Social Share', () => {
     // Skipped: Section not in component
     it('should render social share section', () => {

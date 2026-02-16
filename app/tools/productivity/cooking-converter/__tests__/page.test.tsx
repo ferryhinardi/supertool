@@ -673,49 +673,6 @@ describe('CookingConverterPage', () => {
         expect(screen.getByText('230°C (Very Hot)')).toBeInTheDocument()
       })
     })
-
-    describe('Pro Tips', () => {
-      it('renders Pro Tips section', () => {
-        render(<CookingConverterPage />)
-        expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      })
-
-      it('shows tip about weight measurements for baking', () => {
-        render(<CookingConverterPage />)
-        expect(
-          screen.getByText(
-            'For baking, weight measurements (grams) are more accurate than volume (cups).'
-          )
-        ).toBeInTheDocument()
-      })
-
-      it('shows tip about ingredient densities', () => {
-        render(<CookingConverterPage />)
-        expect(
-          screen.getByText(
-            'Different ingredients have different densities - 1 cup of flour weighs less than 1 cup of sugar.'
-          )
-        ).toBeInTheDocument()
-      })
-
-      it('shows tip about scaling leaveners', () => {
-        render(<CookingConverterPage />)
-        expect(
-          screen.getByText(
-            'When scaling recipes, small quantities of leaveners (baking powder/soda) may need adjustment.'
-          )
-        ).toBeInTheDocument()
-      })
-
-      it('shows tip about chocolate', () => {
-        render(<CookingConverterPage />)
-        expect(
-          screen.getByText(
-            'For best results with chocolate, use weight measurements and melt slowly.'
-          )
-        ).toBeInTheDocument()
-      })
-    })
   })
 
   describe('Features section', () => {

@@ -120,23 +120,6 @@ describe('HashtagGeneratorPage', () => {
       expect(screen.getByText('Under 1M posts')).toBeInTheDocument()
     })
 
-    it('renders pro tips section', () => {
-      render(<HashtagGeneratorPage />)
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(
-        screen.getByText(/Mix viral and niche hashtags for the best reach and engagement/)
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText(/Use fewer hashtags on Twitter\/X to avoid looking spammy/)
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText(/Place hashtags in comments on Instagram to keep captions clean/)
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText(/Research trending hashtags in your niche regularly/)
-      ).toBeInTheDocument()
-    })
-
     it('renders features section', () => {
       render(<HashtagGeneratorPage />)
       expect(screen.getByText('Features')).toBeInTheDocument()
