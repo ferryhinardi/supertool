@@ -387,22 +387,16 @@ describe('JWTDebuggerPage', () => {
         expect(screen.getByText('Header')).toBeInTheDocument()
       })
 
-      // The Header text and copy button are inside the same CardTitle (flex container).
-      // Find the Header text element, then look for the button within its parent.
-      const headerText = screen.getByText('Header')
-      const headerParent = headerText.parentElement
-      if (headerParent) {
-        const copyButton = within(headerParent).getByRole('button')
-        await user.click(copyButton)
+      // CardTitle renders as <h3> containing both "Header" text and a <button>.
+      // Use within(h3) to find the copy button inside it.
+      const headerHeading = screen.getByText('Header')
+      const copyButton = within(headerHeading).getByRole('button')
+      await user.click(copyButton)
 
-        await waitFor(() => {
-          expect(mockWriteText).toHaveBeenCalled()
-          expect(toast.success).toHaveBeenCalledWith('Header copied to clipboard!')
-        })
-      } else {
-        // Fail explicitly if parent not found
-        expect(headerParent).not.toBeNull()
-      }
+      await waitFor(() => {
+        expect(mockWriteText).toHaveBeenCalled()
+        expect(toast.success).toHaveBeenCalledWith('Header copied to clipboard!')
+      })
     })
 
     it('copies payload to clipboard', async () => {
@@ -416,21 +410,15 @@ describe('JWTDebuggerPage', () => {
         expect(screen.getByText('Payload')).toBeInTheDocument()
       })
 
-      // The Payload text and copy button are inside the same CardTitle (flex container).
-      // Find the Payload text element, then look for the button within its parent.
-      const payloadText = screen.getByText('Payload')
-      const payloadParent = payloadText.parentElement
-      if (payloadParent) {
-        const copyButton = within(payloadParent).getByRole('button')
-        await user.click(copyButton)
+      // CardTitle renders as <h3> containing both "Payload" text and a <button>.
+      // Use within(h3) to find the copy button inside it.
+      const payloadHeading = screen.getByText('Payload')
+      const copyButton = within(payloadHeading).getByRole('button')
+      await user.click(copyButton)
 
-        await waitFor(() => {
-          expect(mockWriteText).toHaveBeenCalled()
-        })
-      } else {
-        // Fail explicitly if parent not found
-        expect(payloadParent).not.toBeNull()
-      }
+      await waitFor(() => {
+        expect(mockWriteText).toHaveBeenCalled()
+      })
     })
 
     it('copies generated token to clipboard', async () => {
