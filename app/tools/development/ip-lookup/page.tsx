@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   CheckCircle,
   Copy,
@@ -160,10 +159,13 @@ export default function IPLookupPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -219,13 +221,15 @@ export default function IPLookupPage() {
           Discover detailed information about any IP address including location, ISP, timezone, and
           more.
         </p>
-      </motion.div>
+      </div>
 
       {/* Lookup Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -281,16 +285,18 @@ export default function IPLookupPage() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Results */}
       {ipInfo && (
         <>
           {/* Main Info Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -519,23 +525,19 @@ export default function IPLookupPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         </>
       )}
 
       {/* Features */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+      <div
         className={css({
           display: 'grid',
           gap: '4',
-          gridTemplateColumns: {
-            base: '1',
-            sm: 'repeat(2, 1fr)',
-            lg: 'repeat(4, 1fr)',
-          },
+          gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
         })}
       >
         {[
@@ -583,7 +585,7 @@ export default function IPLookupPage() {
             </CardContent>
           </Card>
         ))}
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

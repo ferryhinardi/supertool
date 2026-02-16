@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   ArrowLeftRight,
   ArrowRight,
@@ -199,11 +198,13 @@ function CurrencyConverterContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -254,13 +255,15 @@ function CurrencyConverterContent() {
           Convert between 150+ world currencies with real-time exchange rates. Fast, accurate, and
           free to use.
         </p>
-      </motion.div>
+      </div>
 
       {/* Converter */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -527,15 +530,15 @@ function CurrencyConverterContent() {
 
             {/* Exchange Rate Info */}
             {exchangeRate !== null && !loading && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+              <div
                 className={css({
                   rounded: 'lg',
                   border: '1px solid',
                   borderColor: 'emerald.500/20',
                   bg: 'emerald.500/5',
                   p: '4',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
                 })}
               >
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
@@ -549,18 +552,20 @@ function CurrencyConverterContent() {
                 <p className={css({ fontSize: 'sm', color: 'white' })}>
                   1 {fromCurrencyInfo?.code} = {exchangeRate.toFixed(6)} {toCurrencyInfo?.code}
                 </p>
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Favorites */}
       {favorites.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -671,14 +676,16 @@ function CurrencyConverterContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -715,7 +722,7 @@ function CurrencyConverterContent() {
             </li>
           </ul>
         </div>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

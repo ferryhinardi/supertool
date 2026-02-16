@@ -15,15 +15,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock window.open
 global.window.open = vi.fn()
 

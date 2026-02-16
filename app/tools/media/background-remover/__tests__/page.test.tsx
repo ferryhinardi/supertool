@@ -2,13 +2,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import BackgroundRemoverPage from '../page'
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.ComponentProps<'div'>) => <div {...props}>{children}</div>,
-  },
-}))
-
 // Mock analytics
 vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),

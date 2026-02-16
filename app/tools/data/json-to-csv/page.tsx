@@ -675,46 +675,6 @@ export default function JSONToCSVPage() {
           </div>
         </div>
 
-        {/* Help Section */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'teal.500/20',
-            bg: 'rgba(20, 184, 166, 0.05)',
-            p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <h3
-            className={css({
-              mb: '3',
-              fontSize: { base: 'base', sm: 'lg' },
-              fontWeight: 'bold',
-              color: 'teal.300',
-            })}
-          >
-            How to Use
-          </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Paste your JSON array in the editor above
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Configure delimiter (default: comma) and flattening options
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Preview the CSV output in real-time
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Copy to clipboard or download as a CSV file
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Nested objects are flattened using dot notation (e.g., &ldquo;address.city&rdquo;)
-            </li>
-          </ul>
-        </div>
-
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
         <ToolSearch />

@@ -1,7 +1,6 @@
 'use client'
 
 import type { FFmpeg } from '@ffmpeg/ffmpeg'
-import { motion } from 'framer-motion'
 import {
   Download,
   FileVideo,
@@ -504,18 +503,7 @@ export default function VideoConverterPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1rem',
-          textAlign: 'center',
-        }}
-      >
+      <div className={css({ animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}>
         <div
           className={css({
             display: 'inline-flex',
@@ -612,23 +600,16 @@ export default function VideoConverterPage() {
             )}
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* Stats Summary */}
       {videos.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '1rem',
-            width: '100%',
-            maxWidth: '1400px',
-          }}
+        <div
           className={css({
             sm: { gridTemplateColumns: 'repeat(4, 1fr)' },
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.1s',
+            opacity: 0,
           })}
         >
           <Card
@@ -727,7 +708,7 @@ export default function VideoConverterPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       <div
@@ -740,13 +721,12 @@ export default function VideoConverterPage() {
         })}
       >
         {/* Settings Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          style={{ width: '100%' }}
+        <div
           className={css({
             gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 1' },
+            animation: 'slideInLeft 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
           })}
         >
           <Card
@@ -1083,16 +1063,15 @@ export default function VideoConverterPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Upload & Videos Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          style={{ width: '100%' }}
+        <div
           className={css({
             gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 2' },
+            animation: 'slideInLeft 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
           })}
         >
           <Card
@@ -1321,24 +1300,17 @@ export default function VideoConverterPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       </div>
 
       {/* Features Info */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-        style={{
-          display: 'grid',
-          gap: '1rem',
-          gridTemplateColumns: '1fr',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
+      <div
         className={css({
           sm: { gridTemplateColumns: 'repeat(2, 1fr)' },
           lg: { gridTemplateColumns: 'repeat(4, 1fr)' },
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
         })}
       >
         {[
@@ -1385,7 +1357,7 @@ export default function VideoConverterPage() {
             </CardContent>
           </Card>
         ))}
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

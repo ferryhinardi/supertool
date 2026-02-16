@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Copy, DollarSign, Info, RotateCcw, Sparkles, TrendingUp, Users } from 'lucide-react'
 import { parseAsFloat, parseAsInteger, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
@@ -132,11 +131,13 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -193,13 +194,15 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
           Calculate tips quickly with preset percentages or custom amounts. Split bills among
           multiple people and round totals for convenience.
         </p>
-      </motion.div>
+      </div>
 
       {/* Bill Amount Input */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -258,13 +261,15 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Tip Percentage Selection */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -372,13 +377,15 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Split Bill & Rounding Options */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -516,15 +523,11 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Results */}
       {calculation && billAmount > 0 && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div className={css({ animation: 'scaleIn 0.3s ease-out forwards', opacity: 0 })}>
           <Card
             className={css({
               border: '1px solid',
@@ -829,14 +832,16 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Quick Tips */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -924,7 +929,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
             </CardContent>
           </Card>
         </div>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
       <ToolSearch />

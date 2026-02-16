@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { ArrowRight, Clock, X } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -67,10 +66,7 @@ export function RecentTools() {
   }
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
+    <section
       className={css({
         position: 'relative',
         zIndex: '10',
@@ -78,6 +74,9 @@ export function RecentTools() {
         w: 'full',
         maxW: { base: 'full', sm: '3xl', md: '4xl', lg: '5xl' },
         mb: { base: '8', sm: '10', md: '12' },
+        animation: 'slideUp 0.5s ease-out forwards',
+        animationDelay: '0.2s',
+        opacity: 0,
       })}
     >
       <div
@@ -184,16 +183,15 @@ export function RecentTools() {
             },
           })}
         >
-          {recentTools?.map((tool, index) => {
+          {recentTools?.map((tool) => {
             const Icon = Clock // Using Clock as default icon for now
             return (
-              <motion.div
-                key={tool.toolId}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
+              <div
+                key={tool.href}
                 className={css({
                   flexShrink: 0,
+                  animation: 'slideInLeft 0.3s ease-out forwards',
+                  opacity: 0,
                 })}
               >
                 <Link
@@ -326,11 +324,11 @@ export function RecentTools() {
                     />
                   </Card>
                 </Link>
-              </motion.div>
+              </div>
             )
           })}
         </div>
       )}
-    </motion.section>
+    </section>
   )
 }

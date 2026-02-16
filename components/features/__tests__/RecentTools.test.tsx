@@ -44,17 +44,6 @@ vi.mock('next/link', () => ({
   ),
 }))
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    section: ({ children, ...props }: { children: React.ReactNode }) => (
-      <section {...props}>{children}</section>
-    ),
-    div: ({ children, ...props }: { children: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 describe('RecentTools Component', () => {
   let queryClient: QueryClient
 

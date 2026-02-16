@@ -1,30 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type * as React from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import FaviconGeneratorPage from '../page'
 
 // Mock analytics
 vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
-}))
-
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ...props
-    }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-    span: ({
-      children,
-      ...props
-    }: React.HTMLAttributes<HTMLSpanElement> & { children?: React.ReactNode }) => (
-      <span {...props}>{children}</span>
-    ),
-  },
 }))
 
 // Mock URL.createObjectURL and revokeObjectURL

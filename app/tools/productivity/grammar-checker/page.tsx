@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { AlertCircle, CheckCircle2, Copy, Loader2, Type } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -128,11 +127,13 @@ export default function GrammarCheckerPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -183,13 +184,15 @@ export default function GrammarCheckerPage() {
           Check your text for grammar, spelling, punctuation, and style issues. Get instant
           suggestions powered by AI.
         </p>
-      </motion.div>
+      </div>
 
       {/* Input Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -303,15 +306,11 @@ export default function GrammarCheckerPage() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Error Display */}
       {error && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div className={css({ animation: 'scaleIn 0.3s ease-out forwards', opacity: 0 })}>
           <Card
             className={css({
               border: '1px solid',
@@ -327,17 +326,19 @@ export default function GrammarCheckerPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Results Section */}
       {result && (
         <>
           {/* Summary */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -412,14 +413,16 @@ export default function GrammarCheckerPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Issues List */}
           {result.issues.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.3s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -487,10 +490,13 @@ export default function GrammarCheckerPage() {
                             </div>
 
                             {isSelected && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                className={css({ spaceY: '2', mt: '3' })}
+                              <div
+                                className={css({
+                                  spaceY: '2',
+                                  mt: '3',
+                                  animation: 'fadeIn 0.5s ease-out forwards',
+                                  opacity: 0,
+                                })}
                               >
                                 <div className={css({ fontSize: 'sm', color: 'white' })}>
                                   {issue.message}
@@ -529,7 +535,7 @@ export default function GrammarCheckerPage() {
                                   <CheckCircle2 className={css({ h: '4', w: '4' })} />
                                   Apply Fix
                                 </Button>
-                              </motion.div>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -538,15 +544,17 @@ export default function GrammarCheckerPage() {
                   })}
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Corrected Text */}
           {result.correctedText && result.issueCount > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.4s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -598,16 +606,18 @@ export default function GrammarCheckerPage() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </>
       )}
 
       {/* Tips */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.5s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -644,7 +654,7 @@ export default function GrammarCheckerPage() {
             </li>
           </ul>
         </div>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

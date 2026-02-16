@@ -12,15 +12,6 @@ vi.mock('exifr', () => ({
   },
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {

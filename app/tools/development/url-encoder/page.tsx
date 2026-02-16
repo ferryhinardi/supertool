@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { ArrowLeftRight, Check, Copy, Link2, RotateCcw, Sparkles } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useState } from 'react'
@@ -8,7 +7,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
@@ -38,49 +37,6 @@ const ENCODING_METHODS: { id: EncodingMethod; label: string; description: string
     id: 'decodeURI',
     label: 'decodeURI',
     description: 'Decodes preserving URL structure',
-  },
-]
-
-const faqs = [
-  {
-    question: 'What is URL encoding and why is it needed?',
-    answer:
-      'URL encoding (also called percent-encoding) converts special characters into a format that can be safely transmitted over the internet. Characters like spaces, &, =, and non-ASCII characters must be encoded because URLs can only contain certain characters. For example, a space becomes %20 or +, and & becomes %26.',
-  },
-  {
-    question: 'What is the difference between encodeURI and encodeURIComponent?',
-    answer:
-      "encodeURI() encodes a complete URL but preserves characters that have special meaning in URLs like :, /, ?, #, &, and =. encodeURIComponent() encodes everything except letters, numbers, and - _ . ! ~ * ' ( ). Use encodeURIComponent() for query parameter values, and encodeURI() for encoding entire URLs while preserving their structure.",
-  },
-  {
-    question: 'When should I use encodeURIComponent?',
-    answer:
-      'Use encodeURIComponent() when encoding values that will be used as query parameters, form data, or any part of a URL that might contain special characters. For example: https://example.com/search?q=encodeURIComponent(userInput). This prevents user input from breaking the URL structure.',
-  },
-  {
-    question: 'How do I decode a URL that was encoded multiple times?',
-    answer:
-      'If a URL has been encoded multiple times (double-encoded), you need to decode it the same number of times. You can repeatedly apply decodeURIComponent() until the output stops changing. Our tool shows you the decoded result after each pass so you can decode step-by-step.',
-  },
-  {
-    question: 'What characters are safe in URLs without encoding?',
-    answer:
-      "According to RFC 3986, unreserved characters that don't need encoding are: A-Z, a-z, 0-9, and - _ . ~. Reserved characters with special meaning (: / ? # [ ] @ ! $ & ' ( ) * + , ; =) should be encoded when used outside their special purpose. All other characters must be percent-encoded.",
-  },
-  {
-    question: 'Why do I see %20 vs + for spaces in URLs?',
-    answer:
-      '%20 is the correct URL encoding for space characters according to RFC 3986. The + symbol for spaces is only valid in the query string portion of URLs and comes from the older application/x-www-form-urlencoded format. encodeURIComponent() produces %20, while form submissions typically use +.',
-  },
-  {
-    question: 'Can I encode non-English characters in URLs?',
-    answer:
-      'Yes! Non-ASCII characters (like Chinese, Arabic, emoji, etc.) are first converted to UTF-8 bytes, then each byte is percent-encoded. For example, the Chinese character 中 becomes %E4%B8%AD. Modern browsers display these characters in the address bar but transmit them encoded.',
-  },
-  {
-    question: 'What happens if I try to decode an invalid encoded string?',
-    answer:
-      'If you try to decode a string with invalid percent-encoding (like %GG or incomplete sequences like %2), JavaScript will throw a URIError: "malformed URI sequence". Our tool catches these errors and displays a friendly message explaining the issue.',
   },
 ]
 
@@ -198,13 +154,12 @@ function URLEncoderContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
         className={css({
           textAlign: 'center',
           spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
         })}
       >
         <Badge
@@ -250,13 +205,15 @@ function URLEncoderContent() {
           Encode and decode URLs with encodeURI, encodeURIComponent, and their decode counterparts.
           Perfect for handling special characters in URLs and query parameters.
         </p>
-      </motion.div>
+      </div>
 
       {/* Method Selection */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -323,13 +280,15 @@ function URLEncoderContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Input/Output */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -503,13 +462,15 @@ function URLEncoderContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Quick Examples */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -597,10 +558,7 @@ function URLEncoderContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
-
-      {/* FAQ Section */}
-      <FAQAccordion faqs={faqs} />
+      </div>
 
       {/* Related Tools */}
       <RelatedTools currentToolPath="/tools/development/url-encoder" />

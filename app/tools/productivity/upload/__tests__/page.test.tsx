@@ -71,22 +71,6 @@ vi.mock('@/lib/auth/supabaseClient', () => ({
   },
 }))
 
-// Mock framer-motion Reorder
-vi.mock('framer-motion', async () => {
-  const actual = await vi.importActual('framer-motion')
-  return {
-    ...actual,
-    Reorder: {
-      Group: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-        <ul {...props}>{children}</ul>
-      ),
-      Item: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-        <li {...props}>{children}</li>
-      ),
-    },
-  }
-})
-
 describe('Cloud File Upload Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()

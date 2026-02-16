@@ -37,15 +37,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock clipboard API
 const mockClipboard = {
   writeText: vi.fn(() => Promise.resolve()),

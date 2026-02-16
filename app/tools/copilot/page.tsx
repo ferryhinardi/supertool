@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
 import {
   AlertCircle,
   Bot,
@@ -28,9 +27,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import {
   DEFAULT_COPILOT_REPO,
   MAIN_CONTENT_HEIGHT,
-  SIDEBAR_ANIMATION_OFFSET,
   SIDEBAR_WIDTH,
-  SOURCE_PANEL_ANIMATION_OFFSET,
   SOURCE_PANEL_MAX_HEIGHT,
   SOURCE_PANEL_WIDTH,
   Z_INDEX,
@@ -85,10 +82,6 @@ function CopilotPageContent() {
     handleRawFilesUpload,
     clearError: clearLocalError,
   } = useLocalFiles()
-
-  // Accessibility: respect user's reduced motion preferences
-  const shouldReduceMotion = useReducedMotion()
-  const noMotion = shouldReduceMotion ?? false
 
   const { data: sessions, isLoading: isLoadingSessions } = useSessions()
   const createSession = useCreateSession()
@@ -311,10 +304,7 @@ function CopilotPageContent() {
         )}
 
         {/* Header */}
-        <motion.div
-          initial={noMotion ? false : { opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={noMotion ? { duration: 0 } : { duration: 0.4 }}
+        <div
           className={css({
             px: { base: '4', sm: '6', md: '8' },
             py: { base: '4', sm: '5' },
@@ -322,6 +312,8 @@ function CopilotPageContent() {
             borderColor: 'gray.800',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
+            animation: 'slideUp 0s ease-out forwards',
+            opacity: 0,
           })}
         >
           <div
@@ -444,7 +436,7 @@ function CopilotPageContent() {
               </Button>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Main Content */}
         <div
@@ -456,15 +448,7 @@ function CopilotPageContent() {
           })}
         >
           {/* Sidebar - Sessions navigation */}
-          <motion.aside
-            ref={sidebarRef}
-            aria-label="Chat sessions"
-            initial={noMotion ? false : { x: SIDEBAR_ANIMATION_OFFSET, opacity: 0 }}
-            animate={{
-              x: isSidebarOpen ? 0 : SIDEBAR_ANIMATION_OFFSET,
-              opacity: isSidebarOpen ? 1 : 0,
-            }}
-            transition={noMotion ? { duration: 0 } : { duration: 0.3, ease: 'easeInOut' }}
+          <aside
             className={css({
               position: { base: 'absolute', lg: 'relative' },
               top: '0',
@@ -477,6 +461,8 @@ function CopilotPageContent() {
               bg: 'gray.900/95',
               backdropFilter: 'blur(16px)',
               display: isSidebarOpen ? 'block' : 'none',
+              animation: 'slideInLeft 0s ease-out forwards',
+              opacity: 0,
             })}
           >
             <SessionSidebar
@@ -485,7 +471,7 @@ function CopilotPageContent() {
               triggerRenameSessionId={triggerRenameSessionId}
               onRenameTriggered={clearTriggerRenameSessionId}
             />
-          </motion.aside>
+          </aside>
 
           {/* Overlay for mobile when sidebar is open */}
           {isSidebarOpen && (
@@ -525,16 +511,15 @@ function CopilotPageContent() {
             {activeSessionId ? (
               <ChatContainer sessionId={activeSessionId} selectedFiles={selectedRawFiles} />
             ) : (
-              <motion.div
-                initial={noMotion ? false : { opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={noMotion ? { duration: 0 } : { duration: 0.4 }}
+              <div
                 className={css({
                   display: 'flex',
                   flex: '1',
                   alignItems: 'center',
                   justifyContent: 'center',
                   p: '8',
+                  animation: 'scaleIn 0s ease-out forwards',
+                  opacity: 0,
                 })}
               >
                 <Card
@@ -768,7 +753,7 @@ function CopilotPageContent() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             )}
           </div>
 
@@ -792,15 +777,7 @@ function CopilotPageContent() {
           )}
 
           {/* Source Panel - Right Sidebar (complementary region) */}
-          <motion.aside
-            ref={sourcePanelRef}
-            aria-label="Code sources"
-            initial={noMotion ? false : { x: SOURCE_PANEL_ANIMATION_OFFSET, opacity: 0 }}
-            animate={{
-              x: isSourcePanelOpen ? 0 : SOURCE_PANEL_ANIMATION_OFFSET,
-              opacity: isSourcePanelOpen ? 1 : 0,
-            }}
-            transition={noMotion ? { duration: 0 } : { duration: 0.3, ease: 'easeInOut' }}
+          <aside
             className={css({
               position: { base: 'absolute', lg: 'relative' },
               top: '0',
@@ -814,6 +791,8 @@ function CopilotPageContent() {
               backdropFilter: 'blur(16px)',
               display: isSourcePanelOpen ? 'block' : 'none',
               overflow: 'hidden',
+              animation: 'slideInLeft 0s ease-out forwards',
+              opacity: 0,
             })}
           >
             <SourcePanel
@@ -829,7 +808,7 @@ function CopilotPageContent() {
               localError={localError}
               maxHeight={SOURCE_PANEL_MAX_HEIGHT}
             />
-          </motion.aside>
+          </aside>
         </div>
 
         {/* Keyboard Shortcuts Modal */}

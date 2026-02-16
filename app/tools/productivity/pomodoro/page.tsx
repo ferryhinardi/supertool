@@ -23,7 +23,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { ToolRating } from '@/components/ui/tool-rating'
@@ -73,34 +73,6 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   notificationsEnabled: true,
   soundEnabled: true,
 }
-
-const faqs = [
-  {
-    question: 'What is the Pomodoro Technique and how does it work?',
-    answer:
-      'The Pomodoro Technique is a time management method developed by Francesco Cirillo that uses a timer to break work into focused intervals (traditionally 25 minutes) separated by short breaks (5 minutes). After 4 work sessions, you take a longer break (15-30 minutes). This helps maintain concentration, reduce mental fatigue, and improve productivity by creating structured work cycles.',
-  },
-  {
-    question: 'Can I customize the timer intervals?',
-    answer:
-      'Yes! While the classic Pomodoro uses 25-minute work sessions and 5-minute breaks, our timer is fully customizable. Adjust work duration from 1-60 minutes, short breaks from 1-15 minutes, and long breaks from 10-60 minutes. Save your custom settings as presets for different types of tasks like deep work, studying, or creative projects.',
-  },
-  {
-    question: 'How do I track tasks with the Pomodoro timer?',
-    answer:
-      "Add tasks to your task list before starting a session. When you start the timer, select the task you're working on. The tool tracks completed Pomodoros per task, helping you understand time spent on different activities. Review your statistics to see total focus time, completed sessions, and productivity patterns over time.",
-  },
-  {
-    question: 'Does the timer work when I close the browser tab?',
-    answer:
-      "The timer continues running in the background even when you switch tabs or minimize the browser. You'll receive desktop notifications when each session ends (if you grant notification permissions). However, closing the browser entirely will stop the timer. For best results, keep the browser open or pinned during your work sessions.",
-  },
-  {
-    question: 'What are the benefits of using the Pomodoro Technique?',
-    answer:
-      'The Pomodoro Technique helps combat procrastination, improves focus by creating urgency, prevents burnout through regular breaks, makes large tasks less overwhelming by breaking them into smaller chunks, and provides clear metrics to measure productivity. Studies show it reduces anxiety about time and helps maintain sustained mental energy throughout the day.',
-  },
-]
 
 export default function PomodoroTimerPage() {
   // Timer state
@@ -1011,134 +983,7 @@ export default function PomodoroTimerPage() {
         </Card>
       </div>
 
-      {/* Tips Card */}
-      <Card
-        className={css({
-          border: '1px solid',
-          borderColor: 'blue.500/20',
-          bg: 'blue.500/5',
-        })}
-      >
-        <CardHeader>
-          <CardTitle className={css({ fontSize: 'lg' })}>
-            How to Use the Pomodoro Technique
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div
-            className={css({
-              display: 'grid',
-              gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-              gap: '4',
-              w: 'full',
-            })}
-          >
-            <div>
-              <div
-                className={css({
-                  mb: '2',
-                  h: '10',
-                  w: '10',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'lg',
-                  bg: 'purple.500/20',
-                  fontSize: 'xl',
-                  fontWeight: 'bold',
-                  color: 'purple.300',
-                })}
-              >
-                1
-              </div>
-              <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
-                Choose a Task
-              </h3>
-              <p className={css({ fontSize: 'xs', color: 'white' })}>
-                Select a task you want to work on and set a target number of Pomodoros.
-              </p>
-            </div>
-            <div>
-              <div
-                className={css({
-                  mb: '2',
-                  h: '10',
-                  w: '10',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'lg',
-                  bg: 'purple.500/20',
-                  fontSize: 'xl',
-                  fontWeight: 'bold',
-                  color: 'purple.300',
-                })}
-              >
-                2
-              </div>
-              <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
-                Work for 25 Minutes
-              </h3>
-              <p className={css({ fontSize: 'xs', color: 'white' })}>
-                Focus completely on your task. Avoid all distractions until the timer rings.
-              </p>
-            </div>
-            <div>
-              <div
-                className={css({
-                  mb: '2',
-                  h: '10',
-                  w: '10',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'lg',
-                  bg: 'purple.500/20',
-                  fontSize: 'xl',
-                  fontWeight: 'bold',
-                  color: 'purple.300',
-                })}
-              >
-                3
-              </div>
-              <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
-                Take a Short Break
-              </h3>
-              <p className={css({ fontSize: 'xs', color: 'white' })}>
-                Relax for 5 minutes. Stretch, grab water, or take a quick walk.
-              </p>
-            </div>
-            <div>
-              <div
-                className={css({
-                  mb: '2',
-                  h: '10',
-                  w: '10',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'lg',
-                  bg: 'purple.500/20',
-                  fontSize: 'xl',
-                  fontWeight: 'bold',
-                  color: 'purple.300',
-                })}
-              >
-                4
-              </div>
-              <h3 className={css({ mb: '1', fontSize: 'sm', fontWeight: 'semibold' })}>
-                Repeat & Rest
-              </h3>
-              <p className={css({ fontSize: 'xs', color: 'white' })}>
-                After 4 Pomodoros, take a longer 15-minute break to recharge.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* FAQ Section */}
-      <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/pomodoro" category="productivity" />
       <ToolRating toolId="/tools/pomodoro" toolName="Pomodoro Timer" />
 

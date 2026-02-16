@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   CheckCircle,
@@ -20,7 +19,7 @@ import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { Progress } from '@/components/ui/progress'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
@@ -247,10 +246,7 @@ export default function BackgroundRemoverPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
         className={css({
           display: 'flex',
           flexDirection: 'column',
@@ -258,6 +254,8 @@ export default function BackgroundRemoverPage() {
           gap: '4',
           textAlign: 'center',
           w: 'full',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
         })}
       >
         <div
@@ -322,14 +320,16 @@ export default function BackgroundRemoverPage() {
           Remove backgrounds from images instantly with AI. 100% free, works entirely in your
           browser for complete privacy. No upload to servers, no sign-up required.
         </p>
-      </motion.div>
+      </div>
 
       {/* Main Tool Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-        className={css({ w: 'full' })}
+      <div
+        className={css({
+          w: 'full',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -652,18 +652,18 @@ export default function BackgroundRemoverPage() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Features Grid */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
         className={css({
           display: 'grid',
           gap: '4',
           gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
           w: 'full',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
         })}
       >
         {[
@@ -723,108 +723,16 @@ export default function BackgroundRemoverPage() {
             </CardContent>
           </Card>
         ))}
-      </motion.div>
-
-      {/* How to Use Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className={css({ w: 'full' })}
-      >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(4px)',
-          })}
-        >
-          <CardHeader>
-            <CardTitle
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2',
-                fontSize: 'xl',
-              })}
-            >
-              <Lightbulb className={css({ h: '6', w: '6', color: 'purple.400' })} />
-              How to Remove Background from Image
-            </CardTitle>
-            <CardDescription>
-              Follow these simple steps to remove the background from any image
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className={css({ spaceY: '4' })}>
-              {[
-                {
-                  step: 1,
-                  title: 'Upload Your Image',
-                  description:
-                    'Drag and drop an image or click to browse. Supports JPG, PNG, WebP up to 20MB.',
-                },
-                {
-                  step: 2,
-                  title: 'Click Remove Background',
-                  description:
-                    'Our AI will automatically detect and remove the background from your image.',
-                },
-                {
-                  step: 3,
-                  title: 'Preview & Customize',
-                  description:
-                    'Preview the result with different background colors to see how it looks.',
-                },
-                {
-                  step: 4,
-                  title: 'Download Your Image',
-                  description:
-                    'Download the processed image as a transparent PNG file, ready to use.',
-                },
-              ].map((item) => (
-                <div
-                  key={item.step}
-                  className={css({ display: 'flex', alignItems: 'start', gap: '3' })}
-                >
-                  <Badge
-                    variant="outline"
-                    className={css({
-                      flexShrink: '0',
-                      h: '6',
-                      w: '6',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      rounded: 'full',
-                      border: '1px solid',
-                      borderColor: 'purple.500/50',
-                      bg: 'purple.500/10',
-                      color: 'purple.300',
-                    })}
-                  >
-                    {item.step}
-                  </Badge>
-                  <div>
-                    <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
-                      {item.title}
-                    </h3>
-                    <p className={css({ fontSize: 'sm', color: 'gray.400' })}>{item.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+      </div>
 
       {/* Social Share */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-        className={css({ w: 'full' })}
+      <div
+        className={css({
+          w: 'full',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
+        })}
       >
         <SocialShare
           toolName="Background Remover"
@@ -832,90 +740,31 @@ export default function BackgroundRemoverPage() {
           description="Free AI-powered background remover. Remove backgrounds from images instantly in your browser with complete privacy."
           hashtags={['BackgroundRemover', 'AITool', 'PhotoEditing', 'ImageProcessing', 'FreeTool']}
         />
-      </motion.div>
-
-      {/* FAQ Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className={css({ w: 'full' })}
-      >
-        <FAQAccordion
-          faqs={[
-            {
-              question: 'How does the AI background remover work?',
-              answer:
-                'Our tool uses advanced machine learning models that run directly in your browser using WebAssembly technology. The AI analyzes your image to identify the foreground subject and accurately separates it from the background, producing a transparent PNG image.',
-            },
-            {
-              question: 'Is this tool really free?',
-              answer:
-                "Yes, completely free with no hidden costs. There are no watermarks, no sign-up required, and no limits on how many images you can process. The tool runs entirely in your browser, which means we don't have server costs for processing your images.",
-            },
-            {
-              question: 'Are my images uploaded to a server?',
-              answer:
-                'No, your images never leave your device. All processing happens locally in your browser using WebAssembly technology. This ensures complete privacy - we never see, store, or have access to your images.',
-            },
-            {
-              question: 'What image formats are supported?',
-              answer:
-                'You can upload images in JPEG, PNG, WebP, and GIF formats. The output is always a PNG file with transparent background, which is the best format for maintaining transparency.',
-            },
-            {
-              question: 'What is the maximum file size?',
-              answer:
-                'You can upload images up to 20MB in size. For best results, we recommend images under 10MB as larger images may take longer to process depending on your device capabilities.',
-            },
-            {
-              question: 'Why does the first image take longer to process?',
-              answer:
-                'The first image takes longer because the AI model needs to be downloaded and initialized in your browser (about 30-40MB). Once loaded, subsequent images process much faster as the model is cached.',
-            },
-            {
-              question: 'Can I remove backgrounds from multiple images?',
-              answer:
-                'Currently, you need to process one image at a time. After downloading your processed image, you can click "Clear" and upload another image. We\'re working on batch processing for a future update.',
-            },
-            {
-              question: 'What types of images work best?',
-              answer:
-                'The tool works best with photos that have clear distinction between the subject and background. Product photos, portraits, and images with well-defined subjects produce the best results. Complex backgrounds or images with fine details like hair may require some refinement.',
-            },
-            {
-              question: 'Can I use this for commercial purposes?',
-              answer:
-                'Yes, you can use the processed images for any purpose including commercial use. There are no restrictions on how you use the images you create with this tool.',
-            },
-            {
-              question: 'Does this work on mobile devices?',
-              answer:
-                'Yes, the tool works on mobile browsers. However, processing may be slower on mobile devices compared to desktop computers due to hardware limitations. For the best experience, we recommend using a modern desktop browser.',
-            },
-          ]}
-        />
-      </motion.div>
+      </div>
 
       {/* Related Tools */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.5 }}
-        className={css({ w: 'full' })}
+      <div
+        className={css({
+          w: 'full',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.6s',
+          opacity: 0,
+        })}
       >
         <RelatedTools currentToolPath="/tools/media/background-remover" category="media" />
-      </motion.div>
+      </div>
 
       {/* Tool Rating */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7, duration: 0.5 }}
-        className={css({ w: 'full' })}
+      <div
+        className={css({
+          w: 'full',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.7s',
+          opacity: 0,
+        })}
       >
         <ToolRating toolId="/tools/media/background-remover" toolName="Background Remover" />
-      </motion.div>
+      </div>
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="background-remover" variant="banner" />

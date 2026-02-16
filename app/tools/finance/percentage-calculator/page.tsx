@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Calculator, Copy, Info, Percent, RotateCcw, Sparkles, TrendingUp } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useState } from 'react'
@@ -233,11 +232,13 @@ function PercentageCalculatorContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -288,13 +289,15 @@ function PercentageCalculatorContent() {
           Calculate percentages, discounts, tips, tax, and more with instant results. Seven powerful
           calculation modes for all your percentage needs.
         </p>
-      </motion.div>
+      </div>
 
       {/* Mode Selection */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -360,13 +363,15 @@ function PercentageCalculatorContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Calculator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -451,10 +456,12 @@ function PercentageCalculatorContent() {
 
             {/* Result */}
             {result && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={css({ spaceY: '4' })}
+              <div
+                className={css({
+                  spaceY: '4',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
+                })}
               >
                 <div className={css({ spaceY: '3' })}>
                   <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
@@ -524,7 +531,7 @@ function PercentageCalculatorContent() {
                     {result.formula}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* Clear Button */}
@@ -544,13 +551,15 @@ function PercentageCalculatorContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Quick Tips */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -616,7 +625,7 @@ function PercentageCalculatorContent() {
             </CardContent>
           </Card>
         </div>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

@@ -21,7 +21,6 @@ import {
   Phone,
   RotateCcw,
   Smartphone,
-  Sparkles,
   Twitter,
   User,
   Youtube,
@@ -31,7 +30,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -923,47 +922,6 @@ export default function EmailSignatureGenerator() {
             </CardContent>
           </Card>
 
-          {/* Instructions */}
-          <Card
-            className={css({
-              bg: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-            })}
-          >
-            <CardHeader>
-              <CardTitle
-                className={css({ fontSize: 'md', display: 'flex', alignItems: 'center', gap: '2' })}
-              >
-                <Sparkles size={18} className={css({ color: 'purple.400' })} />
-                How to Use
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ol
-                className={css({
-                  listStyleType: 'decimal',
-                  pl: '4',
-                  spaceY: '2',
-                  fontSize: 'sm',
-                  color: 'gray.400',
-                })}
-              >
-                <li>Fill in your details in the form on the left</li>
-                <li>Choose a template and customize colors/layout</li>
-                <li>Click "Copy HTML" to copy the signature</li>
-                <li>
-                  <strong>Gmail:</strong> Settings → See all settings → Signature → Paste
-                </li>
-                <li>
-                  <strong>Outlook:</strong> Settings → Mail → Compose → Signature → Paste
-                </li>
-                <li>
-                  <strong>Apple Mail:</strong> Preferences → Signatures → Create new → Paste
-                </li>
-              </ol>
-            </CardContent>
-          </Card>
-
           {/* Tool Rating */}
           <ToolRating toolId="email-signature" toolName="Email Signature Generator" />
 
@@ -975,54 +933,6 @@ export default function EmailSignatureGenerator() {
             hashtags={['emailsignature', 'productivity', 'devtools']}
           />
         </div>
-      </div>
-
-      {/* FAQ Section */}
-      <div className={css({ mt: '10' })}>
-        <h2
-          className={css({
-            fontSize: '2xl',
-            fontWeight: 'bold',
-            mb: '6',
-            textAlign: 'center',
-          })}
-        >
-          Frequently Asked Questions
-        </h2>
-        <FAQAccordion
-          faqs={[
-            {
-              question: 'How do I add my email signature to Gmail?',
-              answer:
-                'Open Gmail Settings (gear icon) → Click "See all settings" → Scroll to "Signature" section → Click "Create new" → Paste the copied HTML signature → Save changes.',
-            },
-            {
-              question: 'How do I add my signature to Outlook?',
-              answer:
-                'In Outlook.com: Settings → View all Outlook settings → Mail → Compose and reply → Email signature → Paste your signature. For desktop Outlook: File → Options → Mail → Signatures.',
-            },
-            {
-              question: 'Why are my images not showing?',
-              answer:
-                'Images must be hosted on a publicly accessible HTTPS URL. Use image hosting services like Imgur, Google Drive (with public link), or your company website. Local file paths will not work.',
-            },
-            {
-              question: 'Can I use my own fonts?',
-              answer:
-                'Email clients have limited font support. We provide web-safe fonts that work across all email clients. Custom fonts may not display correctly in all email applications.',
-            },
-            {
-              question: 'Why does my signature look different in some email clients?',
-              answer:
-                'Different email clients render HTML differently. Our signatures are optimized for maximum compatibility, but some variations may occur. The table-based layout ensures the best cross-client support.',
-            },
-            {
-              question: 'Is my data saved?',
-              answer:
-                'Yes, your signature data is saved locally in your browser. It never leaves your device and is not sent to any server. Your information is 100% private.',
-            },
-          ]}
-        />
       </div>
 
       {/* Related Tools */}

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import hljs from 'highlight.js/lib/core'
 import json from 'highlight.js/lib/languages/json'
 import 'highlight.js/styles/github-dark.css'
@@ -637,11 +636,13 @@ function ApiTesterContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -692,14 +693,19 @@ function ApiTesterContent() {
           Test REST APIs directly in your browser. Send requests with custom headers, body, and
           authentication. Save presets and track history.
         </p>
-      </motion.div>
+      </div>
 
       {/* Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-        className={css({ display: 'flex', gap: '3', justifyContent: 'center', flexWrap: 'wrap' })}
+      <div
+        className={css({
+          display: 'flex',
+          gap: '3',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Button
           onClick={handleSavePreset}
@@ -751,15 +757,11 @@ function ApiTesterContent() {
           <Globe className={css({ h: '4', w: '4' })} />
           {activeEnvironment ? activeEnvironment.name : `Environments (${environments.length})`}
         </Button>
-      </motion.div>
+      </div>
 
       {/* Presets Panel */}
       {showPresets && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-        >
+        <div className={css({ animation: 'fadeIn 0.5s ease-out forwards', opacity: 0 })}>
           <Card
             className={css({
               border: '1px solid',
@@ -860,16 +862,12 @@ function ApiTesterContent() {
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* History Panel */}
       {showHistory && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-        >
+        <div className={css({ animation: 'fadeIn 0.5s ease-out forwards', opacity: 0 })}>
           <Card
             className={css({
               border: '1px solid',
@@ -979,16 +977,12 @@ function ApiTesterContent() {
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Environments Panel */}
       {showEnvironments && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-        >
+        <div className={css({ animation: 'fadeIn 0.5s ease-out forwards', opacity: 0 })}>
           <Card
             className={css({
               border: '1px solid',
@@ -1403,14 +1397,16 @@ function ApiTesterContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Request Configuration */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -2078,14 +2074,16 @@ function ApiTesterContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Response */}
       {(response || error) && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -2245,14 +2243,16 @@ function ApiTesterContent() {
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -2283,7 +2283,7 @@ function ApiTesterContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="api-tester" variant="banner" />

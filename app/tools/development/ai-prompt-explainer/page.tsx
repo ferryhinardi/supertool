@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   ArrowRight,
   Check,
@@ -169,11 +168,13 @@ function AIPromptExplainerContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -224,13 +225,15 @@ function AIPromptExplainerContent() {
           Analyze and optimize your AI prompts for better results. Get expert insights on clarity,
           structure, and effectiveness with AI-powered analysis.
         </p>
-      </motion.div>
+      </div>
 
       {/* Prompt Input */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -295,12 +298,9 @@ function AIPromptExplainerContent() {
               >
                 {loading ? (
                   <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: 'linear' }}
-                    >
+                    <div>
                       <MessageSquare className={css({ h: '5', w: '5' })} />
-                    </motion.div>
+                    </div>
                     Analyzing...
                   </>
                 ) : (
@@ -331,14 +331,16 @@ function AIPromptExplainerContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Example Prompts */}
       {!analysis && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -417,16 +419,13 @@ function AIPromptExplainerContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Analysis Result */}
       {analysis && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className={css({ spaceY: '6' })}
+        <div
+          className={css({ spaceY: '6', animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}
         >
           {/* Overall Analysis */}
           <Card
@@ -506,17 +505,14 @@ function AIPromptExplainerContent() {
                         overflow: 'hidden',
                       })}
                     >
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${score * 10}%` }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
+                      <div
                         className={css({
                           h: 'full',
                           rounded: 'full',
+                          animation: 'fadeIn 0.5s ease-out forwards',
+                          animationDelay: '0.2s',
+                          opacity: 0,
                         })}
-                        style={{
-                          backgroundColor: `var(--colors-${getScoreColor(score).replace('.', '-')})`,
-                        }}
                       />
                     </div>
                   </div>
@@ -691,14 +687,16 @@ function AIPromptExplainerContent() {
               </p>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Pro Tips */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -738,7 +736,7 @@ function AIPromptExplainerContent() {
             </li>
           </ul>
         </div>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

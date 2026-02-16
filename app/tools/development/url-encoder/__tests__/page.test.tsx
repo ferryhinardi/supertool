@@ -80,25 +80,6 @@ vi.mock('nuqs', () => ({
   })),
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      ...props
-    }: {
-      children: React.ReactNode
-      className?: string
-      [key: string]: unknown
-    }) => (
-      <div className={className} {...props}>
-        {children}
-      </div>
-    ),
-  },
-}))
-
 // Clipboard mock - will be set up with vi.spyOn in beforeEach
 const mockWriteText = vi.fn()
 

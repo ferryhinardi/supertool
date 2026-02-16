@@ -15,15 +15,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock UI components
 vi.mock('@/components/ui/faq-accordion', () => ({
   FAQAccordion: () => <div data-testid="faq-accordion">FAQ</div>,

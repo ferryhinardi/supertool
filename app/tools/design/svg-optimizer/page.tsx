@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   CheckCircle2,
   Copy,
@@ -280,11 +279,13 @@ function SVGOptimizerContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -330,13 +331,15 @@ function SVGOptimizerContent() {
           Minify and optimize SVG files with live preview. Remove unnecessary metadata, compress
           paths, and reduce file size by up to 70%. Perfect for web performance.
         </p>
-      </motion.div>
+      </div>
 
       {/* Options */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -404,13 +407,15 @@ function SVGOptimizerContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Input Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -480,19 +485,19 @@ function SVGOptimizerContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Stats Section */}
       {stats && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+        <div
           className={css({
             display: 'grid',
             gap: '4',
             gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
             w: 'full',
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
           })}
         >
           <Card
@@ -548,20 +553,20 @@ function SVGOptimizerContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Output Section */}
       {svgOutput && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+        <div
           className={css({
             display: 'grid',
             gap: '6',
             gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
             w: 'full',
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.4s',
+            opacity: 0,
           })}
         >
           {/* Code Output */}
@@ -647,19 +652,19 @@ function SVGOptimizerContent() {
               />
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Educational Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+      <div
         className={css({
           display: 'grid',
           gap: '6',
           gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
           w: 'full',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.5s',
+          opacity: 0,
         })}
       >
         <Card className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}>
@@ -801,7 +806,7 @@ function SVGOptimizerContent() {
             </ul>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       <Suspense fallback={null}>
         <ToolSearch />

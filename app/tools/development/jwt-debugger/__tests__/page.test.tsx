@@ -76,19 +76,6 @@ vi.mock('@/hooks/tools/useToolHistory', () => {
   }
 })
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-    span: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <span {...props}>{children}</span>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}))
-
 import { toast } from 'sonner'
 // Now import the components and utilities after mocks are set up
 import JWTDebuggerPage from '../page'

@@ -1,12 +1,10 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import type {
   ToolGridLayout,
   ToolOperation,
   ToolOperationCategory,
 } from '@/lib/data/tool-components-types'
-import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
 import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
@@ -101,8 +99,8 @@ export function ToolOperationGrid({
   if (isCategorized && categories) {
     return (
       <div className={css({ spaceY: '6' })}>
-        {categories.map((category, categoryIndex) => (
-          <motion.div key={category.id} {...TOOL_ANIMATIONS.stagger(categoryIndex * 0.1)}>
+        {categories.map((category) => (
+          <div key={category.id}>
             {showCategories && (
               <h3
                 className={css({
@@ -136,7 +134,7 @@ export function ToolOperationGrid({
                 />
               ))}
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     )
@@ -144,7 +142,7 @@ export function ToolOperationGrid({
 
   // Render flat operations
   return (
-    <motion.div {...TOOL_ANIMATIONS.fadeIn}>
+    <div>
       <div
         className={css({
           display: 'grid',
@@ -163,7 +161,7 @@ export function ToolOperationGrid({
           />
         ))}
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -181,12 +179,10 @@ function OperationButton({ operation, isSelected, onClick, disabled }: Operation
   const Icon = operation.icon
 
   return (
-    <motion.button
+    <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      whileHover={{ scale: disabled ? 1 : 1.02 }}
-      whileTap={{ scale: disabled ? 1 : 0.98 }}
       className={css({
         position: 'relative',
         display: 'flex',
@@ -298,9 +294,7 @@ function OperationButton({ operation, isSelected, onClick, disabled }: Operation
 
           {/* Selected checkmark */}
           {isSelected && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
+            <div
               className={css({
                 display: 'flex',
                 alignItems: 'center',
@@ -309,6 +303,8 @@ function OperationButton({ operation, isSelected, onClick, disabled }: Operation
                 w: '5',
                 rounded: 'full',
                 bg: 'currentColor',
+                animation: 'scaleIn 0.5s ease-out forwards',
+                opacity: 0,
               })}
             >
               <svg
@@ -326,7 +322,7 @@ function OperationButton({ operation, isSelected, onClick, disabled }: Operation
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-            </motion.div>
+            </div>
           )}
         </div>
 
@@ -362,6 +358,6 @@ function OperationButton({ operation, isSelected, onClick, disabled }: Operation
           </kbd>
         )}
       </div>
-    </motion.button>
+    </button>
   )
 }

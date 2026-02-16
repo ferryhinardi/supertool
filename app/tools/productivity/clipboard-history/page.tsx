@@ -739,48 +739,6 @@ export default function ClipboardHistoryPage() {
         </div>
       )}
 
-      {/* Help Section */}
-      <Card
-        className={css({
-          border: '2px solid',
-          borderColor: 'cyan.500/20',
-          bg: 'rgba(6, 182, 212, 0.05)',
-          backdropFilter: 'blur(16px)',
-        })}
-      >
-        <CardHeader>
-          <CardTitle className={css({ color: 'cyan.300' })}>
-            How to Use Clipboard History Manager
-          </CardTitle>
-        </CardHeader>
-        <CardContent className={css({ spaceY: '3', color: 'white' })}>
-          <p>This tool helps you manage your clipboard history locally in your browser:</p>
-          <ol className={css({ pl: '6', spaceY: '2', listStyle: 'decimal' })}>
-            <li>
-              Click <strong>&quot;Add Current Clipboard&quot;</strong> to manually save your current
-              clipboard content
-            </li>
-            <li>
-              Use <strong>&quot;Start Monitoring&quot;</strong> to automatically track copied items
-              (requires clipboard permission)
-            </li>
-            <li>
-              Click the <strong>Pin icon</strong> to keep important items at the top
-            </li>
-            <li>
-              Use the <strong>search bar</strong> to quickly find specific clipboard items
-            </li>
-            <li>
-              Click <strong>&quot;Copy&quot;</strong> on any item to restore it to your clipboard
-            </li>
-          </ol>
-          <p className={css({ pt: '2' })}>
-            <strong>Privacy Note:</strong> All clipboard data is stored locally in your browser.
-            Nothing is sent to any server, ensuring your data remains private and secure.
-          </p>
-        </CardContent>
-      </Card>
-
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />

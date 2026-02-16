@@ -1,11 +1,9 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
 import { Keyboard, X } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import type { ToolKeyboardShortcut } from '@/lib/data/tool-components-types'
-import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
 import { css } from '@/styled-system/css'
 
 interface ToolKeyboardShortcutsProps {
@@ -110,204 +108,199 @@ export function ToolKeyboardShortcuts({
       )}
 
       {/* Modal */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className={css({
-                position: 'fixed',
-                inset: '0',
-                bg: 'black/60',
-                backdropFilter: 'blur(4px)',
-                zIndex: '50',
-              })}
-            />
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => setIsOpen(false)}
+            className={css({
+              position: 'fixed',
+              inset: '0',
+              bg: 'black/60',
+              backdropFilter: 'blur(4px)',
+              zIndex: '50',
+              animation: 'fadeIn 0.2s ease-out',
+            })}
+          />
 
-            {/* Dialog */}
-            <motion.div
-              {...TOOL_ANIMATIONS.scale}
+          {/* Dialog */}
+          <div
+            className={css({
+              animation: 'scaleIn 0.2s ease-out',
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              w: { base: '11/12', sm: 'lg' },
+              maxW: 'lg',
+              maxH: '90vh',
+              overflowY: 'auto',
+              zIndex: '50',
+            })}
+          >
+            <div
               className={css({
-                position: 'fixed',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                w: { base: '11/12', sm: 'lg' },
-                maxW: 'lg',
-                maxH: '90vh',
-                overflowY: 'auto',
-                zIndex: '50',
+                rounded: 'xl',
+                border: '1px solid',
+                borderColor: 'gray.700',
+                bg: 'gray.900',
+                shadow: '2xl',
               })}
             >
+              {/* Header */}
               <div
                 className={css({
-                  rounded: 'xl',
-                  border: '1px solid',
-                  borderColor: 'gray.700',
-                  bg: 'gray.900',
-                  shadow: '2xl',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  p: '6',
+                  borderBottom: '1px solid',
+                  borderColor: 'gray.800',
                 })}
               >
-                {/* Header */}
-                <div
+                <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                  <Keyboard className={css({ h: '5', w: '5', color: 'blue.400' })} />
+                  <h2
+                    className={css({
+                      fontSize: 'xl',
+                      fontWeight: 'bold',
+                      color: 'gray.100',
+                    })}
+                  >
+                    {title}
+                  </h2>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
                   className={css({
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    p: '6',
-                    borderBottom: '1px solid',
-                    borderColor: 'gray.800',
+                    rounded: 'lg',
+                    p: '1',
+                    color: 'gray.500',
+                    transition: 'colors 0.2s',
+                    _hover: {
+                      color: 'gray.300',
+                      bg: 'gray.800',
+                    },
                   })}
+                  aria-label="Close"
                 >
-                  <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-                    <Keyboard className={css({ h: '5', w: '5', color: 'blue.400' })} />
-                    <h2
+                  <X className={css({ h: '5', w: '5' })} />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className={css({ p: '6', spaceY: '6' })}>
+                {Object.entries(categorizedShortcuts).map(([category, categoryShortcuts]) => (
+                  <div key={category}>
+                    <h3
                       className={css({
-                        fontSize: 'xl',
-                        fontWeight: 'bold',
-                        color: 'gray.100',
+                        mb: '3',
+                        fontSize: 'sm',
+                        fontWeight: 'semibold',
+                        color: 'gray.400',
+                        textTransform: 'uppercase',
+                        letterSpacing: 'wider',
                       })}
                     >
-                      {title}
-                    </h2>
-                  </div>
+                      {category}
+                    </h3>
 
-                  <button
-                    type="button"
-                    onClick={() => setIsOpen(false)}
-                    className={css({
-                      rounded: 'lg',
-                      p: '1',
-                      color: 'gray.500',
-                      transition: 'colors 0.2s',
-                      _hover: {
-                        color: 'gray.300',
-                        bg: 'gray.800',
-                      },
-                    })}
-                    aria-label="Close"
-                  >
-                    <X className={css({ h: '5', w: '5' })} />
-                  </button>
-                </div>
-
-                {/* Content */}
-                <div className={css({ p: '6', spaceY: '6' })}>
-                  {Object.entries(categorizedShortcuts).map(([category, categoryShortcuts]) => (
-                    <div key={category}>
-                      <h3
-                        className={css({
-                          mb: '3',
-                          fontSize: 'sm',
-                          fontWeight: 'semibold',
-                          color: 'gray.400',
-                          textTransform: 'uppercase',
-                          letterSpacing: 'wider',
-                        })}
-                      >
-                        {category}
-                      </h3>
-
-                      <div className={css({ spaceY: '2' })}>
-                        {categoryShortcuts.map((shortcut) => (
-                          <motion.div
-                            key={`${category}-${shortcut.key}-${shortcut.description}`}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
+                    <div className={css({ spaceY: '2' })}>
+                      {categoryShortcuts.map((shortcut) => (
+                        <div
+                          key={`${category}-${shortcut.key}-${shortcut.description}`}
+                          className={css({
+                            animation: 'slideInLeft 0.3s ease-out',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '4',
+                            p: '3',
+                            rounded: 'lg',
+                            bg: 'gray.800/50',
+                            border: '1px solid',
+                            borderColor: 'gray.700',
+                          })}
+                        >
+                          <span
                             className={css({
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              gap: '4',
-                              p: '3',
-                              rounded: 'lg',
-                              bg: 'gray.800/50',
-                              border: '1px solid',
-                              borderColor: 'gray.700',
+                              flex: '1',
+                              fontSize: 'sm',
+                              color: 'gray.300',
                             })}
                           >
-                            <span
-                              className={css({
-                                flex: '1',
-                                fontSize: 'sm',
-                                color: 'gray.300',
-                              })}
-                            >
-                              {shortcut.description}
-                            </span>
+                            {shortcut.description}
+                          </span>
 
-                            <div className={css({ display: 'flex', gap: '1', flexShrink: 0 })}>
-                              {formatKey(shortcut.key)
-                                .split('+')
-                                .map((part, i, arr) => (
-                                  // biome-ignore lint/suspicious/noArrayIndexKey: Keyboard key parts may repeat in combinations
-                                  <span key={`${part}-${i}`}>
-                                    <kbd
+                          <div className={css({ display: 'flex', gap: '1', flexShrink: 0 })}>
+                            {formatKey(shortcut.key)
+                              .split('+')
+                              .map((part, i, arr) => (
+                                // biome-ignore lint/suspicious/noArrayIndexKey: Keyboard key parts may repeat in combinations
+                                <span key={`${part}-${i}`}>
+                                  <kbd
+                                    className={css({
+                                      px: '2',
+                                      py: '1',
+                                      rounded: 'md',
+                                      bg: 'gray.700',
+                                      border: '1px solid',
+                                      borderColor: 'gray.600',
+                                      fontSize: 'xs',
+                                      fontFamily: 'mono',
+                                      fontWeight: 'semibold',
+                                      color: 'gray.200',
+                                      shadow: 'sm',
+                                    })}
+                                  >
+                                    {part}
+                                  </kbd>
+                                  {i < arr.length - 1 && (
+                                    <span
                                       className={css({
-                                        px: '2',
-                                        py: '1',
-                                        rounded: 'md',
-                                        bg: 'gray.700',
-                                        border: '1px solid',
-                                        borderColor: 'gray.600',
+                                        mx: '1',
+                                        color: 'gray.500',
                                         fontSize: 'xs',
-                                        fontFamily: 'mono',
-                                        fontWeight: 'semibold',
-                                        color: 'gray.200',
-                                        shadow: 'sm',
                                       })}
                                     >
-                                      {part}
-                                    </kbd>
-                                    {i < arr.length - 1 && (
-                                      <span
-                                        className={css({
-                                          mx: '1',
-                                          color: 'gray.500',
-                                          fontSize: 'xs',
-                                        })}
-                                      >
-                                        +
-                                      </span>
-                                    )}
-                                  </span>
-                                ))}
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
+                                      +
+                                    </span>
+                                  )}
+                                </span>
+                              ))}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-
-                  {/* Platform indicator */}
-                  <div
-                    className={css({
-                      mt: '6',
-                      p: '3',
-                      rounded: 'lg',
-                      bg: 'blue.500/10',
-                      border: '1px solid',
-                      borderColor: 'blue.500/30',
-                      textAlign: 'center',
-                    })}
-                  >
-                    <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
-                      Shortcuts optimized for{' '}
-                      <span className={css({ fontWeight: 'semibold', color: 'blue.300' })}>
-                        {isMac ? 'macOS' : 'Windows/Linux'}
-                      </span>
-                    </p>
                   </div>
+                ))}
+
+                {/* Platform indicator */}
+                <div
+                  className={css({
+                    mt: '6',
+                    p: '3',
+                    rounded: 'lg',
+                    bg: 'blue.500/10',
+                    border: '1px solid',
+                    borderColor: 'blue.500/30',
+                    textAlign: 'center',
+                  })}
+                >
+                  <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                    Shortcuts optimized for{' '}
+                    <span className={css({ fontWeight: 'semibold', color: 'blue.300' })}>
+                      {isMac ? 'macOS' : 'Windows/Linux'}
+                    </span>
+                  </p>
                 </div>
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+        </>
+      )}
     </>
   )
 }

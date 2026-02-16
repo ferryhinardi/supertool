@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { CheckCircle, Code, Copy, Download, Sparkles, XCircle } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
@@ -206,11 +205,13 @@ function JSONSchemaContent() {
         })}
       >
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className={css({ textAlign: 'center', spaceY: '4' })}
+        <div
+          className={css({
+            textAlign: 'center',
+            spaceY: '4',
+            animation: 'slideUp 0.5s ease-out forwards',
+            opacity: 0,
+          })}
         >
           <div
             className={css({
@@ -261,13 +262,15 @@ function JSONSchemaContent() {
             Automatically generate JSON Schema from sample JSON data with type inference, format
             detection, and validation
           </p>
-        </motion.div>
+        </div>
 
         {/* Stats Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.1s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -346,13 +349,15 @@ function JSONSchemaContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Options */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -492,18 +497,18 @@ function JSONSchemaContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Input/Output Editors */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
           className={css({
             display: 'grid',
             gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
             gap: { base: '6', sm: '8' },
             w: 'full',
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
           })}
         >
           {/* Input JSON */}
@@ -573,13 +578,15 @@ function JSONSchemaContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.4s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -663,13 +670,15 @@ function JSONSchemaContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Pro Tips Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.5s',
+            opacity: 0,
+          })}
         >
           <div
             className={css({
@@ -709,7 +718,7 @@ function JSONSchemaContent() {
               </li>
             </ul>
           </div>
-        </motion.div>
+        </div>
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

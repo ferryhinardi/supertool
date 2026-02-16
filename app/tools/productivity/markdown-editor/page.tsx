@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   CheckCircle2,
   Code2,
@@ -8,7 +7,6 @@ import {
   Download,
   Eye,
   FileText,
-  Lightbulb,
   RotateCcw,
   SplitSquareHorizontal,
   Upload,
@@ -24,7 +22,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
@@ -39,59 +37,6 @@ import { MarkdownPreview } from './components/markdown-preview'
 import 'highlight.js/styles/github-dark.css'
 
 type ViewMode = 'split' | 'editor' | 'preview'
-
-const faqs = [
-  {
-    question: 'What is Markdown and why should I use it?',
-    answer:
-      "Markdown is a lightweight markup language that uses plain text formatting to create structured documents. It's widely used for README files, documentation, blog posts, and technical writing because it's easy to read, write, and convert to HTML. Markdown allows you to focus on content while maintaining formatting consistency.",
-  },
-  {
-    question: 'Does this editor support GitHub-flavored Markdown (GFM)?',
-    answer:
-      'Yes! Our editor fully supports GitHub-flavored Markdown including task lists, tables, strikethrough, automatic URL linking, code fencing with syntax highlighting, and emoji shortcuts. This makes it perfect for writing README files, GitHub issues, pull request descriptions, and documentation that will be displayed on GitHub.',
-  },
-  {
-    question: 'Can I export my Markdown to other formats?',
-    answer:
-      'Yes, you can export your content in multiple formats: save as .md file for Markdown, export as .html for web publishing, or copy the rendered HTML to paste into other applications. The live preview shows exactly how your Markdown will render, making it easy to see the final result before exporting.',
-  },
-  {
-    question: 'How do I create tables in Markdown?',
-    answer:
-      'Use pipes (|) and hyphens (-) to create tables. Start with a header row, add a separator row with hyphens, then add data rows. Example: | Column 1 | Column 2 | followed by |----------|----------|. Our editor supports table alignment (left, center, right) and renders them with proper formatting in the live preview.',
-  },
-  {
-    question: 'Is my Markdown content saved automatically?',
-    answer:
-      "Your content is automatically saved to your browser's local storage as you type, so you won't lose work if you accidentally close the tab. However, this is device-specific storage. For permanent backup, use the export feature to download your Markdown file or copy it to a version control system like Git.",
-  },
-  {
-    question: 'How do I add code blocks with syntax highlighting?',
-    answer:
-      'Use triple backticks (```) followed by the language name to create code blocks. For example: ```javascript for JavaScript code. Our editor supports syntax highlighting for 50+ languages including JavaScript, Python, Java, C++, HTML, CSS, and more. The live preview shows your code with proper formatting and colors.',
-  },
-  {
-    question: 'Can I use this editor for writing documentation?',
-    answer:
-      'Absolutely! This editor is perfect for technical documentation, API docs, user guides, and README files. The GitHub-flavored Markdown support means your content will look great on GitHub, GitLab, and other platforms. Export to HTML for standalone documentation or copy markdown for version control.',
-  },
-  {
-    question: 'What view modes are available?',
-    answer:
-      "The editor offers three view modes: Editor Only (focus on writing), Split View (see markdown and preview side-by-side), and Preview Only (see final output). Switch modes instantly to match your workflow, whether you're drafting content, refining formatting, or reviewing the final result.",
-  },
-  {
-    question: 'How do I create task lists in Markdown?',
-    answer:
-      'Create task lists using - [ ] for unchecked items and - [x] for checked items. Task lists are great for tracking project progress, to-do items, and checklists. They render as interactive checkboxes in the preview, making them perfect for GitHub issues and project management.',
-  },
-  {
-    question: 'Can I load existing Markdown files into the editor?',
-    answer:
-      'Yes! Click the "Load File" button to import existing .md or .markdown files from your computer. The editor will display your content with live preview immediately. You can then edit, export, or download your modified content. This makes it easy to work with existing documentation and README files.',
-  },
-]
 
 // View Mode Operations
 const VIEW_MODE_OPERATIONS: ToolOperation[] = [
@@ -341,11 +286,13 @@ export default function MarkdownEditorPage() {
         })}
       >
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className={css({ textAlign: 'center', spaceY: '4' })}
+        <div
+          className={css({
+            textAlign: 'center',
+            spaceY: '4',
+            animation: 'slideUp 0.5s ease-out forwards',
+            opacity: 0,
+          })}
         >
           <div
             className={css({
@@ -402,13 +349,15 @@ export default function MarkdownEditorPage() {
             Write and preview markdown in real-time with syntax highlighting, tables, task lists,
             and full GitHub-flavored markdown support.
           </p>
-        </motion.div>
+        </div>
 
         {/* View Mode Controls */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.1s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -455,13 +404,15 @@ export default function MarkdownEditorPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Stats Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -599,13 +550,15 @@ export default function MarkdownEditorPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -732,13 +685,10 @@ export default function MarkdownEditorPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Editor and Preview */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+        <div
           className={css({
             display: 'grid',
             gap: { base: '6', lg: '6' },
@@ -747,6 +697,9 @@ export default function MarkdownEditorPage() {
               lg: viewMode === 'split' ? 'repeat(2, 1fr)' : '1fr',
             },
             w: 'full',
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.4s',
+            opacity: 0,
           })}
         >
           {/* Editor */}
@@ -850,13 +803,15 @@ export default function MarkdownEditorPage() {
               </CardContent>
             </Card>
           )}
-        </motion.div>
+        </div>
 
         {/* Pro Tips */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.1s',
+            opacity: 0,
+          })}
         >
           <div
             className={css({
@@ -905,258 +860,15 @@ export default function MarkdownEditorPage() {
               </li>
             </ul>
           </div>
-        </motion.div>
-
-        {/* How to Use Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <Card
-            className={css({
-              border: '2px solid',
-              borderColor: 'blue.500/30',
-              bg: 'rgba(59, 130, 246, 0.05)',
-              backdropFilter: 'blur(16px)',
-              padding: '6',
-            })}
-          >
-            <CardHeader
-              className={css({
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: '3',
-                padding: '0',
-                marginBottom: '4',
-              })}
-            >
-              <Lightbulb
-                className={css({
-                  h: '6',
-                  w: '6',
-                  color: 'blue.400',
-                  flexShrink: '0',
-                })}
-              />
-              <CardTitle
-                className={css({
-                  fontSize: 'xl',
-                  fontWeight: 'semibold',
-                  color: 'blue.300',
-                })}
-              >
-                How to Use Markdown Editor
-              </CardTitle>
-            </CardHeader>
-            <CardContent className={css({ padding: '0' })}>
-              <div
-                className={css({
-                  display: 'grid',
-                  gridTemplateColumns: { base: '1fr', md: '1fr 1fr' },
-                  gap: { base: '4', md: '6' },
-                })}
-              >
-                <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-                  <Badge
-                    variant="outline"
-                    className={css({
-                      minH: '10',
-                      minW: '10',
-                      h: '10',
-                      w: '10',
-                      rounded: 'full',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bg: 'purple.500/10',
-                      borderColor: 'purple.500',
-                      borderWidth: '2px',
-                      fontSize: 'lg',
-                      fontWeight: 'bold',
-                      color: 'purple.300',
-                      flexShrink: 0,
-                    })}
-                  >
-                    1
-                  </Badge>
-                  <div className={css({ flex: '1', minW: '0' })}>
-                    <h3
-                      className={css({
-                        fontWeight: 'semibold',
-                        color: 'gray.100',
-                        mb: '2',
-                        fontSize: { base: 'sm', sm: 'base' },
-                      })}
-                    >
-                      Choose Your View Mode
-                    </h3>
-                    <p
-                      className={css({
-                        fontSize: 'sm',
-                        color: 'white',
-                        lineHeight: '1.6',
-                      })}
-                    >
-                      Select Editor Only (focus on writing), Split View (side-by-side editing and
-                      preview), or Preview Only (see final output) based on your workflow and screen
-                      size.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-                  <Badge
-                    variant="outline"
-                    className={css({
-                      minH: '10',
-                      minW: '10',
-                      h: '10',
-                      w: '10',
-                      rounded: 'full',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bg: 'pink.500/10',
-                      borderColor: 'pink.500',
-                      borderWidth: '2px',
-                      fontSize: 'lg',
-                      fontWeight: 'bold',
-                      color: 'pink.300',
-                      flexShrink: 0,
-                    })}
-                  >
-                    2
-                  </Badge>
-                  <div className={css({ flex: '1', minW: '0' })}>
-                    <h3
-                      className={css({
-                        fontWeight: 'semibold',
-                        color: 'gray.100',
-                        mb: '2',
-                        fontSize: { base: 'sm', sm: 'base' },
-                      })}
-                    >
-                      Write or Load Markdown
-                    </h3>
-                    <p
-                      className={css({
-                        fontSize: 'sm',
-                        color: 'white',
-                        lineHeight: '1.6',
-                      })}
-                    >
-                      Type directly in the editor using GitHub-flavored Markdown syntax, or load an
-                      existing .md file using the "Load File" button. Start with the provided
-                      template or reset anytime.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-                  <Badge
-                    variant="outline"
-                    className={css({
-                      minH: '10',
-                      minW: '10',
-                      h: '10',
-                      w: '10',
-                      rounded: 'full',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bg: 'blue.500/10',
-                      borderColor: 'blue.500',
-                      borderWidth: '2px',
-                      fontSize: 'lg',
-                      fontWeight: 'bold',
-                      color: 'blue.300',
-                      flexShrink: 0,
-                    })}
-                  >
-                    3
-                  </Badge>
-                  <div className={css({ flex: '1', minW: '0' })}>
-                    <h3
-                      className={css({
-                        fontWeight: 'semibold',
-                        color: 'gray.100',
-                        mb: '2',
-                        fontSize: { base: 'sm', sm: 'base' },
-                      })}
-                    >
-                      See Live Preview with Syntax Highlighting
-                    </h3>
-                    <p
-                      className={css({
-                        fontSize: 'sm',
-                        color: 'white',
-                        lineHeight: '1.6',
-                      })}
-                    >
-                      Watch your markdown render in real-time with proper formatting, code
-                      highlighting for 180+ languages, tables, task lists, and emoji support.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-                  <Badge
-                    variant="outline"
-                    className={css({
-                      minH: '10',
-                      minW: '10',
-                      h: '10',
-                      w: '10',
-                      rounded: 'full',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bg: 'green.500/10',
-                      borderColor: 'green.500',
-                      borderWidth: '2px',
-                      fontSize: 'lg',
-                      fontWeight: 'bold',
-                      color: 'green.300',
-                      flexShrink: 0,
-                    })}
-                  >
-                    4
-                  </Badge>
-                  <div className={css({ flex: '1', minW: '0' })}>
-                    <h3
-                      className={css({
-                        fontWeight: 'semibold',
-                        color: 'gray.100',
-                        mb: '2',
-                        fontSize: { base: 'sm', sm: 'base' },
-                      })}
-                    >
-                      Export or Copy Your Work
-                    </h3>
-                    <p
-                      className={css({
-                        fontSize: 'sm',
-                        color: 'white',
-                        lineHeight: '1.6',
-                      })}
-                    >
-                      Use the action buttons to download as .md or .html files, copy markdown or
-                      HTML to clipboard, or reset to the default template.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+        </div>
 
         {/* Social Share */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.7s',
+            opacity: 0,
+          })}
         >
           <SocialShare
             toolName="Markdown Editor & Preview"
@@ -1164,34 +876,29 @@ export default function MarkdownEditorPage() {
             description="Write and preview GitHub-flavored Markdown in real-time with syntax highlighting, tables, and task lists. Perfect for README files and documentation!"
             hashtags={['Markdown', 'Documentation', 'GithubMarkdown', 'Developer', 'Productivity']}
           />
-        </motion.div>
-
-        {/* FAQ Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-        >
-          <FAQAccordion faqs={faqs} />
-        </motion.div>
+        </div>
 
         {/* Related Tools */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.9s',
+            opacity: 0,
+          })}
         >
           <RelatedTools currentToolPath="/tools/markdown-editor" category="productivity" />
-        </motion.div>
+        </div>
 
         {/* Tool Rating */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '1.0s',
+            opacity: 0,
+          })}
         >
           <ToolRating toolId="/tools/markdown-editor" toolName="Markdown Editor" />
-        </motion.div>
+        </div>
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

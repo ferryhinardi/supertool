@@ -6,15 +6,6 @@ import '@testing-library/jest-dom/vitest'
 import { trackToolEvent } from '@/lib/services/analytics'
 import SpeedTestPage from '../page'
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock analytics
 vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),

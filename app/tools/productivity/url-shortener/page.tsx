@@ -8,7 +8,6 @@ import {
   Copy,
   Download,
   ExternalLink,
-  Lightbulb,
   Link as LinkIcon,
   QrCode,
   Sparkles,
@@ -21,7 +20,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { Input } from '@/components/ui/input'
 import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -30,59 +29,6 @@ import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
 import { css } from '@/styled-system/css'
-
-const faqs = [
-  {
-    question: 'How do I create a shortened URL?',
-    answer:
-      'Simply paste your long URL into the input field and click "Shorten". You can optionally add a custom alias to make your link memorable (e.g., supertool.id/mylink). The short link is generated instantly and you can copy it to share. All shortened URLs are stored securely in our database with analytics tracking enabled.',
-  },
-  {
-    question: 'Can I customize the shortened link with my own alias?',
-    answer:
-      'Yes! You can create custom short links with memorable aliases instead of random strings. Enter your desired alias when creating the short URL. Custom aliases are first-come, first-served and must be unique. This is perfect for branding, marketing campaigns, or creating easy-to-remember links for sharing.',
-  },
-  {
-    question: 'Do shortened links expire or stop working?',
-    answer:
-      'No, shortened URLs created on our platform do not expire and will work indefinitely. Once created, your short link remains active permanently unless you manually delete it from your dashboard. This ensures your shared links in social media, documents, or printed materials continue working long-term.',
-  },
-  {
-    question: 'What analytics are tracked for my shortened URLs?',
-    answer:
-      'We track click counts, geographic locations (country/city), referrer sources, device types (desktop/mobile/tablet), browsers, operating systems, and timestamp data for each click. All analytics are anonymous and respect user privacy. You can view detailed statistics on your dashboard to measure link performance and audience insights.',
-  },
-  {
-    question: 'Is it safe to use shortened URLs for sensitive links?',
-    answer:
-      "While our URL shortener uses secure HTTPS connections and doesn't expose original URLs publicly, we recommend caution with sensitive links. Shortened URLs can mask the destination, which may be flagged by security systems. For highly sensitive content, consider password-protecting the destination or using direct links in secure channels.",
-  },
-  {
-    question: 'Can I generate QR codes for my shortened URLs?',
-    answer:
-      'Yes! Every shortened URL can generate a scannable QR code instantly. Simply click the QR icon next to your short link to view the QR code. You can download it as a PNG image for printing on marketing materials, business cards, posters, or digital displays. QR codes make sharing physical-to-digital seamless and are perfect for events, retail, and offline marketing.',
-  },
-  {
-    question: 'How can I track link performance and analytics?',
-    answer:
-      'Each shortened URL includes built-in analytics tracking. View total clicks, unique visitors, geographic locations, referrer sources, device types, and click timestamps on your dashboard. Analytics help you measure campaign effectiveness, understand your audience, and optimize marketing strategies. All tracking is privacy-focused and complies with data protection standards.',
-  },
-  {
-    question: 'What makes a good custom alias for URL shortening?',
-    answer:
-      'Effective custom aliases are short, memorable, and relevant to the content. Use lowercase letters, numbers, and hyphens only. Avoid special characters or spaces. Examples: "sale-2025", "webinar-signup", or "product-launch". Keep it under 20 characters for best results. Good aliases improve brand recognition, click-through rates, and are easier to type manually.',
-  },
-  {
-    question: 'Can I edit or update a shortened URL after creation?',
-    answer:
-      'Once a shortened URL is created, the short code or alias cannot be changed to maintain link integrity and prevent broken links. However, you can delete the shortened URL and create a new one with a different alias. If you need to update the destination URL, consider creating a new short link and updating references to point to the new link.',
-  },
-  {
-    question: 'Are shortened URLs good for SEO and social media sharing?',
-    answer:
-      'Shortened URLs are excellent for social media where character limits matter (Twitter, SMS, etc.). They look cleaner and are easier to share verbally or in print. For SEO, search engines follow redirects properly, so link equity passes through. Custom aliases with keywords can improve click-through rates. However, for SEO-critical content, direct URLs with descriptive paths may be preferable.',
-  },
-]
 
 interface ShortenedUrl {
   id: string
@@ -1054,233 +1000,6 @@ export default function URLShortenerPage() {
         </ul>
       </div>
 
-      {/* How to Use Section */}
-      <Card
-        className={css({
-          border: '2px solid',
-          borderColor: 'blue.500/30',
-          bg: 'rgba(59, 130, 246, 0.05)',
-          backdropFilter: 'blur(16px)',
-          overflow: 'hidden',
-        })}
-      >
-        <CardHeader>
-          <CardTitle
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '2',
-              fontSize: 'xl',
-              fontWeight: 'bold',
-            })}
-          >
-            <Lightbulb className={css({ h: '6', w: '6', color: 'blue.400' })} />
-            How to Use URL Shortener
-          </CardTitle>
-          <CardDescription>
-            Follow these simple steps to create and share your short links
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div
-            className={css({
-              display: 'grid',
-              gridTemplateColumns: { base: '1fr', md: '1fr 1fr' },
-              gap: { base: '4', md: '6' },
-            })}
-          >
-            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-              <Badge
-                variant="outline"
-                className={css({
-                  minH: '10',
-                  minW: '10',
-                  h: '10',
-                  w: '10',
-                  rounded: 'full',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bg: 'purple.500/10',
-                  borderColor: 'purple.500',
-                  borderWidth: '2px',
-                  fontSize: 'lg',
-                  fontWeight: 'bold',
-                  color: 'purple.300',
-                  flexShrink: 0,
-                })}
-              >
-                1
-              </Badge>
-              <div className={css({ flex: '1', minW: '0' })}>
-                <h3
-                  className={css({
-                    fontWeight: 'semibold',
-                    color: 'gray.100',
-                    mb: '2',
-                    fontSize: { base: 'sm', sm: 'base' },
-                  })}
-                >
-                  Enter Your Long URL
-                </h3>
-                <p
-                  className={css({
-                    fontSize: 'sm',
-                    color: 'white',
-                    lineHeight: '1.6',
-                  })}
-                >
-                  Paste the long URL you want to shorten into the input field. The tool validates
-                  the URL format automatically and shows a green checkmark when ready.
-                </p>
-              </div>
-            </div>
-
-            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-              <Badge
-                variant="outline"
-                className={css({
-                  minH: '10',
-                  minW: '10',
-                  h: '10',
-                  w: '10',
-                  rounded: 'full',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bg: 'pink.500/10',
-                  borderColor: 'pink.500',
-                  borderWidth: '2px',
-                  fontSize: 'lg',
-                  fontWeight: 'bold',
-                  color: 'pink.300',
-                  flexShrink: 0,
-                })}
-              >
-                2
-              </Badge>
-              <div className={css({ flex: '1', minW: '0' })}>
-                <h3
-                  className={css({
-                    fontWeight: 'semibold',
-                    color: 'gray.100',
-                    mb: '2',
-                    fontSize: { base: 'sm', sm: 'base' },
-                  })}
-                >
-                  Customize Your Link (Optional)
-                </h3>
-                <p
-                  className={css({
-                    fontSize: 'sm',
-                    color: 'white',
-                    lineHeight: '1.6',
-                  })}
-                >
-                  Add a custom alias for branded, memorable links (e.g., "summer-sale-2025"). Leave
-                  blank for auto-generated short codes. Use only lowercase, numbers, and hyphens.
-                </p>
-              </div>
-            </div>
-
-            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-              <Badge
-                variant="outline"
-                className={css({
-                  minH: '10',
-                  minW: '10',
-                  h: '10',
-                  w: '10',
-                  rounded: 'full',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bg: 'blue.500/10',
-                  borderColor: 'blue.500',
-                  borderWidth: '2px',
-                  fontSize: 'lg',
-                  fontWeight: 'bold',
-                  color: 'blue.300',
-                  flexShrink: 0,
-                })}
-              >
-                3
-              </Badge>
-              <div className={css({ flex: '1', minW: '0' })}>
-                <h3
-                  className={css({
-                    fontWeight: 'semibold',
-                    color: 'gray.100',
-                    mb: '2',
-                    fontSize: { base: 'sm', sm: 'base' },
-                  })}
-                >
-                  Generate and Copy Your Short Link
-                </h3>
-                <p
-                  className={css({
-                    fontSize: 'sm',
-                    color: 'white',
-                    lineHeight: '1.6',
-                  })}
-                >
-                  Click "Shorten URL" to instantly create your short link. Copy it to clipboard with
-                  one click, or generate a QR code for physical sharing and print materials.
-                </p>
-              </div>
-            </div>
-
-            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-              <Badge
-                variant="outline"
-                className={css({
-                  minH: '10',
-                  minW: '10',
-                  h: '10',
-                  w: '10',
-                  rounded: 'full',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bg: 'green.500/10',
-                  borderColor: 'green.500',
-                  borderWidth: '2px',
-                  fontSize: 'lg',
-                  fontWeight: 'bold',
-                  color: 'green.300',
-                  flexShrink: 0,
-                })}
-              >
-                4
-              </Badge>
-              <div className={css({ flex: '1', minW: '0' })}>
-                <h3
-                  className={css({
-                    fontWeight: 'semibold',
-                    color: 'gray.100',
-                    mb: '2',
-                    fontSize: { base: 'sm', sm: 'base' },
-                  })}
-                >
-                  Share and Track Performance
-                </h3>
-                <p
-                  className={css({
-                    fontSize: 'sm',
-                    color: 'white',
-                    lineHeight: '1.6',
-                  })}
-                >
-                  Share your short link on social media, emails, or print. Track clicks, locations,
-                  devices, and referrers through the built-in analytics dashboard. Monitor
-                  performance in real-time.
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       <SocialShare
         toolName="URL Shortener"
         toolUrl="https://supertool.id/tools/url-shortener"
@@ -1288,7 +1007,6 @@ export default function URLShortenerPage() {
         hashtags={['URLShortener', 'LinkManagement', 'Marketing', 'Analytics']}
       />
 
-      <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/url-shortener" category="productivity" />
       <ToolRating toolId="/tools/url-shortener" toolName="URL Shortener" />
       <ToolSearch />

@@ -14,7 +14,6 @@
  * Reference: /tools/unit-converter/page.tsx for detailed example
  */
 
-import { motion, useReducedMotion } from 'framer-motion'
 import { Copy, RotateCcw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -28,7 +27,6 @@ export default function ToolPageTemplate() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const shouldReduceMotion = useReducedMotion()
 
   const handleProcess = async () => {
     if (!input.trim()) {
@@ -45,7 +43,7 @@ export default function ToolPageTemplate() {
       })
       // TODO: Add your processing logic here
       setOutput('Processed result')
-      toast.success('Success! ✓')
+      toast.success('Success!')
     } catch (error) {
       console.error(error)
       toast.error('Something went wrong')
@@ -58,7 +56,7 @@ export default function ToolPageTemplate() {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(output)
-      toast.success('Copied to clipboard! ✓')
+      toast.success('Copied to clipboard!')
       // TODO: Replace 'json_copy' with your actual tool event
       trackToolEvent('json_copy', { length: output.length })
     } catch {
@@ -69,13 +67,9 @@ export default function ToolPageTemplate() {
   const handleReset = () => {
     setInput('')
     setOutput('')
-    // TODO: Replace 'split_bill_reset' with your actual tool event
-    trackToolEvent('split_bill_reset', {})
+    // TODO: Replace with your actual tool event
+    trackToolEvent('json_beautify', {})
   }
-
-  const animationVariants = shouldReduceMotion
-    ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 } }
-    : { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } }
 
   return (
     <main
@@ -89,12 +83,7 @@ export default function ToolPageTemplate() {
       })}
     >
       {/* Header Section */}
-      <motion.div
-        initial={animationVariants.initial}
-        animate={animationVariants.animate}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
-      >
+      <div className={css({ textAlign: 'center', spaceY: '4', animation: 'fadeIn 0.5s ease-out' })}>
         <div
           className={css({
             display: 'inline-flex',
@@ -131,16 +120,8 @@ export default function ToolPageTemplate() {
           className={css({
             fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
             fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'blue.400',
-            bgClip: 'text',
+            color: 'white',
           })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
         >
           Tool Title
         </h1>
@@ -153,15 +134,17 @@ export default function ToolPageTemplate() {
             color: 'gray.400',
           })}
         >
-          Clear description of what this tool does and how it helps users
+          Clear description of what this tool does
         </p>
-      </motion.div>
+      </div>
 
       {/* Main Tool Section */}
-      <motion.div
-        initial={animationVariants.initial}
-        animate={animationVariants.animate}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -240,15 +223,11 @@ export default function ToolPageTemplate() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Output Section */}
       {output && (
-        <motion.div
-          initial={animationVariants.initial}
-          animate={animationVariants.animate}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
+        <div className={css({ animation: 'fadeIn 0.3s ease-out' })}>
           <Card
             className={css({
               border: '1px solid',
@@ -301,43 +280,8 @@ export default function ToolPageTemplate() {
               </pre>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
-
-      {/* Info/Help Section */}
-      <motion.div
-        initial={animationVariants.initial}
-        animate={animationVariants.animate}
-        transition={{ delay: 0.3, duration: 0.5 }}
-      >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'blue.500/20',
-            bg: 'blue.500/5',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardHeader>
-            <CardTitle>How to Use</CardTitle>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '3' })}>
-            <ul
-              className={css({
-                spaceY: '2',
-                listStyleType: 'disc',
-                pl: '5',
-                fontSize: { base: 'sm', sm: 'base' },
-                color: 'gray.300',
-              })}
-            >
-              <li>Step 1: Enter your input</li>
-              <li>Step 2: Click Process button</li>
-              <li>Step 3: Copy or download result</li>
-            </ul>
-          </CardContent>
-        </Card>
-      </motion.div>
     </main>
   )
 }

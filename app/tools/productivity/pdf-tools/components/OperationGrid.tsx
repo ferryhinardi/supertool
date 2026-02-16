@@ -1,6 +1,5 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import {
   Archive,
@@ -506,264 +505,245 @@ export function OperationGrid({
       )}
 
       {/* Categories */}
-      <AnimatePresence mode="wait">
-        {filteredCategories.length > 0 ? (
-          filteredCategories.map((category, categoryIndex) => {
-            const isCollapsed = collapsedCategories.has(category.label)
 
-            return (
-              <motion.div
-                key={category.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: categoryIndex * 0.05, duration: 0.3 }}
+      {filteredCategories.length > 0 ? (
+        filteredCategories.map((category, categoryIndex) => {
+          const isCollapsed = collapsedCategories.has(category.label)
+
+          return (
+            <div key={category.label}>
+              {/* Category Header */}
+              <button
+                type="button"
+                onClick={() => toggleCategory(category.label)}
+                className={css({
+                  w: 'full',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  mb: '3',
+                  p: '2',
+                  rounded: 'lg',
+                  transition: 'all 0.2s',
+                  _hover: {
+                    bg: 'gray.800/50',
+                  },
+                })}
               >
-                {/* Category Header */}
-                <button
-                  type="button"
-                  onClick={() => toggleCategory(category.label)}
+                <h3
                   className={css({
-                    w: 'full',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    mb: '3',
-                    p: '2',
-                    rounded: 'lg',
-                    transition: 'all 0.2s',
-                    _hover: {
-                      bg: 'gray.800/50',
-                    },
+                    fontSize: 'sm',
+                    fontWeight: 'semibold',
+                    color: 'white',
+                    textTransform: 'uppercase',
+                    letterSpacing: 'wider',
                   })}
                 >
-                  <h3
+                  {category.label}
+                  <span className={css({ ml: '2', color: 'gray.500', fontWeight: 'normal' })}>
+                    ({category.operations.length})
+                  </span>
+                </h3>
+                {isCollapsed ? (
+                  <ChevronDown className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                ) : (
+                  <ChevronUp className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                )}
+              </button>
+
+              {/* Operations Grid */}
+
+              {!isCollapsed && (
+                <div
+                  className={css({
+                    overflow: 'hidden',
+                    mb: '6',
+                  })}
+                >
+                  <div
                     className={css({
-                      fontSize: 'sm',
-                      fontWeight: 'semibold',
-                      color: 'white',
-                      textTransform: 'uppercase',
-                      letterSpacing: 'wider',
+                      display: 'grid',
+                      gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                      gap: '3',
+                      w: 'full',
                     })}
                   >
-                    {category.label}
-                    <span className={css({ ml: '2', color: 'gray.500', fontWeight: 'normal' })}>
-                      ({category.operations.length})
-                    </span>
-                  </h3>
-                  {isCollapsed ? (
-                    <ChevronDown className={css({ h: '5', w: '5', color: 'gray.500' })} />
-                  ) : (
-                    <ChevronUp className={css({ h: '5', w: '5', color: 'gray.500' })} />
-                  )}
-                </button>
+                    {category.operations.map((op) => {
+                      const isSelected = selectedOperation === op.value
+                      const Icon = op.icon
 
-                {/* Operations Grid */}
-                <AnimatePresence>
-                  {!isCollapsed && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className={css({
-                        overflow: 'hidden',
-                        mb: '6',
-                      })}
-                    >
-                      <div
-                        className={css({
-                          display: 'grid',
-                          gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
-                          gap: '3',
-                          w: 'full',
-                        })}
-                      >
-                        {category.operations.map((op) => {
-                          const isSelected = selectedOperation === op.value
-                          const Icon = op.icon
-
-                          return (
-                            <motion.button
-                              type="button"
-                              key={op.value}
-                              onClick={() => handleOperationClick(op.value)}
-                              disabled={disabled}
-                              whileHover={{ scale: disabled ? 1 : 1.02 }}
-                              whileTap={{ scale: disabled ? 1 : 0.98 }}
-                              className={css({
-                                position: 'relative',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '3',
-                                p: '4',
-                                rounded: 'lg',
-                                border: '2px solid',
-                                borderColor: isSelected ? 'currentColor' : 'gray.700',
-                                bg: isSelected ? 'currentColor/10' : 'gray.800/50',
-                                textAlign: 'left',
-                                transition: 'all 0.2s',
-                                cursor: disabled ? 'not-allowed' : 'pointer',
-                                opacity: disabled ? 0.5 : 1,
-                                _hover: disabled
-                                  ? {}
-                                  : {
-                                      borderColor: 'currentColor',
-                                      bg: 'currentColor/5',
-                                    },
-                                _focus: {
-                                  outline: '2px solid',
-                                  outlineColor: 'currentColor',
-                                  outlineOffset: '2px',
+                      return (
+                        <button
+                          type="button"
+                          key={op.value}
+                          onClick={() => handleOperationClick(op.value)}
+                          disabled={disabled}
+                          className={css({
+                            position: 'relative',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '3',
+                            p: '4',
+                            rounded: 'lg',
+                            border: '2px solid',
+                            borderColor: isSelected ? 'currentColor' : 'gray.700',
+                            bg: isSelected ? 'currentColor/10' : 'gray.800/50',
+                            textAlign: 'left',
+                            transition: 'all 0.2s',
+                            cursor: disabled ? 'not-allowed' : 'pointer',
+                            opacity: disabled ? 0.5 : 1,
+                            _hover: disabled
+                              ? {}
+                              : {
+                                  borderColor: 'currentColor',
+                                  bg: 'currentColor/5',
                                 },
+                            _focus: {
+                              outline: '2px solid',
+                              outlineColor: 'currentColor',
+                              outlineOffset: '2px',
+                            },
+                          })}
+                          style={{ color: op.color }}
+                          aria-pressed={isSelected}
+                          aria-label={`${op.label}: ${op.description}`}
+                        >
+                          {/* Glow effect for selected */}
+                          {isSelected && (
+                            <div
+                              className={css({
+                                position: 'absolute',
+                                inset: '-2px',
+                                rounded: 'lg',
+                                opacity: 0.5,
+                                pointerEvents: 'none',
+                                filter: 'blur(8px)',
+                              })}
+                              style={{ background: op.color }}
+                            />
+                          )}
+
+                          {/* Icon */}
+                          <div
+                            className={css({
+                              position: 'relative',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                              h: '12',
+                              w: '12',
+                              rounded: 'lg',
+                              bg: isSelected ? 'currentColor/20' : 'currentColor/10',
+                            })}
+                          >
+                            <Icon
+                              className={css({
+                                h: '6',
+                                w: '6',
                               })}
                               style={{ color: op.color }}
-                              aria-pressed={isSelected}
-                              aria-label={`${op.label}: ${op.description}`}
-                            >
-                              {/* Glow effect for selected */}
-                              {isSelected && (
-                                <div
-                                  className={css({
-                                    position: 'absolute',
-                                    inset: '-2px',
-                                    rounded: 'lg',
-                                    opacity: 0.5,
-                                    pointerEvents: 'none',
-                                    filter: 'blur(8px)',
-                                  })}
-                                  style={{ background: op.color }}
-                                />
-                              )}
+                            />
+                          </div>
 
-                              {/* Icon */}
-                              <div
+                          {/* Content */}
+                          <div className={css({ minW: '0', flex: '1' })}>
+                            <div
+                              className={css({
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '2',
+                                mb: '1',
+                              })}
+                            >
+                              <h4
                                 className={css({
-                                  position: 'relative',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  flexShrink: 0,
-                                  h: '12',
-                                  w: '12',
-                                  rounded: 'lg',
-                                  bg: isSelected ? 'currentColor/20' : 'currentColor/10',
+                                  fontSize: 'sm',
+                                  fontWeight: 'semibold',
+                                  color: isSelected ? 'currentColor' : 'gray.200',
                                 })}
                               >
-                                <Icon
-                                  className={css({
-                                    h: '6',
-                                    w: '6',
-                                  })}
-                                  style={{ color: op.color }}
-                                />
-                              </div>
-
-                              {/* Content */}
-                              <div className={css({ minW: '0', flex: '1' })}>
+                                {op.label}
+                              </h4>
+                              {isSelected && (
                                 <div
                                   className={css({
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '2',
-                                    mb: '1',
+                                    justifyContent: 'center',
+                                    h: '5',
+                                    w: '5',
+                                    rounded: 'full',
+                                    bg: 'currentColor',
                                   })}
                                 >
-                                  <h4
-                                    className={css({
-                                      fontSize: 'sm',
-                                      fontWeight: 'semibold',
-                                      color: isSelected ? 'currentColor' : 'gray.200',
-                                    })}
+                                  <svg
+                                    className={css({ h: '3', w: '3', color: 'white' })}
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    aria-hidden="true"
                                   >
-                                    {op.label}
-                                  </h4>
-                                  {isSelected && (
-                                    <motion.div
-                                      initial={{ scale: 0 }}
-                                      animate={{ scale: 1 }}
-                                      className={css({
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        h: '5',
-                                        w: '5',
-                                        rounded: 'full',
-                                        bg: 'currentColor',
-                                      })}
-                                    >
-                                      <svg
-                                        className={css({ h: '3', w: '3', color: 'white' })}
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        aria-hidden="true"
-                                      >
-                                        <title>Selected</title>
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth={3}
-                                          d="M5 13l4 4L19 7"
-                                        />
-                                      </svg>
-                                    </motion.div>
-                                  )}
+                                    <title>Selected</title>
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={3}
+                                      d="M5 13l4 4L19 7"
+                                    />
+                                  </svg>
                                 </div>
-                                <p
-                                  className={css({
-                                    fontSize: 'xs',
-                                    color: isSelected ? 'currentColor/80' : 'gray.500',
-                                    lineHeight: 'tight',
-                                  })}
-                                >
-                                  {op.description}
-                                </p>
-                              </div>
-                            </motion.button>
-                          )
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            )
-          })
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+                              )}
+                            </div>
+                            <p
+                              className={css({
+                                fontSize: 'xs',
+                                color: isSelected ? 'currentColor/80' : 'gray.500',
+                                lineHeight: 'tight',
+                              })}
+                            >
+                              {op.description}
+                            </p>
+                          </div>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })
+      ) : (
+        <div
+          className={css({
+            py: '12',
+            textAlign: 'center',
+            color: 'gray.500',
+          })}
+        >
+          <p>No operations found matching &quot;{searchQuery}&quot;</p>
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
             className={css({
-              py: '12',
-              textAlign: 'center',
-              color: 'gray.500',
+              mt: '4',
+              px: '4',
+              py: '2',
+              rounded: 'lg',
+              bg: 'gray.800',
+              color: 'white',
+              fontSize: 'sm',
+              transition: 'all 0.2s',
+              _hover: {
+                bg: 'gray.700',
+              },
             })}
           >
-            <p>No operations found matching &quot;{searchQuery}&quot;</p>
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className={css({
-                mt: '4',
-                px: '4',
-                py: '2',
-                rounded: 'lg',
-                bg: 'gray.800',
-                color: 'white',
-                fontSize: 'sm',
-                transition: 'all 0.2s',
-                _hover: {
-                  bg: 'gray.700',
-                },
-              })}
-            >
-              Clear search
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Clear search
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   CheckCircle2,
@@ -182,11 +181,13 @@ function FileVerifierContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -234,13 +235,15 @@ function FileVerifierContent() {
           Verify file integrity by comparing cryptographic hashes. Detect tampering, corruption, or
           unauthorized modifications. All processing happens securely in your browser.
         </p>
-      </motion.div>
+      </div>
 
       {/* Algorithm Selection */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -303,13 +306,15 @@ function FileVerifierContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* File Upload */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -383,14 +388,16 @@ function FileVerifierContent() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* File Hash Result */}
       {fileData && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -484,14 +491,16 @@ function FileVerifierContent() {
               </Button>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Hash Verification */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -585,137 +594,7 @@ function FileVerifierContent() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
-
-      {/* How It Works */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'gray.700',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardHeader>
-            <CardTitle className={css({ fontSize: 'lg' })}>How File Verification Works</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className={css({ spaceY: '3' })}>
-              <div className={css({ fontSize: 'sm', color: 'white' })}>
-                <strong>1. Hash Calculation:</strong> A cryptographic hash function generates a
-                unique fingerprint of your file.
-              </div>
-              <div className={css({ fontSize: 'sm', color: 'white' })}>
-                <strong>2. Comparison:</strong> Compare the calculated hash with the expected hash
-                from a trusted source.
-              </div>
-              <div className={css({ fontSize: 'sm', color: 'white' })}>
-                <strong>3. Verification:</strong> If hashes match, the file is authentic and
-                unmodified. If they don't match, the file may be corrupted or tampered with.
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Use Cases */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-      >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'gray.700',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardHeader>
-            <CardTitle className={css({ fontSize: 'lg' })}>Common Use Cases</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              className={css({
-                display: 'grid',
-                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
-                gap: '4',
-              })}
-            >
-              <div
-                className={css({
-                  p: '4',
-                  borderRadius: 'lg',
-                  bg: 'gray.800/50',
-                  border: '1px solid',
-                  borderColor: 'gray.700',
-                })}
-              >
-                <div className={css({ fontWeight: 'semibold', color: 'emerald.300', mb: '2' })}>
-                  Software Downloads
-                </div>
-                <div className={css({ fontSize: 'sm', color: 'white' })}>
-                  Verify downloaded software hasn't been tampered with before installation
-                </div>
-              </div>
-              <div
-                className={css({
-                  p: '4',
-                  borderRadius: 'lg',
-                  bg: 'gray.800/50',
-                  border: '1px solid',
-                  borderColor: 'gray.700',
-                })}
-              >
-                <div className={css({ fontWeight: 'semibold', color: 'emerald.300', mb: '2' })}>
-                  Data Backups
-                </div>
-                <div className={css({ fontSize: 'sm', color: 'white' })}>
-                  Ensure backup files haven't been corrupted during storage or transfer
-                </div>
-              </div>
-              <div
-                className={css({
-                  p: '4',
-                  borderRadius: 'lg',
-                  bg: 'gray.800/50',
-                  border: '1px solid',
-                  borderColor: 'gray.700',
-                })}
-              >
-                <div className={css({ fontWeight: 'semibold', color: 'emerald.300', mb: '2' })}>
-                  File Transfers
-                </div>
-                <div className={css({ fontSize: 'sm', color: 'white' })}>
-                  Confirm files received match the original after network transfer
-                </div>
-              </div>
-              <div
-                className={css({
-                  p: '4',
-                  borderRadius: 'lg',
-                  bg: 'gray.800/50',
-                  border: '1px solid',
-                  borderColor: 'gray.700',
-                })}
-              >
-                <div className={css({ fontWeight: 'semibold', color: 'emerald.300', mb: '2' })}>
-                  Security Audits
-                </div>
-                <div className={css({ fontSize: 'sm', color: 'white' })}>
-                  Detect unauthorized modifications to sensitive files or documents
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+      </div>
 
       <ToolSearch />
     </main>

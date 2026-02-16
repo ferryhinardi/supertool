@@ -20,15 +20,6 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/tools/prompt-formatter',
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock URL.createObjectURL and revokeObjectURL
 globalThis.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
 globalThis.URL.revokeObjectURL = vi.fn()

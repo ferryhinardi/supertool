@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   Building2,
   Download,
@@ -388,11 +387,13 @@ export default function InvoiceGeneratorPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -449,18 +450,18 @@ export default function InvoiceGeneratorPage() {
           Create professional invoices with custom templates, tax calculations, and client
           management. Export to PDF or print instantly.
         </p>
-      </motion.div>
+      </div>
 
       {/* Action Buttons */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
         className={css({
           display: 'flex',
           gap: '3',
           flexWrap: 'wrap',
           justifyContent: 'center',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
         })}
       >
         <Button
@@ -511,7 +512,7 @@ export default function InvoiceGeneratorPage() {
           <Printer className={css({ h: '4', w: '4' })} />
           Print
         </Button>
-      </motion.div>
+      </div>
 
       <div
         className={css({
@@ -526,10 +527,12 @@ export default function InvoiceGeneratorPage() {
         {/* Main Invoice Form */}
         <div className={css({ spaceY: '6' })}>
           {/* Invoice Details */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -668,13 +671,15 @@ export default function InvoiceGeneratorPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* From (Your Company) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.3s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -801,13 +806,15 @@ export default function InvoiceGeneratorPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* To (Client) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.4s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -934,13 +941,15 @@ export default function InvoiceGeneratorPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Line Items */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.5s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -1136,13 +1145,15 @@ export default function InvoiceGeneratorPage() {
                 ))}
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Tax & Discount */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.6s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -1227,13 +1238,15 @@ export default function InvoiceGeneratorPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Notes */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.7s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -1274,16 +1287,18 @@ export default function InvoiceGeneratorPage() {
                 />
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         </div>
 
         {/* Sidebar - Summary & Saved Invoices */}
         <div className={css({ spaceY: '6' })}>
           {/* Summary */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideInLeft 0.5s ease-out forwards',
+              animationDelay: '0.3s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -1354,14 +1369,16 @@ export default function InvoiceGeneratorPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Saved Invoices */}
           {savedInvoices.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideInLeft 0.5s ease-out forwards',
+                animationDelay: '0.4s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -1432,7 +1449,7 @@ export default function InvoiceGeneratorPage() {
                   ))}
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </div>
       </div>

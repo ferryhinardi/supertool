@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   Activity,
   Download,
@@ -559,11 +558,13 @@ function SpeedTestContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -614,13 +615,15 @@ function SpeedTestContent() {
           Test your internet connection speed in real-time. Measure download speed, upload speed,
           latency, and jitter with accurate results.
         </p>
-      </motion.div>
+      </div>
 
       {/* Main Speed Test Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -828,10 +831,14 @@ function SpeedTestContent() {
 
             {/* Retest Button */}
             {phase === 'complete' && result && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={css({ display: 'flex', justifyContent: 'center', pt: '4' })}
+              <div
+                className={css({
+                  display: 'flex',
+                  justifyContent: 'center',
+                  pt: '4',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
+                })}
               >
                 <Button
                   onClick={runSpeedTest}
@@ -847,18 +854,20 @@ function SpeedTestContent() {
                   <Play className={css({ h: '4', w: '4' })} />
                   Run Test Again
                 </Button>
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Result Details */}
       {result && phase === 'complete' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -1017,14 +1026,16 @@ function SpeedTestContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -1051,7 +1062,7 @@ function SpeedTestContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

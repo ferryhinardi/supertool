@@ -38,15 +38,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: mockTrackToolEvent,
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: mockToast,

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   CheckCircle2,
@@ -197,10 +196,8 @@ function SSLCheckerContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={css({ spaceY: '4' })}
+      <div
+        className={css({ spaceY: '4', animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}
       >
         <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
           <div
@@ -252,7 +249,7 @@ function SSLCheckerContent() {
             Recommendations
           </Badge>
         </div>
-      </motion.div>
+      </div>
 
       {/* Main Content */}
       <div
@@ -315,7 +312,7 @@ function SSLCheckerContent() {
 
           {/* Results */}
           {result && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <div className={css({ animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}>
               {result.error ? (
                 <Card>
                   <CardContent className={css({ pt: '6' })}>
@@ -722,7 +719,7 @@ function SSLCheckerContent() {
                   )}
                 </>
               ) : null}
-            </motion.div>
+            </div>
           )}
         </div>
 

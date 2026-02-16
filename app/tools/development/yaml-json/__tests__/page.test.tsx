@@ -34,15 +34,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: (props: { children?: React.ReactNode; [key: string]: unknown }) => {
-      const { children, ...rest } = props
-      return createElement('div', rest, children)
-    },
-  },
-}))
-
 import YamlJsonConverterPage from '../page'
 
 describe('YAML ↔ JSON Converter Page - Component Tests', () => {

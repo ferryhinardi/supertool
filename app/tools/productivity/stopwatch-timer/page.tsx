@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Bell, Clock, Download, Pause, Play, Plus, RotateCcw, Save, Trash2, X } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -417,11 +416,13 @@ function StopwatchTimerContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -472,14 +473,17 @@ function StopwatchTimerContent() {
           Professional stopwatch with lap tracking and multiple countdown timers. Save presets, set
           alarms, and get desktop notifications.
         </p>
-      </motion.div>
+      </div>
 
       {/* Mode Toggle */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-        className={css({ display: 'flex', justifyContent: 'center' })}
+      <div
+        className={css({
+          display: 'flex',
+          justifyContent: 'center',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -532,15 +536,17 @@ function StopwatchTimerContent() {
             Timer
           </Button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Stopwatch Mode */}
       {mode === 'stopwatch' && (
         <>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -668,14 +674,16 @@ function StopwatchTimerContent() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Lap Times */}
           {laps.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.3s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -845,7 +853,7 @@ function StopwatchTimerContent() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </>
       )}
@@ -854,10 +862,12 @@ function StopwatchTimerContent() {
       {mode === 'timer' && (
         <>
           {/* Add Timer Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -984,14 +994,16 @@ function StopwatchTimerContent() {
                 )}
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Timer Presets */}
           {presets.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.3s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -1082,15 +1094,17 @@ function StopwatchTimerContent() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Active Timers */}
           {timers.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.4s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -1262,16 +1276,18 @@ function StopwatchTimerContent() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.5s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -1311,7 +1327,7 @@ function StopwatchTimerContent() {
             </li>
           </ul>
         </div>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

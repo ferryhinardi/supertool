@@ -680,49 +680,6 @@ export default function JSONToMarkdownTablePage() {
           </div>
         </div>
 
-        {/* Help Section */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'purple.500/20',
-            bg: 'rgba(168, 85, 247, 0.05)',
-            p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <h3
-            className={css({
-              mb: '3',
-              fontSize: { base: 'base', sm: 'lg' },
-              fontWeight: 'bold',
-              color: 'purple.300',
-            })}
-          >
-            How to Use
-          </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Paste your JSON array in the editor above
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Choose column alignment (left, center, or right)
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Optionally provide custom header names (comma-separated)
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Preview the Markdown table in real-time
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Copy to clipboard or download as a .md file
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Perfect for documentation, README files, and GitHub issues
-            </li>
-          </ul>
-        </div>
-
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
         <ToolSearch />

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, FileJson, Sparkles, Star, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
@@ -51,17 +50,11 @@ function gradientToCss(gradient: string): string {
 }
 
 function ToolCard({ tool }: { tool: Tool }) {
-  const shouldReduceMotion = useReducedMotion()
   const Icon = tool.icon
   const isComingSoon = tool.comingSoon
-  const noMotion = shouldReduceMotion ?? false
 
   return (
-    <motion.div
-      initial={false}
-      whileHover={noMotion ? {} : { y: -8, scale: 1.02 }}
-      whileTap={noMotion ? {} : { scale: 0.98 }}
-    >
+    <div>
       <Link
         href={isComingSoon ? '#' : tool.href}
         className={css({
@@ -98,7 +91,7 @@ function ToolCard({ tool }: { tool: Tool }) {
                 justifyContent: 'space-between',
               })}
             >
-              <motion.div
+              <div
                 className={css({
                   rounded: 'xl',
                   p: '3.5',
@@ -107,11 +100,9 @@ function ToolCard({ tool }: { tool: Tool }) {
                 style={{
                   background: gradientToCss(tool.gradient),
                 }}
-                whileHover={noMotion ? {} : { rotate: [0, -10, 10, 0], scale: 1.1 }}
-                transition={{ duration: 0.4 }}
               >
                 <Icon className={css({ h: '7', w: '7', color: 'white' })} />
-              </motion.div>
+              </div>
 
               <div
                 className={css({
@@ -274,7 +265,7 @@ function ToolCard({ tool }: { tool: Tool }) {
           />
         </Card>
       </Link>
-    </motion.div>
+    </div>
   )
 }
 
@@ -314,22 +305,21 @@ export default function DataToolsPage() {
           spaceY: '4',
         })}
       >
-        <motion.div
+        <div
           className={css({
             display: 'inline-flex',
             rounded: '2xl',
             p: '4',
             shadow: 'lg',
             bg: 'linear-gradient(135deg, #a855f7, #ec4899)',
+            animation: 'scaleIn 0.3s ease-out forwards',
+            opacity: 0,
           })}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.3 }}
         >
           <FileJson className={css({ h: '10', w: '10', color: 'white' })} />
-        </motion.div>
+        </div>
 
-        <motion.h1
+        <h1
           className={css({
             fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
             fontWeight: 'bold',
@@ -339,39 +329,39 @@ export default function DataToolsPage() {
             gradientTo: 'purple.400',
             bgClip: 'text',
             color: 'transparent',
+            animation: 'slideUp 0.4s ease-out forwards',
+            animationDelay: '0.1s',
+            opacity: 0,
           })}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
         >
           Data Processing Tools
-        </motion.h1>
+        </h1>
 
-        <motion.p
+        <p
           className={css({
             maxW: '2xl',
             mx: 'auto',
             fontSize: { base: 'lg', md: 'xl' },
             color: 'gray.400',
+            animation: 'slideUp 0.4s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
           })}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
         >
           Transform, convert, and format your data with our powerful collection of{' '}
           {categoryTools.length} free online tools.
-        </motion.p>
+        </p>
 
-        <motion.div
+        <div
           className={css({
             display: 'flex',
             justifyContent: 'center',
             gap: '4',
             flexWrap: 'wrap',
+            animation: 'slideUp 0.4s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
           })}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
         >
           <Badge
             variant="secondary"
@@ -406,42 +396,44 @@ export default function DataToolsPage() {
           >
             Browser-Based
           </Badge>
-        </motion.div>
+        </div>
       </div>
 
       {/* Tools Grid */}
-      <motion.div
+      <div
         className={css({
           display: 'grid',
           gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
           gap: { base: '4', sm: '6' },
           w: 'full',
+          animation: 'fadeIn 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
         })}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
       >
-        {categoryTools.map((tool, index) => (
-          <motion.div
+        {categoryTools.map((tool) => (
+          <div
             key={tool.href}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 * Math.min(index, 10) }}
+            className={css({
+              animation: 'slideUp 0.3s ease-out forwards',
+              animationDelay: '0.1s',
+              opacity: 0,
+            })}
           >
             <ToolCard tool={tool} />
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
+      </div>
 
       {/* Call to action */}
-      <motion.div
+      <div
         className={css({
           textAlign: 'center',
           py: '8',
+          animation: 'fadeIn 0.5s ease-out forwards',
+          animationDelay: '0.6s',
+          opacity: 0,
         })}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
       >
         <Link href="/">
           <Button
@@ -460,7 +452,7 @@ export default function DataToolsPage() {
             <ArrowRight className={css({ h: '4', w: '4', ml: '2' })} />
           </Button>
         </Link>
-      </motion.div>
+      </div>
     </main>
   )
 }

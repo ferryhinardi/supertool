@@ -1,10 +1,8 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronUp } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
 import { css } from '@/styled-system/css'
 
 interface ToolMobilePickerProps {
@@ -93,123 +91,119 @@ export function ToolMobilePicker({
       </Button>
 
       {/* Bottom Sheet */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+      {isOpen && (
+        <>
+          {/* Overlay */}
+          <div
+            onClick={() => setIsOpen(false)}
+            className={css({
+              position: 'fixed',
+              inset: '0',
+              bg: 'black/40',
+              backdropFilter: 'blur(4px)',
+              zIndex: '50',
+              animation: 'fadeIn 0.2s ease-out',
+            })}
+          />
+
+          {/* Bottom Sheet */}
+          <div
+            className={css({
+              animation: 'slideUp 0.3s ease-out',
+              position: 'fixed',
+              bottom: '0',
+              left: '0',
+              right: '0',
+              display: 'flex',
+              flexDirection: 'column',
+              maxH: '96',
+              rounded: 't-2xl',
+              bg: 'gray.900',
+              borderTop: '1px solid',
+              borderColor: 'gray.800',
+              zIndex: '50',
+            })}
+          >
+            {/* Handle */}
+            <button
+              type="button"
               onClick={() => setIsOpen(false)}
               className={css({
-                position: 'fixed',
-                inset: '0',
-                bg: 'black/40',
-                backdropFilter: 'blur(4px)',
-                zIndex: '50',
+                mx: 'auto',
+                mt: '4',
+                h: '1.5',
+                w: '12',
+                rounded: 'full',
+                bg: 'gray.700',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+                _hover: {
+                  bg: 'gray.600',
+                },
+                _focus: {
+                  outline: '2px solid',
+                  outlineColor: 'gray.600',
+                  outlineOffset: '2px',
+                },
               })}
+              aria-label="Close drawer"
             />
 
-            {/* Bottom Sheet */}
-            <motion.div
-              {...TOOL_ANIMATIONS.bottomSheet}
+            {/* Header */}
+            <div
               className={css({
-                position: 'fixed',
-                bottom: '0',
-                left: '0',
-                right: '0',
-                display: 'flex',
-                flexDirection: 'column',
-                maxH: '96',
-                rounded: 't-2xl',
-                bg: 'gray.900',
-                borderTop: '1px solid',
+                p: '6',
+                borderBottom: '1px solid',
                 borderColor: 'gray.800',
-                zIndex: '50',
               })}
             >
-              {/* Handle */}
+              <h2
+                className={css({
+                  fontSize: 'xl',
+                  fontWeight: 'bold',
+                  color: 'gray.100',
+                })}
+              >
+                {title}
+              </h2>
+              {description && (
+                <p
+                  className={css({
+                    mt: '2',
+                    fontSize: 'sm',
+                    color: 'gray.400',
+                  })}
+                >
+                  {description}
+                </p>
+              )}
+            </div>
+
+            {/* Content */}
+            <div
+              className={css({
+                flex: '1',
+                overflowY: 'auto',
+                p: '6',
+              })}
+            >
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
                 className={css({
-                  mx: 'auto',
-                  mt: '4',
-                  h: '1.5',
-                  w: '12',
-                  rounded: 'full',
-                  bg: 'gray.700',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s',
-                  _hover: {
-                    bg: 'gray.600',
-                  },
-                  _focus: {
-                    outline: '2px solid',
-                    outlineColor: 'gray.600',
-                    outlineOffset: '2px',
-                  },
-                })}
-                aria-label="Close drawer"
-              />
-
-              {/* Header */}
-              <div
-                className={css({
-                  p: '6',
-                  borderBottom: '1px solid',
-                  borderColor: 'gray.800',
+                  appearance: 'none',
+                  w: 'full',
+                  bg: 'transparent',
+                  border: 'none',
+                  p: 0,
                 })}
               >
-                <h2
-                  className={css({
-                    fontSize: 'xl',
-                    fontWeight: 'bold',
-                    color: 'gray.100',
-                  })}
-                >
-                  {title}
-                </h2>
-                {description && (
-                  <p
-                    className={css({
-                      mt: '2',
-                      fontSize: 'sm',
-                      color: 'gray.400',
-                    })}
-                  >
-                    {description}
-                  </p>
-                )}
-              </div>
-
-              {/* Content */}
-              <div
-                className={css({
-                  flex: '1',
-                  overflowY: 'auto',
-                  p: '6',
-                })}
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className={css({
-                    appearance: 'none',
-                    w: 'full',
-                    bg: 'transparent',
-                    border: 'none',
-                    p: 0,
-                  })}
-                >
-                  {children}
-                </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                {children}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </>
   )
 }

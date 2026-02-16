@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { ToolEmptyStateProps } from '@/lib/data/tool-components-types'
@@ -38,7 +37,7 @@ export function ToolEmptyState({
   color = '#ef4444',
 }: ToolEmptyStateProps) {
   return (
-    <motion.div
+    <div
       {...TOOL_ANIMATIONS.fadeIn}
       className={css({
         display: 'flex',
@@ -51,18 +50,11 @@ export function ToolEmptyState({
       })}
     >
       {/* Animated Icon */}
-      <motion.div
-        animate={{
-          y: [0, -10, 0],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: 'easeInOut',
-        }}
+      <div
         className={css({
           mb: '6',
           position: 'relative',
+          animation: 'float 2s ease-in-out infinite',
         })}
       >
         <div
@@ -90,20 +82,12 @@ export function ToolEmptyState({
         </div>
 
         {/* Floating sparkles */}
-        <motion.div
-          animate={{
-            rotate: 360,
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: 'linear',
-          }}
+        <div
           className={css({
             position: 'absolute',
             top: '-2',
             right: '-2',
+            animation: 'spin 4s linear infinite',
           })}
         >
           <Sparkles
@@ -113,8 +97,8 @@ export function ToolEmptyState({
               color: 'yellow.400',
             })}
           />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
       {/* Content */}
       <h3
@@ -153,11 +137,8 @@ export function ToolEmptyState({
           })}
         >
           {tips.map((tipText, index) => (
-            <motion.div
-              key={tipText}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + index * 0.1 }}
+            <div
+              key={index}
               className={css({
                 display: 'flex',
                 alignItems: 'center',
@@ -165,6 +146,9 @@ export function ToolEmptyState({
                 fontSize: 'sm',
                 color: 'gray.500',
                 textAlign: 'left',
+                animation: 'slideInLeft 0.5s ease-out forwards',
+                animationDelay: '0.2s',
+                opacity: 0,
               })}
             >
               <div
@@ -177,17 +161,19 @@ export function ToolEmptyState({
                 style={{ backgroundColor: color }}
               />
               {tipText}
-            </motion.div>
+            </div>
           ))}
         </div>
       )}
 
       {/* Action Button */}
       {actionLabel && onAction && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4 }}
+        <div
+          className={css({
+            animation: 'scaleIn 0.5s ease-out forwards',
+            animationDelay: '0.4s',
+            opacity: 0,
+          })}
         >
           <Button
             onClick={onAction}
@@ -212,15 +198,12 @@ export function ToolEmptyState({
             />
             {actionLabel}
           </Button>
-        </motion.div>
+        </div>
       )}
 
       {/* Quick start hint (if tips are provided) */}
       {tips.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
+        <div
           className={css({
             mt: '8',
             p: '4',
@@ -230,6 +213,9 @@ export function ToolEmptyState({
             borderColor: 'gray.700',
             maxW: { base: 'sm', sm: 'md' },
             w: 'full',
+            animation: 'fadeIn 0.5s ease-out forwards',
+            animationDelay: '0.8s',
+            opacity: 0,
           })}
         >
           <div
@@ -273,8 +259,8 @@ export function ToolEmptyState({
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-    </motion.div>
+    </div>
   )
 }

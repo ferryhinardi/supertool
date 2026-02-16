@@ -1,10 +1,8 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
 import { AlertCircle, CheckCircle, Loader2, X, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { ToolProcessingState } from '@/lib/data/tool-components-types'
-import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
 import { css } from '@/styled-system/css'
 
 interface ToolProcessingModalProps extends ToolProcessingState {
@@ -55,30 +53,26 @@ export function ToolProcessingModal({
   const hasError = !!error
 
   return (
-    <AnimatePresence>
+    <>
       {(isProcessing || error) && (
         <>
           {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             className={css({
               position: 'fixed',
               inset: '0',
               bg: 'black/60',
               backdropFilter: 'blur(4px)',
               zIndex: '50',
+              animation: 'fadeIn 0.2s ease-out',
             })}
             onClick={isComplete || hasError ? onClose : undefined}
           />
 
           {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+          <div
             className={css({
+              animation: 'scaleIn 0.2s ease-out',
               position: 'fixed',
               top: '50%',
               left: '50%',
@@ -134,7 +128,7 @@ export function ToolProcessingModal({
               >
                 {/* Progress Circle or Status Icon */}
                 {hasError ? (
-                  <motion.div {...TOOL_ANIMATIONS.scale}>
+                  <div className={css({ animation: 'scaleIn 0.3s ease-out' })}>
                     <div
                       className={css({
                         display: 'flex',
@@ -154,13 +148,9 @@ export function ToolProcessingModal({
                         })}
                       />
                     </div>
-                  </motion.div>
+                  </div>
                 ) : isComplete ? (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', duration: 0.5 }}
-                  >
+                  <div className={css({ animation: 'scaleIn 0.3s ease-out' })}>
                     <div
                       className={css({
                         display: 'flex',
@@ -180,7 +170,7 @@ export function ToolProcessingModal({
                         })}
                       />
                     </div>
-                  </motion.div>
+                  </div>
                 ) : (
                   <ProgressCircle value={progress} color={color} />
                 )}
@@ -214,9 +204,9 @@ export function ToolProcessingModal({
 
                   {/* Error message */}
                   {error && (
-                    <motion.div
-                      {...TOOL_ANIMATIONS.fadeInFast}
+                    <div
                       className={css({
+                        animation: 'fadeIn 0.2s ease-out',
                         mt: '3',
                         p: '3',
                         rounded: 'lg',
@@ -252,7 +242,7 @@ export function ToolProcessingModal({
                           {error}
                         </p>
                       </div>
-                    </motion.div>
+                    </div>
                   )}
 
                   {/* Estimated time */}
@@ -316,10 +306,10 @@ export function ToolProcessingModal({
                 )}
               </div>
             </div>
-          </motion.div>
+          </div>
         </>
       )}
-    </AnimatePresence>
+    </>
   )
 }
 

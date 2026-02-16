@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   ArrowLeftRight,
@@ -35,7 +34,6 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -54,49 +52,6 @@ import { css } from '@/styled-system/css'
 const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), {
   ssr: false,
 })
-
-const faqs = [
-  {
-    question: 'What is JSON beautifier and why do I need it?',
-    answer:
-      'A JSON beautifier formats compressed or minified JSON data into a readable, indented structure. It helps developers debug API responses, review configuration files, and understand complex JSON structures by adding proper indentation, line breaks, and syntax highlighting. This is essential for developers working with REST APIs, configuration management, data analysis, and web development.',
-  },
-  {
-    question: 'Is my JSON data safe when using this tool?',
-    answer:
-      'Yes, absolutely. All JSON formatting, validation, and beautification happens entirely in your browser using client-side JavaScript. Your data never leaves your device and is not sent to any server, ensuring complete privacy and security. This makes it safe to format sensitive data like API keys, configuration files, or customer data.',
-  },
-  {
-    question: 'Can I validate JSON syntax with this tool?',
-    answer:
-      'Yes! The JSON beautifier automatically validates your JSON syntax as you type. It will highlight errors and show you exactly where syntax issues occur, making it easy to fix malformed JSON quickly. You can also validate JSON against JSON Schema for advanced validation with custom rules and data types.',
-  },
-  {
-    question: 'What is the difference between beautify and minify?',
-    answer:
-      'Beautify adds indentation, line breaks, and spacing to make JSON human-readable. Minify does the opposite - it removes all unnecessary whitespace to create the smallest possible file size, which is useful for production environments to reduce bandwidth usage. Use beautify for development and debugging, and minify for production deployments.',
-  },
-  {
-    question: 'How do I format JSON from API responses?',
-    answer:
-      'Copy the JSON response from your API testing tool (Postman, Insomnia, cURL, etc.) and paste it directly into the editor. Click "Beautify" to format it with proper indentation. The tool automatically detects and formats nested objects and arrays, making complex API responses easy to read and understand.',
-  },
-  {
-    question: 'Can I convert JSON to TypeScript interfaces?',
-    answer:
-      'Yes! Switch to the "TypeScript" view mode and click "Generate TypeScript Interface" to automatically create TypeScript type definitions from your JSON data. This is perfect for frontend developers working with APIs who need to quickly generate type-safe interfaces for their TypeScript projects.',
-  },
-  {
-    question: 'What are the keyboard shortcuts?',
-    answer:
-      'The editor supports standard keyboard shortcuts: Ctrl+B (or Cmd+B on Mac) to beautify, Ctrl+M to minify, and Ctrl+C to copy. The CodeMirror editor also supports common editing shortcuts like Ctrl+Z for undo, Ctrl+F for find, and Tab for indentation.',
-  },
-  {
-    question: 'How do I compare two JSON files?',
-    answer:
-      'Switch to the "Compare" view mode, paste your first JSON in the left editor and the second JSON in the right editor. Click "Compare JSONs" to see a detailed diff showing added, removed, and changed properties. This is useful for comparing API responses, configuration versions, or debugging data changes.',
-  },
-]
 
 // Schema templates
 const SCHEMA_TEMPLATES = {
@@ -836,11 +791,8 @@ function JSONBeautifyContent() {
         })}
       >
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className={css({ spaceY: '3' })}
+        <div
+          className={css({ spaceY: '3', animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}
         >
           <div
             className={css({
@@ -899,13 +851,15 @@ function JSONBeautifyContent() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Pro Tips Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.1s',
+            opacity: 0,
+          })}
         >
           <div
             className={css({
@@ -945,210 +899,16 @@ function JSONBeautifyContent() {
               </li>
             </ul>
           </div>
-        </motion.div>
-
-        {/* How to Use Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <Card
-            className={css({
-              border: '2px solid',
-              borderColor: 'blue.500/30',
-              bg: 'rgba(59, 130, 246, 0.05)',
-              backdropFilter: 'blur(16px)',
-            })}
-          >
-            <CardHeader>
-              <CardTitle
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2',
-                })}
-              >
-                <Lightbulb className={css({ h: '5', w: '5' })} />
-                How to Use JSON Beautifier
-              </CardTitle>
-              <CardDescription>
-                Follow these simple steps to format, validate, and work with your JSON data
-              </CardDescription>
-            </CardHeader>
-            <CardContent className={css({ spaceY: '4' })}>
-              <div className={css({ spaceY: '3' })}>
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <Badge
-                    variant="outline"
-                    className={css({
-                      h: '6',
-                      w: '6',
-                      rounded: 'full',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bg: 'purple.500/20',
-                      borderColor: 'purple.500/50',
-                      flexShrink: 0,
-                    })}
-                  >
-                    1
-                  </Badge>
-                  <div>
-                    <h3
-                      className={css({
-                        fontWeight: 'semibold',
-                        color: 'gray.100',
-                        mb: '1',
-                      })}
-                    >
-                      Paste Your JSON
-                    </h3>
-                    <p className={css({ fontSize: 'sm', color: 'white' })}>
-                      Copy your JSON data from API responses, config files, or any source and paste
-                      it into the editor below. Works with minified or formatted JSON.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <Badge
-                    variant="outline"
-                    className={css({
-                      h: '6',
-                      w: '6',
-                      rounded: 'full',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bg: 'pink.500/20',
-                      borderColor: 'pink.500/50',
-                      flexShrink: 0,
-                    })}
-                  >
-                    2
-                  </Badge>
-                  <div>
-                    <h3
-                      className={css({
-                        fontWeight: 'semibold',
-                        color: 'gray.100',
-                        mb: '1',
-                      })}
-                    >
-                      Choose Your Action
-                    </h3>
-                    <p className={css({ fontSize: 'sm', color: 'white' })}>
-                      Click <strong>Beautify</strong> to format with indentation,{' '}
-                      <strong>Minify</strong> to compress, or explore advanced features like schema
-                      validation, comparison, and TypeScript generation.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={css({ display: 'flex', gap: '3' })}>
-                  <Badge
-                    variant="outline"
-                    className={css({
-                      h: '6',
-                      w: '6',
-                      rounded: 'full',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bg: 'blue.500/20',
-                      borderColor: 'blue.500/50',
-                      flexShrink: 0,
-                    })}
-                  >
-                    3
-                  </Badge>
-                  <div>
-                    <h3
-                      className={css({
-                        fontWeight: 'semibold',
-                        color: 'gray.100',
-                        mb: '1',
-                      })}
-                    >
-                      Copy or Download
-                    </h3>
-                    <p className={css({ fontSize: 'sm', color: 'white' })}>
-                      Use the <strong>Copy</strong> button to copy formatted JSON to your clipboard,
-                      or <strong>Download</strong> as a .json file. All processing happens in your
-                      browser - your data never leaves your device.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Pro Features */}
-              <div
-                className={css({
-                  mt: '4',
-                  p: '4',
-                  rounded: 'lg',
-                  bg: 'purple.500/10',
-                  border: '1px solid',
-                  borderColor: 'purple.500/30',
-                })}
-              >
-                <h3
-                  className={css({
-                    fontWeight: 'semibold',
-                    color: 'purple.200',
-                    mb: '2',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '2',
-                  })}
-                >
-                  <Sparkles className={css({ h: '4', w: '4' })} />
-                  Pro Features
-                </h3>
-                <ul
-                  className={css({
-                    spaceY: '1',
-                    fontSize: 'sm',
-                    color: 'white',
-                  })}
-                >
-                  <li>
-                    <strong className={css({ color: 'gray.100' })}>
-                      Tree View + Path Extractor:
-                    </strong>{' '}
-                    Visualize JSON structure in an interactive tree. Click any value, key, or index
-                    to copy its JSONPath
-                  </li>
-                  <li>
-                    <strong className={css({ color: 'gray.100' })}>Schema Validation:</strong>{' '}
-                    Validate JSON against JSON Schema with detailed error messages
-                  </li>
-                  <li>
-                    <strong className={css({ color: 'gray.100' })}>JSON Diff:</strong> Compare two
-                    JSON objects and see differences highlighted
-                  </li>
-                  <li>
-                    <strong className={css({ color: 'gray.100' })}>TypeScript Generator:</strong>{' '}
-                    Automatically generate TypeScript interfaces from JSON
-                  </li>
-                  <li>
-                    <strong className={css({ color: 'gray.100' })}>JSONPath Search:</strong> Query
-                    JSON data using JSONPath expressions
-                  </li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+        </div>
 
         {/* View Mode Selector - Desktop */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className={css({ display: { base: 'none', md: 'block' } })}
+        <div
+          className={css({
+            display: { base: 'none', md: 'block' },
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <ToolOperationGrid
             operations={VIEW_MODE_OPERATIONS}
@@ -1157,14 +917,16 @@ function JSONBeautifyContent() {
             columns={{ base: 1, sm: 2, md: 3, lg: 5 }}
             analyticsCategory="json_beautifier"
           />
-        </motion.div>
+        </div>
 
         {/* View Mode Selector - Mobile */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className={css({ display: { base: 'block', md: 'none' } })}
+        <div
+          className={css({
+            display: { base: 'block', md: 'none' },
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <ToolMobilePicker
             label={`View: ${VIEW_MODE_OPERATIONS.find((op) => op.id === viewMode)?.label || 'Editor'}`}
@@ -1180,7 +942,7 @@ function JSONBeautifyContent() {
               analyticsCategory="json_beautifier"
             />
           </ToolMobilePicker>
-        </motion.div>
+        </div>
 
         {/* Stats Bar */}
         <div
@@ -2558,8 +2320,6 @@ function JSONBeautifyContent() {
           description="Format and validate JSON with this free online JSON beautifier - minify, compare, and convert JSON to TypeScript"
           hashtags={['JSON', 'WebDev', 'Developer', 'Productivity']}
         />
-
-        <FAQAccordion faqs={faqs} />
         <RelatedTools currentToolPath="/tools/json-beautify" category="data" />
         <ToolRating toolId="/tools/json-beautify" toolName="JSON Beautifier" />
 

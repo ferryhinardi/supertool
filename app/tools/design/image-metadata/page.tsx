@@ -1,7 +1,6 @@
 'use client'
 
 import exifr from 'exifr'
-import { motion } from 'framer-motion'
 import {
   Camera,
   Copy,
@@ -401,11 +400,13 @@ function ImageMetadataContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -456,13 +457,15 @@ function ImageMetadataContent() {
           Extract EXIF data, GPS location, camera settings, and technical metadata from your photos.
           Perfect for photographers and image professionals.
         </p>
-      </motion.div>
+      </div>
 
       {/* Upload Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -651,14 +654,17 @@ function ImageMetadataContent() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Loading State */}
       {loading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className={css({ textAlign: 'center', py: '8' })}
+        <div
+          className={css({
+            textAlign: 'center',
+            py: '8',
+            animation: 'fadeIn 0.5s ease-out forwards',
+            opacity: 0,
+          })}
         >
           <div
             className={css({
@@ -673,19 +679,19 @@ function ImageMetadataContent() {
             })}
           />
           <p className={css({ mt: '4', color: 'white' })}>Parsing metadata...</p>
-        </motion.div>
+        </div>
       )}
 
       {/* Metadata Sections */}
       {metadata && !loading && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
           className={css({
             display: 'grid',
             gap: { base: '6', md: '6' },
             gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
           })}
         >
           {renderMetadataSection(
@@ -712,7 +718,7 @@ function ImageMetadataContent() {
             metadata.technical,
             'orange.500'
           )}
-        </motion.div>
+        </div>
       )}
 
       {/* No Metadata Message */}
@@ -722,10 +728,12 @@ function ImageMetadataContent() {
         metadata.gps.length === 0 &&
         metadata.camera.length === 0 &&
         metadata.technical.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -752,14 +760,16 @@ function ImageMetadataContent() {
                 </p>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -801,7 +811,7 @@ function ImageMetadataContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

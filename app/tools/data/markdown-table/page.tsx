@@ -869,49 +869,6 @@ export default function MarkdownTablePage() {
           </div>
         </div>
 
-        {/* Help Section */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'purple.500/20',
-            bg: 'rgba(168, 85, 247, 0.05)',
-            p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <h3
-            className={css({
-              mb: '3',
-              fontSize: { base: 'base', sm: 'lg' },
-              fontWeight: 'bold',
-              color: 'purple.300',
-            })}
-          >
-            How to Use
-          </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Click on any cell to edit its content directly
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Use the alignment buttons under each column header to change text alignment
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Add or remove rows and columns using the buttons in the toolbar
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Import data from CSV or JSON using the Import button
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              Export to Markdown, HTML, JSON, or CSV formats
-            </li>
-            <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-              The Markdown output is compatible with GitHub and most Markdown renderers
-            </li>
-          </ul>
-        </div>
-
         <ToolSearch />
       </main>
     </TooltipProvider>

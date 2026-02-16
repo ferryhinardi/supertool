@@ -1,6 +1,5 @@
 'use client'
 
-import { AnimatePresence, motion, Reorder } from 'framer-motion'
 import {
   Check,
   Clock,
@@ -29,7 +28,7 @@ import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -94,40 +93,6 @@ interface QRModalState {
   url: string
   fileName: string
 }
-
-// FAQ Data
-const faqs = [
-  {
-    question: 'What is the maximum file size I can upload?',
-    answer:
-      'The maximum file size per upload is 10MB. This limit ensures fast and reliable uploads while keeping the service free for all users. For larger files, consider using compression or splitting your content into smaller parts.',
-  },
-  {
-    question: 'How long are uploaded files stored?',
-    answer:
-      'Files are stored securely in cloud storage with CDN delivery. Public URLs remain accessible as long as the storage service is active. For sensitive files, consider using expiring links or password protection (coming soon).',
-  },
-  {
-    question: 'Can I upload multiple files at once?',
-    answer:
-      'Yes! You can select multiple files at once or drag and drop several files into the upload zone. Files are uploaded in parallel with up to 3 concurrent uploads for optimal speed. You can reorder files in the queue by dragging them.',
-  },
-  {
-    question: 'What file types are supported?',
-    answer:
-      'All common file types are supported including images (JPG, PNG, GIF, WebP, SVG), documents (PDF, DOC, DOCX, TXT), videos (MP4, WebM, MOV), audio (MP3, WAV, OGG), and archives (ZIP, RAR). There are no restrictions on file extensions.',
-  },
-  {
-    question: 'Are my uploads private and secure?',
-    answer:
-      'Files are uploaded to secure cloud storage with encryption in transit. Public URLs can be shared with anyone who has the link. For additional security, avoid uploading sensitive personal data and use unique file names.',
-  },
-  {
-    question: 'Can I track my upload history?',
-    answer:
-      'Yes! Your upload history is automatically saved locally in your browser. You can view past uploads, copy URLs again, add files to favorites for quick access, search through history, and export your upload history to CSV format.',
-  },
-]
 
 // Related Tools
 const _relatedTools = [
@@ -662,9 +627,7 @@ function UploadToolContent() {
               gap: { base: '3', sm: '4' },
             })}
           >
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+            <div
               className={css({
                 rounded: '2xl',
                 bg: 'linear-gradient(to bottom right, #2563eb, #0891b2, #1d4ed8)',
@@ -680,7 +643,7 @@ function UploadToolContent() {
                   color: 'white',
                 })}
               />
-            </motion.div>
+            </div>
             <div className={css({ spaceY: { base: '1', sm: '2' } })}>
               <h1
                 className={css({
@@ -777,11 +740,7 @@ function UploadToolContent() {
 
         {/* Upload Tab */}
         {activeTab === 'upload' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={css({ spaceY: '6' })}
-          >
+          <div className={css({ spaceY: '6' })}>
             {/* Upload Card */}
             <Card className="glass-card border-2 border-blue-500/30 shadow-2xl shadow-blue-500/20">
               <CardContent withTopPadding>
@@ -862,230 +821,211 @@ function UploadToolContent() {
                       </div>
 
                       {/* File List */}
-                      <Reorder.Group
-                        axis="y"
-                        values={fileQueue}
-                        onReorder={handleReorder}
-                        className={css({ spaceY: '3' })}
-                      >
-                        <AnimatePresence>
-                          {fileQueue.map((queuedFile) => (
-                            <Reorder.Item
-                              key={queuedFile.id}
-                              value={queuedFile}
+                      <div className={css({ spaceY: '3' })}>
+                        {fileQueue.map((queuedFile) => (
+                          <div
+                            key={queuedFile.id}
+                            className={css({
+                              listStyle: 'none',
+                            })}
+                          >
+                            <div
                               className={css({
-                                listStyle: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '3',
+                                p: '4',
+                                rounded: 'xl',
+                                border: '2px solid',
+                                borderColor:
+                                  queuedFile.status === 'completed'
+                                    ? 'green.500/30'
+                                    : queuedFile.status === 'error'
+                                      ? 'red.500/30'
+                                      : queuedFile.status === 'uploading'
+                                        ? 'blue.500/30'
+                                        : 'gray.700/50',
+                                bg:
+                                  queuedFile.status === 'completed'
+                                    ? 'green.500/5'
+                                    : queuedFile.status === 'error'
+                                      ? 'red.500/5'
+                                      : queuedFile.status === 'uploading'
+                                        ? 'blue.500/5'
+                                        : 'gray.900/50',
+                                transition: 'all 0.2s',
                               })}
                             >
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
+                              {/* Drag Handle */}
+                              <div
                                 className={css({
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '3',
-                                  p: '4',
-                                  rounded: 'xl',
-                                  border: '2px solid',
-                                  borderColor:
-                                    queuedFile.status === 'completed'
-                                      ? 'green.500/30'
-                                      : queuedFile.status === 'error'
-                                        ? 'red.500/30'
-                                        : queuedFile.status === 'uploading'
-                                          ? 'blue.500/30'
-                                          : 'gray.700/50',
-                                  bg:
-                                    queuedFile.status === 'completed'
-                                      ? 'green.500/5'
-                                      : queuedFile.status === 'error'
-                                        ? 'red.500/5'
-                                        : queuedFile.status === 'uploading'
-                                          ? 'blue.500/5'
-                                          : 'gray.900/50',
-                                  transition: 'all 0.2s',
+                                  cursor: queuedFile.status === 'pending' ? 'grab' : 'default',
+                                  color: 'gray.500',
+                                  _active: { cursor: 'grabbing' },
                                 })}
                               >
-                                {/* Drag Handle */}
-                                <div
+                                <GripVertical className={css({ h: '5', w: '5' })} />
+                              </div>
+
+                              {/* File Info */}
+                              <div className={css({ flex: 1, minW: 0 })}>
+                                <p
                                   className={css({
-                                    cursor: queuedFile.status === 'pending' ? 'grab' : 'default',
-                                    color: 'gray.500',
-                                    _active: { cursor: 'grabbing' },
+                                    fontWeight: 'medium',
+                                    color: 'white',
+                                    truncate: true,
+                                    fontSize: { base: 'sm', sm: 'base' },
                                   })}
                                 >
-                                  <GripVertical className={css({ h: '5', w: '5' })} />
-                                </div>
+                                  {queuedFile.file.name}
+                                </p>
+                                <p
+                                  className={css({
+                                    fontSize: 'xs',
+                                    color: 'gray.400',
+                                  })}
+                                >
+                                  {formatFileSize(queuedFile.file.size)}
+                                  {queuedFile.file.type && ` • ${queuedFile.file.type}`}
+                                </p>
 
-                                {/* File Info */}
-                                <div className={css({ flex: 1, minW: 0 })}>
-                                  <p
+                                {/* Progress Bar */}
+                                {queuedFile.status === 'uploading' && (
+                                  <div className={css({ mt: '2' })}>
+                                    <Progress value={queuedFile.progress} showPercentage gradient />
+                                  </div>
+                                )}
+
+                                {/* Error Message */}
+                                {queuedFile.error && (
+                                  <p className={css({ fontSize: 'xs', color: 'red.400', mt: '1' })}>
+                                    {queuedFile.error}
+                                  </p>
+                                )}
+
+                                {/* Success URL */}
+                                {queuedFile.publicUrl && (
+                                  <div
                                     className={css({
-                                      fontWeight: 'medium',
-                                      color: 'white',
-                                      truncate: true,
-                                      fontSize: { base: 'sm', sm: 'base' },
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '2',
+                                      mt: '2',
                                     })}
                                   >
-                                    {queuedFile.file.name}
-                                  </p>
-                                  <p
-                                    className={css({
-                                      fontSize: 'xs',
-                                      color: 'gray.400',
-                                    })}
-                                  >
-                                    {formatFileSize(queuedFile.file.size)}
-                                    {queuedFile.file.type && ` • ${queuedFile.file.type}`}
-                                  </p>
-
-                                  {/* Progress Bar */}
-                                  {queuedFile.status === 'uploading' && (
-                                    <div className={css({ mt: '2' })}>
-                                      <Progress
-                                        value={queuedFile.progress}
-                                        showPercentage
-                                        gradient
-                                      />
-                                    </div>
-                                  )}
-
-                                  {/* Error Message */}
-                                  {queuedFile.error && (
-                                    <p
-                                      className={css({ fontSize: 'xs', color: 'red.400', mt: '1' })}
-                                    >
-                                      {queuedFile.error}
-                                    </p>
-                                  )}
-
-                                  {/* Success URL */}
-                                  {queuedFile.publicUrl && (
-                                    <div
+                                    <input
+                                      type="text"
+                                      value={queuedFile.publicUrl}
+                                      readOnly
                                       className={css({
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '2',
-                                        mt: '2',
-                                      })}
-                                    >
-                                      <input
-                                        type="text"
-                                        value={queuedFile.publicUrl}
-                                        readOnly
-                                        className={css({
-                                          flex: 1,
-                                          px: '2',
-                                          py: '1',
-                                          fontSize: 'xs',
-                                          fontFamily: 'mono',
-                                          bg: 'gray.900/80',
-                                          border: '1px solid',
-                                          borderColor: 'gray.700',
-                                          rounded: 'md',
-                                          color: 'gray.300',
-                                          minW: 0,
-                                        })}
-                                      />
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                          // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
-                                          handleCopy(queuedFile.publicUrl!, queuedFile.id)
-                                        }
-                                        className={css({ p: '1', h: 'auto' })}
-                                      >
-                                        {copied === queuedFile.id ? (
-                                          <Check
-                                            className={css({ h: '4', w: '4', color: 'green.400' })}
-                                          />
-                                        ) : (
-                                          <Copy className={css({ h: '4', w: '4' })} />
-                                        )}
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        asChild
-                                        className={css({ p: '1', h: 'auto' })}
-                                      >
-                                        <a
-                                          href={queuedFile.publicUrl}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          <ExternalLink className={css({ h: '4', w: '4' })} />
-                                        </a>
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                          // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
-                                          openQRModal(queuedFile.publicUrl!, queuedFile.file.name)
-                                        }
-                                        className={css({ p: '1', h: 'auto' })}
-                                        title="Generate QR Code"
-                                      >
-                                        <QrCode className={css({ h: '4', w: '4' })} />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                          openShareModal(
-                                            // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
-                                            queuedFile.publicUrl!,
-                                            queuedFile.file.name
-                                          )
-                                        }
-                                        className={css({ p: '1', h: 'auto' })}
-                                        title="Share"
-                                      >
-                                        <Share2 className={css({ h: '4', w: '4' })} />
-                                      </Button>
-                                    </div>
-                                  )}
-                                </div>
-
-                                {/* Status Icon / Actions */}
-                                <div className={css({ flexShrink: 0 })}>
-                                  {queuedFile.status === 'uploading' && (
-                                    <Loader2
-                                      className={css({
-                                        h: '5',
-                                        w: '5',
-                                        color: 'blue.400',
-                                        animation: 'spin 1s linear infinite',
+                                        flex: 1,
+                                        px: '2',
+                                        py: '1',
+                                        fontSize: 'xs',
+                                        fontFamily: 'mono',
+                                        bg: 'gray.900/80',
+                                        border: '1px solid',
+                                        borderColor: 'gray.700',
+                                        rounded: 'md',
+                                        color: 'gray.300',
+                                        minW: 0,
                                       })}
                                     />
-                                  )}
-                                  {queuedFile.status === 'completed' && (
-                                    <Check
-                                      className={css({ h: '5', w: '5', color: 'green.400' })}
-                                    />
-                                  )}
-                                  {queuedFile.status === 'error' && (
-                                    <X className={css({ h: '5', w: '5', color: 'red.400' })} />
-                                  )}
-                                  {queuedFile.status === 'pending' && (
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      onClick={() => removeFromQueue(queuedFile.id)}
-                                      className={css({ p: '1', h: 'auto', color: 'gray.500' })}
+                                      onClick={() =>
+                                        // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
+                                        handleCopy(queuedFile.publicUrl!, queuedFile.id)
+                                      }
+                                      className={css({ p: '1', h: 'auto' })}
                                     >
-                                      <X className={css({ h: '4', w: '4' })} />
+                                      {copied === queuedFile.id ? (
+                                        <Check
+                                          className={css({ h: '4', w: '4', color: 'green.400' })}
+                                        />
+                                      ) : (
+                                        <Copy className={css({ h: '4', w: '4' })} />
+                                      )}
                                     </Button>
-                                  )}
-                                </div>
-                              </motion.div>
-                            </Reorder.Item>
-                          ))}
-                        </AnimatePresence>
-                      </Reorder.Group>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      asChild
+                                      className={css({ p: '1', h: 'auto' })}
+                                    >
+                                      <a
+                                        href={queuedFile.publicUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        <ExternalLink className={css({ h: '4', w: '4' })} />
+                                      </a>
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() =>
+                                        // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
+                                        openQRModal(queuedFile.publicUrl!, queuedFile.file.name)
+                                      }
+                                      className={css({ p: '1', h: 'auto' })}
+                                      title="Generate QR Code"
+                                    >
+                                      <QrCode className={css({ h: '4', w: '4' })} />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() =>
+                                        openShareModal(
+                                          // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
+                                          queuedFile.publicUrl!,
+                                          queuedFile.file.name
+                                        )
+                                      }
+                                      className={css({ p: '1', h: 'auto' })}
+                                      title="Share"
+                                    >
+                                      <Share2 className={css({ h: '4', w: '4' })} />
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Status Icon / Actions */}
+                              <div className={css({ flexShrink: 0 })}>
+                                {queuedFile.status === 'uploading' && (
+                                  <Loader2
+                                    className={css({
+                                      h: '5',
+                                      w: '5',
+                                      color: 'blue.400',
+                                      animation: 'spin 1s linear infinite',
+                                    })}
+                                  />
+                                )}
+                                {queuedFile.status === 'completed' && (
+                                  <Check className={css({ h: '5', w: '5', color: 'green.400' })} />
+                                )}
+                                {queuedFile.status === 'error' && (
+                                  <X className={css({ h: '5', w: '5', color: 'red.400' })} />
+                                )}
+                                {queuedFile.status === 'pending' && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => removeFromQueue(queuedFile.id)}
+                                    className={css({ p: '1', h: 'auto', color: 'gray.500' })}
+                                  >
+                                    <X className={css({ h: '4', w: '4' })} />
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
 
                       {/* Upload Button */}
                       {stats.pending > 0 && (
@@ -1134,16 +1074,12 @@ function UploadToolContent() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         )}
 
         {/* History Tab */}
         {activeTab === 'history' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={css({ spaceY: '6' })}
-          >
+          <div className={css({ spaceY: '6' })}>
             <Card className="glass-card border-2 border-purple-500/30 shadow-xl shadow-purple-500/20">
               <CardHeader>
                 <div
@@ -1246,10 +1182,8 @@ function UploadToolContent() {
                   ) : (
                     <div className={css({ spaceY: '3', maxH: '500px', overflowY: 'auto' })}>
                       {filteredHistory.map((item) => (
-                        <motion.div
+                        <div
                           key={item.id}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
                           className={css({
                             display: 'flex',
                             alignItems: 'center',
@@ -1364,23 +1298,19 @@ function UploadToolContent() {
                               <Share2 className={css({ h: '4', w: '4' })} />
                             </Button>
                           </div>
-                        </motion.div>
+                        </div>
                       ))}
                     </div>
                   )}
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         )}
 
         {/* Favorites Tab */}
         {activeTab === 'favorites' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={css({ spaceY: '6' })}
-          >
+          <div className={css({ spaceY: '6' })}>
             <Card className="glass-card border-2 border-yellow-500/30 shadow-xl shadow-yellow-500/20">
               <CardHeader>
                 <div>
@@ -1424,10 +1354,8 @@ function UploadToolContent() {
                 ) : (
                   <div className={css({ spaceY: '3' })}>
                     {favorites.map((item) => (
-                      <motion.div
+                      <div
                         key={item.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
                         className={css({
                           display: 'flex',
                           alignItems: 'center',
@@ -1512,13 +1440,13 @@ function UploadToolContent() {
                             <Trash2 className={css({ h: '4', w: '4' })} />
                           </Button>
                         </div>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 )}
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         )}
 
         {/* Info Card */}
@@ -1605,9 +1533,6 @@ function UploadToolContent() {
           </CardContent>
         </Card>
 
-        {/* FAQ Section */}
-        <FAQAccordion faqs={faqs} />
-
         {/* Related Tools */}
         <RelatedTools currentToolPath="/tools/productivity/upload" category="Productivity" />
 
@@ -1636,345 +1561,331 @@ function UploadToolContent() {
       <ToolSearch />
 
       {/* QR Code Modal */}
-      <AnimatePresence>
-        {qrModal.isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+
+      {qrModal.isOpen && (
+        <div
+          className={css({
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bg: 'black/80',
+            backdropFilter: 'blur(4px)',
+            p: '4',
+          })}
+          onClick={closeQRModal}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
             className={css({
-              position: 'fixed',
-              inset: 0,
-              zIndex: 50,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              bg: 'black/80',
-              backdropFilter: 'blur(4px)',
-              p: '4',
+              bg: 'gray.900',
+              border: '2px solid',
+              borderColor: 'blue.500/30',
+              rounded: '2xl',
+              p: { base: '5', sm: '6' },
+              maxW: 'md',
+              w: 'full',
+              shadow: '2xl',
+              spaceY: '5',
             })}
-            onClick={closeQRModal}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
+            {/* Modal Header */}
+            <div
               className={css({
-                bg: 'gray.900',
-                border: '2px solid',
-                borderColor: 'blue.500/30',
-                rounded: '2xl',
-                p: { base: '5', sm: '6' },
-                maxW: 'md',
-                w: 'full',
-                shadow: '2xl',
-                spaceY: '5',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               })}
             >
-              {/* Modal Header */}
-              <div
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                })}
-              >
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <QrCode className={css({ h: '5', w: '5', color: 'blue.400' })} />
-                  <h3
-                    className={css({
-                      fontSize: 'lg',
-                      fontWeight: 'semibold',
-                      color: 'white',
-                    })}
-                  >
-                    QR Code
-                  </h3>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={closeQRModal}
-                  className={css({ p: '1', h: 'auto' })}
-                >
-                  <X className={css({ h: '5', w: '5' })} />
-                </Button>
-              </div>
-
-              {/* File Name */}
-              <p
-                className={css({
-                  fontSize: 'sm',
-                  color: 'gray.400',
-                  truncate: true,
-                  textAlign: 'center',
-                })}
-              >
-                {qrModal.fileName}
-              </p>
-
-              {/* QR Code Display */}
-              <div
-                className={css({
-                  display: 'flex',
-                  justifyContent: 'center',
-                  p: '4',
-                  bg: 'white',
-                  rounded: 'xl',
-                })}
-              >
-                <QRCodeSVG
-                  ref={qrCodeRef}
-                  value={qrModal.url}
-                  size={200}
-                  level="H"
-                  includeMargin
-                  bgColor="#ffffff"
-                  fgColor="#000000"
-                />
-              </div>
-
-              {/* URL Display */}
-              <div className={css({ spaceY: '2' })}>
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>File URL:</p>
-                <input
-                  type="text"
-                  value={qrModal.url}
-                  readOnly
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <QrCode className={css({ h: '5', w: '5', color: 'blue.400' })} />
+                <h3
                   className={css({
-                    w: 'full',
-                    px: '3',
-                    py: '2',
-                    fontSize: 'xs',
-                    fontFamily: 'mono',
-                    bg: 'gray.800',
-                    border: '1px solid',
-                    borderColor: 'gray.700',
-                    rounded: 'lg',
-                    color: 'gray.300',
-                  })}
-                />
-              </div>
-
-              {/* Actions */}
-              <div className={css({ display: 'flex', gap: '2' })}>
-                <Button
-                  onClick={handleDownloadQR}
-                  className={css({
-                    flex: 1,
-                    bg: 'blue.600',
-                    _hover: { bg: 'blue.700' },
+                    fontSize: 'lg',
+                    fontWeight: 'semibold',
+                    color: 'white',
                   })}
                 >
-                  <Download className={css({ h: '4', w: '4', mr: '2' })} />
-                  Download PNG
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handleCopy(qrModal.url)}
-                  className={css({ flex: 1 })}
-                >
-                  <Copy className={css({ h: '4', w: '4', mr: '2' })} />
-                  Copy URL
-                </Button>
+                  QR Code
+                </h3>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={closeQRModal}
+                className={css({ p: '1', h: 'auto' })}
+              >
+                <X className={css({ h: '5', w: '5' })} />
+              </Button>
+            </div>
+
+            {/* File Name */}
+            <p
+              className={css({
+                fontSize: 'sm',
+                color: 'gray.400',
+                truncate: true,
+                textAlign: 'center',
+              })}
+            >
+              {qrModal.fileName}
+            </p>
+
+            {/* QR Code Display */}
+            <div
+              className={css({
+                display: 'flex',
+                justifyContent: 'center',
+                p: '4',
+                bg: 'white',
+                rounded: 'xl',
+              })}
+            >
+              <QRCodeSVG
+                ref={qrCodeRef}
+                value={qrModal.url}
+                size={200}
+                level="H"
+                includeMargin
+                bgColor="#ffffff"
+                fgColor="#000000"
+              />
+            </div>
+
+            {/* URL Display */}
+            <div className={css({ spaceY: '2' })}>
+              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>File URL:</p>
+              <input
+                type="text"
+                value={qrModal.url}
+                readOnly
+                className={css({
+                  w: 'full',
+                  px: '3',
+                  py: '2',
+                  fontSize: 'xs',
+                  fontFamily: 'mono',
+                  bg: 'gray.800',
+                  border: '1px solid',
+                  borderColor: 'gray.700',
+                  rounded: 'lg',
+                  color: 'gray.300',
+                })}
+              />
+            </div>
+
+            {/* Actions */}
+            <div className={css({ display: 'flex', gap: '2' })}>
+              <Button
+                onClick={handleDownloadQR}
+                className={css({
+                  flex: 1,
+                  bg: 'blue.600',
+                  _hover: { bg: 'blue.700' },
+                })}
+              >
+                <Download className={css({ h: '4', w: '4', mr: '2' })} />
+                Download PNG
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleCopy(qrModal.url)}
+                className={css({ flex: 1 })}
+              >
+                <Copy className={css({ h: '4', w: '4', mr: '2' })} />
+                Copy URL
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Share Modal */}
-      <AnimatePresence>
-        {shareModal.isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+
+      {shareModal.isOpen && (
+        <div
+          className={css({
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bg: 'black/80',
+            backdropFilter: 'blur(4px)',
+            p: '4',
+          })}
+          onClick={closeShareModal}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
             className={css({
-              position: 'fixed',
-              inset: 0,
-              zIndex: 50,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              bg: 'black/80',
-              backdropFilter: 'blur(4px)',
-              p: '4',
+              bg: 'gray.900',
+              border: '2px solid',
+              borderColor: 'green.500/30',
+              rounded: '2xl',
+              p: { base: '5', sm: '6' },
+              maxW: 'md',
+              w: 'full',
+              shadow: '2xl',
+              spaceY: '5',
             })}
-            onClick={closeShareModal}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
+            {/* Modal Header */}
+            <div
               className={css({
-                bg: 'gray.900',
-                border: '2px solid',
-                borderColor: 'green.500/30',
-                rounded: '2xl',
-                p: { base: '5', sm: '6' },
-                maxW: 'md',
-                w: 'full',
-                shadow: '2xl',
-                spaceY: '5',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               })}
             >
-              {/* Modal Header */}
-              <div
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                })}
-              >
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <Share2 className={css({ h: '5', w: '5', color: 'green.400' })} />
-                  <h3
-                    className={css({
-                      fontSize: 'lg',
-                      fontWeight: 'semibold',
-                      color: 'white',
-                    })}
-                  >
-                    Share File
-                  </h3>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={closeShareModal}
-                  className={css({ p: '1', h: 'auto' })}
+              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <Share2 className={css({ h: '5', w: '5', color: 'green.400' })} />
+                <h3
+                  className={css({
+                    fontSize: 'lg',
+                    fontWeight: 'semibold',
+                    color: 'white',
+                  })}
                 >
-                  <X className={css({ h: '5', w: '5' })} />
-                </Button>
+                  Share File
+                </h3>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={closeShareModal}
+                className={css({ p: '1', h: 'auto' })}
+              >
+                <X className={css({ h: '5', w: '5' })} />
+              </Button>
+            </div>
 
-              {/* File Name */}
+            {/* File Name */}
+            <p
+              className={css({
+                fontSize: 'sm',
+                color: 'gray.400',
+                truncate: true,
+              })}
+            >
+              {shareModal.fileName}
+            </p>
+
+            {/* Link Expiration */}
+            <div className={css({ spaceY: '2' })}>
               <p
                 className={css({
                   fontSize: 'sm',
-                  color: 'gray.400',
-                  truncate: true,
+                  fontWeight: 'medium',
+                  color: 'gray.300',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
                 })}
               >
-                {shareModal.fileName}
+                <Clock className={css({ h: '4', w: '4' })} />
+                Link Expiration
               </p>
+              <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+                {EXPIRATION_OPTIONS.map((option) => (
+                  <Button
+                    key={option.value}
+                    size="sm"
+                    variant={selectedExpiration === option.value ? 'default' : 'outline'}
+                    onClick={() => {
+                      setSelectedExpiration(option.value)
+                      setLinkExpiration(shareModal.url, option.value)
+                    }}
+                    className={css({
+                      fontSize: 'xs',
+                      ...(selectedExpiration === option.value
+                        ? { bg: 'green.600', borderColor: 'green.600' }
+                        : { borderColor: 'gray.600' }),
+                    })}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </div>
+              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                Note: Expiration is tracked locally and does not affect the actual file storage.
+              </p>
+            </div>
 
-              {/* Link Expiration */}
-              <div className={css({ spaceY: '2' })}>
-                <p
-                  className={css({
-                    fontSize: 'sm',
-                    fontWeight: 'medium',
-                    color: 'gray.300',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '2',
-                  })}
-                >
-                  <Clock className={css({ h: '4', w: '4' })} />
-                  Link Expiration
-                </p>
-                <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-                  {EXPIRATION_OPTIONS.map((option) => (
-                    <Button
-                      key={option.value}
-                      size="sm"
-                      variant={selectedExpiration === option.value ? 'default' : 'outline'}
-                      onClick={() => {
-                        setSelectedExpiration(option.value)
-                        setLinkExpiration(shareModal.url, option.value)
-                      }}
-                      className={css({
-                        fontSize: 'xs',
-                        ...(selectedExpiration === option.value
-                          ? { bg: 'green.600', borderColor: 'green.600' }
-                          : { borderColor: 'gray.600' }),
-                      })}
+            {/* Social Share Buttons */}
+            <div className={css({ spaceY: '2' })}>
+              <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
+                Share on Social
+              </p>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: '2',
+                })}
+              >
+                {[
+                  { name: 'Twitter', key: 'twitter' as const, color: 'blue.400' },
+                  { name: 'Facebook', key: 'facebook' as const, color: 'blue.600' },
+                  { name: 'LinkedIn', key: 'linkedin' as const, color: 'blue.500' },
+                  { name: 'WhatsApp', key: 'whatsapp' as const, color: 'green.500' },
+                  { name: 'Telegram', key: 'telegram' as const, color: 'cyan.500' },
+                  { name: 'Email', key: 'email' as const, color: 'gray.400' },
+                ].map((platform) => (
+                  <Button
+                    key={platform.key}
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className={css({
+                      fontSize: 'xs',
+                      borderColor: 'gray.700',
+                      _hover: { borderColor: platform.color, color: platform.color },
+                    })}
+                  >
+                    <a
+                      href={getShareUrls(shareModal.url, shareModal.fileName)[platform.key]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() =>
+                        trackToolEvent('upload_share_social', { platform: platform.name })
+                      }
                     >
-                      {option.label}
-                    </Button>
-                  ))}
-                </div>
-                <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
-                  Note: Expiration is tracked locally and does not affect the actual file storage.
-                </p>
+                      {platform.name}
+                    </a>
+                  </Button>
+                ))}
               </div>
+            </div>
 
-              {/* Social Share Buttons */}
-              <div className={css({ spaceY: '2' })}>
-                <p className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
-                  Share on Social
-                </p>
-                <div
-                  className={css({
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '2',
-                  })}
-                >
-                  {[
-                    { name: 'Twitter', key: 'twitter' as const, color: 'blue.400' },
-                    { name: 'Facebook', key: 'facebook' as const, color: 'blue.600' },
-                    { name: 'LinkedIn', key: 'linkedin' as const, color: 'blue.500' },
-                    { name: 'WhatsApp', key: 'whatsapp' as const, color: 'green.500' },
-                    { name: 'Telegram', key: 'telegram' as const, color: 'cyan.500' },
-                    { name: 'Email', key: 'email' as const, color: 'gray.400' },
-                  ].map((platform) => (
-                    <Button
-                      key={platform.key}
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className={css({
-                        fontSize: 'xs',
-                        borderColor: 'gray.700',
-                        _hover: { borderColor: platform.color, color: platform.color },
-                      })}
-                    >
-                      <a
-                        href={getShareUrls(shareModal.url, shareModal.fileName)[platform.key]}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() =>
-                          trackToolEvent('upload_share_social', { platform: platform.name })
-                        }
-                      >
-                        {platform.name}
-                      </a>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Copy Actions */}
-              <div className={css({ display: 'flex', gap: '2' })}>
-                <Button
-                  onClick={() => handleCopy(shareModal.url)}
-                  className={css({
-                    flex: 1,
-                    bg: 'green.600',
-                    _hover: { bg: 'green.700' },
-                  })}
-                >
-                  <Copy className={css({ h: '4', w: '4', mr: '2' })} />
-                  Copy URL
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => openQRModal(shareModal.url, shareModal.fileName)}
-                  className={css({ flex: 1 })}
-                >
-                  <QrCode className={css({ h: '4', w: '4', mr: '2' })} />
-                  QR Code
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {/* Copy Actions */}
+            <div className={css({ display: 'flex', gap: '2' })}>
+              <Button
+                onClick={() => handleCopy(shareModal.url)}
+                className={css({
+                  flex: 1,
+                  bg: 'green.600',
+                  _hover: { bg: 'green.700' },
+                })}
+              >
+                <Copy className={css({ h: '4', w: '4', mr: '2' })} />
+                Copy URL
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => openQRModal(shareModal.url, shareModal.fileName)}
+                className={css({ flex: 1 })}
+              >
+                <QrCode className={css({ h: '4', w: '4', mr: '2' })} />
+                QR Code
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }

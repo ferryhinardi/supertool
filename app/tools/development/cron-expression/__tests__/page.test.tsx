@@ -5,15 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { trackToolEvent } from '@/lib/services/analytics'
 import CronExpressionPage from '../page'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock analytics tracking
 vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),

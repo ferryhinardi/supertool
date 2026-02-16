@@ -19,7 +19,6 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { motion } from 'framer-motion'
 import {
   Archive,
   BookmarkCheck,
@@ -2231,10 +2230,7 @@ export default function PDFToolsPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
         className={css({
           display: 'flex',
           flexDirection: 'column',
@@ -2313,13 +2309,10 @@ export default function PDFToolsPage() {
         <div className={css({ display: 'flex', justifyContent: 'center', mt: '4' })}>
           <KeyboardShortcutsDialog />
         </div>
-      </motion.div>
+      </div>
       {/* Stats Summary */}
       {pdfs.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+        <div
           className={css({
             display: 'grid',
             w: 'full',
@@ -2421,7 +2414,7 @@ export default function PDFToolsPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
       <div
         className={css({
@@ -2433,10 +2426,7 @@ export default function PDFToolsPage() {
         })}
       >
         {/* Settings Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
           style={{ width: '100%' }}
           className={css({
             gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 2' },
@@ -3817,11 +3807,7 @@ export default function PDFToolsPage() {
                     </div>
 
                     {/* Drag and drop list */}
-                    <DndContext
-                      sensors={sensors}
-                      collisionDetection={closestCenter}
-                      onDragEnd={handleDragEnd}
-                    >
+                    <DndContext sensors={sensors} collisionDetection={closestCenter}>
                       <SortableContext items={pageOrder} strategy={verticalListSortingStrategy}>
                         <div className={css({ spaceY: '2' })}>
                           {pageOrder.map((pageNum, index) => (
@@ -5384,13 +5370,10 @@ export default function PDFToolsPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Upload & PDFs Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
           style={{ width: '100%' }}
           className={css({
             gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 1' },
@@ -5487,7 +5470,7 @@ export default function PDFToolsPage() {
 
                     <ReorderablePDFList
                       pdfs={pdfs}
-                      onReorder={(reorderedPdfs) => setPdfs(reorderedPdfs)}
+                      onReorder={setPdfs}
                       onRemove={handleRemove}
                       onDownload={handleDownload}
                       formatBytes={formatBytes}
@@ -5515,12 +5498,9 @@ export default function PDFToolsPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       </div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+      <div
         className={css({
           display: 'grid',
           w: 'full',
@@ -5596,7 +5576,7 @@ export default function PDFToolsPage() {
             </CardContent>
           </Card>
         ))}
-      </motion.div>
+      </div>
 
       {/* PDF Page Editor - Reorder/Remove pages */}
       {editingPdf && operation === 'edit' ? (

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   CheckCircle2,
@@ -217,11 +216,13 @@ function JWTDecoderContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -267,13 +268,15 @@ function JWTDecoderContent() {
           Decode, verify, and validate JSON Web Tokens securely in your browser. View header,
           payload, and signature. All processing happens locally.
         </p>
-      </motion.div>
+      </div>
 
       {/* Main Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -330,9 +333,7 @@ function JWTDecoderContent() {
 
             {/* Error Display */}
             {error && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+              <div
                 className={css({
                   display: 'flex',
                   alignItems: 'center',
@@ -342,13 +343,15 @@ function JWTDecoderContent() {
                   borderColor: 'red.500/30',
                   bg: 'red.500/10',
                   borderRadius: 'md',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
                 })}
               >
                 <AlertCircle
                   className={css({ h: '5', w: '5', color: 'red.400', flexShrink: '0' })}
                 />
                 <p className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</p>
-              </motion.div>
+              </div>
             )}
 
             {/* Action Buttons */}
@@ -368,16 +371,14 @@ function JWTDecoderContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Decoded JWT Display */}
       {decodedJWT && (
         <>
           {/* Expiration Warning */}
           {isExpired && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+            <div
               className={css({
                 display: 'flex',
                 alignItems: 'center',
@@ -387,6 +388,8 @@ function JWTDecoderContent() {
                 borderColor: 'orange.500/30',
                 bg: 'orange.500/10',
                 borderRadius: 'md',
+                animation: 'slideUp 0.5s ease-out forwards',
+                opacity: 0,
               })}
             >
               <Clock className={css({ h: '5', w: '5', color: 'orange.400', flexShrink: '0' })} />
@@ -398,13 +401,11 @@ function JWTDecoderContent() {
                   This JWT token has expired and should not be accepted.
                 </p>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {!isExpired && decodedJWT.payload.exp && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+            <div
               className={css({
                 display: 'flex',
                 alignItems: 'center',
@@ -414,6 +415,8 @@ function JWTDecoderContent() {
                 borderColor: 'green.500/30',
                 bg: 'green.500/10',
                 borderRadius: 'md',
+                animation: 'slideUp 0.5s ease-out forwards',
+                opacity: 0,
               })}
             >
               <CheckCircle2
@@ -427,14 +430,16 @@ function JWTDecoderContent() {
                   Expires: {formatTimestamp(decodedJWT.payload.exp)}
                 </p>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Header Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.1s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -481,13 +486,15 @@ function JWTDecoderContent() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Payload Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -597,13 +604,15 @@ function JWTDecoderContent() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Signature Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.3s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -672,19 +681,19 @@ function JWTDecoderContent() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         </>
       )}
 
       {/* Educational Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+      <div
         className={css({
           display: 'grid',
           gap: '6',
           gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
         })}
       >
         <Card className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}>
@@ -784,13 +793,15 @@ function JWTDecoderContent() {
             </ul>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Related Tool */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.5s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({ border: '1px solid', borderColor: 'blue.500/20', bg: 'gray.900/50' })}
@@ -824,7 +835,7 @@ function JWTDecoderContent() {
             </a>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       <Suspense fallback={null}>
         <ToolSearch />

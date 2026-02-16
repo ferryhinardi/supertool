@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   CaseLower,
   CaseSensitive,
@@ -279,22 +278,15 @@ function ClipboardFormatterPageContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: 'easeInOut',
-          }}
-        >
+        <div>
           <Clipboard
             className={css({
               width: '16',
@@ -303,7 +295,7 @@ function ClipboardFormatterPageContent() {
               mx: 'auto',
             })}
           />
-        </motion.div>
+        </div>
 
         <h1
           className={css({
@@ -335,17 +327,17 @@ function ClipboardFormatterPageContent() {
           Paste and format text instantly. Remove extra whitespace, normalize line breaks, and apply
           transformations.
         </p>
-      </motion.div>
+      </div>
 
       {/* Main Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
         className={css({
           display: 'grid',
           gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: '1fr 1fr 1fr' },
           gap: '6',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
         })}
       >
         {/* Input Section */}
@@ -439,12 +431,7 @@ function ClipboardFormatterPageContent() {
                   {stats.inputChars} chars, {stats.inputWords} words, {stats.inputLines} lines
                 </span>
                 {pasteDetected && (
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={css({ color: 'green.400' })}
-                  >
+                  <span className={css({ color: 'green.400', animation: 'fadeIn 0.3s ease-out' })}>
                     <Check
                       className={css({
                         w: '4',
@@ -454,7 +441,7 @@ function ClipboardFormatterPageContent() {
                       })}
                     />
                     Pasted!
-                  </motion.span>
+                  </span>
                 )}
               </div>
             </CardContent>
@@ -462,11 +449,7 @@ function ClipboardFormatterPageContent() {
 
           {/* Settings Panel */}
           {showSettings && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-            >
+            <div className={css({ animation: 'fadeIn 0.5s ease-out forwards', opacity: 0 })}>
               <Card
                 className={css({
                   mt: '4',
@@ -616,7 +599,7 @@ function ClipboardFormatterPageContent() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </div>
 
@@ -715,15 +698,15 @@ function ClipboardFormatterPageContent() {
             </CardContent>
           </Card>
         </div>
-      </motion.div>
+      </div>
 
       {/* Output Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
         className={css({
           gridColumn: { base: '1 / -1', md: '2 / 3', lg: '3 / 4' },
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
         })}
       >
         <Card
@@ -919,13 +902,15 @@ function ClipboardFormatterPageContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Pro Tips */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -965,7 +950,7 @@ function ClipboardFormatterPageContent() {
             </li>
           </ul>
         </div>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

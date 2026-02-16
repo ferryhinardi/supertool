@@ -18,25 +18,6 @@ vi.mock('@/hooks/tools/useRecentTools', () => ({
   useTrackToolView: vi.fn(),
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      ...props
-    }: {
-      children: React.ReactNode
-      className?: string
-      [key: string]: unknown
-    }) => (
-      <div className={className} {...props}>
-        {children}
-      </div>
-    ),
-  },
-}))
-
 // Clipboard mock
 const mockWriteText = vi.fn()
 

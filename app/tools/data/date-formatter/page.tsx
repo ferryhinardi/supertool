@@ -1,7 +1,6 @@
 'use client'
 
 import type dayjs from 'dayjs'
-import { motion } from 'framer-motion'
 import { Calendar, Clock, Copy, Info } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -153,11 +152,13 @@ function DateFormatterContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -208,13 +209,15 @@ function DateFormatterContent() {
           Convert timestamps between formats and timezones. Parse dates, calculate differences, and
           format with precision.
         </p>
-      </motion.div>
+      </div>
 
       {/* Date Input */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -267,10 +270,12 @@ function DateFormatterContent() {
             </div>
 
             {parsedDate && isValidDate(parsedDate) && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={css({ spaceY: '3' })}
+              <div
+                className={css({
+                  spaceY: '3',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
+                })}
               >
                 <div
                   className={css({
@@ -352,18 +357,20 @@ function DateFormatterContent() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Format Converter */}
       {parsedDate && isValidDate(parsedDate) && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -441,15 +448,17 @@ function DateFormatterContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Timezone Converter */}
       {parsedDate && isValidDate(parsedDate) && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -552,14 +561,16 @@ function DateFormatterContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Date Difference Calculator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -627,10 +638,12 @@ function DateFormatterContent() {
             </div>
 
             {dateDiff && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={css({ spaceY: '4' })}
+              <div
+                className={css({
+                  spaceY: '4',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
+                })}
               >
                 <div
                   className={css({
@@ -736,17 +749,19 @@ function DateFormatterContent() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.5s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -775,7 +790,7 @@ function DateFormatterContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

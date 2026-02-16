@@ -19,24 +19,6 @@ vi.mock('nuqs', async () => {
   }
 })
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ...props
-    }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-    span: ({
-      children,
-      ...props
-    }: React.HTMLAttributes<HTMLSpanElement> & { children?: React.ReactNode }) => (
-      <span {...props}>{children}</span>
-    ),
-  },
-}))
-
 // Mock localStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {}

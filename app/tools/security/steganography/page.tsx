@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Copy, EyeOff, Info, Sparkles, Trash2, Upload } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -215,11 +214,13 @@ function SteganographyContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -270,14 +271,18 @@ function SteganographyContent() {
           Hide secret messages within plain text using invisible zero-width characters. Encode and
           decode hidden text that is completely invisible to the naked eye.
         </p>
-      </motion.div>
+      </div>
 
       {/* Mode Selector */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-        className={css({ display: 'flex', justifyContent: 'center', gap: '3' })}
+      <div
+        className={css({
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '3',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Button
           onClick={() => {
@@ -319,14 +324,16 @@ function SteganographyContent() {
           <EyeOff className={css({ h: '4', w: '4' })} />
           Decode Message
         </Button>
-      </motion.div>
+      </div>
 
       {/* Encode Mode */}
       {mode === 'encode' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -467,10 +474,12 @@ function SteganographyContent() {
 
               {/* Encoded Result */}
               {encodedResult && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className={css({ spaceY: '3' })}
+                <div
+                  className={css({
+                    spaceY: '3',
+                    animation: 'scaleIn 0.5s ease-out forwards',
+                    opacity: 0,
+                  })}
                 >
                   <label
                     htmlFor="encoded-result"
@@ -545,19 +554,21 @@ function SteganographyContent() {
                       secret.
                     </p>
                   </div>
-                </motion.div>
+                </div>
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Decode Mode */}
       {mode === 'decode' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -664,10 +675,12 @@ function SteganographyContent() {
 
               {/* Decoded Message */}
               {decodedMessage && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className={css({ spaceY: '3' })}
+                <div
+                  className={css({
+                    spaceY: '3',
+                    animation: 'scaleIn 0.5s ease-out forwards',
+                    opacity: 0,
+                  })}
                 >
                   <label
                     htmlFor="decoded-message"
@@ -741,58 +754,12 @@ function SteganographyContent() {
                       the original text.
                     </p>
                   </div>
-                </motion.div>
+                </div>
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
-
-      {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-      >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'gray.500/20',
-            bg: 'gray.500/5',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'white', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  How It Works
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>
-                    • Uses zero-width Unicode characters (invisible to the naked eye) to encode
-                    binary data
-                  </li>
-                  <li>
-                    • Secret messages are converted to binary and embedded using invisible
-                    characters
-                  </li>
-                  <li>
-                    • The cover text appears completely normal but contains the hidden message
-                  </li>
-                  <li>
-                    • Perfect for secure communication, digital watermarking, and stealth data
-                  </li>
-                  <li>
-                    • All processing happens locally in your browser - no data is sent to servers
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
