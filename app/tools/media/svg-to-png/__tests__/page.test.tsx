@@ -510,11 +510,13 @@ describe('SvgToPngConverterPage', () => {
       })
 
       // The mock SVG has viewBox="0 0 100 100", so width/height should be 100
-      const widthInput = screen.getByLabelText('Width (px)') as HTMLInputElement
-      const heightInput = screen.getByLabelText('Height (px)') as HTMLInputElement
-
-      expect(widthInput.value).toBe('100')
-      expect(heightInput.value).toBe('100')
+      // Wait for dimensions to settle after SVG parsing
+      await waitFor(() => {
+        const widthInput = screen.getByLabelText('Width (px)') as HTMLInputElement
+        const heightInput = screen.getByLabelText('Height (px)') as HTMLInputElement
+        expect(widthInput.value).toBe('100')
+        expect(heightInput.value).toBe('100')
+      })
     })
 
     it('extracts dimensions from width/height attributes', async () => {
