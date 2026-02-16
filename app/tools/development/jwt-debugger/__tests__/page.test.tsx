@@ -387,14 +387,21 @@ describe('JWTDebuggerPage', () => {
         expect(screen.getByText('Header')).toBeInTheDocument()
       })
 
-      // Find the Header card and its copy button
-      const headerCard = screen.getByText('Header').closest('[class*="card"]')
-      if (headerCard) {
-        const copyButton = within(headerCard as HTMLElement).getByRole('button')
+      // The Header text and copy button are inside the same CardTitle (flex container).
+      // Find the Header text element, then look for the button within its parent.
+      const headerText = screen.getByText('Header')
+      const headerParent = headerText.parentElement
+      if (headerParent) {
+        const copyButton = within(headerParent).getByRole('button')
         await user.click(copyButton)
 
-        expect(mockWriteText).toHaveBeenCalled()
-        expect(toast.success).toHaveBeenCalledWith('Header copied to clipboard!')
+        await waitFor(() => {
+          expect(mockWriteText).toHaveBeenCalled()
+          expect(toast.success).toHaveBeenCalledWith('Header copied to clipboard!')
+        })
+      } else {
+        // Fail explicitly if parent not found
+        expect(headerParent).not.toBeNull()
       }
     })
 
@@ -409,17 +416,20 @@ describe('JWTDebuggerPage', () => {
         expect(screen.getByText('Payload')).toBeInTheDocument()
       })
 
-      // Find copy buttons and click the payload one (second copy button)
-      const copyButtons = screen.getAllByRole('button').filter((btn) => btn.querySelector('svg'))
-      // The payload copy button is typically after the header copy button
-      const payloadCopyBtn = copyButtons.find((btn) => {
-        const parent = btn.closest('[class*="card"]')
-        return parent?.textContent?.includes('Payload')
-      })
+      // The Payload text and copy button are inside the same CardTitle (flex container).
+      // Find the Payload text element, then look for the button within its parent.
+      const payloadText = screen.getByText('Payload')
+      const payloadParent = payloadText.parentElement
+      if (payloadParent) {
+        const copyButton = within(payloadParent).getByRole('button')
+        await user.click(copyButton)
 
-      if (payloadCopyBtn) {
-        await user.click(payloadCopyBtn)
-        expect(mockWriteText).toHaveBeenCalled()
+        await waitFor(() => {
+          expect(mockWriteText).toHaveBeenCalled()
+        })
+      } else {
+        // Fail explicitly if parent not found
+        expect(payloadParent).not.toBeNull()
       }
     })
 

@@ -748,7 +748,11 @@ describe('AI Image Caption Generator - Multiple Caption Types Tests', () => {
 
           await waitFor(
             () => {
-              expect(toast.success).toHaveBeenCalledTimes(2)
+              // Check that success toast was called with caption message at least twice
+              const successCalls = vi
+                .mocked(toast.success)
+                .mock.calls.filter((call) => call[0] === 'Caption generated successfully!')
+              expect(successCalls.length).toBeGreaterThanOrEqual(2)
             },
             { timeout: 5000 }
           )

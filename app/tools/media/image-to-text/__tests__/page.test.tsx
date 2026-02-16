@@ -929,14 +929,9 @@ describe('ImageToTextPage', () => {
       mockRecognize.mockReset()
       mockCreateWorker.mockReset()
 
-      // Track calls with a simple counter
-      let callCount = 0
-      mockRecognize.mockImplementation(async () => {
-        callCount++
-        // Return different text based on call count (odd = first, even = second)
-        // This handles potential double-calls per upload
-        return { data: { text: callCount <= 2 ? 'First text' : 'Second text' } }
-      })
+      // Use mockResolvedValueOnce for first call, then default for subsequent
+      mockRecognize.mockResolvedValueOnce({ data: { text: 'First text' } })
+      mockRecognize.mockResolvedValue({ data: { text: 'Second text' } })
 
       mockCreateWorker.mockImplementation(async (_lang, _oem, options) => {
         if (options?.logger) {
@@ -976,7 +971,7 @@ describe('ImageToTextPage', () => {
       )
 
       // Verify recognize was called multiple times (at least once per upload)
-      expect(callCount).toBeGreaterThanOrEqual(2)
+      expect(mockRecognize).toHaveBeenCalledTimes(2)
     })
   })
 })

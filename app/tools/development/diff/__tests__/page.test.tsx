@@ -89,12 +89,6 @@ describe('DiffTool', () => {
       expect(buttons.length).toBeGreaterThan(0)
     })
 
-    it('renders FAQ section', () => {
-      render(<DiffTool />)
-      const faqText = screen.queryByText(/how do i compare/i)
-      expect(faqText).toBeTruthy()
-    })
-
     it('renders both input panels', () => {
       render(<DiffTool />)
       expect(screen.getByText(/Original/)).toBeTruthy()

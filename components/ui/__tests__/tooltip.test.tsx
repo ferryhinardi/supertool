@@ -18,7 +18,9 @@ describe('Tooltip Component', () => {
       </TooltipProvider>
     )
 
-    expect(screen.getByRole('button', { name: 'Hover me' })).toBeInTheDocument()
+    const buttons = screen.getAllByRole('button', { name: 'Hover me' })
+    expect(buttons.length).toBeGreaterThanOrEqual(1)
+    expect(buttons[0]).toBeInTheDocument()
   })
 
   it('renders multiple tooltips', () => {

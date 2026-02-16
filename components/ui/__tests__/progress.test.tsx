@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { Progress } from '../progress'
 
@@ -10,22 +10,25 @@ describe('Progress Component', () => {
   })
 
   it('displays correct value', () => {
-    const { container } = render(<Progress value={75} />)
-    // Ark UI Progress has a div with value attribute
-    const progressElement = container.querySelector('[value="75"]')
+    render(<Progress value={75} />)
+    // Ark UI Progress renders role="progressbar" with aria-valuenow
+    const progressElement = screen.getByRole('progressbar')
     expect(progressElement).toBeInTheDocument()
+    expect(progressElement).toHaveAttribute('aria-valuenow', '75')
   })
 
   it('handles 0 value', () => {
-    const { container } = render(<Progress value={0} />)
-    const progressElement = container.querySelector('[value="0"]')
+    render(<Progress value={0} />)
+    const progressElement = screen.getByRole('progressbar')
     expect(progressElement).toBeInTheDocument()
+    expect(progressElement).toHaveAttribute('aria-valuenow', '0')
   })
 
   it('handles 100 value', () => {
-    const { container } = render(<Progress value={100} />)
-    const progressElement = container.querySelector('[value="100"]')
+    render(<Progress value={100} />)
+    const progressElement = screen.getByRole('progressbar')
     expect(progressElement).toBeInTheDocument()
+    expect(progressElement).toHaveAttribute('aria-valuenow', '100')
   })
 
   it('applies custom className', () => {
@@ -35,16 +38,17 @@ describe('Progress Component', () => {
   })
 
   it('renders progress with value attribute', () => {
-    const { container } = render(<Progress value={50} />)
-    const progressElement = container.querySelector('[value="50"]')
+    render(<Progress value={50} />)
+    const progressElement = screen.getByRole('progressbar')
     expect(progressElement).toBeInTheDocument()
-    expect(progressElement).toHaveAttribute('value', '50')
+    expect(progressElement).toHaveAttribute('aria-valuenow', '50')
   })
 
   it('renders without value prop', () => {
-    const { container } = render(<Progress />)
+    render(<Progress />)
     // Default value is 0
-    const progressElement = container.querySelector('[value="0"]')
+    const progressElement = screen.getByRole('progressbar')
     expect(progressElement).toBeInTheDocument()
+    expect(progressElement).toHaveAttribute('aria-valuenow', '0')
   })
 })
