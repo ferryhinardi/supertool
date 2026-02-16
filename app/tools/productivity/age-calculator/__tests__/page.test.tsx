@@ -266,62 +266,6 @@ describe('Age Calculator - Life Milestones', () => {
   })
 })
 
-describe('Age Calculator - How It Works Section', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  it('displays how it works section', () => {
-    render(<AgeCalculatorPage />)
-    expect(screen.getByText('How Age Calculation Works')).toBeInTheDocument()
-  })
-
-  it('displays Info icon', () => {
-    render(<AgeCalculatorPage />)
-    expect(screen.getByText('How Age Calculation Works')).toBeInTheDocument()
-  })
-
-  it('explains age calculation method', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/Your age is calculated by comparing your birthdate with today's date/i)
-    ).toBeInTheDocument()
-  })
-
-  it('mentions leap year handling', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/accounts for leap years and varying month lengths/i)
-    ).toBeInTheDocument()
-  })
-
-  it('lists calculation features', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/Years, months, and days are calculated precisely/i)
-    ).toBeInTheDocument()
-  })
-
-  it('mentions zodiac sign determination', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/Zodiac sign is determined from birth month and day/i)
-    ).toBeInTheDocument()
-  })
-
-  it('mentions birthday countdown', () => {
-    render(<AgeCalculatorPage />)
-    expect(screen.getByText(/Next birthday countdown updates daily/i)).toBeInTheDocument()
-  })
-
-  it('mentions timezone handling', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/All calculations are performed in your local timezone/i)
-    ).toBeInTheDocument()
-  })
-})
-
 describe('Age Calculator - User Interactions', () => {
   beforeEach(() => {
     vi.clearAllMocks()

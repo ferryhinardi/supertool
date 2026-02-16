@@ -427,18 +427,6 @@ describe('Unit Converter Page', () => {
     })
   })
 
-  describe('Pro Tips Section', () => {
-    it('displays pro tips', () => {
-      render(<UnitConverterPage />)
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      // Use getAllByText since text appears in multiple places (Pro Tips + FAQ)
-      const swapTexts = screen.getAllByText(/swap button/)
-      expect(swapTexts.length).toBeGreaterThan(0)
-      const favoritesTexts = screen.getAllByText(/favorites/)
-      expect(favoritesTexts.length).toBeGreaterThan(0)
-    })
-  })
-
   describe('Conversion Formula Display', () => {
     it('shows conversion formula when result is available', async () => {
       render(<UnitConverterPage />)

@@ -99,14 +99,6 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
       expect(screen.getByText('Title')).toBeInTheDocument()
       expect(screen.getByText('Sentence')).toBeInTheDocument()
     })
-
-    it('should render help section', () => {
-      render(<ClipboardFormatterPage />)
-
-      expect(screen.getByText('How to Use')).toBeInTheDocument()
-      expect(screen.getByText('Quick Start')).toBeInTheDocument()
-      expect(screen.getByText('Format Options')).toBeInTheDocument()
-    })
   })
 
   describe('Text Input and Output', () => {

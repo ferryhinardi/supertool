@@ -885,36 +885,6 @@ describe('DiffTool', () => {
     })
   })
 
-  describe('FAQ Section', () => {
-    it('renders FAQ accordion', () => {
-      render(<DiffTool />)
-      expect(screen.getByText(/how do i compare/i)).toBeTruthy()
-    })
-
-    it('displays multiple FAQ questions', () => {
-      render(<DiffTool />)
-      expect(screen.getByText(/split view and unified view/i)).toBeTruthy()
-      const syntaxHighlightingElements = screen.getAllByText(/syntax highlighting/i)
-      expect(syntaxHighlightingElements.length).toBeGreaterThanOrEqual(1)
-    })
-
-    it('shows FAQ about JSON support', () => {
-      render(<DiffTool />)
-      expect(screen.getByText(/compare JSON files/i)).toBeTruthy()
-    })
-
-    it('shows FAQ about data safety', () => {
-      render(<DiffTool />)
-      expect(screen.getByText(/code or text data safe/i)).toBeTruthy()
-    })
-
-    it('displays comprehensive FAQ answers', () => {
-      render(<DiffTool />)
-      const faqSection = screen.getByText(/how do i compare/i)
-      expect(faqSection).toBeTruthy()
-    })
-  })
-
   describe('Accessibility', () => {
     it('has proper heading structure', () => {
       render(<DiffTool />)

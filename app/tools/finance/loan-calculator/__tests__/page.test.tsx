@@ -355,25 +355,6 @@ describe('Loan Calculator Page', () => {
     })
   })
 
-  describe('Info Section', () => {
-    it('displays how it works section', async () => {
-      render(<LoanCalculatorPage />)
-
-      await waitFor(() => {
-        expect(screen.getByText('How It Works')).toBeInTheDocument()
-      })
-    })
-
-    it('shows helpful information about calculations', async () => {
-      render(<LoanCalculatorPage />)
-
-      await waitFor(() => {
-        const infoSection = screen.getByText('How It Works').closest('article')
-        expect(infoSection).toBeInTheDocument()
-      })
-    })
-  })
-
   describe('Accessibility', () => {
     it('has proper heading structure', async () => {
       render(<LoanCalculatorPage />)

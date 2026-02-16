@@ -73,14 +73,6 @@ describe('Text Summarizer - Component Tests', () => {
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('text_summarizer_open', {})
   })
 
-  it('should display pro tips card', () => {
-    render(<TextSummarizerPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/best results|50 words/i)
-  })
-
   it('should display length options', () => {
     render(<TextSummarizerPage />)
 

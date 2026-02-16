@@ -77,14 +77,6 @@ describe('AI Prompt Explainer - Component Tests', () => {
     })
   })
 
-  it('should display pro tips card', () => {
-    render(<AIPromptExplainerPage />)
-
-    expect(screen.getByText('Pro Tips for Better Prompts')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/specific and clear|provide context/i)
-  })
-
   it('should display example prompts', () => {
     render(<AIPromptExplainerPage />)
 

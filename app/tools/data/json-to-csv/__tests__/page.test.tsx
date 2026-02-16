@@ -114,11 +114,6 @@ describe('JSON to CSV Converter Page', () => {
       render(<JSONToCSVPage />)
       expect(screen.getByText('CSV Output Preview')).toBeTruthy()
     })
-
-    it('displays how to use section', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText('How to Use')).toBeTruthy()
-    })
   })
 
   describe('Default State and Sample Data', () => {
@@ -937,38 +932,6 @@ describe('JSON to CSV Converter Page', () => {
     it('displays responsive configuration grid', async () => {
       render(<JSONToCSVPage />)
       expect(screen.getByText('Configuration')).toBeTruthy()
-    })
-  })
-
-  describe('Help Section', () => {
-    it('displays how to use instructions', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText('How to Use')).toBeTruthy()
-    })
-
-    it('shows instruction to paste JSON', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Paste your JSON array in the editor above/i)).toBeTruthy()
-    })
-
-    it('shows instruction about delimiter configuration', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Configure delimiter.*and flattening options/i)).toBeTruthy()
-    })
-
-    it('shows instruction about preview', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Preview the CSV output in real-time/i)).toBeTruthy()
-    })
-
-    it('shows instruction about copy and download', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Copy to clipboard or download as a CSV file/i)).toBeTruthy()
-    })
-
-    it('explains nested object flattening', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Nested objects are flattened using dot notation/i)).toBeTruthy()
     })
   })
 

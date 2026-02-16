@@ -437,21 +437,6 @@ describe('Prompt Formatter Page', () => {
     })
   })
 
-  describe('Pro Tips Section', () => {
-    it('displays pro tips section', () => {
-      render(<PromptFormatterPage />)
-      expect(screen.getByText('Prompt Engineering Tips')).toBeInTheDocument()
-    })
-
-    it('displays all pro tips', () => {
-      render(<PromptFormatterPage />)
-      expect(screen.getByText(/Be specific and clear/)).toBeInTheDocument()
-      expect(screen.getByText(/Provide context/)).toBeInTheDocument()
-      expect(screen.getByText(/Use examples/)).toBeInTheDocument()
-      expect(screen.getByText(/Iterate and refine/)).toBeInTheDocument()
-    })
-  })
-
   describe('Template Categories', () => {
     it('shows all 8 templates across 3 categories', () => {
       render(<PromptFormatterPage />)

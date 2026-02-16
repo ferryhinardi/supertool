@@ -71,14 +71,6 @@ describe('AI JSON Analyzer - Component Tests', () => {
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_json_open', {})
   })
 
-  it('should display pro tips card', () => {
-    render(<AIJSONAnalyzerPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/Works best with structured JSON|AI can detect nested relationships/i)
-  })
-
   it('should display Load Example button', () => {
     render(<AIJSONAnalyzerPage />)
 

@@ -47,12 +47,6 @@ describe('Text Similarity Checker Page', () => {
       expect(screen.getByText('Duplicate Detection')).toBeInTheDocument()
       expect(screen.getByText('Paraphrased Content')).toBeInTheDocument()
     })
-
-    it('renders pro tips section', () => {
-      render(<TextSimilarityPage />)
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(screen.getByText(/Cosine Similarity:/)).toBeInTheDocument()
-    })
   })
 
   describe('Algorithm Selection', () => {

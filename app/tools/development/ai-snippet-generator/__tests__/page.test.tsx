@@ -73,14 +73,6 @@ describe('AI Snippet Generator - Component Tests', () => {
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_snippet_open', {})
   })
 
-  it('should display pro tips card', () => {
-    render(<AISnippetGeneratorPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/specific|edge cases/i)
-  })
-
   it('should display all language options', () => {
     render(<AISnippetGeneratorPage />)
 

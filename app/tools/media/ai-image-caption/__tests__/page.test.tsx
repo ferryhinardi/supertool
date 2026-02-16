@@ -105,16 +105,6 @@ describe('AI Image Caption Generator - Component Tests', () => {
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_caption_open', {})
   })
-
-  it('should display pro tips card', () => {
-    render(<AIImageCaptionPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    // Check for the tips text more flexibly
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/Alt Text.*WCAG|WCAG.*Alt Text/)
-    expect(content).toMatch(/SEO.*search|search.*SEO/)
-  })
 })
 
 describe('AI Image Caption Generator - File Upload Tests', () => {

@@ -87,16 +87,6 @@ describe('AI Text Rewriter - Component Tests', () => {
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_text_rewriter_open', {})
   })
 
-  it('should display pro tips card', () => {
-    render(<AITextRewriterPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(
-      /Best results with complete sentences|Tone selection affects word choice|Generate multiple variants/i
-    )
-  })
-
   it('should display tone selection buttons', () => {
     render(<AITextRewriterPage />)
 

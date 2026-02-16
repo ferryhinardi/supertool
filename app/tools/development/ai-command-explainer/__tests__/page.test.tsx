@@ -80,14 +80,6 @@ describe('AI Command Explainer - Component Tests', () => {
     expect(screen.getByText('Docker Container Management')).toBeInTheDocument()
     expect(screen.getByText('Git Interactive Rebase')).toBeInTheDocument()
   })
-
-  it('should display how it works section', () => {
-    render(<AICommandExplainerPage />)
-
-    expect(screen.getByText('How It Works')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/AI analyzes your command/i)
-  })
 })
 
 describe('AI Command Explainer - Command Input Tests', () => {

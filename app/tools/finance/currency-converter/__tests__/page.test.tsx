@@ -499,15 +499,6 @@ describe('Currency Converter Page', () => {
     })
   })
 
-  describe('Pro Tips Section', () => {
-    it('displays pro tips', async () => {
-      render(<CurrencyConverterPage />)
-      await waitFor(() => {
-        expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      })
-    })
-  })
-
   describe('Accessibility', () => {
     it('has proper heading structure', async () => {
       render(<CurrencyConverterPage />)

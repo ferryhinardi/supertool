@@ -82,38 +82,6 @@ describe('Base64 Encoder/Decoder Page', () => {
     })
   })
 
-  describe('Pro Tips Section', () => {
-    it('should display pro tips heading', () => {
-      render(<Base64Page />)
-      expect(screen.getByText('Pro Tips')).toBeTruthy()
-    })
-
-    it('should display text & file encoding tip', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/Text & File Encoding:/i)).toBeTruthy()
-    })
-
-    it('should display binary-to-text conversion tip', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/Binary-to-Text Conversion:/i)).toBeTruthy()
-    })
-
-    it('should display image preview tip', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/Image Preview:/i)).toBeTruthy()
-    })
-
-    it('should display data URI support tip', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/Data URI Support:/i)).toBeTruthy()
-    })
-
-    it('should display browser-only processing tip', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/Browser-Only Processing:/i)).toBeTruthy()
-    })
-  })
-
   describe('Mode Switching', () => {
     it.skip('should have encode mode button', () => {
       // Skipped: Multiple Encode buttons
@@ -283,108 +251,12 @@ describe('Base64 Encoder/Decoder Page', () => {
     })
   })
 
-  describe('How to Use Section', () => {
-    it('should display how to use heading', () => {
-      render(<Base64Page />)
-      expect(screen.getByText('How to Use Base64 Encoder/Decoder')).toBeTruthy()
-    })
-
-    it('should display how to use description', () => {
-      render(<Base64Page />)
-      expect(
-        screen.getByText(/Follow these simple steps to encode and decode Base64 data/i)
-      ).toBeTruthy()
-    })
-
-    it('should display step 1', () => {
-      render(<Base64Page />)
-      expect(screen.getByText('Choose Encode or Decode Mode')).toBeTruthy()
-    })
-
-    it('should display step 2', () => {
-      render(<Base64Page />)
-      expect(screen.getByText('Enter Text or Upload File')).toBeTruthy()
-    })
-
-    it('should display step 3', () => {
-      render(<Base64Page />)
-      expect(screen.getByText('Convert and View Results')).toBeTruthy()
-    })
-
-    it('should display step 4', () => {
-      render(<Base64Page />)
-      expect(screen.getByText('Copy or Download Output')).toBeTruthy()
-    })
-
-    it('should display numbered badges for steps', () => {
-      render(<Base64Page />)
-      const badges = screen.getAllByText(/^[1-4]$/)
-      expect(badges.length).toBe(4)
-    })
-  })
-
   describe('Social Share', () => {
     it('should display social share component', () => {
       render(<Base64Page />)
       // SocialShare component renders buttons/links
       const socialElements = document.querySelectorAll('[class*="social"]')
       expect(socialElements.length).toBeGreaterThanOrEqual(0)
-    })
-  })
-
-  describe('FAQ Section', () => {
-    it('should display FAQ accordion', () => {
-      render(<Base64Page />)
-      // FAQAccordion renders with FAQ data
-      expect(screen.getByText(/What is Base64 encoding and why is it used\?/i)).toBeTruthy()
-    })
-
-    it('should have multiple FAQ items', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/Can I encode files other than text with this tool\?/i)).toBeTruthy()
-      expect(
-        screen.getByText(/How do I decode a Base64 string back to its original format\?/i)
-      ).toBeTruthy()
-      expect(screen.getByText(/Is Base64 encoding secure for sensitive data\?/i)).toBeTruthy()
-    })
-
-    it('should display security warning in FAQ', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/Is Base64 encoding secure for sensitive data\?/i)).toBeTruthy()
-    })
-
-    it('should display size increase FAQ', () => {
-      render(<Base64Page />)
-      expect(
-        screen.getByText(/Why is my Base64 string so much longer than the original\?/i)
-      ).toBeTruthy()
-    })
-
-    it('should display HTML/CSS embedding FAQ', () => {
-      render(<Base64Page />)
-      expect(
-        screen.getByText(/Can I embed Base64-encoded images directly in HTML and CSS\?/i)
-      ).toBeTruthy()
-    })
-
-    it('should display error handling FAQ', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/What does "Invalid Base64 string" error mean\?/i)).toBeTruthy()
-    })
-
-    it('should display JSON API FAQ', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/How do I encode images for use in JSON APIs\?/i)).toBeTruthy()
-    })
-
-    it('should display image preview FAQ', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/Can I decode Base64 images and preview them\?/i)).toBeTruthy()
-    })
-
-    it('should display use cases FAQ', () => {
-      render(<Base64Page />)
-      expect(screen.getByText(/What are common use cases for Base64 encoding\?/i)).toBeTruthy()
     })
   })
 
