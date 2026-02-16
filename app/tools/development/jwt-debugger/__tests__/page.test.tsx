@@ -6,6 +6,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // All vi.mock calls must be at the top level and will be hoisted
 
+// Mock ToolSearch to avoid dialog overlay interfering with queries
+vi.mock('@/components/ui/tool-search', () => ({
+  ToolSearch: () => null,
+}))
+
 // Mock the generateJWT function from utils since jose library doesn't work well in jsdom
 vi.mock('../utils', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../utils')>()
