@@ -58,7 +58,12 @@ export function MobileOperationPicker({
         <>
           {/* Overlay */}
           <div
+            role="button"
+            tabIndex={0}
             onClick={() => setIsOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape' || e.key === 'Enter') setIsOpen(false)
+            }}
             className={css({
               position: 'fixed',
               inset: '0',

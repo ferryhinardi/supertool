@@ -562,8 +562,9 @@ function TextTransformerContent() {
             from: 'yellow.500',
             to: 'amber.500',
           },
-        ].map((stat, index) => (
+        ].map((stat) => (
           <div
+            key={stat.label}
             className={css({
               animation: 'scaleIn 0.5s ease-out forwards',
               animationDelay: '0.1s',

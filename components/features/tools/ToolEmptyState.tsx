@@ -136,9 +136,9 @@ export function ToolEmptyState({
             w: 'full',
           })}
         >
-          {tips.map((tipText, index) => (
+          {tips.map((tipText) => (
             <div
-              key={index}
+              key={tipText}
               className={css({
                 display: 'flex',
                 alignItems: 'center',

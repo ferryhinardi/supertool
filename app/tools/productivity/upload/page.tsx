@@ -1564,6 +1564,8 @@ function UploadToolContent() {
 
       {qrModal.isOpen && (
         <div
+          role="button"
+          tabIndex={0}
           className={css({
             position: 'fixed',
             inset: 0,
@@ -1576,9 +1578,14 @@ function UploadToolContent() {
             p: '4',
           })}
           onClick={closeQRModal}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Enter') closeQRModal()
+          }}
         >
           <div
+            role="dialog"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
             className={css({
               bg: 'gray.900',
               border: '2px solid',
@@ -1706,6 +1713,8 @@ function UploadToolContent() {
 
       {shareModal.isOpen && (
         <div
+          role="button"
+          tabIndex={0}
           className={css({
             position: 'fixed',
             inset: 0,
@@ -1718,9 +1727,14 @@ function UploadToolContent() {
             p: '4',
           })}
           onClick={closeShareModal}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Enter') closeShareModal()
+          }}
         >
           <div
+            role="dialog"
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
             className={css({
               bg: 'gray.900',
               border: '2px solid',

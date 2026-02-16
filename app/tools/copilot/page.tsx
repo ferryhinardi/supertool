@@ -257,9 +257,9 @@ function CopilotPageContent() {
         })}
       >
         {/* Live region for dynamic announcements */}
-        <div role="status" aria-live="polite" aria-atomic="true" className={css({ srOnly: true })}>
+        <output aria-live="polite" aria-atomic="true" className={css({ srOnly: true })}>
           {activeSessionId ? 'Chat session active' : 'No chat session selected'}
-        </div>
+        </output>
 
         {/* Error Banner with alert role for screen readers */}
         {localError && (
@@ -472,7 +472,6 @@ function CopilotPageContent() {
               onRenameTriggered={clearTriggerRenameSessionId}
             />
           </aside>
-
           {/* Overlay for mobile when sidebar is open */}
           {isSidebarOpen && (
             <button
@@ -491,13 +490,11 @@ function CopilotPageContent() {
               })}
             />
           )}
-
           {/* Chat Area - Main content region */}
-          <div
+          <section
             ref={mainContentRef}
             id="main-content"
             tabIndex={-1}
-            role="region"
             aria-label="Chat conversation"
             className={css({
               flex: '1',
@@ -755,8 +752,7 @@ function CopilotPageContent() {
                 </Card>
               </div>
             )}
-          </div>
-
+          </section>{' '}
           {/* Overlay for mobile when source panel is open */}
           {isSourcePanelOpen && (
             <button
@@ -775,7 +771,6 @@ function CopilotPageContent() {
               })}
             />
           )}
-
           {/* Source Panel - Right Sidebar (complementary region) */}
           <aside
             className={css({
