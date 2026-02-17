@@ -1,25 +1,55 @@
 'use client'
 
-import { Heart, Home, LogIn, LogOut, Menu, User, X } from 'lucide-react'
+import {
+  Calculator,
+  ChevronDown,
+  ChevronRight,
+  Code,
+  Eye,
+  FileJson,
+  Heart,
+  Home,
+  Image,
+  Lock,
+  LogIn,
+  LogOut,
+  Menu,
+  User,
+  X,
+  Zap,
+} from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import type React from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useAuthStore } from '@/lib/auth/auth-store'
-import { tools } from '@/lib/data/tools'
+import { type Tool, type ToolCategory, tools } from '@/lib/data/tools'
 import { css, cva } from '@/styled-system/css'
 
-// Generate navigation from tools data, filtering out coming soon tools
-const navigation = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'Support Us', href: '/support', icon: Heart },
-  ...tools
-    .filter((tool) => !tool.comingSoon)
-    .map((tool) => ({
-      name: tool.title,
-      href: tool.href,
-      icon: tool.icon,
-    })),
+// Category display order and metadata for sidebar
+const SIDEBAR_CATEGORIES: {
+  id: ToolCategory
+  label: string
+  icon: React.ElementType
+}[] = [
+  { id: 'productivity', label: 'Productivity', icon: Zap },
+  { id: 'design', label: 'Design & Visual', icon: Eye },
+  { id: 'media', label: 'Media Tools', icon: Image },
+  { id: 'finance', label: 'Finance', icon: Calculator },
+  { id: 'security', label: 'Security', icon: Lock },
+  { id: 'data', label: 'Data Processing', icon: FileJson },
+  { id: 'development', label: 'Developer Tools', icon: Code },
 ]
+
+// Sort tools within a category: high priority first, then alphabetical
+function sortCategoryTools(categoryTools: Tool[]): Tool[] {
+  return [...categoryTools].sort((a, b) => {
+    const aPriority = a.sidebarPriority === 'high' ? 0 : 1
+    const bPriority = b.sidebarPriority === 'high' ? 0 : 1
+    if (aPriority !== bPriority) return aPriority - bPriority
+    return a.title.localeCompare(b.title)
+  })
+}
 
 // Navigation link variants using cva
 const navLinkStyles = cva({
@@ -55,8 +85,46 @@ const navLinkStyles = cva({
 export function Sidebar() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<ToolCategory>>(new Set())
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
+
+  const toggleCategory = useCallback((category: ToolCategory) => {
+    setCollapsedCategories((prev) => {
+      const next = new Set(prev)
+      if (next.has(category)) {
+        next.delete(category)
+      } else {
+        next.add(category)
+      }
+      return next
+    })
+  }, [])
+
+  // Group tools by category, sorted within each group
+  const groupedTools = useMemo(() => {
+    const activeTools = tools.filter((tool) => !tool.comingSoon)
+    const groups = new Map<ToolCategory, Tool[]>()
+
+    for (const cat of SIDEBAR_CATEGORIES) {
+      const categoryTools = activeTools.filter((t) => t.category === cat.id)
+      if (categoryTools.length > 0) {
+        groups.set(cat.id, sortCategoryTools(categoryTools))
+      }
+    }
+
+    return groups
+  }, [])
+
+  // Check if any tool in a category is active (for highlighting the category header)
+  const activeCategoryId = useMemo(() => {
+    for (const [catId, catTools] of groupedTools) {
+      if (catTools.some((t) => pathname === t.href)) {
+        return catId
+      }
+    }
+    return null
+  }, [pathname, groupedTools])
 
   return (
     <>
@@ -184,11 +252,14 @@ export function Sidebar() {
           </Link>
 
           {/* Navigation */}
-          <nav className={css({ flex: '1', spaceY: '3' })}>
-            {navigation.map((item) => {
+          <nav className={css({ flex: '1', spaceY: '1' })}>
+            {/* Home & Support links */}
+            {[
+              { name: 'Home', href: '/', icon: Home },
+              { name: 'Support Us', href: '/support', icon: Heart },
+            ].map((item) => {
               const isActive = pathname === item.href
               const Icon = item.icon
-
               return (
                 <Link
                   key={item.name}
@@ -196,7 +267,6 @@ export function Sidebar() {
                   onClick={closeMobileMenu}
                   className={navLinkStyles({ active: isActive })}
                 >
-                  {/* Active indicator */}
                   {isActive && (
                     <div
                       className={css({
@@ -211,7 +281,6 @@ export function Sidebar() {
                       })}
                     />
                   )}
-
                   <Icon
                     className={css({
                       h: '5',
@@ -221,6 +290,133 @@ export function Sidebar() {
                   />
                   <span className={css({ fontWeight: 'medium', fontSize: 'sm' })}>{item.name}</span>
                 </Link>
+              )
+            })}
+
+            {/* Divider */}
+            <div
+              className={css({
+                borderTop: '1px solid rgba(139, 92, 246, 0.1)',
+                my: '3',
+              })}
+            />
+
+            {/* Category groups */}
+            {SIDEBAR_CATEGORIES.map((cat) => {
+              const categoryTools = groupedTools.get(cat.id)
+              if (!categoryTools || categoryTools.length === 0) return null
+
+              const isCollapsed = collapsedCategories.has(cat.id)
+              const hasActiveTool = activeCategoryId === cat.id
+              const CatIcon = cat.icon
+
+              return (
+                <div key={cat.id} className={css({ mb: '1' })}>
+                  {/* Category header */}
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(cat.id)}
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2',
+                      w: 'full',
+                      px: '3',
+                      py: '2',
+                      rounded: 'md',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      bg: hasActiveTool ? 'rgba(139, 92, 246, 0.08)' : 'transparent',
+                      _hover: {
+                        bg: 'rgba(139, 92, 246, 0.08)',
+                      },
+                      border: 'none',
+                    })}
+                  >
+                    <CatIcon
+                      className={css({
+                        h: '4',
+                        w: '4',
+                        color: hasActiveTool ? 'purple.300' : 'gray.500',
+                        flexShrink: 0,
+                      })}
+                    />
+                    <span
+                      className={css({
+                        flex: '1',
+                        textAlign: 'left',
+                        fontSize: 'xs',
+                        fontWeight: 'semibold',
+                        textTransform: 'uppercase',
+                        letterSpacing: 'wider',
+                        color: hasActiveTool ? 'purple.300' : 'gray.400',
+                      })}
+                    >
+                      {cat.label}
+                    </span>
+                    <span
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'gray.600',
+                        mr: '1',
+                      })}
+                    >
+                      {categoryTools.length}
+                    </span>
+                    {isCollapsed ? (
+                      <ChevronRight
+                        className={css({ h: '3.5', w: '3.5', color: 'gray.500', flexShrink: 0 })}
+                      />
+                    ) : (
+                      <ChevronDown
+                        className={css({ h: '3.5', w: '3.5', color: 'gray.500', flexShrink: 0 })}
+                      />
+                    )}
+                  </button>
+
+                  {/* Category tools */}
+                  {!isCollapsed && (
+                    <div className={css({ mt: '0.5', spaceY: '0.5' })}>
+                      {categoryTools.map((tool) => {
+                        const isActive = pathname === tool.href
+                        const ToolIcon = tool.icon
+                        return (
+                          <Link
+                            key={tool.href}
+                            href={tool.href}
+                            onClick={closeMobileMenu}
+                            className={navLinkStyles({ active: isActive })}
+                          >
+                            {isActive && (
+                              <div
+                                className={css({
+                                  position: 'absolute',
+                                  top: '50%',
+                                  left: '0',
+                                  h: '6',
+                                  w: '1',
+                                  transform: 'translateY(-50%)',
+                                  roundedRight: 'full',
+                                  bg: 'purple.400',
+                                })}
+                              />
+                            )}
+                            <ToolIcon
+                              className={css({
+                                h: '5',
+                                w: '5',
+                                color: isActive ? 'purple.300' : 'gray.500',
+                              })}
+                            />
+                            <span className={css({ fontWeight: 'medium', fontSize: 'sm' })}>
+                              {tool.title}
+                            </span>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
               )
             })}
           </nav>

@@ -91,6 +91,7 @@ export interface Tool {
   popular?: boolean
   new?: boolean
   premium?: boolean // Requires paid subscription for access
+  sidebarPriority?: 'high' | 'low' // Controls ordering within sidebar category groups
 }
 
 export const tools: Tool[] = [
@@ -168,6 +169,7 @@ export const tools: Tool[] = [
     category: 'productivity',
     new: true,
     popular: true,
+    sidebarPriority: 'high',
   },
   {
     title: 'Cover Letter Builder',
@@ -180,6 +182,7 @@ export const tools: Tool[] = [
     category: 'productivity',
     new: true,
     popular: true,
+    sidebarPriority: 'high',
   },
   {
     title: 'Privacy Policy Generator',
@@ -393,6 +396,7 @@ export const tools: Tool[] = [
     features: ['Drag & Drop', 'Cloud Storage', 'Public URLs', 'Instant Sharing'],
     category: 'productivity',
     premium: true, // Cloud storage and CDN delivery costs
+    sidebarPriority: 'high',
   },
 
   // Coming soon tools
@@ -542,6 +546,7 @@ export const tools: Tool[] = [
     gradient: 'from-red-500 to-orange-500',
     features: ['Merge/Split', 'Compress', 'Convert', 'Watermark'],
     category: 'productivity',
+    sidebarPriority: 'high',
   },
   {
     title: 'Loan & Mortgage Calculator',
@@ -1156,6 +1161,7 @@ export const tools: Tool[] = [
     features: ['AI Summaries', 'Bullet Points', 'Adjustable Length', 'Key Highlights'],
     category: 'productivity',
     premium: true,
+    sidebarPriority: 'high',
   },
   {
     title: 'Keyword Density Analyzer',
@@ -1191,6 +1197,7 @@ export const tools: Tool[] = [
     features: ['Tone Control', 'Style Adjustment', 'Multiple Variants', 'Preserve Meaning'],
     category: 'productivity',
     premium: false,
+    sidebarPriority: 'high',
   },
   {
     title: 'AI JSON Analyzer',
@@ -1369,5 +1376,6 @@ export const tools: Tool[] = [
     category: 'productivity',
     new: true,
     comingSoon: true,
+    sidebarPriority: 'high',
   },
 ]
