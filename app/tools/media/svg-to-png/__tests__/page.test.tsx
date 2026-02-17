@@ -269,56 +269,6 @@ describe('SvgToPngConverterPage', () => {
       expect(fileInput).toHaveAttribute('accept', '.svg,image/svg+xml')
     })
 
-    it('renders the How to Use guide', () => {
-      render(<SvgToPngConverterPage />)
-
-      expect(screen.getByText('How to Use SVG to PNG Converter')).toBeInTheDocument()
-      expect(screen.getByText('Upload SVG File')).toBeInTheDocument()
-      expect(screen.getByText('Customize Settings')).toBeInTheDocument()
-      expect(screen.getByText('Convert to PNG')).toBeInTheDocument()
-      expect(screen.getByText('Download or Copy')).toBeInTheDocument()
-    })
-
-    it('renders guide step descriptions', () => {
-      render(<SvgToPngConverterPage />)
-
-      expect(
-        screen.getByText('Click the upload area to select an SVG file from your device (max 10MB)')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('Adjust dimensions, background color, and quality to your preferences')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('Click "Convert to PNG" to generate your PNG image')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('Download the PNG file or copy it directly to your clipboard')
-      ).toBeInTheDocument()
-    })
-
-    it('renders the Key Features section', () => {
-      render(<SvgToPngConverterPage />)
-
-      expect(screen.getByText('Key Features')).toBeInTheDocument()
-    })
-
-    it('renders all key features', () => {
-      render(<SvgToPngConverterPage />)
-
-      expect(screen.getByText('Custom Dimensions')).toBeInTheDocument()
-      expect(screen.getByText('Set exact width and height up to 4096px')).toBeInTheDocument()
-      expect(screen.getByText('Aspect Ratio')).toBeInTheDocument()
-      expect(screen.getByText('Maintain or adjust aspect ratio as needed')).toBeInTheDocument()
-      expect(screen.getByText('Background Colors')).toBeInTheDocument()
-      expect(screen.getByText('Choose transparent or custom background colors')).toBeInTheDocument()
-      expect(screen.getByText('Quality Control')).toBeInTheDocument()
-      expect(screen.getByText('Adjust PNG quality from 10% to 100%')).toBeInTheDocument()
-      expect(screen.getByText('Instant Download')).toBeInTheDocument()
-      expect(screen.getByText('Download converted PNG files immediately')).toBeInTheDocument()
-      expect(screen.getByText('Copy to Clipboard')).toBeInTheDocument()
-      expect(screen.getByText('Copy PNG images directly to clipboard')).toBeInTheDocument()
-    })
-
     it('does not show conversion settings initially', () => {
       render(<SvgToPngConverterPage />)
 
@@ -560,11 +510,13 @@ describe('SvgToPngConverterPage', () => {
       })
 
       // The mock SVG has viewBox="0 0 100 100", so width/height should be 100
-      const widthInput = screen.getByLabelText('Width (px)') as HTMLInputElement
-      const heightInput = screen.getByLabelText('Height (px)') as HTMLInputElement
-
-      expect(widthInput.value).toBe('100')
-      expect(heightInput.value).toBe('100')
+      // Wait for dimensions to settle after SVG parsing
+      await waitFor(() => {
+        const widthInput = screen.getByLabelText('Width (px)') as HTMLInputElement
+        const heightInput = screen.getByLabelText('Height (px)') as HTMLInputElement
+        expect(widthInput.value).toBe('100')
+        expect(heightInput.value).toBe('100')
+      })
     })
 
     it('extracts dimensions from width/height attributes', async () => {

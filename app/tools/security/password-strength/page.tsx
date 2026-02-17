@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   CheckCircle2,
@@ -100,11 +99,13 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -155,13 +156,15 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
           Measure password entropy and security strength with visual feedback. Detect common
           patterns, dictionary words, and get actionable recommendations.
         </p>
-      </motion.div>
+      </div>
 
       {/* Password Input */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -219,10 +222,12 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
             </div>
 
             {analysis && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={css({ spaceY: '3' })}
+              <div
+                className={css({
+                  spaceY: '3',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
+                })}
               >
                 {/* Strength Meter */}
                 <div className={css({ spaceY: '2' })}>
@@ -331,18 +336,20 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Character Requirements */}
       {analysis && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -492,15 +499,17 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Pattern Detection */}
       {analysis && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -617,15 +626,17 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Suggestions */}
       {analysis && suggestions.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.4s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -695,14 +706,16 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
               </ul>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.5s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -731,7 +744,7 @@ ${suggestions.map((s) => `• ${s}`).join('\n')}`
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="password-strength" variant="banner" />

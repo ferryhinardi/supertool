@@ -20,15 +20,6 @@ vi.mock('nuqs', () => ({
   },
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 describe('Timezone Converter Page', () => {
   beforeEach(() => {
     // Mock a stable date/time for consistent testing

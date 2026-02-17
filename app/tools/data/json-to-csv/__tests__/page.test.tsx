@@ -73,6 +73,15 @@ vi.mock('@codemirror/lang-json', () => ({
 // Using getByDisplayValue instead of getByLabelText due to multiple "Delimiter" text matches (label + tooltip)
 const getDelimiterInput = () => screen.getByDisplayValue(',')
 
+// Helper to get action buttons that are duplicated by the Tooltip mock.
+// The @ark-ui/react Tooltip.Trigger mock doesn't handle `asChild`, so it wraps
+// each <Button> in an extra <button>, creating duplicate role matches.
+// We pick the last match which is the real <Button> with correct handlers/disabled state.
+const getActionButton = (name: RegExp) => {
+  const buttons = screen.getAllByRole('button', { name })
+  return buttons[buttons.length - 1]
+}
+
 describe('JSON to CSV Converter Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -113,11 +122,6 @@ describe('JSON to CSV Converter Page', () => {
     it('displays CSV output preview section', async () => {
       render(<JSONToCSVPage />)
       expect(screen.getByText('CSV Output Preview')).toBeTruthy()
-    })
-
-    it('displays how to use section', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText('How to Use')).toBeTruthy()
     })
   })
 
@@ -387,7 +391,7 @@ describe('JSON to CSV Converter Page', () => {
   describe('Copy Functionality', () => {
     it('displays copy button', async () => {
       render(<JSONToCSVPage />)
-      expect(screen.getByRole('button', { name: /Copy CSV/i })).toBeTruthy()
+      expect(getActionButton(/Copy CSV/i)).toBeTruthy()
     })
 
     it('copies valid CSV to clipboard', async () => {
@@ -401,7 +405,7 @@ describe('JSON to CSV Converter Page', () => {
         { timeout: 5000 }
       )
 
-      const copyButton = screen.getByRole('button', { name: /Copy CSV/i })
+      const copyButton = getActionButton(/Copy CSV/i)
       expect(copyButton).not.toBeDisabled()
 
       // Use fireEvent instead of userEvent for simpler test
@@ -421,7 +425,7 @@ describe('JSON to CSV Converter Page', () => {
       const user = userEvent.setup()
       render(<JSONToCSVPage />)
 
-      const copyButton = screen.getByRole('button', { name: /Copy CSV/i })
+      const copyButton = getActionButton(/Copy CSV/i)
       await user.click(copyButton)
 
       expect(vi.mocked(analytics.trackToolEvent)).toHaveBeenCalledWith(
@@ -441,7 +445,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: 'invalid json' } })
 
       await waitFor(async () => {
-        const copyButton = screen.getByRole('button', { name: /Copy CSV/i })
+        const copyButton = getActionButton(/Copy CSV/i)
         expect(copyButton).toBeDisabled()
       })
     })
@@ -455,14 +459,14 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: '{}' } })
 
       await waitFor(async () => {
-        const copyButton = screen.getByRole('button', { name: /Copy CSV/i })
+        const copyButton = getActionButton(/Copy CSV/i)
         expect(copyButton).toBeDisabled()
       })
     })
 
     it('shows tooltip on copy button hover', async () => {
       render(<JSONToCSVPage />)
-      const copyButton = screen.getByRole('button', { name: /Copy CSV/i })
+      const copyButton = getActionButton(/Copy CSV/i)
       expect(copyButton).toBeTruthy()
     })
   })
@@ -470,7 +474,7 @@ describe('JSON to CSV Converter Page', () => {
   describe('Download Functionality', () => {
     it('displays download button', async () => {
       render(<JSONToCSVPage />)
-      expect(screen.getByRole('button', { name: /Download CSV/i })).toBeTruthy()
+      expect(getActionButton(/Download CSV/i)).toBeTruthy()
     })
 
     it('downloads CSV file', async () => {
@@ -481,7 +485,7 @@ describe('JSON to CSV Converter Page', () => {
       const appendChildSpy = vi.spyOn(document.body, 'appendChild')
       const removeChildSpy = vi.spyOn(document.body, 'removeChild')
 
-      const downloadButton = screen.getByRole('button', { name: /Download CSV/i })
+      const downloadButton = getActionButton(/Download CSV/i)
       await user.click(downloadButton)
 
       expect(createElementSpy).toHaveBeenCalledWith('a')
@@ -500,7 +504,7 @@ describe('JSON to CSV Converter Page', () => {
       vi.spyOn(document.body, 'appendChild')
       vi.spyOn(document.body, 'removeChild')
 
-      const downloadButton = screen.getByRole('button', { name: /Download CSV/i })
+      const downloadButton = getActionButton(/Download CSV/i)
       await user.click(downloadButton)
 
       expect(vi.mocked(analytics.trackToolEvent)).toHaveBeenCalledWith(
@@ -519,7 +523,7 @@ describe('JSON to CSV Converter Page', () => {
       vi.spyOn(document.body, 'appendChild')
       vi.spyOn(document.body, 'removeChild')
 
-      const downloadButton = screen.getByRole('button', { name: /Download CSV/i })
+      const downloadButton = getActionButton(/Download CSV/i)
       await user.click(downloadButton)
 
       const anchorCall = createElementSpy.mock.results.find(
@@ -537,14 +541,14 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: 'not valid json' } })
 
       await waitFor(async () => {
-        const downloadButton = screen.getByRole('button', { name: /Download CSV/i })
+        const downloadButton = getActionButton(/Download CSV/i)
         expect(downloadButton).toBeDisabled()
       })
     })
 
     it('shows tooltip on download button hover', async () => {
       render(<JSONToCSVPage />)
-      const downloadButton = screen.getByRole('button', { name: /Download CSV/i })
+      const downloadButton = getActionButton(/Download CSV/i)
       expect(downloadButton).toBeTruthy()
     })
   })
@@ -552,7 +556,7 @@ describe('JSON to CSV Converter Page', () => {
   describe('Reset Functionality', () => {
     it('displays reset button', async () => {
       render(<JSONToCSVPage />)
-      expect(screen.getByRole('button', { name: /Reset/i })).toBeTruthy()
+      expect(getActionButton(/Reset/i)).toBeTruthy()
     })
 
     it('resets to default JSON sample', async () => {
@@ -566,7 +570,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: '[{"test":"value"}]' } })
 
       // Click reset
-      const resetButton = screen.getByRole('button', { name: /Reset/i })
+      const resetButton = getActionButton(/Reset/i)
       await user.click(resetButton)
 
       await waitFor(async () => {
@@ -588,7 +592,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(delimiterInput, { target: { value: ';' } })
 
       // Click reset
-      const resetButton = screen.getByRole('button', { name: /Reset/i })
+      const resetButton = getActionButton(/Reset/i)
       await user.click(resetButton)
 
       await waitFor(async () => {
@@ -605,7 +609,7 @@ describe('JSON to CSV Converter Page', () => {
       await user.click(checkbox)
 
       // Click reset
-      const resetButton = screen.getByRole('button', { name: /Reset/i })
+      const resetButton = getActionButton(/Reset/i)
       await user.click(resetButton)
 
       await waitFor(async () => {
@@ -617,7 +621,7 @@ describe('JSON to CSV Converter Page', () => {
       const user = userEvent.setup()
       render(<JSONToCSVPage />)
 
-      const resetButton = screen.getByRole('button', { name: /Reset/i })
+      const resetButton = getActionButton(/Reset/i)
       await user.click(resetButton)
 
       expect(vi.mocked(toast.success)).toHaveBeenCalledWith('Reset to default example')
@@ -625,7 +629,7 @@ describe('JSON to CSV Converter Page', () => {
 
     it('shows tooltip on reset button hover', async () => {
       render(<JSONToCSVPage />)
-      const resetButton = screen.getByRole('button', { name: /Reset/i })
+      const resetButton = getActionButton(/Reset/i)
       expect(resetButton).toBeTruthy()
     })
   })
@@ -880,9 +884,9 @@ describe('JSON to CSV Converter Page', () => {
   describe('Accessibility', () => {
     it('has accessible action buttons', async () => {
       render(<JSONToCSVPage />)
-      expect(screen.getByRole('button', { name: /Copy CSV/i })).toBeTruthy()
-      expect(screen.getByRole('button', { name: /Download CSV/i })).toBeTruthy()
-      expect(screen.getByRole('button', { name: /Reset/i })).toBeTruthy()
+      expect(getActionButton(/Copy CSV/i)).toBeTruthy()
+      expect(getActionButton(/Download CSV/i)).toBeTruthy()
+      expect(getActionButton(/Reset/i)).toBeTruthy()
     })
 
     it('has accessible form inputs', async () => {
@@ -900,15 +904,15 @@ describe('JSON to CSV Converter Page', () => {
 
     it('provides meaningful button labels', async () => {
       render(<JSONToCSVPage />)
-      expect(screen.getByRole('button', { name: /Copy CSV/i })).toBeTruthy()
-      expect(screen.getByRole('button', { name: /Download CSV/i })).toBeTruthy()
+      expect(getActionButton(/Copy CSV/i)).toBeTruthy()
+      expect(getActionButton(/Download CSV/i)).toBeTruthy()
     })
 
     it('shows tooltips for action buttons', async () => {
       render(<JSONToCSVPage />)
-      const copyButton = screen.getByRole('button', { name: /Copy CSV/i })
-      const downloadButton = screen.getByRole('button', { name: /Download CSV/i })
-      const resetButton = screen.getByRole('button', { name: /Reset/i })
+      const copyButton = getActionButton(/Copy CSV/i)
+      const downloadButton = getActionButton(/Download CSV/i)
+      const resetButton = getActionButton(/Reset/i)
 
       expect(copyButton).toBeTruthy()
       expect(downloadButton).toBeTruthy()
@@ -937,38 +941,6 @@ describe('JSON to CSV Converter Page', () => {
     it('displays responsive configuration grid', async () => {
       render(<JSONToCSVPage />)
       expect(screen.getByText('Configuration')).toBeTruthy()
-    })
-  })
-
-  describe('Help Section', () => {
-    it('displays how to use instructions', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText('How to Use')).toBeTruthy()
-    })
-
-    it('shows instruction to paste JSON', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Paste your JSON array in the editor above/i)).toBeTruthy()
-    })
-
-    it('shows instruction about delimiter configuration', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Configure delimiter.*and flattening options/i)).toBeTruthy()
-    })
-
-    it('shows instruction about preview', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Preview the CSV output in real-time/i)).toBeTruthy()
-    })
-
-    it('shows instruction about copy and download', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Copy to clipboard or download as a CSV file/i)).toBeTruthy()
-    })
-
-    it('explains nested object flattening', async () => {
-      render(<JSONToCSVPage />)
-      expect(screen.getByText(/Nested objects are flattened using dot notation/i)).toBeTruthy()
     })
   })
 
@@ -1071,19 +1043,19 @@ describe('JSON to CSV Converter Page', () => {
   describe('Button States', () => {
     it('enables copy button when CSV is valid', async () => {
       render(<JSONToCSVPage />)
-      const copyButton = screen.getByRole('button', { name: /Copy CSV/i })
+      const copyButton = getActionButton(/Copy CSV/i)
       expect(copyButton).not.toBeDisabled()
     })
 
     it('enables download button when CSV is valid', async () => {
       render(<JSONToCSVPage />)
-      const downloadButton = screen.getByRole('button', { name: /Download CSV/i })
+      const downloadButton = getActionButton(/Download CSV/i)
       expect(downloadButton).not.toBeDisabled()
     })
 
     it('reset button is always enabled', async () => {
       render(<JSONToCSVPage />)
-      const resetButton = screen.getByRole('button', { name: /Reset/i })
+      const resetButton = getActionButton(/Reset/i)
       expect(resetButton).not.toBeDisabled()
     })
   })

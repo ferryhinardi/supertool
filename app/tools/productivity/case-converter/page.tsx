@@ -1,13 +1,12 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Check, Copy, RotateCcw, Sparkles, Type } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
@@ -40,49 +39,6 @@ const CASE_TYPES: { id: CaseType; label: string; example: string }[] = [
   { id: 'Sentence case', label: 'Sentence case', example: 'My sentence here' },
   { id: 'lowercase', label: 'lowercase', example: 'all lowercase text' },
   { id: 'UPPERCASE', label: 'UPPERCASE', example: 'ALL UPPERCASE TEXT' },
-]
-
-const faqs = [
-  {
-    question: 'What is camelCase and when should I use it?',
-    answer:
-      "camelCase is a naming convention where the first word is lowercase and subsequent words start with uppercase letters (e.g., myVariableName). It's commonly used for variable names in JavaScript, Java, and many other programming languages. Use it for local variables, function names, and object properties.",
-  },
-  {
-    question: 'What is the difference between PascalCase and camelCase?',
-    answer:
-      'The main difference is the first letter: PascalCase starts with an uppercase letter (MyClassName), while camelCase starts with a lowercase letter (myVariableName). PascalCase is typically used for class names, type names, and React components, while camelCase is used for variables and functions.',
-  },
-  {
-    question: 'When should I use snake_case vs kebab-case?',
-    answer:
-      'snake_case (words_separated_by_underscores) is commonly used in Python, Ruby, and database column names. kebab-case (words-separated-by-hyphens) is used for URL slugs, CSS class names, and file names in many web projects. The choice often depends on the programming language or framework conventions.',
-  },
-  {
-    question: 'What is SCREAMING_SNAKE_CASE used for?',
-    answer:
-      'SCREAMING_SNAKE_CASE (all uppercase with underscores) is conventionally used for constants and environment variables across most programming languages. Examples include MAX_VALUE, API_BASE_URL, or DATABASE_CONNECTION_STRING. It makes constants visually distinct from regular variables.',
-  },
-  {
-    question: 'How does Title Case differ from Sentence case?',
-    answer:
-      'Title Case capitalizes the first letter of each major word (The Quick Brown Fox), while Sentence case only capitalizes the first letter of the first word and proper nouns (The quick brown fox). Title Case is used for headings and titles, Sentence case for regular text and UI labels.',
-  },
-  {
-    question: 'What is TRAIN-CASE and where is it used?',
-    answer:
-      'TRAIN-CASE (also called HTTP-Header-Case) capitalizes the first letter of each word and separates them with hyphens (Content-Type, X-Custom-Header). It\'s primarily used for HTTP headers and some configuration file formats. Each "car" of the train is capitalized.',
-  },
-  {
-    question: 'Can this tool convert between any case types?',
-    answer:
-      'Yes! The tool first normalizes your input by detecting word boundaries (spaces, underscores, hyphens, camelCase transitions) and then converts to your chosen format. This means you can convert from any case to any other case, like snake_case to camelCase or kebab-case to PascalCase.',
-  },
-  {
-    question: 'How does the tool handle numbers in text?',
-    answer:
-      'Numbers are preserved and treated as part of words. For example, "user2name" becomes "user2Name" in camelCase, "user_2_name" becomes "User2Name" in PascalCase. The tool intelligently handles mixed alphanumeric strings.',
-  },
 ]
 
 // Utility function to split text into words
@@ -219,13 +175,12 @@ function CaseConverterContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
         className={css({
           textAlign: 'center',
           spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
         })}
       >
         <Badge
@@ -271,13 +226,15 @@ function CaseConverterContent() {
           Convert text between camelCase, PascalCase, snake_case, kebab-case, and more. Preview all
           case formats at once.
         </p>
-      </motion.div>
+      </div>
 
       {/* Input Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -337,13 +294,15 @@ function CaseConverterContent() {
             />
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Case Selection & Output */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -466,14 +425,16 @@ function CaseConverterContent() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* All Cases Preview */}
       {input.trim() && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -564,11 +525,8 @@ function CaseConverterContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
-
-      {/* FAQ Section */}
-      <FAQAccordion faqs={faqs} />
 
       {/* Related Tools */}
       <RelatedTools currentToolPath="/tools/productivity/case-converter" />

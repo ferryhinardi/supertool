@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   CheckCircle2,
@@ -93,11 +92,9 @@ export function OperationProgress({
   const color = getStatusColor()
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: -20 }}
+    <div
       className={css({
+        animation: 'fadeIn 0.3s ease-out forwards',
         display: 'flex',
         flexDirection: { base: 'column', sm: 'row' },
         alignItems: { base: 'stretch', sm: 'center' },
@@ -223,15 +220,14 @@ export function OperationProgress({
               overflow: 'hidden',
             })}
           >
-            <motion.div
+            <div
               className={css({
                 h: 'full',
                 bg: `${color}.500`,
                 rounded: 'full',
+                transition: 'width 0.3s ease',
               })}
-              initial={{ width: 0 }}
-              animate={{ width: `${pdf.progress}%` }}
-              transition={{ duration: 0.3 }}
+              style={{ width: `${pdf.progress}%` }}
             />
           </div>
           <span className={css({ fontSize: 'xs', color: 'white', w: 10, textAlign: 'right' })}>
@@ -328,6 +324,6 @@ export function OperationProgress({
           )}
         </div>
       )}
-    </motion.div>
+    </div>
   )
 }

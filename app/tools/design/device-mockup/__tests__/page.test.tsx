@@ -119,15 +119,6 @@ describe('DeviceMockupPage', () => {
       expect(screen.getByText('PNG, JPG, WebP (Max 10MB)')).toBeInTheDocument()
     })
 
-    it('renders the Pro Tips section', () => {
-      render(<DeviceMockupPage />)
-
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(screen.getByText('Best Practices')).toBeInTheDocument()
-      expect(screen.getByText('Gradient Backgrounds')).toBeInTheDocument()
-      expect(screen.getByText('Export Quality')).toBeInTheDocument()
-    })
-
     it('does not show device selection or preview before image upload', () => {
       render(<DeviceMockupPage />)
 

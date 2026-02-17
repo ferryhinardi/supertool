@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   CheckCircle,
@@ -594,11 +593,13 @@ export default function VideoSubtitleCombinerPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -653,7 +654,7 @@ export default function VideoSubtitleCombinerPage() {
             Initialize Subtitle Tool
           </Button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Main Content Grid */}
       <div
@@ -666,13 +667,13 @@ export default function VideoSubtitleCombinerPage() {
         })}
       >
         {/* Upload Section */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <div
           className={css({
             gridColumn: { base: '1 / -1', md: '1 / 2', lg: '1 / 3' },
             spaceY: '6',
+            animation: 'slideInLeft 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
           })}
         >
           {/* Server Status */}
@@ -841,14 +842,17 @@ export default function VideoSubtitleCombinerPage() {
               </>
             )}
           </Button>
-        </motion.div>
+        </div>
 
         {/* Subtitle Styling Options */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className={css({ gridColumn: { base: '1 / -1', md: '2 / 3', lg: '3 / 4' }, spaceY: '6' })}
+        <div
+          className={css({
+            gridColumn: { base: '1 / -1', md: '2 / 3', lg: '3 / 4' },
+            spaceY: '6',
+            animation: 'slideInLeft 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           {/* Video Trimming */}
           {videoFile && videoDuration > 0 && (
@@ -1513,16 +1517,18 @@ export default function VideoSubtitleCombinerPage() {
               Reset All
             </Button>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Processed Videos */}
       {processingFiles.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className={css({ spaceY: '4' })}
+        <div
+          className={css({
+            spaceY: '4',
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.4s',
+            opacity: 0,
+          })}
         >
           <div
             className={css({
@@ -1621,7 +1627,7 @@ export default function VideoSubtitleCombinerPage() {
               </Card>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Tool Search */}

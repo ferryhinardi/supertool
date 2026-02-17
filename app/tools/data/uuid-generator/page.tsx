@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Check, Copy, Hash, Info, Loader2, RefreshCw, Sparkles, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -193,11 +192,13 @@ export default function UUIDGeneratorPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -248,13 +249,15 @@ export default function UUIDGeneratorPage() {
           Generate unique identifiers (v1-v5) with bulk generation support. Validate UUID format and
           version instantly. Perfect for database keys and API identifiers.
         </p>
-      </motion.div>
+      </div>
 
       {/* Single UUID Generator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -340,13 +343,15 @@ export default function UUIDGeneratorPage() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Bulk UUID Generator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -422,10 +427,12 @@ export default function UUIDGeneratorPage() {
             </div>
 
             {bulkUUIDs.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={css({ spaceY: '3' })}
+              <div
+                className={css({
+                  spaceY: '3',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
+                })}
               >
                 <div
                   className={css({
@@ -482,17 +489,19 @@ export default function UUIDGeneratorPage() {
                     },
                   })}
                 />
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* UUID Validator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -553,15 +562,15 @@ export default function UUIDGeneratorPage() {
             </div>
 
             {validationResult && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+              <div
                 className={css({
                   rounded: 'lg',
                   border: '1px solid',
                   borderColor: validationResult.valid ? 'green.500/30' : 'red.500/30',
                   bg: validationResult.valid ? 'green.500/10' : 'red.500/10',
                   p: '4',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
                 })}
               >
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
@@ -603,17 +612,19 @@ export default function UUIDGeneratorPage() {
                     </>
                   )}
                 </div>
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -652,7 +663,7 @@ export default function UUIDGeneratorPage() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

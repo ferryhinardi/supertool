@@ -17,7 +17,6 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { AnimatePresence, motion } from 'framer-motion'
 import { CheckCircle, GripVertical, Trash2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
@@ -69,12 +68,9 @@ function SortablePDFCard({
   const canDrag = !disabled && pdf.status !== 'processing'
 
   return (
-    <motion.div
+    <div
       ref={setNodeRef}
       style={style}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
       className={css({
         display: { base: 'none', lg: 'block' },
         rounded: 'lg',
@@ -261,7 +257,7 @@ function SortablePDFCard({
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -321,19 +317,17 @@ export function ReorderablePDFList({
               pr: '2',
             })}
           >
-            <AnimatePresence>
-              {pdfs.map((pdf) => (
-                <SortablePDFCard
-                  key={pdf.id}
-                  pdf={pdf}
-                  onRemove={onRemove}
-                  onDownload={onDownload}
-                  formatBytes={formatBytes}
-                  thumbnail={renderThumbnail?.(pdf)}
-                  disabled={disabled}
-                />
-              ))}
-            </AnimatePresence>
+            {pdfs.map((pdf) => (
+              <SortablePDFCard
+                key={pdf.id}
+                pdf={pdf}
+                onRemove={onRemove}
+                onDownload={onDownload}
+                formatBytes={formatBytes}
+                thumbnail={renderThumbnail?.(pdf)}
+                disabled={disabled}
+              />
+            ))}
           </div>
         </SortableContext>
       </DndContext>
@@ -348,19 +342,17 @@ export function ReorderablePDFList({
           pr: '2',
         })}
       >
-        <AnimatePresence>
-          {pdfs.map((pdf) => (
-            <SwipeablePDFCard
-              key={pdf.id}
-              pdf={pdf}
-              onDownload={(p) => onDownload?.(p)}
-              onRemove={(p) => onRemove(p.id)}
-              formatBytes={formatBytes}
-              renderThumbnail={(p) => renderThumbnail?.(p) || null}
-              disabled={disabled}
-            />
-          ))}
-        </AnimatePresence>
+        {pdfs.map((pdf) => (
+          <SwipeablePDFCard
+            key={pdf.id}
+            pdf={pdf}
+            onDownload={(p) => onDownload?.(p)}
+            onRemove={(p) => onRemove(p.id)}
+            formatBytes={formatBytes}
+            renderThumbnail={(p) => renderThumbnail?.(p) || null}
+            disabled={disabled}
+          />
+        ))}
       </div>
     </>
   )

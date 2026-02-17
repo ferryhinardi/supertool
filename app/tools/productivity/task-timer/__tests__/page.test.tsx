@@ -259,16 +259,6 @@ describe('Task Timer Page - Component Tests', () => {
     expect(screen.getByRole('button', { name: /Enable Notifications/i })).toBeInTheDocument()
   })
 
-  it('should display pro tips section', () => {
-    render(<TaskTimerPage />)
-
-    expect(screen.getByRole('heading', { name: /Pro Tips/i })).toBeInTheDocument()
-    expect(
-      screen.getByText(/Start a session to organize multiple task timers together/i)
-    ).toBeInTheDocument()
-    expect(screen.getByText(/Run multiple timers concurrently/i)).toBeInTheDocument()
-  })
-
   it('should create default session name when none provided', async () => {
     const { toast } = await import('sonner')
     render(<TaskTimerPage />)

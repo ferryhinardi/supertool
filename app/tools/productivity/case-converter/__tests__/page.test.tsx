@@ -15,20 +15,7 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock UI components
-vi.mock('@/components/ui/faq-accordion', () => ({
-  FAQAccordion: () => <div data-testid="faq-accordion">FAQ</div>,
-}))
-
 vi.mock('@/components/ui/related-tools', () => ({
   RelatedTools: () => <div data-testid="related-tools">Related Tools</div>,
 }))
@@ -137,12 +124,6 @@ describe('CaseConverterPage', () => {
       render(<CaseConverterPage />)
 
       expect(screen.getByRole('button', { name: /clear/i })).toBeInTheDocument()
-    })
-
-    it('renders FAQ accordion', () => {
-      render(<CaseConverterPage />)
-
-      expect(screen.getByTestId('faq-accordion')).toBeInTheDocument()
     })
 
     it('renders related tools section', () => {

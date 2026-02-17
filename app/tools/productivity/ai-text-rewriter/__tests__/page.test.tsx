@@ -21,15 +21,6 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/tools/ai-text-rewriter',
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {
@@ -94,16 +85,6 @@ describe('AI Text Rewriter - Component Tests', () => {
     render(<AITextRewriterPage />)
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_text_rewriter_open', {})
-  })
-
-  it('should display pro tips card', () => {
-    render(<AITextRewriterPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(
-      /Best results with complete sentences|Tone selection affects word choice|Generate multiple variants/i
-    )
   })
 
   it('should display tone selection buttons', () => {

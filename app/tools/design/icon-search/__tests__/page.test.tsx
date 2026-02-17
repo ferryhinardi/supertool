@@ -133,15 +133,6 @@ describe('IconSearchPage', () => {
       expect(screen.getByText('Select an icon to customize and download')).toBeInTheDocument()
     })
 
-    it('renders pro tips section', () => {
-      render(<IconSearchPage />)
-
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(screen.getByText('Search Tips')).toBeInTheDocument()
-      expect(screen.getByText('React Integration')).toBeInTheDocument()
-      expect(screen.getByText('Favorites')).toBeInTheDocument()
-    })
-
     it('displays icon count in card description', () => {
       render(<IconSearchPage />)
 

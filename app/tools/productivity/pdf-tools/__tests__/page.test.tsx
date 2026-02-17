@@ -623,20 +623,6 @@ describe('PDF Tools Page', () => {
     })
   })
 
-  describe('FAQ Section', () => {
-    it('should render FAQ section', () => {
-      render(<PDFToolsPage />)
-      // FAQ section was removed in redesign - skip test
-      expect(true).toBe(true)
-    })
-
-    it('should display FAQ items', () => {
-      render(<PDFToolsPage />)
-      // FAQ section was removed in redesign - skip test
-      expect(true).toBe(true)
-    })
-  })
-
   describe('Social Share', () => {
     it.skip('should render social share section', () => {
       render(<PDFToolsPage />)

@@ -1,6 +1,5 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
 import { jsPDF } from 'jspdf'
 import {
   CheckCircle,
@@ -371,12 +370,7 @@ export default function ImageToPdfPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
-      >
+      <div className={css({ textAlign: 'center', spaceY: '4' })}>
         <div
           className={css({
             display: 'inline-flex',
@@ -432,14 +426,10 @@ export default function ImageToPdfPage() {
           Convert JPG, PNG, WebP, and other image formats to PDF instantly. Combine multiple images
           into a single PDF document with customizable page settings.
         </p>
-      </motion.div>
+      </div>
 
       {/* Upload Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -518,156 +508,144 @@ export default function ImageToPdfPage() {
                     },
                   })}
                 >
-                  <AnimatePresence mode="popLayout">
-                    {images.map((image, index) => (
-                      <motion.div
-                        key={image.id}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        layout
-                        className={css({
-                          position: 'relative',
-                          overflow: 'hidden',
-                          rounded: 'lg',
-                          border: '1px solid',
-                          borderColor: 'gray.700',
-                          bg: 'gray.800/50',
-                          p: '3',
-                        })}
-                      >
-                        <div className={css({ spaceY: '2' })}>
-                          {/* Image Preview */}
-                          <div
+                  {images.map((image, index) => (
+                    <div
+                      key={image.id}
+                      className={css({
+                        position: 'relative',
+                        overflow: 'hidden',
+                        rounded: 'lg',
+                        border: '1px solid',
+                        borderColor: 'gray.700',
+                        bg: 'gray.800/50',
+                        p: '3',
+                      })}
+                    >
+                      <div className={css({ spaceY: '2' })}>
+                        {/* Image Preview */}
+                        <div
+                          className={css({
+                            position: 'relative',
+                            aspectRatio: '16/9',
+                            overflow: 'hidden',
+                            rounded: 'md',
+                            bg: 'gray.900',
+                          })}
+                        >
+                          <img
+                            src={image.preview}
+                            alt={`Preview ${index + 1}`}
                             className={css({
-                              position: 'relative',
-                              aspectRatio: '16/9',
-                              overflow: 'hidden',
-                              rounded: 'md',
-                              bg: 'gray.900',
+                              h: 'full',
+                              w: 'full',
+                              objectFit: 'cover',
                             })}
-                          >
-                            <img
-                              src={image.preview}
-                              alt={`Preview ${index + 1}`}
-                              className={css({
-                                h: 'full',
-                                w: 'full',
-                                objectFit: 'cover',
-                              })}
-                            />
+                          />
 
-                            {/* Status Badge */}
-                            {image.status === 'completed' && (
-                              <div
-                                className={css({
-                                  position: 'absolute',
-                                  top: '2',
-                                  right: '2',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '1',
-                                  rounded: 'md',
-                                  bg: 'green.500/90',
-                                  px: '2',
-                                  py: '1',
-                                })}
-                              >
-                                <CheckCircle className={css({ h: '3', w: '3', color: 'white' })} />
-                                <span className={css({ fontSize: 'xs', color: 'white' })}>
-                                  Done
-                                </span>
-                              </div>
-                            )}
-
-                            {image.status === 'error' && (
-                              <div
-                                className={css({
-                                  position: 'absolute',
-                                  top: '2',
-                                  right: '2',
-                                  rounded: 'md',
-                                  bg: 'red.500/90',
-                                  px: '2',
-                                  py: '1',
-                                  fontSize: 'xs',
-                                  color: 'white',
-                                })}
-                              >
-                                Error
-                              </div>
-                            )}
-
-                            {/* Remove Button */}
-                            <button
-                              type="button"
-                              onClick={() => removeImage(image.id)}
+                          {/* Status Badge */}
+                          {image.status === 'completed' && (
+                            <div
                               className={css({
                                 position: 'absolute',
                                 top: '2',
-                                left: '2',
+                                right: '2',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center',
+                                gap: '1',
                                 rounded: 'md',
-                                bg: 'red.500/90',
-                                p: '1.5',
-                                color: 'white',
-                                transition: 'all 0.2s',
-                                _hover: { bg: 'red.600' },
+                                bg: 'green.500/90',
+                                px: '2',
+                                py: '1',
                               })}
-                              aria-label="Remove image"
                             >
-                              <X className={css({ h: '3.5', w: '3.5' })} />
-                            </button>
-                          </div>
+                              <CheckCircle className={css({ h: '3', w: '3', color: 'white' })} />
+                              <span className={css({ fontSize: 'xs', color: 'white' })}>Done</span>
+                            </div>
+                          )}
 
-                          {/* Image Info */}
-                          <div className={css({ spaceY: '1' })}>
-                            <p
-                              className={css({
-                                fontSize: 'xs',
-                                fontWeight: 'medium',
-                                color: 'white',
-                                truncate: true,
-                              })}
-                            >
-                              {image.file.name}
-                            </p>
+                          {image.status === 'error' && (
                             <div
                               className={css({
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '2',
+                                position: 'absolute',
+                                top: '2',
+                                right: '2',
+                                rounded: 'md',
+                                bg: 'red.500/90',
+                                px: '2',
+                                py: '1',
                                 fontSize: 'xs',
                                 color: 'white',
                               })}
                             >
-                              <span>
-                                {image.width} × {image.height}
-                              </span>
-                              <span>•</span>
-                              <span>{(image.file.size / 1024).toFixed(1)} KB</span>
+                              Error
                             </div>
+                          )}
+
+                          {/* Remove Button */}
+                          <button
+                            type="button"
+                            onClick={() => removeImage(image.id)}
+                            className={css({
+                              position: 'absolute',
+                              top: '2',
+                              left: '2',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              rounded: 'md',
+                              bg: 'red.500/90',
+                              p: '1.5',
+                              color: 'white',
+                              transition: 'all 0.2s',
+                              _hover: { bg: 'red.600' },
+                            })}
+                            aria-label="Remove image"
+                          >
+                            <X className={css({ h: '3.5', w: '3.5' })} />
+                          </button>
+                        </div>
+
+                        {/* Image Info */}
+                        <div className={css({ spaceY: '1' })}>
+                          <p
+                            className={css({
+                              fontSize: 'xs',
+                              fontWeight: 'medium',
+                              color: 'white',
+                              truncate: true,
+                            })}
+                          >
+                            {image.file.name}
+                          </p>
+                          <div
+                            className={css({
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '2',
+                              fontSize: 'xs',
+                              color: 'white',
+                            })}
+                          >
+                            <span>
+                              {image.width} × {image.height}
+                            </span>
+                            <span>•</span>
+                            <span>{(image.file.size / 1024).toFixed(1)} KB</span>
                           </div>
                         </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Settings */}
       {images.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
@@ -940,15 +918,12 @@ export default function ImageToPdfPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Generate Button */}
       {images.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
           className={css({
             display: 'flex',
             flexDirection: 'column',
@@ -997,15 +972,11 @@ export default function ImageToPdfPage() {
             <Download className={css({ h: '5', w: '5' })} />
             {isGenerating ? 'Generating PDF...' : 'Generate PDF'}
           </Button>
-        </motion.div>
+        </div>
       )}
 
       {/* Pro Tips */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -1032,7 +1003,7 @@ export default function ImageToPdfPage() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Related Tools */}
       <RelatedTools currentToolPath="/tools/image-to-pdf" category="media" />

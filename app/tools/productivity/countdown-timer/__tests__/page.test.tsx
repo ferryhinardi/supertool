@@ -37,15 +37,6 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock clipboard API
 const mockClipboard = {
   writeText: vi.fn(() => Promise.resolve()),
@@ -139,12 +130,6 @@ describe('CountdownTimerPage', () => {
       expect(screen.getByText('1 Week')).toBeInTheDocument()
       expect(screen.getByText('1 Month')).toBeInTheDocument()
       expect(screen.getByText('New Year')).toBeInTheDocument()
-    })
-
-    it('renders FAQ section', () => {
-      render(<CountdownTimerPage />)
-
-      expect(screen.getByText('How accurate is the countdown timer?')).toBeInTheDocument()
     })
   })
 
@@ -249,60 +234,6 @@ describe('CountdownTimerPage', () => {
       render(<CountdownTimerPage />)
 
       expect(trackToolEvent).toHaveBeenCalledWith('countdown_timer_open', {})
-    })
-  })
-
-  describe('FAQ Content', () => {
-    it('displays FAQ about timer accuracy', () => {
-      render(<CountdownTimerPage />)
-
-      expect(screen.getByText('How accurate is the countdown timer?')).toBeInTheDocument()
-    })
-
-    it('displays FAQ about sharing countdown', () => {
-      render(<CountdownTimerPage />)
-
-      expect(screen.getByText('Can I share my countdown with others?')).toBeInTheDocument()
-    })
-
-    it('displays FAQ about countdown reaching zero', () => {
-      render(<CountdownTimerPage />)
-
-      expect(screen.getByText('What happens when the countdown reaches zero?')).toBeInTheDocument()
-    })
-
-    it('displays FAQ about browser closing', () => {
-      render(<CountdownTimerPage />)
-
-      expect(
-        screen.getByText('Does the countdown work if I close the browser?')
-      ).toBeInTheDocument()
-    })
-
-    it('displays FAQ about timezone', () => {
-      render(<CountdownTimerPage />)
-
-      expect(screen.getByText('What timezone is the countdown based on?')).toBeInTheDocument()
-    })
-
-    it('displays FAQ about multiple countdowns', () => {
-      render(<CountdownTimerPage />)
-
-      expect(screen.getByText('Can I create multiple countdowns?')).toBeInTheDocument()
-    })
-
-    it('displays FAQ about date formats', () => {
-      render(<CountdownTimerPage />)
-
-      expect(screen.getByText('What date formats are supported?')).toBeInTheDocument()
-    })
-
-    it('displays FAQ about future limit', () => {
-      render(<CountdownTimerPage />)
-
-      expect(
-        screen.getByText('Is there a limit on how far in the future I can set the countdown?')
-      ).toBeInTheDocument()
     })
   })
 

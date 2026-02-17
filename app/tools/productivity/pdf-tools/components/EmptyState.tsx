@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   Archive,
   Bookmark,
@@ -354,11 +353,9 @@ export function EmptyState({
   const tip = operationTips[operation]
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+    <div
       className={css({
+        animation: 'fadeIn 0.3s ease-out',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -369,15 +366,7 @@ export function EmptyState({
       })}
     >
       {/* Animated Icon */}
-      <motion.div
-        animate={{
-          y: [0, -10, 0],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: 'easeInOut',
-        }}
+      <div
         className={css({
           mb: '6',
           position: 'relative',
@@ -406,16 +395,7 @@ export function EmptyState({
         </div>
 
         {/* Floating sparkles */}
-        <motion.div
-          animate={{
-            rotate: 360,
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: 'linear',
-          }}
+        <div
           className={css({
             position: 'absolute',
             top: '-2',
@@ -429,8 +409,8 @@ export function EmptyState({
               color: 'yellow.400',
             })}
           />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
       {/* Content */}
       <h3
@@ -467,12 +447,10 @@ export function EmptyState({
         })}
       >
         {tip.tips.map((tipText) => (
-          <motion.div
+          <div
             key={tipText}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 + tip.tips.indexOf(tipText) * 0.1 }}
             className={css({
+              animation: 'slideInLeft 0.3s ease-out',
               display: 'flex',
               alignItems: 'center',
               gap: '2',
@@ -490,7 +468,7 @@ export function EmptyState({
               })}
             />
             {tipText}
-          </motion.div>
+          </div>
         ))}
       </div>
 
@@ -549,11 +527,9 @@ export function EmptyState({
       </div>
 
       {/* Quick start hint */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
+      <div
         className={css({
+          animation: 'fadeIn 0.3s ease-out',
           mt: '8',
           p: '4',
           rounded: 'lg',
@@ -604,18 +580,14 @@ export function EmptyState({
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Recently Used & Popular Operations */}
       {onOperationChange && (
         <div className={css({ mt: '8', w: 'full', maxW: 'lg', spaceY: '6' })}>
           {/* Recently Used Operations */}
           {recentOperations && recentOperations.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-            >
+            <div className={css({ animation: 'fadeIn 0.3s ease-out' })}>
               <div
                 className={css({
                   display: 'flex',
@@ -656,16 +628,12 @@ export function EmptyState({
                   const metadata = operationMetadata[recent.operation]
                   const Icon = metadata.icon
                   return (
-                    <motion.button
+                    <button
                       key={recent.operation}
                       type="button"
                       onClick={() => onOperationChange(recent.operation)}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1 + index * 0.1 }}
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
                       className={css({
+                        animation: 'fadeIn 0.3s ease-out',
                         p: '4',
                         rounded: 'lg',
                         bg: 'gray.800/50',
@@ -740,20 +708,16 @@ export function EmptyState({
                       >
                         {metadata.useCase}
                       </div>
-                    </motion.button>
+                    </button>
                   )
                 })}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Popular Operations - only show if no recent or on merge page */}
           {(!recentOperations || recentOperations.length === 0 || operation === 'merge') && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: recentOperations?.length ? 1.5 : 1 }}
-            >
+            <div className={css({ animation: 'fadeIn 0.3s ease-out' })}>
               <div
                 className={css({
                   display: 'flex',
@@ -794,18 +758,12 @@ export function EmptyState({
                   const metadata = operationMetadata[opType]
                   const Icon = metadata.icon
                   return (
-                    <motion.button
+                    <button
                       key={opType}
                       type="button"
                       onClick={() => onOperationChange(opType)}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: (recentOperations?.length ? 1.6 : 1.1) + index * 0.1,
-                      }}
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
                       className={css({
+                        animation: 'fadeIn 0.3s ease-out',
                         p: '4',
                         rounded: 'lg',
                         bg: 'gray.800/50',
@@ -860,14 +818,14 @@ export function EmptyState({
                       >
                         {metadata.useCase}
                       </div>
-                    </motion.button>
+                    </button>
                   )
                 })}
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       )}
-    </motion.div>
+    </div>
   )
 }

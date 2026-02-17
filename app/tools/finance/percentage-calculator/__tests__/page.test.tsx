@@ -426,20 +426,6 @@ describe('Percentage Calculator Page', () => {
     })
   })
 
-  describe('Pro Tips Section', () => {
-    it('displays pro tips', () => {
-      render(<PercentageCalculatorPage />)
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(screen.getByText(/Switch between modes/)).toBeInTheDocument()
-    })
-
-    it('displays common uses section', () => {
-      render(<PercentageCalculatorPage />)
-      expect(screen.getByText('Common Uses')).toBeInTheDocument()
-      expect(screen.getByText(/sales discounts/)).toBeInTheDocument()
-    })
-  })
-
   describe('Accessibility', () => {
     it('has proper heading structure', () => {
       render(<PercentageCalculatorPage />)

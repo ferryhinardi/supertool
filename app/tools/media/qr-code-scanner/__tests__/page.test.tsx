@@ -210,60 +210,6 @@ describe('QRCodeScannerPage', () => {
     })
   })
 
-  describe('How to Use Section', () => {
-    it('renders How to Use section', () => {
-      render(<QRCodeScannerPage />)
-      expect(screen.getByText('How to Use QR Code Scanner')).toBeInTheDocument()
-    })
-
-    it('shows Method 1: Upload Image instructions', () => {
-      render(<QRCodeScannerPage />)
-      expect(screen.getByText('Method 1: Upload Image')).toBeInTheDocument()
-    })
-
-    it('shows Method 2: Use Webcam instructions', () => {
-      render(<QRCodeScannerPage />)
-      expect(screen.getByText('Method 2: Use Webcam')).toBeInTheDocument()
-    })
-
-    it('shows Tips for Best Results', () => {
-      render(<QRCodeScannerPage />)
-      expect(screen.getByText('Tips for Best Results')).toBeInTheDocument()
-    })
-  })
-
-  describe('Features Section', () => {
-    it('renders Features section', () => {
-      render(<QRCodeScannerPage />)
-      expect(screen.getByText('Features')).toBeInTheDocument()
-    })
-
-    it('shows Multiple Scan Methods feature', () => {
-      render(<QRCodeScannerPage />)
-      expect(screen.getByText('Multiple Scan Methods')).toBeInTheDocument()
-    })
-
-    it('shows Scan History feature', () => {
-      render(<QRCodeScannerPage />)
-      // This is the feature description, not the section
-      expect(
-        screen.getByText(
-          'Keep track of all your scanned QR codes with timestamps for easy reference.'
-        )
-      ).toBeInTheDocument()
-    })
-
-    it('shows One-Click Copy feature', () => {
-      render(<QRCodeScannerPage />)
-      expect(screen.getByText('One-Click Copy')).toBeInTheDocument()
-    })
-
-    it('shows Privacy-Focused feature', () => {
-      render(<QRCodeScannerPage />)
-      expect(screen.getByText('Privacy-Focused')).toBeInTheDocument()
-    })
-  })
-
   describe('File Upload', () => {
     it('accepts valid image files', async () => {
       render(<QRCodeScannerPage />)

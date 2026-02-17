@@ -20,17 +20,6 @@ vi.mock('@/lib/services/analytics', () => ({
 
 import { trackToolEvent } from '@/lib/services/analytics'
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-      <div className={className} {...props}>
-        {children}
-      </div>
-    ),
-  },
-}))
-
 // Mock ToolSearch component
 vi.mock('@/components/ui/tool-search', () => ({
   ToolSearch: () => <div data-testid="tool-search">Tool Search</div>,

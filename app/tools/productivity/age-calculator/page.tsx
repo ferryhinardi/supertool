@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Cake, Calendar, Clock, Copy, Heart, Info, RotateCcw, Sparkles } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo } from 'react'
@@ -189,11 +188,13 @@ Zodiac Sign: ${calculation.zodiacSign}
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -241,13 +242,15 @@ Zodiac Sign: ${calculation.zodiacSign}
           Calculate your exact age from birthdate with precision. See how old you are in years,
           months, days, hours, and even minutes. Find out when your next birthday is!
         </p>
-      </motion.div>
+      </div>
 
       {/* Input Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -304,16 +307,18 @@ Zodiac Sign: ${calculation.zodiacSign}
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Results Section */}
       {calculation && (
         <>
           {/* Exact Age */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -378,13 +383,15 @@ Zodiac Sign: ${calculation.zodiacSign}
                 </Button>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Next Birthday */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.3s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -440,13 +447,15 @@ Zodiac Sign: ${calculation.zodiacSign}
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Multiple Units */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.4s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -630,14 +639,16 @@ Zodiac Sign: ${calculation.zodiacSign}
                 </Button>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Life Milestones */}
           {calculation.lifeMilestones.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.5s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -684,16 +695,18 @@ Zodiac Sign: ${calculation.zodiacSign}
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.6s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -733,7 +746,7 @@ Zodiac Sign: ${calculation.zodiacSign}
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
       <ToolSearch />

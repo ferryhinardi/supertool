@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   Check,
   Crop,
@@ -357,11 +356,13 @@ export default function PhotoEditorPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -423,13 +424,15 @@ export default function PhotoEditorPage() {
           Professional photo editing with advanced filters, adjustments, and AI-powered image
           generation. Edit photos in your browser with powerful tools and effects.
         </p>
-      </motion.div>
+      </div>
 
       {/* Main Editor */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -952,13 +955,15 @@ export default function PhotoEditorPage() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Features Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -987,7 +992,7 @@ export default function PhotoEditorPage() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     </main>
   )
 }

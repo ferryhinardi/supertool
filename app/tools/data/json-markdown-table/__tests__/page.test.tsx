@@ -298,15 +298,6 @@ describe('JSON to Markdown Table Page - Component Tests', () => {
     })
   })
 
-  it('should display help section', () => {
-    render(<JSONToMarkdownTablePage />)
-
-    expect(screen.getByRole('heading', { name: /How to Use/i })).toBeInTheDocument()
-    expect(screen.getByText(/Paste your JSON array in the editor above/i)).toBeInTheDocument()
-    expect(screen.getByText(/Choose column alignment/i)).toBeInTheDocument()
-    expect(screen.getByText(/Perfect for documentation/i)).toBeInTheDocument()
-  })
-
   it('should disable buttons when JSON is invalid', async () => {
     render(<JSONToMarkdownTablePage />)
 

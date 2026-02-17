@@ -5,15 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/services/analytics'
 import AIPromptExplainerPage from '../page'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {
@@ -84,14 +75,6 @@ describe('AI Prompt Explainer - Component Tests', () => {
       action: 'open',
       category: 'ai_prompt_explainer',
     })
-  })
-
-  it('should display pro tips card', () => {
-    render(<AIPromptExplainerPage />)
-
-    expect(screen.getByText('Pro Tips for Better Prompts')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/specific and clear|provide context/i)
   })
 
   it('should display example prompts', () => {

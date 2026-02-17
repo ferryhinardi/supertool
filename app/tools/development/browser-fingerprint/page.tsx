@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { AlertCircle, Check, Copy, Eye, Fingerprint, Info, Monitor, Shield, X } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -95,11 +94,13 @@ function BrowserFingerprintContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -150,14 +151,16 @@ function BrowserFingerprintContent() {
           Discover how unique and trackable your browser is. See what information websites can
           collect about your device without using cookies.
         </p>
-      </motion.div>
+      </div>
 
       {/* Uniqueness Score Card */}
       {!loading && fingerprint && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.1s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -218,15 +221,17 @@ function BrowserFingerprintContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Fingerprint Hash */}
       {!loading && fingerprintHash && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -278,15 +283,18 @@ function BrowserFingerprintContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Loading State */}
       {loading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className={css({ textAlign: 'center', py: '12' })}
+        <div
+          className={css({
+            textAlign: 'center',
+            py: '12',
+            animation: 'fadeIn 0.5s ease-out forwards',
+            opacity: 0,
+          })}
         >
           <div className={css({ display: 'inline-block', animation: 'spin 1s linear infinite' })}>
             <Fingerprint className={css({ h: '12', w: '12', color: 'indigo.400' })} />
@@ -294,17 +302,19 @@ function BrowserFingerprintContent() {
           <p className={css({ mt: '4', fontSize: 'lg', color: 'white' })}>
             Collecting fingerprint data...
           </p>
-        </motion.div>
+        </div>
       )}
 
       {/* Fingerprint Details */}
       {!loading && fingerprint && (
         <>
           {/* Basic Browser Info */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.3s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -351,13 +361,15 @@ function BrowserFingerprintContent() {
                 </CardContent>
               )}
             </Card>
-          </motion.div>
+          </div>
 
           {/* Screen & Display */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.4s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -410,13 +422,15 @@ function BrowserFingerprintContent() {
                 </CardContent>
               )}
             </Card>
-          </motion.div>
+          </div>
 
           {/* Hardware */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.5s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -461,13 +475,15 @@ function BrowserFingerprintContent() {
                 </CardContent>
               )}
             </Card>
-          </motion.div>
+          </div>
 
           {/* Graphics */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.6s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -521,13 +537,15 @@ function BrowserFingerprintContent() {
                 </CardContent>
               )}
             </Card>
-          </motion.div>
+          </div>
 
           {/* Fonts */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.7s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -596,13 +614,15 @@ function BrowserFingerprintContent() {
                 </CardContent>
               )}
             </Card>
-          </motion.div>
+          </div>
 
           {/* Privacy & Storage */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.8s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -676,14 +696,17 @@ function BrowserFingerprintContent() {
                 </CardContent>
               )}
             </Card>
-          </motion.div>
+          </div>
 
           {/* Copy All Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.5 }}
-            className={css({ display: 'flex', justifyContent: 'center' })}
+          <div
+            className={css({
+              display: 'flex',
+              justifyContent: 'center',
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.9s',
+              opacity: 0,
+            })}
           >
             <Button
               onClick={copyAllData}
@@ -703,15 +726,17 @@ function BrowserFingerprintContent() {
               <Copy className={css({ h: '5', w: '5' })} />
               Copy All Fingerprint Data
             </Button>
-          </motion.div>
+          </div>
         </>
       )}
 
       {/* Privacy Insights */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.0, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '1.0s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -751,13 +776,15 @@ function BrowserFingerprintContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Pro Tips */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '1.1s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -797,7 +824,7 @@ function BrowserFingerprintContent() {
             </li>
           </ul>
         </div>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

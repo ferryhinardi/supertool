@@ -10,39 +10,9 @@
  * - Mobile sidebar behavior
  */
 
-import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      initial: _initial,
-      animate: _animate,
-      transition: _transition,
-      ...props
-    }: React.HTMLAttributes<HTMLDivElement> & {
-      initial?: unknown
-      animate?: unknown
-      transition?: unknown
-    }) => <div {...props}>{children}</div>,
-    aside: ({
-      children,
-      initial: _initial,
-      animate: _animate,
-      transition: _transition,
-      ...props
-    }: React.HTMLAttributes<HTMLElement> & {
-      initial?: unknown
-      animate?: unknown
-      transition?: unknown
-    }) => <aside {...props}>{children}</aside>,
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  useReducedMotion: () => false,
-}))
 
 // Mock analytics
 const mockTrackToolEvent = vi.fn()

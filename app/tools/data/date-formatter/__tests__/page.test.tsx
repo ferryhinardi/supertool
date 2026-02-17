@@ -20,15 +20,6 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/tools/date-formatter',
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {

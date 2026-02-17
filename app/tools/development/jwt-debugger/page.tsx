@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   CheckCircle,
@@ -226,11 +225,13 @@ function JWTDebuggerContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -280,7 +281,7 @@ function JWTDebuggerContent() {
           Decode, verify, and generate JSON Web Tokens with full algorithm support and claims
           validation
         </p>
-      </motion.div>
+      </div>
 
       {/* Main Content */}
       <div

@@ -212,72 +212,6 @@ describe('ImageToTextPage', () => {
     })
   })
 
-  describe('How to Use Section', () => {
-    it('renders How to Use section', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('How to Use')).toBeInTheDocument()
-    })
-
-    it('shows step 1 - Select Language', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('Select Language')).toBeInTheDocument()
-    })
-
-    it('shows step 2 - Upload Image', () => {
-      render(<ImageToTextPage />)
-      // There's "Upload Image" button and step title
-      const uploadTexts = screen.getAllByText('Upload Image')
-      expect(uploadTexts.length).toBeGreaterThanOrEqual(1)
-    })
-
-    it('shows step 3 - Wait for Processing', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('Wait for Processing')).toBeInTheDocument()
-    })
-
-    it('shows step 4 - Copy or Download', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('Copy or Download')).toBeInTheDocument()
-    })
-  })
-
-  describe('Key Features Section', () => {
-    it('renders Key Features section', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('Key Features')).toBeInTheDocument()
-    })
-
-    it('shows Accurate OCR feature', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('Accurate OCR')).toBeInTheDocument()
-    })
-
-    it('shows Multiple Formats feature', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('Multiple Formats')).toBeInTheDocument()
-    })
-
-    it('shows Easy Upload feature', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('Easy Upload')).toBeInTheDocument()
-    })
-
-    it('shows One-Click Copy feature', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('One-Click Copy')).toBeInTheDocument()
-    })
-
-    it('shows Download Text feature', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('Download Text')).toBeInTheDocument()
-    })
-
-    it('shows 12+ Languages feature', () => {
-      render(<ImageToTextPage />)
-      expect(screen.getByText('12+ Languages')).toBeInTheDocument()
-    })
-  })
-
   describe('Language Selection', () => {
     it('allows changing language', () => {
       render(<ImageToTextPage />)
@@ -995,14 +929,9 @@ describe('ImageToTextPage', () => {
       mockRecognize.mockReset()
       mockCreateWorker.mockReset()
 
-      // Track calls with a simple counter
-      let callCount = 0
-      mockRecognize.mockImplementation(async () => {
-        callCount++
-        // Return different text based on call count (odd = first, even = second)
-        // This handles potential double-calls per upload
-        return { data: { text: callCount <= 2 ? 'First text' : 'Second text' } }
-      })
+      // Use mockResolvedValueOnce for first call, then default for subsequent
+      mockRecognize.mockResolvedValueOnce({ data: { text: 'First text' } })
+      mockRecognize.mockResolvedValue({ data: { text: 'Second text' } })
 
       mockCreateWorker.mockImplementation(async (_lang, _oem, options) => {
         if (options?.logger) {
@@ -1042,7 +971,7 @@ describe('ImageToTextPage', () => {
       )
 
       // Verify recognize was called multiple times (at least once per upload)
-      expect(callCount).toBeGreaterThanOrEqual(2)
+      expect(mockRecognize).toHaveBeenCalledTimes(2)
     })
   })
 })

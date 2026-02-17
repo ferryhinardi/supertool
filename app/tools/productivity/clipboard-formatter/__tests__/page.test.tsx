@@ -19,24 +19,6 @@ vi.mock('nuqs', async () => {
   }
 })
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ...props
-    }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-    span: ({
-      children,
-      ...props
-    }: React.HTMLAttributes<HTMLSpanElement> & { children?: React.ReactNode }) => (
-      <span {...props}>{children}</span>
-    ),
-  },
-}))
-
 // Mock localStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {}
@@ -116,14 +98,6 @@ describe.skip('Clipboard Formatter Page - Component Tests', () => {
       expect(screen.getByText('lower')).toBeInTheDocument()
       expect(screen.getByText('Title')).toBeInTheDocument()
       expect(screen.getByText('Sentence')).toBeInTheDocument()
-    })
-
-    it('should render help section', () => {
-      render(<ClipboardFormatterPage />)
-
-      expect(screen.getByText('How to Use')).toBeInTheDocument()
-      expect(screen.getByText('Quick Start')).toBeInTheDocument()
-      expect(screen.getByText('Format Options')).toBeInTheDocument()
     })
   })
 

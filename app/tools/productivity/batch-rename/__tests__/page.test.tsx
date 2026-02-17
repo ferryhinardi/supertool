@@ -25,11 +25,6 @@ describe('Batch Rename Page', () => {
       render(<BatchRenamePage />)
       expect(screen.queryByText('Preview Changes')).not.toBeInTheDocument()
     })
-
-    it('shows pro tips section', () => {
-      render(<BatchRenamePage />)
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    })
   })
 
   describe('File Upload', () => {

@@ -20,15 +20,6 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/tools/prompt-formatter',
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock URL.createObjectURL and revokeObjectURL
 globalThis.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
 globalThis.URL.revokeObjectURL = vi.fn()
@@ -443,21 +434,6 @@ describe('Prompt Formatter Page', () => {
         ) as HTMLTextAreaElement
         expect(input.value).toBe('')
       })
-    })
-  })
-
-  describe('Pro Tips Section', () => {
-    it('displays pro tips section', () => {
-      render(<PromptFormatterPage />)
-      expect(screen.getByText('Prompt Engineering Tips')).toBeInTheDocument()
-    })
-
-    it('displays all pro tips', () => {
-      render(<PromptFormatterPage />)
-      expect(screen.getByText(/Be specific and clear/)).toBeInTheDocument()
-      expect(screen.getByText(/Provide context/)).toBeInTheDocument()
-      expect(screen.getByText(/Use examples/)).toBeInTheDocument()
-      expect(screen.getByText(/Iterate and refine/)).toBeInTheDocument()
     })
   })
 

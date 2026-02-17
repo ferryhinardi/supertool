@@ -16,27 +16,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ...props
-    }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-    button: ({
-      children,
-      ...props
-    }: React.ButtonHTMLAttributes<HTMLButtonElement> & { children?: React.ReactNode }) => (
-      <button type="button" {...props}>
-        {children}
-      </button>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}))
-
 // Mock clipboard API
 
 // Mock WebCrypto API
@@ -90,12 +69,6 @@ describe('File Integrity Verifier - Component Tests', () => {
     // Check for placeholder with algorithm-specific text
     const input = screen.getByPlaceholderText(/Enter expected/i)
     expect(input).toBeInTheDocument()
-  })
-
-  it('should display educational sections', () => {
-    render(<FileVerifierPage />)
-
-    expect(screen.getByText('Common Use Cases'))
   })
 
   it('should display security badge', () => {

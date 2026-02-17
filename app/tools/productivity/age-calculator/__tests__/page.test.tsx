@@ -34,27 +34,6 @@ vi.mock('nuqs', async () => {
   }
 })
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ...props
-    }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-    button: ({
-      children,
-      ...props
-    }: React.ButtonHTMLAttributes<HTMLButtonElement> & { children?: React.ReactNode }) => (
-      <button type="button" {...props}>
-        {children}
-      </button>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}))
-
 describe('Age Calculator - Page Rendering', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -284,62 +263,6 @@ describe('Age Calculator - Life Milestones', () => {
     render(<AgeCalculatorPage />)
     // Verify milestone section exists with life milestones content
     expect(screen.getByText('Life Milestones')).toBeInTheDocument()
-  })
-})
-
-describe('Age Calculator - How It Works Section', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  it('displays how it works section', () => {
-    render(<AgeCalculatorPage />)
-    expect(screen.getByText('How Age Calculation Works')).toBeInTheDocument()
-  })
-
-  it('displays Info icon', () => {
-    render(<AgeCalculatorPage />)
-    expect(screen.getByText('How Age Calculation Works')).toBeInTheDocument()
-  })
-
-  it('explains age calculation method', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/Your age is calculated by comparing your birthdate with today's date/i)
-    ).toBeInTheDocument()
-  })
-
-  it('mentions leap year handling', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/accounts for leap years and varying month lengths/i)
-    ).toBeInTheDocument()
-  })
-
-  it('lists calculation features', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/Years, months, and days are calculated precisely/i)
-    ).toBeInTheDocument()
-  })
-
-  it('mentions zodiac sign determination', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/Zodiac sign is determined from birth month and day/i)
-    ).toBeInTheDocument()
-  })
-
-  it('mentions birthday countdown', () => {
-    render(<AgeCalculatorPage />)
-    expect(screen.getByText(/Next birthday countdown updates daily/i)).toBeInTheDocument()
-  })
-
-  it('mentions timezone handling', () => {
-    render(<AgeCalculatorPage />)
-    expect(
-      screen.getByText(/All calculations are performed in your local timezone/i)
-    ).toBeInTheDocument()
   })
 })
 

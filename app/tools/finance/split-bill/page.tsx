@@ -33,7 +33,6 @@ import { ShortcutsHelp } from '@/components/features/shared/ShortcutsHelp'
 import { TemplatesSelector } from '@/components/features/shared/TemplatesSelector'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
@@ -98,49 +97,6 @@ interface BillItem {
 
 type PageMode = 'calculator' | 'create'
 type SplitType = 'equal' | 'percentage' | 'items'
-
-const faqs = [
-  {
-    question: 'How do I split a bill with this calculator?',
-    answer:
-      'Simply add all participants, enter the total bill amount, select tip percentage, and our calculator automatically divides the total equally among all people. You can also use the receipt scanner feature to quickly extract items from a photo of your receipt. The calculator supports both equal splits and custom percentage splits for flexible bill sharing.',
-  },
-  {
-    question: 'Can I split bills unequally among people?',
-    answer:
-      'Yes! We offer three split options: 1) Equal Split - divides equally among all participants, 2) Percentage Split - assign custom percentages to each person, and 3) Item-Based Split - add individual items and assign who ordered what. The item-based split is perfect for restaurant bills where each person ordered different dishes.',
-  },
-  {
-    question: 'How does the tip calculation work?',
-    answer:
-      "You can choose from preset tip percentages (10%, 15%, 18%, 20%) or enter a custom amount. The tip is added to the total bill before splitting among participants. The calculator automatically shows the tip amount in your selected currency and includes it in each person's share.",
-  },
-  {
-    question: 'Does the receipt scanner work with any receipt?',
-    answer:
-      'The receipt scanner works best with clear, well-lit photos of printed receipts. It uses OCR technology to extract item names and prices. While it works with most standard restaurant receipts, you may need to verify and adjust the extracted data for best accuracy. Supported formats include restaurant bills, cafe receipts, and itemized invoices.',
-  },
-  {
-    question: 'How do I create a shareable bill link?',
-    answer:
-      'Switch to "Create Shareable Bill" mode, enter the bill details including title, organizer name, and optional bank account info. Set up the split amounts, then click "Create & Share Bill" to generate a unique link. Share this link with participants so they can track payment status in real-time and mark when they\'ve paid.',
-  },
-  {
-    question: 'What currencies does the calculator support?',
-    answer:
-      'The split bill calculator supports 30+ currencies including USD, EUR, GBP, JPY, CNY, IDR, INR, AUD, CAD, and more. Select your currency from the dropdown menu and all amounts will be formatted correctly with proper symbols and thousand separators. The calculator remembers your preferred currency for future use.',
-  },
-  {
-    question: "Can I track who has paid and who hasn't?",
-    answer:
-      "Yes! Each participant has a payment status toggle. Click the checkmark button next to any person to mark them as paid. The calculator shows a real-time summary of who has paid, who hasn't, and the total amount still owed. This makes it easy to track payment progress for group expenses.",
-  },
-  {
-    question: 'How do I share the bill split with my group?',
-    answer:
-      'Click the "Share Summary" button to generate a formatted text summary of the entire bill split including everyone\'s amounts and payment status. You can share this via any messaging app, email, or social media. The summary includes all details: subtotal, tip, tax, total, and each person\'s share with their payment status.',
-  },
-]
 
 export default function SplitBillPage() {
   const router = useRouter()
@@ -2854,175 +2810,12 @@ export default function SplitBillPage() {
           </div>
         </div>
 
-        {/* How to Use */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/50',
-            p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
-            animation: 'fadeInUp 0.4s ease-out 0.2s both',
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '2',
-              mb: '3',
-            })}
-          >
-            <h3
-              className={css({
-                fontSize: { base: 'lg', sm: 'xl' },
-                fontWeight: 'bold',
-              })}
-            >
-              How to Use
-            </h3>
-          </div>
-          <p
-            className={css({
-              fontSize: 'sm',
-              color: 'white',
-              mb: '4',
-            })}
-          >
-            Calculate and share bill splits in 3 simple steps
-          </p>
-
-          <div
-            className={css({
-              display: 'grid',
-              gap: '4',
-              gridTemplateColumns: { base: '1fr', md: '1fr 1fr' },
-            })}
-          >
-            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-              <div
-                className={css({
-                  display: 'flex',
-                  h: '10',
-                  w: '10',
-                  minH: '10',
-                  minW: '10',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'full',
-                  border: '2px solid',
-                  borderColor: 'purple.500',
-                  bg: 'purple.500/10',
-                  fontSize: 'lg',
-                  fontWeight: 'bold',
-                  color: 'purple.400',
-                  flexShrink: 0,
-                })}
-              >
-                1
-              </div>
-              <div className={css({ flex: '1', minW: '0' })}>
-                <h4
-                  className={css({
-                    mb: '1',
-                    fontSize: 'sm',
-                    fontWeight: 'semibold',
-                  })}
-                >
-                  Enter Bill Details
-                </h4>
-                <p className={css({ fontSize: 'sm', color: 'white' })}>
-                  Input the total amount, select currency, and set tip & tax percentages with quick
-                  presets
-                </p>
-              </div>
-            </div>
-            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-              <div
-                className={css({
-                  display: 'flex',
-                  h: '10',
-                  w: '10',
-                  minH: '10',
-                  minW: '10',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'full',
-                  border: '2px solid',
-                  borderColor: 'pink.500',
-                  bg: 'pink.500/10',
-                  fontSize: 'lg',
-                  fontWeight: 'bold',
-                  color: 'pink.400',
-                  flexShrink: 0,
-                })}
-              >
-                2
-              </div>
-              <div className={css({ flex: '1', minW: '0' })}>
-                <h4
-                  className={css({
-                    mb: '1',
-                    fontSize: 'sm',
-                    fontWeight: 'semibold',
-                  })}
-                >
-                  Add Participants & Split
-                </h4>
-                <p className={css({ fontSize: 'sm', color: 'white' })}>
-                  Add people and choose equal split, percentage split, or item-based splitting
-                </p>
-              </div>
-            </div>
-            <div className={css({ display: 'flex', gap: '3', alignItems: 'flex-start' })}>
-              <div
-                className={css({
-                  display: 'flex',
-                  h: '10',
-                  w: '10',
-                  minH: '10',
-                  minW: '10',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'full',
-                  border: '2px solid',
-                  borderColor: 'blue.500',
-                  bg: 'blue.500/10',
-                  fontSize: 'lg',
-                  fontWeight: 'bold',
-                  color: 'blue.400',
-                  flexShrink: 0,
-                })}
-              >
-                3
-              </div>
-              <div className={css({ flex: '1', minW: '0' })}>
-                <h4
-                  className={css({
-                    mb: '1',
-                    fontSize: 'sm',
-                    fontWeight: 'semibold',
-                  })}
-                >
-                  Track & Share
-                </h4>
-                <p className={css({ fontSize: 'sm', color: 'white' })}>
-                  Mark payments as complete and share the summary or create a shareable link
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <SocialShare
           toolName="Split Bill Calculator"
           toolUrl="/tools/split-bill"
           description="Free bill splitting calculator with receipt scanner and tip calculation - perfect for restaurants and group expenses"
           hashtags={['SplitBill', 'Finance', 'Calculator', 'MoneySaving']}
         />
-
-        <FAQAccordion faqs={faqs} />
         <RelatedTools currentToolPath="/tools/split-bill" category="finance" />
         <ToolRating toolId="/tools/split-bill" toolName="Split Bill Calculator" />
 

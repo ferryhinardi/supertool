@@ -1,18 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ...props
-    }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock analytics
 vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
@@ -244,40 +232,6 @@ describe('SignatureGeneratorPage', () => {
       ).toBeInTheDocument()
       expect(
         screen.getByText(/Download as PNG, SVG \(vector\), or JPG for any use case/i)
-      ).toBeInTheDocument()
-    })
-  })
-
-  // ==========================================
-  // FAQ SECTION TESTS
-  // ==========================================
-
-  describe('FAQ Section', () => {
-    it('renders FAQ section', () => {
-      render(<SignatureGeneratorPage />)
-
-      expect(screen.getByText('Frequently Asked Questions')).toBeInTheDocument()
-    })
-
-    it('renders all FAQ questions', () => {
-      render(<SignatureGeneratorPage />)
-
-      expect(screen.getByText('Is this a legally valid signature?')).toBeInTheDocument()
-      expect(screen.getByText('What format should I download?')).toBeInTheDocument()
-      expect(screen.getByText('Can I use this signature commercially?')).toBeInTheDocument()
-      expect(screen.getByText('How do I add this to my email?')).toBeInTheDocument()
-      expect(screen.getByText('Why should I use a digital signature?')).toBeInTheDocument()
-    })
-
-    it('renders FAQ answers', () => {
-      render(<SignatureGeneratorPage />)
-
-      expect(
-        screen.getByText(/This tool creates digital signature images for visual use/i)
-      ).toBeInTheDocument()
-      expect(screen.getByText(/PNG is best for general use/i)).toBeInTheDocument()
-      expect(
-        screen.getByText(/All signatures generated are yours to use freely/i)
       ).toBeInTheDocument()
     })
   })

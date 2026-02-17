@@ -5,15 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { trackToolEvent } from '@/lib/services/analytics'
 import CronExpressionPage from '../page'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock analytics tracking
 vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
@@ -385,20 +376,6 @@ describe('CronExpressionPage', () => {
       renderPage()
       const relatedTools = document.querySelectorAll('[href*="/tools/"]')
       expect(relatedTools.length).toBeGreaterThan(0)
-    })
-  })
-
-  describe.skip('FAQ Section', () => {
-    // Skipped: Section not in component
-    it('should render FAQ section', () => {
-      renderPage()
-      expect(screen.getByText(/Frequently Asked Questions|FAQ/i)).toBeTruthy()
-    })
-
-    it('should display FAQ items', () => {
-      renderPage()
-      const faqItems = screen.queryAllByText(/\?/)
-      expect(faqItems.length).toBeGreaterThan(0)
     })
   })
 

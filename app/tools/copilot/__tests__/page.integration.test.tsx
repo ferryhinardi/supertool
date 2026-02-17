@@ -12,23 +12,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 // Must import store before mocking to reset between tests
 import { useCopilotStore } from '@/lib/hooks/use-copilot'
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-      <div {...props}>{children}</div>
-    ),
-    button: ({ children, ...props }: React.HTMLAttributes<HTMLButtonElement>) => (
-      <button {...props}>{children}</button>
-    ),
-    span: ({ children, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
-      <span {...props}>{children}</span>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  useReducedMotion: () => false,
-}))
-
 // Mock analytics
 vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),

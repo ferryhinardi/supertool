@@ -1,16 +1,27 @@
 'use client'
 
 import { FeedbackDialog } from '@/components/features/shared/FeedbackDialog'
+import { css } from '@/styled-system/css'
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between border-b border-neutral-800 bg-neutral-900 p-4">
-      <h1 className="text-lg font-semibold">Dashboard</h1>
-      <div className="flex items-center gap-3">
+    <header
+      className={css({
+        position: 'sticky',
+        top: '0',
+        zIndex: '10',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid',
+        borderColor: 'gray.800',
+        bg: 'gray.900',
+        p: '4',
+      })}
+    >
+      <h1 className={css({ fontSize: 'lg', fontWeight: 'semibold' })}>Dashboard</h1>
+      <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
         <FeedbackDialog />
-        <button type="button" className="text-neutral-400 transition-colors hover:text-white">
-          Theme Toggle (coming soon)
-        </button>
       </div>
     </header>
   )

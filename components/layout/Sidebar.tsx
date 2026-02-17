@@ -1,6 +1,6 @@
 'use client'
 
-import { Github, Heart, Home, LogIn, LogOut, Menu, User, X } from 'lucide-react'
+import { Heart, Home, LogIn, LogOut, Menu, User, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
@@ -20,7 +20,6 @@ const navigation = [
       icon: tool.icon,
     })),
 ]
-const showAccessToGithub = false
 
 // Navigation link variants using cva
 const navLinkStyles = cva({
@@ -29,29 +28,23 @@ const navLinkStyles = cva({
     display: 'flex',
     alignItems: 'center',
     gap: '3',
-    rounded: 'xl',
+    rounded: 'lg',
     px: '4',
-    py: '3.5',
-    transition: 'all 0.3s',
+    py: '2.5',
+    transition: 'all 0.2s',
     _hover: {
-      transform: 'scale(1.03)',
-      shadow: 'xl',
-      boxShadow: '0 10px 20px rgba(139, 92, 246, 0.3)',
+      bg: 'rgba(139, 92, 246, 0.1)',
     },
   },
   variants: {
     active: {
       true: {
-        border: '2px solid rgba(139, 92, 246, 0.4)',
+        bg: 'rgba(139, 92, 246, 0.15)',
         color: 'white',
-        shadow: 'xl',
-        boxShadow: '0 10px 20px rgba(139, 92, 246, 0.4)',
       },
       false: {
-        border: '1px solid transparent',
         color: 'gray.400',
         _hover: {
-          borderColor: 'rgba(139, 92, 246, 0.3)',
           color: 'white',
         },
       },
@@ -79,20 +72,14 @@ export function Sidebar() {
           zIndex: 'tooltip',
           alignItems: 'center',
           justifyContent: 'center',
-          rounded: 'xl',
-          border: '2px solid rgba(139, 92, 246, 0.3)',
-          bg: 'rgba(17, 24, 39, 0.8)',
+          rounded: 'lg',
+          border: '1px solid rgba(139, 92, 246, 0.2)',
+          bg: 'rgba(17, 24, 39, 0.9)',
           p: '3',
-          shadow: 'xl',
-          boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
           backdropFilter: 'blur(16px)',
-          transition: 'all 0.3s',
+          transition: 'all 0.2s',
           _hover: {
-            bg: 'rgba(139, 92, 246, 0.2)',
-            transform: 'scale(1.05)',
-          },
-          _active: {
-            transform: 'scale(0.95)',
+            bg: 'rgba(139, 92, 246, 0.15)',
           },
         })}
         style={{ WebkitBackdropFilter: 'blur(16px)' }}
@@ -147,56 +134,14 @@ export function Sidebar() {
           transition: 'left 0.3s ease-in-out',
         })}
         style={{
-          borderRight: '2px solid rgba(139, 92, 246, 0.3)',
-          boxShadow: '0 25px 50px rgba(139, 92, 246, 0.2)',
-          // Glass morphism effect
-          background:
-            'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(236, 72, 153, 0.06), rgba(59, 130, 246, 0.06))',
+          borderRight: '1px solid rgba(139, 92, 246, 0.15)',
+          background: 'rgba(17, 24, 39, 0.95)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
         }}
       >
-        {/* Animated gradient backgrounds */}
         <div
           className={css({
-            position: 'absolute',
-            inset: '0',
-            pointerEvents: 'none',
-            bgGradient: 'to-br',
-            gradientFrom: 'rgba(139, 92, 246, 0.2)',
-            gradientVia: 'rgba(59, 130, 246, 0.15)',
-            gradientTo: 'rgba(6, 182, 212, 0.2)',
-          })}
-        />
-        <div
-          className={css({
-            position: 'absolute',
-            inset: '0',
-            pointerEvents: 'none',
-            animation: 'pulse 3s infinite',
-            bgGradient: 'to-tr',
-            gradientFrom: 'rgba(59, 130, 246, 0.15)',
-            gradientVia: 'rgba(139, 92, 246, 0.10)',
-            gradientTo: 'rgba(236, 72, 153, 0.15)',
-          })}
-        />
-        <div
-          className={css({
-            position: 'absolute',
-            inset: '0',
-            pointerEvents: 'none',
-            animation: 'pulse 4s 1s infinite',
-            bgGradient: 'to-bl',
-            gradientFrom: 'rgba(6, 182, 212, 0.10)',
-            gradientVia: 'transparent',
-            gradientTo: 'rgba(139, 92, 246, 0.10)',
-          })}
-        />
-
-        <div
-          className={css({
-            position: 'relative',
-            zIndex: '10',
             display: 'flex',
             h: 'full',
             flexDirection: 'column',
@@ -207,12 +152,8 @@ export function Sidebar() {
             href="/"
             onClick={closeMobileMenu}
             className={css({
-              mb: { base: '8', md: '10' },
+              mb: { base: '6', md: '8' },
               textDecoration: 'none !important',
-              _hover: {
-                transform: 'scale(1.05)',
-                transition: 'all 0.3s',
-              },
             })}
           >
             <h1
@@ -226,41 +167,20 @@ export function Sidebar() {
             >
               <span
                 className={css({
-                  animation: 'pulse 2s infinite',
-                  fontSize: { base: '3xl', md: '4xl' },
+                  fontSize: { base: '2xl', md: '3xl' },
                 })}
               >
                 ⚡
               </span>
               <span
                 className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'purple.400',
-                  gradientVia: 'pink.400',
-                  gradientTo: 'blue.400',
-                  bgClip: 'text',
+                  color: 'white',
                   fontWeight: 'extrabold',
-                  color: 'transparent',
                 })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
               >
                 SuperTool
               </span>
             </h1>
-            <p
-              className={css({
-                mt: '2',
-                ml: { base: '10', md: '12' },
-                fontSize: { base: 'xs', md: 'sm' },
-                fontWeight: 'medium',
-                color: 'purple.300',
-              })}
-            >
-              Digital Toolkit
-            </p>
           </Link>
 
           {/* Navigation */}
@@ -275,15 +195,6 @@ export function Sidebar() {
                   href={item.href}
                   onClick={closeMobileMenu}
                   className={navLinkStyles({ active: isActive })}
-                  style={{
-                    paddingLeft: '1rem',
-                    paddingRight: '1rem',
-                    paddingTop: '0.475rem',
-                    paddingBottom: '0.475rem',
-                    background: isActive
-                      ? 'linear-gradient(to right, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.3), rgba(59, 130, 246, 0.4))'
-                      : 'transparent',
-                  }}
                 >
                   {/* Active indicator */}
                   {isActive && (
@@ -292,17 +203,11 @@ export function Sidebar() {
                         position: 'absolute',
                         top: '50%',
                         left: '0',
-                        h: '10',
-                        w: '1.5',
+                        h: '6',
+                        w: '1',
                         transform: 'translateY(-50%)',
-                        animation: 'pulse 2s infinite',
                         roundedRight: 'full',
-                        bgGradient: 'to-b',
-                        gradientFrom: 'purple.400',
-                        gradientVia: 'pink.500',
-                        gradientTo: 'blue.500',
-                        shadow: 'lg',
-                        boxShadow: '0 4px 14px rgba(139, 92, 246, 0.7)',
+                        bg: 'purple.400',
                       })}
                     />
                   )}
@@ -311,33 +216,10 @@ export function Sidebar() {
                     className={css({
                       h: '5',
                       w: '5',
-                      transition: 'all 0.2s',
                       color: isActive ? 'purple.300' : 'gray.500',
-                      _groupHover: {
-                        transform: 'scale(1.1)',
-                        color: isActive ? 'purple.300' : 'purple.400',
-                      },
                     })}
                   />
-                  <span className={css({ fontWeight: 'semibold' })}>{item.name}</span>
-
-                  {/* Hover glow effect */}
-                  {!isActive && (
-                    <div
-                      className={css({
-                        position: 'absolute',
-                        inset: '0',
-                        rounded: 'xl',
-                        opacity: '0',
-                        transition: 'opacity 0.3s',
-                        _groupHover: { opacity: '1' },
-                      })}
-                      style={{
-                        background:
-                          'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))',
-                      }}
-                    />
-                  )}
+                  <span className={css({ fontWeight: 'medium', fontSize: 'sm' })}>{item.name}</span>
                 </Link>
               )
             })}
@@ -351,86 +233,24 @@ export function Sidebar() {
             className={css({
               mt: 'auto',
               spaceY: '4',
-              borderTop: '2px solid rgba(139, 92, 246, 0.2)',
-              pt: '6',
+              borderTop: '1px solid rgba(139, 92, 246, 0.1)',
+              pt: '4',
             })}
           >
-            {showAccessToGithub && (
-              <a
-                href="https://github.com/ferryhinardi/supertool"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '3',
-                  rounded: 'lg',
-                  px: '3',
-                  py: '2',
-                  fontSize: 'sm',
-                  color: 'gray.400',
-                  textDecoration: 'none !important',
-                  transition: 'all 0.3s',
-                  _hover: {
-                    color: 'white',
-                  },
-                })}
-                style={{
-                  background: 'transparent',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background =
-                    'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2))'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent'
-                }}
-              >
-                <Github
-                  className={css({
-                    h: '5',
-                    w: '5',
-                    transition: 'transform 0.3s',
-                    _groupHover: { transform: 'scale(1.1)' },
-                  })}
-                />
-                <span className={css({ fontWeight: 'medium' })}>View on GitHub</span>
-              </a>
-            )}
-
-            <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
-              Built with{' '}
-              <span
-                className={css({
-                  animation: 'pulse 2s infinite',
-                  color: 'red.500',
-                })}
-              >
-                ❤️
-              </span>{' '}
-              by{' '}
+            <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              Built by{' '}
               <a
                 href="https://github.com/ferryhinardi"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'purple.400',
-                  gradientTo: 'pink.400',
-                  bgClip: 'text',
-                  fontWeight: 'semibold',
-                  color: 'transparent',
+                  color: 'gray.400',
+                  fontWeight: 'medium',
                   textDecoration: 'none !important',
-                  transition: 'all 0.3s',
                   _hover: {
-                    gradientFrom: 'purple.300',
-                    gradientTo: 'pink.300',
+                    color: 'white',
                   },
                 })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
               >
                 Ferry
               </a>
@@ -590,35 +410,18 @@ function AuthSection() {
           justifyContent: 'center',
           gap: '3',
           px: '4',
-          py: '3',
+          py: '2.5',
           rounded: 'lg',
           fontSize: 'sm',
           fontWeight: 'semibold',
           color: 'white',
           cursor: 'pointer',
-          transition: 'all 0.3s',
-          position: 'relative',
-          overflow: 'hidden',
-          border: '2px solid rgba(168, 85, 247, 0.5)',
-          shadow: 'lg',
-          boxShadow: '0 4px 14px rgba(168, 85, 247, 0.4)',
+          transition: 'all 0.2s',
+          bg: 'purple.600',
           _hover: {
-            transform: 'translateY(-2px)',
-            shadow: 'xl',
-            boxShadow: '0 8px 20px rgba(168, 85, 247, 0.5)',
+            bg: 'purple.500',
           },
         })}
-        style={{
-          background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(236, 72, 153, 0.8))',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background =
-            'linear-gradient(135deg, rgb(168, 85, 247), rgb(236, 72, 153))'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background =
-            'linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(236, 72, 153, 0.8))'
-        }}
       >
         <LogIn className={css({ w: '5', h: '5' })} />
         <span>Sign In</span>

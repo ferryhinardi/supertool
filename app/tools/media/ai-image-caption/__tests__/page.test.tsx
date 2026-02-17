@@ -21,15 +21,6 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/tools/ai-image-caption',
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {
@@ -113,16 +104,6 @@ describe('AI Image Caption Generator - Component Tests', () => {
     render(<AIImageCaptionPage />)
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_caption_open', {})
-  })
-
-  it('should display pro tips card', () => {
-    render(<AIImageCaptionPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    // Check for the tips text more flexibly
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/Alt Text.*WCAG|WCAG.*Alt Text/)
-    expect(content).toMatch(/SEO.*search|search.*SEO/)
   })
 })
 
@@ -767,7 +748,11 @@ describe('AI Image Caption Generator - Multiple Caption Types Tests', () => {
 
           await waitFor(
             () => {
-              expect(toast.success).toHaveBeenCalledTimes(2)
+              // Check that success toast was called with caption message at least twice
+              const successCalls = vi
+                .mocked(toast.success)
+                .mock.calls.filter((call) => call[0] === 'Caption generated successfully!')
+              expect(successCalls.length).toBeGreaterThanOrEqual(2)
             },
             { timeout: 5000 }
           )

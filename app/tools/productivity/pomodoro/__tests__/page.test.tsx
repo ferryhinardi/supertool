@@ -456,46 +456,6 @@ describe.skip('Pomodoro Timer Page - LocalStorage Integration', () => {
   })
 })
 
-describe.skip('Pomodoro Timer Page - Tips Section', () => {
-  beforeEach(() => {
-    localStorage.clear()
-    vi.clearAllMocks()
-  })
-
-  it('should display tips section', () => {
-    render(<PomodoroTimerPage />)
-    expect(screen.getByText('How to Use the Pomodoro Technique')).toBeTruthy()
-  })
-
-  it('should display Choose a Task tip', () => {
-    render(<PomodoroTimerPage />)
-    expect(screen.getByText('Choose a Task')).toBeTruthy()
-  })
-
-  it('should display Work for 25 Minutes tip', () => {
-    render(<PomodoroTimerPage />)
-    expect(screen.getByText('Work for 25 Minutes')).toBeTruthy()
-  })
-
-  it('should display Take a Short Break tip', () => {
-    render(<PomodoroTimerPage />)
-    expect(screen.getByText('Take a Short Break')).toBeTruthy()
-  })
-
-  it('should display Repeat & Rest tip', () => {
-    render(<PomodoroTimerPage />)
-    expect(screen.getByText('Repeat & Rest')).toBeTruthy()
-  })
-
-  it('should display all tip steps', () => {
-    render(<PomodoroTimerPage />)
-    expect(screen.getByText('Choose a Task')).toBeTruthy()
-    expect(screen.getByText('Work for 25 Minutes')).toBeTruthy()
-    expect(screen.getByText('Take a Short Break')).toBeTruthy()
-    expect(screen.getByText('Repeat & Rest')).toBeTruthy()
-  })
-})
-
 describe.skip('Pomodoro Timer Page - Analytics', () => {
   beforeEach(() => {
     localStorage.clear()

@@ -1,15 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock the utils module
 vi.mock('../utils', () => ({
   loadImageFromFile: vi.fn(),
@@ -154,18 +145,6 @@ describe('ScreenshotDiffPage', () => {
       expect(screen.getByText('Screenshot 1 (Before)')).toBeInTheDocument()
       expect(screen.getByText('Screenshot 2 (After)')).toBeInTheDocument()
       expect(screen.getAllByTestId('drag-drop-zone')).toHaveLength(2)
-    })
-
-    it('renders the info card with pro tips', () => {
-      render(<ScreenshotDiffPage />)
-
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(
-        screen.getByText('Lower threshold values (0-0.1) detect subtle color differences')
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText('Images with different dimensions will be automatically resized to match')
-      ).toBeInTheDocument()
     })
 
     it('renders the tool search component', () => {

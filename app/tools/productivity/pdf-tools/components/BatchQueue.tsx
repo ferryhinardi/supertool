@@ -1,6 +1,5 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
 import { FileStack, Layers } from 'lucide-react'
 import { css } from '@/styled-system/css'
 import { OperationProgress } from './OperationProgress'
@@ -35,10 +34,9 @@ export function BatchQueue({
 }: BatchQueueProps) {
   if (pdfs.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      <div
         className={css({
+          animation: 'fadeIn 0.3s ease-out forwards',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -72,7 +70,7 @@ export function BatchQueue({
         <p className={css({ fontSize: 'sm', color: 'white', maxW: 'md' })}>
           Upload PDF files to start batch processing. You can process multiple files at once.
         </p>
-      </motion.div>
+      </div>
     )
   }
 
@@ -132,24 +130,20 @@ export function BatchQueue({
           },
         })}
       >
-        <AnimatePresence mode="popLayout">
-          {pdfs.map((pdf) => (
-            <OperationProgress
-              key={pdf.id}
-              pdf={pdf}
-              onDownload={onDownload}
-              onRetry={onRetry}
-              onRemove={onRemove}
-            />
-          ))}
-        </AnimatePresence>
+        {pdfs.map((pdf) => (
+          <OperationProgress
+            key={pdf.id}
+            pdf={pdf}
+            onDownload={onDownload}
+            onRetry={onRetry}
+            onRemove={onRemove}
+          />
+        ))}
       </div>
 
       {/* Footer Stats */}
       {pdfs.length > 5 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+        <div
           className={css({
             display: 'flex',
             alignItems: 'center',
@@ -165,7 +159,7 @@ export function BatchQueue({
           <span>
             Showing {pdfs.length} {pdfs.length === 1 ? 'file' : 'files'} in queue
           </span>
-        </motion.div>
+        </div>
       )}
     </div>
   )

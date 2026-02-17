@@ -29,7 +29,6 @@ describe('Sidebar', () => {
     render(<Sidebar />)
 
     expect(screen.getByText('SuperTool')).toBeInTheDocument()
-    expect(screen.getByText('Digital Toolkit')).toBeInTheDocument()
   })
 
   it('renders navigation links', () => {
@@ -64,13 +63,6 @@ describe('Sidebar', () => {
     render(<Sidebar />)
 
     expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
-  })
-
-  it('displays footer information', () => {
-    render(<Sidebar />)
-
-    expect(screen.getByText(/built with/i)).toBeInTheDocument()
-    expect(screen.getByText('Ferry')).toBeInTheDocument()
   })
 
   it('renders all major tool categories', () => {

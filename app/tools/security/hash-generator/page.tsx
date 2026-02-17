@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   CheckCircle,
   Copy,
@@ -17,7 +16,6 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -48,59 +46,6 @@ interface HashHistory {
   hashes: Record<HashAlgorithm, string>
   type: 'text' | 'file'
 }
-
-const faqs = [
-  {
-    question: 'What is a hash generator and how does it work?',
-    answer:
-      'A hash generator creates a fixed-size alphanumeric string (hash) from any input data using cryptographic algorithms. The same input always produces the same hash, but even a tiny change in input creates a completely different hash. Hash functions are one-way - you cannot reverse a hash to get the original data. This makes them perfect for data integrity verification, password storage, and digital signatures.',
-  },
-  {
-    question: 'What are the differences between MD5, SHA-1, SHA-256, and other hash algorithms?',
-    answer:
-      'MD5 produces 128-bit hashes (32 characters) and is fast but cryptographically broken - not recommended for security. SHA-1 creates 160-bit hashes (40 characters) and is also deprecated for security use. SHA-256, SHA-384, and SHA-512 are part of the SHA-2 family, producing 256-bit, 384-bit, and 512-bit hashes respectively. SHA-256 is the current industry standard, offering strong security while maintaining reasonable performance. SHA-384 and SHA-512 provide even stronger security for highly sensitive applications.',
-  },
-  {
-    question: 'Can I use hash generators for password security?',
-    answer:
-      'While hashing is essential for password storage, simple hash functions alone are not secure enough. Modern password security requires additional techniques like salting (adding random data before hashing), using slow hash functions like bcrypt or Argon2, and proper key derivation functions. Never store passwords as plain text or simple MD5/SHA hashes. Our hash generator is excellent for file verification and data integrity, but use dedicated password hashing libraries for authentication systems.',
-  },
-  {
-    question: 'How can I verify file integrity using hashes?',
-    answer:
-      'File integrity verification uses hash comparison. First, generate a hash of your original file. Later, generate a hash of the file again and compare - if the hashes match, the file is unchanged. This is commonly used when downloading software: developers publish SHA-256 hashes of their files, and you can verify your download matches by comparing hashes. A single changed byte will produce a completely different hash, instantly revealing tampering or corruption.',
-  },
-  {
-    question: 'Is hashing the same as encryption?',
-    answer:
-      'No, hashing and encryption are fundamentally different. Hashing is one-way: you cannot reverse a hash to get the original data. It always produces the same output for the same input and has a fixed output size. Encryption is two-way: encrypted data can be decrypted back to the original using a key. Encryption output size varies with input size. Use hashing for data integrity, fingerprinting, and password storage. Use encryption for confidential data that needs to be retrieved later.',
-  },
-  {
-    question: 'What is hash collision and why does it matter?',
-    answer:
-      'A hash collision occurs when two different inputs produce the same hash output. While theoretically possible due to the infinite input space mapping to finite output space, cryptographically secure hash functions like SHA-256 make collisions computationally infeasible to find. MD5 and SHA-1 have known collision vulnerabilities, which is why they are deprecated for security applications. For modern applications requiring collision resistance, always use SHA-256 or stronger algorithms.',
-  },
-  {
-    question: 'Can hash generators work with files or only text?',
-    answer:
-      'Hash generators work with any data - text, images, videos, executables, archives, or any file type. Our tool supports both text input and file upload. For files, the tool reads the binary data and generates hashes just as it would for text. Large file hashing may take longer depending on file size. File hashing is commonly used for software distribution, forensics, blockchain, and data deduplication.',
-  },
-  {
-    question: 'Are online hash generators safe and private?',
-    answer:
-      'Our hash generator processes everything locally in your browser using JavaScript and the Web Crypto API. Your data never leaves your device or gets sent to any server. The hashing happens entirely client-side, ensuring complete privacy. However, avoid hashing highly sensitive data like passwords or confidential documents in any online tool. For sensitive use cases, use offline tools or command-line utilities on secure, air-gapped systems.',
-  },
-  {
-    question: 'What is the best hash algorithm to use?',
-    answer:
-      'For general-purpose data integrity and checksums, SHA-256 is the current industry standard offering excellent security and performance. For highly sensitive applications or when future-proofing is critical, use SHA-384 or SHA-512. Avoid MD5 and SHA-1 for any security-critical applications as they have known vulnerabilities. For blockchain and cryptocurrency, Bitcoin uses SHA-256. For password hashing specifically, use bcrypt, scrypt, or Argon2 instead of standard hash functions.',
-  },
-  {
-    question: 'How can I compare and verify hashes?',
-    answer:
-      'To verify a hash, generate a new hash of your data and compare it character-by-character with the reference hash. Our tool includes a hash comparison feature - paste the expected hash into the comparison field and it will automatically check if it matches any of the generated hashes. Hash comparison is case-insensitive and spaces are typically ignored. Even a single character difference indicates the data has been modified or corrupted.',
-  },
-]
 
 export default function HashGeneratorPage() {
   const [input, setInput] = useState('')
@@ -475,10 +420,13 @@ export default function HashGeneratorPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -534,13 +482,15 @@ export default function HashGeneratorPage() {
           Generate cryptographic hashes using multiple algorithms. Hash text or files, and verify
           integrity.
         </p>
-      </motion.div>
+      </div>
 
       {/* Pro Tips Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -590,13 +540,15 @@ export default function HashGeneratorPage() {
             </li>
           </ul>
         </div>
-      </motion.div>
+      </div>
 
       {/* Input Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -653,14 +605,16 @@ export default function HashGeneratorPage() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Hashes Output */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className={css({ spaceY: '4' })}
+      <div
+        className={css({
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         {(Object.keys(hashes) as HashAlgorithm[]).map((algorithm) => (
           <Card
@@ -698,13 +652,15 @@ export default function HashGeneratorPage() {
             </CardContent>
           </Card>
         ))}
-      </motion.div>
+      </div>
 
       {/* Compare/Verify Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -773,14 +729,16 @@ export default function HashGeneratorPage() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Batch Processing Section */}
       {batchMode && batchFiles.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.45s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -938,15 +896,17 @@ export default function HashGeneratorPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* History Panel */}
       {showHistory && history.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.45s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -1033,23 +993,19 @@ export default function HashGeneratorPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Features */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+      <div
         className={css({
           display: 'grid',
           gap: '4',
           w: 'full',
-          gridTemplateColumns: {
-            base: '1fr',
-            sm: 'repeat(2, 1fr)',
-            lg: 'repeat(4, 1fr)',
-          },
+          gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.5s',
+          opacity: 0,
         })}
       >
         {[
@@ -1093,161 +1049,14 @@ export default function HashGeneratorPage() {
             </CardContent>
           </Card>
         ))}
-      </motion.div>
+      </div>
 
-      {/* How to Use Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        <Card
-          className={css({
-            border: '2px solid',
-            borderColor: 'blue.500/30',
-            bg: 'rgba(59, 130, 246, 0.05)',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Lightbulb className={css({ h: '5', w: '5' })} />
-              How to Use Hash Generator
-            </CardTitle>
-            <CardDescription>
-              Follow these simple steps to generate and verify cryptographic hashes
-            </CardDescription>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '6' })}>
-            <div
-              className={css({
-                display: 'grid',
-                gap: '4',
-                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
-              })}
-            >
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'purple.500/20',
-                    border: '2px solid',
-                    borderColor: 'purple.500',
-                  })}
-                >
-                  <span
-                    className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'purple.400' })}
-                  >
-                    1
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Enter Text or Upload File
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
-                  Type or paste your text into the input field, or click the upload button to hash a
-                  file. The tool supports any file type and processes data locally in your browser
-                  for complete privacy.
-                </p>
-              </div>
-
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'pink.500/20',
-                    border: '2px solid',
-                    borderColor: 'pink.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'pink.400' })}>
-                    2
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Generate Hashes
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
-                  Click the "Generate Hashes" button to create cryptographic hashes using multiple
-                  algorithms simultaneously: MD5, SHA-1, SHA-256, SHA-384, and SHA-512. Each
-                  algorithm produces a unique hash signature.
-                </p>
-              </div>
-
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'blue.500/20',
-                    border: '2px solid',
-                    borderColor: 'blue.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}>
-                    3
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Copy Hash Values
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
-                  Click the copy button next to any hash to copy it to your clipboard. The hash
-                  remains available for use in verification, documentation, or integration with your
-                  applications and workflows.
-                </p>
-              </div>
-
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'green.500/20',
-                    border: '2px solid',
-                    borderColor: 'green.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'green.400' })}>
-                    4
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Verify Hashes (Optional)
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
-                  To verify data integrity, paste a reference hash into the comparison field. The
-                  tool will automatically check if it matches any generated hash and display whether
-                  the data is identical or has been modified.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.7s',
+          opacity: 0,
+        })}
       >
         <SocialShare
           toolName="Hash Generator"
@@ -1255,31 +1064,35 @@ export default function HashGeneratorPage() {
           description="Generate cryptographic hashes with MD5, SHA-1, SHA-256, SHA-384, and SHA-512 algorithms for data integrity verification"
           hashtags={['Cryptography', 'Security', 'WebDev', 'DataIntegrity']}
         />
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-      >
-        <FAQAccordion faqs={faqs} />
-      </motion.div>
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.8s',
+          opacity: 0,
+        })}
+      ></div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.9s',
+          opacity: 0,
+        })}
       >
         <RelatedTools currentToolPath="/tools/hash-generator" category="security" />
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.0 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '1.0s',
+          opacity: 0,
+        })}
       >
         <ToolRating toolId="/tools/hash-generator" toolName="Hash Generator" />
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
       <ToolSearch />

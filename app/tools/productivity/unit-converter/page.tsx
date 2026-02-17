@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   ArrowLeftRight,
   ArrowRight,
@@ -41,7 +40,6 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
@@ -223,59 +221,6 @@ const _chainTemplates: ChainPreset[] = [
     category: 'digital',
     steps: ['gigabyte', 'megabyte', 'kilobyte', 'byte'],
     defaultValue: '32',
-  },
-]
-
-const faqs = [
-  {
-    question: 'What types of units can I convert with this tool?',
-    answer:
-      'Our converter supports 30+ unit categories including: length/distance (meters, feet, miles, kilometers), weight/mass (grams, pounds, kilograms, ounces), temperature (Celsius, Fahrenheit, Kelvin), volume (liters, gallons, cups, milliliters), area (square meters, acres, hectares), speed (mph, km/h, knots), time, pressure, energy, power, and data storage units.',
-  },
-  {
-    question: 'How accurate are the unit conversions?',
-    answer:
-      'All conversions use precise mathematical formulas and industry-standard conversion factors with up to 10 decimal places of precision. For example, temperature conversions use exact formulas: °C = (°F - 32) × 5/9. We regularly verify conversion accuracy against scientific standards to ensure reliability for both casual and professional use.',
-  },
-  {
-    question: 'Can I convert between metric and imperial units?',
-    answer:
-      'Yes! The converter seamlessly handles conversions between metric (SI) and imperial (US/UK) measurement systems. Convert pounds to kilograms, miles to kilometers, Fahrenheit to Celsius, gallons to liters, and vice versa. This is especially useful for international travel, recipe conversions, or working with specifications from different countries.',
-  },
-  {
-    question: 'How do I convert Celsius to Fahrenheit or vice versa?',
-    answer:
-      'Select Temperature from the category dropdown, enter your value, choose Celsius or Fahrenheit as the source unit, and select the target unit. The conversion happens instantly. Formula: °F = (°C × 9/5) + 32 or °C = (°F - 32) × 5/9. Our tool also supports Kelvin for scientific calculations.',
-  },
-  {
-    question: 'Can I save my favorite unit conversions?',
-    answer:
-      'Yes! You can mark frequently used conversions as favorites for quick access. Simply click the star icon next to any conversion pair (e.g., kg to lbs, miles to km) and it will appear in your favorites list. Favorites are saved locally in your browser for instant loading on future visits.',
-  },
-  {
-    question: 'Does this unit converter work offline?',
-    answer:
-      'Once the page loads, all conversions happen locally in your browser using JavaScript - no internet connection required for calculations. The conversion formulas are built into the application, so you can use it on flights, in areas with poor connectivity, or completely offline after the initial page load. Your favorites are also stored locally and accessible offline.',
-  },
-  {
-    question: 'What is the difference between weight and mass units?',
-    answer:
-      'Mass (kilograms, grams) measures the amount of matter in an object and remains constant regardless of location. Weight (newtons, pounds-force) measures the force of gravity on that mass and varies with gravitational field strength. In everyday usage, pounds and kilograms are often used interchangeably for "weight," though technically they measure different properties. Our converter handles both mass and force units appropriately.',
-  },
-  {
-    question: 'Can I convert cooking measurements like cups, tablespoons, and teaspoons?',
-    answer:
-      'Yes! The volume category includes cooking and baking measurements: cups, tablespoons, teaspoons, fluid ounces, milliliters, and liters. This is perfect for converting recipes between US and metric measurements. Note that dry ingredients (flour, sugar) have different densities, so volume conversions work best for liquids. For dry goods, use weight measurements (grams, ounces) for accuracy.',
-  },
-  {
-    question: 'How do I convert data storage units like GB, TB, and MB?',
-    answer:
-      'Select "Data Storage" or "Digital Storage" from categories, then choose your units: bytes, kilobytes (KB), megabytes (MB), gigabytes (GB), terabytes (TB), petabytes (PB), or bits. The converter handles both decimal (1 KB = 1000 bytes) and binary (1 KiB = 1024 bytes) standards. This is useful for understanding file sizes, storage capacity, internet speeds, and data transfer calculations.',
-  },
-  {
-    question: 'Why do I need a unit converter when I can calculate manually?',
-    answer:
-      'While simple conversions like meters to centimeters are easy, complex conversions (e.g., acre-feet to cubic meters, BTU to joules, knots to meters per second) require memorizing specific formulas and factors. Our converter eliminates calculation errors, saves time, provides instant results, handles precision automatically, and supports dozens of units you might not encounter regularly. It is especially valuable for professionals, students, travelers, and anyone working with international standards.',
   },
 ]
 
@@ -929,11 +874,13 @@ function UnitConverterContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -984,13 +931,15 @@ function UnitConverterContent() {
           Convert between metric, imperial, and scientific units instantly. Support for length,
           weight, temperature, volume, area, speed, time, and more.
         </p>
-      </motion.div>
+      </div>
 
       {/* Category Selection */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -1041,13 +990,15 @@ function UnitConverterContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Converter */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -1244,9 +1195,7 @@ function UnitConverterContent() {
 
             {/* Enhanced Formula Display */}
             {fromValue && toValue && toValue !== 'Error' && formulaExplanation && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+              <div
                 className={css({
                   rounded: 'lg',
                   border: '1px solid',
@@ -1254,6 +1203,8 @@ function UnitConverterContent() {
                   bg: 'blue.500/5',
                   p: '4',
                   spaceY: '3',
+                  animation: 'scaleIn 0.5s ease-out forwards',
+                  opacity: 0,
                 })}
               >
                 <div
@@ -1313,15 +1264,14 @@ function UnitConverterContent() {
                 </p>
 
                 {showFormulaDetails && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
+                  <div
                     className={css({
                       spaceY: '3',
                       pt: '2',
                       borderTop: '1px solid',
                       borderColor: 'blue.500/20',
+                      animation: 'fadeIn 0.5s ease-out forwards',
+                      opacity: 0,
                     })}
                   >
                     <div>
@@ -1404,19 +1354,21 @@ function UnitConverterContent() {
                         </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 )}
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Multi-Step Conversions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.25s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -1591,10 +1543,7 @@ function UnitConverterContent() {
 
                     return (
                       <div key={step.id}>
-                        <motion.div
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
+                        <div
                           className={css({
                             position: 'relative',
                             rounded: 'lg',
@@ -1606,6 +1555,8 @@ function UnitConverterContent() {
                                 : 'gray.700',
                             bg: isFirst ? 'teal.500/10' : isLast ? 'cyan.500/10' : 'gray.800/50',
                             p: '4',
+                            animation: 'slideInLeft 0.5s ease-out forwards',
+                            opacity: 0,
                           })}
                         >
                           <div
@@ -1720,7 +1671,7 @@ function UnitConverterContent() {
                               </Button>
                             )}
                           </div>
-                        </motion.div>
+                        </div>
 
                         {/* Arrow between steps */}
                         {!isLast && (
@@ -1738,9 +1689,7 @@ function UnitConverterContent() {
                 {/* Summary */}
                 {conversionChain.length >= 2 &&
                   conversionChain[conversionChain.length - 1].value && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                    <div
                       className={css({
                         rounded: 'lg',
                         border: '1px solid',
@@ -1748,6 +1697,8 @@ function UnitConverterContent() {
                         bg: 'teal.500/5',
                         p: '4',
                         spaceY: '3',
+                        animation: 'scaleIn 0.5s ease-out forwards',
+                        opacity: 0,
                       })}
                     >
                       <div
@@ -1810,14 +1761,12 @@ function UnitConverterContent() {
                           Export CSV
                         </Button>
                       </div>
-                    </motion.div>
+                    </div>
                   )}
 
                 {/* Save Chain Dialog */}
                 {showSaveChainDialog && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                  <div
                     className={css({
                       position: 'fixed',
                       inset: '0',
@@ -1828,12 +1777,11 @@ function UnitConverterContent() {
                       justifyContent: 'center',
                       zIndex: '50',
                       px: '4',
+                      animation: 'fadeIn 0.5s ease-out forwards',
+                      opacity: 0,
                     })}
-                    onClick={() => setShowSaveChainDialog(false)}
                   >
-                    <motion.div
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
+                    <div
                       className={css({
                         bg: 'gray.900',
                         rounded: 'xl',
@@ -1843,8 +1791,9 @@ function UnitConverterContent() {
                         maxW: 'md',
                         w: 'full',
                         spaceY: '4',
+                        animation: 'scaleIn 0.5s ease-out forwards',
+                        opacity: 0,
                       })}
-                      onClick={(e) => e.stopPropagation()}
                     >
                       <div>
                         <h3
@@ -1923,8 +1872,8 @@ function UnitConverterContent() {
                           Save Chain
                         </Button>
                       </div>
-                    </motion.div>
-                  </motion.div>
+                    </div>
+                  </div>
                 )}
 
                 {/* Preset Chains Section */}
@@ -2136,14 +2085,16 @@ function UnitConverterContent() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Favorites */}
       {favorites.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -2250,15 +2201,17 @@ function UnitConverterContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Conversion History */}
       {history.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.35s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -2435,14 +2388,16 @@ function UnitConverterContent() {
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -2469,157 +2424,14 @@ function UnitConverterContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
-      {/* How to Use Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        <Card
-          className={css({
-            border: '2px solid',
-            borderColor: 'blue.500/30',
-            bg: 'rgba(59, 130, 246, 0.05)',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Lightbulb className={css({ h: '5', w: '5' })} />
-              How to Use Unit Converter
-            </CardTitle>
-            <CardDescription>
-              Follow these simple steps to convert between any units instantly
-            </CardDescription>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '4' })}>
-            <div className={css({ spaceY: '3' })}>
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bg: 'purple.500/20',
-                    borderColor: 'purple.500/50',
-                    flexShrink: 0,
-                  })}
-                >
-                  1
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Select Unit Category
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'white' })}>
-                    Choose from 30+ categories including Length, Weight, Temperature, Volume, Area,
-                    Speed, Time, Pressure, Energy, Power, and Data Storage. Each category contains
-                    relevant measurement units for that type.
-                  </p>
-                </div>
-              </div>
-
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bg: 'pink.500/20',
-                    borderColor: 'pink.500/50',
-                    flexShrink: 0,
-                  })}
-                >
-                  2
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Enter Value and Choose Units
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'white' })}>
-                    Type your number in the input field, select the source unit (what you have), and
-                    choose the target unit (what you want). The conversion happens instantly as you
-                    type with up to 10 decimal places of precision.
-                  </p>
-                </div>
-              </div>
-
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bg: 'blue.500/20',
-                    borderColor: 'blue.500/50',
-                    flexShrink: 0,
-                  })}
-                >
-                  3
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    View Results and Formula
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'white' })}>
-                    The converted value appears immediately below. Click the info icon to see the
-                    conversion formula and learn how the calculation works. Use the swap button to
-                    reverse the conversion direction quickly.
-                  </p>
-                </div>
-              </div>
-
-              <div className={css({ display: 'flex', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    h: '6',
-                    w: '6',
-                    rounded: 'full',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bg: 'green.500/20',
-                    borderColor: 'green.500/50',
-                    flexShrink: 0,
-                  })}
-                >
-                  4
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.100', mb: '1' })}>
-                    Save Favorites (Optional)
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'white' })}>
-                    Click the star icon to save frequently used conversions like kg to lbs, miles to
-                    km, or Celsius to Fahrenheit. Your favorites appear at the top for instant
-                    access on future visits. All data is stored locally in your browser.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.7s',
+          opacity: 0,
+        })}
       >
         <SocialShare
           toolName="Unit Converter"
@@ -2627,9 +2439,7 @@ function UnitConverterContent() {
           description="Convert between 30+ unit types instantly - length, weight, temperature, volume, and more with high precision"
           hashtags={['UnitConverter', 'Productivity', 'Tools', 'Conversion']}
         />
-      </motion.div>
-
-      <FAQAccordion faqs={faqs} />
+      </div>
       <RelatedTools currentToolPath="/tools/unit-converter" category="productivity" />
       <ToolRating toolId="/tools/unit-converter" toolName="Unit Converter" />
 

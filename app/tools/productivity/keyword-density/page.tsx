@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertTriangle,
   BarChart3,
@@ -399,11 +398,13 @@ function KeywordDensityContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -454,13 +455,15 @@ function KeywordDensityContent() {
           Analyze keyword usage and density in your content for SEO optimization. Track keyword
           frequency, identify overuse, and get suggestions for better content balance.
         </p>
-      </motion.div>
+      </div>
 
       {/* Input Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -552,16 +555,18 @@ function KeywordDensityContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Results */}
       {analysis && (
         <>
           {/* SEO Score & Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             <div
               className={css({
@@ -652,18 +657,18 @@ function KeywordDensityContent() {
                 </CardContent>
               </Card>
             </div>
-          </motion.div>
+          </div>
 
           {/* Warnings & Recommendations */}
           {(analysis.warnings.length > 0 || analysis.recommendations.length > 0) && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+            <div
               className={css({
                 display: 'grid',
                 gridTemplateColumns: { base: '1fr', md: '1fr' },
                 gap: '4',
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.3s',
+                opacity: 0,
               })}
             >
               {analysis.warnings.length > 0 && (
@@ -713,14 +718,16 @@ function KeywordDensityContent() {
                   </CardContent>
                 </Card>
               )}
-            </motion.div>
+            </div>
           )}
 
           {/* Top Keywords */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.4s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -854,14 +861,16 @@ function KeywordDensityContent() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Two-Word Phrases */}
           {analysis.twoWordPhrases.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.5s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -917,15 +926,17 @@ function KeywordDensityContent() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Three-Word Phrases */}
           {analysis.threeWordPhrases.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.6s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -981,17 +992,13 @@ function KeywordDensityContent() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: analysis ? 0.7 : 0.2, duration: 0.5 }}
-      >
+      <div className={css({ animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}>
         <Card
           className={css({
             border: '1px solid',
@@ -1020,7 +1027,7 @@ function KeywordDensityContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

@@ -848,43 +848,6 @@ export default function CSVExcelConverterPage() {
           </div>
         )}
 
-        {/* Help Section */}
-        <Card
-          className={css({
-            border: '2px solid',
-            borderColor: 'green.500/20',
-            bg: 'rgba(16, 185, 129, 0.05)',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardHeader>
-            <CardTitle>How to Use</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className={css({ spaceY: '2', pl: '5', color: 'white', listStyle: 'disc' })}>
-              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-                Select conversion mode (CSV to Excel or Excel to CSV)
-              </li>
-              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-                Drag and drop your file or click to browse
-              </li>
-              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-                Preview the converted data in the table below
-              </li>
-              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-                Download the converted file - multiple sheets are supported for Excel files
-              </li>
-              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-                All processing happens locally in your browser - files are never uploaded to a
-                server
-              </li>
-              <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
-                Supports files up to 50MB with proper handling of special characters and formatting
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
-
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
         <ToolSearch />

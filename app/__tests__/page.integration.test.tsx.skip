@@ -921,65 +921,6 @@ vi.mock('@/components/ui/tool-search', () => ({
   }),
 }))
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ref,
-      initial,
-      animate,
-      exit,
-      transition,
-      whileHover,
-      whileTap,
-      ...props
-      // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    }: any) => (
-      <div ref={ref} {...props}>
-        {children}
-      </div>
-    ),
-    section: ({
-      children,
-      initial,
-      animate,
-      exit,
-      transition,
-      whileHover,
-      whileTap,
-      ...props
-      // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    }: any) => <section {...props}>{children}</section>,
-    // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    h1: ({ children, initial, animate, exit, transition, whileHover, whileTap, ...props }: any) => (
-      <h1 {...props}>{children}</h1>
-    ),
-    // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    p: ({ children, initial, animate, exit, transition, whileHover, whileTap, ...props }: any) => (
-      <p {...props}>{children}</p>
-    ),
-    button: ({
-      children,
-      ref,
-      initial,
-      animate,
-      exit,
-      transition,
-      whileHover,
-      whileTap,
-      ...props
-      // biome-ignore lint/suspicious/noExplicitAny: Framer motion props are complex and not needed for tests
-    }: any) => (
-      <button ref={ref} {...props}>
-        {children}
-      </button>
-    ),
-  },
-  useReducedMotion: () => false,
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}))
-
 // Mock Panda CSS recipes - these are functions that return className strings
 vi.mock('@/styled-system/recipes', () => ({
   // biome-ignore lint/suspicious/noExplicitAny: Panda recipe types are complex and not needed for tests

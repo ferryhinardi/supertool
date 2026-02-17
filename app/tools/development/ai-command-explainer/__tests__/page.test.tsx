@@ -5,15 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/services/analytics'
 import AICommandExplainerPage from '../page'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {
@@ -88,14 +79,6 @@ describe('AI Command Explainer - Component Tests', () => {
     expect(screen.getByText('Example Commands')).toBeInTheDocument()
     expect(screen.getByText('Docker Container Management')).toBeInTheDocument()
     expect(screen.getByText('Git Interactive Rebase')).toBeInTheDocument()
-  })
-
-  it('should display how it works section', () => {
-    render(<AICommandExplainerPage />)
-
-    expect(screen.getByText('How It Works')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/AI analyzes your command/i)
   })
 })
 

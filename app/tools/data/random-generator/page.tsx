@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Check, Copy, Dices, RefreshCw, RotateCcw } from 'lucide-react'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useState } from 'react'
@@ -8,7 +7,6 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
@@ -23,49 +21,6 @@ const GENERATOR_TYPES: { id: GeneratorType; label: string; description: string }
   { id: 'string', label: 'Random String', description: 'Alphanumeric, letters, or custom chars' },
   { id: 'uuid', label: 'UUID v4', description: 'Universally unique identifier' },
   { id: 'password', label: 'Password', description: 'Secure random passwords' },
-]
-
-const faqs = [
-  {
-    question: 'How random are the generated values?',
-    answer:
-      "This tool uses the Web Crypto API (crypto.getRandomValues) for generating random values, which provides cryptographically secure random numbers. This is suitable for security-sensitive applications like password generation. The randomness comes from your system's entropy sources.",
-  },
-  {
-    question: 'What is a UUID and when should I use one?',
-    answer:
-      "A UUID (Universally Unique Identifier) is a 128-bit identifier that's practically guaranteed to be unique across all space and time. UUID v4 uses random numbers. Use UUIDs when you need unique identifiers for database records, API resources, session tokens, or any scenario where you need globally unique IDs without coordination between systems.",
-  },
-  {
-    question: 'How secure are the generated passwords?',
-    answer:
-      'The passwords are generated using cryptographically secure random numbers. A 16-character password with uppercase, lowercase, numbers, and symbols has approximately 95^16 possible combinations, making it extremely difficult to crack. For maximum security, use longer passwords (20+ characters) with all character types enabled.',
-  },
-  {
-    question: 'Can I use these random numbers for cryptography?',
-    answer:
-      'Yes, the random values generated here use the Web Crypto API which provides cryptographically secure pseudo-random numbers (CSPRNG). However, for production cryptographic applications, always use established libraries and follow security best practices.',
-  },
-  {
-    question: "What's the difference between integer and decimal random numbers?",
-    answer:
-      'Integer mode generates whole numbers (like 1, 42, 100) within your specified range, inclusive of both endpoints. Decimal mode generates floating-point numbers with the precision you specify. For example, with 2 decimal places, you might get 3.14 or 99.87.',
-  },
-  {
-    question: 'Why would I need to generate multiple values at once?',
-    answer:
-      'Generating multiple values is useful for: creating test data sets, generating multiple unique IDs for batch operations, creating arrays of random numbers for simulations, or generating multiple password options to choose from.',
-  },
-  {
-    question: 'Are the UUIDs compliant with RFC 4122?',
-    answer:
-      'Yes, the generated UUIDs follow the RFC 4122 specification for version 4 (random) UUIDs. They have the correct format: 8-4-4-4-12 hexadecimal characters, with the version number (4) in the appropriate position and the variant bits set correctly.',
-  },
-  {
-    question: 'Can I generate random strings with custom characters?',
-    answer:
-      'Yes! In string mode, you can select from preset character sets (alphanumeric, letters only, numbers only) or define your own custom character set. This is useful for generating codes, tokens, or identifiers with specific formatting requirements.',
-  },
 ]
 
 // Generate cryptographically secure random integer
@@ -300,13 +255,12 @@ function RandomGeneratorContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
         className={css({
           textAlign: 'center',
           spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
         })}
       >
         <Badge
@@ -352,13 +306,15 @@ function RandomGeneratorContent() {
           Generate cryptographically secure random numbers, strings, UUIDs, and passwords. Perfect
           for testing, development, and security applications.
         </p>
-      </motion.div>
+      </div>
 
       {/* Generator Type Selection */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -424,13 +380,15 @@ function RandomGeneratorContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Options */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -730,14 +688,16 @@ function RandomGeneratorContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Results */}
       {results.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -807,12 +767,10 @@ function RandomGeneratorContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* FAQ Section */}
-      <FAQAccordion faqs={faqs} />
-
       {/* Related Tools */}
       <RelatedTools currentToolPath="/tools/data/random-generator" />
 

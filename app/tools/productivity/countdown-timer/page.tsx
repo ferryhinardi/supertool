@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Calendar, Check, Clock, Link2, RotateCcw, Share2 } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useState } from 'react'
@@ -8,7 +7,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
@@ -23,49 +22,6 @@ interface TimeRemaining {
   seconds: number
   total: number
 }
-
-const faqs = [
-  {
-    question: 'How accurate is the countdown timer?',
-    answer:
-      "The countdown timer updates every second and uses your device's system clock for accuracy. The timer accounts for timezone differences by working with UTC timestamps internally. For best accuracy, ensure your device's time is synchronized with internet time servers.",
-  },
-  {
-    question: 'Can I share my countdown with others?',
-    answer:
-      'Yes! Click the "Copy Link" button to get a shareable URL that includes your event name and target date. Anyone who opens this link will see the same countdown. The URL parameters preserve the event name and target datetime.',
-  },
-  {
-    question: 'What happens when the countdown reaches zero?',
-    answer:
-      'When the countdown reaches zero, it displays "The event has started!" or "Time\'s up!" along with how much time has passed since the target time. The timer continues to show elapsed time so you can see how long ago the event occurred.',
-  },
-  {
-    question: 'Does the countdown work if I close the browser?',
-    answer:
-      'The countdown is calculated based on the target date/time, so when you reopen the page (or use a shared link), it will show the correct remaining time. However, there are no browser notifications when the timer completes—you need to keep the page open to watch it count down.',
-  },
-  {
-    question: 'What timezone is the countdown based on?',
-    answer:
-      'The countdown uses your local timezone for the date/time input and display. When you share a link, the target time is stored as a UTC timestamp, so recipients in different timezones will see the correct countdown relative to their local time.',
-  },
-  {
-    question: 'Can I create multiple countdowns?',
-    answer:
-      'You can create one countdown at a time on this page. To track multiple events, you can create separate countdown links for each event and bookmark them. Each link is independent and can be shared separately.',
-  },
-  {
-    question: 'What date formats are supported?',
-    answer:
-      "The tool uses standard HTML5 datetime-local input, which accepts dates in YYYY-MM-DD format and times in 24-hour HH:MM format. The input adapts to your browser's locale for the picker interface.",
-  },
-  {
-    question: 'Is there a limit on how far in the future I can set the countdown?',
-    answer:
-      "There's no practical limit—you can set countdowns years into the future. The timer displays days, hours, minutes, and seconds. For very long countdowns (years away), the days counter will show large numbers.",
-  },
-]
 
 function calculateTimeRemaining(targetDate: Date): TimeRemaining {
   const now = new Date()
@@ -221,13 +177,12 @@ function CountdownTimerContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
         className={css({
           textAlign: 'center',
           spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
         })}
       >
         <Badge
@@ -273,13 +228,15 @@ function CountdownTimerContent() {
           Set a countdown to any date and time. Share the link with others to count down together.
           Perfect for events, deadlines, and celebrations.
         </p>
-      </motion.div>
+      </div>
 
       {/* Setup Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -450,14 +407,16 @@ function CountdownTimerContent() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Countdown Display */}
       {isStarted && timeRemaining && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'scaleIn 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -533,11 +492,7 @@ function CountdownTimerContent() {
                           borderColor: 'gray.700',
                         })}
                       >
-                        <motion.div
-                          key={unit.value}
-                          initial={{ scale: 1.1 }}
-                          animate={{ scale: 1 }}
-                          transition={{ duration: 0.2 }}
+                        <div
                           className={css({
                             fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
                             fontWeight: 'bold',
@@ -548,10 +503,12 @@ function CountdownTimerContent() {
                             bgClip: 'text',
                             color: 'transparent',
                             lineHeight: 1,
+                            animation: 'scaleIn 0.2s ease-out forwards',
+                            opacity: 0,
                           })}
                         >
                           {String(unit.value).padStart(2, '0')}
-                        </motion.div>
+                        </div>
                         <div
                           className={css({
                             fontSize: { base: 'xs', sm: 'sm' },
@@ -585,15 +542,17 @@ function CountdownTimerContent() {
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Quick Presets */}
       {!isStarted && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
+          className={css({
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.3s',
+            opacity: 0,
+          })}
         >
           <Card
             className={css({
@@ -678,11 +637,8 @@ function CountdownTimerContent() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
-
-      {/* FAQ Section */}
-      <FAQAccordion faqs={faqs} />
 
       {/* Related Tools */}
       <RelatedTools currentToolPath="/tools/productivity/countdown-timer" />

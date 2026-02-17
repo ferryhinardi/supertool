@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertCircle,
   Check,
@@ -206,10 +205,13 @@ export default function MemeGeneratorPage() {
         })}
       >
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={css({ textAlign: 'center', spaceY: '4' })}
+        <div
+          className={css({
+            textAlign: 'center',
+            spaceY: '4',
+            animation: 'slideUp 0.5s ease-out forwards',
+            opacity: 0,
+          })}
         >
           <div className={css({ display: 'inline-flex', alignItems: 'center', gap: '2' })}>
             <Sparkles className={css({ w: '8', h: '8', color: 'purple.400' })} />
@@ -231,7 +233,7 @@ export default function MemeGeneratorPage() {
             Create viral memes in seconds. Choose from 25+ popular templates or upload your own
             image. Add text, customize fonts, and download your masterpiece.
           </p>
-        </motion.div>
+        </div>
 
         {/* Main Content */}
         <div
@@ -243,10 +245,12 @@ export default function MemeGeneratorPage() {
           })}
         >
           {/* Left Panel - Template Selector */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
+          <div
+            className={css({
+              animation: 'slideInLeft 0.5s ease-out forwards',
+              animationDelay: '0.1s',
+              opacity: 0,
+            })}
           >
             <Card>
               <CardHeader>
@@ -423,14 +427,16 @@ export default function MemeGeneratorPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Right Panel - Editor */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className={css({ spaceY: '6' })}
+          <div
+            className={css({
+              spaceY: '6',
+              animation: 'slideInLeft 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             {/* Text Boxes */}
             {(selectedTemplate || customImage) && (
@@ -575,7 +581,7 @@ export default function MemeGeneratorPage() {
                 </CardContent>
               </Card>
             )}
-          </motion.div>
+          </div>
         </div>
       </main>
     </div>

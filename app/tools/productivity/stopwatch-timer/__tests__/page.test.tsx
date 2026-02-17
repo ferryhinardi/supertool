@@ -38,15 +38,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: mockTrackToolEvent,
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: mockToast,
@@ -138,12 +129,6 @@ describe('StopwatchTimerPage', () => {
     it('renders the badge with features', () => {
       render(<StopwatchTimerPage />)
       expect(screen.getByText('Stopwatch • Timer • Presets')).toBeInTheDocument()
-    })
-
-    it('renders Pro Tips section', () => {
-      render(<StopwatchTimerPage />)
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(screen.getByText(/use lap times to track intervals/i)).toBeInTheDocument()
     })
 
     it('renders mode toggle buttons', () => {

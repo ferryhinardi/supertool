@@ -16,7 +16,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { RelatedTools } from '@/components/ui/related-tools'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
@@ -42,34 +42,6 @@ const ReactDiffViewer = dynamic(() => import('react-diff-viewer-continued'), {
 
 type DiffViewType = 'split' | 'unified'
 type ContentType = 'text' | 'json'
-
-const faqs = [
-  {
-    question: 'How do I compare two text or code files?',
-    answer:
-      'Paste your original text in the left panel and modified text in the right panel, then click Compare. The diff viewer will highlight additions in green, deletions in red, and unchanged lines in gray. You can switch between split view (side-by-side) and unified view (single column) for easier comparison.',
-  },
-  {
-    question: 'What is the difference between split view and unified view?',
-    answer:
-      'Split view displays both texts side-by-side with synchronized scrolling, making it easy to see changes at a glance. Unified view combines both texts in a single column with +/- prefixes (like Git diffs), which is more compact and better for reviewing sequential changes or on smaller screens.',
-  },
-  {
-    question: 'Does this diff tool support syntax highlighting for code?',
-    answer:
-      'Yes! Our diff viewer automatically detects and applies syntax highlighting for popular programming languages including JavaScript, TypeScript, Python, Java, C++, PHP, Ruby, Go, and many more. This makes code comparison clearer by color-coding keywords, strings, comments, and other syntax elements.',
-  },
-  {
-    question: 'Can I compare JSON files with this tool?',
-    answer:
-      'Absolutely! The diff tool has special JSON formatting support that beautifies and validates JSON before comparison. This ensures accurate structural comparison even if the original JSON has different formatting or whitespace. It highlights object key changes, value modifications, and array differences.',
-  },
-  {
-    question: 'Is my code or text data safe when using this diff tool?',
-    answer:
-      'Yes, your data is completely safe. All comparison happens entirely in your browser using JavaScript. No text, code, or files are uploaded to any server or stored anywhere. Your data never leaves your device, ensuring complete privacy and security for sensitive code or confidential information.',
-  },
-]
 
 export default function DiffTool() {
   const [oldValue, setOldValue] = useState('')
@@ -735,7 +707,6 @@ export default function DiffTool() {
         </Card>
       )}
 
-      <FAQAccordion faqs={faqs} />
       <RelatedTools currentToolPath="/tools/diff" category="development" />
       <ToolRating toolId="/tools/diff" toolName="Code Diff Viewer" />
 

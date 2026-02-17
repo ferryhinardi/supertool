@@ -2,13 +2,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import BackgroundRemoverPage from '../page'
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.ComponentProps<'div'>) => <div {...props}>{children}</div>,
-  },
-}))
-
 // Mock analytics
 vi.mock('@/lib/services/analytics', () => ({
   trackEvent: vi.fn(),
@@ -29,16 +22,6 @@ vi.mock('@/components/ui/tool-rating', () => ({
 
 vi.mock('@/components/ui/tool-search', () => ({
   ToolSearch: () => <div data-testid="tool-search">Tool Search</div>,
-}))
-
-vi.mock('@/components/ui/faq-accordion', () => ({
-  FAQAccordion: ({ faqs }: { faqs: Array<{ question: string; answer: string }> }) => (
-    <div data-testid="faq-accordion">
-      {faqs.map((faq) => (
-        <div key={faq.question}>{faq.question}</div>
-      ))}
-    </div>
-  ),
 }))
 
 vi.mock('@/components/features/ads/AffiliateSuggestion', () => ({
@@ -212,20 +195,6 @@ describe('BackgroundRemoverPage', () => {
       expect(
         screen.getByText('Images never leave your browser - complete privacy guaranteed')
       ).toBeInTheDocument()
-    })
-
-    it('renders how-to section', () => {
-      render(<BackgroundRemoverPage />)
-      expect(screen.getByText('How to Remove Background from Image')).toBeInTheDocument()
-      expect(screen.getByText('Upload Your Image')).toBeInTheDocument()
-      expect(screen.getByText('Click Remove Background')).toBeInTheDocument()
-      expect(screen.getByText('Preview & Customize')).toBeInTheDocument()
-      expect(screen.getByText('Download Your Image')).toBeInTheDocument()
-    })
-
-    it('renders FAQ section', () => {
-      render(<BackgroundRemoverPage />)
-      expect(screen.getByTestId('faq-accordion')).toBeInTheDocument()
     })
 
     it('renders related tools section', () => {
@@ -851,22 +820,6 @@ describe('BackgroundRemoverPage', () => {
       await waitFor(() => {
         expect(screen.getByText('Background removed successfully!')).toBeInTheDocument()
       })
-    })
-  })
-
-  describe('How-to Step Descriptions', () => {
-    it('displays step descriptions', () => {
-      render(<BackgroundRemoverPage />)
-      expect(screen.getByText(/Drag and drop an image or click to browse/i)).toBeInTheDocument()
-      expect(
-        screen.getByText(/Our AI will automatically detect and remove the background/i)
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText(/Preview the result with different background colors/i)
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText(/Download the processed image as a transparent PNG file/i)
-      ).toBeInTheDocument()
     })
   })
 

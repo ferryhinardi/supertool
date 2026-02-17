@@ -1,13 +1,11 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Copy, Download, ImageIcon, Lightbulb, Lock, Unlock, Upload } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
 import { Input } from '@/components/ui/input'
 import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -21,59 +19,6 @@ import { css } from '@/styled-system/css'
 export const dynamic = 'force-dynamic'
 
 type Mode = 'encode' | 'decode'
-
-const faqs = [
-  {
-    question: 'What is Base64 encoding and why is it used?',
-    answer:
-      "Base64 is a binary-to-text encoding scheme that converts binary data into ASCII characters using 64 printable characters (A-Z, a-z, 0-9, +, /). It's widely used for transmitting data over text-based protocols like email and JSON, embedding images in HTML/CSS, storing credentials safely, and encoding binary files for APIs. Base64 ensures binary data remains intact during transmission without modification.",
-  },
-  {
-    question: 'Can I encode files other than text with this tool?',
-    answer:
-      'Yes! Our Base64 encoder supports any file type - images (PNG, JPG, GIF), documents (PDF, DOCX), audio files (MP3, WAV), videos, and more. Simply upload your file using the file picker in encode mode. The tool converts the entire file into a Base64 string that you can embed in code, transmit via API, or store in databases.',
-  },
-  {
-    question: 'How do I decode a Base64 string back to its original format?',
-    answer:
-      'Switch to "Decode" mode, paste your Base64 string into the input field, and click "Decode from Base64". The original text will appear in the output. For images, the tool automatically detects image data and displays a preview. You can download decoded content as a text file or copy it to your clipboard.',
-  },
-  {
-    question: 'Is Base64 encoding secure for sensitive data?',
-    answer:
-      "No, Base64 is NOT encryption and provides no security. It's simply an encoding format that makes binary data text-safe. Anyone can easily decode Base64 strings. Never use Base64 alone for passwords, API keys, or sensitive information. For security, use proper encryption algorithms like AES-256 first, then optionally Base64 encode the encrypted output for transmission.",
-  },
-  {
-    question: 'Why is my Base64 string so much longer than the original?',
-    answer:
-      'Base64 encoding increases data size by approximately 33% because it converts every 3 bytes of binary data into 4 ASCII characters. This overhead is the trade-off for text-safe transmission. For example, a 100KB image becomes ~133KB when Base64 encoded. This is normal and expected behavior for Base64 encoding.',
-  },
-  {
-    question: 'Can I embed Base64-encoded images directly in HTML and CSS?',
-    answer:
-      'Yes! Base64-encoded images can be embedded directly using data URIs. In HTML: <img src="data:image/png;base64,YOUR_BASE64_STRING" />. In CSS: background-image: url(data:image/png;base64,YOUR_BASE64_STRING);. This eliminates HTTP requests but increases page size. Best for small images, icons, and logos under 10KB.',
-  },
-  {
-    question: 'What does "Invalid Base64 string" error mean?',
-    answer:
-      'This error occurs when the input string contains invalid characters (not A-Z, a-z, 0-9, +, /, or =), incorrect padding (Base64 strings should be divisible by 4 with = padding), or corrupted data. Ensure you copied the entire Base64 string, including any = padding at the end. Remove any extra whitespace or line breaks.',
-  },
-  {
-    question: 'How do I encode images for use in JSON APIs?',
-    answer:
-      'Upload your image file in encode mode. The tool generates a Base64 string starting with "data:image/[type];base64,". Copy this entire string (including the data URI prefix) and use it in your JSON payload. Most APIs accept Base64 images in request bodies. For large images, consider using direct file uploads instead to avoid large JSON payloads.',
-  },
-  {
-    question: 'Can I decode Base64 images and preview them?',
-    answer:
-      'Yes! When decoding Base64 strings that contain image data (starting with "data:image/"), the tool automatically detects and displays an image preview. You can visually verify the decoded image before downloading or using it. This works for PNG, JPEG, GIF, WebP, and SVG formats.',
-  },
-  {
-    question: 'What are common use cases for Base64 encoding?',
-    answer:
-      'Common uses include: embedding small images/fonts in CSS to reduce HTTP requests, transmitting binary files through JSON APIs, storing images in databases as text, email attachments (MIME encoding), data URIs in HTML, OAuth tokens and JWT payloads, encoding binary data for XML, and ensuring data integrity during text-based transmission. Base64 is essential for web development and API integration.',
-  },
-]
 
 function Base64Content() {
   const [mode, setMode] = useQueryState(
@@ -184,9 +129,7 @@ function Base64Content() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+      <div
         className={css({
           display: 'flex',
           flexDirection: 'column',
@@ -195,6 +138,8 @@ function Base64Content() {
           textAlign: 'center',
           w: 'full',
           maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
         })}
       >
         <div
@@ -250,14 +195,17 @@ function Base64Content() {
         >
           Convert text and files to Base64 encoding or decode Base64 strings back to original format
         </p>
-      </motion.div>
+      </div>
 
       {/* Pro Tips Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className={css({ w: 'full', maxW: '1400px' })}
+      <div
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -307,19 +255,19 @@ function Base64Content() {
             </li>
           </ul>
         </div>
-      </motion.div>
+      </div>
 
       {/* Mode Toggle */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+      <div
         className={css({
           display: 'flex',
           justifyContent: 'center',
           gap: '2',
           w: 'full',
           maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
         })}
       >
         <Button
@@ -356,19 +304,19 @@ function Base64Content() {
           <Unlock className={css({ h: '4', w: '4' })} />
           Decode
         </Button>
-      </motion.div>
+      </div>
 
       {/* Main Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+      <div
         className={css({
           display: 'grid',
           gap: '6',
           gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
           w: 'full',
           maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
         })}
       >
         {/* Input */}
@@ -534,19 +482,19 @@ function Base64Content() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Features */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+      <div
         className={css({
           display: 'grid',
           gap: '4',
           gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
           w: 'full',
           maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.4s',
+          opacity: 0,
         })}
       >
         {[
@@ -587,163 +535,17 @@ function Base64Content() {
             </CardContent>
           </Card>
         ))}
-      </motion.div>
-
-      {/* How to Use Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className={css({ w: 'full', maxW: '1400px' })}
-      >
-        <Card
-          className={css({
-            border: '2px solid',
-            borderColor: 'blue.500/30',
-            bg: 'rgba(59, 130, 246, 0.05)',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardHeader>
-            <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-              <Lightbulb className={css({ h: '5', w: '5' })} />
-              How to Use Base64 Encoder/Decoder
-            </CardTitle>
-            <CardDescription>
-              Follow these simple steps to encode and decode Base64 data
-            </CardDescription>
-          </CardHeader>
-          <CardContent className={css({ spaceY: '6' })}>
-            <div
-              className={css({
-                display: 'grid',
-                gap: '4',
-                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
-              })}
-            >
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'purple.500/20',
-                    border: '2px solid',
-                    borderColor: 'purple.500',
-                  })}
-                >
-                  <span
-                    className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'purple.400' })}
-                  >
-                    1
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Choose Encode or Decode Mode
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
-                  Select "Encode" to convert text or files to Base64 format, or "Decode" to convert
-                  Base64 strings back to their original format. The mode toggle switches between
-                  both operations.
-                </p>
-              </div>
-
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'pink.500/20',
-                    border: '2px solid',
-                    borderColor: 'pink.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'pink.400' })}>
-                    2
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Enter Text or Upload File
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
-                  Type or paste your text directly, or upload any file (images, documents, audio,
-                  etc.) to encode. For decoding, paste the Base64 string including data URI prefix
-                  if present.
-                </p>
-              </div>
-
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'blue.500/20',
-                    border: '2px solid',
-                    borderColor: 'blue.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'blue.400' })}>
-                    3
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Convert and View Results
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
-                  Click the encode/decode button to convert. The result appears instantly in the
-                  output panel. Images are automatically detected and previewed when decoding data
-                  URIs.
-                </p>
-              </div>
-
-              <div className={css({ spaceY: '3' })}>
-                <div
-                  className={css({
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: '10',
-                    h: '10',
-                    rounded: 'full',
-                    bg: 'green.500/20',
-                    border: '2px solid',
-                    borderColor: 'green.500',
-                  })}
-                >
-                  <span className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'green.400' })}>
-                    4
-                  </span>
-                </div>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  Copy or Download Output
-                </h3>
-                <p className={css({ fontSize: 'sm', color: 'white', lineHeight: 'relaxed' })}>
-                  Use the "Copy" button to copy the result to clipboard, or "Download" to save as a
-                  text file. Perfect for embedding in code, APIs, data URIs, or data transmission.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+      </div>
 
       {/* Social Share */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className={css({ w: 'full', maxW: '1400px' })}
+      <div
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.6s',
+          opacity: 0,
+        })}
       >
         <SocialShare
           toolName="Base64 Encoder & Decoder"
@@ -751,37 +553,44 @@ function Base64Content() {
           description="Convert text and files to Base64 encoding or decode Base64 strings with instant image preview - perfect for web development, APIs, and data transmission!"
           hashtags={['Base64', 'Encoding', 'WebDev', 'DataConversion']}
         />
-      </motion.div>
+      </div>
 
       {/* FAQs */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        className={css({ w: 'full', maxW: '1400px' })}
-      >
-        <FAQAccordion faqs={faqs} />
-      </motion.div>
+      <div
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.7s',
+          opacity: 0,
+        })}
+      ></div>
 
       {/* Related Tools */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-        className={css({ w: 'full', maxW: '1400px' })}
+      <div
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.8s',
+          opacity: 0,
+        })}
       >
         <RelatedTools currentToolPath="/tools/base64" category="converter" />
-      </motion.div>
+      </div>
 
       {/* Tool Rating */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
-        className={css({ w: 'full', maxW: '1400px' })}
+      <div
+        className={css({
+          w: 'full',
+          maxW: '1400px',
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.9s',
+          opacity: 0,
+        })}
       >
         <ToolRating toolId="/tools/base64" toolName="Base64 Encoder & Decoder" />
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

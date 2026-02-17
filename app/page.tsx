@@ -1,7 +1,6 @@
 'use client'
 
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
   Calculator,
@@ -187,7 +186,6 @@ const categories: {
 ]
 
 export default function HomePage() {
-  const shouldReduceMotion = useReducedMotion()
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [toolsView, setToolsView] = useState<'popular' | 'all'>(() => {
@@ -397,10 +395,8 @@ export default function HomePage() {
 
   const stats = useMemo(() => {
     const total = tools.length
-    const active = tools.filter((t) => !t.comingSoon).length
     const popular = tools.filter((t) => t.popular).length
-    const newTools = tools.filter((t) => t.new).length
-    return { total, active, popular, new: newTools }
+    return { total, popular }
   }, [])
 
   return (
@@ -416,63 +412,15 @@ export default function HomePage() {
         spaceY: { base: '10', sm: '12', lg: '14' },
       })}
     >
-      {/* Subtle background gradients */}
+      {/* Hero Section */}
       <div
-        className={css({
-          pointerEvents: 'none',
-          position: 'fixed',
-          inset: '0',
-          zIndex: '0',
-        })}
-      >
-        <div
-          className={css({
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            h: '96',
-            w: '96',
-            rounded: 'full',
-            bg: 'rgba(168, 85, 247, 0.1)',
-            filter: 'blur(96px)',
-          })}
-        />
-        <div
-          className={css({
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            h: '96',
-            w: '96',
-            rounded: 'full',
-            bg: 'rgba(59, 130, 246, 0.1)',
-            filter: 'blur(96px)',
-          })}
-        />
-        <div
-          className={css({
-            position: 'absolute',
-            bottom: '0',
-            left: '33.333%',
-            h: '96',
-            w: '96',
-            rounded: 'full',
-            bg: 'rgba(236, 72, 153, 0.1)',
-            filter: 'blur(96px)',
-          })}
-        />
-      </div>
-
-      {/* Compact Hero Section - Skip initial animation to reduce TBT */}
-      <motion.div
-        initial={false}
         className={css({
           position: 'relative',
           zIndex: '10',
           mx: 'auto',
           w: 'full',
           maxW: { base: 'full', sm: '3xl', md: '4xl', lg: '5xl' },
-          spaceY: '6',
+          spaceY: '4',
           textAlign: 'center',
         })}
         style={{ margin: '0 auto' }}
@@ -485,28 +433,26 @@ export default function HomePage() {
             rounded: 'full',
             border: '1px solid rgba(168, 85, 247, 0.2)',
             bg: 'rgba(168, 85, 247, 0.1)',
-            px: '5',
-            py: '2.5',
+            px: '4',
+            py: '2',
             backdropFilter: 'blur(8px)',
           })}
         >
-          <Sparkles className={css({ h: '5', w: '5', color: 'purple.400' })} />
+          <Sparkles className={css({ h: '4', w: '4', color: 'purple.400' })} />
           <span
             className={css({
-              fontSize: 'base',
+              fontSize: 'sm',
               fontWeight: 'semibold',
               color: 'purple.300',
             })}
           >
-            {toolsView === 'popular'
-              ? `${stats.popular} Most Popular Tools`
-              : `${stats.total} Professional Tools for Daily Use`}
+            {stats.total}+ Tools
           </span>
         </div>
 
         <h1
           className={css({
-            fontSize: { base: '5xl', sm: '6xl', md: '7xl' },
+            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
             fontWeight: 'extrabold',
           })}
         >
@@ -524,35 +470,13 @@ export default function HomePage() {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            SuperTool Collection
-          </span>
-          <span
-            className={css({
-              display: 'block',
-              mt: '2',
-              fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-              color: 'gray.300',
-            })}
-          >
-            Your All-in-One Digital Toolkit
+            SuperTool
           </span>
         </h1>
-
-        <p
-          className={css({
-            fontSize: { base: 'lg', sm: 'xl' },
-            lineHeight: 'relaxed',
-            color: 'gray.400',
-          })}
-        >
-          From development tools to finance calculators, productivity boosters to media converters.
-          Everything you need for work and daily life, beautifully designed and lightning fast.
-        </p>
-      </motion.div>
+      </div>
 
       {/* Search and Filter Bar - Skip initial animation to reduce TBT */}
-      <motion.div
-        initial={false}
+      <div
         className={css({
           position: 'relative',
           zIndex: '10',
@@ -637,9 +561,7 @@ export default function HomePage() {
 
               {/* Clear Button */}
               {searchQuery && (
-                <motion.button
-                  initial={false}
-                  animate={{ opacity: 1 }}
+                <button
                   onClick={() => setSearchQuery('')}
                   className={css({
                     position: 'absolute',
@@ -667,13 +589,12 @@ export default function HomePage() {
                   type="button"
                 >
                   <X className={css({ h: '4', w: '4' })} strokeWidth={2.5} />
-                </motion.button>
+                </button>
               )}
 
               {/* Global Tool Search hint */}
               {!searchQuery && (
-                <motion.div
-                  initial={false}
+                <div
                   id="search-hint"
                   className={css({
                     pointerEvents: 'none',
@@ -710,7 +631,7 @@ export default function HomePage() {
                   >
                     ⌘K
                   </kbd>
-                </motion.div>
+                </div>
               )}
             </div>
           </Field>
@@ -868,11 +789,7 @@ export default function HomePage() {
 
         {/* Results count */}
         {searchQuery && (
-          <motion.div
-            initial={false}
-            animate={{ opacity: 1 }}
-            className={css({ display: 'flex', alignItems: 'center', gap: '3' })}
-          >
+          <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
             <div
               className={css({
                 display: 'flex',
@@ -917,16 +834,15 @@ export default function HomePage() {
             >
               Clear search
             </button>
-          </motion.div>
+          </div>
         )}
-      </motion.div>
+      </div>
 
       {/* Recent Tools Section */}
       <RecentTools />
 
       {/* Ad Banner - Feature Flag Guarded - Skip initial animation */}
-      <motion.div
-        initial={false}
+      <div
         className={css({
           position: 'relative',
           zIndex: '10',
@@ -942,11 +858,10 @@ export default function HomePage() {
             my: { base: '8', md: '10' },
           })}
         />
-      </motion.div>
+      </div>
 
       {/* Tools by Category Sections - Skip initial animation */}
-      <motion.div
-        initial={false}
+      <div
         style={{
           position: 'relative',
           zIndex: 10,
@@ -956,308 +871,290 @@ export default function HomePage() {
           padding: '0 1rem',
         }}
       >
-        <AnimatePresence mode="wait">
-          {Object.values(filteredToolsByCategory).flat().length > 0 ? (
-            <motion.div
-              key={`${viewMode}-${searchQuery}`}
-              initial={false}
-              animate={{ opacity: 1 }}
-              className={css({ spaceY: { base: '12', md: '16' } })}
-            >
-              {categories.map((category) => {
-                const toolsInCategory = filteredToolsByCategory[category.value]
-                if (toolsInCategory.length === 0) return null
+        {Object.values(filteredToolsByCategory).flat().length > 0 ? (
+          <div
+            key={`${viewMode}-${searchQuery}`}
+            className={css({ spaceY: { base: '12', md: '16' } })}
+          >
+            {categories.map((category) => {
+              const toolsInCategory = filteredToolsByCategory[category.value]
+              if (toolsInCategory.length === 0) return null
 
-                const Icon = category.icon
-                const isExpanded = expandedCategories.has(category.value)
+              const Icon = category.icon
+              const isExpanded = expandedCategories.has(category.value)
 
-                return (
-                  <motion.section key={category.value} initial={false}>
-                    {/* Category Header */}
+              return (
+                <section key={category.value}>
+                  {/* Category Header */}
+                  <div
+                    className={css({
+                      mb: '6',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      pb: '4',
+                      borderBottom: '2px solid',
+                      borderColor: 'gray.800',
+                    })}
+                  >
                     <div
                       className={css({
-                        mb: '6',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'space-between',
-                        pb: '4',
-                        borderBottom: '2px solid',
-                        borderColor: 'gray.800',
+                        gap: '4',
                       })}
                     >
                       <div
                         className={css({
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '4',
+                          justifyContent: 'center',
+                          rounded: 'xl',
+                          bg: 'rgba(168, 85, 247, 0.1)',
+                          p: '3',
                         })}
                       >
-                        <motion.div
+                        <Icon
                           className={css({
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            rounded: 'xl',
-                            bg: 'rgba(168, 85, 247, 0.1)',
-                            p: '3',
+                            h: '6',
+                            w: '6',
+                            color: 'purple.400',
                           })}
-                          whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <Icon
-                            className={css({
-                              h: '6',
-                              w: '6',
-                              color: 'purple.400',
-                            })}
-                          />
-                        </motion.div>
-                        <div>
-                          <h2
-                            className={css({
-                              fontSize: { base: '2xl', sm: '3xl' },
-                              fontWeight: 'bold',
-                              color: 'gray.100',
-                            })}
-                          >
-                            {category.label}
-                          </h2>
-                          <p
-                            className={css({
-                              fontSize: 'sm',
-                              color: 'gray.500',
-                            })}
-                          >
-                            {category.description}
-                          </p>
-                        </div>
-                        <Badge
-                          variant="secondary"
-                          className={css({
-                            ml: '2',
-                            h: '7',
-                            rounded: 'full',
-                            bg: 'rgba(168, 85, 247, 0.2)',
-                            px: '3',
-                            fontSize: 'sm',
-                            fontWeight: 'bold',
-                            color: 'purple.300',
-                          })}
-                        >
-                          {toolsInCategory.length}
-                        </Badge>
+                        />
                       </div>
-
-                      {/* Collapse/Expand Button */}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => toggleCategory(category.value)}
+                      <div>
+                        <h2
+                          className={css({
+                            fontSize: { base: '2xl', sm: '3xl' },
+                            fontWeight: 'bold',
+                            color: 'gray.100',
+                          })}
+                        >
+                          {category.label}
+                        </h2>
+                        <p
+                          className={css({
+                            fontSize: 'sm',
+                            color: 'gray.500',
+                          })}
+                        >
+                          {category.description}
+                        </p>
+                      </div>
+                      <Badge
+                        variant="secondary"
                         className={css({
-                          gap: '2',
-                          color: 'gray.400',
-                          _hover: { color: 'purple.400' },
+                          ml: '2',
+                          h: '7',
+                          rounded: 'full',
+                          bg: 'rgba(168, 85, 247, 0.2)',
+                          px: '3',
+                          fontSize: 'sm',
+                          fontWeight: 'bold',
+                          color: 'purple.300',
                         })}
                       >
-                        {isExpanded ? (
-                          <>
-                            <ChevronUp className={css({ h: '5', w: '5' })} />
-                            Collapse
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className={css({ h: '5', w: '5' })} />
-                            Expand
-                          </>
-                        )}
-                      </Button>
+                        {toolsInCategory.length}
+                      </Badge>
                     </div>
 
-                    {/* Tools Grid/List with Virtualization */}
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <VirtualizedToolsList
-                          tools={toolsInCategory}
-                          viewMode={viewMode}
-                          shouldReduceMotion={shouldReduceMotion}
-                          categoryValue={category.value}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </motion.section>
-                )
-              })}
-
-              {/* See All Tools CTA - Only show in popular view */}
-              {toolsView === 'popular' && !searchQuery && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  className={css({
-                    mt: '12',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '6',
-                    py: '12',
-                    textAlign: 'center',
-                  })}
-                >
-                  <div className={css({ spaceY: '4' })}>
-                    <h3
+                    {/* Collapse/Expand Button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleCategory(category.value)}
                       className={css({
-                        fontSize: { base: '2xl', sm: '3xl' },
-                        fontWeight: 'bold',
-                        color: 'gray.200',
-                      })}
-                    >
-                      Explore All {stats.total} Tools
-                    </h3>
-                    <p
-                      className={css({
-                        maxW: '2xl',
-                        mx: 'auto',
-                        fontSize: { base: 'base', sm: 'lg' },
+                        gap: '2',
                         color: 'gray.400',
+                        _hover: { color: 'purple.400' },
                       })}
                     >
-                      Discover our complete collection of professional tools across all categories
-                    </p>
+                      {isExpanded ? (
+                        <>
+                          <ChevronUp className={css({ h: '5', w: '5' })} />
+                          Collapse
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className={css({ h: '5', w: '5' })} />
+                          Expand
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    size="lg"
-                    onClick={() => {
-                      setToolsView('all')
-                      trackToolEvent('view_mode_toggle', { mode: 'all', source: 'cta_button' })
-                    }}
-                    className={css({
-                      gap: '3',
-                      h: '14',
-                      px: '8',
-                      fontSize: 'lg',
-                      fontWeight: 'semibold',
-                      bg: 'rgba(168, 85, 247, 0.2)',
-                      border: '1px solid',
-                      borderColor: 'purple.500/50',
-                      color: 'purple.300',
-                      backdropFilter: 'blur(8px)',
-                      transition: 'all 0.3s',
-                      _hover: {
-                        bg: 'rgba(168, 85, 247, 0.3)',
-                        borderColor: 'purple.500/70',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 8px 24px rgba(168, 85, 247, 0.3)',
-                      },
-                    })}
-                  >
-                    <Grid3x3 className={css({ h: '5', w: '5' })} />
-                    View All Tools
-                    <ArrowRight className={css({ h: '5', w: '5' })} />
-                  </Button>
-                </motion.div>
-              )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="no-results"
-              initial={false}
-              animate={{ opacity: 1 }}
-              className={css({
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                py: '20',
-                textAlign: 'center',
-              })}
-            >
+
+                  {/* Tools Grid/List with Virtualization */}
+                  {isExpanded && (
+                    <VirtualizedToolsList
+                      tools={toolsInCategory}
+                      viewMode={viewMode}
+                      categoryValue={category.value}
+                    />
+                  )}
+                </section>
+              )
+            })}
+
+            {/* See All Tools CTA - Only show in popular view */}
+            {toolsView === 'popular' && !searchQuery && (
               <div
                 className={css({
-                  mb: '6',
+                  mt: '12',
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  rounded: 'full',
-                  bg: 'rgba(31, 41, 55, 0.5)',
-                  p: '8',
+                  gap: '6',
+                  py: '12',
+                  textAlign: 'center',
                 })}
               >
-                <Search
-                  className={css({ h: '16', w: '16', color: 'gray.600' })}
-                  strokeWidth={1.5}
-                />
-              </div>
-              <h3
-                className={css({
-                  mb: '3',
-                  fontSize: '2xl',
-                  fontWeight: 'bold',
-                  color: 'gray.300',
-                })}
-              >
-                No tools found
-              </h3>
-              <p
-                className={css({
-                  mb: '2',
-                  maxW: 'md',
-                  fontSize: 'base',
-                  lineHeight: 'relaxed',
-                  color: 'gray.500',
-                })}
-              >
-                {searchQuery ? (
-                  <>
-                    No results for{' '}
-                    <span
-                      className={css({
-                        fontWeight: 'semibold',
-                        color: 'purple.400',
-                      })}
-                    >
-                      &quot;{searchQuery}&quot;
-                    </span>
-                  </>
-                ) : (
-                  'No tools available'
-                )}
-              </p>
-              <p
-                className={css({
-                  mb: '8',
-                  maxW: 'md',
-                  fontSize: 'sm',
-                  color: 'gray.600',
-                })}
-              >
-                Try adjusting your search to find what you&apos;re looking for
-              </p>
-              <div className={css({ display: 'flex', gap: '3' })}>
-                {searchQuery && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setSearchQuery('')}
+                <div className={css({ spaceY: '4' })}>
+                  <h3
                     className={css({
-                      border: '1px solid rgba(168, 85, 247, 0.3)',
-                      px: '4',
-                      py: '5',
-                      fontSize: 'sm',
-                      _hover: { bg: 'rgba(168, 85, 247, 0.1)' },
+                      fontSize: { base: '2xl', sm: '3xl' },
+                      fontWeight: 'bold',
+                      color: 'gray.200',
                     })}
                   >
-                    Clear search
-                  </Button>
-                )}
+                    Explore All {stats.total} Tools
+                  </h3>
+                  <p
+                    className={css({
+                      maxW: '2xl',
+                      mx: 'auto',
+                      fontSize: { base: 'base', sm: 'lg' },
+                      color: 'gray.400',
+                    })}
+                  >
+                    Discover our complete collection of professional tools across all categories
+                  </p>
+                </div>
+                <Button
+                  size="lg"
+                  onClick={() => {
+                    setToolsView('all')
+                    trackToolEvent('view_mode_toggle', { mode: 'all', source: 'cta_button' })
+                  }}
+                  className={css({
+                    gap: '3',
+                    h: '14',
+                    px: '8',
+                    fontSize: 'lg',
+                    fontWeight: 'semibold',
+                    bg: 'rgba(168, 85, 247, 0.2)',
+                    border: '1px solid',
+                    borderColor: 'purple.500/50',
+                    color: 'purple.300',
+                    backdropFilter: 'blur(8px)',
+                    transition: 'all 0.3s',
+                    _hover: {
+                      bg: 'rgba(168, 85, 247, 0.3)',
+                      borderColor: 'purple.500/70',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 8px 24px rgba(168, 85, 247, 0.3)',
+                    },
+                  })}
+                >
+                  <Grid3x3 className={css({ h: '5', w: '5' })} />
+                  View All Tools
+                  <ArrowRight className={css({ h: '5', w: '5' })} />
+                </Button>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+            )}
+          </div>
+        ) : (
+          <div
+            key="no-results"
+            className={css({
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              py: '20',
+              textAlign: 'center',
+            })}
+          >
+            <div
+              className={css({
+                mb: '6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                rounded: 'full',
+                bg: 'rgba(31, 41, 55, 0.5)',
+                p: '8',
+              })}
+            >
+              <Search className={css({ h: '16', w: '16', color: 'gray.600' })} strokeWidth={1.5} />
+            </div>
+            <h3
+              className={css({
+                mb: '3',
+                fontSize: '2xl',
+                fontWeight: 'bold',
+                color: 'gray.300',
+              })}
+            >
+              No tools found
+            </h3>
+            <p
+              className={css({
+                mb: '2',
+                maxW: 'md',
+                fontSize: 'base',
+                lineHeight: 'relaxed',
+                color: 'gray.500',
+              })}
+            >
+              {searchQuery ? (
+                <>
+                  No results for{' '}
+                  <span
+                    className={css({
+                      fontWeight: 'semibold',
+                      color: 'purple.400',
+                    })}
+                  >
+                    &quot;{searchQuery}&quot;
+                  </span>
+                </>
+              ) : (
+                'No tools available'
+              )}
+            </p>
+            <p
+              className={css({
+                mb: '8',
+                maxW: 'md',
+                fontSize: 'sm',
+                color: 'gray.600',
+              })}
+            >
+              Try adjusting your search to find what you&apos;re looking for
+            </p>
+            <div className={css({ display: 'flex', gap: '3' })}>
+              {searchQuery && (
+                <Button
+                  variant="outline"
+                  onClick={() => setSearchQuery('')}
+                  className={css({
+                    border: '1px solid rgba(168, 85, 247, 0.3)',
+                    px: '4',
+                    py: '5',
+                    fontSize: 'sm',
+                    _hover: { bg: 'rgba(168, 85, 247, 0.1)' },
+                  })}
+                >
+                  Clear search
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Ad Banner Bottom - Feature Flag Guarded - Skip initial animation */}
-      <motion.div
-        initial={false}
+      <div
         className={css({
           position: 'relative',
           zIndex: '10',
@@ -1273,145 +1170,7 @@ export default function HomePage() {
             my: { base: '8', md: '10' },
           })}
         />
-      </motion.div>
-
-      {/* Quick Stats Footer - Skip initial animation */}
-      <motion.div
-        initial={false}
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          marginTop: '80px',
-          marginBottom: '20px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          width: '100%',
-          maxWidth: '1400px',
-          overflow: 'hidden',
-          borderRadius: '1rem',
-          border: '1px solid rgba(168, 85, 247, 0.2)',
-          background:
-            'linear-gradient(to right, rgba(88, 28, 135, 0.2), rgba(131, 24, 67, 0.2), rgba(30, 58, 138, 0.2))',
-          padding: '2rem',
-          backdropFilter: 'blur(8px)',
-        }}
-      >
-        <div
-          className={css({
-            display: 'grid',
-            gridTemplateColumns: {
-              base: 'repeat(2, 1fr)',
-              sm: 'repeat(4, 1fr)',
-            },
-            gap: '8',
-          })}
-        >
-          <div className={css({ textAlign: 'center' })}>
-            <div
-              className={css({
-                mb: '2',
-                fontSize: '4xl',
-                fontWeight: 'bold',
-                color: 'purple.400',
-              })}
-            >
-              {stats.active}
-            </div>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '1.5',
-                fontSize: 'base',
-                fontWeight: 'medium',
-                color: 'gray.400',
-              })}
-            >
-              <Zap className={css({ h: '4', w: '4' })} />
-              <span>Active Tools</span>
-            </div>
-          </div>
-          <div className={css({ textAlign: 'center' })}>
-            <div
-              className={css({
-                mb: '2',
-                fontSize: '4xl',
-                fontWeight: 'bold',
-                color: 'pink.400',
-              })}
-            >
-              {stats.total}
-            </div>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '1.5',
-                fontSize: 'base',
-                fontWeight: 'medium',
-                color: 'gray.400',
-              })}
-            >
-              <LayoutGrid className={css({ h: '4', w: '4' })} />
-              <span>Total Tools</span>
-            </div>
-          </div>
-          <div className={css({ textAlign: 'center' })}>
-            <div
-              className={css({
-                mb: '2',
-                fontSize: '4xl',
-                fontWeight: 'bold',
-                color: 'blue.400',
-              })}
-            >
-              {stats.popular}
-            </div>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '1.5',
-                fontSize: 'base',
-                fontWeight: 'medium',
-                color: 'gray.400',
-              })}
-            >
-              <TrendingUp className={css({ h: '4', w: '4' })} />
-              <span>Popular</span>
-            </div>
-          </div>
-          <div className={css({ textAlign: 'center' })}>
-            <div
-              className={css({
-                mb: '2',
-                fontSize: '4xl',
-                fontWeight: 'bold',
-                color: 'cyan.400',
-              })}
-            >
-              {stats.new}
-            </div>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '1.5',
-                fontSize: 'base',
-                fontWeight: 'medium',
-                color: 'gray.400',
-              })}
-            >
-              <Star className={css({ h: '4', w: '4' })} />
-              <span>New This Week</span>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+      </div>
 
       {/* Fixed Position Buttons - Feedback & Support */}
       <div
@@ -1426,23 +1185,13 @@ export default function HomePage() {
           pointerEvents: 'none',
         }}
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.7, duration: 0.4 }}
-          style={{ pointerEvents: 'auto' }}
-        >
+        <div style={{ pointerEvents: 'auto' }}>
           <TreatMeDialog />
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, duration: 0.4 }}
-          style={{ pointerEvents: 'auto' }}
-        >
+        <div style={{ pointerEvents: 'auto' }}>
           <FeedbackDialog />
-        </motion.div>
+        </div>
       </div>
 
       {/* Structured Data for SEO */}
@@ -1487,12 +1236,10 @@ export default function HomePage() {
 const VirtualizedToolsList = memo(function VirtualizedToolsList({
   tools,
   viewMode,
-  shouldReduceMotion,
   categoryValue,
 }: {
   tools: Tool[]
   viewMode: 'grid' | 'list'
-  shouldReduceMotion: boolean | null
   categoryValue: ToolCategory
 }) {
   const parentRef = useRef<HTMLDivElement>(null)
@@ -1580,24 +1327,15 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
         })}
       >
         {tools.map((tool) => (
-          <ToolCard
-            key={tool.title}
-            tool={tool}
-            viewMode={viewMode}
-            shouldReduceMotion={shouldReduceMotion}
-          />
+          <ToolCard key={tool.title} tool={tool} viewMode={viewMode} />
         ))}
       </div>
     )
   }
 
   return (
-    <motion.div
+    <div
       ref={parentRef}
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: 'auto' }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.3 }}
       className={css({
         position: 'relative',
         w: 'full',
@@ -1642,19 +1380,14 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
                 })}
               >
                 {rowTools.map((tool) => (
-                  <ToolCard
-                    key={tool.title}
-                    tool={tool}
-                    viewMode={viewMode}
-                    shouldReduceMotion={shouldReduceMotion}
-                  />
+                  <ToolCard key={tool.title} tool={tool} viewMode={viewMode} />
                 ))}
               </div>
             </div>
           )
         })}
       </div>
-    </motion.div>
+    </div>
   )
 })
 
@@ -1662,15 +1395,12 @@ const VirtualizedToolsList = memo(function VirtualizedToolsList({
 const ToolCard = memo(function ToolCard({
   tool,
   viewMode,
-  shouldReduceMotion,
 }: {
   tool: Tool
   viewMode: 'grid' | 'list'
-  shouldReduceMotion: boolean | null
 }) {
   const Icon = tool.icon
   const isComingSoon = tool.comingSoon
-  const noMotion = shouldReduceMotion ?? false
 
   // Save scroll position when clicking on tool links
   const handleToolClick = () => {
@@ -1681,7 +1411,7 @@ const ToolCard = memo(function ToolCard({
 
   if (viewMode === 'list') {
     return (
-      <motion.div initial={false} whileHover={noMotion ? {} : { x: 4 }}>
+      <div>
         <Link
           href={isComingSoon ? '#' : tool.href}
           onClick={handleToolClick}
@@ -1716,7 +1446,7 @@ const ToolCard = memo(function ToolCard({
                 gap: '5',
               })}
             >
-              <motion.div
+              <div
                 className={css({
                   flexShrink: 0,
                   rounded: 'xl',
@@ -1726,11 +1456,9 @@ const ToolCard = memo(function ToolCard({
                 style={{
                   background: gradientToCss(tool.gradient),
                 }}
-                whileHover={noMotion ? {} : { rotate: [0, -5, 5, 0], scale: 1.05 }}
-                transition={{ duration: 0.3 }}
               >
                 <Icon className={css({ h: '7', w: '7', color: 'white' })} />
-              </motion.div>
+              </div>
 
               <div className={css({ minW: 0, flex: 1 })}>
                 <div
@@ -1874,17 +1602,13 @@ const ToolCard = memo(function ToolCard({
             </div>
           </Card>
         </Link>
-      </motion.div>
+      </div>
     )
   }
 
   // Grid view
   return (
-    <motion.div
-      initial={false}
-      whileHover={noMotion ? {} : { y: -8, scale: 1.02 }}
-      whileTap={noMotion ? {} : { scale: 0.98 }}
-    >
+    <div>
       <Link
         href={isComingSoon ? '#' : tool.href}
         onClick={handleToolClick}
@@ -1922,7 +1646,7 @@ const ToolCard = memo(function ToolCard({
                 justifyContent: 'space-between',
               })}
             >
-              <motion.div
+              <div
                 className={css({
                   rounded: 'xl',
                   p: '3.5',
@@ -1931,11 +1655,9 @@ const ToolCard = memo(function ToolCard({
                 style={{
                   background: gradientToCss(tool.gradient),
                 }}
-                whileHover={noMotion ? {} : { rotate: [0, -10, 10, 0], scale: 1.1 }}
-                transition={{ duration: 0.4 }}
               >
                 <Icon className={css({ h: '7', w: '7', color: 'white' })} />
-              </motion.div>
+              </div>
 
               <div
                 className={css({
@@ -2098,6 +1820,6 @@ const ToolCard = memo(function ToolCard({
           />
         </Card>
       </Link>
-    </motion.div>
+    </div>
   )
 })

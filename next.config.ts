@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['pdfjs-dist', 'ffmpeg-static', 'canvas-confetti', 'vaul'],
+  serverExternalPackages: ['pdfjs-dist', 'ffmpeg-static', 'vaul'],
 
   // Transpile ESM packages that have issues with Next.js
   transpilePackages: [
@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
 
   // Optimize package imports - reduces bundle size
   experimental: {
-    optimizePackageImports: ['framer-motion', '@tanstack/react-query', 'lucide-react'],
+    optimizePackageImports: ['@tanstack/react-query', 'lucide-react'],
   },
 
   // Enable compression

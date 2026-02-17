@@ -40,11 +40,6 @@ describe('Grammar Checker Page', () => {
       render(<GrammarCheckerPage />)
       expect(screen.getByText('0 / 10,000 characters')).toBeInTheDocument()
     })
-
-    it('displays pro tips section', () => {
-      render(<GrammarCheckerPage />)
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    })
   })
 
   describe('Text Input', () => {

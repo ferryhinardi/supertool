@@ -14,19 +14,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-// Mock FAQAccordion
-vi.mock('@/components/ui/faq-accordion', () => ({
-  FAQAccordion: ({ faqs }: { faqs: Array<{ question: string; answer: string }> }) => (
-    <div data-testid="faq-accordion">
-      {faqs.map((faq, i) => (
-        <div key={i} data-testid={`faq-item-${i}`}>
-          <span>{faq.question}</span>
-        </div>
-      ))}
-    </div>
-  ),
-}))
-
 // Mock RelatedTools
 vi.mock('@/components/ui/related-tools', () => ({
   RelatedTools: ({ currentToolPath }: { currentToolPath: string }) => (
@@ -78,25 +65,6 @@ vi.mock('nuqs', () => ({
   parseAsStringEnum: vi.fn(() => ({
     withDefault: vi.fn(() => ({})),
   })),
-}))
-
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      className,
-      ...props
-    }: {
-      children: React.ReactNode
-      className?: string
-      [key: string]: unknown
-    }) => (
-      <div className={className} {...props}>
-        {children}
-      </div>
-    ),
-  },
 }))
 
 // Clipboard mock - will be set up with vi.spyOn in beforeEach
@@ -185,12 +153,6 @@ describe('URLEncoderPage', () => {
       expect(screen.getByText('Unicode')).toBeInTheDocument()
       expect(screen.getByText('Email in URL')).toBeInTheDocument()
       expect(screen.getByText('Encoded string')).toBeInTheDocument()
-    })
-
-    it('renders FAQ accordion', () => {
-      render(<URLEncoderPage />)
-
-      expect(screen.getByTestId('faq-accordion')).toBeInTheDocument()
     })
 
     it('renders related tools section', () => {

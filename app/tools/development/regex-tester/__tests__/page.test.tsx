@@ -25,19 +25,6 @@ vi.mock('@/hooks/tools/useRecentTools', () => ({
   useTrackToolView: vi.fn(),
 }))
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-    span: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <span {...props}>{children}</span>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}))
-
 import { toast } from 'sonner'
 import { trackToolEvent } from '@/lib/services/analytics'
 import RegexTesterPage from '../page'

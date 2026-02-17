@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import * as yaml from 'js-yaml'
 import { ArrowLeftRight, Check, Copy, Download, FileJson, Info, Sparkles } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
@@ -213,11 +212,13 @@ developers:
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -268,13 +269,15 @@ developers:
           Convert between YAML and JSON formats instantly with syntax validation and formatting.
           Perfect for configuration files, API responses, and data transformation.
         </p>
-      </motion.div>
+      </div>
 
       {/* Conversion Direction Toggle */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -362,13 +365,15 @@ developers:
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Converter */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -450,9 +455,7 @@ developers:
                 })}
               />
               {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                <div
                   className={css({
                     mt: '3',
                     rounded: 'lg',
@@ -460,6 +463,8 @@ developers:
                     borderColor: 'red.500/30',
                     bg: 'red.500/10',
                     p: '3',
+                    animation: 'slideUp 0.5s ease-out forwards',
+                    opacity: 0,
                   })}
                 >
                   <div className={css({ display: 'flex', alignItems: 'start', gap: '2' })}>
@@ -473,7 +478,7 @@ developers:
                       <p className={css({ fontSize: 'xs', color: 'red.400', mt: '1' })}>{error}</p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -558,13 +563,15 @@ developers:
             </CardContent>
           </Card>
         </div>
-      </motion.div>
+      </div>
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.3s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -597,7 +604,7 @@ developers:
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   BookOpen,
   Clock,
@@ -290,10 +289,8 @@ query GetFilm {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={css({ spaceY: '4' })}
+      <div
+        className={css({ spaceY: '4', animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}
       >
         <div
           className={css({
@@ -336,7 +333,7 @@ query GetFilm {
         <Suspense fallback={<div>Loading...</div>}>
           <ToolSearch />
         </Suspense>
-      </motion.div>
+      </div>
 
       {/* Main Content */}
       <div

@@ -5,15 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/services/analytics'
 import AISnippetGeneratorPage from '../page'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {
@@ -80,14 +71,6 @@ describe('AI Snippet Generator - Component Tests', () => {
     render(<AISnippetGeneratorPage />)
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_snippet_open', {})
-  })
-
-  it('should display pro tips card', () => {
-    render(<AISnippetGeneratorPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/specific|edge cases/i)
   })
 
   it('should display all language options', () => {

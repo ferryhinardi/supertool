@@ -1,8 +1,7 @@
 'use client'
 
-import { motion, useDragControls } from 'framer-motion'
 import { Download, Trash2 } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { css } from '@/styled-system/css'
 
 interface PDFFile {
@@ -35,44 +34,8 @@ export function SwipeablePDFCard({
   renderThumbnail,
   disabled = false,
 }: SwipeablePDFCardProps) {
-  const [isDragging, setIsDragging] = useState(false)
-  const [swipeOffset, setSwipeOffset] = useState(0)
-  const dragControls = useDragControls()
-
-  const handleDragEnd = useCallback(
-    (_event: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number } }) => {
-      setIsDragging(false)
-      const threshold = 100
-
-      // Swipe right to delete
-      if (info.offset.x > threshold) {
-        onRemove(pdf)
-        setSwipeOffset(0)
-        return
-      }
-
-      // Swipe left to download
-      if (info.offset.x < -threshold && pdf.status === 'completed' && pdf.processedBlob) {
-        onDownload(pdf)
-      }
-
-      // Reset position
-      setSwipeOffset(0)
-    },
-    [pdf, onRemove, onDownload]
-  )
-
-  const handleDrag = useCallback(
-    (_event: MouseEvent | TouchEvent | PointerEvent, info: { offset: { x: number } }) => {
-      if (disabled) return
-
-      // Limit drag distance
-      const maxDrag = 150
-      const offset = Math.max(-maxDrag, Math.min(maxDrag, info.offset.x))
-      setSwipeOffset(offset)
-    },
-    [disabled]
-  )
+  const [_isDragging] = useState(false)
+  const [swipeOffset] = useState(0)
 
   // Status badge color
   const getStatusColor = () => {
@@ -107,9 +70,7 @@ export function SwipeablePDFCard({
     >
       {/* Left action (Download) - revealed when swiping left */}
       {showLeftAction && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+        <div
           className={css({
             position: 'absolute',
             right: '0',
@@ -130,14 +91,12 @@ export function SwipeablePDFCard({
               color: 'white',
             })}
           />
-        </motion.div>
+        </div>
       )}
 
       {/* Right action (Delete) - revealed when swiping right */}
       {showRightAction && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+        <div
           className={css({
             position: 'absolute',
             left: '0',
@@ -158,26 +117,16 @@ export function SwipeablePDFCard({
               color: 'white',
             })}
           />
-        </motion.div>
+        </div>
       )}
 
-      {/* Main card content - draggable */}
-      <motion.div
-        drag="x"
-        dragControls={dragControls}
-        dragConstraints={{ left: -150, right: 150 }}
-        dragElastic={0.2}
-        onDragStart={() => setIsDragging(true)}
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
-        animate={{ x: swipeOffset }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      {/* Main card content */}
+      <div
         className={css({
           position: 'relative',
           zIndex: 1,
           bg: 'gray.800/90',
           backdropFilter: 'blur(4px)',
-          cursor: isDragging ? 'grabbing' : 'grab',
         })}
       >
         <div
@@ -292,10 +241,10 @@ export function SwipeablePDFCard({
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Swipe hint */}
-      {!isDragging && swipeOffset === 0 && (
+      {!_isDragging && swipeOffset === 0 && (
         <div
           className={css({
             position: 'absolute',

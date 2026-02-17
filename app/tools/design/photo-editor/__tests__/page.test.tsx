@@ -16,17 +16,6 @@ vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({
-      children,
-      ...props
-    }: { children?: React.ReactNode } & React.HTMLAttributes<HTMLDivElement>) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock canvas and image APIs
 class MockImage {
   onload: (() => void) | null = null

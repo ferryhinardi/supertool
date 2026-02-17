@@ -110,11 +110,6 @@ describe('RandomGeneratorPage', () => {
       expect(getGenerateButton()).toBeInTheDocument()
     })
 
-    it('renders FAQ section', () => {
-      renderWithNuqs()
-      expect(screen.getByText('How random are the generated values?')).toBeInTheDocument()
-    })
-
     it('renders loading fallback initially via Suspense', () => {
       // The Suspense fallback is handled by React internals
       // We just verify the component renders correctly

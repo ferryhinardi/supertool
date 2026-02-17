@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   AlertTriangle,
   BookOpen,
@@ -133,11 +132,13 @@ function AICommandExplainerContent() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -188,13 +189,15 @@ function AICommandExplainerContent() {
           Understand complex CLI commands with AI assistance. Get detailed breakdowns, parameter
           explanations, safety warnings, and alternative suggestions.
         </p>
-      </motion.div>
+      </div>
 
       {/* Command Input */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -320,13 +323,15 @@ function AICommandExplainerContent() {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Example Commands */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.2s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -396,16 +401,18 @@ function AICommandExplainerContent() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Explanation Results */}
       {explanation && (
         <>
           {/* Overall Purpose */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+          <div
+            className={css({
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.3s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -427,14 +434,16 @@ function AICommandExplainerContent() {
                 </p>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Safety Warnings */}
           {explanation.safetyWarnings.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.4s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -473,15 +482,17 @@ function AICommandExplainerContent() {
                   </ul>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Command Breakdown */}
           {explanation.breakdown.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.5s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -530,15 +541,17 @@ function AICommandExplainerContent() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Parameters */}
           {explanation.parameters.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.6s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -587,15 +600,17 @@ function AICommandExplainerContent() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Alternatives */}
           {explanation.alternatives.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
+            <div
+              className={css({
+                animation: 'slideUp 0.5s ease-out forwards',
+                animationDelay: '0.7s',
+                opacity: 0,
+              })}
             >
               <Card
                 className={css({
@@ -634,44 +649,10 @@ function AICommandExplainerContent() {
                   </ul>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </>
       )}
-
-      {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-      >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'green.500/20',
-            bg: 'green.500/5',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
-            <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Sparkles className={css({ h: '6', w: '6', color: 'green.400', flexShrink: '0' })} />
-              <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'green.300' })}>
-                  How It Works
-                </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
-                  <li>• AI analyzes your command and identifies the shell/tool type</li>
-                  <li>• Get detailed breakdowns of each command component</li>
-                  <li>• Understand what each flag and parameter does</li>
-                  <li>• Receive safety warnings for potentially dangerous operations</li>
-                  <li>• Discover safer or more efficient alternatives</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

@@ -1,7 +1,6 @@
 'use client'
 
 import imageCompression from 'browser-image-compression'
-import { AnimatePresence, motion } from 'framer-motion'
 import JSZip from 'jszip'
 import {
   CheckCircle,
@@ -22,7 +21,7 @@ import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FAQAccordion } from '@/components/ui/faq-accordion'
+
 import { Progress } from '@/components/ui/progress'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
@@ -337,10 +336,7 @@ export default function ImageOptimizerPage() {
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -412,14 +408,11 @@ export default function ImageOptimizerPage() {
           Compress and optimize images up to 80% smaller without visible quality loss. Convert
           between JPG, PNG, and WebP formats with batch processing.
         </p>
-      </motion.div>
+      </div>
 
       {/* Stats Summary */}
       {images.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
+        <div
           className={css({
             display: 'grid',
             gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
@@ -524,7 +517,7 @@ export default function ImageOptimizerPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       <div
@@ -537,10 +530,7 @@ export default function ImageOptimizerPage() {
         })}
       >
         {/* Settings Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <div
           className={css({ w: 'full', gridColumn: { base: '1 / -1', md: '1 / 2', lg: '1 / 2' } })}
         >
           <Card
@@ -916,13 +906,10 @@ export default function ImageOptimizerPage() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Upload & Images Panel */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <div
           className={css({ w: 'full', gridColumn: { base: '1 / -1', md: '2 / 3', lg: '2 / 4' } })}
         >
           <Card
@@ -978,475 +965,459 @@ export default function ImageOptimizerPage() {
                         pr: '2',
                       })}
                     >
-                      <AnimatePresence>
-                        {images.map((image) => (
-                          <motion.div
-                            key={image.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className={css({
-                              rounded: 'lg',
-                              border: '1px solid',
-                              borderColor: 'gray.800',
-                              bg: 'gray.900/80',
-                              p: '4',
-                            })}
-                          >
+                      {images.map((image) => (
+                        <div
+                          key={image.id}
+                          className={css({
+                            rounded: 'lg',
+                            border: '1px solid',
+                            borderColor: 'gray.800',
+                            bg: 'gray.900/80',
+                            p: '4',
+                          })}
+                        >
+                          <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+                            {/* Image Preview */}
                             <div
-                              className={css({ display: 'flex', alignItems: 'start', gap: '4' })}
+                              className={css({
+                                position: 'relative',
+                                h: '20',
+                                w: '20',
+                                flexShrink: '0',
+                                overflow: 'hidden',
+                                rounded: 'lg',
+                                bg: 'gray.800',
+                              })}
                             >
-                              {/* Image Preview */}
-                              <div
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={image.preview}
+                                alt={image.file.name}
                                 className={css({
-                                  position: 'relative',
-                                  h: '20',
-                                  w: '20',
-                                  flexShrink: '0',
-                                  overflow: 'hidden',
-                                  rounded: 'lg',
-                                  bg: 'gray.800',
+                                  h: 'full',
+                                  w: 'full',
+                                  objectFit: 'cover',
                                 })}
-                              >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={image.preview}
-                                  alt={image.file.name}
-                                  className={css({
-                                    h: 'full',
-                                    w: 'full',
-                                    objectFit: 'cover',
-                                  })}
-                                />
-                                {image.status === 'completed' && (
-                                  <div
-                                    className={css({
-                                      position: 'absolute',
-                                      inset: '0',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      bg: 'teal.500/20',
-                                    })}
-                                  >
-                                    <CheckCircle
-                                      className={css({ h: '6', w: '6', color: 'teal.400' })}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Image Info */}
-                              <div className={css({ minW: '0', flex: '1' })}>
+                              />
+                              {image.status === 'completed' && (
                                 <div
                                   className={css({
-                                    mb: '2',
+                                    position: 'absolute',
+                                    inset: '0',
                                     display: 'flex',
-                                    alignItems: 'start',
-                                    justifyContent: 'space-between',
-                                    gap: '2',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    bg: 'teal.500/20',
                                   })}
                                 >
-                                  <div className={css({ minW: '0', flex: '1' })}>
-                                    <p
-                                      className={css({
-                                        truncate: true,
-                                        fontSize: 'sm',
-                                        fontWeight: 'medium',
-                                        color: 'gray.200',
-                                      })}
-                                    >
-                                      {image.file.name}
-                                    </p>
-                                    <div
-                                      className={css({
-                                        mt: '1',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '3',
-                                        fontSize: 'xs',
-                                        color: 'white',
-                                      })}
-                                    >
-                                      <span>{formatBytes(image.originalSize)}</span>
-                                      {image.compressedSize && (
-                                        <>
-                                          <span>→</span>
-                                          <span className={css({ color: 'teal.400' })}>
-                                            {formatBytes(image.compressedSize)}
-                                          </span>
-                                          <span
-                                            className={css({
-                                              rounded: 'md',
-                                              bg: 'teal.500/20',
-                                              px: '2',
-                                              py: '0.5',
-                                              color: 'teal.300',
-                                            })}
-                                          >
-                                            {calculateSavings(
-                                              image.originalSize,
-                                              image.compressedSize
-                                            )}
-                                            % saved
-                                          </span>
-                                        </>
-                                      )}
-                                    </div>
-                                  </div>
+                                  <CheckCircle
+                                    className={css({ h: '6', w: '6', color: 'teal.400' })}
+                                  />
+                                </div>
+                              )}
+                            </div>
 
-                                  {/* Action Buttons */}
-                                  <div className={css({ display: 'flex', gap: '1' })}>
-                                    {image.status === 'completed' && image.compressedPreview && (
-                                      <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() => {
-                                          setExpandedCompare(
-                                            expandedCompare === image.id ? null : image.id
-                                          )
-                                          setComparePosition(50)
-                                          trackEvent({
-                                            action: 'compare_view_toggled',
-                                            category: 'image_optimizer',
-                                            label:
-                                              expandedCompare === image.id ? 'closed' : 'opened',
-                                          })
-                                        }}
-                                        className={css({
-                                          h: '8',
-                                          w: '8',
-                                          p: '0',
-                                          color:
-                                            expandedCompare === image.id ? 'cyan.400' : 'gray.400',
-                                          _hover: {
-                                            bg: 'cyan.500/20',
-                                            color: 'cyan.400',
-                                          },
-                                        })}
-                                        title="Compare before/after"
-                                      >
-                                        <Eye className={css({ h: '4', w: '4' })} />
-                                      </Button>
-                                    )}
-                                    {image.status === 'completed' && (
-                                      <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() => handleDownload(image)}
-                                        className={css({
-                                          h: '8',
-                                          w: '8',
-                                          p: '0',
-                                          color: 'teal.400',
-                                          _hover: {
+                            {/* Image Info */}
+                            <div className={css({ minW: '0', flex: '1' })}>
+                              <div
+                                className={css({
+                                  mb: '2',
+                                  display: 'flex',
+                                  alignItems: 'start',
+                                  justifyContent: 'space-between',
+                                  gap: '2',
+                                })}
+                              >
+                                <div className={css({ minW: '0', flex: '1' })}>
+                                  <p
+                                    className={css({
+                                      truncate: true,
+                                      fontSize: 'sm',
+                                      fontWeight: 'medium',
+                                      color: 'gray.200',
+                                    })}
+                                  >
+                                    {image.file.name}
+                                  </p>
+                                  <div
+                                    className={css({
+                                      mt: '1',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '3',
+                                      fontSize: 'xs',
+                                      color: 'white',
+                                    })}
+                                  >
+                                    <span>{formatBytes(image.originalSize)}</span>
+                                    {image.compressedSize && (
+                                      <>
+                                        <span>→</span>
+                                        <span className={css({ color: 'teal.400' })}>
+                                          {formatBytes(image.compressedSize)}
+                                        </span>
+                                        <span
+                                          className={css({
+                                            rounded: 'md',
                                             bg: 'teal.500/20',
-                                          },
-                                        })}
-                                      >
-                                        <Download className={css({ h: '4', w: '4' })} />
-                                      </Button>
+                                            px: '2',
+                                            py: '0.5',
+                                            color: 'teal.300',
+                                          })}
+                                        >
+                                          {calculateSavings(
+                                            image.originalSize,
+                                            image.compressedSize
+                                          )}
+                                          % saved
+                                        </span>
+                                      </>
                                     )}
+                                  </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className={css({ display: 'flex', gap: '1' })}>
+                                  {image.status === 'completed' && image.compressedPreview && (
                                     <Button
                                       size="sm"
                                       variant="ghost"
-                                      onClick={() => handleRemove(image.id)}
+                                      onClick={() => {
+                                        setExpandedCompare(
+                                          expandedCompare === image.id ? null : image.id
+                                        )
+                                        setComparePosition(50)
+                                        trackEvent({
+                                          action: 'compare_view_toggled',
+                                          category: 'image_optimizer',
+                                          label: expandedCompare === image.id ? 'closed' : 'opened',
+                                        })
+                                      }}
                                       className={css({
                                         h: '8',
                                         w: '8',
                                         p: '0',
-                                        color: 'red.400',
+                                        color:
+                                          expandedCompare === image.id ? 'cyan.400' : 'gray.400',
                                         _hover: {
-                                          bg: 'red.500/20',
+                                          bg: 'cyan.500/20',
+                                          color: 'cyan.400',
+                                        },
+                                      })}
+                                      title="Compare before/after"
+                                    >
+                                      <Eye className={css({ h: '4', w: '4' })} />
+                                    </Button>
+                                  )}
+                                  {image.status === 'completed' && (
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleDownload(image)}
+                                      className={css({
+                                        h: '8',
+                                        w: '8',
+                                        p: '0',
+                                        color: 'teal.400',
+                                        _hover: {
+                                          bg: 'teal.500/20',
                                         },
                                       })}
                                     >
-                                      <Trash2 className={css({ h: '4', w: '4' })} />
+                                      <Download className={css({ h: '4', w: '4' })} />
                                     </Button>
+                                  )}
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleRemove(image.id)}
+                                    className={css({
+                                      h: '8',
+                                      w: '8',
+                                      p: '0',
+                                      color: 'red.400',
+                                      _hover: {
+                                        bg: 'red.500/20',
+                                      },
+                                    })}
+                                  >
+                                    <Trash2 className={css({ h: '4', w: '4' })} />
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/* Progress Bar */}
+                              {image.status === 'processing' && (
+                                <div className={css({ spaceY: '1' })}>
+                                  <Progress value={image.progress} className={css({ h: '2' })} />
+                                  <p className={css({ fontSize: 'xs', color: 'white' })}>
+                                    Optimizing... {image.progress}%
+                                  </p>
+                                </div>
+                              )}
+
+                              {/* Error Message */}
+                              {image.status === 'error' && (
+                                <p className={css({ fontSize: 'xs', color: 'red.400' })}>
+                                  {image.error}
+                                </p>
+                              )}
+
+                              {/* Status */}
+                              {image.status === 'pending' && (
+                                <p className={css({ fontSize: 'xs', color: 'white' })}>
+                                  Ready to optimize
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Before/After Comparison Slider */}
+
+                          {expandedCompare === image.id && image.compressedPreview && (
+                            <div
+                              className={css({
+                                mt: '4',
+                                overflow: 'hidden',
+                              })}
+                            >
+                              <div
+                                className={css({
+                                  rounded: 'lg',
+                                  border: '1px solid',
+                                  borderColor: 'cyan.500/30',
+                                  bg: 'gray.800/50',
+                                  p: '4',
+                                })}
+                              >
+                                <div
+                                  className={css({
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    mb: '3',
+                                  })}
+                                >
+                                  <span
+                                    className={css({
+                                      fontSize: 'sm',
+                                      fontWeight: 'medium',
+                                      color: 'cyan.300',
+                                    })}
+                                  >
+                                    Before/After Comparison
+                                  </span>
+                                  <span
+                                    className={css({
+                                      fontSize: 'xs',
+                                      color: 'gray.400',
+                                    })}
+                                  >
+                                    Drag slider to compare
+                                  </span>
+                                </div>
+
+                                {/* Comparison Container */}
+                                <div
+                                  role="slider"
+                                  aria-label="Image comparison slider"
+                                  aria-valuenow={Math.round(comparePosition)}
+                                  aria-valuemin={0}
+                                  aria-valuemax={100}
+                                  tabIndex={0}
+                                  className={css({
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    rounded: 'md',
+                                    bg: 'gray.900',
+                                    aspectRatio: '16 / 9',
+                                    userSelect: 'none',
+                                    cursor: 'ew-resize',
+                                    _focus: {
+                                      outline: '2px solid',
+                                      outlineColor: 'cyan.500',
+                                      outlineOffset: '2px',
+                                    },
+                                  })}
+                                  onMouseMove={(e) => {
+                                    if (e.buttons === 1) {
+                                      const rect = e.currentTarget.getBoundingClientRect()
+                                      const x = e.clientX - rect.left
+                                      const percentage = Math.max(
+                                        0,
+                                        Math.min(100, (x / rect.width) * 100)
+                                      )
+                                      setComparePosition(percentage)
+                                    }
+                                  }}
+                                  onTouchMove={(e) => {
+                                    const touch = e.touches[0]
+                                    const rect = e.currentTarget.getBoundingClientRect()
+                                    const x = touch.clientX - rect.left
+                                    const percentage = Math.max(
+                                      0,
+                                      Math.min(100, (x / rect.width) * 100)
+                                    )
+                                    setComparePosition(percentage)
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'ArrowLeft') {
+                                      setComparePosition((prev) => Math.max(0, prev - 5))
+                                    } else if (e.key === 'ArrowRight') {
+                                      setComparePosition((prev) => Math.min(100, prev + 5))
+                                    }
+                                  }}
+                                >
+                                  {/* Original Image (Background - Full) */}
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={image.preview}
+                                    alt="Original"
+                                    className={css({
+                                      position: 'absolute',
+                                      inset: '0',
+                                      h: 'full',
+                                      w: 'full',
+                                      objectFit: 'contain',
+                                    })}
+                                    draggable={false}
+                                  />
+
+                                  {/* Optimized Image (Foreground - Clipped) */}
+                                  <div
+                                    className={css({
+                                      position: 'absolute',
+                                      inset: '0',
+                                      overflow: 'hidden',
+                                    })}
+                                    style={{
+                                      clipPath: `inset(0 ${100 - comparePosition}% 0 0)`,
+                                    }}
+                                  >
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                      src={image.compressedPreview}
+                                      alt="Optimized"
+                                      className={css({
+                                        h: 'full',
+                                        w: 'full',
+                                        objectFit: 'contain',
+                                      })}
+                                      draggable={false}
+                                    />
+                                  </div>
+
+                                  {/* Slider Handle */}
+                                  <div
+                                    className={css({
+                                      position: 'absolute',
+                                      top: '0',
+                                      bottom: '0',
+                                      w: '1',
+                                      bg: 'cyan.400',
+                                      cursor: 'ew-resize',
+                                      zIndex: '10',
+                                      _after: {
+                                        content: '""',
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        w: '8',
+                                        h: '8',
+                                        rounded: 'full',
+                                        bg: 'cyan.400',
+                                        border: '2px solid',
+                                        borderColor: 'white',
+                                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+                                      },
+                                    })}
+                                    style={{ left: `${comparePosition}%` }}
+                                  />
+
+                                  {/* Labels */}
+                                  <div
+                                    className={css({
+                                      position: 'absolute',
+                                      top: '2',
+                                      left: '2',
+                                      rounded: 'md',
+                                      bg: 'gray.900/80',
+                                      px: '2',
+                                      py: '1',
+                                      fontSize: 'xs',
+                                      fontWeight: 'medium',
+                                      color: 'gray.300',
+                                      backdropFilter: 'blur(4px)',
+                                    })}
+                                  >
+                                    Optimized
+                                  </div>
+                                  <div
+                                    className={css({
+                                      position: 'absolute',
+                                      top: '2',
+                                      right: '2',
+                                      rounded: 'md',
+                                      bg: 'gray.900/80',
+                                      px: '2',
+                                      py: '1',
+                                      fontSize: 'xs',
+                                      fontWeight: 'medium',
+                                      color: 'gray.300',
+                                      backdropFilter: 'blur(4px)',
+                                    })}
+                                  >
+                                    Original
                                   </div>
                                 </div>
 
-                                {/* Progress Bar */}
-                                {image.status === 'processing' && (
-                                  <div className={css({ spaceY: '1' })}>
-                                    <Progress value={image.progress} className={css({ h: '2' })} />
-                                    <p className={css({ fontSize: 'xs', color: 'white' })}>
-                                      Optimizing... {image.progress}%
-                                    </p>
-                                  </div>
-                                )}
-
-                                {/* Error Message */}
-                                {image.status === 'error' && (
-                                  <p className={css({ fontSize: 'xs', color: 'red.400' })}>
-                                    {image.error}
-                                  </p>
-                                )}
-
-                                {/* Status */}
-                                {image.status === 'pending' && (
-                                  <p className={css({ fontSize: 'xs', color: 'white' })}>
-                                    Ready to optimize
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Before/After Comparison Slider */}
-                            <AnimatePresence>
-                              {expandedCompare === image.id && image.compressedPreview && (
-                                <motion.div
-                                  initial={{ opacity: 0, height: 0 }}
-                                  animate={{ opacity: 1, height: 'auto' }}
-                                  exit={{ opacity: 0, height: 0 }}
-                                  transition={{ duration: 0.3 }}
-                                  className={css({
-                                    mt: '4',
-                                    overflow: 'hidden',
-                                  })}
-                                >
+                                {/* Slider Control */}
+                                <div className={css({ mt: '3' })}>
+                                  <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={comparePosition}
+                                    onChange={(e) => setComparePosition(Number(e.target.value))}
+                                    className={css({
+                                      w: 'full',
+                                      accentColor: 'cyan.500',
+                                      cursor: 'pointer',
+                                    })}
+                                    aria-label="Comparison slider"
+                                  />
                                   <div
                                     className={css({
-                                      rounded: 'lg',
-                                      border: '1px solid',
-                                      borderColor: 'cyan.500/30',
-                                      bg: 'gray.800/50',
-                                      p: '4',
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      mt: '1',
+                                      fontSize: 'xs',
+                                      color: 'gray.400',
                                     })}
                                   >
-                                    <div
-                                      className={css({
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        mb: '3',
-                                      })}
-                                    >
-                                      <span
-                                        className={css({
-                                          fontSize: 'sm',
-                                          fontWeight: 'medium',
-                                          color: 'cyan.300',
-                                        })}
-                                      >
-                                        Before/After Comparison
-                                      </span>
-                                      <span
-                                        className={css({
-                                          fontSize: 'xs',
-                                          color: 'gray.400',
-                                        })}
-                                      >
-                                        Drag slider to compare
-                                      </span>
-                                    </div>
-
-                                    {/* Comparison Container */}
-                                    <div
-                                      role="slider"
-                                      aria-label="Image comparison slider"
-                                      aria-valuenow={Math.round(comparePosition)}
-                                      aria-valuemin={0}
-                                      aria-valuemax={100}
-                                      tabIndex={0}
-                                      className={css({
-                                        position: 'relative',
-                                        overflow: 'hidden',
-                                        rounded: 'md',
-                                        bg: 'gray.900',
-                                        aspectRatio: '16 / 9',
-                                        userSelect: 'none',
-                                        cursor: 'ew-resize',
-                                        _focus: {
-                                          outline: '2px solid',
-                                          outlineColor: 'cyan.500',
-                                          outlineOffset: '2px',
-                                        },
-                                      })}
-                                      onMouseMove={(e) => {
-                                        if (e.buttons === 1) {
-                                          const rect = e.currentTarget.getBoundingClientRect()
-                                          const x = e.clientX - rect.left
-                                          const percentage = Math.max(
-                                            0,
-                                            Math.min(100, (x / rect.width) * 100)
-                                          )
-                                          setComparePosition(percentage)
-                                        }
-                                      }}
-                                      onTouchMove={(e) => {
-                                        const touch = e.touches[0]
-                                        const rect = e.currentTarget.getBoundingClientRect()
-                                        const x = touch.clientX - rect.left
-                                        const percentage = Math.max(
-                                          0,
-                                          Math.min(100, (x / rect.width) * 100)
-                                        )
-                                        setComparePosition(percentage)
-                                      }}
-                                      onKeyDown={(e) => {
-                                        if (e.key === 'ArrowLeft') {
-                                          setComparePosition((prev) => Math.max(0, prev - 5))
-                                        } else if (e.key === 'ArrowRight') {
-                                          setComparePosition((prev) => Math.min(100, prev + 5))
-                                        }
-                                      }}
-                                    >
-                                      {/* Original Image (Background - Full) */}
-                                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                                      <img
-                                        src={image.preview}
-                                        alt="Original"
-                                        className={css({
-                                          position: 'absolute',
-                                          inset: '0',
-                                          h: 'full',
-                                          w: 'full',
-                                          objectFit: 'contain',
-                                        })}
-                                        draggable={false}
-                                      />
-
-                                      {/* Optimized Image (Foreground - Clipped) */}
-                                      <div
-                                        className={css({
-                                          position: 'absolute',
-                                          inset: '0',
-                                          overflow: 'hidden',
-                                        })}
-                                        style={{
-                                          clipPath: `inset(0 ${100 - comparePosition}% 0 0)`,
-                                        }}
-                                      >
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img
-                                          src={image.compressedPreview}
-                                          alt="Optimized"
-                                          className={css({
-                                            h: 'full',
-                                            w: 'full',
-                                            objectFit: 'contain',
-                                          })}
-                                          draggable={false}
-                                        />
-                                      </div>
-
-                                      {/* Slider Handle */}
-                                      <div
-                                        className={css({
-                                          position: 'absolute',
-                                          top: '0',
-                                          bottom: '0',
-                                          w: '1',
-                                          bg: 'cyan.400',
-                                          cursor: 'ew-resize',
-                                          zIndex: '10',
-                                          _after: {
-                                            content: '""',
-                                            position: 'absolute',
-                                            top: '50%',
-                                            left: '50%',
-                                            transform: 'translate(-50%, -50%)',
-                                            w: '8',
-                                            h: '8',
-                                            rounded: 'full',
-                                            bg: 'cyan.400',
-                                            border: '2px solid',
-                                            borderColor: 'white',
-                                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
-                                          },
-                                        })}
-                                        style={{ left: `${comparePosition}%` }}
-                                      />
-
-                                      {/* Labels */}
-                                      <div
-                                        className={css({
-                                          position: 'absolute',
-                                          top: '2',
-                                          left: '2',
-                                          rounded: 'md',
-                                          bg: 'gray.900/80',
-                                          px: '2',
-                                          py: '1',
-                                          fontSize: 'xs',
-                                          fontWeight: 'medium',
-                                          color: 'gray.300',
-                                          backdropFilter: 'blur(4px)',
-                                        })}
-                                      >
-                                        Optimized
-                                      </div>
-                                      <div
-                                        className={css({
-                                          position: 'absolute',
-                                          top: '2',
-                                          right: '2',
-                                          rounded: 'md',
-                                          bg: 'gray.900/80',
-                                          px: '2',
-                                          py: '1',
-                                          fontSize: 'xs',
-                                          fontWeight: 'medium',
-                                          color: 'gray.300',
-                                          backdropFilter: 'blur(4px)',
-                                        })}
-                                      >
-                                        Original
-                                      </div>
-                                    </div>
-
-                                    {/* Slider Control */}
-                                    <div className={css({ mt: '3' })}>
-                                      <input
-                                        type="range"
-                                        min="0"
-                                        max="100"
-                                        value={comparePosition}
-                                        onChange={(e) => setComparePosition(Number(e.target.value))}
-                                        className={css({
-                                          w: 'full',
-                                          accentColor: 'cyan.500',
-                                          cursor: 'pointer',
-                                        })}
-                                        aria-label="Comparison slider"
-                                      />
-                                      <div
-                                        className={css({
-                                          display: 'flex',
-                                          justifyContent: 'space-between',
-                                          mt: '1',
-                                          fontSize: 'xs',
-                                          color: 'gray.400',
-                                        })}
-                                      >
-                                        <span>
-                                          Optimized ({formatBytes(image.compressedSize || 0)})
-                                        </span>
-                                        <span>Original ({formatBytes(image.originalSize)})</span>
-                                      </div>
-                                    </div>
+                                    <span>
+                                      Optimized ({formatBytes(image.compressedSize || 0)})
+                                    </span>
+                                    <span>Original ({formatBytes(image.originalSize)})</span>
                                   </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </>
                 )}
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       </div>
 
       {/* Features Info */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+      <div
         className={css({
           display: 'grid',
           gap: '4',
@@ -1512,175 +1483,10 @@ export default function ImageOptimizerPage() {
             </CardContent>
           </Card>
         ))}
-      </motion.div>
-
-      {/* How to Use Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className={css({
-          w: 'full',
-          maxW: '1400px',
-        })}
-      >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(4px)',
-          })}
-        >
-          <CardHeader>
-            <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
-              <CardTitle
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2',
-                  fontSize: '2xl',
-                })}
-              >
-                <Lightbulb className={css({ h: '6', w: '6', color: 'teal.400' })} />
-                How to Use Image Optimizer
-              </CardTitle>
-              <CardDescription>
-                Follow these simple steps to optimize and compress your images
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    flexShrink: '0',
-                    h: '6',
-                    w: '6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    rounded: 'full',
-                    border: '1px solid',
-                    borderColor: 'teal.500/50',
-                    bg: 'teal.500/10',
-                    color: 'teal.300',
-                  })}
-                >
-                  1
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
-                    Upload Your Images
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'white' })}>
-                    Drag and drop your images into the upload zone, or click to browse your files.
-                    Supports JPG, PNG, WebP, and GIF formats up to 50MB each.
-                  </p>
-                </div>
-              </div>
-
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    flexShrink: '0',
-                    h: '6',
-                    w: '6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    rounded: 'full',
-                    border: '1px solid',
-                    borderColor: 'teal.500/50',
-                    bg: 'teal.500/10',
-                    color: 'teal.300',
-                  })}
-                >
-                  2
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
-                    Configure Settings
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'white' })}>
-                    Select your desired output format (JPEG, PNG, or WebP), adjust quality level
-                    (10-100%), and set maximum dimensions if you want to resize your images.
-                  </p>
-                </div>
-              </div>
-
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    flexShrink: '0',
-                    h: '6',
-                    w: '6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    rounded: 'full',
-                    border: '1px solid',
-                    borderColor: 'teal.500/50',
-                    bg: 'teal.500/10',
-                    color: 'teal.300',
-                  })}
-                >
-                  3
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
-                    Optimize Images
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'white' })}>
-                    Click "Optimize All Images" to process your entire batch. Watch the real-time
-                    progress as each image is compressed, and see instant file size savings.
-                  </p>
-                </div>
-              </div>
-
-              <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                <Badge
-                  variant="outline"
-                  className={css({
-                    flexShrink: '0',
-                    h: '6',
-                    w: '6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    rounded: 'full',
-                    border: '1px solid',
-                    borderColor: 'teal.500/50',
-                    bg: 'teal.500/10',
-                    color: 'teal.300',
-                  })}
-                >
-                  4
-                </Badge>
-                <div>
-                  <h3 className={css({ fontWeight: 'semibold', color: 'gray.200', mb: '1' })}>
-                    Download Optimized Files
-                  </h3>
-                  <p className={css({ fontSize: 'sm', color: 'white' })}>
-                    Download individual optimized images or use "Download All" for batch downloads.
-                    Each file is renamed with "_optimized" suffix for easy identification.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+      </div>
 
       {/* Social Share */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.5 }}
+      <div
         className={css({
           w: 'full',
           maxW: '1400px',
@@ -1692,99 +1498,27 @@ export default function ImageOptimizerPage() {
           description="Free online tool to compress and optimize images without quality loss. Batch processing, format conversion, and smart resizing"
           hashtags={['ImageOptimizer', 'WebPerformance', 'ImageCompression', 'WebDev', 'Developer']}
         />
-      </motion.div>
-
-      {/* FAQ Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7, duration: 0.5 }}
-        className={css({
-          w: 'full',
-          maxW: '1400px',
-        })}
-      >
-        <FAQAccordion
-          faqs={[
-            {
-              question: 'How does image optimization work?',
-              answer:
-                'Image optimization uses advanced compression algorithms to reduce file size while maintaining visual quality. The tool analyzes your image, removes unnecessary metadata, applies lossy or lossless compression based on your quality settings, and can convert to more efficient formats like WebP. This process can reduce file sizes by up to 80% without noticeable quality loss at recommended settings.',
-            },
-            {
-              question: 'What quality setting should I use?',
-              answer:
-                'For most web use cases, a quality setting of 75-85% provides the best balance between file size and visual quality. Higher settings (85-100%) are recommended for professional photography or print materials where maximum quality is essential. Lower settings (60-75%) work well for thumbnails, background images, or situations where faster loading is prioritized over perfect quality.',
-            },
-            {
-              question: 'Can I optimize multiple images at once?',
-              answer:
-                'Yes, our tool supports batch processing of multiple images simultaneously. Upload all your images at once, configure your desired settings, and click "Optimize All Images" to process them together. You can then download all optimized images with a single click. This feature is perfect for bulk photo processing, website migrations, or preparing multiple images for social media.',
-            },
-            {
-              question: 'What image formats are supported?',
-              answer:
-                'The tool supports all common web image formats including JPEG/JPG, PNG, WebP, and GIF. You can upload images in any of these formats and convert them to JPEG, PNG, or WebP output. WebP is recommended for web use as it offers superior compression compared to JPEG and PNG, resulting in smaller files with equivalent visual quality.',
-            },
-            {
-              question: 'Should I use WebP format?',
-              answer:
-                'WebP is highly recommended for modern web applications as it provides 25-35% better compression than JPEG and PNG while maintaining similar visual quality. All modern browsers support WebP, making it ideal for websites, web apps, and digital content. However, if you need compatibility with older systems or software, JPEG and PNG remain solid universal choices.',
-            },
-            {
-              question: 'What happens when I resize images?',
-              answer:
-                'The resize feature scales your images to fit within the specified maximum dimensions while maintaining aspect ratio (if enabled). For example, setting max dimensions to 1920x1080 will resize a 4000x3000 image down to 1440x1080, preserving the original proportions. This is useful for optimizing high-resolution photos for web use, reducing both dimensions and file size.',
-            },
-            {
-              question: 'How much file size reduction can I expect?',
-              answer:
-                'File size reduction varies based on the original image and your settings, but typically ranges from 40-80%. High-resolution photos often see the greatest savings, sometimes reducing from 5MB to under 500KB. Images already optimized may see smaller reductions. The tool displays real-time compression results so you can see exact savings for each image.',
-            },
-            {
-              question: 'Are my images stored on your servers?',
-              answer:
-                'No, all image processing happens entirely in your browser using client-side JavaScript. Your images never leave your device or get uploaded to any server. This ensures complete privacy and security for your photos. All processing is done locally, which also means faster optimization without network delays and no storage limits.',
-            },
-            {
-              question: 'Can I download my optimized images?',
-              answer:
-                'Yes, after optimization completes, you can download images individually by clicking the download button on each image, or use "Download All" to download all optimized images at once. Downloaded files are automatically renamed with "_optimized" suffix in your chosen output format, making it easy to distinguish them from originals.',
-            },
-            {
-              question: 'What is the maximum file size I can upload?',
-              answer:
-                'Each image can be up to 50MB in size, which is sufficient for even high-resolution professional photos. You can upload multiple images simultaneously with no limit on the total number. For extremely large images (20MB+), processing may take longer but will still complete successfully. If you encounter issues with very large files, try resizing them first.',
-            },
-          ]}
-        />
-      </motion.div>
+      </div>
 
       {/* Related Tools */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
+      <div
         className={css({
           w: 'full',
           maxW: '1400px',
         })}
       >
         <RelatedTools currentToolPath="/tools/image-optimizer" category="media" />
-      </motion.div>
+      </div>
 
       {/* Tool Rating */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9, duration: 0.5 }}
+      <div
         className={css({
           w: 'full',
           maxW: '1400px',
         })}
       >
         <ToolRating toolId="/tools/image-optimizer" toolName="Image Optimizer" />
-      </motion.div>
+      </div>
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="image-optimizer" variant="banner" />

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import {
   Archive,
@@ -179,10 +178,9 @@ function ProgressCircle({ value, text }: { value: number; text: string }) {
 
 function FileProgressItem({ pdf }: { pdf: PDFFile }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
+    <div
       className={css({
+        animation: 'slideInLeft 0.3s ease-out forwards',
         display: 'flex',
         alignItems: 'center',
         gap: '3',
@@ -216,7 +214,7 @@ function FileProgressItem({ pdf }: { pdf: PDFFile }) {
           />
         )}
         {pdf.status === 'completed' && (
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
+          <div className={css({ animation: 'scaleIn 0.5s ease-out forwards', opacity: 0 })}>
             <CheckCircle
               className={css({
                 h: '5',
@@ -224,7 +222,7 @@ function FileProgressItem({ pdf }: { pdf: PDFFile }) {
                 color: 'green.400',
               })}
             />
-          </motion.div>
+          </div>
         )}
         {pdf.status === 'error' && (
           <XCircle
@@ -271,7 +269,7 @@ function FileProgressItem({ pdf }: { pdf: PDFFile }) {
           <span className={css({ fontSize: 'xs', color: 'white' })}>{pdf.progress}%</span>
         </div>
       )}
-    </motion.div>
+    </div>
   )
 }
 
@@ -312,11 +310,9 @@ export function ProcessingModal({
       aria-modal="true"
       aria-labelledby="processing-modal-title"
     >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
+      <div
         className={css({
+          animation: 'scaleIn 0.3s ease-out forwards',
           w: 'full',
           maxW: '2xl',
           rounded: '2xl',
@@ -337,17 +333,10 @@ export function ProcessingModal({
           })}
         >
           <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
-            {/* Animated Icon */}
-            <motion.div
-              animate={{
-                rotate: processingCount > 0 ? 360 : 0,
-              }}
-              transition={{
-                duration: 2,
-                repeat: processingCount > 0 ? Number.POSITIVE_INFINITY : 0,
-                ease: 'linear',
-              }}
+            {/* Icon */}
+            <div
               className={css({
+                animation: processingCount > 0 ? 'spin 2s linear infinite' : 'none',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -364,7 +353,7 @@ export function ProcessingModal({
                   color: 'red.400',
                 })}
               />
-            </motion.div>
+            </div>
 
             {/* Title & Stats */}
             <div className={css({ flex: '1' })}>
@@ -441,7 +430,7 @@ export function ProcessingModal({
             </Button>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }

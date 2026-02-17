@@ -5,15 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/services/analytics'
 import AIJSONAnalyzerPage from '../page'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {
@@ -78,14 +69,6 @@ describe('AI JSON Analyzer - Component Tests', () => {
     render(<AIJSONAnalyzerPage />)
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_json_open', {})
-  })
-
-  it('should display pro tips card', () => {
-    render(<AIJSONAnalyzerPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/Works best with structured JSON|AI can detect nested relationships/i)
   })
 
   it('should display Load Example button', () => {

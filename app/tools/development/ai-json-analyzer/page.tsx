@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Brain, Check, Copy, Lightbulb, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -171,11 +170,13 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
       })}
     >
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={css({ textAlign: 'center', spaceY: '4' })}
+      <div
+        className={css({
+          textAlign: 'center',
+          spaceY: '4',
+          animation: 'slideUp 0.5s ease-out forwards',
+          opacity: 0,
+        })}
       >
         <div
           className={css({
@@ -227,13 +228,15 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
           summaries, detect patterns, explain data relationships, and debug JSON with GPT
           intelligence.
         </p>
-      </motion.div>
+      </div>
 
       {/* JSON Input Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
+      <div
+        className={css({
+          animation: 'slideUp 0.5s ease-out forwards',
+          animationDelay: '0.1s',
+          opacity: 0,
+        })}
       >
         <Card
           className={css({
@@ -339,15 +342,17 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Analysis Results */}
       {analysis && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className={css({ spaceY: '6' })}
+        <div
+          className={css({
+            spaceY: '6',
+            animation: 'slideUp 0.5s ease-out forwards',
+            animationDelay: '0.2s',
+            opacity: 0,
+          })}
         >
           {/* Summary Card */}
           <Card
@@ -586,15 +591,11 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Info Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: analysis ? 0.3 : 0.2, duration: 0.5 }}
-      >
+      <div className={css({ animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}>
         <Card
           className={css({
             border: '1px solid',
@@ -628,7 +629,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

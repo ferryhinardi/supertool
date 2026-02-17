@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { AlertCircle, Calendar, Check, Clock, Copy, Download, Settings2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -169,10 +168,13 @@ export default function CronBuilderPage() {
         })}
       >
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={css({ textAlign: 'center', spaceY: '4' })}
+        <div
+          className={css({
+            textAlign: 'center',
+            spaceY: '4',
+            animation: 'slideUp 0.5s ease-out forwards',
+            opacity: 0,
+          })}
         >
           <div
             className={css({
@@ -207,7 +209,7 @@ export default function CronBuilderPage() {
             Generate cron expressions visually with human-readable explanations and
             platform-specific syntax. Preview next execution times and validate expressions.
           </p>
-        </motion.div>
+        </div>
 
         {/* Main Content */}
         <div
@@ -219,10 +221,12 @@ export default function CronBuilderPage() {
           })}
         >
           {/* Settings Panel */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
+          <div
+            className={css({
+              animation: 'slideInLeft 0.5s ease-out forwards',
+              animationDelay: '0.1s',
+              opacity: 0,
+            })}
           >
             <Card
               className={css({
@@ -376,14 +380,17 @@ export default function CronBuilderPage() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Main Panel - Visual Builder + Output */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className={css({ gridColumn: { base: 'span 1', lg: 'span 2' }, spaceY: '6' })}
+          <div
+            className={css({
+              gridColumn: { base: 'span 1', lg: 'span 2' },
+              spaceY: '6',
+              animation: 'slideUp 0.5s ease-out forwards',
+              animationDelay: '0.2s',
+              opacity: 0,
+            })}
           >
             {/* Visual Builder */}
             <Card
@@ -814,7 +821,7 @@ export default function CronBuilderPage() {
                 )}
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         </div>
       </main>
     </div>

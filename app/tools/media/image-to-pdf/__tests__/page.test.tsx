@@ -84,13 +84,6 @@ describe('ImageToPdfPage', () => {
 
       expect(screen.getByText(/Related Tools/i)).toBeInTheDocument()
     })
-
-    it('should render pro tips section', () => {
-      render(<ImageToPdfPage />)
-
-      expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-      expect(screen.getByText(/Drag and drop multiple images/i)).toBeInTheDocument()
-    })
   })
 
   describe('File Upload', () => {

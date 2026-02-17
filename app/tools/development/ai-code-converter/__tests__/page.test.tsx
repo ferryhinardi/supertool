@@ -102,11 +102,6 @@ describe('AICodeConverterPage', () => {
       expect(screen.getByText('Optimize Code')).toBeInTheDocument()
     })
 
-    it('renders Pro Tips section', () => {
-      render(<AICodeConverterPage />)
-      expect(screen.getByText(/Pro Tips/i)).toBeInTheDocument()
-    })
-
     it('renders converted code placeholder text', () => {
       render(<AICodeConverterPage />)
       expect(screen.getByText(/Converted code will appear here/i)).toBeInTheDocument()

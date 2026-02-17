@@ -5,15 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/services/analytics'
 import TextSummarizerPage from '../page'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-}))
-
 // Mock sonner toast
 vi.mock('sonner', () => ({
   toast: {
@@ -80,14 +71,6 @@ describe('Text Summarizer - Component Tests', () => {
     render(<TextSummarizerPage />)
 
     expect(analytics.trackToolEvent).toHaveBeenCalledWith('text_summarizer_open', {})
-  })
-
-  it('should display pro tips card', () => {
-    render(<TextSummarizerPage />)
-
-    expect(screen.getByText('Pro Tips')).toBeInTheDocument()
-    const content = document.body.textContent || ''
-    expect(content).toMatch(/best results|50 words/i)
   })
 
   it('should display length options', () => {
