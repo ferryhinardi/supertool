@@ -17,7 +17,6 @@ export type {
 } from '@/lib/data/tool-components-types'
 // Constants
 export {
-  TOOL_ANIMATIONS,
   TOOL_COLORS,
   TOOL_LAYOUT,
   TOUCH_TARGET,

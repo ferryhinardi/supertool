@@ -321,10 +321,10 @@ describe('Base64 Encoder/Decoder Page', () => {
   })
 
   describe('Animations', () => {
-    it.skip('should have motion components', () => {
-      // Skipped: Motion components not rendered in test
+    it.skip('should have animated components', () => {
+      // Skipped: Animation elements not rendered in test
       render(<Base64Page />)
-      // framer-motion renders divs with animation styles
+      // CSS animations apply opacity styles
       const animatedElements = document.querySelectorAll('[style*="opacity"]')
       expect(animatedElements.length).toBeGreaterThan(0)
     })

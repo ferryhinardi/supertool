@@ -289,6 +289,10 @@ export default defineConfig({
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
       },
       recipes,
       // patterns, // Removed - patterns is not a valid theme property
@@ -327,6 +331,13 @@ export default defineConfig({
       textDecoration: 'none !important',
       _hover: {
         textDecoration: 'none !important',
+      },
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      '*': {
+        animationDuration: '0.01ms !important',
+        animationIterationCount: '1 !important',
+        transitionDuration: '0.01ms !important',
       },
     },
   },

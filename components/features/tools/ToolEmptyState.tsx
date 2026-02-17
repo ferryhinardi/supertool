@@ -3,7 +3,6 @@
 import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { ToolEmptyStateProps } from '@/lib/data/tool-components-types'
-import { TOOL_ANIMATIONS } from '@/lib/data/tool-components-types'
 import { css } from '@/styled-system/css'
 
 /**
@@ -38,7 +37,6 @@ export function ToolEmptyState({
 }: ToolEmptyStateProps) {
   return (
     <div
-      {...TOOL_ANIMATIONS.fadeIn}
       className={css({
         display: 'flex',
         flexDirection: 'column',
@@ -47,6 +45,8 @@ export function ToolEmptyState({
         py: { base: '12', sm: '16', md: '20' },
         px: '4',
         textAlign: 'center',
+        animation: 'fadeIn 0.5s ease-out forwards',
+        opacity: 0,
       })}
     >
       {/* Animated Icon */}
