@@ -1,7 +1,7 @@
 'use client'
 
 import { Check, Copy, Download, FileImage, Upload, X } from 'lucide-react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -17,6 +17,7 @@ interface ConversionSettings {
 export default function SvgToPngConverter() {
   const [svgFile, setSvgFile] = useState<File | null>(null)
   const [svgPreview, setSvgPreview] = useState<string>('')
+  const [svgPreviewSafe, setSvgPreviewSafe] = useState<string>('')
   const [pngDataUrl, setPngDataUrl] = useState<string>('')
   const [isConverting, setIsConverting] = useState(false)
   const [error, setError] = useState<string>('')
@@ -30,6 +31,17 @@ export default function SvgToPngConverter() {
   })
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  // Sanitize svgPreview for safe HTML rendering
+  useEffect(() => {
+    if (!svgPreview) {
+      setSvgPreviewSafe('')
+      return
+    }
+    import('dompurify').then(({ default: DOMPurify }) => {
+      setSvgPreviewSafe(DOMPurify.sanitize(svgPreview, { USE_PROFILES: { svg: true, svgFilters: true } }))
+    })
+  }, [svgPreview])
 
   const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -635,8 +647,8 @@ export default function SvgToPngConverter() {
                   justifyContent: 'center',
                   overflow: 'hidden',
                 })}
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: SVG content is user-uploaded for preview purposes
-                dangerouslySetInnerHTML={{ __html: svgPreview }}
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: SVG is sanitized via DOMPurify (svgPreviewSafe)
+                dangerouslySetInnerHTML={{ __html: svgPreviewSafe }}
               />
             </div>
           )}

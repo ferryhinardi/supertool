@@ -24,6 +24,12 @@ vi.mock('openai', () => {
   }
 })
 
+// Mock rate limiter — default: allow all requests
+const mockCheckRateLimit = vi.hoisted(() => vi.fn())
+vi.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: mockCheckRateLimit,
+}))
+
 import OpenAI from 'openai'
 import { POST } from '../route'
 
@@ -33,6 +39,8 @@ describe('Grammar Check API Route', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     process.env.OPENAI_API_KEY = 'test-api-key'
+    // Default: all requests pass the rate limiter
+    mockCheckRateLimit.mockReturnValue({ allowed: true, remaining: 9, resetAt: Date.now() + 60_000 })
   })
 
   afterEach(() => {
@@ -316,6 +324,62 @@ describe('Grammar Check API Route', () => {
 
       expect(response.status).toBe(500)
       expect(data.error).toContain('Failed to check grammar')
+    })
+  })
+
+  describe('IP rate limiting', () => {
+    it('returns 429 when IP rate limit is exceeded', async () => {
+      mockCheckRateLimit.mockReturnValueOnce({
+        allowed: false,
+        remaining: 0,
+        resetAt: Date.now() + 60_000,
+      })
+
+      const request = new Request('http://localhost:3000/api/grammar-check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-forwarded-for': '1.2.3.4',
+        },
+        body: JSON.stringify({ text: 'Test text' }),
+      })
+
+      const response = await POST(request as unknown as NextRequest)
+      const data = await response.json()
+
+      expect(response.status).toBe(429)
+      expect(data.error).toContain('Too many requests')
+    })
+
+    it('proceeds normally when rate limit allows the request', async () => {
+      mockCheckRateLimit.mockReturnValueOnce({
+        allowed: true,
+        remaining: 5,
+        resetAt: Date.now() + 60_000,
+      })
+      mockCreate.mockResolvedValueOnce({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                issues: [],
+                correctedText: 'Hello world',
+                summary: 'No issues found',
+                score: 100,
+              }),
+            },
+          },
+        ],
+      })
+
+      const request = new Request('http://localhost:3000/api/grammar-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: 'Hello world' }),
+      })
+
+      const response = await POST(request as unknown as NextRequest)
+      expect(response.status).toBe(200)
     })
   })
 })

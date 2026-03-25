@@ -1,8 +1,17 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 // AI Image Generation API Route using OpenAI DALL-E
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 10 requests per IP per minute to protect OpenAI quota
+    const rateLimitResult = checkRateLimit(request, { limit: 10, windowMs: 60_000 })
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again in a minute.' },
+        { status: 429 }
+      )
+    }
     const body = await request.json()
     const { prompt } = body
 

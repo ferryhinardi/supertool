@@ -43,6 +43,7 @@ interface OptimizationOptions {
 function SVGOptimizerContent() {
   const [svgInput, setSvgInput] = useState('')
   const [svgOutput, setSvgOutput] = useState('')
+  const [svgOutputSafe, setSvgOutputSafe] = useState('')
   const [stats, setStats] = useState<OptimizationStats | null>(null)
   const [options, setOptions] = useState<OptimizationOptions>({
     removeComments: true,
@@ -61,6 +62,17 @@ function SVGOptimizerContent() {
   useEffect(() => {
     trackToolEvent('svg_optimizer_open', {})
   }, [])
+
+  // Sanitize svgOutput for safe preview rendering
+  useEffect(() => {
+    if (!svgOutput) {
+      setSvgOutputSafe('')
+      return
+    }
+    import('dompurify').then(({ default: DOMPurify }) => {
+      setSvgOutputSafe(DOMPurify.sanitize(svgOutput, { USE_PROFILES: { svg: true, svgFilters: true } }))
+    })
+  }, [svgOutput])
 
   const optimizeSVG = (svg: string, opts: OptimizationOptions): string => {
     let optimized = svg
@@ -647,8 +659,8 @@ function SVGOptimizerContent() {
                   border: '1px dashed',
                   borderColor: 'gray.700',
                 })}
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: SVG preview requires HTML rendering
-                dangerouslySetInnerHTML={{ __html: svgOutput }}
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: SVG is sanitized via DOMPurify (svgOutputSafe)
+                dangerouslySetInnerHTML={{ __html: svgOutputSafe }}
               />
             </CardContent>
           </Card>

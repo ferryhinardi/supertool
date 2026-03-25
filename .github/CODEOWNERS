@@ -1,0 +1,30 @@
+# CODEOWNERS
+#
+# Each line is a file pattern followed by one or more owners.
+# The last matching rule takes precedence.
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global fallback — repository owner reviews everything by default
+* @ferryhinardi
+
+# CI/CD pipeline changes require careful review
+.github/workflows/ @ferryhinardi
+.github/CODEOWNERS @ferryhinardi
+
+# Security-sensitive areas
+app/api/ @ferryhinardi
+lib/rate-limit.ts @ferryhinardi
+lib/auth/ @ferryhinardi
+next.config.ts @ferryhinardi
+vercel.json @ferryhinardi
+
+# Core library and utilities
+lib/ @ferryhinardi
+
+# Styling system configuration
+panda.config.ts @ferryhinardi
+panda.recipes.ts @ferryhinardi
+
+# Dependency management
+package.json @ferryhinardi
+pnpm-lock.yaml @ferryhinardi

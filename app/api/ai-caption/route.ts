@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -8,6 +9,14 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 10 requests per IP per minute to protect OpenAI quota
+    const rateLimitResult = checkRateLimit(request, { limit: 10, windowMs: 60_000 })
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again in a minute.' },
+        { status: 429 }
+      )
+    }
     // Check if API key is configured
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(

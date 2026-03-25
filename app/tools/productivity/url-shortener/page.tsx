@@ -287,7 +287,7 @@ export default function URLShortenerPage() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1', sm: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { base: '1fr', sm: 'repeat(3, 1fr)' },
           gap: { base: '4', sm: '4' },
         })}
       >

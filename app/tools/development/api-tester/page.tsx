@@ -614,13 +614,21 @@ function ApiTesterContent() {
 
   const highlightedResponseBody = useMemo(() => {
     if (!response) return ''
+    // Escape HTML entities so raw text cannot inject scripts
+    const escapeHtml = (str: string) =>
+      str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
     try {
       // Try to parse and highlight as JSON
       JSON.parse(response.body)
       return hljs.highlight(response.body, { language: 'json' }).value
     } catch {
-      // If not JSON, return as is
-      return response.body
+      // If not JSON, return as escaped HTML so tags are displayed as text
+      return escapeHtml(response.body)
     }
   }, [response])
 
@@ -2234,7 +2242,7 @@ function ApiTesterContent() {
                           whiteSpace: 'pre-wrap',
                           wordBreak: 'break-word',
                         })}
-                        // biome-ignore lint/security/noDangerouslySetInnerHtml: Sanitized by highlight.js
+                        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON path uses hljs; non-JSON is HTML-escaped
                         dangerouslySetInnerHTML={{ __html: highlightedResponseBody }}
                       />
                     </div>
