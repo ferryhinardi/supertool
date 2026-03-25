@@ -51,22 +51,10 @@ jobs:
     outputs:
       comment_id: ""
       comment_repo: ""
-      has_copilot_token: ${{ steps.check-copilot-token.outputs.token_configured }}
       lockdown_check_failed: ${{ steps.generate_aw_info.outputs.lockdown_check_failed == 'true' }}
       model: ${{ steps.generate_aw_info.outputs.model }}
       secret_verification_result: ${{ steps.validate-secret.outputs.verification_result }}
     steps:
-      - name: Check COPILOT_GITHUB_TOKEN availability
-        id: check-copilot-token
-        env:
-          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
-        run: |
-          if [ -z "$COPILOT_GITHUB_TOKEN" ]; then
-            echo "token_configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::COPILOT_GITHUB_TOKEN secret is not configured. Dependency Update Helper will be skipped. Please add COPILOT_GITHUB_TOKEN to your repository secrets. See .github/SECRETS_SETUP.md for setup instructions."
-          else
-            echo "token_configured=true" >> "$GITHUB_OUTPUT"
-          fi
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@v0.63.1
         with:
@@ -250,7 +238,6 @@ jobs:
 
   agent:
     needs: activation
-    if: needs.activation.outputs.has_copilot_token == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -1053,3 +1040,4 @@ jobs:
           name: safe-output-items
           path: /tmp/gh-aw/safe-output-items.jsonl
           if-no-files-found: ignore
+
