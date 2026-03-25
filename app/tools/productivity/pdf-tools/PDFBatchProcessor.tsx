@@ -898,40 +898,100 @@ export class PDFBatchProcessor {
    * @param password - Password to unlock the PDF
    */
   private async unlockPDF(pdf: PDFFile, password: string): Promise<void> {
-    // Validate password
     if (!password || password.trim() === '') {
       throw new Error('Password is required to unlock the PDF')
     }
 
-    this.updateCallback(pdf.id, { progress: 10 })
+    const pdfjs = await import('pdfjs-dist')
+    const { PDFDocument } = await import('pdf-lib')
 
-    // Prepare form data
-    const formData = new FormData()
-    formData.append('file', pdf.file)
-    formData.append('password', password)
-
-    this.updateCallback(pdf.id, { progress: 30 })
-
-    // Call server-side API for decryption
-    const response = await fetch('/api/pdf-unlock', {
-      method: 'POST',
-      body: formData,
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.error || 'Failed to unlock PDF')
+    if (typeof window !== 'undefined') {
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.mjs',
+        import.meta.url
+      ).toString()
     }
 
-    this.updateCallback(pdf.id, { progress: 80 })
+    this.updateCallback(pdf.id, { progress: 10 })
 
-    const blob = await response.blob()
+    const arrayBuffer = await pdf.file.arrayBuffer()
+
+    let pdfjsDoc: Awaited<ReturnType<typeof pdfjs.getDocument>>['promise'] extends Promise<infer T>
+      ? T
+      : never
+    try {
+      const loadingTask = pdfjs.getDocument({ data: arrayBuffer, password })
+      pdfjsDoc = await loadingTask.promise
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      if (
+        errorMessage.includes('Incorrect Password') ||
+        errorMessage.includes('PasswordException')
+      ) {
+        throw new Error('Incorrect password. Please try again with the correct password.')
+      }
+      throw new Error(`Failed to decrypt PDF: ${errorMessage}`)
+    }
+
+    this.updateCallback(pdf.id, { progress: 20 })
+
+    const pdfDoc = await PDFDocument.create()
+    const scale = 2.0
+
+    for (let pageNum = 1; pageNum <= pdfjsDoc.numPages; pageNum++) {
+      const page = await pdfjsDoc.getPage(pageNum)
+      const viewport = page.getViewport({ scale })
+
+      const canvas = document.createElement('canvas')
+      const context = canvas.getContext('2d')
+      if (!context) throw new Error('Could not get canvas context')
+
+      canvas.height = viewport.height
+      canvas.width = viewport.width
+
+      await page.render({
+        canvasContext: context,
+        viewport: viewport,
+        canvas: canvas,
+      }).promise
+
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (b) => {
+            if (b) resolve(b)
+            else reject(new Error('Failed to create blob'))
+          },
+          'image/jpeg',
+          0.92
+        )
+      })
+
+      const jpegImage = await pdfDoc.embedJpg(await blob.arrayBuffer())
+      const newPage = pdfDoc.addPage([viewport.width, viewport.height])
+      newPage.drawImage(jpegImage, {
+        x: 0,
+        y: 0,
+        width: viewport.width,
+        height: viewport.height,
+      })
+
+      this.updateCallback(pdf.id, {
+        progress: 20 + (pageNum / pdfjsDoc.numPages) * 70,
+      })
+    }
+
+    const pdfBytes = await pdfDoc.save({
+      useObjectStreams: true,
+      addDefaultPage: false,
+    })
+
+    const finalBlob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' })
 
     this.updateCallback(pdf.id, {
       status: 'completed',
       progress: 100,
-      processedBlob: blob,
-      processedSize: blob.size,
+      processedBlob: finalBlob,
+      processedSize: finalBlob.size,
     })
   }
 

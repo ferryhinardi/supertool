@@ -5,6 +5,18 @@ import { PDFDocument } from 'pdf-lib'
 export const runtime = 'nodejs'
 export const maxDuration = 60 // 60 seconds max
 
+/**
+ * Server-side PDF unlock API route (LEGACY FALLBACK).
+ *
+ * NOTE: The preferred unlock path is client-side via PDFBatchProcessor.unlockPDF(),
+ * which uses pdfjs-dist to properly decrypt content with the user's password and
+ * re-renders pages into an unencrypted PDF. This server-side route uses pdf-lib's
+ * ignoreEncryption flag, which loads the PDF structure but does NOT decrypt content
+ * streams — resulting in blank pages for most encrypted PDFs.
+ *
+ * This route is kept as a fallback for non-JS environments or future server-side
+ * decryption improvements.
+ */
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
