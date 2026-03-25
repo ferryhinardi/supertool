@@ -6,19 +6,40 @@ This guide explains how to configure GitHub repository secrets for CI/CD.
 
 ## 📋 Required Secrets
 
+### For CI/CD Pipeline (Supabase Integration)
+
 For the CI/CD pipeline to work with Supabase features, you need to set up the following secrets:
 
-### 1. `NEXT_PUBLIC_SUPABASE_URL`
+#### 1. `NEXT_PUBLIC_SUPABASE_URL`
 
 - **Description:** Your Supabase project URL
 - **Example:** `https://abcdefghijklmnop.supabase.co`
 - **Where to find:** Supabase Dashboard → Project Settings → API
 
-### 2. `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+#### 2. `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 - **Description:** Your Supabase anonymous/public key
 - **Example:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
 - **Where to find:** Supabase Dashboard → Project Settings → API
+
+### For Agentic Workflows (Issue Triage, Code Review, etc.)
+
+The four agentic workflows require the following secrets. **Without these, workflows fail with "Secret Verification Failed".**
+
+#### 3. `COPILOT_GITHUB_TOKEN` ⚠️ Required for all agentic workflows
+
+- **Description:** GitHub Personal Access Token (PAT) with Copilot access
+- **Required by:** Issue Triage Assistant, Code Review Assistant, Test Coverage Analysis, Dependency Update Helper
+- **Required scopes:** `repo`, `workflow`, `read:org`, `copilot`
+- **Where to create:** GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+- **Error if missing:** `Error: None of the following secrets are set: COPILOT_GITHUB_TOKEN`
+
+#### 4. `GH_AW_GITHUB_TOKEN` ⚠️ Required for GitHub API access in workflows
+
+- **Description:** GitHub Personal Access Token (PAT) for GitHub API operations
+- **Required scopes:** `repo`, `workflow`, `read:org`
+- **Where to create:** GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+- **Note:** Falls back to built-in `GITHUB_TOKEN` if not set, but with limited permissions
 
 ---
 
@@ -29,11 +50,11 @@ For the CI/CD pipeline to work with Supabase features, you need to set up the fo
 1. Go to your repository on GitHub
 2. Click **Settings** → **Secrets and variables** → **Actions**
 3. Click **New repository secret**
-4. Add each secret:
-   - Name: `NEXT_PUBLIC_SUPABASE_URL`
-   - Value: Your Supabase URL
-   - Click **Add secret**
-5. Repeat for `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Add each secret one at a time:
+   - `NEXT_PUBLIC_SUPABASE_URL` → Your Supabase URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` → Your Supabase anon key
+   - `COPILOT_GITHUB_TOKEN` → Your GitHub PAT with Copilot access
+   - `GH_AW_GITHUB_TOKEN` → Your GitHub PAT for workflow operations
 
 ### Via GitHub CLI:
 
@@ -43,6 +64,12 @@ gh secret set NEXT_PUBLIC_SUPABASE_URL -b "https://your-project.supabase.co"
 
 # Set Supabase Anon Key
 gh secret set NEXT_PUBLIC_SUPABASE_ANON_KEY -b "your-anon-key-here"
+
+# Set Copilot token (REQUIRED for agentic workflows)
+gh secret set COPILOT_GITHUB_TOKEN -b "ghp_your_token_here"
+
+# Set GitHub API token for workflow operations
+gh secret set GH_AW_GITHUB_TOKEN -b "ghp_your_token_here"
 ```
 
 ---
@@ -126,6 +153,17 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 
 - **Cause:** Different env variables (`.env.local` vs GitHub Secrets)
 - **Fix:** Ensure GitHub secrets match your local `.env.local`
+
+### Agentic workflow fails with "Secret Verification Failed"
+
+- **Error message:** `Error: None of the following secrets are set: COPILOT_GITHUB_TOKEN`
+- **Cause:** `COPILOT_GITHUB_TOKEN` secret is not configured
+- **Fix:**
+  1. Create a GitHub PAT with `repo`, `workflow`, `read:org`, and `copilot` scopes
+  2. Go to **Settings** → **Secrets and variables** → **Actions**
+  3. Add `COPILOT_GITHUB_TOKEN` with the PAT value
+  4. Re-run the failed workflow
+- **Affected workflows:** Issue Triage Assistant, Code Review Assistant, Test Coverage Analysis, Dependency Update Helper
 
 ---
 
