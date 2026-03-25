@@ -119,5 +119,13 @@ describe('rate-limit', () => {
       const result = checkRateLimit(req, { limit: 5, windowMs: 60_000 })
       expect(result.remaining).toBe(0)
     })
+
+    it('x-forwarded-for takes priority over x-real-ip', () => {
+      const headers = new Headers()
+      headers.set('x-forwarded-for', '1.2.3.4')
+      headers.set('x-real-ip', '9.9.9.9')
+      const req = new Request('https://example.com/', { headers })
+      expect(getClientIp(req)).toBe('1.2.3.4')
+    })
   })
 })

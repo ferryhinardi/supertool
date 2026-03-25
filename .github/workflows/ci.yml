@@ -11,6 +11,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Restrict default GITHUB_TOKEN permissions to read-only.
+# Jobs that need write access must declare it explicitly.
+permissions:
+  contents: read
+
 env:
   NODE_VERSION: '20'
   PNPM_VERSION: '9.15.3'
@@ -182,9 +187,9 @@ jobs:
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
-    # Run in parallel with tests; a vulnerability warning should not block deployments
-    # but it surfaces issues early. Set continue-on-error: false to make it blocking.
-    continue-on-error: true
+    # Blocks on high/critical severity vulnerabilities; moderate and lower are warnings only.
+    # Set continue-on-error: true temporarily if a known vuln has no available fix.
+    continue-on-error: false
 
     steps:
       - name: Checkout code

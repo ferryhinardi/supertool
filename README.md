@@ -1,6 +1,6 @@
 # 🚀 SuperTool - Modern Developer Toolkit
 
-![Coverage](https://img.shields.io/badge/coverage-passing-brightgreen)
+[![CI/CD](https://github.com/ferryhinardi/supertool/actions/workflows/ci.yml/badge.svg)](https://github.com/ferryhinardi/supertool/actions/workflows/ci.yml)
 
 Professional toolkit with 115+ implemented tools for developers, designers, and productivity enthusiasts. All tools work offline in your browser with no registration required.
 

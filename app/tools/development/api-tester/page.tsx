@@ -119,6 +119,16 @@ interface Environment {
   createdAt: number
 }
 
+/** Escape HTML entities so raw text cannot inject scripts when rendered via dangerouslySetInnerHTML */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 function ApiTesterContent() {
   // Request Configuration
   const [method, setMethod] = useState<HttpMethod>('GET')
@@ -614,14 +624,6 @@ function ApiTesterContent() {
 
   const highlightedResponseBody = useMemo(() => {
     if (!response) return ''
-    // Escape HTML entities so raw text cannot inject scripts
-    const escapeHtml = (str: string) =>
-      str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
     try {
       // Try to parse and highlight as JSON
       JSON.parse(response.body)

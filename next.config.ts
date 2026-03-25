@@ -8,10 +8,17 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // Content-Security-Policy header value.
 // Using Report-Only mode first so violations are logged without blocking anything.
 // Switch to 'Content-Security-Policy' once you've verified no regressions.
+//
+// NOTE: 'unsafe-inline' and 'unsafe-eval' in script-src are required because:
+//   - Next.js App Router injects inline <script> tags for hydration data
+//   - The React compiler and some third-party libs need eval at dev time
+// TODO: Once all inline scripts are migrated to nonces or hashes, remove these
+//       and set a per-request nonce via middleware.
 const cspHeader = [
   // Only serve content from the same origin by default
   "default-src 'self'",
-  // Scripts: same-origin + inline scripts required by Next.js (unsafe-inline) + Vercel Analytics
+  // Scripts: same-origin + inline scripts required by Next.js + Vercel Analytics + GTM
+  // (unsafe-inline / unsafe-eval are required by Next.js App Router until nonces are implemented)
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com",
   // Styles: same-origin + inline styles required by Panda CSS and component libraries
   "style-src 'self' 'unsafe-inline'",
@@ -109,6 +116,9 @@ const nextConfig: NextConfig = {
             value: 'strict-origin-when-cross-origin',
           },
           // Enforce HTTPS for 1 year (only in production to avoid breaking localhost)
+          // NOTE: 'preload' is intentionally omitted. Adding it submits the domain
+          // to the browser HSTS preload list which is difficult to reverse.
+          // Add '; preload' only after verifying HTTPS is permanent for all subdomains.
           ...(process.env.NODE_ENV === 'production'
             ? [
                 {

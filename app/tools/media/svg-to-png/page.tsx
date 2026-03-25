@@ -6,6 +6,15 @@ import { Button } from '@/components/ui/button'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
+// Cache the DOMPurify import so it is only loaded once per page lifecycle
+let dompurifyPromise: Promise<typeof import('dompurify').default> | null = null
+function getDOMPurify(): Promise<typeof import('dompurify').default> {
+  if (!dompurifyPromise) {
+    dompurifyPromise = import('dompurify').then((mod) => mod.default)
+  }
+  return dompurifyPromise
+}
+
 interface ConversionSettings {
   width: number
   height: number
@@ -32,13 +41,13 @@ export default function SvgToPngConverter() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  // Sanitize svgPreview for safe HTML rendering
+  // Sanitize svgPreview for safe HTML rendering (uses cached DOMPurify import)
   useEffect(() => {
     if (!svgPreview) {
       setSvgPreviewSafe('')
       return
     }
-    import('dompurify').then(({ default: DOMPurify }) => {
+    getDOMPurify().then((DOMPurify) => {
       setSvgPreviewSafe(DOMPurify.sanitize(svgPreview, { USE_PROFILES: { svg: true, svgFilters: true } }))
     })
   }, [svgPreview])

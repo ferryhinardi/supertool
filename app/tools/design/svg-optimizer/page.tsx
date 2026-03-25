@@ -19,6 +19,15 @@ import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
+// Cache the DOMPurify import so it is only loaded once per page lifecycle
+let dompurifyPromise: Promise<typeof import('dompurify').default> | null = null
+function getDOMPurify(): Promise<typeof import('dompurify').default> {
+  if (!dompurifyPromise) {
+    dompurifyPromise = import('dompurify').then((mod) => mod.default)
+  }
+  return dompurifyPromise
+}
+
 interface OptimizationStats {
   originalSize: number
   optimizedSize: number
@@ -69,7 +78,7 @@ function SVGOptimizerContent() {
       setSvgOutputSafe('')
       return
     }
-    import('dompurify').then(({ default: DOMPurify }) => {
+    getDOMPurify().then((DOMPurify) => {
       setSvgOutputSafe(DOMPurify.sanitize(svgOutput, { USE_PROFILES: { svg: true, svgFilters: true } }))
     })
   }, [svgOutput])

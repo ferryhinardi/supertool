@@ -6,6 +6,13 @@
  * deployments, consider replacing with a Redis-backed solution such as
  * @upstash/ratelimit.
  *
+ * IMPORTANT – x-forwarded-for trust model:
+ * The `x-forwarded-for` header can be set by any client and is therefore
+ * spoofable unless the deployment platform (e.g. Vercel) strips and re-adds
+ * it from the actual TCP connection. When running behind Vercel or a trusted
+ * reverse proxy this header can be trusted. Do NOT trust it in environments
+ * where requests reach the application directly without a proxy.
+ *
  * Usage:
  *   const result = checkRateLimit(request, { limit: 10, windowMs: 60_000 })
  *   if (!result.allowed) {
@@ -77,15 +84,21 @@ export function checkRateLimit(
   const ip = getClientIp(request)
   const now = Date.now()
 
-  // Run lazy cleanup every call (cheap O(n) but store stays small)
-  if (store.size > 5000) {
-    cleanExpired()
-  }
+  // Always clean expired entries to prevent unbounded memory growth.
+  // This is O(n) but the store is bounded by MAX_STORE_SIZE below.
+  cleanExpired()
 
   const existing = store.get(ip)
 
   if (!existing || existing.resetAt <= now) {
-    // Start a new window
+    // Start a new window; enforce a hard cap on store size before inserting
+    if (store.size >= 10_000) {
+      // Purge the oldest entry to stay within bounds
+      const oldestKey = store.keys().next().value
+      if (oldestKey !== undefined) {
+        store.delete(oldestKey)
+      }
+    }
     const resetAt = now + windowMs
     store.set(ip, { count: 1, resetAt })
     return { allowed: true, remaining: limit - 1, resetAt }
