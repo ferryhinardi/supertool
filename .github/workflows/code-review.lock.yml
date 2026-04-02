@@ -567,6 +567,7 @@ jobs:
         run: bash /opt/gh-aw/actions/print_prompt_summary.sh
       - name: Execute GitHub Copilot CLI
         id: agentic_execution
+        continue-on-error: true
         # Copilot CLI tool arguments (sorted):
         timeout-minutes: 20
         run: |
