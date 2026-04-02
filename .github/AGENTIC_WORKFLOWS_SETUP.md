@@ -68,31 +68,32 @@ Four agentic workflows have been created in `.github/workflows/`:
 
 ### 1. Configure GitHub Secrets
 
-The workflows require GitHub secrets to function. **All four agentic workflows use the GitHub Copilot engine and require `COPILOT_GITHUB_TOKEN` to be set.**
+The workflows require GitHub secrets to function. You need to set up the required token:
 
-#### Required Secrets
+#### Required Secret for AI-Powered Workflows
 
 ```bash
-# REQUIRED: GitHub Copilot token - needed by ALL agentic workflows
-# This is a Personal Access Token (PAT) with GitHub Copilot access.
-# Without this, the Issue Triage Assistant, Code Review Assistant,
-# Test Coverage Analysis, and Dependency Update Helper will all fail
-# with "Secret Verification Failed".
-gh aw secrets set COPILOT_GITHUB_TOKEN --owner ferryhinardi --repo supertool
+# Create a Personal Access Token (PAT) with these permissions:
+# - repo (full repository access)
+# - workflow
+# - read:org
+# The account must have an active GitHub Copilot subscription.
 
-# REQUIRED: GitHub API token for general workflow operations
-# Create a PAT with: repo (full control), workflow, read:org
-gh aw secrets set GH_AW_GITHUB_TOKEN --owner ferryhinardi --repo supertool
+gh aw secrets set COPILOT_GITHUB_TOKEN --owner ferryhinardi --repo supertool
 ```
 
-#### Optional Secrets (advanced functionality)
+> **⚠️ Important:** `COPILOT_GITHUB_TOKEN` is **required** (not optional) for all AI-powered agentic workflows to function.
+> Without this token, the workflows will gracefully skip with a warning instead of failing.
+> See `.github/SECRETS_SETUP.md` for detailed instructions on obtaining and configuring this token.
+
+#### Optional Additional Secrets (for advanced features)
 
 ```bash
+# For using a separate token for GitHub MCP server (advanced isolation)
+gh aw secrets set GH_AW_GITHUB_MCP_SERVER_TOKEN --owner ferryhinardi --repo supertool
+
 # For agent assignment features
 gh aw secrets set GH_AW_AGENT_TOKEN --owner ferryhinardi --repo supertool
-
-# For isolated MCP server permissions (advanced)
-gh aw secrets set GH_AW_GITHUB_MCP_SERVER_TOKEN --owner ferryhinardi --repo supertool
 ```
 
 ### 2. Create Personal Access Tokens
@@ -288,6 +289,26 @@ If `gh aw compile` fails:
 2. Check workflow permissions in Actions settings
 3. Verify trigger conditions match (PR, issue, schedule)
 4. Check GitHub Actions tab for error details
+
+### "Secret Verification Failed" or Workflow Skipped with Warning
+
+**Cause:** `COPILOT_GITHUB_TOKEN` is not configured in repository secrets.
+
+**Symptoms:**
+- Workflow shows "skipped" status
+- Warning message: `COPILOT_GITHUB_TOKEN secret is not configured`
+
+**Fix:**
+1. Ensure your GitHub account has an active GitHub Copilot subscription
+2. Generate a Personal Access Token at [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
+3. Select scopes: `repo`, `workflow`, `read:org`
+4. Add the token as `COPILOT_GITHUB_TOKEN` in repository secrets:
+   - Go to **Settings** → **Secrets and variables** → **Actions**
+   - Click **New repository secret**
+   - Name: `COPILOT_GITHUB_TOKEN`, Value: your PAT
+5. See `.github/SECRETS_SETUP.md` for detailed instructions
+
+**Note:** Without `COPILOT_GITHUB_TOKEN`, workflows will skip gracefully instead of failing. All other CI/CD checks will continue to work normally.
 
 ### Performance Issues
 
