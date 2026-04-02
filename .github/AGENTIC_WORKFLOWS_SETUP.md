@@ -2,7 +2,7 @@
 
 ## Overview
 
-GitHub Agentic Workflows (gh-aw) has been installed and configured for the SuperTool repository. This system enables AI-powered automation for code reviews, issue triage, and dependency management.
+GitHub Agentic Workflows (gh-aw) has been installed and configured for the SuperTool repository. This system enables AI-powered automation for code reviews, issue triage, test coverage analysis, and dependency management.
 
 ## What Was Installed
 
@@ -12,7 +12,7 @@ GitHub Agentic Workflows (gh-aw) has been installed and configured for the Super
 
 ### 2. Created Workflows
 
-Three agentic workflows have been created in `.github/workflows/`:
+Four agentic workflows have been created in `.github/workflows/`:
 
 #### a) **Code Review Assistant** (`code-review.md`)
 - **Trigger**: On pull request (opened, synchronized)
@@ -26,7 +26,17 @@ Three agentic workflows have been created in `.github/workflows/`:
   - Checks AI tool integration patterns
 - **Output**: One comprehensive PR comment with feedback
 
-#### b) **Dependency Update Helper** (`dependency-update-helper.md`)
+#### b) **Test Coverage Analysis** (`test-coverage-check.md`)
+- **Trigger**: On pull request (opened, synchronized)
+- **Purpose**: Analyzes test coverage for new/modified code
+- **Key Features**:
+  - Identifies missing test files
+  - Checks test quality (React Testing Library patterns)
+  - Verifies coverage thresholds (>70% general, >80% critical)
+  - Provides test templates for missing tests
+- **Output**: Coverage summary comment on PR
+
+#### c) **Dependency Update Helper** (`dependency-update-helper.md`)
 - **Trigger**: Weekly (Monday)
 - **Purpose**: Monitor and report outdated dependencies
 - **Key Features**:
@@ -37,7 +47,7 @@ Three agentic workflows have been created in `.github/workflows/`:
   - Includes testing checklist
 - **Output**: Weekly issue with update recommendations
 
-#### c) **Issue Triage Assistant** (`issue-triage.md`)
+#### d) **Issue Triage Assistant** (`issue-triage.md`)
 - **Trigger**: On issue (opened, reopened)
 - **Purpose**: Automatically categorize and respond to issues
 - **Key Features**:
@@ -58,33 +68,37 @@ Three agentic workflows have been created in `.github/workflows/`:
 
 ### 1. Configure GitHub Secrets
 
-The workflows require GitHub secrets to function. You need to set up at least the required token:
+The workflows require GitHub secrets to function. You need to set up the required token:
 
-#### Required Secret
+#### Required Secret for AI-Powered Workflows
 
 ```bash
 # Create a Personal Access Token (PAT) with these permissions:
-# - repo (full control)
+# - repo (full repository access)
 # - workflow
 # - read:org
+# The account must have an active GitHub Copilot subscription.
 
-gh aw secrets set GH_AW_GITHUB_TOKEN --owner ferryhinardi --repo supertool
+gh aw secrets set COPILOT_GITHUB_TOKEN --owner ferryhinardi --repo supertool
 ```
 
-#### Optional Secrets (for full functionality)
+> **⚠️ Important:** `COPILOT_GITHUB_TOKEN` is **required** (not optional) for all AI-powered agentic workflows to function.
+> Without this token, the workflows will gracefully skip with a warning instead of failing.
+> See `.github/SECRETS_SETUP.md` for detailed instructions on obtaining and configuring this token.
+
+#### Optional Additional Secrets (for advanced features)
 
 ```bash
-# For Copilot-powered workflows
-gh aw secrets set COPILOT_GITHUB_TOKEN --owner ferryhinardi --repo supertool
+# For using a separate token for GitHub MCP server (advanced isolation)
+gh aw secrets set GH_AW_GITHUB_MCP_SERVER_TOKEN --owner ferryhinardi --repo supertool
 
 # For agent assignment features
 gh aw secrets set GH_AW_AGENT_TOKEN --owner ferryhinardi --repo supertool
-
-# For isolated MCP server permissions (advanced)
-gh aw secrets set GH_AW_GITHUB_MCP_SERVER_TOKEN --owner ferryhinardi --repo supertool
 ```
 
-### 2. Create Personal Access Token
+### 2. Create Personal Access Tokens
+
+#### COPILOT_GITHUB_TOKEN (Required for Copilot engine)
 
 1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
 2. Click "Generate new token (classic)"
@@ -92,8 +106,25 @@ gh aw secrets set GH_AW_GITHUB_MCP_SERVER_TOKEN --owner ferryhinardi --repo supe
    - ✅ `repo` (full control of private repositories)
    - ✅ `workflow` (update GitHub Action workflows)
    - ✅ `read:org` (read organization info)
+   - ✅ `copilot` (access to GitHub Copilot)
 4. Generate and copy the token
-5. Use it when running the `gh aw secrets set` commands above
+5. Set it as `COPILOT_GITHUB_TOKEN` in repository secrets
+
+#### GH_AW_GITHUB_TOKEN (Required for GitHub API access)
+
+1. Create a separate PAT (or reuse the same one) with:
+   - ✅ `repo` (full control of private repositories)
+   - ✅ `workflow` (update GitHub Action workflows)
+   - ✅ `read:org` (read organization info)
+2. Set it as `GH_AW_GITHUB_TOKEN` in repository secrets
+
+#### Setting Secrets via GitHub Web UI
+
+1. Go to your repository on GitHub
+2. Click **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Add `COPILOT_GITHUB_TOKEN` with the PAT value
+5. Add `GH_AW_GITHUB_TOKEN` with the PAT value
 
 ### 3. Compile Workflows
 
@@ -191,6 +222,8 @@ PR Opened
 ├─ ci.yml (runs tests, build, lint)
 ├─ coverage.yml (generates coverage report)
 ├─ code-review.md (AI reviews code quality) ← NEW
+└─ test-coverage-check.md (AI analyzes coverage) ← NEW
+
 Issue Opened
   ↓
 └─ issue-triage.md (AI categorizes + responds) ← NEW
@@ -224,6 +257,24 @@ The workflows reference these project docs:
 
 ## Troubleshooting
 
+### ⚠️ Secret Verification Failed
+
+**Symptom**: Workflow run fails with "Secret Verification Failed" error. Log shows:
+```
+Error: None of the following secrets are set: COPILOT_GITHUB_TOKEN
+The GitHub Copilot CLI engine requires either COPILOT_GITHUB_TOKEN secret to be configured.
+```
+
+**Cause**: The `COPILOT_GITHUB_TOKEN` secret is not configured in the repository settings.
+
+**Fix**:
+1. Create a GitHub Personal Access Token (PAT) with `repo`, `workflow`, `read:org`, and `copilot` scopes
+2. Go to **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
+3. Add the secret with name `COPILOT_GITHUB_TOKEN` and the PAT value
+4. Re-run the failed workflow
+
+All four agentic workflows (Issue Triage, Code Review, Test Coverage, Dependency Update) require this secret.
+
 ### Compilation Errors
 
 If `gh aw compile` fails:
@@ -234,10 +285,30 @@ If `gh aw compile` fails:
 
 ### Workflow Not Triggering
 
-1. Ensure secrets are set in repository settings
+1. Ensure `COPILOT_GITHUB_TOKEN` and `GH_AW_GITHUB_TOKEN` secrets are set in repository settings
 2. Check workflow permissions in Actions settings
 3. Verify trigger conditions match (PR, issue, schedule)
 4. Check GitHub Actions tab for error details
+
+### "Secret Verification Failed" or Workflow Skipped with Warning
+
+**Cause:** `COPILOT_GITHUB_TOKEN` is not configured in repository secrets.
+
+**Symptoms:**
+- Workflow shows "skipped" status
+- Warning message: `COPILOT_GITHUB_TOKEN secret is not configured`
+
+**Fix:**
+1. Ensure your GitHub account has an active GitHub Copilot subscription
+2. Generate a Personal Access Token at [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
+3. Select scopes: `repo`, `workflow`, `read:org`
+4. Add the token as `COPILOT_GITHUB_TOKEN` in repository secrets:
+   - Go to **Settings** → **Secrets and variables** → **Actions**
+   - Click **New repository secret**
+   - Name: `COPILOT_GITHUB_TOKEN`, Value: your PAT
+5. See `.github/SECRETS_SETUP.md` for detailed instructions
+
+**Note:** Without `COPILOT_GITHUB_TOKEN`, workflows will skip gracefully instead of failing. All other CI/CD checks will continue to work normally.
 
 ### Performance Issues
 
@@ -259,9 +330,9 @@ Workflows run on GitHub infrastructure and may take 1-3 minutes per run dependin
 ## Summary
 
 ✅ **Installed**: GitHub Agentic Workflows extension
-✅ **Created**: 3 custom workflows for SuperTool
+✅ **Created**: 4 custom workflows for SuperTool
 ✅ **Configured**: Workflows tailored to project standards
-⏳ **Pending**: GitHub secrets setup (required to enable)
-⏳ **Pending**: Workflow compilation + deployment
+⚠️ **Required**: `COPILOT_GITHUB_TOKEN` secret must be set for all workflows to function
+⚠️ **Required**: `GH_AW_GITHUB_TOKEN` secret must be set for GitHub API access
 
-Next action: Set up GitHub secrets and compile workflows to activate!
+**Action Required**: Set up `COPILOT_GITHUB_TOKEN` and `GH_AW_GITHUB_TOKEN` in repository secrets to activate all agentic workflows. See the [Required Setup](#1-configure-github-secrets) section above.
