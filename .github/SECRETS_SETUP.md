@@ -176,6 +176,17 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 - **Cause:** Different env variables (`.env.local` vs GitHub Secrets)
 - **Fix:** Ensure GitHub secrets match your local `.env.local`
 
+### Agentic workflow fails with "Secret Verification Failed"
+
+- **Error message:** `Error: None of the following secrets are set: COPILOT_GITHUB_TOKEN`
+- **Cause:** `COPILOT_GITHUB_TOKEN` secret is not configured
+- **Fix:**
+  1. Create a GitHub PAT with `repo`, `workflow`, `read:org`, and `copilot` scopes
+  2. Go to **Settings** → **Secrets and variables** → **Actions**
+  3. Add `COPILOT_GITHUB_TOKEN` with the PAT value
+  4. Re-run the failed workflow
+- **Affected workflows:** Issue Triage Assistant, Code Review Assistant, Test Coverage Analysis, Dependency Update Helper
+
 ---
 
 **Need help?** Check the [GitHub Actions logs](../../actions) for detailed error messages.

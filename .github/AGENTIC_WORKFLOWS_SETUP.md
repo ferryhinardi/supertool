@@ -96,7 +96,9 @@ gh aw secrets set GH_AW_GITHUB_MCP_SERVER_TOKEN --owner ferryhinardi --repo supe
 gh aw secrets set GH_AW_AGENT_TOKEN --owner ferryhinardi --repo supertool
 ```
 
-### 2. Create Personal Access Token
+### 2. Create Personal Access Tokens
+
+#### COPILOT_GITHUB_TOKEN (Required for Copilot engine)
 
 1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
 2. Click "Generate new token (classic)"
@@ -104,8 +106,25 @@ gh aw secrets set GH_AW_AGENT_TOKEN --owner ferryhinardi --repo supertool
    - ✅ `repo` (full control of private repositories)
    - ✅ `workflow` (update GitHub Action workflows)
    - ✅ `read:org` (read organization info)
+   - ✅ `copilot` (access to GitHub Copilot)
 4. Generate and copy the token
-5. Use it when running the `gh aw secrets set` commands above
+5. Set it as `COPILOT_GITHUB_TOKEN` in repository secrets
+
+#### GH_AW_GITHUB_TOKEN (Required for GitHub API access)
+
+1. Create a separate PAT (or reuse the same one) with:
+   - ✅ `repo` (full control of private repositories)
+   - ✅ `workflow` (update GitHub Action workflows)
+   - ✅ `read:org` (read organization info)
+2. Set it as `GH_AW_GITHUB_TOKEN` in repository secrets
+
+#### Setting Secrets via GitHub Web UI
+
+1. Go to your repository on GitHub
+2. Click **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Add `COPILOT_GITHUB_TOKEN` with the PAT value
+5. Add `GH_AW_GITHUB_TOKEN` with the PAT value
 
 ### 3. Compile Workflows
 
@@ -238,6 +257,24 @@ The workflows reference these project docs:
 
 ## Troubleshooting
 
+### ⚠️ Secret Verification Failed
+
+**Symptom**: Workflow run fails with "Secret Verification Failed" error. Log shows:
+```
+Error: None of the following secrets are set: COPILOT_GITHUB_TOKEN
+The GitHub Copilot CLI engine requires either COPILOT_GITHUB_TOKEN secret to be configured.
+```
+
+**Cause**: The `COPILOT_GITHUB_TOKEN` secret is not configured in the repository settings.
+
+**Fix**:
+1. Create a GitHub Personal Access Token (PAT) with `repo`, `workflow`, `read:org`, and `copilot` scopes
+2. Go to **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
+3. Add the secret with name `COPILOT_GITHUB_TOKEN` and the PAT value
+4. Re-run the failed workflow
+
+All four agentic workflows (Issue Triage, Code Review, Test Coverage, Dependency Update) require this secret.
+
 ### Compilation Errors
 
 If `gh aw compile` fails:
@@ -248,7 +285,7 @@ If `gh aw compile` fails:
 
 ### Workflow Not Triggering
 
-1. Ensure secrets are set in repository settings
+1. Ensure `COPILOT_GITHUB_TOKEN` and `GH_AW_GITHUB_TOKEN` secrets are set in repository settings
 2. Check workflow permissions in Actions settings
 3. Verify trigger conditions match (PR, issue, schedule)
 4. Check GitHub Actions tab for error details
@@ -295,7 +332,7 @@ Workflows run on GitHub infrastructure and may take 1-3 minutes per run dependin
 ✅ **Installed**: GitHub Agentic Workflows extension
 ✅ **Created**: 4 custom workflows for SuperTool
 ✅ **Configured**: Workflows tailored to project standards
-⏳ **Pending**: GitHub secrets setup (required to enable)
-⏳ **Pending**: Workflow compilation + deployment
+⚠️ **Required**: `COPILOT_GITHUB_TOKEN` secret must be set for all workflows to function
+⚠️ **Required**: `GH_AW_GITHUB_TOKEN` secret must be set for GitHub API access
 
-Next action: Set up GitHub secrets and compile workflows to activate!
+**Action Required**: Set up `COPILOT_GITHUB_TOKEN` and `GH_AW_GITHUB_TOKEN` in repository secrets to activate all agentic workflows. See the [Required Setup](#1-configure-github-secrets) section above.
