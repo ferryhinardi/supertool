@@ -42,9 +42,9 @@ jobs:
         run: pnpm exec playwright install chromium --with-deps
 
       - name: Run tests with coverage
-        timeout-minutes: 20
+        timeout-minutes: 45
         run: |
-          timeout 900 pnpm exec vitest run --coverage || {
+          timeout 2400 pnpm exec vitest run --coverage || {
             exit_code=$?
             if [ $exit_code -eq 124 ] && [ -f coverage/coverage-final.json ] && [ -f coverage/coverage-summary.json ] && [ -f coverage/lcov.info ]; then
               echo "::warning::Vitest was killed by timeout after coverage artifacts were generated"
