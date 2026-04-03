@@ -68,28 +68,26 @@ Four agentic workflows have been created in `.github/workflows/`:
 
 ### 1. Configure GitHub Secrets
 
-The workflows require GitHub secrets to function. You need to set up the required token:
+The workflows require GitHub secrets to function. You need to set up the **required** token:
 
-#### Required Secret for AI-Powered Workflows
+#### ⚠️ Required Secret — Agentic Workflows Will Fail Without This
 
 ```bash
-# Create a Personal Access Token (PAT) with these permissions:
-# - repo (full repository access)
-# - workflow
-# - read:org
+# Create a fine-grained Personal Access Token (PAT).
+# Required permission: Account permissions -> Copilot Requests: Read
 # The account must have an active GitHub Copilot subscription.
 
-gh aw secrets set COPILOT_GITHUB_TOKEN --owner ferryhinardi --repo supertool
+gh aw secrets set COPILOT_GITHUB_TOKEN --owner ferryhinardi --repo supertool --value "your-fine-grained-pat-here"
 ```
 
 > **⚠️ Important:** `COPILOT_GITHUB_TOKEN` is **required** (not optional) for all AI-powered agentic workflows to function.
 > Without this token, the workflows will gracefully skip with a warning instead of failing.
 > See `.github/SECRETS_SETUP.md` for detailed instructions on obtaining and configuring this token.
 
-#### Optional Additional Secrets (for advanced features)
+#### Optional Secrets (for additional functionality)
 
 ```bash
-# For using a separate token for GitHub MCP server (advanced isolation)
+# For GitHub MCP server with isolated permissions (advanced)
 gh aw secrets set GH_AW_GITHUB_MCP_SERVER_TOKEN --owner ferryhinardi --repo supertool
 
 # For agent assignment features
@@ -100,13 +98,9 @@ gh aw secrets set GH_AW_AGENT_TOKEN --owner ferryhinardi --repo supertool
 
 #### COPILOT_GITHUB_TOKEN (Required for Copilot engine)
 
-1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
-2. Click "Generate new token (classic)"
-3. Select scopes:
-   - ✅ `repo` (full control of private repositories)
-   - ✅ `workflow` (update GitHub Action workflows)
-   - ✅ `read:org` (read organization info)
-   - ✅ `copilot` (access to GitHub Copilot)
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens
+2. Click **Generate new token**
+3. Set **Account permissions → Copilot Requests** to **Read**
 4. Generate and copy the token
 5. Set it as `COPILOT_GITHUB_TOKEN` in repository secrets
 
@@ -268,7 +262,7 @@ The GitHub Copilot CLI engine requires either COPILOT_GITHUB_TOKEN secret to be 
 **Cause**: The `COPILOT_GITHUB_TOKEN` secret is not configured in the repository settings.
 
 **Fix**:
-1. Create a GitHub Personal Access Token (PAT) with `repo`, `workflow`, `read:org`, and `copilot` scopes
+1. Create a fine-grained GitHub Personal Access Token (PAT) with **Account permissions → Copilot Requests: Read**
 2. Go to **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
 3. Add the secret with name `COPILOT_GITHUB_TOKEN` and the PAT value
 4. Re-run the failed workflow
@@ -301,7 +295,7 @@ If `gh aw compile` fails:
 **Fix:**
 1. Ensure your GitHub account has an active GitHub Copilot subscription
 2. Generate a Personal Access Token at [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
-3. Select scopes: `repo`, `workflow`, `read:org`
+3. Set **Account permissions → Copilot Requests** to **Read**
 4. Add the token as `COPILOT_GITHUB_TOKEN` in repository secrets:
    - Go to **Settings** → **Secrets and variables** → **Actions**
    - Click **New repository secret**
