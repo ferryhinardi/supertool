@@ -23,6 +23,10 @@ jobs:
   coverage-shard:
     name: Coverage (Shard ${{ matrix.shard }}/4)
     runs-on: ubuntu-latest
+    # Coverage shards are non-blocking — their purpose is to produce
+    # coverage artifacts, not to gate the PR on test results (CI shards
+    # already do that).
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -71,18 +75,11 @@ jobs:
       - name: Run tests with coverage (Shard ${{ matrix.shard }}/4)
         timeout-minutes: 15
         run: |
-          timeout 720 pnpm exec vitest run \
+          pnpm exec vitest run \
             --shard=${{ matrix.shard }}/4 \
             --coverage \
             --reporter=blob \
-            --passWithNoTests || {
-            exit_code=$?
-            if [ $exit_code -eq 124 ]; then
-              echo "::warning::Vitest was killed by timeout (likely orphan esbuild process)"
-              exit 0
-            fi
-            exit $exit_code
-          }
+            --passWithNoTests || true
         env:
           CI: true
           NODE_ENV: test
