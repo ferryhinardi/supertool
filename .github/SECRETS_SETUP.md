@@ -1,12 +1,14 @@
 # 🔐 GitHub Secrets Setup Guide
 
-This guide explains how to configure GitHub repository secrets for CI/CD.
+This guide explains how to configure GitHub repository secrets for CI/CD and Agentic Workflows.
 
 ---
 
 ## 📋 Required Secrets
 
-### For CI/CD Pipeline (Supabase Features)
+### CI/CD Secrets (Optional — build uses placeholders if not set)
+
+For the CI/CD pipeline to work with Supabase features, you need to set up the following secrets:
 
 #### 1. `NEXT_PUBLIC_SUPABASE_URL`
 
@@ -26,21 +28,53 @@ The following secret is **required** for all AI-powered GitHub Agentic Workflows
 
 #### 3. `COPILOT_GITHUB_TOKEN` ⚠️ **REQUIRED for AI workflows**
 
-- **Description:** A Personal Access Token (PAT) that grants access to GitHub Copilot for AI-powered automation
+- **Description:** A fine-grained Personal Access Token (PAT) that grants access to GitHub Copilot for AI-powered automation
 - **Why needed:** The Code Review Assistant, Test Coverage Analysis, Issue Triage, and Dependency Update Helper all use GitHub Copilot CLI as the AI engine. Without this token, these workflows will be skipped with a warning.
 - **Requirements:**
   - The GitHub account associated with the token must have a **GitHub Copilot subscription** (Individual, Business, or Enterprise)
-  - Token must have the following scopes: `repo` (full repository access), `workflow`, `read:org`
+  - Token must be a **fine-grained** PAT owned by that user account
+  - Token must grant **Account permissions → Copilot Requests: Read**
 - **How to generate:**
-  1. Go to [GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)](https://github.com/settings/tokens)
-  2. Click "Generate new token (classic)"
+  1. Go to [GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
+  2. Click **Generate new token**
   3. Set a descriptive name (e.g., "SuperTool Copilot Workflows")
   4. Select expiration (90 days recommended, or no expiration)
-  5. Select scopes: ✅ `repo`, ✅ `workflow`, ✅ `read:org`
+  5. Under **Account permissions**, set **Copilot Requests** to **Read**
   6. Click "Generate token" and **copy the token immediately** (it won't be shown again)
   7. Add it as `COPILOT_GITHUB_TOKEN` in your repository secrets (see instructions below)
 
 > **Note:** If `COPILOT_GITHUB_TOKEN` is not configured, the AI workflows will gracefully skip (not fail) with a warning message. Other CI/CD workflows will continue to work normally.
+
+---
+
+## 🤖 Agentic Workflow Secrets (Required for AI workflows)
+
+The GitHub Agentic Workflows (Code Review, Issue Triage, Test Coverage Analysis, Dependency Updates)
+require a GitHub Copilot token to function. Without this secret, all agentic workflows will fail
+with "Secret Verification Failed".
+
+### 3. `COPILOT_GITHUB_TOKEN` ⚠️ **Required for Agentic Workflows**
+
+- **Description:** A fine-grained GitHub Personal Access Token (PAT) with Copilot access, used by the AI engine
+- **Required permissions:**
+  - **Account permissions → Copilot Requests: Read**
+- **How to create:**
+  1. Go to GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens
+  2. Click **Generate new token**
+  3. Under **Account permissions**, set **Copilot Requests** to **Read**
+  4. Generate and copy the token
+- **How to set:**
+  ```bash
+  gh secret set COPILOT_GITHUB_TOKEN -b "your-fine-grained-pat-here"
+  # or using gh aw:
+  gh aw secrets set COPILOT_GITHUB_TOKEN --value "your-fine-grained-pat-here"
+  ```
+
+> **Note:** Without `COPILOT_GITHUB_TOKEN`, the following workflows will fail:
+> - Code Review Assistant
+> - Issue Triage Assistant
+> - Test Coverage Analysis
+> - Dependency Update Helper
 
 ---
 
@@ -51,12 +85,8 @@ The following secret is **required** for all AI-powered GitHub Agentic Workflows
 1. Go to your repository on GitHub
 2. Click **Settings** → **Secrets and variables** → **Actions**
 3. Click **New repository secret**
-4. Add each secret:
-   - Name: `NEXT_PUBLIC_SUPABASE_URL`
-   - Value: Your Supabase URL
-   - Click **Add secret**
-5. Repeat for `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-6. Repeat for `COPILOT_GITHUB_TOKEN` (if you have a GitHub Copilot subscription)
+4. Add each secret with the name and value
+5. Click **Add secret**
 
 ### Via GitHub CLI:
 
@@ -67,8 +97,8 @@ gh secret set NEXT_PUBLIC_SUPABASE_URL -b "https://your-project.supabase.co"
 # Set Supabase Anon Key
 gh secret set NEXT_PUBLIC_SUPABASE_ANON_KEY -b "your-anon-key-here"
 
-# Set Copilot token (required for AI-powered agentic workflows)
-gh secret set COPILOT_GITHUB_TOKEN -b "your-pat-token-here"
+# Set Copilot GitHub Token (REQUIRED for agentic workflows)
+gh secret set COPILOT_GITHUB_TOKEN -b "your-fine-grained-pat-here"
 ```
 
 ---
@@ -181,7 +211,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 - **Error message:** `Error: None of the following secrets are set: COPILOT_GITHUB_TOKEN`
 - **Cause:** `COPILOT_GITHUB_TOKEN` secret is not configured
 - **Fix:**
-  1. Create a GitHub PAT with `repo`, `workflow`, `read:org`, and `copilot` scopes
+  1. Create a fine-grained GitHub PAT with **Account permissions → Copilot Requests: Read**
   2. Go to **Settings** → **Secrets and variables** → **Actions**
   3. Add `COPILOT_GITHUB_TOKEN` with the PAT value
   4. Re-run the failed workflow
