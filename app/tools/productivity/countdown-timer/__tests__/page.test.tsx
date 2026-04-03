@@ -279,17 +279,17 @@ describe('CountdownTimerPage', () => {
 // Test the helper functions separately
 describe('calculateTimeRemaining function', () => {
   it('returns zeros when target is in the past', () => {
-    const pastDate = new Date(Date.now() - 1000)
+    const now = new Date('2026-01-01T00:00:00Z')
+    const pastDate = new Date(now.getTime() - 1000)
     // This tests the internal logic - the component should show "Time's Up!"
-    const now = new Date()
     const total = pastDate.getTime() - now.getTime()
 
     expect(total).toBeLessThan(0)
   })
 
   it('calculates days correctly', () => {
-    const futureDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // 2 days from now
-    const now = new Date()
+    const now = new Date('2026-01-01T00:00:00Z')
+    const futureDate = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000) // 2 days from now
     const total = futureDate.getTime() - now.getTime()
     const days = Math.floor(total / (1000 * 60 * 60 * 24))
 
@@ -297,8 +297,8 @@ describe('calculateTimeRemaining function', () => {
   })
 
   it('calculates hours correctly', () => {
-    const futureDate = new Date(Date.now() + 5 * 60 * 60 * 1000) // 5 hours from now
-    const now = new Date()
+    const now = new Date('2026-01-01T00:00:00Z')
+    const futureDate = new Date(now.getTime() + 5 * 60 * 60 * 1000) // 5 hours from now
     const total = futureDate.getTime() - now.getTime()
     const hours = Math.floor((total / (1000 * 60 * 60)) % 24)
 
@@ -306,8 +306,8 @@ describe('calculateTimeRemaining function', () => {
   })
 
   it('calculates minutes correctly', () => {
-    const futureDate = new Date(Date.now() + 30 * 60 * 1000) // 30 minutes from now
-    const now = new Date()
+    const now = new Date('2026-01-01T00:00:00Z')
+    const futureDate = new Date(now.getTime() + 30 * 60 * 1000) // 30 minutes from now
     const total = futureDate.getTime() - now.getTime()
     const minutes = Math.floor((total / 1000 / 60) % 60)
 
@@ -315,8 +315,8 @@ describe('calculateTimeRemaining function', () => {
   })
 
   it('calculates seconds correctly', () => {
-    const futureDate = new Date(Date.now() + 45 * 1000) // 45 seconds from now
-    const now = new Date()
+    const now = new Date('2026-01-01T00:00:00Z')
+    const futureDate = new Date(now.getTime() + 45 * 1000) // 45 seconds from now
     const total = futureDate.getTime() - now.getTime()
     const seconds = Math.floor((total / 1000) % 60)
 
