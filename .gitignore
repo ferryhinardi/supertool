@@ -50,7 +50,6 @@ next-env.d.ts
 
 ## Panda
 styled-system/
-app/panda.css
 
 # build output
 bin/
@@ -69,3 +68,6 @@ biome-logs/
 
 # opencode
 .opencode/
+
+# sisyphus agent workspace
+.sisyphus/

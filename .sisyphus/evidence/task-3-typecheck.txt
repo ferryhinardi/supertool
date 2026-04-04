@@ -1,8 +1,0 @@
-TYPECHECK VERIFICATION
-======================
-
-Command: pnpm exec tsc --noEmit
-Exit code: 0
-Output: (no errors)
-
-Status: PASS ✓
