@@ -80,9 +80,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy ffmpeg binary
-COPY --from=builder /app/bin/ffmpeg /usr/local/bin/ffmpeg
-RUN chmod +x /usr/local/bin/ffmpeg
+# Note: ffmpeg is downloaded at runtime by the video-subtitle API.
+# The application uses ffmpeg-static which fetches the binary from GitHub
+# during runtime, not bundled in the image. This keeps the Docker image lean.
 
 USER nextjs
 

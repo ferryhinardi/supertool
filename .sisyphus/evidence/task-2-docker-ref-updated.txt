@@ -1,0 +1,41 @@
+Task 2: Docker Reference Update Evidence
+==========================================
+
+Date: 2025-04-05
+Task: Remove stale Docker COPY command referencing /app/bin/ffmpeg
+
+FILE UPDATED:
+.github/agents/devops-infrastructure-specialist.agent.md
+
+VERIFICATION RESULTS:
+====================
+
+1. Search for stale reference:
+   grep -r "COPY --from=builder /app/bin/ffmpeg" .github/agents/ 2>&1
+   Result: No output (expected)
+   Status: ✅ PASS - Stale Docker COPY command removed
+
+2. Removed lines (78-85 before cleanup, now 78-82):
+   OLD:
+   ├── Line 83: COPY --from=builder /app/bin/ffmpeg /app/bin/ffmpeg
+   ├── Line 84: RUN chmod +x /app/bin/ffmpeg
+   └── Line 85: [blank line]
+
+   NEW:
+   └── Added explanatory comment at line 83:
+       # Note: ffmpeg is downloaded at runtime by the video-subtitle API
+       # using the ffmpeg-static package from npm, so it's not included
+       # in the image. This keeps the Docker image lean.
+
+EXECUTION SUMMARY:
+==================
+- File: .github/agents/devops-infrastructure-specialist.agent.md
+- Lines removed: 2 (old Docker COPY and RUN chmod commands)
+- Comment added: Explains runtime ffmpeg download pattern
+- Result: ✅ Docker image definition updated, no stale binary references
+
+TECHNICAL NOTES:
+- Old pattern: Bundle ffmpeg binary into Docker image (2-3MB bloat)
+- New pattern: Download ffmpeg at runtime via ffmpeg-static npm package
+- This is enforced by: app/api/video-subtitle/route.ts (unchanged)
+- The ffmpeg-static package remains in package.json (required for runtime)
