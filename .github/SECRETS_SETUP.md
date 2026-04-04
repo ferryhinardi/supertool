@@ -12,10 +12,12 @@ The repository uses GitHub Agentic Workflows for automated code review, issue tr
 
 #### `COPILOT_GITHUB_TOKEN`
 
-- **Description:** Personal Access Token for GitHub Copilot CLI engine
+- **Description:** Fine-grained PAT used exclusively by the GitHub Copilot CLI engine for AI inference
+- **Required permission:** `Copilot` → Read-only (**only** this permission is needed)
 - **Required by:** All 4 agentic workflows (code-review, issue-triage, test-coverage-check, dependency-update-helper)
 - **Symptoms when missing:** Workflows fail with "⚠️ Secret Verification Failed"
-- **How to get:** Create a Fine-grained PAT with **Copilot** (read) permission at GitHub Settings → Developer settings → Personal access tokens
+- **⚠️ Security:** This is a **private** secret — treat it like a password and never expose it in code or logs (unlike the `NEXT_PUBLIC_*` Supabase keys below, which are intentionally public)
+- **How to get:** Create a Fine-grained PAT scoped to this repository with only the **Copilot (read)** permission — see [full instructions in AGENTIC_WORKFLOWS_SETUP.md](AGENTIC_WORKFLOWS_SETUP.md#2-create-personal-access-token-for-copilot_github_token)
 - **How to set:**
   ```bash
   gh secret set COPILOT_GITHUB_TOKEN --body "<your-token>" --repo ferryhinardi/supertool

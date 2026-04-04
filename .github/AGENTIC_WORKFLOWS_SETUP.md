@@ -96,23 +96,24 @@ gh aw secrets set GH_AW_GITHUB_TOKEN --owner ferryhinardi --repo supertool
 
 ### 2. Create Personal Access Token for COPILOT_GITHUB_TOKEN
 
-The `COPILOT_GITHUB_TOKEN` must be a **Fine-grained Personal Access Token** (PAT) with Copilot access:
+`COPILOT_GITHUB_TOKEN` is used **exclusively** by the GitHub Copilot CLI engine for AI inference. It does **not** need GitHub API permissions (those operations use the automatically-provisioned `GITHUB_TOKEN` or the optional `GH_AW_GITHUB_TOKEN`/`GH_AW_GITHUB_MCP_SERVER_TOKEN`).
+
+Create a **Fine-grained Personal Access Token** (PAT):
 
 1. Go to GitHub Settings → Developer settings → Personal access tokens → **Fine-grained tokens**
 2. Click "Generate new token"
 3. Under **"Repository access"**, select **"Only select repositories"** and choose `ferryhinardi/supertool`
-4. Select permissions:
-   - ✅ **Copilot** → "Read-only" (required for GitHub Copilot CLI)
-   - ✅ **Contents** → "Read-only" (to read repository files)
-   - ✅ **Issues** → "Read and write" (to add comments/labels)
-   - ✅ **Pull requests** → "Read-only"
+4. Under **Permissions**, grant only:
+   - ✅ **Copilot** → "Read-only" (required for GitHub Copilot CLI engine)
 5. Generate and copy the token
 6. Add it to repository secrets:
    ```bash
    gh secret set COPILOT_GITHUB_TOKEN --body "<your-token>" --repo ferryhinardi/supertool
    ```
 
-> **Note**: Classic PATs with `repo`, `workflow`, and `read:org` scopes also work if Fine-grained PATs are not available.
+> **⚠️ Security note**: `COPILOT_GITHUB_TOKEN` is a private secret — treat it like a password and never expose it in code or logs.
+
+> **Note**: Classic PATs with the `copilot` scope also work if Fine-grained PATs are not available.
 
 ### 3. Compile Workflows
 
