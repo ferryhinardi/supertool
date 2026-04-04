@@ -5,7 +5,17 @@
     "ses_2a7746fbaffepnJHgXfINs8pKX",
     "ses_2a5f3c303ffeK62Nr2ARsNJh5B",
     "ses_2a5efe86cffeSY3hz3nwnsu4gm",
-    "ses_2a5e8bbffffeD2nmkH2LUvLB23"
+    "ses_2a5e8bbffffeD2nmkH2LUvLB23",
+    "ses_2a5e3346affeSDMlrTyVq2eSem",
+    "ses_2a5e38753ffemY0WeG00t8s46d",
+    "ses_2a5e2fbccffeWQwzgIGILorQPo",
+    "ses_2a5e3e29fffeeW931KqTPthxee",
+    "ses_2a5e3c5eaffexq81ekRhM397Wp",
+    "ses_2a5e3603fffeJBRKR1nu3uPb1a",
+    "ses_2a5dea037ffe0CF76XaB0jA5iU",
+    "ses_2a5d8b650ffe0PaejfTp7uyPNN",
+    "ses_2a5d6c675ffeMSlxmkAeVgSnj8",
+    "ses_2a5d5c189ffe9MPetm9RhqWmFU"
   ],
   "plan_name": "repo-structure-cleanup",
   "agent": "atlas",
@@ -14,10 +24,10 @@
       "task_key": "todo:1",
       "task_label": "1",
       "task_title": "Fix .gitignore — clean up garbled entries, add missing ignores, fix turbopack typo",
-      "session_id": "ses_2a5e8bbffffeD2nmkH2LUvLB23",
+      "session_id": "ses_2a5d5c189ffe9MPetm9RhqWmFU",
       "agent": "Sisyphus-Junior",
-      "category": "quick",
-      "updated_at": "2026-04-04T20:03:32.879Z"
+      "category": "deep",
+      "updated_at": "2026-04-04T20:23:54.588Z"
     }
   }
 }
