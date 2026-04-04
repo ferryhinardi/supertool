@@ -1,0 +1,34 @@
+# Task 8: Move Root Shell Scripts to scripts/ - EVIDENCE
+
+## Pre-Move State
+- check-ci-locally.sh: -rwxr-xr-x (executable)
+- commit-and-push.sh: -rw-r--r-- (NOT executable, needed chmod)
+- run-test.sh: -rw-r--r-- (NOT executable, needed chmod)
+
+## Actions Taken
+1. Moved check-ci-locally.sh to scripts/
+2. Moved commit-and-push.sh to scripts/
+3. Moved run-test.sh to scripts/
+4. Applied chmod +x to all three in scripts/ directory
+
+## Post-Move Verification
+✓ scripts/check-ci-locally.sh: -rwxr-xr-x (executable)
+✓ scripts/commit-and-push.sh: -rwxr-xr-x (executable)
+✓ scripts/run-test.sh: -rwxr-xr-x (executable)
+✓ No scripts exist at repo root
+✓ No CI workflow or package.json references found
+
+## Git Commit
+Commit: 4b557b1
+Message: "chore: move root shell scripts to scripts/"
+Changes:
+  - Renamed check-ci-locally.sh => scripts/check-ci-locally.sh (100%)
+  - Renamed commit-and-push.sh => scripts/commit-and-push.sh (100%)
+  - Mode changed to 100755 (executable) on both
+  - Renamed run-test.sh => scripts/run-test.sh (100%)
+  - Mode changed to 100755 (executable)
+
+## Status
+✓ COMPLETE - All three scripts moved with executable permissions preserved/added
+✓ No unrelated files staged
+✓ Atomic commit created
