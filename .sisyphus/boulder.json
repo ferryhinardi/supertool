@@ -1,0 +1,23 @@
+{
+  "active_plan": "/Users/ferryhinardi/Workspace/supertool/.sisyphus/plans/repo-structure-cleanup.md",
+  "started_at": "2026-04-04T19:49:56.545Z",
+  "session_ids": [
+    "ses_2a7746fbaffepnJHgXfINs8pKX",
+    "ses_2a5f3c303ffeK62Nr2ARsNJh5B",
+    "ses_2a5efe86cffeSY3hz3nwnsu4gm",
+    "ses_2a5e8bbffffeD2nmkH2LUvLB23"
+  ],
+  "plan_name": "repo-structure-cleanup",
+  "agent": "atlas",
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "Fix .gitignore — clean up garbled entries, add missing ignores, fix turbopack typo",
+      "session_id": "ses_2a5e8bbffffeD2nmkH2LUvLB23",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-04-04T20:03:32.879Z"
+    }
+  }
+}

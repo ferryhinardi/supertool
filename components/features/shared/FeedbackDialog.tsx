@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { css } from '@/styled-system/css'
 
 type FeedbackType = 'idea' | 'issue'
 
@@ -67,26 +68,24 @@ export function FeedbackDialog() {
   return (
     <Dialog open={open} onOpenChange={(details) => setOpen(details.open)}>
       <DialogTrigger asChild>
-        <button
+        <Button
           type="button"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            background: 'linear-gradient(to right, rgb(168, 85, 247), rgb(236, 72, 153))',
+          className={css({
+            gap: '2',
+            bgGradient: 'to-r',
+            gradientFrom: 'purple.500',
+            gradientTo: 'pink.500',
             color: 'white',
-            fontWeight: '600',
-            fontSize: '1rem',
-            boxShadow: '0 10px 15px -3px rgba(168, 85, 247, 0.5)',
-            transition: 'all 0.3s',
-            border: 'none',
-            borderRadius: '0.5rem',
-            cursor: 'pointer',
-            paddingLeft: '1.5rem',
-            paddingRight: '1.5rem',
-            paddingTop: '0.625rem',
-            paddingBottom: '0.625rem',
-          }}
+            fontWeight: 'semibold',
+            fontSize: 'md',
+            shadow: 'lg',
+            px: '6',
+            py: '2.5',
+            _hover: {
+              transform: 'scale(1.05)',
+              shadow: 'xl',
+            },
+          })}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'scale(1.05)'
             e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(168, 85, 247, 0.6)'
@@ -98,7 +97,7 @@ export function FeedbackDialog() {
         >
           <MessageSquare style={{ width: '1.25rem', height: '1.25rem' }} />
           <span>Feedback</span>
-        </button>
+        </Button>
       </DialogTrigger>
       <DialogContent
         style={{

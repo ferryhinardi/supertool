@@ -1,0 +1,21 @@
+Task 6: Move types/ to lib/types/ - COMPLETED
+
+FILES MOVED:
+✅ types/payment.ts → lib/types/payment.ts
+✅ types/vaul.d.ts → lib/types/vaul.d.ts
+✅ types/ directory removed (no longer exists)
+
+VERIFICATION:
+✅ Both files exist in lib/types/ with identical content
+✅ No stale @/types/ references found in code
+✅ Ambient declaration (vaul.d.ts) remains discoverable by TypeScript
+✅ tsconfig.json includes "**/*.ts" - covers lib/types/*.d.ts automatically
+
+TSCONFIG.JSON STATUS:
+- No changes needed
+- "include" array already contains "**/*.ts" and "**/*.tsx"
+- Ambient declarations in lib/types/ are automatically discovered
+
+GREP RESULTS:
+✅ grep -rn "@/types/" returns ZERO code references (docs only)
+✅ No code imports found from old types/ path

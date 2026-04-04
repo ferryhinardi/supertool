@@ -6,8 +6,6 @@ import { defineConfig, type Plugin } from 'vitest/config'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Custom plugin to intercept @ark-ui/react imports and redirect to mock
-// This prevents the massive dependency tree from being parsed and causing OOM
 function arkUiMockPlugin(): Plugin {
   const mockPath = path.resolve(__dirname, './__mocks__/@ark-ui/react.ts')
   const fieldMockPath = path.resolve(__dirname, './__mocks__/@ark-ui/react/field.ts')
@@ -16,9 +14,8 @@ function arkUiMockPlugin(): Plugin {
 
   return {
     name: 'ark-ui-mock-plugin',
-    enforce: 'pre', // Run before other plugins
+    enforce: 'pre',
     resolveId(id) {
-      // Handle subpath imports first (more specific matches)
       if (id === '@ark-ui/react/field') {
         return fieldMockPath
       }
@@ -28,7 +25,6 @@ function arkUiMockPlugin(): Plugin {
       if (id === '@ark-ui/react/portal') {
         return portalMockPath
       }
-      // Handle main import and any other subpaths
       if (id === '@ark-ui/react' || id.startsWith('@ark-ui/react/')) {
         return mockPath
       }
@@ -42,25 +38,21 @@ export default defineConfig({
   test: {
     globals: true,
     setupFiles: './vitest.setup.ts',
-    // Reduced timeouts to prevent hanging workers that leak memory
     testTimeout: 30000,
     hookTimeout: 30000,
-    // Force faster cleanup - prevents the 31-minute hang seen in CI shard 5
     teardownTimeout: 5000,
     env: {
       NEXT_PUBLIC_SUPABASE_URL: 'https://test.supabase.co',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
     },
-    // Use forks pool with a single worker to minimize memory footprint.
-    // The OOM occurs during cleanup phase (31 min after tests finish), so
-    // keeping file parallelism disabled and workers capped at 1 stabilizes CI.
     pool: 'forks',
     isolate: true,
-    // Disable parallel file execution to reduce memory pressure
-    // This trades speed for stability in CI environment
-    fileParallelism: false,
-    maxWorkers: 1,
-    // Limit concurrent tests within a file
+    // Coverage needs more throughput than the single-worker CI shard config.
+    // Two workers still timed out before coverage artifacts were written, so
+    // the standalone coverage job uses a moderate worker count to better match
+    // the repo-wide test volume without returning to the earlier aggressive setup.
+    fileParallelism: true,
+    maxWorkers: 4,
     maxConcurrency: 3,
     exclude: [
       '**/node_modules/**',
@@ -69,12 +61,9 @@ export default defineConfig({
       '**/dist/**',
       '**/.next/**',
     ],
-    // Browser mode is only enabled for specific tests that need it (e.g., screenshot tests)
-    // Most tests will use jsdom environment for better performance and compatibility
-    // To use browser mode in a test file, add: // @vitest-environment browser
     environment: 'jsdom',
     browser: {
-      enabled: false, // Disabled by default, only enabled when test file specifies @vitest-environment browser
+      enabled: false,
       provider: playwright(),
       instances: [
         {
@@ -84,6 +73,7 @@ export default defineConfig({
       headless: true,
     },
     coverage: {
+      enabled: true,
       provider: 'v8',
       reporter: ['text', 'json', 'lcov', 'json-summary'],
       reportsDirectory: './coverage',
@@ -110,15 +100,12 @@ export default defineConfig({
         'hooks/**/*.{ts,tsx}',
       ],
     },
-    // Externalize @ark-ui/react to prevent OOM issues in jsdom environment
-    // Note: The arkUiMockPlugin() above handles the actual mocking
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './'),
     },
   },
-  // Prevent Vite from pre-bundling @ark-ui/react which causes OOM in jsdom
   optimizeDeps: {
     exclude: [
       '@ark-ui/react',
@@ -127,7 +114,6 @@ export default defineConfig({
       '@ark-ui/react/portal',
     ],
   },
-  // Mark @ark-ui/react as external for SSR/test environments
   ssr: {
     external: ['@ark-ui/react'],
   },

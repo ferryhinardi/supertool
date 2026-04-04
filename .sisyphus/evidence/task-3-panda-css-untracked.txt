@@ -1,0 +1,15 @@
+VERIFICATION: app/panda.css untrack (git rm --cached)
+======================================================
+
+BEFORE untrack:
+Command: git ls-files app/panda.css
+Output: app/panda.css
+
+AFTER untrack (git rm --cached app/panda.css):
+Command: git ls-files app/panda.css
+Output: (empty)
+
+Local file still exists:
+Command: ls -la app/panda.css
+Output:
+-rw-r--r--@ 1 ferryhinardi  staff  48 Feb 27 20:30 app/panda.css

@@ -1,6 +1,10 @@
 import { render, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { addSpeculationRule, SpeculationRules, useSpeculationStatus } from '../SpeculationRules'
+import {
+  addSpeculationRule,
+  SpeculationRules,
+  useSpeculationStatus,
+} from '../features/SpeculationRules'
 
 describe('SpeculationRules', () => {
   beforeEach(() => {

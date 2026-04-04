@@ -12,7 +12,7 @@ SuperTool is a Next.js 16 (React 19) developer toolkit with 36+ browser-based to
 Each tool lives under `app/tools/<category>/<tool-slug>/` where category is one of: `data`, `media`, `development`, `productivity`, `security`, `finance`, `design`.
 
 ### Required files per tool:
-1. **`page.tsx`** — Main tool component (use `'use client'`). Copy patterns from `TOOL_PAGE_TEMPLATE.tsx`:
+1. **`page.tsx`** — Main tool component (use `'use client'`). Copy patterns from `scripts/templates/TOOL_PAGE_TEMPLATE.tsx`:
    - Panda CSS via `css()` from `@/styled-system/css` (NOT Tailwind)
    - Framer Motion animations with `useReducedMotion` support
    - `trackToolEvent()` from `@/lib/services/analytics` for analytics
@@ -51,7 +51,7 @@ Validation Steps (run after scaffolding)
 4. pnpm build — Ensure production build succeeds
 
 Reference Files
-•  Template: TOOL_PAGE_TEMPLATE.tsx
+•  Template: scripts/templates/TOOL_PAGE_TEMPLATE.tsx
 •  Canonical example: app/tools/data/json-beautify/page.tsx
 •  Layout example: app/tools/data/json-beautify/layout.tsx
 •  Tools registry: lib/data/tools.ts
