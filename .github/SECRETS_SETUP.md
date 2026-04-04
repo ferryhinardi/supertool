@@ -29,13 +29,13 @@ The repository uses GitHub Agentic Workflows for automated code review, issue tr
 
 ### CI/CD Pipeline (Supabase Features)
 
-### 1. `NEXT_PUBLIC_SUPABASE_URL`
+#### 1. `NEXT_PUBLIC_SUPABASE_URL`
 
 - **Description:** Your Supabase project URL
 - **Example:** `https://abcdefghijklmnop.supabase.co`
 - **Where to find:** Supabase Dashboard → Project Settings → API
 
-### 2. `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+#### 2. `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 - **Description:** Your Supabase anonymous/public key
 - **Example:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
