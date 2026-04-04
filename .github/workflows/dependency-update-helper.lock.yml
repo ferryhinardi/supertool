@@ -21,7 +21,7 @@
 # For more information: https://github.github.com/gh-aw/introduction/overview/
 #
 #
-# gh-aw-metadata: {"schema_version":"v3","frontmatter_hash":"52833fcb17a668a7f78f439831f4a586eaf1d67fff5ebdf467d0885190aebb3c","compiler_version":"v0.63.1","strict":true,"agent_id":"copilot"}
+# gh-aw-metadata: {"schema_version":"v3","frontmatter_hash":"b7f581db3936fa5444c57fa396f5cb85d40d523e0ed3d4b56e1ecf37ff7d5679","compiler_version":"v0.63.1","strict":true,"agent_id":"copilot"}
 
 name: "Dependency Update Helper"
 "on":
@@ -51,22 +51,10 @@ jobs:
     outputs:
       comment_id: ""
       comment_repo: ""
-      has_copilot_token: ${{ steps.check-copilot-token.outputs.token_configured }}
       lockdown_check_failed: ${{ steps.generate_aw_info.outputs.lockdown_check_failed == 'true' }}
       model: ${{ steps.generate_aw_info.outputs.model }}
       secret_verification_result: ${{ steps.validate-secret.outputs.verification_result }}
     steps:
-      - name: Check COPILOT_GITHUB_TOKEN availability
-        id: check-copilot-token
-        env:
-          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
-        run: |
-          if [ -z "$COPILOT_GITHUB_TOKEN" ]; then
-            echo "token_configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::COPILOT_GITHUB_TOKEN secret is not configured. Dependency Update Helper will be skipped. Please add COPILOT_GITHUB_TOKEN to your repository secrets. See .github/SECRETS_SETUP.md for setup instructions."
-          else
-            echo "token_configured=true" >> "$GITHUB_OUTPUT"
-          fi
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@v0.63.1
         with:
@@ -84,7 +72,7 @@ jobs:
           GH_AW_INFO_EXPERIMENTAL: "false"
           GH_AW_INFO_SUPPORTS_TOOLS_ALLOWLIST: "true"
           GH_AW_INFO_STAGED: "false"
-          GH_AW_INFO_ALLOWED_DOMAINS: '["defaults"]'
+          GH_AW_INFO_ALLOWED_DOMAINS: '["defaults","telemetry.business.githubcopilot.com"]'
           GH_AW_INFO_FIREWALL_ENABLED: "true"
           GH_AW_INFO_AWF_VERSION: "v0.25.0"
           GH_AW_INFO_AWMG_VERSION: ""
@@ -250,7 +238,6 @@ jobs:
 
   agent:
     needs: activation
-    if: needs.activation.outputs.has_copilot_token == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -1053,3 +1040,4 @@ jobs:
           name: safe-output-items
           path: /tmp/gh-aw/safe-output-items.jsonl
           if-no-files-found: ignore
+

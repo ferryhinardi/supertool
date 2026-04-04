@@ -34,6 +34,12 @@ safe-outputs:
       - high-priority
       - good-first-issue
 
+# Network access - keep default allow-list and add missing Copilot telemetry domain
+network:
+  allowed:
+    - "defaults"
+    - "telemetry.business.githubcopilot.com"
+
 ---
 
 # Issue Triage Assistant

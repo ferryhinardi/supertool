@@ -21,7 +21,7 @@
 # For more information: https://github.github.com/gh-aw/introduction/overview/
 #
 #
-# gh-aw-metadata: {"schema_version":"v3","frontmatter_hash":"b30d90268a224ec28b4651319b7802569702332d85145d026f982431999a102a","compiler_version":"v0.63.1","strict":true,"agent_id":"copilot"}
+# gh-aw-metadata: {"schema_version":"v3","frontmatter_hash":"87b63be35cefbe01e759e5513de1bf805e3f6570985ee3e5e18d7214c4f4673e","compiler_version":"v0.63.1","strict":true,"agent_id":"copilot"}
 
 name: "Test Coverage Analysis"
 "on":
@@ -73,7 +73,7 @@ jobs:
           GH_AW_INFO_EXPERIMENTAL: "false"
           GH_AW_INFO_SUPPORTS_TOOLS_ALLOWLIST: "true"
           GH_AW_INFO_STAGED: "false"
-          GH_AW_INFO_ALLOWED_DOMAINS: '["defaults"]'
+          GH_AW_INFO_ALLOWED_DOMAINS: '["defaults","telemetry.business.githubcopilot.com"]'
           GH_AW_INFO_FIREWALL_ENABLED: "true"
           GH_AW_INFO_AWF_VERSION: "v0.25.0"
           GH_AW_INFO_AWMG_VERSION: ""
@@ -967,20 +967,9 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.id == github.repository_id
     runs-on: ubuntu-slim
     outputs:
-      activated: ${{ steps.check_membership.outputs.is_team_member == 'true' && steps.check-copilot-token.outputs.token_configured == 'true' }}
+      activated: ${{ steps.check_membership.outputs.is_team_member == 'true' }}
       matched_command: ''
     steps:
-      - name: Check COPILOT_GITHUB_TOKEN availability
-        id: check-copilot-token
-        env:
-          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
-        run: |
-          if [ -z "$COPILOT_GITHUB_TOKEN" ]; then
-            echo "token_configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::COPILOT_GITHUB_TOKEN secret is not configured. Test Coverage Analysis will be skipped. Please add COPILOT_GITHUB_TOKEN to your repository secrets. See .github/SECRETS_SETUP.md for setup instructions."
-          else
-            echo "token_configured=true" >> "$GITHUB_OUTPUT"
-          fi
       - name: Setup Scripts
         uses: github/gh-aw-actions/setup@v0.63.1
         with:
@@ -1074,3 +1063,4 @@ jobs:
           name: safe-output-items
           path: /tmp/gh-aw/safe-output-items.jsonl
           if-no-files-found: ignore
+

@@ -14,6 +14,12 @@ safe-outputs:
   create-issue:
     max: 1
 
+# Network access - keep default allow-list and add missing Copilot telemetry domain
+network:
+  allowed:
+    - "defaults"
+    - "telemetry.business.githubcopilot.com"
+
 ---
 
 # Dependency Update Helper

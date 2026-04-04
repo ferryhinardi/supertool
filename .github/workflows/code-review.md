@@ -15,6 +15,12 @@ safe-outputs:
   add-comment:
     max: 1
 
+# Network access - keep default allow-list and add missing Copilot telemetry domain
+network:
+  allowed:
+    - "defaults"
+    - "telemetry.business.githubcopilot.com"
+
 ---
 
 # Code Review Assistant
