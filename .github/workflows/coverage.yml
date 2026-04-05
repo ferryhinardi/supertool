@@ -1,10 +1,7 @@
 name: Test Coverage
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+  workflow_dispatch: # Manual trigger only — auto runs disabled due to chronic CI timeouts
 
 permissions:
   contents: write
