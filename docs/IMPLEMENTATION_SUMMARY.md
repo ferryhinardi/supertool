@@ -15,7 +15,7 @@
 
 ### 2. Implementation Patterns Established
 
-- ✅ Created reusable `TOOL_PAGE_TEMPLATE.tsx` for new tools
+- ✅ Created reusable `scripts/templates/TOOL_PAGE_TEMPLATE.tsx` for new tools
 - ✅ Documented standardized patterns for:
   - Button touch targets (44px minimum)
   - Input field sizing (mobile-friendly)
@@ -114,10 +114,10 @@ cat IMPLEMENTATION_ACTION_PLAN.md | less
 
 ```tsx
 // For new tools or reference
-cat TOOL_PAGE_TEMPLATE.tsx
+cat scripts/templates/TOOL_PAGE_TEMPLATE.tsx
 
 // For button patterns
-cat TOOL_PAGE_TEMPLATE.tsx | grep -A20 "Touch-Friendly Button"
+cat scripts/templates/TOOL_PAGE_TEMPLATE.tsx | grep -A20 "Touch-Friendly Button"
 ```
 
 ### 3. Progress Tracking
@@ -250,7 +250,7 @@ cat IMPLEMENTATION_ACTION_PLAN.md
 ### Get Template
 
 ```bash
-cat TOOL_PAGE_TEMPLATE.tsx
+cat scripts/templates/TOOL_PAGE_TEMPLATE.tsx
 ```
 
 ### Start Linting/Testing
@@ -331,7 +331,7 @@ pnpm test:browser      # Run tests
 
 1. **Enforce patterns**: Update ESLint rules to prevent `size="sm"` in tool pages
 2. **Code review**: Require aria-labels on all icon-only buttons
-3. **Template usage**: Require new tools use TOOL_PAGE_TEMPLATE.tsx as starting point
+3. **Template usage**: Require new tools use `scripts/templates/TOOL_PAGE_TEMPLATE.tsx` as starting point
 4. **Testing**: Add mobile viewport tests to CI/CD pipeline
 5. **Documentation**: Keep IMPLEMENTATION_PLAN.md updated as single source of truth
 

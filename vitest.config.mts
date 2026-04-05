@@ -51,21 +51,15 @@ export default defineConfig({
       NEXT_PUBLIC_SUPABASE_URL: 'https://test.supabase.co',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
     },
-    // Use forks pool with single fork to minimize memory footprint
-    // The OOM occurs during cleanup phase (31 min after tests finish)
-    // Single fork ensures only one worker exists during teardown
+    // Use forks pool with a single worker to minimize memory footprint.
+    // The OOM occurs during cleanup phase (31 min after tests finish), so
+    // keeping file parallelism disabled and workers capped at 1 stabilizes CI.
     pool: 'forks',
     isolate: true,
     // Disable parallel file execution to reduce memory pressure
     // This trades speed for stability in CI environment
     fileParallelism: false,
-    // Configure fork pool with single fork for predictable memory usage
-    poolOptions: {
-      forks: {
-        singleFork: true,
-        isolate: true,
-      },
-    },
+    maxWorkers: 1,
     // Limit concurrent tests within a file
     maxConcurrency: 3,
     exclude: [

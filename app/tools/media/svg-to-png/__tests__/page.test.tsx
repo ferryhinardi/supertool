@@ -1382,12 +1382,8 @@ describe('SvgToPngConverterPage', () => {
       fireEvent.change(fileInput, { target: { files: [file] } })
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Width (px)')).toBeInTheDocument()
+        expect(screen.getByLabelText('Width (px)')).toHaveValue(100)
       })
-
-      // After clear and re-upload, dimensions should be from the SVG again
-      const newWidthInput = screen.getByLabelText('Width (px)') as HTMLInputElement
-      expect(newWidthInput.value).toBe('100') // From viewBox
     })
   })
 

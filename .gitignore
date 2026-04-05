@@ -14,7 +14,6 @@
 /coverage
 *.log
 /logs
-!turbopack-backtrace.log
 *.tmp/
 
 # next.js
@@ -50,11 +49,25 @@ next-env.d.ts
 .vscode/*
 
 ## Panda
-styled-system
-styled-system-studiostyled-system/
+styled-system/
+
+# build output
+bin/
+
+# test files
+test-output.txt
+
+# firebase
+firebase-debug.log
+
+# turbopack
+turbopack-backtrace.log
 
 # biome
 biome-logs/
 
 # opencode
 .opencode/
+
+# sisyphus agent workspace
+.sisyphus/

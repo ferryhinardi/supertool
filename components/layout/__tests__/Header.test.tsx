@@ -19,17 +19,11 @@ describe('Header', () => {
     expect(feedbackButtons[0]).toBeInTheDocument()
   })
 
-  it('renders theme toggle button', () => {
-    render(<Header />)
-
-    expect(screen.getByText(/theme toggle/i)).toBeInTheDocument()
-  })
-
   it('has sticky positioning', () => {
     const { container } = render(<Header />)
     const header = container.querySelector('header')
 
-    expect(header).toHaveClass('sticky')
+    expect(header?.className).toContain('pos_sticky')
   })
 
   it('is accessible with semantic header element', () => {

@@ -295,7 +295,7 @@ pnpm test       # Run tests
 ### Documentation Files Created ✅
 
 - [x] `/Users/ferryhinardi/Project/supertool/IMPROVEMENT_PLAN.md` - Strategy
-- [x] `/Users/ferryhinardi/Project/supertool/TOOL_PAGE_TEMPLATE.tsx` - Reference template
+- [x] `/Users/ferryhinardi/Project/supertool/scripts/templates/TOOL_PAGE_TEMPLATE.tsx` - Reference template
 - [x] `/Users/ferryhinardi/Project/supertool/IMPLEMENTATION_PROGRESS.md` - Progress tracking
 - [x] `/Users/ferryhinardi/Project/supertool/audit-mobile-ux.sh` - Audit script
 - [x] `/Users/ferryhinardi/Project/supertool/fix-mobile-ux.sh` - Fix script
@@ -346,7 +346,7 @@ pnpm test       # Run tests
 ### InProject References
 
 - Template: `app/tools/unit-converter/page.tsx` (canonical example)
-- Template: `TOOL_PAGE_TEMPLATE.tsx` (starter template)
+- Template: `scripts/templates/TOOL_PAGE_TEMPLATE.tsx` (starter template)
 - Config: `.github/copilot-instructions.md` (style guidelines)
 
 ---

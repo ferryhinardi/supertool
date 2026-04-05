@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { CopilotMessage, GeneratedFile } from '@/lib/services/copilot/types'
@@ -6,14 +6,6 @@ import { ChatMessage } from '../chat-message'
 
 // Mock Date.now for consistent timestamp testing
 const MOCK_NOW = new Date('2025-01-24T10:00:00Z').getTime()
-
-// Mock clipboard API
-const mockClipboard = {
-  writeText: vi.fn(),
-}
-Object.assign(navigator, {
-  clipboard: mockClipboard,
-})
 
 // Mock URL.createObjectURL and URL.revokeObjectURL
 const mockCreateObjectURL = vi.fn(() => 'blob:mock-url')
@@ -25,9 +17,13 @@ describe('ChatMessage', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     vi.setSystemTime(MOCK_NOW)
+    vi.restoreAllMocks()
+    mockCreateObjectURL.mockClear()
+    mockRevokeObjectURL.mockClear()
   })
 
   afterEach(() => {
+    vi.restoreAllMocks()
     vi.useRealTimers()
   })
 
@@ -354,30 +350,39 @@ describe('ChatMessage', () => {
     })
 
     it('copies file content to clipboard when copy button is clicked', async () => {
-      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
-      mockClipboard.writeText.mockResolvedValue(undefined)
+      vi.useRealTimers()
+      const user = userEvent.setup()
+      const writeTextSpy = vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue(undefined)
 
-      const fileContent = 'export const hello = "world"'
-      const message = createMessage({
-        role: 'assistant',
-        content: 'Copy this',
-        generatedFiles: [
-          createGeneratedFile({
-            name: 'module.ts',
-            content: fileContent,
-          }),
-        ],
-      })
-      render(<ChatMessage message={message} />)
+      try {
+        const fileContent = 'export const hello = "world"'
+        const message = createMessage({
+          role: 'assistant',
+          content: 'Copy this',
+          generatedFiles: [
+            createGeneratedFile({
+              name: 'module.ts',
+              content: fileContent,
+            }),
+          ],
+        })
+        render(<ChatMessage message={message} />)
 
-      const copyButton = screen.getByRole('button', { name: /Copy module\.ts content/ })
-      await user.click(copyButton)
+        const copyButton = screen.getByRole('button', { name: /Copy module\.ts content/ })
+        await user.click(copyButton)
 
-      expect(mockClipboard.writeText).toHaveBeenCalledWith(fileContent)
+        await waitFor(() => {
+          expect(writeTextSpy).toHaveBeenCalledWith(fileContent)
+        })
+      } finally {
+        vi.useFakeTimers()
+        vi.setSystemTime(MOCK_NOW)
+      }
     })
 
     it('triggers download when download button is clicked', async () => {
-      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      vi.useRealTimers()
+      const user = userEvent.setup()
 
       // Mock document.createElement and appendChild/removeChild
       const mockLink = {
@@ -385,16 +390,14 @@ describe('ChatMessage', () => {
         download: '',
         click: vi.fn(),
       }
-      const createElementSpy = vi
-        .spyOn(document, 'createElement')
-        .mockReturnValue(mockLink as unknown as HTMLAnchorElement)
-      const appendChildSpy = vi
-        .spyOn(document.body, 'appendChild')
-        .mockImplementation(() => mockLink as unknown as HTMLAnchorElement)
-      const removeChildSpy = vi
-        .spyOn(document.body, 'removeChild')
-        .mockImplementation(() => mockLink as unknown as HTMLAnchorElement)
+      const originalCreateElement = document.createElement.bind(document)
+      const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tagName) => {
+        if (tagName === 'a') {
+          return mockLink as unknown as HTMLAnchorElement
+        }
 
+        return originalCreateElement(tagName)
+      })
       const message = createMessage({
         role: 'assistant',
         content: 'Download this',
@@ -409,17 +412,26 @@ describe('ChatMessage', () => {
       render(<ChatMessage message={message} />)
 
       const downloadButton = screen.getByRole('button', { name: /Download download\.txt/ })
-      await user.click(downloadButton)
+      const appendChildSpy = vi
+        .spyOn(document.body, 'appendChild')
+        .mockImplementation((node) => node)
+      const removeChildSpy = vi
+        .spyOn(document.body, 'removeChild')
+        .mockImplementation((node) => node)
+      try {
+        await user.click(downloadButton)
 
-      expect(mockCreateObjectURL).toHaveBeenCalled()
-      expect(mockLink.click).toHaveBeenCalled()
-      expect(mockLink.download).toBe('download.txt')
-      expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:mock-url')
-
-      // Cleanup
-      createElementSpy.mockRestore()
-      appendChildSpy.mockRestore()
-      removeChildSpy.mockRestore()
+        expect(mockCreateObjectURL).toHaveBeenCalled()
+        expect(mockLink.click).toHaveBeenCalled()
+        expect(mockLink.download).toBe('download.txt')
+        expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:mock-url')
+      } finally {
+        createElementSpy.mockRestore()
+        appendChildSpy.mockRestore()
+        removeChildSpy.mockRestore()
+        vi.useFakeTimers()
+        vi.setSystemTime(MOCK_NOW)
+      }
     })
 
     it('formats file sizes correctly', () => {
