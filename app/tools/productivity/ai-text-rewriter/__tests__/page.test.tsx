@@ -2,13 +2,16 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { supabase } from '@/lib/auth/supabaseClient'
 import * as analytics from '@/lib/services/analytics'
 import AITextRewriterPage from '../page'
 
 // Mock next/navigation
+const mockPush = vi.hoisted(() => vi.fn())
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
-    push: vi.fn(),
+    push: mockPush,
     replace: vi.fn(),
     prefetch: vi.fn(),
     back: vi.fn(),
@@ -30,8 +33,41 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
+const mockTrackToolEvent = vi.hoisted(() => vi.fn())
+
 vi.mock('@/lib/services/analytics', () => ({
-  trackToolEvent: vi.fn(),
+  trackToolEvent: mockTrackToolEvent,
+}))
+
+vi.mock('@/components/features/monetization/PaywallModal', () => ({
+  PaywallModal: ({
+    open,
+    reason,
+    remaining,
+    onOpenChange,
+  }: {
+    open: boolean
+    reason: 'quota-exceeded' | 'anonymous-blocked'
+    remaining?: number
+    onOpenChange: (value: boolean) => void
+  }) =>
+    open ? (
+      <div data-testid="paywall-modal">
+        <span>{reason}</span>
+        <span>{remaining ?? 'no-remaining'}</span>
+        <button type="button" onClick={() => onOpenChange(false)}>
+          Close paywall
+        </button>
+      </div>
+    ) : null,
+}))
+
+vi.mock('@/lib/auth/supabaseClient', () => ({
+  supabase: {
+    auth: {
+      getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
+    },
+  },
 }))
 
 // Mock fetch API
@@ -283,6 +319,177 @@ describe('AI Text Rewriter - Rewriting Tests', () => {
     mockFetch.mockClear()
   })
 
+  it('opens the paywall modal for a 402 quota-exceeded response instead of showing a generic error', async () => {
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({ status: 'paywall', reason: 'quota-exceeded', remaining: 0 }, false, 402)
+    )
+
+    render(<AITextRewriterPage />)
+
+    const textarea = screen.getByPlaceholderText(/Enter your text here/i)
+    fireEvent.change(textarea, { target: { value: 'Test message' } })
+
+    const buttons = screen.getAllByRole('button')
+    const rewriteButton = buttons.find((btn) => btn.textContent?.includes('Rewrite Text'))
+    expect(rewriteButton).toBeDefined()
+
+    if (rewriteButton) {
+      await userEvent.click(rewriteButton)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('paywall-modal')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('quota-exceeded')).toBeInTheDocument()
+      expect(screen.getByText('0')).toBeInTheDocument()
+      expect(toast.error).not.toHaveBeenCalledWith('Failed to rewrite text')
+    }
+  })
+
+  it('tracks quota consumption with remaining count after a successful rewrite', async () => {
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
+        variants: ['Rewritten text'],
+        improvements: ['Improved clarity'],
+        tone: 'professional',
+        style: 'balanced',
+        originalLength: 12,
+        remaining: 4,
+      })
+    )
+
+    render(<AITextRewriterPage />)
+
+    const textarea = screen.getByPlaceholderText(/Enter your text here/i)
+    fireEvent.change(textarea, { target: { value: 'Test message' } })
+
+    const buttons = screen.getAllByRole('button')
+    const rewriteButton = buttons.find((btn) => btn.textContent?.includes('Rewrite Text'))
+    expect(rewriteButton).toBeDefined()
+
+    if (rewriteButton) {
+      await userEvent.click(rewriteButton)
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith('Text rewritten successfully!')
+      })
+
+      expect(mockTrackToolEvent).toHaveBeenCalledWith(
+        'quota_consumed',
+        expect.objectContaining({
+          tool_slug: 'ai-text-rewriter',
+          remaining: 4,
+        })
+      )
+    }
+  })
+
+  it('includes the authorization header when a Supabase session token is available', async () => {
+    vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+      data: {
+        session: {
+          access_token: 'session-token',
+        },
+      },
+    } as Awaited<ReturnType<typeof supabase.auth.getSession>>)
+
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
+        variants: ['Authenticated rewrite'],
+        improvements: ['Improved clarity'],
+        tone: 'professional',
+        style: 'balanced',
+        originalLength: 12,
+        remaining: 3,
+      })
+    )
+
+    render(<AITextRewriterPage />)
+
+    const textarea = screen.getByPlaceholderText(/Enter your text here/i)
+    fireEvent.change(textarea, { target: { value: 'Test message' } })
+
+    const buttons = screen.getAllByRole('button')
+    const rewriteButton = buttons.find((btn) => btn.textContent?.includes('Rewrite Text'))
+    expect(rewriteButton).toBeDefined()
+
+    if (rewriteButton) {
+      await userEvent.click(rewriteButton)
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith(
+          '/api/ai-text-rewriter',
+          expect.objectContaining({
+            headers: expect.objectContaining({
+              Authorization: 'Bearer session-token',
+              'Content-Type': 'application/json',
+            }),
+          })
+        )
+      })
+    }
+  })
+
+  it('does not show a remaining quota hint or emit quota analytics when remaining is absent', async () => {
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
+        variants: ['Rewritten text'],
+        improvements: ['Improved clarity'],
+        tone: 'professional',
+        style: 'balanced',
+        originalLength: 12,
+      })
+    )
+
+    render(<AITextRewriterPage />)
+
+    const textarea = screen.getByPlaceholderText(/Enter your text here/i)
+    fireEvent.change(textarea, { target: { value: 'Test message' } })
+
+    const buttons = screen.getAllByRole('button')
+    const rewriteButton = buttons.find((btn) => btn.textContent?.includes('Rewrite Text'))
+    expect(rewriteButton).toBeDefined()
+
+    if (rewriteButton) {
+      await userEvent.click(rewriteButton)
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith('Text rewritten successfully!')
+      })
+
+      expect(screen.queryByText(/Remaining free rewrites today:/i)).not.toBeInTheDocument()
+      expect(mockTrackToolEvent).not.toHaveBeenCalledWith('quota_consumed', expect.any(Object))
+    }
+  })
+
+  it('allows closing the paywall modal after a blocked response', async () => {
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({ status: 'paywall', reason: 'anonymous-blocked' }, false, 402)
+    )
+
+    render(<AITextRewriterPage />)
+
+    const textarea = screen.getByPlaceholderText(/Enter your text here/i)
+    fireEvent.change(textarea, { target: { value: 'Test message' } })
+
+    const buttons = screen.getAllByRole('button')
+    const rewriteButton = buttons.find((btn) => btn.textContent?.includes('Rewrite Text'))
+    expect(rewriteButton).toBeDefined()
+
+    if (rewriteButton) {
+      await userEvent.click(rewriteButton)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('paywall-modal')).toBeInTheDocument()
+      })
+
+      await userEvent.click(screen.getByRole('button', { name: 'Close paywall' }))
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('paywall-modal')).not.toBeInTheDocument()
+      })
+    }
+  })
   it('should rewrite text successfully', async () => {
     mockFetch.mockResolvedValueOnce(
       createMockResponse({
@@ -507,6 +714,17 @@ describe('AI Text Rewriter - Rewriting Tests', () => {
       })
     }
   })
+
+  it('updates the selected number of variants from the range input', async () => {
+    render(<AITextRewriterPage />)
+
+    expect(screen.getByText('Number of Variants: 1')).toBeInTheDocument()
+
+    const slider = screen.getByLabelText(/Number of Variants:/i)
+    fireEvent.change(slider, { target: { value: '3' } })
+
+    expect(screen.getByText('Number of Variants: 3')).toBeInTheDocument()
+  })
 })
 
 describe('AI Text Rewriter - Copy Functionality Tests', () => {
@@ -619,6 +837,56 @@ describe('AI Text Rewriter - Copy Functionality Tests', () => {
       }
     }
   })
+
+  it('should show an error when copying fails', async () => {
+    vi.mocked(navigator.clipboard.writeText).mockRejectedValueOnce(new Error('copy failed'))
+
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
+        variants: ['Rewritten text'],
+        improvements: ['test'],
+        tone: 'professional',
+        style: 'balanced',
+        originalLength: 12,
+      })
+    )
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+    render(<AITextRewriterPage />)
+
+    const textarea = screen.getByPlaceholderText(/Enter your text here/i)
+    fireEvent.change(textarea, { target: { value: 'Test message' } })
+
+    const buttons = screen.getAllByRole('button')
+    const rewriteButton = buttons.find((btn) => btn.textContent?.includes('Rewrite Text'))
+    expect(rewriteButton).toBeDefined()
+
+    if (rewriteButton) {
+      await userEvent.click(rewriteButton)
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith('Text rewritten successfully!')
+      })
+
+      const allButtons = await screen.findAllByRole('button')
+      const copyButton = allButtons.find((btn) => btn.textContent?.trim() === 'Copy')
+      expect(copyButton).toBeDefined()
+
+      if (copyButton) {
+        await userEvent.click(copyButton)
+
+        await waitFor(() => {
+          expect(toast.error).toHaveBeenCalledWith('Failed to copy to clipboard')
+        })
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          'Error copying to clipboard:',
+          expect.any(Error)
+        )
+      }
+    }
+  })
 })
 
 describe('AI Text Rewriter - Clear Functionality Tests', () => {
@@ -675,6 +943,43 @@ describe('AI Text Rewriter - Clear Functionality Tests', () => {
       })
 
       expect(analytics.trackToolEvent).toHaveBeenCalledWith('ai_text_rewriter_clear', {})
+    }
+  })
+
+  it('should clear the remaining quota hint when clearing after a successful rewrite', async () => {
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
+        variants: ['Rewritten text'],
+        improvements: ['test'],
+        tone: 'professional',
+        style: 'balanced',
+        originalLength: 12,
+        remaining: 4,
+      })
+    )
+
+    render(<AITextRewriterPage />)
+
+    const textarea = screen.getByPlaceholderText(/Enter your text here/i)
+    fireEvent.change(textarea, { target: { value: 'Test message' } })
+
+    const buttons = screen.getAllByRole('button')
+    const rewriteButton = buttons.find((btn) => btn.textContent?.includes('Rewrite Text'))
+    expect(rewriteButton).toBeDefined()
+
+    if (rewriteButton) {
+      await userEvent.click(rewriteButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Remaining free rewrites today: 4')).toBeInTheDocument()
+      })
+
+      const clearButton = await screen.findByRole('button', { name: /clear all/i })
+      await userEvent.click(clearButton)
+
+      await waitFor(() => {
+        expect(screen.queryByText('Remaining free rewrites today: 4')).not.toBeInTheDocument()
+      })
     }
   })
 })
