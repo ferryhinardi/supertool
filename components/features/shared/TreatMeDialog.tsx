@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Button } from '@/components/ui/button'
+import { trackToolEvent } from '@/lib/services/analytics'
 
 type PaymentStep = 'select' | 'qris' | 'crypto' | 'international' | 'polar'
 
@@ -40,7 +41,13 @@ export function TreatMeDialog() {
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          trackToolEvent('support_cta_clicked', {
+            tier: 'entry',
+            source: 'treat_me_dialog_open',
+          })
+          setOpen(true)
+        }}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -58,6 +65,7 @@ export function TreatMeDialog() {
           paddingRight: '1.5rem',
           paddingTop: '0.625rem',
           paddingBottom: '0.625rem',
+          minHeight: '44px',
           touchAction: 'manipulation',
           WebkitTapHighlightColor: 'transparent',
         }}
@@ -243,7 +251,13 @@ function SelectPaymentMethod({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {/* QRIS Payment - Available */}
           <button
-            onClick={() => onSelectMethod('qris')}
+            onClick={() => {
+              trackToolEvent('support_cta_clicked', {
+                tier: 'qris',
+                source: 'treat_me_dialog_method',
+              })
+              onSelectMethod('qris')
+            }}
             style={{
               position: 'relative',
               width: '100%',
@@ -257,6 +271,7 @@ function SelectPaymentMethod({
               borderColor: 'rgba(34, 197, 94, 0.4)',
               background:
                 'linear-gradient(to right, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.15))',
+              minHeight: '44px',
               cursor: 'pointer',
             }}
             type="button"
@@ -318,7 +333,13 @@ function SelectPaymentMethod({
 
           {/* International Payment - Available via Polar */}
           <button
-            onClick={() => onSelectMethod('polar')}
+            onClick={() => {
+              trackToolEvent('support_cta_clicked', {
+                tier: 'international',
+                source: 'treat_me_dialog_method',
+              })
+              onSelectMethod('polar')
+            }}
             style={{
               position: 'relative',
               width: '100%',
@@ -332,6 +353,7 @@ function SelectPaymentMethod({
               borderColor: 'rgba(96, 165, 250, 0.4)',
               background:
                 'linear-gradient(to right, rgba(96, 165, 250, 0.15), rgba(59, 130, 246, 0.15))',
+              minHeight: '44px',
               cursor: 'pointer',
             }}
             type="button"
@@ -393,7 +415,13 @@ function SelectPaymentMethod({
 
           {/* Cryptocurrency - Coming Soon */}
           <button
-            onClick={() => onSelectMethod('crypto')}
+            onClick={() => {
+              trackToolEvent('support_cta_clicked', {
+                tier: 'crypto',
+                source: 'treat_me_dialog_method',
+              })
+              onSelectMethod('crypto')
+            }}
             style={{
               position: 'relative',
               width: '100%',
@@ -407,6 +435,7 @@ function SelectPaymentMethod({
               borderStyle: 'solid',
               borderColor: '#374151',
               backgroundColor: 'rgba(31, 41, 55, 0.5)',
+              minHeight: '44px',
               cursor: 'pointer',
             }}
             type="button"
@@ -634,6 +663,11 @@ function PolarPayment({ onBack }: { onBack: () => void }) {
     setLoading(true)
     setError('')
 
+    trackToolEvent('support_cta_clicked', {
+      tier: String(amount),
+      source: 'treat_me_dialog_checkout',
+    })
+
     try {
       const response = await fetch('/api/payment/checkout', {
         method: 'POST',
@@ -729,6 +763,7 @@ function PolarPayment({ onBack }: { onBack: () => void }) {
                   borderColor: selectedAmount === amount ? 'rgb(96, 165, 250)' : 'rgb(55, 65, 81)',
                   backgroundColor:
                     selectedAmount === amount ? 'rgba(96, 165, 250, 0.1)' : 'rgb(31, 41, 55)',
+                  minHeight: '44px',
                   color: selectedAmount === amount ? 'rgb(96, 165, 250)' : 'white',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
@@ -776,6 +811,7 @@ function PolarPayment({ onBack }: { onBack: () => void }) {
                 width: '100%',
                 padding: '0.75rem 1rem 0.75rem 2rem',
                 borderRadius: '0.5rem',
+                minHeight: '44px',
                 border: '2px solid',
                 borderColor: customAmount ? 'rgb(96, 165, 250)' : 'rgb(55, 65, 81)',
                 backgroundColor: 'rgb(31, 41, 55)',
@@ -859,6 +895,7 @@ function PolarPayment({ onBack }: { onBack: () => void }) {
               flex: 1,
               padding: '0.5rem 1rem',
               borderRadius: '0.5rem',
+              minHeight: '44px',
               fontSize: '1rem',
               fontWeight: 600,
               border: 'none',
