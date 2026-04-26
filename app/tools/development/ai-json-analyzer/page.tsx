@@ -3,10 +3,12 @@
 import { Brain, Check, Copy, Lightbulb, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { PaywallModal } from '@/components/features/monetization/PaywallModal'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { supabase } from '@/lib/auth/supabaseClient'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
@@ -18,11 +20,22 @@ interface AnalysisResult {
   relationships: string[]
 }
 
+interface PaywallState {
+  open: boolean
+  reason: 'quota-exceeded' | 'anonymous-blocked'
+  remaining?: number
+}
+
 function AIJsonAnalyzerContent() {
   const [jsonInput, setJsonInput] = useState('')
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [remainingQuota, setRemainingQuota] = useState<number | null>(null)
+  const [paywallState, setPaywallState] = useState<PaywallState>({
+    open: false,
+    reason: 'quota-exceeded',
+  })
 
   // Track page visit
   useEffect(() => {
@@ -50,10 +63,15 @@ function AIJsonAnalyzerContent() {
     setAnalysis(null)
 
     try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
       const response = await fetch('/api/ai-json-analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
         },
         body: JSON.stringify({
           jsonData: jsonInput.trim(),
@@ -61,6 +79,17 @@ function AIJsonAnalyzerContent() {
       })
 
       const data = await response.json()
+
+      if (response.status === 402 && data.status === 'paywall') {
+        setRemainingQuota(null)
+        setPaywallState({
+          open: true,
+          reason: data.reason,
+          remaining:
+            'remaining' in data && typeof data.remaining === 'number' ? data.remaining : undefined,
+        })
+        return
+      }
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to analyze JSON')
@@ -76,10 +105,19 @@ function AIJsonAnalyzerContent() {
 
       toast.success('JSON analyzed successfully!')
 
+      const remaining = typeof data.remaining === 'number' ? data.remaining : null
+      setRemainingQuota(remaining)
+
       trackToolEvent('ai_json_analyze', {
-        json_size: jsonInput.length,
         tokens: data.usage?.total_tokens || 0,
       })
+
+      if (remaining !== null) {
+        trackToolEvent('quota_consumed', {
+          tool_slug: 'ai-json-analyzer',
+          remaining,
+        })
+      }
     } catch (error) {
       console.error('Error analyzing JSON:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to analyze JSON'
@@ -126,6 +164,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
     setJsonInput('')
     setAnalysis(null)
     setCopied(false)
+    setRemainingQuota(null)
   }
 
   const handleLoadExample = () => {
@@ -340,6 +379,17 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                 </Button>
               )}
             </div>
+
+            {remainingQuota !== null && (
+              <p
+                className={css({
+                  fontSize: 'sm',
+                  color: 'blue.300',
+                })}
+              >
+                Remaining free analyses today: {remainingQuota}
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -634,6 +684,14 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
+
+      <PaywallModal
+        open={paywallState.open}
+        onOpenChange={(open) => setPaywallState((current) => ({ ...current, open }))}
+        reason={paywallState.reason}
+        remaining={paywallState.remaining}
+        toolSlug="ai-json-analyzer"
+      />
     </main>
   )
 }
