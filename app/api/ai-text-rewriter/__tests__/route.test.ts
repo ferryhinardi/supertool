@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock OpenAI before importing the route
 const mockCreate = vi.hoisted(() => vi.fn())
+const mockCheckPremiumAccess = vi.hoisted(() => vi.fn())
+const mockRecordUsage = vi.hoisted(() => vi.fn())
+const mockGetUser = vi.hoisted(() => vi.fn())
 
 vi.mock('openai', () => {
   return {
@@ -23,6 +26,19 @@ vi.mock('openai', () => {
   }
 })
 
+vi.mock('@/lib/services/premium-gate', () => ({
+  checkPremiumAccess: mockCheckPremiumAccess,
+  recordUsage: mockRecordUsage,
+}))
+
+vi.mock('@/lib/auth/supabaseServer', () => ({
+  getSupabaseServer: () => ({
+    auth: {
+      getUser: mockGetUser,
+    },
+  }),
+}))
+
 import OpenAI from 'openai'
 import { POST } from '../route'
 
@@ -32,6 +48,16 @@ describe('AI Text Rewriter API Route', () => {
   beforeEach(() => {
     vi.resetAllMocks()
     process.env = { ...originalEnv, OPENAI_API_KEY: 'test-api-key' }
+    mockCheckPremiumAccess.mockResolvedValue({
+      allowed: true,
+      reason: 'within-quota',
+      remaining: 5,
+    })
+    mockRecordUsage.mockResolvedValue(true)
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: 'user-123' } },
+      error: null,
+    })
   })
 
   afterEach(() => {
@@ -39,15 +65,98 @@ describe('AI Text Rewriter API Route', () => {
   })
 
   // Helper function to create a mock request
-  function createMockRequest(body: Record<string, unknown>): Request {
+  function createMockRequest(
+    body: Record<string, unknown>,
+    headers: Record<string, string> = {}
+  ): Request {
     return new Request('http://localhost:3000/api/ai-text-rewriter', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...headers },
       body: JSON.stringify(body),
     })
   }
 
   describe('POST /api/ai-text-rewriter', () => {
+    it('returns a 402 paywall response before calling OpenAI when quota is exceeded', async () => {
+      mockCheckPremiumAccess.mockResolvedValueOnce({
+        allowed: false,
+        reason: 'quota-exceeded',
+        remaining: 0,
+      })
+
+      const request = createMockRequest(
+        {
+          text: 'Please rewrite this text',
+          tone: 'professional',
+        },
+        {
+          'x-forwarded-for': '203.0.113.10',
+        }
+      )
+
+      const response = await POST(request as never)
+      const data = await response.json()
+
+      expect(response.status).toBe(402)
+      expect(data).toEqual({
+        status: 'paywall',
+        reason: 'quota-exceeded',
+        remaining: 0,
+      })
+      expect(mockCreate).not.toHaveBeenCalled()
+      expect(mockRecordUsage).not.toHaveBeenCalled()
+      expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+        userId: undefined,
+        metricName: 'ai-text-rewriter',
+        freeQuotaPerDay: 5,
+        ipAddress: '203.0.113.10',
+      })
+    })
+
+    it('records usage after a successful authenticated rewrite and returns remaining quota', async () => {
+      mockCreate.mockResolvedValueOnce({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                variants: ['Rewritten text'],
+                improvements: ['Improved clarity'],
+              }),
+            },
+          },
+        ],
+        usage: { prompt_tokens: 100, completion_tokens: 50, total_tokens: 150 },
+      })
+
+      const request = createMockRequest(
+        {
+          text: 'Please rewrite this text',
+          tone: 'professional',
+        },
+        {
+          authorization: 'Bearer valid-token',
+          'x-forwarded-for': '198.51.100.8',
+        }
+      )
+
+      const response = await POST(request as never)
+      const data = await response.json()
+
+      expect(response.status).toBe(200)
+      expect(data.remaining).toBe(4)
+      expect(mockGetUser).toHaveBeenCalledWith('valid-token')
+      expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+        userId: 'user-123',
+        metricName: 'ai-text-rewriter',
+        freeQuotaPerDay: 5,
+        ipAddress: '198.51.100.8',
+      })
+      expect(mockRecordUsage).toHaveBeenCalledWith({
+        userId: 'user-123',
+        metricName: 'ai-text-rewriter',
+        quantity: 1,
+      })
+    })
     describe('Environment Configuration', () => {
       it('should return 500 if OPENAI_API_KEY is not configured', async () => {
         delete process.env.OPENAI_API_KEY
