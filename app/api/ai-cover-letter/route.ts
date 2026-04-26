@@ -1,5 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { getSupabaseServer } from '@/lib/auth/supabaseServer'
+import { checkPremiumAccess, recordUsage } from '@/lib/services/premium-gate'
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -8,7 +10,37 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if API key is configured
+    const authHeader = request.headers.get('authorization')
+    const forwardedFor = request.headers.get('x-forwarded-for')
+    const realIp = request.headers.get('x-real-ip')
+    const ipAddress = forwardedFor?.split(',')[0]?.trim() || realIp || undefined
+
+    let userId: string | undefined
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const supabase = getSupabaseServer()
+      const { data } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''))
+      userId = data.user?.id
+    }
+
+    const premiumAccess = await checkPremiumAccess({
+      userId,
+      metricName: 'cover-letter-builder',
+      freeQuotaPerDay: 3,
+      ipAddress,
+    })
+
+    if (!premiumAccess.allowed) {
+      return NextResponse.json(
+        {
+          status: 'paywall',
+          reason: premiumAccess.reason,
+          remaining: premiumAccess.remaining,
+        },
+        { status: 402 }
+      )
+    }
+
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         {
@@ -28,7 +60,6 @@ export async function POST(request: NextRequest) {
     let systemPrompt = ''
     let userPrompt = ''
 
-    // Generate different content based on action type
     switch (action) {
       case 'generate-opening':
         systemPrompt = `You are an expert career coach and professional writer specializing in cover letters. Generate a compelling opening paragraph for a cover letter that immediately captures attention and expresses genuine interest in the position.
@@ -137,7 +168,6 @@ Industry/Company Context: ${data.companyName || 'corporate'} - ${data.department
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
 
-    // Call OpenAI API
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
@@ -161,9 +191,23 @@ Industry/Company Context: ${data.companyName || 'corporate'} - ${data.department
 
     const parsedResult = JSON.parse(result)
 
+    if (userId) {
+      await recordUsage({
+        userId,
+        metricName: 'cover-letter-builder',
+        quantity: 1,
+      })
+    }
+
+    const remainingAfterUsage =
+      userId && premiumAccess.reason === 'within-quota'
+        ? Math.max(0, premiumAccess.remaining - 1)
+        : premiumAccess.remaining
+
     return NextResponse.json({
       success: true,
       data: parsedResult,
+      remaining: remainingAfterUsage,
     })
   } catch (error) {
     console.error('AI Cover Letter API error:', error)
