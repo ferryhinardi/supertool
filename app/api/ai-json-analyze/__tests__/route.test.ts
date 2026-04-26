@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Hoist mock function
 const mockCreate = vi.hoisted(() => vi.fn())
+const mockCheckPremiumAccess = vi.hoisted(() => vi.fn())
+const mockRecordUsage = vi.hoisted(() => vi.fn())
+const mockGetUser = vi.hoisted(() => vi.fn())
 
 // Mock OpenAI SDK
 vi.mock('openai', () => {
@@ -24,6 +27,19 @@ vi.mock('openai', () => {
   }
 })
 
+vi.mock('@/lib/services/premium-gate', () => ({
+  checkPremiumAccess: mockCheckPremiumAccess,
+  recordUsage: mockRecordUsage,
+}))
+
+vi.mock('@/lib/auth/supabaseServer', () => ({
+  getSupabaseServer: () => ({
+    auth: {
+      getUser: mockGetUser,
+    },
+  }),
+}))
+
 import OpenAI from 'openai'
 import { POST } from '../route'
 
@@ -31,18 +47,31 @@ describe('AI JSON Analyze API Route', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.stubEnv('OPENAI_API_KEY', 'test-api-key')
+    mockCheckPremiumAccess.mockResolvedValue({
+      allowed: true,
+      reason: 'within-quota',
+      remaining: 8,
+    })
+    mockRecordUsage.mockResolvedValue(undefined)
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: 'user-123' } },
+      error: null,
+    })
   })
+
+  const createRequest = (body: unknown, headers: Record<string, string> = {}) =>
+    new Request('http://localhost/api/ai-json-analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...headers },
+      body: JSON.stringify(body),
+    })
 
   describe('POST /api/ai-json-analyze', () => {
     describe('Input Validation', () => {
       it('should return 500 if OPENAI_API_KEY is not configured', async () => {
         vi.stubEnv('OPENAI_API_KEY', '')
 
-        const request = new Request('http://localhost/api/ai-json-analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ jsonData: { name: 'test' } }),
-        })
+        const request = createRequest({ jsonData: { name: 'test' } })
 
         const response = await POST(request as never)
         const data = await response.json()
@@ -52,11 +81,7 @@ describe('AI JSON Analyze API Route', () => {
       })
 
       it('should return 400 if jsonData is missing', async () => {
-        const request = new Request('http://localhost/api/ai-json-analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({}),
-        })
+        const request = createRequest({})
 
         const response = await POST(request as never)
         const data = await response.json()
@@ -66,11 +91,7 @@ describe('AI JSON Analyze API Route', () => {
       })
 
       it('should return 400 if jsonData is null', async () => {
-        const request = new Request('http://localhost/api/ai-json-analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ jsonData: null }),
-        })
+        const request = createRequest({ jsonData: null })
 
         const response = await POST(request as never)
         const data = await response.json()
@@ -80,11 +101,7 @@ describe('AI JSON Analyze API Route', () => {
       })
 
       it('should return 400 if jsonData string is invalid JSON', async () => {
-        const request = new Request('http://localhost/api/ai-json-analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ jsonData: 'not valid json {' }),
-        })
+        const request = createRequest({ jsonData: 'not valid json {' })
 
         const response = await POST(request as never)
         const data = await response.json()
@@ -107,11 +124,7 @@ describe('AI JSON Analyze API Route', () => {
           usage: { prompt_tokens: 50, completion_tokens: 100, total_tokens: 150 },
         })
 
-        const request = new Request('http://localhost/api/ai-json-analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ jsonData: { name: 'John', age: 30 } }),
-        })
+        const request = createRequest({ jsonData: { name: 'John', age: 30 } })
 
         const response = await POST(request as never)
         expect(response.status).toBe(200)
@@ -131,11 +144,7 @@ describe('AI JSON Analyze API Route', () => {
           usage: { prompt_tokens: 50, completion_tokens: 100, total_tokens: 150 },
         })
 
-        const request = new Request('http://localhost/api/ai-json-analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ jsonData: '{"name": "Jane", "email": "jane@example.com"}' }),
-        })
+        const request = createRequest({ jsonData: '{"name": "Jane", "email": "jane@example.com"}' })
 
         const response = await POST(request as never)
         expect(response.status).toBe(200)
@@ -314,6 +323,128 @@ describe('AI JSON Analyze API Route', () => {
         expect(data.patterns).toBe('No patterns detected.')
         expect(data.insights).toBe('No insights available.')
         expect(data.relationships).toBe('No relationships detected.')
+      })
+    })
+
+    describe('Premium Gate', () => {
+      it('should return 402 paywall response before calling OpenAI when quota is exceeded', async () => {
+        mockCheckPremiumAccess.mockResolvedValueOnce({
+          allowed: false,
+          reason: 'quota-exceeded',
+          remaining: 0,
+        })
+
+        const request = createRequest(
+          { jsonData: { name: 'John Doe', email: 'john@example.com' } },
+          { 'x-forwarded-for': '203.0.113.30' }
+        )
+
+        const response = await POST(request as never)
+        const data = await response.json()
+
+        expect(response.status).toBe(402)
+        expect(data).toEqual({
+          status: 'paywall',
+          reason: 'quota-exceeded',
+          remaining: 0,
+        })
+        expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+          userId: undefined,
+          metricName: 'ai-json-analyzer',
+          freeQuotaPerDay: 8,
+          ipAddress: '203.0.113.30',
+        })
+        expect(mockCreate).not.toHaveBeenCalled()
+        expect(mockRecordUsage).not.toHaveBeenCalled()
+      })
+
+      it('should record usage after a successful authenticated analysis and return remaining quota', async () => {
+        const mockAnalysis = {
+          summary: 'This JSON represents a user profile with basic personal information.',
+          structure: 'Single-level flat object with 3 string fields and 1 numeric field.',
+          patterns: 'Uses camelCase naming convention, all primitive types.',
+          insights: 'Consider adding validation for email format and age range.',
+          relationships: 'Name and email are independent, age could be derived from birthDate.',
+        }
+
+        mockCreate.mockResolvedValueOnce({
+          choices: [{ message: { content: JSON.stringify(mockAnalysis) } }],
+          usage: { prompt_tokens: 100, completion_tokens: 200, total_tokens: 300 },
+        })
+
+        const request = createRequest(
+          { jsonData: { name: 'John Doe', email: 'john@example.com', age: 30 } },
+          {
+            authorization: 'Bearer valid-token',
+            'x-real-ip': '198.51.100.31',
+          }
+        )
+
+        const response = await POST(request as never)
+        const data = await response.json()
+
+        expect(mockGetUser).toHaveBeenCalledWith('valid-token')
+        expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+          userId: 'user-123',
+          metricName: 'ai-json-analyzer',
+          freeQuotaPerDay: 8,
+          ipAddress: '198.51.100.31',
+        })
+        expect(mockRecordUsage).toHaveBeenCalledWith({
+          userId: 'user-123',
+          metricName: 'ai-json-analyzer',
+          quantity: 1,
+        })
+        expect(response.status).toBe(200)
+        expect(data.remaining).toBe(7)
+      })
+
+      it('should allow subscribed users to bypass gating while preserving premium remaining quota', async () => {
+        const mockAnalysis = {
+          summary: 'Premium access keeps the analyzer available without decrementing free quota.',
+          structure: 'Simple flat object with premium metadata.',
+          patterns: 'Uses explicit subscription status fields.',
+          insights:
+            'Premium users still succeed even when free quota would otherwise be exhausted.',
+          relationships: 'Subscription status controls gating while metering stays recorded.',
+        }
+
+        mockCheckPremiumAccess.mockResolvedValueOnce({
+          allowed: true,
+          reason: 'subscription',
+          remaining: 8,
+        })
+        mockCreate.mockResolvedValueOnce({
+          choices: [{ message: { content: JSON.stringify(mockAnalysis) } }],
+          usage: { prompt_tokens: 90, completion_tokens: 180, total_tokens: 270 },
+        })
+
+        const request = createRequest(
+          { jsonData: { subscription: 'active', name: 'Premium User' } },
+          {
+            authorization: 'Bearer premium-token',
+            'x-real-ip': '198.51.100.32',
+          }
+        )
+
+        const response = await POST(request as never)
+        const data = await response.json()
+
+        expect(response.status).toBe(200)
+        expect(mockGetUser).toHaveBeenCalledWith('premium-token')
+        expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+          userId: 'user-123',
+          metricName: 'ai-json-analyzer',
+          freeQuotaPerDay: 8,
+          ipAddress: '198.51.100.32',
+        })
+        expect(mockRecordUsage).toHaveBeenCalledWith({
+          userId: 'user-123',
+          metricName: 'ai-json-analyzer',
+          quantity: 1,
+        })
+        expect(data.summary).toBe(mockAnalysis.summary)
+        expect(data.remaining).toBe(8)
       })
     })
 
