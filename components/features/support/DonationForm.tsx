@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import type { DonationTier } from '@/lib/data/donation-tiers'
 import { DONATION_TIERS, formatAmount, isValidAmount, parseAmount } from '@/lib/data/donation-tiers'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 /**
@@ -18,6 +19,10 @@ export default function DonationForm() {
   const [error, setError] = useState('')
 
   const handleTierSelect = (tier: DonationTier) => {
+    trackToolEvent('support_cta_clicked', {
+      tier: tier.id,
+      source: 'support_page_tier',
+    })
     setSelectedTier(tier)
     setIsCustom(false)
     setCustomAmount('')
@@ -55,6 +60,11 @@ export default function DonationForm() {
       setError('Amount must be between $1.00 and $10,000.00')
       return
     }
+
+    trackToolEvent('support_cta_clicked', {
+      tier: selectedTier?.id ?? 'custom',
+      source: 'support_page_checkout',
+    })
 
     setIsLoading(true)
 
@@ -129,6 +139,7 @@ export default function DonationForm() {
                   selectedTier?.id === tier.id && !isCustom
                     ? 'blue.500'
                     : 'rgba(255, 255, 255, 0.1)',
+                minH: '11',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 _hover: {
@@ -224,6 +235,7 @@ export default function DonationForm() {
                 py: '3',
                 pl: '8',
                 fontSize: 'xl',
+                minH: '11',
                 color: 'white',
                 _placeholder: { color: 'gray.500' },
                 _focus: {
@@ -260,13 +272,14 @@ export default function DonationForm() {
         <button
           type="button"
           onClick={handleDonate}
-          disabled={isLoading || (!selectedTier && !customAmount)}
+          disabled={isLoading || (!selectedTier && !customAmount && !isCustom)}
           className={css({
             w: 'full',
             bg: 'blue.500',
             color: 'white',
             fontSize: 'lg',
             fontWeight: 'semibold',
+            minH: '11',
             py: '4',
             borderRadius: 'lg',
             cursor: 'pointer',
