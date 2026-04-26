@@ -1,5 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { getSupabaseServer } from '@/lib/auth/supabaseServer'
+import { checkPremiumAccess, recordUsage } from '@/lib/services/premium-gate'
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -8,6 +10,37 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
+    const authHeader = request.headers.get('authorization')
+    const forwardedFor = request.headers.get('x-forwarded-for')
+    const realIp = request.headers.get('x-real-ip')
+    const ipAddress = forwardedFor?.split(',')[0]?.trim() || realIp || undefined
+
+    let userId: string | undefined
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const supabase = getSupabaseServer()
+      const { data } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''))
+      userId = data.user?.id
+    }
+
+    const premiumAccess = await checkPremiumAccess({
+      userId,
+      metricName: 'ai-image-caption',
+      freeQuotaPerDay: 3,
+      ipAddress,
+    })
+
+    if (!premiumAccess.allowed) {
+      return NextResponse.json(
+        {
+          status: 'paywall',
+          reason: premiumAccess.reason,
+          remaining: premiumAccess.remaining,
+        },
+        { status: 402 }
+      )
+    }
+
     // Check if API key is configured
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
@@ -74,9 +107,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No caption generated' }, { status: 500 })
     }
 
+    if (userId) {
+      await recordUsage({
+        userId,
+        metricName: 'ai-image-caption',
+        quantity: 1,
+      })
+    }
+
+    const remainingAfterUsage =
+      userId && premiumAccess.reason === 'within-quota'
+        ? Math.max(0, premiumAccess.remaining - 1)
+        : premiumAccess.remaining
+
     return NextResponse.json({
       caption,
       usage: response.usage,
+      remaining: remainingAfterUsage,
     })
   } catch (error: unknown) {
     console.error('Error generating caption:', error)
