@@ -118,6 +118,30 @@ vi.mock('../components/TemplateThumbnail', () => ({
   ),
 }))
 
+vi.mock('../components/AISuggestionsPanel', () => ({
+  AISuggestionsPanel: ({
+    onAnalyticsEvent,
+  }: {
+    onAnalyticsEvent?: (event: string, data?: Record<string, unknown>) => void
+  }) => (
+    <div data-testid="resume-ai-suggestions-panel">
+      <button
+        type="button"
+        onClick={() =>
+          onAnalyticsEvent?.('resume_ai_suggestion_requested', {
+            type: 'summary',
+            remaining: 2,
+            currentContent: 'secret summary text',
+            email: 'john@example.com',
+          })
+        }
+      >
+        Generate Unsafe AI Analytics Event
+      </button>
+    </div>
+  ),
+}))
+
 // Mock PDF export functions
 vi.mock('../lib/pdfExport', () => ({
   exportResumeToPDF: vi.fn().mockResolvedValue(undefined),
@@ -156,9 +180,6 @@ class MockIntersectionObserver {
   observe = vi.fn()
   unobserve = vi.fn()
   disconnect = vi.fn()
-  constructor(_callback: IntersectionObserverCallback) {
-    // Don't call callback - let tests control timing
-  }
 }
 window.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver
 
@@ -575,9 +596,27 @@ describe('Resume Builder - Form Interactions', () => {
     await waitFor(() => {
       expect(vi.mocked(analytics.trackToolEvent)).toHaveBeenCalledWith(
         'resume_personal_info_update',
-        expect.any(Object)
+        {
+          completed_fields: 1,
+        }
       )
     })
+  })
+
+  it('sanitizes forwarded AI analytics payloads before tracking', async () => {
+    render(<ResumeBuilderPage />)
+
+    await userEvent.click(
+      screen.getByRole('button', { name: /Generate Unsafe AI Analytics Event/i })
+    )
+
+    expect(vi.mocked(analytics.trackToolEvent)).toHaveBeenCalledWith(
+      'resume_ai_suggestion_requested',
+      {
+        type: 'summary',
+        remaining: 2,
+      }
+    )
   })
 
   it('adds experience entry when button is clicked', async () => {

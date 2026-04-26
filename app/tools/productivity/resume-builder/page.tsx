@@ -24,6 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
+import { AISuggestionsPanel } from './components/AISuggestionsPanel'
 import { EducationForm } from './components/EducationForm'
 import { ExperienceForm } from './components/ExperienceForm'
 import { PersonalInfoForm } from './components/PersonalInfoForm'
@@ -55,6 +56,34 @@ import {
 
 const STORAGE_KEY = 'supertool-resume-builder'
 const AUTO_SAVE_INTERVAL = 30000 // 30 seconds
+const SAFE_ANALYTICS_KEYS = new Set(['remaining', 'template', 'type'])
+
+function sanitizeAnalyticsPayload(data?: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(data ?? {}).filter(([key, value]) => {
+      if (!SAFE_ANALYTICS_KEYS.has(key)) {
+        return false
+      }
+
+      if (Array.isArray(value)) {
+        return value.every((item) => typeof item === 'string')
+      }
+
+      return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+    })
+  ) as Record<string, string | number | boolean | string[]>
+}
+
+function countCompletedPersonalFields(personalInfo: PersonalInfo) {
+  const trackedValues = [
+    personalInfo.fullName,
+    personalInfo.email,
+    personalInfo.phone,
+    personalInfo.summary,
+  ]
+
+  return trackedValues.filter((value) => value.trim() !== '').length
+}
 
 // Convert templates object to array
 const TEMPLATES = Object.values(RESUME_TEMPLATES)
@@ -256,11 +285,19 @@ export default function ResumeBuilderPage() {
       updatedAt: new Date().toISOString(),
     }))
     trackToolEvent('resume_personal_info_update', {
-      has_name: !!personalInfo.fullName,
-      has_email: !!personalInfo.email,
-      has_phone: !!personalInfo.phone,
-      has_summary: !!personalInfo.summary,
+      completed_fields: countCompletedPersonalFields(personalInfo),
     })
+  }, [])
+
+  const handleApplyAISummary = useCallback((summary: string) => {
+    setResume((prev) => ({
+      ...prev,
+      personal: {
+        ...prev.personal,
+        summary,
+      },
+      updatedAt: new Date().toISOString(),
+    }))
   }, [])
 
   // Update handler for experience
@@ -669,7 +706,19 @@ export default function ResumeBuilderPage() {
             </CardHeader>
             <CardContent>
               {activeSection === 'personal' && (
-                <PersonalInfoForm data={resume.personal} onChange={handlePersonalInfoChange} />
+                <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                  <PersonalInfoForm data={resume.personal} onChange={handlePersonalInfoChange} />
+                  <AISuggestionsPanel
+                    resume={resume}
+                    onApplySummary={handleApplyAISummary}
+                    onAnalyticsEvent={(event, data) =>
+                      trackToolEvent(
+                        event as Parameters<typeof trackToolEvent>[0],
+                        sanitizeAnalyticsPayload(data)
+                      )
+                    }
+                  />
+                </div>
               )}
               {activeSection === 'experience' && (
                 <ExperienceForm data={resume.experience} onChange={handleExperienceChange} />
