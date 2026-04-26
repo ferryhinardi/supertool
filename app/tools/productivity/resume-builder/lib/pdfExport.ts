@@ -37,9 +37,6 @@ export async function exportResumeToPDF(
       throw new Error(`Element with id "${elementId}" not found`)
     }
 
-    // Show loading state (you can add a toast or spinner here)
-    console.log('Generating PDF...')
-
     // Capture the element as canvas
     const canvas = await html2canvas(element, {
       scale: 2, // Higher quality
@@ -66,8 +63,6 @@ export async function exportResumeToPDF(
 
     // Download PDF
     pdf.save(filename)
-
-    console.log('PDF generated successfully!')
   } catch (error) {
     console.error('Error generating PDF:', error)
     throw error
