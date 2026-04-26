@@ -5,6 +5,8 @@ import { ArrowRight, Check, Copy, Download, Info, Loader2, Sparkles } from 'luci
 import { useEffect, useRef, useState } from 'react'
 import 'highlight.js/styles/atom-one-dark.css'
 import { toast } from 'sonner'
+import { PaywallModal } from '@/components/features/monetization/PaywallModal'
+import { supabase } from '@/lib/auth/supabaseClient'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -15,6 +17,12 @@ import {
   LANGUAGES,
 } from './templates'
 
+interface PaywallState {
+  open: boolean
+  reason: 'quota-exceeded' | 'anonymous-blocked'
+  remaining?: number
+}
+
 export default function AICodeConverterPage() {
   const [sourceCode, setSourceCode] = useState('')
   const [sourceLanguage, setSourceLanguage] = useState('javascript')
@@ -24,6 +32,11 @@ export default function AICodeConverterPage() {
   const [warnings, setWarnings] = useState<string[]>([])
   const [isConverting, setIsConverting] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [remainingQuota, setRemainingQuota] = useState<number | null>(null)
+  const [paywallState, setPaywallState] = useState<PaywallState>({
+    open: false,
+    reason: 'quota-exceeded',
+  })
 
   // Conversion options
   const [options, setOptions] = useState<ConversionOptions>({
@@ -32,7 +45,6 @@ export default function AICodeConverterPage() {
     optimizeCode: false,
   })
 
-  const sourceCodeRef = useRef<HTMLPreElement>(null)
   const convertedCodeRef = useRef<HTMLPreElement>(null)
 
   // Track page open
@@ -41,18 +53,6 @@ export default function AICodeConverterPage() {
   }, [])
 
   // Apply syntax highlighting
-  useEffect(() => {
-    if (sourceCodeRef.current && sourceCode) {
-      const sourceLang = getLanguageById(sourceLanguage)
-      if (sourceLang) {
-        const highlighted = hljs.highlight(sourceCode, {
-          language: sourceLang.highlightLanguage,
-        })
-        sourceCodeRef.current.innerHTML = highlighted.value
-      }
-    }
-  }, [sourceCode, sourceLanguage])
-
   useEffect(() => {
     if (convertedCodeRef.current && convertedCode) {
       const targetLang = getLanguageById(targetLanguage)
@@ -66,11 +66,6 @@ export default function AICodeConverterPage() {
   }, [convertedCode, targetLanguage])
 
   const handleConvert = async () => {
-    if (!sourceCode.trim()) {
-      toast.error('Please enter source code to convert')
-      return
-    }
-
     if (sourceLanguage === targetLanguage) {
       toast.error('Please select different source and target languages')
       return
@@ -82,16 +77,21 @@ export default function AICodeConverterPage() {
     setWarnings([])
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData.session?.access_token
+
       trackToolEvent('code_converter_convert', {
         category: 'development',
         sourceLanguage,
         targetLanguage,
-        codeLength: sourceCode.length,
       })
 
       const response = await fetch('/api/ai-code-converter', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify({
           sourceCode,
           sourceLanguage,
@@ -103,6 +103,24 @@ export default function AICodeConverterPage() {
       const data: ConversionResponse | { error: string } = await response.json()
 
       if (!response.ok) {
+        if (
+          response.status === 402 &&
+          'status' in data &&
+          data.status === 'paywall' &&
+          'reason' in data
+        ) {
+          setRemainingQuota(null)
+          setPaywallState({
+            open: true,
+            reason: data.reason as 'quota-exceeded' | 'anonymous-blocked',
+            remaining:
+              'remaining' in data && typeof data.remaining === 'number'
+                ? data.remaining
+                : undefined,
+          })
+          return
+        }
+
         throw new Error('error' in data ? data.error : 'Failed to convert code')
       }
 
@@ -110,6 +128,7 @@ export default function AICodeConverterPage() {
         setConvertedCode(data.convertedCode)
         setExplanation(data.explanation || '')
         setWarnings(data.warnings || [])
+        setRemainingQuota(typeof data.remaining === 'number' ? data.remaining : null)
         toast.success('Code converted successfully!')
 
         trackToolEvent('code_converter_success', {
@@ -117,6 +136,13 @@ export default function AICodeConverterPage() {
           sourceLanguage,
           targetLanguage,
         })
+
+        if (typeof data.remaining === 'number') {
+          trackToolEvent('quota_consumed', {
+            tool_slug: 'ai-code-converter',
+            remaining: data.remaining,
+          })
+        }
       }
     } catch (error) {
       console.error('Conversion error:', error)
@@ -132,11 +158,6 @@ export default function AICodeConverterPage() {
   }
 
   const handleCopy = async () => {
-    if (!convertedCode) {
-      toast.error('No converted code to copy')
-      return
-    }
-
     try {
       await navigator.clipboard.writeText(convertedCode)
       setCopied(true)
@@ -153,11 +174,6 @@ export default function AICodeConverterPage() {
   }
 
   const handleDownload = () => {
-    if (!convertedCode) {
-      toast.error('No converted code to download')
-      return
-    }
-
     const targetLang = getLanguageById(targetLanguage)
     const extension = targetLang ? getLanguageExtension(targetLanguage) : '.txt'
     const fileName = `converted_code${extension}`
@@ -672,6 +688,18 @@ export default function AICodeConverterPage() {
         </button>
       </div>
 
+      {remainingQuota !== null && (
+        <p
+          className={css({
+            textAlign: 'center',
+            fontSize: 'sm',
+            color: 'gray.400',
+          })}
+        >
+          Remaining free conversions today: {remainingQuota}
+        </p>
+      )}
+
       {/* Explanation & Warnings */}
       {(explanation || warnings.length > 0) && (
         <div className={css({ spaceY: '4' })}>
@@ -763,6 +791,14 @@ export default function AICodeConverterPage() {
           <li>• AI may take 5-15 seconds to convert complex code</li>
         </ul>
       </div>
+
+      <PaywallModal
+        open={paywallState.open}
+        onOpenChange={(open) => setPaywallState((current) => ({ ...current, open }))}
+        reason={paywallState.reason}
+        remaining={paywallState.remaining}
+        toolSlug="ai-code-converter"
+      />
     </main>
   )
 }
