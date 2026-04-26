@@ -143,6 +143,11 @@ type ToolEvent =
   | 'search_query'
   | 'category_filter'
   | 'view_mode_toggle'
+  | 'paywall_shown'
+  | 'paywall_dismissed'
+  | 'upgrade_clicked'
+  | 'support_cta_clicked'
+  | 'quota_consumed'
   | 'gradient_generator_view'
   | 'gradient_generator_add_color_stop'
   | 'gradient_generator_remove_color_stop'
@@ -751,6 +756,7 @@ type ToolEvent =
   | 'copilot_local_files_uploaded'
   | 'copilot_local_files_selected'
   | 'copilot_source_changed'
+  | 'web_vitals'
 
 // Type-safe gtag wrapper
 declare global {
