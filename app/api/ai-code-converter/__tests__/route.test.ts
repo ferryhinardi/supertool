@@ -3,6 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock OpenAI - must be hoisted
 const mockCreate = vi.hoisted(() => vi.fn())
+const mockCheckPremiumAccess = vi.hoisted(() => vi.fn())
+const mockRecordUsage = vi.hoisted(() => vi.fn())
+const mockGetUser = vi.hoisted(() => vi.fn())
 
 vi.mock('openai', () => {
   return {
@@ -24,6 +27,19 @@ vi.mock('openai', () => {
   }
 })
 
+vi.mock('@/lib/services/premium-gate', () => ({
+  checkPremiumAccess: mockCheckPremiumAccess,
+  recordUsage: mockRecordUsage,
+}))
+
+vi.mock('@/lib/auth/supabaseServer', () => ({
+  getSupabaseServer: () => ({
+    auth: {
+      getUser: mockGetUser,
+    },
+  }),
+}))
+
 // Mock the templates module
 vi.mock('@/app/tools/development/ai-code-converter/templates', () => ({
   generateSystemPrompt: vi.fn(
@@ -42,16 +58,26 @@ describe('POST /api/ai-code-converter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     process.env.OPENAI_API_KEY = 'test-api-key'
+    mockCheckPremiumAccess.mockResolvedValue({
+      allowed: true,
+      reason: 'within-quota',
+      remaining: 10,
+    })
+    mockRecordUsage.mockResolvedValue(undefined)
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: 'user-123' } },
+      error: null,
+    })
   })
 
   afterEach(() => {
     process.env.OPENAI_API_KEY = originalEnv
   })
 
-  const createRequest = (body: unknown) => {
+  const createRequest = (body: unknown, headers: Record<string, string> = {}) => {
     return new NextRequest('http://localhost:3000/api/ai-code-converter', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...headers },
       body: JSON.stringify(body),
     })
   }
@@ -369,6 +395,96 @@ describe('POST /api/ai-code-converter', () => {
           ]),
         })
       )
+    })
+  })
+
+  describe('Premium Gate', () => {
+    it('should return 402 paywall response before calling OpenAI when quota is exceeded', async () => {
+      mockCheckPremiumAccess.mockResolvedValueOnce({
+        allowed: false,
+        reason: 'quota-exceeded',
+        remaining: 0,
+      })
+
+      const request = createRequest(
+        {
+          sourceCode: 'console.log("hello")',
+          sourceLanguage: 'javascript',
+          targetLanguage: 'python',
+          options: { addComments: true, preserveStructure: true, optimizeCode: false },
+        },
+        { 'x-forwarded-for': '203.0.113.20' }
+      )
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(402)
+      expect(data).toEqual({
+        status: 'paywall',
+        reason: 'quota-exceeded',
+        remaining: 0,
+      })
+      expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+        userId: undefined,
+        metricName: 'ai-code-converter',
+        freeQuotaPerDay: 10,
+        ipAddress: '203.0.113.20',
+      })
+      expect(mockCreate).not.toHaveBeenCalled()
+      expect(mockRecordUsage).not.toHaveBeenCalled()
+    })
+
+    it('should record usage after a successful authenticated conversion and return remaining quota', async () => {
+      mockCreate.mockResolvedValueOnce({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                convertedCode: 'print("hello")',
+                explanation: 'Converted console.log to Python print function',
+                warnings: [],
+              }),
+            },
+          },
+        ],
+        usage: {
+          prompt_tokens: 100,
+          completion_tokens: 50,
+          total_tokens: 150,
+        },
+      })
+
+      const request = createRequest(
+        {
+          sourceCode: 'console.log("hello")',
+          sourceLanguage: 'javascript',
+          targetLanguage: 'python',
+          options: { addComments: true, preserveStructure: true, optimizeCode: false },
+        },
+        {
+          authorization: 'Bearer valid-token',
+          'x-real-ip': '198.51.100.21',
+        }
+      )
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(mockGetUser).toHaveBeenCalledWith('valid-token')
+      expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+        userId: 'user-123',
+        metricName: 'ai-code-converter',
+        freeQuotaPerDay: 10,
+        ipAddress: '198.51.100.21',
+      })
+      expect(mockRecordUsage).toHaveBeenCalledWith({
+        userId: 'user-123',
+        metricName: 'ai-code-converter',
+        quantity: 1,
+      })
+      expect(response.status).toBe(200)
+      expect(data.remaining).toBe(9)
     })
   })
 
