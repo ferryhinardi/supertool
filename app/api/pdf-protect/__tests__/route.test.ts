@@ -1,3 +1,6 @@
+// @vitest-environment node
+// FormData/File bodies must be Node (undici) natives: Node 24's fetch
+// brand-checks multipart entries, so jsdom's File polyfill is rejected.
 import { NextRequest } from 'next/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
