@@ -9,6 +9,20 @@ export interface LapTime {
   lapDuration: number
 }
 
+type AudioContextConstructor = new () => AudioContext
+
+function getAudioContextConstructor(win: Window): AudioContextConstructor | undefined {
+  const standardConstructor = Reflect.get(win, 'AudioContext')
+  if (typeof standardConstructor === 'function') {
+    return standardConstructor as AudioContextConstructor
+  }
+
+  const prefixedConstructor = Reflect.get(win, 'webkitAudioContext')
+  return typeof prefixedConstructor === 'function'
+    ? (prefixedConstructor as AudioContextConstructor)
+    : undefined
+}
+
 /**
  * Generate a beep sound using Web Audio API as fallback
  * when audio file is not available
@@ -17,8 +31,10 @@ export function playBeepSound(): void {
   if (typeof window === 'undefined') return
 
   try {
-    // biome-ignore lint/suspicious/noExplicitAny: webkit prefix requires any type
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const ResolvedAudioContext = getAudioContextConstructor(window)
+    if (!ResolvedAudioContext) return
+
+    const audioContext = new ResolvedAudioContext()
     const oscillator = audioContext.createOscillator()
     const gainNode = audioContext.createGain()
 

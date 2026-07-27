@@ -411,7 +411,7 @@ export default function MediaToolsPage() {
           opacity: 0,
         })}
       >
-        {categoryTools.map((tool, index) => (
+        {categoryTools.map((tool) => (
           <div
             key={tool.href}
             className={css({

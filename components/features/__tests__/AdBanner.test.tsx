@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AdBanner, isAdsEnabled } from '../ads/AdBanner'
 
@@ -222,6 +222,46 @@ describe('AdBanner Component', () => {
 
     it('should not throw errors with minimal props', () => {
       expect(() => render(<AdBanner />)).not.toThrow()
+    })
+  })
+
+  describe('Ad loading effect', () => {
+    it('pushes to adsbygoogle when configured', async () => {
+      mockEnv({
+        NEXT_PUBLIC_ENABLE_ADS: 'true',
+        NEXT_PUBLIC_ENABLE_ADSENSE: 'true',
+        NEXT_PUBLIC_GOOGLE_ADSENSE_ID: 'ca-pub-test',
+      })
+      const push = vi.fn()
+      // @ts-expect-error test-only global mutation
+      window.adsbygoogle = { push }
+
+      render(<AdBanner />)
+
+      await waitFor(() => {
+        expect(push).toHaveBeenCalledWith({})
+      })
+    })
+
+    it('logs when adsbygoogle push throws', async () => {
+      mockEnv({
+        NEXT_PUBLIC_ENABLE_ADS: 'true',
+        NEXT_PUBLIC_ENABLE_ADSENSE: 'true',
+        NEXT_PUBLIC_GOOGLE_ADSENSE_ID: 'ca-pub-test',
+      })
+      const error = new Error('push failed')
+      const push = vi.fn(() => {
+        throw error
+      })
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+      // @ts-expect-error test-only global mutation
+      window.adsbygoogle = { push }
+
+      render(<AdBanner />)
+
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith('Ad loading error:', error)
+      })
     })
   })
 })

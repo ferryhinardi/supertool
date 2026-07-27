@@ -49,6 +49,16 @@ Object.defineProperty(navigator, 'clipboard', {
   configurable: true,
 })
 
+const getRequiredPattern = (id: string) => {
+  const pattern = REGEX_PATTERNS.find((item) => item.id === id)
+
+  if (!pattern) {
+    throw new Error(`Expected regex pattern '${id}' to exist`)
+  }
+
+  return pattern
+}
+
 describe('RegexTesterPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -643,26 +653,23 @@ describe('Regex Utils', () => {
     })
 
     it('email pattern matches valid emails', () => {
-      const emailPattern = REGEX_PATTERNS.find((p) => p.id === 'email')
-      expect(emailPattern).toBeDefined()
+      const emailPattern = getRequiredPattern('email')
 
-      const result = testRegex(emailPattern!.pattern, emailPattern!.flags, 'user@example.com')
+      const result = testRegex(emailPattern.pattern, emailPattern.flags, 'user@example.com')
       expect(result.hasMatch).toBe(true)
     })
 
     it('url pattern matches valid URLs', () => {
-      const urlPattern = REGEX_PATTERNS.find((p) => p.id === 'url')
-      expect(urlPattern).toBeDefined()
+      const urlPattern = getRequiredPattern('url')
 
-      const result = testRegex(urlPattern!.pattern, urlPattern!.flags, 'https://example.com')
+      const result = testRegex(urlPattern.pattern, urlPattern.flags, 'https://example.com')
       expect(result.hasMatch).toBe(true)
     })
 
     it('phone pattern matches US phone numbers', () => {
-      const phonePattern = REGEX_PATTERNS.find((p) => p.id === 'phone-us')
-      expect(phonePattern).toBeDefined()
+      const phonePattern = getRequiredPattern('phone-us')
 
-      const result = testRegex(phonePattern!.pattern, phonePattern!.flags, '(555) 123-4567')
+      const result = testRegex(phonePattern.pattern, phonePattern.flags, '(555) 123-4567')
       expect(result.hasMatch).toBe(true)
     })
   })

@@ -46,6 +46,7 @@ vi.mock('@/components/ui/button', () => ({
     size?: string
   }) => (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled}
       className={className}
@@ -976,7 +977,7 @@ describe('QRCodeScannerPage', () => {
     it('handles long QR code data', async () => {
       render(<QRCodeScannerPage />)
 
-      const longData = 'https://example.com/' + 'a'.repeat(500)
+      const longData = `https://example.com/${'a'.repeat(500)}`
       mockJsQR.mockReturnValue({
         data: longData,
       })

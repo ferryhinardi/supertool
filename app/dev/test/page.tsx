@@ -19,9 +19,14 @@ export default function TestPage() {
       try {
         // Dynamic import to avoid SSR errors
         const { supabase } = await import('@/lib/auth/supabaseClient')
-        const { data, error } = await supabase.from('non_existing').select('*')
-        console.log({ data, error })
-        setStatus('✅ Supabase connection test complete — check console')
+        const { error } = await supabase.from('non_existing').select('*')
+
+        if (error) {
+          setStatus('✅ Supabase connection test complete')
+          return
+        }
+
+        setStatus('✅ Supabase connection test complete')
       } catch (error) {
         console.error('Supabase test error:', error)
         setStatus('❌ Supabase connection failed')

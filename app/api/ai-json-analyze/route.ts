@@ -1,5 +1,34 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { getSupabaseServer } from '@/lib/auth/supabaseServer'
+import { getClientIdentifier } from '@/lib/services/api/rate-limiter'
+import { checkPremiumAccess, recordUsage } from '@/lib/services/premium-gate'
+
+const DEFAULT_MAX_PAYLOAD_BYTES = 100_000
+
+function getMaxPayloadBytes() {
+  const configuredValue = Number(process.env.AI_JSON_ANALYZER_MAX_PAYLOAD_BYTES)
+
+  if (Number.isFinite(configuredValue) && configuredValue > 0) {
+    return configuredValue
+  }
+
+  return DEFAULT_MAX_PAYLOAD_BYTES
+}
+
+function normalizeAnalysisList(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.filter(
+      (item): item is string => typeof item === 'string' && item.trim().length > 0
+    )
+  }
+
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return [value]
+  }
+
+  return []
+}
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -8,6 +37,37 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
+    const authorization = request.headers.get('authorization')
+    const clientIdentifier = getClientIdentifier(request)
+    const ipAddress = clientIdentifier === 'unknown' ? undefined : clientIdentifier
+
+    let userId: string | undefined
+
+    if (authorization?.startsWith('Bearer ')) {
+      const token = authorization.replace('Bearer ', '')
+      const supabase = getSupabaseServer()
+      const { data } = await supabase.auth.getUser(token)
+      userId = data.user?.id
+    }
+
+    const premiumAccess = await checkPremiumAccess({
+      userId,
+      metricName: 'ai-json-analyzer',
+      freeQuotaPerDay: 8,
+      ipAddress,
+    })
+
+    if (!premiumAccess.allowed) {
+      return NextResponse.json(
+        {
+          status: 'paywall',
+          reason: premiumAccess.reason,
+          remaining: premiumAccess.remaining,
+        },
+        { status: 402 }
+      )
+    }
+
     // Check if API key is configured
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
@@ -19,7 +79,29 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { jsonData } = await request.json()
+    const rawBody = await request.text()
+    const payloadSize = new TextEncoder().encode(rawBody).length
+
+    if (payloadSize > getMaxPayloadBytes()) {
+      return NextResponse.json(
+        { error: 'JSON payload is too large. Please reduce the size and try again.' },
+        { status: 413 }
+      )
+    }
+
+    let requestBody: { jsonData?: unknown }
+
+    try {
+      requestBody = JSON.parse(rawBody) as { jsonData?: unknown }
+    } catch (parseError) {
+      console.error('Invalid request body:', parseError)
+      return NextResponse.json(
+        { error: 'Invalid request body. Please send valid JSON.' },
+        { status: 400 }
+      )
+    }
+
+    const { jsonData } = requestBody
 
     if (!jsonData) {
       return NextResponse.json({ error: 'No JSON data provided' }, { status: 400 })
@@ -83,9 +165,9 @@ Provide a comprehensive analysis covering structure, patterns, insights, and rel
     let parsedContent: {
       summary?: string
       structure?: string
-      patterns?: string
-      insights?: string
-      relationships?: string
+      patterns?: string | string[]
+      insights?: string | string[]
+      relationships?: string | string[]
     }
     try {
       parsedContent = JSON.parse(content)
@@ -103,13 +185,22 @@ Provide a comprehensive analysis covering structure, patterns, insights, and rel
       return NextResponse.json({ error: 'Incomplete analysis response' }, { status: 500 })
     }
 
+    if (userId && premiumAccess.reason === 'subscription') {
+      await recordUsage({
+        userId,
+        metricName: 'ai-json-analyzer',
+        quantity: 1,
+      })
+    }
+
     return NextResponse.json({
       summary,
       structure: structure || 'No structure analysis available.',
-      patterns: patterns || 'No patterns detected.',
-      insights: insights || 'No insights available.',
-      relationships: relationships || 'No relationships detected.',
+      patterns: normalizeAnalysisList(patterns),
+      insights: normalizeAnalysisList(insights),
+      relationships: normalizeAnalysisList(relationships),
       usage: response.usage,
+      remaining: premiumAccess.remaining,
     })
   } catch (error: unknown) {
     console.error('Error analyzing JSON:', error)

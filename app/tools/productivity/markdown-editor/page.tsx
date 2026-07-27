@@ -730,6 +730,7 @@ export default function MarkdownEditorPage() {
               </CardHeader>
               <CardContent>
                 <Textarea
+                  aria-label="Markdown editor"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   placeholder="Start typing markdown here..."

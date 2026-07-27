@@ -7,7 +7,7 @@ type GTagEvent = {
   value?: number
 }
 
-type ToolEvent =
+export type ToolEvent =
   | 'json_beautify'
   | 'json_minify'
   | 'json_copy'
@@ -143,6 +143,11 @@ type ToolEvent =
   | 'search_query'
   | 'category_filter'
   | 'view_mode_toggle'
+  | 'paywall_shown'
+  | 'paywall_dismissed'
+  | 'upgrade_clicked'
+  | 'support_cta_clicked'
+  | 'quota_consumed'
   | 'gradient_generator_view'
   | 'gradient_generator_add_color_stop'
   | 'gradient_generator_remove_color_stop'
@@ -580,6 +585,8 @@ type ToolEvent =
   | 'resume_sample_data_toggle'
   | 'resume_persona_view'
   | 'resume_persona_load_sample'
+  | 'resume_ai_suggestion_requested'
+  | 'resume_ai_suggestion_applied'
   | 'cover_letter_builder_open'
   | 'cover_letter_loaded_from_storage'
   | 'cover_letter_form_updated'
@@ -751,6 +758,7 @@ type ToolEvent =
   | 'copilot_local_files_uploaded'
   | 'copilot_local_files_selected'
   | 'copilot_source_changed'
+  | 'web_vitals'
 
 // Type-safe gtag wrapper
 declare global {

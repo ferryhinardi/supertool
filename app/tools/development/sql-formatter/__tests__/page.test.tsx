@@ -22,17 +22,8 @@ import { toast } from 'sonner'
 import { trackToolEvent } from '@/lib/services/analytics'
 import SQLFormatterPage from '../page'
 
-// Mock clipboard API at module level using Object.defineProperty
 const mockWriteText = vi.fn().mockResolvedValue(undefined)
 const mockReadText = vi.fn().mockResolvedValue('')
-Object.defineProperty(navigator, 'clipboard', {
-  value: {
-    writeText: mockWriteText,
-    readText: mockReadText,
-  },
-  writable: true,
-  configurable: true,
-})
 
 describe('SQLFormatterPage', () => {
   const user = userEvent.setup()
@@ -41,6 +32,7 @@ describe('SQLFormatterPage', () => {
     vi.clearAllMocks()
     mockWriteText.mockClear()
     mockReadText.mockClear()
+    vi.spyOn(navigator.clipboard, 'writeText').mockImplementation(mockWriteText)
   })
 
   afterEach(() => {
@@ -374,11 +366,8 @@ describe('SQLFormatterPage', () => {
       })
     })
 
-    // TODO: Fix clipboard rejection mock - the mock doesn't properly propagate rejection
-    it.skip('shows error when clipboard fails', async () => {
-      // Reset the mock to reject for this specific test
-      mockWriteText.mockReset()
-      mockWriteText.mockRejectedValue(new Error('Clipboard error'))
+    it('shows error when clipboard fails', async () => {
+      mockWriteText.mockRejectedValueOnce(new Error('Clipboard error'))
 
       render(<SQLFormatterPage />)
       const input = screen.getByPlaceholderText('Paste your SQL query here...')
@@ -396,8 +385,6 @@ describe('SQLFormatterPage', () => {
         expect(toast.error).toHaveBeenCalledWith('Failed to copy to clipboard')
       })
 
-      // Reset the mock back to resolved for other tests
-      mockWriteText.mockReset()
       mockWriteText.mockResolvedValue(undefined)
     })
   })

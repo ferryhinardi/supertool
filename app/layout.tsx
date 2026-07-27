@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Toaster } from 'sonner'
+import WebVitalsReporter from '@/app/_components/WebVitalsReporter'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { SpeculationRules } from '@/components/features/SpeculationRules'
 import { Sidebar } from '@/components/layout/Sidebar'
@@ -324,6 +325,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
 
         {/* Vercel Analytics & Speed Insights */}
+        <WebVitalsReporter />
         <Analytics />
         <SpeedInsights />
       </body>

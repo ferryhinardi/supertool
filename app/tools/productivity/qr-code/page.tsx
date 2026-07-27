@@ -16,7 +16,6 @@ import {
   Globe,
   History,
   Image as ImageIcon,
-  Lightbulb,
   Link,
   Mail,
   MapPin,
@@ -1662,6 +1661,7 @@ url,https://github.com,GitHub,#000000`
               <Field>
                 <FieldLabel>URL</FieldLabel>
                 <Input
+                  aria-label="URL to generate QR code"
                   placeholder="https://example.com"
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
@@ -2140,11 +2140,13 @@ url,https://github.com,GitHub,#000000`
                   <div className={css({ display: 'flex', gap: '2' })}>
                     <Input
                       type="color"
+                      aria-label="Foreground color picker"
                       value={fgColor}
                       onChange={(e) => setFgColor(e.target.value)}
                       className="h-10 w-20 cursor-pointer"
                     />
                     <Input
+                      aria-label="Foreground color hex value"
                       value={fgColor}
                       onChange={(e) => setFgColor(e.target.value)}
                       className="flex-1"
@@ -2156,11 +2158,13 @@ url,https://github.com,GitHub,#000000`
                   <div className={css({ display: 'flex', gap: '2' })}>
                     <Input
                       type="color"
+                      aria-label="Background color picker"
                       value={bgColor}
                       onChange={(e) => setBgColor(e.target.value)}
                       className="h-10 w-20 cursor-pointer"
                     />
                     <Input
+                      aria-label="Background color hex value"
                       value={bgColor}
                       onChange={(e) => setBgColor(e.target.value)}
                       className="flex-1"
@@ -2172,6 +2176,7 @@ url,https://github.com,GitHub,#000000`
                 <FieldLabel>Size: {size}px</FieldLabel>
                 <input
                   type="range"
+                  aria-label={`QR code size, currently ${size}px`}
                   min="128"
                   max="512"
                   step="32"
@@ -2359,6 +2364,7 @@ url,https://github.com,GitHub,#000000`
                   <input
                     ref={fileInputRef}
                     type="file"
+                    aria-label="Upload logo image for QR code"
                     accept="image/*"
                     onChange={handleLogoUpload}
                     className="hidden"
@@ -2495,6 +2501,7 @@ url,https://github.com,GitHub,#000000`
                   <input
                     ref={csvInputRef}
                     type="file"
+                    aria-label="Upload CSV file for bulk QR code generation"
                     accept=".csv"
                     onChange={handleCSVUpload}
                     className="hidden"

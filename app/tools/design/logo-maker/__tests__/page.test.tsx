@@ -229,7 +229,6 @@ class MockXMLSerializer {
 const mockBlobConstructor = vi.fn()
 
 // Mock Image constructor
-const mockImageOnload = vi.fn()
 class MockImage {
   src = ''
   onload: (() => void) | null = null
@@ -476,10 +475,16 @@ describe('LogoMakerPage', () => {
 
       // Font weight buttons have data-active attribute, unlike palette buttons which have title
       const allNormalButtons = screen.getAllByRole('button', { name: /^normal$/i })
-      const normalButton = allNormalButtons.find((btn) => btn.hasAttribute('data-active'))!
+      const normalButton = allNormalButtons.find((btn) => btn.hasAttribute('data-active'))
+      if (!normalButton) {
+        throw new Error('Active normal font weight button not found')
+      }
 
       const allBoldButtons = screen.getAllByRole('button', { name: /^bold$/i })
-      const boldButton = allBoldButtons.find((btn) => btn.hasAttribute('data-active'))!
+      const boldButton = allBoldButtons.find((btn) => btn.hasAttribute('data-active'))
+      if (!boldButton) {
+        throw new Error('Active bold font weight button not found')
+      }
 
       // Bold should be active by default
       expect(boldButton).toHaveAttribute('data-active', 'true')

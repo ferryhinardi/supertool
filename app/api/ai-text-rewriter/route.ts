@@ -1,5 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { getSupabaseServer } from '@/lib/auth/supabaseServer'
+import { getClientIdentifier } from '@/lib/services/api/rate-limiter'
+import { checkPremiumAccess, recordUsage } from '@/lib/services/premium-gate'
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -8,6 +11,35 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
+    const authHeader = request.headers.get('authorization')
+    const clientIdentifier = getClientIdentifier(request)
+    const ipAddress = clientIdentifier === 'unknown' ? undefined : clientIdentifier
+
+    let userId: string | undefined
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const supabase = getSupabaseServer()
+      const { data } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''))
+      userId = data.user?.id
+    }
+
+    const premiumAccess = await checkPremiumAccess({
+      userId,
+      metricName: 'ai-text-rewriter',
+      freeQuotaPerDay: 5,
+      ipAddress,
+    })
+
+    if (!premiumAccess.allowed) {
+      return NextResponse.json(
+        {
+          status: 'paywall',
+          reason: premiumAccess.reason,
+          remaining: premiumAccess.remaining,
+        },
+        { status: 402 }
+      )
+    }
     // Check if API key is configured
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
@@ -130,6 +162,14 @@ ${text}`
       return NextResponse.json({ error: 'No variants in response' }, { status: 500 })
     }
 
+    if (userId && premiumAccess.reason === 'subscription') {
+      await recordUsage({
+        userId,
+        metricName: 'ai-text-rewriter',
+        quantity: 1,
+      })
+    }
+
     return NextResponse.json({
       variants: rewrittenVariants,
       improvements: improvements || [],
@@ -137,6 +177,7 @@ ${text}`
       style: style || 'balanced',
       originalLength: text.length,
       usage: response.usage,
+      remaining: premiumAccess.remaining,
     })
   } catch (error: unknown) {
     console.error('Error rewriting text:', error)

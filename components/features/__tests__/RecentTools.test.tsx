@@ -103,7 +103,7 @@ describe('RecentTools Component', () => {
     expect(screen.getByText('Recently Viewed')).toBeInTheDocument()
   })
 
-  it.skip('should render recent tools', () => {
+  it('should render recent tools', () => {
     const mockTools = [
       {
         toolId: '/tools/json-beautify',
@@ -145,7 +145,7 @@ describe('RecentTools Component', () => {
     expect(screen.getByText('Clear History')).toBeInTheDocument()
   })
 
-  it.skip('should handle clear history click', async () => {
+  it('should handle clear history click', async () => {
     const user = userEvent.setup()
     const mockClearMutate = vi.fn()
     const mockTrackEvent = vi.fn()
@@ -188,7 +188,7 @@ describe('RecentTools Component', () => {
     })
   })
 
-  it.skip('should track tool click', async () => {
+  it('should track tool click', async () => {
     const user = userEvent.setup()
     const mockTrackEvent = vi.fn()
 
@@ -234,10 +234,7 @@ describe('RecentTools Component', () => {
     })
   })
 
-  it.skip('should disable clear button while pending', () => {
-    // TODO: Fix mocking issues with lucide-react icons and Panda CSS
-    // The component works correctly in production, but the test environment
-    // has issues with the complex dependency chain (lucide-react + ark-ui + Panda CSS)
+  it('should disable clear button while pending', () => {
     const mockTools = [
       {
         toolId: '/tools/json-beautify',

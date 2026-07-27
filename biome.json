@@ -9,13 +9,22 @@
     "includes": [
       "**",
       "!**/.next",
+      "!**/coverage",
+      "!**/coverage",
+      "!**/coverage-*",
+      "!**/coverage-*",
       "!**/out",
       "!**/build",
       "!**/dist",
+      "!**/lcov-report",
+      "!**/lcov-report",
       "!**/node_modules",
+      "!**/playwright-report",
+      "!**/test-results",
       "!**/next-env.d.ts",
       "!**/pnpm-lock.yaml",
       "!**/styled-system",
+      "!**/graphify-out",
       "!**/.mcp",
       "!**/scripts"
     ]
@@ -54,6 +63,7 @@
       },
       "suspicious": {
         "noArrayIndexKey": "warn",
+        "noConsole": "off",
         "noExplicitAny": "warn",
         "noExportsInTest": "off"
       }

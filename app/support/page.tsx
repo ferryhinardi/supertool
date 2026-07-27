@@ -1,9 +1,35 @@
+import Script from 'next/script'
+
 import DonationForm from '@/components/features/support/DonationForm'
 import RecentSupporters from '@/components/features/support/RecentSupporters'
+import { generateFAQSchema } from '@/lib/data/structured-data'
 import { css } from '@/styled-system/css'
 
 // Force dynamic rendering since we fetch data from Supabase at request time
 export const dynamic = 'force-dynamic'
+
+const SUPPORT_FAQS = [
+  {
+    question: 'Why donate?',
+    answer:
+      'SuperTool stays free because supporters help cover hosting, AI credits, and the work required to ship new tools every week.',
+  },
+  {
+    question: 'Is payment secure?',
+    answer:
+      'Yes. Payments run through Polar and Stripe, so SuperTool never stores your card or wallet details.',
+  },
+  {
+    question: 'What do I get?',
+    answer:
+      'You help fund faster improvements for the free toolkit and new premium-ready upgrades without adding ads or trackers.',
+  },
+  {
+    question: 'Can I get a refund?',
+    answer:
+      'Donations are generally non-refundable, but if something went wrong contact support within 14 days and we will review it.',
+  },
+] as const
 
 export default function SupportPage() {
   return (
@@ -17,8 +43,23 @@ export default function SupportPage() {
         spaceY: { base: '8', sm: '10', md: '12' },
       })}
     >
+      <Script id="support-faq-schema" type="application/ld+json">
+        {JSON.stringify(generateFAQSchema([...SUPPORT_FAQS]))}
+      </Script>
+
       {/* Hero Section */}
       <div className={css({ textAlign: 'center', spaceY: '4' })}>
+        <p
+          className={css({
+            fontSize: 'sm',
+            fontWeight: 'semibold',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'blue.300',
+          })}
+        >
+          Keep SuperTool fast, private, and shipping weekly
+        </p>
         <h1
           className={css({
             fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
@@ -36,12 +77,12 @@ export default function SupportPage() {
             mx: 'auto',
           })}
         >
-          Help us keep SuperTool free and ad-free for everyone. Your donation fuels development and
-          hosting costs.
+          Fund hosting, AI credits, and new premium-ready tools while keeping the core toolkit free,
+          ad-free, and privacy-first.
         </p>
       </div>
 
-      {/* Stats Section */}
+      {/* Benefit Section */}
       <div
         className={css({
           display: 'grid',
@@ -62,7 +103,9 @@ export default function SupportPage() {
           })}
         >
           <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'blue.400' })}>60+</div>
-          <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>Free Tools</div>
+          <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+            Free tools shipping today
+          </div>
         </div>
         <div
           className={css({
@@ -77,7 +120,9 @@ export default function SupportPage() {
           <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'green.400' })}>
             100%
           </div>
-          <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>Open Source</div>
+          <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+            Open roadmap, open source
+          </div>
         </div>
         <div
           className={css({
@@ -90,7 +135,9 @@ export default function SupportPage() {
           })}
         >
           <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'purple.400' })}>0</div>
-          <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>Ads or Trackers</div>
+          <div className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+            Ads, trackers, or spammy upsells
+          </div>
         </div>
       </div>
 
@@ -114,85 +161,25 @@ export default function SupportPage() {
         </h2>
 
         <div className={css({ spaceY: '4' })}>
-          <div
-            className={css({
-              bg: 'rgba(255, 255, 255, 0.05)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: 'lg',
-              p: '6',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            })}
-          >
-            <h3
-              className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white', mb: '2' })}
+          {SUPPORT_FAQS.map((faq) => (
+            <div
+              key={faq.question}
+              className={css({
+                bg: 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 'lg',
+                p: '6',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+              })}
             >
-              Why donate?
-            </h3>
-            <p className={css({ color: 'gray.400' })}>
-              SuperTool is completely free with no ads. Your donations help cover hosting costs, API
-              fees, and allow us to develop new features.
-            </p>
-          </div>
-
-          <div
-            className={css({
-              bg: 'rgba(255, 255, 255, 0.05)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: 'lg',
-              p: '6',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            })}
-          >
-            <h3
-              className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white', mb: '2' })}
-            >
-              Is payment secure?
-            </h3>
-            <p className={css({ color: 'gray.400' })}>
-              Yes! Payments are processed securely by Polar.sh using Stripe. We never see or store
-              your payment information.
-            </p>
-          </div>
-
-          <div
-            className={css({
-              bg: 'rgba(255, 255, 255, 0.05)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: 'lg',
-              p: '6',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            })}
-          >
-            <h3
-              className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white', mb: '2' })}
-            >
-              What do I get?
-            </h3>
-            <p className={css({ color: 'gray.400' })}>
-              All tools remain free for everyone! Your donation supports the project and shows your
-              appreciation. You'll receive a receipt and our gratitude.
-            </p>
-          </div>
-
-          <div
-            className={css({
-              bg: 'rgba(255, 255, 255, 0.05)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: 'lg',
-              p: '6',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-            })}
-          >
-            <h3
-              className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white', mb: '2' })}
-            >
-              Can I get a refund?
-            </h3>
-            <p className={css({ color: 'gray.400' })}>
-              Donations are non-refundable, but we honor refund requests within 14 days. Contact us
-              if you have any concerns.
-            </p>
-          </div>
+              <h3
+                className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white', mb: '2' })}
+              >
+                {faq.question}
+              </h3>
+              <p className={css({ color: 'gray.400' })}>{faq.answer}</p>
+            </div>
+          ))}
         </div>
       </div>
 

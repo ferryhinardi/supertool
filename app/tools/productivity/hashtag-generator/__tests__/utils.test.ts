@@ -35,7 +35,7 @@ describe('hashtag-generator utils', () => {
     })
 
     it('has correct structure for each platform', () => {
-      for (const [id, platform] of Object.entries(PLATFORMS)) {
+      for (const [, platform] of Object.entries(PLATFORMS)) {
         expect(platform).toHaveProperty('name')
         expect(platform).toHaveProperty('maxHashtags')
         expect(platform).toHaveProperty('recommended')
@@ -205,7 +205,7 @@ describe('hashtag-generator utils', () => {
     })
 
     it('has hashtags array for each topic', () => {
-      for (const [topic, hashtags] of Object.entries(HASHTAG_DATABASE)) {
+      for (const [, hashtags] of Object.entries(HASHTAG_DATABASE)) {
         expect(Array.isArray(hashtags)).toBe(true)
         expect(hashtags.length).toBeGreaterThan(0)
       }

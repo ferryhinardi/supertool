@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import type { DonationTier } from '@/lib/data/donation-tiers'
 import { DONATION_TIERS, formatAmount, isValidAmount, parseAmount } from '@/lib/data/donation-tiers'
+import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 /**
@@ -18,6 +19,10 @@ export default function DonationForm() {
   const [error, setError] = useState('')
 
   const handleTierSelect = (tier: DonationTier) => {
+    trackToolEvent('support_cta_clicked', {
+      tier: tier.id,
+      source: 'support_page_tier',
+    })
     setSelectedTier(tier)
     setIsCustom(false)
     setCustomAmount('')
@@ -56,6 +61,18 @@ export default function DonationForm() {
       return
     }
 
+    const donationProductId = process.env.NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID
+
+    if (!donationProductId) {
+      setError('Donation checkout is not configured right now. Please contact support.')
+      return
+    }
+
+    trackToolEvent('support_cta_clicked', {
+      tier: selectedTier?.id ?? 'custom',
+      source: 'support_page_checkout',
+    })
+
     setIsLoading(true)
 
     try {
@@ -66,17 +83,31 @@ export default function DonationForm() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          productId: process.env.NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID,
+          productId: donationProductId,
           amount: amountCents,
         }),
       })
 
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to create checkout')
+        let errorMessage = 'Failed to create checkout'
+
+        try {
+          const data = (await response.json()) as { error?: string }
+          errorMessage = data.error || errorMessage
+        } catch {
+          // Fall back to the default checkout error message when the response is malformed.
+        }
+
+        throw new Error(errorMessage)
       }
 
-      const data = await response.json()
+      let data: { url?: string }
+
+      try {
+        data = (await response.json()) as { url?: string }
+      } catch {
+        throw new Error('Failed to read checkout response')
+      }
 
       // Redirect to Polar checkout
       if (data.url) {
@@ -129,6 +160,7 @@ export default function DonationForm() {
                   selectedTier?.id === tier.id && !isCustom
                     ? 'blue.500'
                     : 'rgba(255, 255, 255, 0.1)',
+                minH: '11',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 _hover: {
@@ -224,6 +256,7 @@ export default function DonationForm() {
                 py: '3',
                 pl: '8',
                 fontSize: 'xl',
+                minH: '11',
                 color: 'white',
                 _placeholder: { color: 'gray.500' },
                 _focus: {
@@ -260,13 +293,14 @@ export default function DonationForm() {
         <button
           type="button"
           onClick={handleDonate}
-          disabled={isLoading || (!selectedTier && !customAmount)}
+          disabled={isLoading || (!selectedTier && !customAmount && !isCustom)}
           className={css({
             w: 'full',
             bg: 'blue.500',
             color: 'white',
             fontSize: 'lg',
             fontWeight: 'semibold',
+            minH: '11',
             py: '4',
             borderRadius: 'lg',
             cursor: 'pointer',

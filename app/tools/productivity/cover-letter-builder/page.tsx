@@ -40,6 +40,31 @@ import {
 const STORAGE_KEY = 'supertool-cover-letter-builder'
 const AUTO_SAVE_INTERVAL = 30000 // 30 seconds
 
+const SAFE_ANALYTICS_KEYS = new Set([
+  'format',
+  'reason',
+  'remaining',
+  'template',
+  'tool_slug',
+  'type',
+])
+
+function sanitizeAnalyticsPayload(data?: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(data ?? {}).filter(([key, value]) => {
+      if (!SAFE_ANALYTICS_KEYS.has(key)) {
+        return false
+      }
+
+      if (Array.isArray(value)) {
+        return value.every((item) => typeof item === 'string')
+      }
+
+      return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+    })
+  ) as Record<string, string | number | boolean | string[]>
+}
+
 export default function CoverLetterBuilderPage() {
   // Track page view
   useTrackToolView({
@@ -347,7 +372,7 @@ export default function CoverLetterBuilderPage() {
                     >
                       {template.name}
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
                       {template.description}
                     </div>
                   </button>
@@ -394,7 +419,7 @@ export default function CoverLetterBuilderPage() {
               <div
                 className={css({
                   fontSize: 'xs',
-                  color: 'gray.500',
+                  color: 'gray.400',
                   p: '2',
                   bg: 'gray.900',
                   rounded: 'md',
@@ -536,7 +561,7 @@ export default function CoverLetterBuilderPage() {
             onAnalyticsEvent={(event, data) =>
               trackToolEvent(
                 event as Parameters<typeof trackToolEvent>[0],
-                data as Record<string, string | number | boolean | string[]>
+                sanitizeAnalyticsPayload(data)
               )
             }
           />
@@ -597,7 +622,7 @@ export default function CoverLetterBuilderPage() {
             maxW: '7xl',
             mx: 'auto',
             fontSize: 'xs',
-            color: 'gray.500',
+            color: 'gray.400',
             textAlign: 'center',
           })}
         >

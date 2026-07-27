@@ -2,6 +2,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { supabase } from '@/lib/auth/supabaseClient'
+import * as analytics from '@/lib/services/analytics'
 import AICodeConverterPage from '../page'
 
 // Mock sonner toast
@@ -13,8 +15,41 @@ vi.mock('sonner', () => ({
 }))
 
 // Mock analytics
+const mockTrackToolEvent = vi.hoisted(() => vi.fn())
+
 vi.mock('@/lib/services/analytics', () => ({
-  trackToolEvent: vi.fn(),
+  trackToolEvent: mockTrackToolEvent,
+}))
+
+vi.mock('@/components/features/monetization/PaywallModal', () => ({
+  PaywallModal: ({
+    open,
+    reason,
+    remaining,
+    onOpenChange,
+  }: {
+    open: boolean
+    reason: 'quota-exceeded' | 'anonymous-blocked'
+    remaining?: number
+    onOpenChange: (value: boolean) => void
+  }) =>
+    open ? (
+      <div data-testid="paywall-modal">
+        <span>{reason}</span>
+        <span>{remaining ?? 'no-remaining'}</span>
+        <button type="button" onClick={() => onOpenChange(false)}>
+          Close paywall
+        </button>
+      </div>
+    ) : null,
+}))
+
+vi.mock('@/lib/auth/supabaseClient', () => ({
+  supabase: {
+    auth: {
+      getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
+    },
+  },
 }))
 
 // Mock highlight.js
@@ -319,7 +354,6 @@ describe('AICodeConverterPage', () => {
 
   describe('Code Conversion Flow', () => {
     it('shows error when trying to convert empty code', async () => {
-      const user = userEvent.setup()
       render(<AICodeConverterPage />)
 
       // Force enable the button by directly typing whitespace
@@ -497,6 +531,155 @@ describe('AICodeConverterPage', () => {
       })
     })
 
+    it('opens the paywall modal for a 402 quota-exceeded response instead of showing a generic error', async () => {
+      const user = userEvent.setup()
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 402,
+        json: () => Promise.resolve({ status: 'paywall', reason: 'quota-exceeded', remaining: 0 }),
+      })
+
+      render(<AICodeConverterPage />)
+
+      const textarea = screen.getByPlaceholderText(/Paste your code here/i)
+      await user.type(textarea, 'const x = 1;')
+
+      const convertButton = screen.getByRole('button', { name: /Convert Code/i })
+      await user.click(convertButton)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('paywall-modal')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('quota-exceeded')).toBeInTheDocument()
+      expect(screen.getByText('0')).toBeInTheDocument()
+      expect(toast.error).not.toHaveBeenCalledWith('Failed to convert code')
+    })
+
+    it('tracks quota consumption with remaining count after a successful conversion', async () => {
+      const user = userEvent.setup()
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            convertedCode: 'x = 1',
+            explanation: 'Converted JavaScript to Python',
+            warnings: [],
+            remaining: 9,
+          }),
+      })
+
+      render(<AICodeConverterPage />)
+
+      const textarea = screen.getByPlaceholderText(/Paste your code here/i)
+      await user.type(textarea, 'const x = 1;')
+
+      const convertButton = screen.getByRole('button', { name: /Convert Code/i })
+      await user.click(convertButton)
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith('Code converted successfully!')
+      })
+
+      expect(screen.getByText(/Remaining free conversions today: 9/i)).toBeInTheDocument()
+      expect(mockTrackToolEvent).toHaveBeenCalledWith(
+        'quota_consumed',
+        expect.objectContaining({
+          tool_slug: 'ai-code-converter',
+          remaining: 9,
+        })
+      )
+    })
+
+    it('includes the authorization header when a Supabase session token is available', async () => {
+      const user = userEvent.setup()
+      vi.mocked(supabase.auth.getSession).mockResolvedValueOnce({
+        data: {
+          session: {
+            access_token: 'session-token',
+          },
+        },
+      } as Awaited<ReturnType<typeof supabase.auth.getSession>>)
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ convertedCode: 'x = 1', warnings: [] }),
+      })
+
+      render(<AICodeConverterPage />)
+
+      const textarea = screen.getByPlaceholderText(/Paste your code here/i)
+      await user.type(textarea, 'const x = 1;')
+
+      const convertButton = screen.getByRole('button', { name: /Convert Code/i })
+      await user.click(convertButton)
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith(
+          '/api/ai-code-converter',
+          expect.objectContaining({
+            headers: expect.objectContaining({
+              Authorization: 'Bearer session-token',
+              'Content-Type': 'application/json',
+            }),
+          })
+        )
+      })
+    })
+
+    it('does not show a remaining quota hint or emit quota analytics when remaining is absent', async () => {
+      const user = userEvent.setup()
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ convertedCode: 'x = 1', explanation: '', warnings: [] }),
+      })
+
+      render(<AICodeConverterPage />)
+
+      const textarea = screen.getByPlaceholderText(/Paste your code here/i)
+      await user.type(textarea, 'const x = 1;')
+
+      const convertButton = screen.getByRole('button', { name: /Convert Code/i })
+      await user.click(convertButton)
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith('Code converted successfully!')
+      })
+
+      expect(screen.queryByText(/Remaining free conversions today:/i)).not.toBeInTheDocument()
+      expect(mockTrackToolEvent).not.toHaveBeenCalledWith('quota_consumed', expect.any(Object))
+    })
+
+    it('allows closing the paywall modal after a blocked response', async () => {
+      const user = userEvent.setup()
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 402,
+        json: () => Promise.resolve({ status: 'paywall', reason: 'anonymous-blocked' }),
+      })
+
+      render(<AICodeConverterPage />)
+
+      const textarea = screen.getByPlaceholderText(/Paste your code here/i)
+      await user.type(textarea, 'const x = 1;')
+
+      const convertButton = screen.getByRole('button', { name: /Convert Code/i })
+      await user.click(convertButton)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('paywall-modal')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Close paywall' }))
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('paywall-modal')).not.toBeInTheDocument()
+      })
+    })
+
     it('handles API error response', async () => {
       const user = userEvent.setup()
       mockFetch.mockResolvedValue({
@@ -536,6 +719,12 @@ describe('AICodeConverterPage', () => {
   })
 
   describe('Copy Functionality', () => {
+    it('does not attempt to copy when no converted code is available', async () => {
+      render(<AICodeConverterPage />)
+
+      expect(screen.queryByRole('button', { name: /^Copy$/i })).not.toBeInTheDocument()
+      expect(mockWriteText).not.toHaveBeenCalled()
+    })
     it('does not show copy button before conversion', () => {
       render(<AICodeConverterPage />)
       expect(screen.queryByRole('button', { name: /^Copy$/i })).not.toBeInTheDocument()
@@ -671,6 +860,13 @@ describe('AICodeConverterPage', () => {
   })
 
   describe('Download Functionality', () => {
+    it('does not attempt to download when no converted code is available', () => {
+      render(<AICodeConverterPage />)
+
+      expect(screen.queryByRole('button', { name: /Download/i })).not.toBeInTheDocument()
+      expect(mockCreateObjectURL).not.toHaveBeenCalled()
+      expect(mockRevokeObjectURL).not.toHaveBeenCalled()
+    })
     it('does not show download button before conversion', () => {
       render(<AICodeConverterPage />)
       expect(screen.queryByRole('button', { name: /Download/i })).not.toBeInTheDocument()
@@ -771,7 +967,6 @@ describe('AICodeConverterPage', () => {
     })
 
     it('tracks conversion attempt', async () => {
-      const { trackToolEvent } = await import('@/lib/services/analytics')
       const user = userEvent.setup()
       mockFetch.mockResolvedValue({
         ok: true,
@@ -786,11 +981,10 @@ describe('AICodeConverterPage', () => {
       const convertButton = screen.getByRole('button', { name: /Convert Code/i })
       await user.click(convertButton)
 
-      expect(trackToolEvent).toHaveBeenCalledWith('code_converter_convert', {
+      expect(analytics.trackToolEvent).toHaveBeenCalledWith('code_converter_convert', {
         category: 'development',
         sourceLanguage: 'javascript',
         targetLanguage: 'python',
-        codeLength: 12,
       })
     })
 

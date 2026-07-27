@@ -114,7 +114,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
       >
         <div>
           <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', mb: '1' })}>Projects</h3>
-          <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+          <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
             Showcase your portfolio projects, side projects, or contributions
           </p>
         </div>
@@ -140,7 +140,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
           <p className={css({ fontSize: 'sm', color: 'gray.400', mb: '2' })}>
             No projects added yet
           </p>
-          <p className={css({ fontSize: 'xs', color: 'gray.500', mb: '4' })}>
+          <p className={css({ fontSize: 'xs', color: 'gray.400', mb: '4' })}>
             Projects demonstrate your hands-on experience and technical skills
           </p>
           <Button onClick={handleAdd} size="sm" variant="outline">
@@ -183,7 +183,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
                   Project {index + 1}
                 </span>
                 {duration && (
-                  <span className={css({ fontSize: 'xs', color: 'gray.500' })}>• {duration}</span>
+                  <span className={css({ fontSize: 'xs', color: 'gray.400' })}>• {duration}</span>
                 )}
               </div>
               <Button
@@ -443,7 +443,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
                       size="sm"
                       variant="ghost"
                       className={css({
-                        color: 'gray.500',
+                        color: 'gray.400',
                         _hover: { color: 'red.400', bg: 'red.950' },
                       })}
                     >
@@ -453,7 +453,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
                 ))}
 
                 {project.technologies.length === 0 && (
-                  <p className={css({ fontSize: 'xs', color: 'gray.500', fontStyle: 'italic' })}>
+                  <p className={css({ fontSize: 'xs', color: 'gray.400', fontStyle: 'italic' })}>
                     Click "Add Tech" to list technologies used in this project
                   </p>
                 )}
@@ -508,7 +508,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
                       size="sm"
                       variant="ghost"
                       className={css({
-                        color: 'gray.500',
+                        color: 'gray.400',
                         _hover: { color: 'red.400', bg: 'red.950' },
                       })}
                     >
@@ -521,7 +521,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
               <p
                 className={css({
                   fontSize: 'xs',
-                  color: 'gray.500',
+                  color: 'gray.400',
                   mt: '2',
                   fontStyle: 'italic',
                 })}

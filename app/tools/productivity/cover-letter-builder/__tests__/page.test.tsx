@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as analytics from '@/lib/services/analytics'
@@ -92,11 +92,9 @@ vi.mock('../components/CoverLetterForm', () => ({
 
 vi.mock('../components/AISuggestions', () => ({
   AISuggestions: ({
-    coverLetter,
     onApplySuggestion,
     onAnalyticsEvent,
   }: {
-    coverLetter: CoverLetterData
     onApplySuggestion: (field: string, value: string) => void
     onAnalyticsEvent: (event: string, data: Record<string, unknown>) => void
   }) => (
@@ -109,6 +107,19 @@ vi.mock('../components/AISuggestions', () => ({
       </button>
       <button type="button" onClick={() => onAnalyticsEvent('ai_suggestion_generated', {})}>
         Generate AI Suggestion
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          onAnalyticsEvent('ai_suggestion_generated', {
+            type: 'opening',
+            fullName: 'John Doe',
+            companyName: 'Acme Corp',
+            content: 'secret draft',
+          })
+        }
+      >
+        Generate Unsafe Analytics Event
       </button>
     </div>
   ),
@@ -300,7 +311,10 @@ describe('Cover Letter Builder - Template Selection', () => {
     const buttons = screen.getAllByRole('button')
     const professionalButton = buttons.find((btn) => btn.textContent?.startsWith('Professional'))
     expect(professionalButton).toBeTruthy()
-    await user.click(professionalButton!)
+    if (!professionalButton) {
+      throw new Error('Professional template button not found')
+    }
+    await user.click(professionalButton)
 
     expect(vi.mocked(analytics.trackToolEvent)).toHaveBeenCalledWith(
       'cover_letter_template_changed',
@@ -678,6 +692,18 @@ describe('Cover Letter Builder - AI Suggestions', () => {
     await user.click(generateButton)
 
     expect(vi.mocked(analytics.trackToolEvent)).toHaveBeenCalledWith('ai_suggestion_generated', {})
+  })
+
+  it('sanitizes AI analytics payloads before tracking', async () => {
+    const user = userEvent.setup()
+    render(<CoverLetterBuilderPage />)
+
+    const unsafeButton = screen.getByRole('button', { name: /Generate Unsafe Analytics Event/i })
+    await user.click(unsafeButton)
+
+    expect(vi.mocked(analytics.trackToolEvent)).toHaveBeenCalledWith('ai_suggestion_generated', {
+      type: 'opening',
+    })
   })
 })
 

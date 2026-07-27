@@ -5,14 +5,12 @@ export const dynamic = 'force-dynamic'
 import {
   closestCenter,
   DndContext,
-  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
@@ -781,7 +779,6 @@ export default function PDFToolsPage() {
       })
 
       const processingTime = Date.now() - startTime
-      const compressionRatio = Math.round(((pdf.size - finalBlob.size) / pdf.size) * 100)
 
       trackEvent({
         action: 'pdf_compressed',
@@ -789,10 +786,6 @@ export default function PDFToolsPage() {
         label: 'compress',
         value: Math.round(processingTime / 1000),
       })
-
-      console.log(
-        `Compression complete: ${pdf.size} -> ${finalBlob.size} (${compressionRatio}% reduction)`
-      )
     } catch (error) {
       console.error('Error compressing PDF:', error)
       updatePdfStatus(pdf.id, {
@@ -1571,9 +1564,7 @@ export default function PDFToolsPage() {
       toast.info('Extracting text from PDF...')
       const extractedData = await extractTextFromPDF(pdf.file, {
         maxPages: 50, // Limit to first 50 pages for performance
-        onProgress: (current, total) => {
-          console.log(`Extracting page ${current} of ${total}`)
-        },
+        onProgress: () => {},
       })
 
       if (!extractedData.text || extractedData.text.trim().length < 100) {
@@ -2117,18 +2108,6 @@ export default function PDFToolsPage() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-
-    if (over && active.id !== over.id) {
-      setPageOrder((items) => {
-        const oldIndex = items.indexOf(active.id as number)
-        const newIndex = items.indexOf(over.id as number)
-        return arrayMove(items, oldIndex, newIndex)
-      })
-    }
-  }
 
   // Sortable page item component
   function SortablePageItem({

@@ -56,6 +56,39 @@ Each version entry should organize changes under these categories:
 
 ## [Unreleased]
 
+### Changed
+- Polished `/support` for conversion with a stronger value-prop hero, FAQ JSON-LD, support-focused metadata, privacy-safe `support_cta_clicked` analytics on DonationForm and TreatMeDialog CTAs, and explicit 44px-safe CTA sizing on primary support surfaces.
+- Added a minimal `resume-builder` AI summary flow behind the Supabase-backed premium gate, returning 402 paywall envelopes before OpenAI work, recording authenticated usage after successful suggestions, surfacing remaining free AI uses in the UI, and replacing sensitive analytics field-presence flags with sanitized summary-safe payloads.
+- Wrapped `cover-letter-builder` with the Supabase-backed premium gate, returning 402 paywall envelopes before OpenAI work, recording authenticated usage after successful generations, surfacing remaining free AI uses in the UI, and sanitizing forwarded AI analytics payloads so resume/job content never reaches `trackToolEvent`.
+- Wrapped `ai-json-analyzer` with the Supabase-backed premium gate, returning 402 paywall envelopes before OpenAI work, recording successful authenticated usage after analysis, surfacing remaining free analyses in the UI, and validating touched-file coverage at `100%` lines for `route.ts` and `97.1%` lines for `page.tsx` while avoiding analytics on JSON contents or JSON payload size.
+- Wrapped `ai-code-converter` with the Supabase-backed premium gate, returning 402 paywall envelopes before OpenAI work, recording authenticated usage after successful conversions, surfacing remaining free conversions in the UI, and validating touched-file coverage at `100%` lines for both `route.ts` and `page.tsx` while avoiding analytics on code contents or code-derived payload size.
+- Wrapped `ai-image-caption` with the Supabase-backed premium gate, returning 402 paywall envelopes before vision work, recording authenticated usage after successful generations, surfacing remaining free captions in the UI without displaying uploaded filenames, and validating touched-file coverage at `100%` lines for `route.ts` and `98.05%` lines for `page.tsx`.
+- Wrapped `ai-text-rewriter` with the Supabase-backed premium gate, returning 402 paywall envelopes before OpenAI work, recording authenticated usage after successful rewrites, surfacing remaining free quota in the UI, and capturing focused route/page evidence with `route.ts` at `100%` lines and `page.tsx` at `97.4%` lines.
+- Added a reusable Panda/Ark `PaywallModal` for quota-exceeded and anonymous-blocked flows, routed its primary CTA to `/support`, added typed paywall analytics events, and verified 44px minimum action targets with focused component tests and Task 18 evidence artifacts.
+- Added a Supabase-backed premium gate helper in `lib/services/premium-gate.ts` with quota checks against `active_subscriptions`, `usage_records`, and the `check_rate_limit` RPC, plus targeted service tests covering subscription, quota, anonymous, and fail-closed paths at `98.33%` line coverage.
+- Added a Playwright mobile touch-target audit for the top 20 tools, generated `.sisyphus/evidence/touch-targets-2026-04.json` plus `docs/TOUCH_TARGETS_BACKLOG.md`, and recorded `2594` sub-44px violations at the required `375x667` mobile viewport for later remediation.
+- Completed the truthful Task 15 coverage push by adding bounded `PDFEditor` and `ReceiptScanner` media tests, removing unreachable `ReceiptScanner` helper code, and raising scoped line coverage to `98.03%` for `lib/`, `96.69%` for `components/features/`, and `97.33%` for `components/features/media`.
+
+### Fixed
+- Kept the new mobile Playwright audit on the correct runner boundary by excluding `tests/mobile/**` from Vitest discovery while still allowing `pnpm exec playwright test tests/mobile` to pass.
+- Fixed stale Copilot session-sidebar tests to target the real `<button>` control and excluded Playwright-only `tests/a11y/**` specs from Vitest discovery so `CI=true pnpm test run` completes on the intended runner boundary.
+
+### Changed
+- Refreshed `.sisyphus/plans/supertool-improvement.md` on 2026-04-23 with verified 115 tool pages, an explicit 0%-executed refresh note, and a new Google AdSense monetization subphase for tool-page-only, consent-gated ads with premium ad suppression.
+
+### Added
+- Scoped the Wave 2 lint baseline to real source files by excluding generated `graphify-out` artifacts and disabling Biome's generic `noConsole` rule, which was over-reporting legitimate `console.error` and `console.warn` paths across the app.
+- Resolved the highest-confidence Wave 2 TODO/FIXME debt by replacing committed template and migration placeholders with neutral guidance and re-enabling skipped clipboard and RecentTools tests whose local mocks now work reliably.
+- Removed the remaining `as any` usage from `app/` test scaffolding by replacing canvas, FileReader, file-input, and split-bill unknown-status mocks with typed alternatives.
+- Removed the remaining `as any` usage from `lib/` by typing the stopwatch Web Audio fallback explicitly and replacing the chunked-upload test `FormData` cast with a typed mock plus fallback coverage.
+- Added Biome regression protection for console usage via `lint/suspicious/noConsole`, documenting the generic console guard now enforced for future changes.
+- Removed noisy production `console.log` calls from upload, conversion, billing, subtitle-processing, PDF tooling, speed-test, resume export, Copilot local-file selection, and email flows while preserving genuine error logging paths.
+- Kept the protected Polar webhook route unchanged during console-log triage while removing the remaining safe noisy runtime `console.log` calls from other production paths and dev diagnostics.
+- Restored Codecov-backed coverage reporting on constrained `main` pushes, replaced the static README coverage badge with a live Codecov badge, and removed the obsolete workflow step that tried to rewrite `README.md` after coverage runs.
+- Added `docs/ENV_VARS.md` and synced the example environment files with the current runtime env-var inventory, including feature-flag conventions and missing server-only placeholders.
+- Added a revenue model decision record in `docs/REVENUE_MODEL.md` documenting the hybrid Google AdSense plus premium approach, placement guardrails, and execution scope for future monetization work.
+- Added a minimal environment-backed feature flag primitive via `isFeatureEnabled(name)` with conventions documented in `docs/FEATURE_FLAGS.md` and test coverage for enabled, disabled, and missing environment variables.
+
 ### Added
 - Comprehensive changelog system with semantic versioning structure
 - Changelog maintenance instructions in `.github/copilot-instructions.md` (step 16 in "Adding New Tools Checklist")

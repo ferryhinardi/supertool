@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import LoremIpsumPage from '../page'
@@ -24,20 +24,6 @@ vi.mock('lucide-react', () => ({
 import { toast } from 'sonner'
 // Import mocks after mocking
 import { trackToolEvent } from '@/lib/services/analytics'
-
-// Helper function to get statistics section
-const getStatValue = (container: HTMLElement, label: string): string | null => {
-  const statsSection = container.querySelectorAll('[class*="mock-css"]')
-  for (const section of statsSection) {
-    const elements = section.querySelectorAll('div')
-    for (let i = 0; i < elements.length; i++) {
-      if (elements[i].textContent === label && i > 0) {
-        return elements[i - 1]?.textContent || null
-      }
-    }
-  }
-  return null
-}
 
 describe('LoremIpsumPage', () => {
   beforeEach(() => {
@@ -445,7 +431,7 @@ describe('LoremIpsumPage', () => {
 
       // Get the current text
       const outputContainerBefore = document.querySelectorAll('[class*="mock-css"]')
-      const textBefore = Array.from(outputContainerBefore)
+      Array.from(outputContainerBefore)
         .map((el) => el.textContent)
         .join('')
 

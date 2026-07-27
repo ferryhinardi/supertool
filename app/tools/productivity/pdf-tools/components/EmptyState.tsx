@@ -624,7 +624,7 @@ export function EmptyState({
                   gap: '3',
                 })}
               >
-                {recentOperations.slice(0, 4).map((recent, index) => {
+                {recentOperations.slice(0, 4).map((recent) => {
                   const metadata = operationMetadata[recent.operation]
                   const Icon = metadata.icon
                   return (
@@ -754,7 +754,7 @@ export function EmptyState({
                   gap: '3',
                 })}
               >
-                {popularOperations.map((opType, index) => {
+                {popularOperations.map((opType) => {
                   const metadata = operationMetadata[opType]
                   const Icon = metadata.icon
                   return (

@@ -28,11 +28,11 @@ interface SwipeablePDFCardProps {
 
 export function SwipeablePDFCard({
   pdf,
-  onDownload,
-  onRemove,
+  onDownload: _onDownload,
+  onRemove: _onRemove,
   formatBytes,
   renderThumbnail,
-  disabled = false,
+  disabled: _disabled = false,
 }: SwipeablePDFCardProps) {
   const [_isDragging] = useState(false)
   const [swipeOffset] = useState(0)

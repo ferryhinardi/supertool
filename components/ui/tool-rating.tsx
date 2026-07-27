@@ -133,14 +133,11 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
       className={css({
         width: '100%',
         padding: '6',
-        bg: 'white',
+        bg: 'gray.900/60',
         borderRadius: 'lg',
         border: '1px solid',
-        borderColor: 'gray.200',
-        _dark: {
-          bg: 'gray.800',
-          borderColor: 'gray.700',
-        },
+        borderColor: 'gray.700',
+        backdropFilter: 'blur(8px)',
       })}
     >
       <div
@@ -154,8 +151,7 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
           className={css({
             fontSize: 'lg',
             fontWeight: 'semibold',
-            color: 'gray.900',
-            _dark: { color: 'white' },
+            color: 'white',
           })}
         >
           Rate this tool
@@ -185,8 +181,7 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
             <span
               className={css({
                 fontSize: 'sm',
-                color: 'gray.600',
-                _dark: { color: 'gray.400' },
+                color: 'gray.300',
               })}
             >
               {stats.averageRating.toFixed(1)} ({stats.totalRatings}{' '}
@@ -201,9 +196,8 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
             <p
               className={css({
                 fontSize: 'sm',
-                color: 'gray.600',
+                color: 'gray.300',
                 marginBottom: '2',
-                _dark: { color: 'gray.400' },
               })}
             >
               How would you rate {toolName}?
@@ -218,9 +212,8 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
             <p
               className={css({
                 fontSize: 'sm',
-                color: 'gray.600',
+                color: 'gray.300',
                 marginBottom: '2',
-                _dark: { color: 'gray.400' },
               })}
             >
               Your rating:
@@ -249,7 +242,6 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
               paddingTop: '4',
               borderTop: '1px solid',
               borderColor: 'gray.200',
-              _dark: { borderColor: 'gray.700' },
             })}
           >
             <p
@@ -257,7 +249,6 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
                 fontSize: 'xs',
                 color: 'gray.500',
                 marginBottom: '2',
-                _dark: { color: 'gray.500' },
               })}
             >
               Rating distribution
@@ -278,9 +269,8 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
                   <span
                     className={css({
                       fontSize: 'xs',
-                      color: 'gray.600',
+                      color: 'gray.300',
                       width: '2',
-                      _dark: { color: 'gray.400' },
                     })}
                   >
                     {rating}
@@ -300,7 +290,6 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
                       bg: 'gray.200',
                       borderRadius: 'full',
                       overflow: 'hidden',
-                      _dark: { bg: 'gray.700' },
                     })}
                   >
                     <div
@@ -316,10 +305,9 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
                   <span
                     className={css({
                       fontSize: 'xs',
-                      color: 'gray.600',
+                      color: 'gray.300',
                       width: '8',
                       textAlign: 'right',
-                      _dark: { color: 'gray.400' },
                     })}
                   >
                     {count}

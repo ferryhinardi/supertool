@@ -308,7 +308,11 @@ export function AffiliateSuggestion({
         <div
           className={css({
             display: 'grid',
-            gridTemplateColumns: { base: '1', md: products.length > 1 ? '2' : '1' },
+            w: 'full',
+            gridTemplateColumns: {
+              base: '1fr',
+              md: products.length > 1 ? 'repeat(2, 1fr)' : '1fr',
+            },
             gap: '4',
           })}
         >

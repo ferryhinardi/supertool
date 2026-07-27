@@ -292,7 +292,7 @@ Phase 8: ░░░░░░░░░░░░░░░░░░░░   0% ⏳
 **File:** `app/layout.tsx`
 
 ```tsx
-// TODO: Replace this
+// Example legacy Tailwind markup
 <body className="flex min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white">
 
 // With this

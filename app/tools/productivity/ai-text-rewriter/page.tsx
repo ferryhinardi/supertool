@@ -3,11 +3,13 @@
 import { Check, Copy, Lightbulb, Loader2, MessageSquare, Sparkles, Type, Wand2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { PaywallModal } from '@/components/features/monetization/PaywallModal'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { supabase } from '@/lib/auth/supabaseClient'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
@@ -17,6 +19,12 @@ interface RewriteResult {
   tone: string
   style: string
   originalLength: number
+}
+
+interface PaywallState {
+  open: boolean
+  reason: 'quota-exceeded' | 'anonymous-blocked'
+  remaining?: number
 }
 
 type ToneType =
@@ -108,6 +116,11 @@ function AITextRewriterContent() {
   const [result, setResult] = useState<RewriteResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+  const [remainingQuota, setRemainingQuota] = useState<number | null>(null)
+  const [paywallState, setPaywallState] = useState<PaywallState>({
+    open: false,
+    reason: 'quota-exceeded',
+  })
 
   // Track page visit
   useEffect(() => {
@@ -120,19 +133,18 @@ function AITextRewriterContent() {
       return
     }
 
-    if (inputText.length > 5000) {
-      toast.error('Text is too long. Maximum 5000 characters allowed.')
-      return
-    }
-
     setLoading(true)
     setResult(null)
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData.session?.access_token
+
       const response = await fetch('/api/ai-text-rewriter', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
         body: JSON.stringify({
           text: inputText.trim(),
@@ -145,6 +157,15 @@ function AITextRewriterContent() {
       const data = await response.json()
 
       if (!response.ok) {
+        if (response.status === 402 && data.status === 'paywall') {
+          setPaywallState({
+            open: true,
+            reason: data.reason,
+            remaining: typeof data.remaining === 'number' ? data.remaining : undefined,
+          })
+          return
+        }
+
         throw new Error(data.error || 'Failed to rewrite text')
       }
 
@@ -155,6 +176,7 @@ function AITextRewriterContent() {
         style: data.style,
         originalLength: data.originalLength,
       })
+      setRemainingQuota(typeof data.remaining === 'number' ? data.remaining : null)
 
       toast.success('Text rewritten successfully!')
 
@@ -164,6 +186,13 @@ function AITextRewriterContent() {
         variants: numVariants,
         text_length: inputText.length,
       })
+
+      if (typeof data.remaining === 'number') {
+        trackToolEvent('quota_consumed', {
+          tool_slug: 'ai-text-rewriter',
+          remaining: data.remaining,
+        })
+      }
     } catch (error) {
       console.error('Error rewriting text:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to rewrite text'
@@ -197,6 +226,7 @@ function AITextRewriterContent() {
   const handleClear = () => {
     setInputText('')
     setResult(null)
+    setRemainingQuota(null)
     trackToolEvent('ai_text_rewriter_clear', {})
   }
 
@@ -667,11 +697,24 @@ function AITextRewriterContent() {
           flexDirection: { base: 'column', sm: 'row' },
           gap: '3',
           justifyContent: 'center',
+          alignItems: 'center',
           animation: 'slideUp 0.5s ease-out forwards',
           animationDelay: '0.5s',
           opacity: 0,
         })}
       >
+        {remainingQuota !== null && (
+          <p
+            className={css({
+              fontSize: 'sm',
+              color: 'violet.200',
+              textAlign: 'center',
+            })}
+          >
+            Remaining free rewrites today: {remainingQuota}
+          </p>
+        )}
+
         <Button
           onClick={handleRewrite}
           disabled={loading || !inputText.trim() || inputText.length > 5000}
@@ -729,6 +772,14 @@ function AITextRewriterContent() {
           Clear All
         </Button>
       </div>
+
+      <PaywallModal
+        open={paywallState.open}
+        onOpenChange={(open) => setPaywallState((current) => ({ ...current, open }))}
+        reason={paywallState.reason}
+        toolSlug="ai-text-rewriter"
+        remaining={paywallState.remaining}
+      />
 
       {/* Results Section */}
       {result && (

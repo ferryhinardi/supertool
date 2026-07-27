@@ -24,6 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
+import { AISuggestionsPanel } from './components/AISuggestionsPanel'
 import { EducationForm } from './components/EducationForm'
 import { ExperienceForm } from './components/ExperienceForm'
 import { PersonalInfoForm } from './components/PersonalInfoForm'
@@ -55,6 +56,34 @@ import {
 
 const STORAGE_KEY = 'supertool-resume-builder'
 const AUTO_SAVE_INTERVAL = 30000 // 30 seconds
+const SAFE_ANALYTICS_KEYS = new Set(['remaining', 'template', 'type'])
+
+function sanitizeAnalyticsPayload(data?: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(data ?? {}).filter(([key, value]) => {
+      if (!SAFE_ANALYTICS_KEYS.has(key)) {
+        return false
+      }
+
+      if (Array.isArray(value)) {
+        return value.every((item) => typeof item === 'string')
+      }
+
+      return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+    })
+  ) as Record<string, string | number | boolean | string[]>
+}
+
+function countCompletedPersonalFields(personalInfo: PersonalInfo) {
+  const trackedValues = [
+    personalInfo.fullName,
+    personalInfo.email,
+    personalInfo.phone,
+    personalInfo.summary,
+  ]
+
+  return trackedValues.filter((value) => value.trim() !== '').length
+}
 
 // Convert templates object to array
 const TEMPLATES = Object.values(RESUME_TEMPLATES)
@@ -256,11 +285,19 @@ export default function ResumeBuilderPage() {
       updatedAt: new Date().toISOString(),
     }))
     trackToolEvent('resume_personal_info_update', {
-      has_name: !!personalInfo.fullName,
-      has_email: !!personalInfo.email,
-      has_phone: !!personalInfo.phone,
-      has_summary: !!personalInfo.summary,
+      completed_fields: countCompletedPersonalFields(personalInfo),
     })
+  }, [])
+
+  const handleApplyAISummary = useCallback((summary: string) => {
+    setResume((prev) => ({
+      ...prev,
+      personal: {
+        ...prev.personal,
+        summary,
+      },
+      updatedAt: new Date().toISOString(),
+    }))
   }, [])
 
   // Update handler for experience
@@ -669,7 +706,16 @@ export default function ResumeBuilderPage() {
             </CardHeader>
             <CardContent>
               {activeSection === 'personal' && (
-                <PersonalInfoForm data={resume.personal} onChange={handlePersonalInfoChange} />
+                <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                  <PersonalInfoForm data={resume.personal} onChange={handlePersonalInfoChange} />
+                  <AISuggestionsPanel
+                    resume={resume}
+                    onApplySummary={handleApplyAISummary}
+                    onAnalyticsEvent={(event, data) =>
+                      trackToolEvent(event, sanitizeAnalyticsPayload(data))
+                    }
+                  />
+                </div>
               )}
               {activeSection === 'experience' && (
                 <ExperienceForm data={resume.experience} onChange={handleExperienceChange} />
@@ -935,6 +981,7 @@ export default function ResumeBuilderPage() {
                           border: '1px solid',
                           borderColor: 'gray.300',
                           bg: 'white',
+                          color: 'gray.800',
                           cursor: 'pointer',
                           _hover: {
                             borderColor: 'gray.400',
@@ -946,6 +993,7 @@ export default function ResumeBuilderPage() {
                             ringColor: 'blue.200',
                           },
                         })}
+                        aria-label="Choose a sample persona to preview"
                         title="Choose a sample persona to preview"
                       >
                         {Object.values(SAMPLE_PERSONAS).map((persona) => (
@@ -987,7 +1035,7 @@ export default function ResumeBuilderPage() {
                     position: 'absolute',
                     top: '2',
                     right: '2',
-                    bg: 'blue.500',
+                    bg: 'blue.700',
                     color: 'white',
                     px: '2',
                     py: '1',
@@ -1000,7 +1048,10 @@ export default function ResumeBuilderPage() {
                 >
                   {TEMPLATES.find((t) => t.id === selectedTemplate)?.name}
                 </div>
-                <div
+                <section
+                  // biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable region must be keyboard-accessible (WCAG 2.1 SC 2.1.1)
+                  tabIndex={0}
+                  aria-label="Resume preview, scrollable"
                   className={css({
                     w: 'full',
                     h: 'full',
@@ -1018,7 +1069,7 @@ export default function ResumeBuilderPage() {
                   >
                     <ResumePreview data={previewData} templateId={selectedTemplate} />
                   </div>
-                </div>
+                </section>
               </div>
             </CardContent>
           </Card>

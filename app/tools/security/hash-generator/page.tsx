@@ -7,7 +7,6 @@ import {
   FileStack,
   Hash,
   History,
-  Lightbulb,
   Loader2,
   Trash2,
   XCircle,

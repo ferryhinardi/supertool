@@ -394,9 +394,8 @@ export function CopilotWorkspace({
     }
   }, [])
 
-  const handleLocalFilesSelect = useCallback((files: LocalFileInfo[]) => {
+  const handleLocalFilesSelect = useCallback((_files: LocalFileInfo[]) => {
     // Selected local files - could be added to context in the future
-    console.log('Selected local files:', files)
   }, [])
 
   const handleSourceChange = useCallback((source: SourceType) => {

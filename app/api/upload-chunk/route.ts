@@ -29,7 +29,6 @@ setInterval(
 
     for (const [fileId, state] of uploadState.entries()) {
       if (now - state.lastActivity > timeout) {
-        console.log(`🧹 Cleaning up stale upload: ${fileId}`)
         uploadState.delete(fileId)
       }
     }
@@ -50,8 +49,6 @@ export async function POST(request: NextRequest) {
     const metadata: ChunkMetadata = JSON.parse(metadataJson)
     const { fileId, totalChunks, chunkIndex } = metadata
 
-    console.log(`📦 Received chunk ${chunkIndex + 1}/${totalChunks} for file ${fileId}`)
-
     // Get or create upload state
     let state = uploadState.get(fileId)
     if (!state) {
@@ -70,8 +67,6 @@ export async function POST(request: NextRequest) {
 
     // Check if all chunks are received
     if (state.chunks.size === totalChunks) {
-      console.log(`✅ All chunks received for ${fileId}. Assembling file...`)
-
       // Assemble file
       const chunks: Buffer[] = []
       for (let i = 0; i < totalChunks; i++) {
@@ -89,8 +84,6 @@ export async function POST(request: NextRequest) {
       await mkdir(tempDir, { recursive: true })
       const filePath = join(tempDir, `${fileId}-${metadata.fileName}`)
       await writeFile(filePath, completeFile)
-
-      console.log(`✅ File assembled and saved: ${filePath}`)
 
       // Clean up upload state
       uploadState.delete(fileId)
@@ -155,7 +148,6 @@ export async function DELETE(request: NextRequest) {
   const deleted = uploadState.delete(fileId)
 
   if (deleted) {
-    console.log(`🗑️  Cancelled upload: ${fileId}`)
     return NextResponse.json({ status: 'cancelled', fileId })
   }
 

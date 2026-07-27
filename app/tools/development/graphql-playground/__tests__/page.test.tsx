@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
 
@@ -460,7 +460,7 @@ describe('GraphQLPlaygroundPage', () => {
     it('shows loading state during execution', async () => {
       const user = userEvent.setup()
 
-      let resolvePromise: (value: unknown) => void
+      let resolvePromise: ((value: unknown) => void) | undefined
       ;(global.fetch as Mock).mockImplementationOnce(
         () =>
           new Promise((resolve) => {
@@ -477,7 +477,12 @@ describe('GraphQLPlaygroundPage', () => {
       expect(screen.getByRole('button', { name: /executing.../i })).toBeDisabled()
 
       // Resolve the promise
-      resolvePromise!({
+      const currentResolvePromise = resolvePromise
+      if (!currentResolvePromise) {
+        throw new Error('Expected resolvePromise to be assigned')
+      }
+
+      currentResolvePromise({
         ok: true,
         json: () => Promise.resolve({ data: {} }),
       })

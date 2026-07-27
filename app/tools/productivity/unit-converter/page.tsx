@@ -1057,6 +1057,7 @@ function UnitConverterContent() {
                   })}
                 />
                 <select
+                  aria-label="From unit"
                   value={fromUnit}
                   onChange={(e) => setFromUnit(e.target.value)}
                   className={css({
@@ -1150,6 +1151,7 @@ function UnitConverterContent() {
                   })}
                 />
                 <select
+                  aria-label="To unit"
                   value={toUnit}
                   onChange={(e) => setToUnit(e.target.value)}
                   className={css({

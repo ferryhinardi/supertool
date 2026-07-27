@@ -3,16 +3,24 @@
 import { Check, Copy, ImagePlus, Sparkles, Upload, Wand2, X, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { PaywallModal } from '@/components/features/monetization/PaywallModal'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { supabase } from '@/lib/auth/supabaseClient'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
 interface CaptionResult {
   caption: string
   type: string
+}
+
+interface PaywallState {
+  open: boolean
+  reason: 'quota-exceeded' | 'anonymous-blocked'
+  remaining?: number
 }
 
 type CaptionType = 'altText' | 'detailed' | 'seo' | 'social'
@@ -52,6 +60,11 @@ function AIImageCaptionContent() {
   const [loading, setLoading] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+  const [remainingQuota, setRemainingQuota] = useState<number | null>(null)
+  const [paywallState, setPaywallState] = useState<PaywallState>({
+    open: false,
+    reason: 'quota-exceeded',
+  })
 
   // Track page visit
   useEffect(() => {
@@ -73,6 +86,7 @@ function AIImageCaptionContent() {
 
     setSelectedImage(file)
     setCaptions([]) // Clear previous captions
+    setRemainingQuota(null)
 
     // Create preview
     const reader = new FileReader()
@@ -128,10 +142,14 @@ function AIImageCaptionContent() {
     setLoading(true)
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData.session?.access_token
+
       const response = await fetch('/api/ai-caption', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
         body: JSON.stringify({
           image: imagePreview,
@@ -142,6 +160,16 @@ function AIImageCaptionContent() {
       const data = await response.json()
 
       if (!response.ok) {
+        if (response.status === 402 && data.status === 'paywall') {
+          setRemainingQuota(null)
+          setPaywallState({
+            open: true,
+            reason: data.reason,
+            remaining: typeof data.remaining === 'number' ? data.remaining : undefined,
+          })
+          return
+        }
+
         throw new Error(data.error || 'Failed to generate caption')
       }
 
@@ -150,13 +178,21 @@ function AIImageCaptionContent() {
         type: captionType,
       }
 
-      setCaptions([newCaption, ...captions])
+      setCaptions((currentCaptions) => [newCaption, ...currentCaptions])
+      setRemainingQuota(typeof data.remaining === 'number' ? data.remaining : null)
       toast.success('Caption generated successfully!')
 
       trackToolEvent('ai_caption_generate', {
         caption_type: captionType,
         tokens: data.usage?.total_tokens || 0,
       })
+
+      if (typeof data.remaining === 'number') {
+        trackToolEvent('quota_consumed', {
+          tool_slug: 'ai-image-caption',
+          remaining: data.remaining,
+        })
+      }
     } catch (error) {
       console.error('Error generating caption:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to generate caption'
@@ -176,6 +212,7 @@ function AIImageCaptionContent() {
     setImagePreview(null)
     setCaptions([])
     setCopiedIndex(null)
+    setRemainingQuota(null)
   }
 
   const handleCopy = (caption: string, index: number) => {
@@ -388,20 +425,6 @@ function AIImageCaptionContent() {
                     />
                   )}
                 </div>
-                <div
-                  className={css({
-                    rounded: 'lg',
-                    border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
-                    p: '4',
-                  })}
-                >
-                  <p className={css({ fontSize: 'xs', color: 'white', mb: '1' })}>File Name</p>
-                  <p className={css({ fontSize: 'sm', color: 'gray.200', fontFamily: 'mono' })}>
-                    {selectedImage.name}
-                  </p>
-                </div>
                 <Button
                   onClick={handleClear}
                   className={css({
@@ -446,10 +469,11 @@ function AIImageCaptionContent() {
               <div
                 className={css({
                   display: 'grid',
+                  w: 'full',
                   gridTemplateColumns: {
-                    base: '1',
-                    sm: '2',
-                    md: '4',
+                    base: '1fr',
+                    sm: 'repeat(2, 1fr)',
+                    md: 'repeat(4, 1fr)',
                   },
                   gap: '3',
                 })}
@@ -531,10 +555,31 @@ function AIImageCaptionContent() {
                   </>
                 )}
               </Button>
+
+              {remainingQuota !== null && (
+                <p
+                  className={css({
+                    mt: '4',
+                    fontSize: 'sm',
+                    color: 'pink.200',
+                    textAlign: 'center',
+                  })}
+                >
+                  Remaining free captions today: {remainingQuota}
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>
       )}
+
+      <PaywallModal
+        open={paywallState.open}
+        onOpenChange={(open) => setPaywallState((current) => ({ ...current, open }))}
+        reason={paywallState.reason}
+        toolSlug="ai-image-caption"
+        remaining={paywallState.remaining}
+      />
 
       {/* Captions Results */}
       {captions.length > 0 && (

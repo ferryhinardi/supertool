@@ -174,11 +174,14 @@ describe('DeviceMockupPage', () => {
 
       const uploadButton = screen.getByText(/Click to upload or drag and drop/i).closest('button')
       expect(uploadButton).toBeInTheDocument()
+      if (!uploadButton) {
+        throw new Error('Upload button not found')
+      }
 
       const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
       const clickSpy = vi.spyOn(fileInput, 'click')
 
-      await user.click(uploadButton!)
+      await user.click(uploadButton)
 
       expect(clickSpy).toHaveBeenCalled()
     })

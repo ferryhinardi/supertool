@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { NuqsTestingAdapter } from 'nuqs/adapters/testing'
 import { toast } from 'sonner'
@@ -61,6 +61,14 @@ const getGenerateButton = (): HTMLElement => {
     throw new Error('Generate button not found')
   }
   return generateButton
+}
+
+const getRequiredTextContent = (element: HTMLElement): string => {
+  if (element.textContent === null) {
+    throw new Error('Expected element to have text content')
+  }
+
+  return element.textContent
 }
 
 describe('RandomGeneratorPage', () => {
@@ -223,7 +231,7 @@ describe('RandomGeneratorPage', () => {
 
       // Get the generated value - it should have decimal places
       const resultElement = screen.getByRole('code')
-      const value = resultElement.textContent!
+      const value = getRequiredTextContent(resultElement)
 
       // Should contain a decimal point and 2 decimal places (default)
       expect(value).toMatch(/^\d+\.\d{2}$/)
@@ -307,7 +315,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const value = resultElement.textContent!
+      const value = getRequiredTextContent(resultElement)
 
       // Should have 4 decimal places
       expect(value).toMatch(/^\d+\.\d{4}$/)
@@ -326,7 +334,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const value = resultElement.textContent!
+      const value = getRequiredTextContent(resultElement)
 
       expect(value).toHaveLength(16) // Default length
       expect(containsOnlyChars(value, CHARSETS.alphanumeric)).toBe(true)
@@ -344,7 +352,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const value = resultElement.textContent!
+      const value = getRequiredTextContent(resultElement)
 
       expect(containsOnlyChars(value, CHARSETS.letters)).toBe(true)
       // Should not contain any numbers
@@ -363,7 +371,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const value = resultElement.textContent!
+      const value = getRequiredTextContent(resultElement)
 
       expect(containsOnlyChars(value, CHARSETS.numbers)).toBe(true)
       expect(value).toMatch(/^[0-9]+$/)
@@ -385,7 +393,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const value = resultElement.textContent!
+      const value = getRequiredTextContent(resultElement)
 
       expect(containsOnlyChars(value, 'ABC123')).toBe(true)
     })
@@ -404,7 +412,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const value = resultElement.textContent!
+      const value = getRequiredTextContent(resultElement)
 
       // Should use default alphanumeric
       expect(containsOnlyChars(value, CHARSETS.alphanumeric)).toBe(true)
@@ -465,7 +473,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const uuid = resultElement.textContent!
+      const uuid = getRequiredTextContent(resultElement)
 
       expect(uuid).toMatch(UUID_V4_REGEX)
     })
@@ -481,7 +489,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const uuid = resultElement.textContent!
+      const uuid = getRequiredTextContent(resultElement)
 
       // Version 4 UUIDs have '4' as the 13th character
       expect(uuid.charAt(14)).toBe('4')
@@ -498,7 +506,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const uuid = resultElement.textContent!
+      const uuid = getRequiredTextContent(resultElement)
 
       // Variant bits should be 10xx, so character at position 19 should be 8, 9, a, or b
       const variantChar = uuid.charAt(19).toLowerCase()
@@ -544,7 +552,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const password = resultElement.textContent!
+      const password = getRequiredTextContent(resultElement)
 
       expect(password).toHaveLength(16) // Default length
 
@@ -573,7 +581,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const password = resultElement.textContent!
+      const password = getRequiredTextContent(resultElement)
 
       expect(containsOnlyChars(password, CHARSETS.uppercase)).toBe(true)
     })
@@ -598,7 +606,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const password = resultElement.textContent!
+      const password = getRequiredTextContent(resultElement)
 
       expect(containsOnlyChars(password, CHARSETS.lowercase)).toBe(true)
     })
@@ -623,7 +631,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const password = resultElement.textContent!
+      const password = getRequiredTextContent(resultElement)
 
       expect(containsOnlyChars(password, CHARSETS.numbers)).toBe(true)
     })
@@ -648,7 +656,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const password = resultElement.textContent!
+      const password = getRequiredTextContent(resultElement)
 
       expect(containsOnlyChars(password, CHARSETS.symbols)).toBe(true)
     })
@@ -678,7 +686,7 @@ describe('RandomGeneratorPage', () => {
 
       // Should generate using default charset
       const resultElement = screen.getByRole('code')
-      const password = resultElement.textContent!
+      const password = getRequiredTextContent(resultElement)
       expect(containsOnlyChars(password, CHARSETS.alphanumeric)).toBe(true)
     })
 
@@ -1063,7 +1071,7 @@ describe('RandomGeneratorPage', () => {
       })
 
       const resultElement = screen.getByRole('code')
-      const value = resultElement.textContent!
+      const value = getRequiredTextContent(resultElement)
 
       // All characters should be X
       expect(value).toMatch(/^X+$/)
@@ -1112,7 +1120,6 @@ describe('RandomGeneratorPage', () => {
     })
 
     it('has accessible labels for string options', async () => {
-      const user = userEvent.setup()
       renderWithNuqs({ type: 'string' })
 
       expect(screen.getByLabelText(/length/i)).toBeInTheDocument()

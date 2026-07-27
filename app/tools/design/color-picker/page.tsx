@@ -485,6 +485,7 @@ function ColorPickerContent() {
                     })}
                   >
                     <Button
+                      aria-label="Randomize color"
                       onClick={handleRandomColor}
                       className={css({
                         bg: 'gray.900/80',
@@ -502,6 +503,7 @@ function ColorPickerContent() {
                 <div className={css({ display: 'flex', gap: '3', alignItems: 'center' })}>
                   <input
                     type="color"
+                    aria-label="Color picker"
                     value={color}
                     onChange={(e) => {
                       setColor(e.target.value.toUpperCase())
@@ -600,6 +602,7 @@ function ColorPickerContent() {
                     </div>
                   </div>
                   <Button
+                    aria-label="Copy HEX color"
                     onClick={() => handleCopyColor(color, 'HEX')}
                     variant="outline"
                     size="sm"
@@ -633,6 +636,7 @@ function ColorPickerContent() {
                     </div>
                   </div>
                   <Button
+                    aria-label="Copy RGB color"
                     onClick={() => handleCopyColor(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`, 'RGB')}
                     variant="outline"
                     size="sm"
@@ -666,6 +670,7 @@ function ColorPickerContent() {
                     </div>
                   </div>
                   <Button
+                    aria-label="Copy HSL color"
                     onClick={() => handleCopyColor(`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`, 'HSL')}
                     variant="outline"
                     size="sm"
@@ -699,6 +704,7 @@ function ColorPickerContent() {
                     </div>
                   </div>
                   <Button
+                    aria-label="Copy HSV color"
                     onClick={() => handleCopyColor(`hsv(${hsv.h}°, ${hsv.s}%, ${hsv.v}%)`, 'HSV')}
                     variant="outline"
                     size="sm"
@@ -907,7 +913,12 @@ function ColorPickerContent() {
                     <CardTitle>Color Palette</CardTitle>
                     <CardDescription>Generate harmonious color combinations</CardDescription>
                   </div>
-                  <Button onClick={handleCopyPalette} size="sm" variant="outline">
+                  <Button
+                    aria-label="Copy color palette"
+                    onClick={handleCopyPalette}
+                    size="sm"
+                    variant="outline"
+                  >
                     <Copy className={css({ h: '4', w: '4' })} />
                   </Button>
                 </div>
@@ -989,6 +1000,7 @@ function ColorPickerContent() {
                           {paletteColor}
                         </div>
                         <Button
+                          aria-label={`Copy color ${paletteColor}`}
                           onClick={() => handleCopyColor(paletteColor, 'Color')}
                           variant="outline"
                           size="sm"

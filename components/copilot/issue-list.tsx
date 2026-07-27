@@ -604,8 +604,8 @@ function IssueItem({ issue, isSelected, onSelect }: IssueItemProps) {
                 gap: '1',
               })}
             >
-              {reactions.slice(0, 4).map((reaction, index) => (
-                <ReactionBadge key={index} emoji={reaction.emoji} count={reaction.count} />
+              {reactions.slice(0, 4).map((reaction) => (
+                <ReactionBadge key={reaction.emoji} emoji={reaction.emoji} count={reaction.count} />
               ))}
               {reactions.length > 4 && (
                 <span

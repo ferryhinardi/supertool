@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import StopwatchTimerPage from '../page'
 
@@ -75,6 +75,13 @@ const mockAudioPlay = vi.fn().mockResolvedValue(undefined)
 const MockAudio = vi.fn(() => ({
   play: mockAudioPlay,
 }))
+
+const getRequiredElement = <T extends HTMLElement>(element: T | null, label: string): T => {
+  if (!element) {
+    throw new Error(`${label} not found`)
+  }
+  return element
+}
 
 // Notification mock
 const mockRequestPermission = vi.fn()
@@ -313,7 +320,11 @@ describe('StopwatchTimerPage', () => {
         })
 
         // Time should be the same
-        expect(screen.getByText(timeBeforePause!)).toBeInTheDocument()
+        if (timeBeforePause === null) {
+          throw new Error('Expected stopwatch display to have text content')
+        }
+
+        expect(screen.getByText(timeBeforePause)).toBeInTheDocument()
       })
     })
 
@@ -349,8 +360,11 @@ describe('StopwatchTimerPage', () => {
         fireEvent.click(screen.getByRole('button', { name: /lap/i }))
 
         // Should show badge with count 2
-        const lapTimesCard = screen.getByText('Lap Times').closest('div')
-        expect(within(lapTimesCard!).getByText('2')).toBeInTheDocument()
+        const lapTimesCard = getRequiredElement(
+          screen.getByText('Lap Times').closest('div'),
+          'Lap times card'
+        )
+        expect(within(lapTimesCard).getByText('2')).toBeInTheDocument()
       })
 
       it('shows lap number for each lap', async () => {
@@ -590,9 +604,12 @@ describe('StopwatchTimerPage', () => {
         // Structure: div > [button(preset), Button(delete with Trash2 icon)]
         const presetNameElement = screen.getByText('Delete Me')
         // Go up to the button containing the name, then to the parent div container
-        const containerDiv = presetNameElement.closest('button')?.parentElement
+        const containerDiv = getRequiredElement(
+          presetNameElement.closest('button')?.parentElement ?? null,
+          'Preset container'
+        )
         // Find all buttons in the container - the second one is the delete button
-        const buttons = within(containerDiv!).getAllByRole('button')
+        const buttons = within(containerDiv).getAllByRole('button')
         // The delete button is the last button (after the preset button)
         const deleteButton = buttons[buttons.length - 1]
         fireEvent.click(deleteButton)
@@ -624,8 +641,11 @@ describe('StopwatchTimerPage', () => {
         fireEvent.click(screen.getByRole('button', { name: /add timer/i }))
         fireEvent.click(screen.getByRole('button', { name: /add timer/i }))
 
-        const activeTimersCard = screen.getByText('Active Timers').closest('div')
-        expect(within(activeTimersCard!).getByText('2')).toBeInTheDocument()
+        const activeTimersCard = getRequiredElement(
+          screen.getByText('Active Timers').closest('div'),
+          'Active timers card'
+        )
+        expect(within(activeTimersCard).getByText('2')).toBeInTheDocument()
       })
 
       it('shows timer name and remaining time', () => {

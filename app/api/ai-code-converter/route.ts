@@ -5,6 +5,9 @@ import type {
   ConversionResponse,
 } from '@/app/tools/development/ai-code-converter/templates'
 import { generateSystemPrompt } from '@/app/tools/development/ai-code-converter/templates'
+import { getSupabaseServer } from '@/lib/auth/supabaseServer'
+import { getClientIdentifier } from '@/lib/services/api/rate-limiter'
+import { checkPremiumAccess, recordUsage } from '@/lib/services/premium-gate'
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -13,6 +16,39 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
+    const authorizationHeader = request.headers.get('authorization')
+    const clientIdentifier = getClientIdentifier(request)
+    const ipAddress = clientIdentifier === 'unknown' ? undefined : clientIdentifier
+
+    let userId: string | undefined
+
+    if (authorizationHeader?.startsWith('Bearer ')) {
+      const token = authorizationHeader.slice('Bearer '.length)
+      const supabase = getSupabaseServer()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser(token)
+      userId = user?.id
+    }
+
+    const premiumAccess = await checkPremiumAccess({
+      userId,
+      metricName: 'ai-code-converter',
+      freeQuotaPerDay: 10,
+      ipAddress,
+    })
+
+    if (!premiumAccess.allowed) {
+      return NextResponse.json(
+        {
+          status: 'paywall',
+          reason: premiumAccess.reason,
+          remaining: premiumAccess.remaining,
+        },
+        { status: 402 }
+      )
+    }
+
     // Check if API key is configured
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
@@ -135,7 +171,18 @@ Convert it to ${targetLanguage}.`
         : undefined,
     }
 
-    return NextResponse.json(result)
+    if (userId && premiumAccess.reason === 'subscription') {
+      await recordUsage({
+        userId,
+        metricName: 'ai-code-converter',
+        quantity: 1,
+      })
+    }
+
+    return NextResponse.json({
+      ...result,
+      remaining: premiumAccess.remaining,
+    })
   } catch (error: unknown) {
     console.error('Error converting code:', error)
 

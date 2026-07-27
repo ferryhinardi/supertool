@@ -70,7 +70,6 @@ export async function sendEmail(options: SendEmailOptions): Promise<{ id: string
       throw new Error('No email ID returned from Resend')
     }
 
-    console.log('✓ Email sent successfully:', data.id)
     return { id: data.id }
   } catch (error) {
     console.error('Failed to send email:', error)
@@ -251,19 +250,14 @@ export async function testEmailConfig(): Promise<boolean> {
   }
 
   try {
-    console.log('Testing email configuration...')
-    console.log('From email:', DEFAULT_FROM_EMAIL)
-
     // Send test email
-    const result = await sendEmail({
+    await sendEmail({
       to: 'test@example.com', // Resend won't actually send to this
       subject: 'SuperTool Email Test',
       html: '<p>This is a test email from SuperTool.</p>',
       text: 'This is a test email from SuperTool.',
     })
 
-    console.log('✓ Email configuration test passed')
-    console.log('Email ID:', result.id)
     return true
   } catch (error) {
     console.error('❌ Email configuration test failed:', error)

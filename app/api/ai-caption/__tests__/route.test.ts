@@ -3,6 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock OpenAI with vi.hoisted to ensure it's hoisted before imports
 const mockCreate = vi.hoisted(() => vi.fn())
+const mockCheckPremiumAccess = vi.hoisted(() => vi.fn())
+const mockRecordUsage = vi.hoisted(() => vi.fn())
+const mockGetUser = vi.hoisted(() => vi.fn())
 
 vi.mock('openai', () => {
   return {
@@ -24,15 +27,32 @@ vi.mock('openai', () => {
   }
 })
 
+vi.mock('@/lib/services/premium-gate', () => ({
+  checkPremiumAccess: mockCheckPremiumAccess,
+  recordUsage: mockRecordUsage,
+}))
+
+vi.mock('@/lib/auth/supabaseServer', () => ({
+  getSupabaseServer: () => ({
+    auth: {
+      getUser: mockGetUser,
+    },
+  }),
+}))
+
 import OpenAI from 'openai'
 import { POST } from '../route'
 
 // Helper function to create NextRequest with JSON body
-function createRequest(body: Record<string, unknown>): NextRequest {
+function createRequest(
+  body: Record<string, unknown>,
+  headers: Record<string, string> = {}
+): NextRequest {
   return new NextRequest('http://localhost:3000/api/ai-caption', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...headers,
     },
     body: JSON.stringify(body),
   })
@@ -48,10 +68,166 @@ describe('POST /api/ai-caption', () => {
   beforeEach(() => {
     vi.resetAllMocks()
     process.env = { ...originalEnv, OPENAI_API_KEY: 'test-api-key' }
+    mockCheckPremiumAccess.mockResolvedValue({
+      allowed: true,
+      reason: 'within-quota',
+      remaining: 3,
+    })
+    mockRecordUsage.mockResolvedValue(true)
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: 'user-123' } },
+      error: null,
+    })
   })
 
   afterEach(() => {
     process.env = originalEnv
+  })
+
+  describe('Premium Gate', () => {
+    it('should return 402 paywall response before calling OpenAI when quota is exceeded', async () => {
+      mockCheckPremiumAccess.mockResolvedValueOnce({
+        allowed: false,
+        reason: 'quota-exceeded',
+        remaining: 0,
+      })
+
+      const request = createRequest(
+        {
+          image: validBase64Image,
+          captionType: 'detailed',
+        },
+        {
+          'x-forwarded-for': '203.0.113.10',
+        }
+      )
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(402)
+      expect(data).toEqual({
+        status: 'paywall',
+        reason: 'quota-exceeded',
+        remaining: 0,
+      })
+      expect(mockCreate).not.toHaveBeenCalled()
+      expect(mockRecordUsage).not.toHaveBeenCalled()
+      expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+        userId: undefined,
+        metricName: 'ai-image-caption',
+        freeQuotaPerDay: 3,
+        ipAddress: '203.0.113.10',
+      })
+    })
+
+    it('should return 402 paywall response for anonymous-blocked requests before calling OpenAI', async () => {
+      mockCheckPremiumAccess.mockResolvedValueOnce({
+        allowed: false,
+        reason: 'anonymous-blocked',
+        remaining: 0,
+      })
+
+      const request = createRequest(
+        {
+          image: validBase64Image,
+          captionType: 'detailed',
+        },
+        {
+          'x-real-ip': '198.51.100.42',
+        }
+      )
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(402)
+      expect(data).toEqual({
+        status: 'paywall',
+        reason: 'anonymous-blocked',
+        remaining: 0,
+      })
+      expect(mockCreate).not.toHaveBeenCalled()
+      expect(mockRecordUsage).not.toHaveBeenCalled()
+      expect(mockGetUser).not.toHaveBeenCalled()
+      expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+        userId: undefined,
+        metricName: 'ai-image-caption',
+        freeQuotaPerDay: 3,
+        ipAddress: '198.51.100.42',
+      })
+    })
+
+    it('should preserve reserved remaining quota for authenticated free-tier caption generation', async () => {
+      mockCreate.mockResolvedValueOnce({
+        choices: [{ message: { content: 'Accessible mountain sunset caption' } }],
+        usage: { prompt_tokens: 100, completion_tokens: 20, total_tokens: 120 },
+      })
+
+      const request = createRequest(
+        {
+          image: validBase64Image,
+          captionType: 'altText',
+        },
+        {
+          authorization: 'Bearer valid-token',
+          'x-real-ip': '198.51.100.8',
+        }
+      )
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(200)
+      // checkPremiumAccess reserves the usage via RPC and already returns the
+      // post-reservation remaining, so the route must not decrement it again.
+      expect(data.remaining).toBe(3)
+      expect(mockGetUser).toHaveBeenCalledWith('valid-token')
+      expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
+        userId: 'user-123',
+        metricName: 'ai-image-caption',
+        freeQuotaPerDay: 3,
+        ipAddress: '198.51.100.8',
+      })
+      // The reservation RPC records free-tier usage; recordUsage is only for
+      // metered subscribers.
+      expect(mockRecordUsage).not.toHaveBeenCalled()
+    })
+
+    it('should record metered usage for subscribed users after successful caption generation', async () => {
+      mockCheckPremiumAccess.mockResolvedValueOnce({
+        allowed: true,
+        reason: 'subscription',
+        remaining: 3,
+      })
+      mockCreate.mockResolvedValueOnce({
+        choices: [{ message: { content: 'Subscriber mountain sunset caption' } }],
+        usage: { prompt_tokens: 100, completion_tokens: 20, total_tokens: 120 },
+      })
+
+      const request = createRequest(
+        {
+          image: validBase64Image,
+          captionType: 'altText',
+        },
+        {
+          authorization: 'Bearer premium-token',
+          'x-real-ip': '198.51.100.9',
+        }
+      )
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(200)
+      expect(mockGetUser).toHaveBeenCalledWith('premium-token')
+      expect(mockRecordUsage).toHaveBeenCalledWith({
+        userId: 'user-123',
+        metricName: 'ai-image-caption',
+        quantity: 1,
+      })
+      expect(data.remaining).toBe(3)
+    })
   })
 
   describe('Input Validation', () => {

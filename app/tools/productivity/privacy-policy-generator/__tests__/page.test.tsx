@@ -136,7 +136,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_document_type_select', {
         type: 'cookie-policy',
@@ -148,7 +151,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const termsButton = screen.getByText('Terms of Service').closest('button')
-      await user.click(termsButton!)
+      if (!termsButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(termsButton)
 
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_document_type_select', {
         type: 'terms-of-service',
@@ -161,11 +167,17 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // First select cookie policy
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       // Then select privacy policy
       const privacyPolicyButton = screen.getByText('Privacy Policy').closest('button')
-      await user.click(privacyPolicyButton!)
+      if (!privacyPolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(privacyPolicyButton)
 
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_document_type_select', {
         type: 'privacy-policy',
@@ -181,7 +193,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Switch to Cookie Policy
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       // Industry should not be visible
       expect(screen.queryByText('Industry')).not.toBeInTheDocument()
@@ -196,7 +211,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Switch to Terms of Service
       const termsButton = screen.getByText('Terms of Service').closest('button')
-      await user.click(termsButton!)
+      if (!termsButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(termsButton)
 
       // Jurisdiction should not be visible
       expect(screen.queryByText('Jurisdiction')).not.toBeInTheDocument()
@@ -211,7 +229,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Switch to Cookie Policy
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       // Additional sections should not be visible
       expect(screen.queryByText('Additional Sections')).not.toBeInTheDocument()
@@ -342,7 +363,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const saasOption = screen.getByText('SaaS/Software').closest('button')
-      await user.click(saasOption!)
+      if (!saasOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(saasOption)
 
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_industry_select', {
         industry: 'saas',
@@ -354,7 +378,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const ecommerceOption = screen.getByText('E-commerce').closest('button')
-      await user.click(ecommerceOption!)
+      if (!ecommerceOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(ecommerceOption)
 
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_industry_select', {
         industry: 'ecommerce',
@@ -366,7 +393,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const blogOption = screen.getByText('Blog/Content').closest('button')
-      await user.click(blogOption!)
+      if (!blogOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(blogOption)
 
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_industry_select', {
         industry: 'blog',
@@ -378,7 +408,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const mobileAppOption = screen.getByText('Mobile App').closest('button')
-      await user.click(mobileAppOption!)
+      if (!mobileAppOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(mobileAppOption)
 
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_industry_select', {
         industry: 'mobile-app',
@@ -408,7 +441,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const usOption = screen.getByText('United States').closest('button')
-      await user.click(usOption!)
+      if (!usOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(usOption)
 
       // Analytics does NOT include 'selected' property
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_jurisdiction_select', {
@@ -421,7 +457,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const gdprOption = screen.getByText('EU (GDPR)').closest('button')
-      await user.click(gdprOption!)
+      if (!gdprOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(gdprOption)
 
       // Analytics does NOT include 'selected' property
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_jurisdiction_select', {
@@ -434,7 +473,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const ccpaOption = screen.getByText('California (CCPA)').closest('button')
-      await user.click(ccpaOption!)
+      if (!ccpaOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(ccpaOption)
 
       // Analytics does NOT include 'selected' property
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_jurisdiction_select', {
@@ -447,7 +489,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
       render(<PrivacyPolicyGeneratorPage />)
 
       const internationalOption = screen.getByText('International').closest('button')
-      await user.click(internationalOption!)
+      if (!internationalOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(internationalOption)
 
       // International is disabled and cannot be clicked, so no tracking should occur
       expect(trackToolEvent).not.toHaveBeenCalledWith('privacy_policy_jurisdiction_select', {
@@ -606,7 +651,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Select Cookie Policy
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       await fillRequiredFields(user)
 
@@ -623,7 +671,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Select Terms of Service
       const termsButton = screen.getByText('Terms of Service').closest('button')
-      await user.click(termsButton!)
+      if (!termsButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(termsButton)
 
       await fillRequiredFields(user)
 
@@ -704,7 +755,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Select Cookie Policy
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       await fillRequiredFields(user)
 
@@ -722,7 +776,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Select Terms of Service
       const termsButton = screen.getByText('Terms of Service').closest('button')
-      await user.click(termsButton!)
+      if (!termsButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(termsButton)
 
       await fillRequiredFields(user)
 
@@ -797,7 +854,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Select Cookie Policy
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       await fillRequiredFields(user)
 
@@ -857,7 +917,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Select Cookie Policy
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       await fillRequiredFields(user)
 
@@ -875,7 +938,10 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Select Terms of Service
       const termsButton = screen.getByText('Terms of Service').closest('button')
-      await user.click(termsButton!)
+      if (!termsButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(termsButton)
 
       await fillRequiredFields(user)
 
@@ -923,15 +989,24 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Select SaaS industry
       const saasOption = screen.getByText('SaaS/Software').closest('button')
-      await user.click(saasOption!)
+      if (!saasOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(saasOption)
 
       // Select GDPR jurisdiction
       const gdprOption = screen.getByText('EU (GDPR)').closest('button')
-      await user.click(gdprOption!)
+      if (!gdprOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(gdprOption)
 
       // Select CCPA jurisdiction
       const ccpaOption = screen.getByText('California (CCPA)').closest('button')
-      await user.click(ccpaOption!)
+      if (!ccpaOption) {
+        throw new Error('Required button not found')
+      }
+      await user.click(ccpaOption)
 
       // Enable Third-Party Integrations
       const thirdPartyCheckbox = screen.getByLabelText(/third-party integrations/i)
@@ -952,21 +1027,30 @@ describe('PrivacyPolicyGeneratorPage', () => {
 
       // Switch to Cookie Policy
       const cookiePolicyButton = screen.getByText('Cookie Policy').closest('button')
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       // Company info should still be there
       expect(screen.getByLabelText(/company name/i)).toHaveValue('Acme Corporation')
 
       // Switch to Terms of Service
       const termsButton = screen.getByText('Terms of Service').closest('button')
-      await user.click(termsButton!)
+      if (!termsButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(termsButton)
 
       // Company info should still be there
       expect(screen.getByLabelText(/company name/i)).toHaveValue('Acme Corporation')
 
       // Switch back to Privacy Policy
       const privacyButton = screen.getByText('Privacy Policy').closest('button')
-      await user.click(privacyButton!)
+      if (!privacyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(privacyButton)
 
       // Company info should still be there
       expect(screen.getByLabelText(/company name/i)).toHaveValue('Acme Corporation')
@@ -1004,10 +1088,22 @@ describe('PrivacyPolicyGeneratorPage', () => {
       const termsButton = screen.getByText('Terms of Service').closest('button')
       const privacyButton = screen.getByText('Privacy Policy').closest('button')
 
-      await user.click(cookiePolicyButton!)
-      await user.click(termsButton!)
-      await user.click(privacyButton!)
-      await user.click(cookiePolicyButton!)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
+      if (!termsButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(termsButton)
+      if (!privacyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(privacyButton)
+      if (!cookiePolicyButton) {
+        throw new Error('Required button not found')
+      }
+      await user.click(cookiePolicyButton)
 
       // Should track all selections
       expect(trackToolEvent).toHaveBeenCalledWith('privacy_policy_document_type_select', {

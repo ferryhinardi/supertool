@@ -38,10 +38,6 @@ export async function uploadFileInChunks(
   const totalChunks = Math.ceil(file.size / chunkSize)
   const fileId = `${Date.now()}-${Math.random().toString(36).slice(2)}`
 
-  console.log(`📤 Starting chunked upload: ${file.name}`)
-  console.log(`   File size: ${(file.size / 1024 / 1024).toFixed(2)}MB`)
-  console.log(`   Total chunks: ${totalChunks}`)
-
   let bytesUploaded = 0
 
   for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
@@ -90,11 +86,8 @@ export async function uploadFileInChunks(
     const progress = Math.round((bytesUploaded / file.size) * 100)
     onProgress(progress, bytesUploaded, file.size)
     onChunkComplete(chunkIndex, totalChunks)
-
-    console.log(`✅ Chunk ${chunkIndex + 1}/${totalChunks} uploaded (${progress}%)`)
   }
 
-  console.log(`✅ Upload complete: ${fileId}`)
   return fileId
 }
 

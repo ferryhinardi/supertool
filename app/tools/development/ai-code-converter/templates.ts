@@ -24,6 +24,7 @@ export interface ConversionResponse {
   convertedCode: string
   explanation?: string
   warnings?: string[]
+  remaining?: number
   usage?: {
     prompt_tokens: number
     completion_tokens: number

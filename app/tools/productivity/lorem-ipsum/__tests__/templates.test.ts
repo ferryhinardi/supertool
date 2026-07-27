@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
   generateLoremIpsum,
   getCharacterCount,
   getParagraphCount,
   getSentenceCount,
   getWordCount,
-  type OutputType,
 } from '../templates'
 
 describe('Lorem Ipsum Templates', () => {

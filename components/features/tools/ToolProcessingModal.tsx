@@ -58,8 +58,7 @@ export function ToolProcessingModal({
         <>
           {/* Backdrop */}
           <div
-            role="button"
-            tabIndex={0}
+            aria-hidden="true"
             className={css({
               position: 'fixed',
               inset: '0',
@@ -69,10 +68,6 @@ export function ToolProcessingModal({
               animation: 'fadeIn 0.2s ease-out',
             })}
             onClick={isComplete || hasError ? onClose : undefined}
-            onKeyDown={(e) => {
-              if ((e.key === 'Escape' || e.key === 'Enter') && (isComplete || hasError) && onClose)
-                onClose()
-            }}
           />
 
           {/* Modal */}

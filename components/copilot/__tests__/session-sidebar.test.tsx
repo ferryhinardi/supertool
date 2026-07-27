@@ -271,8 +271,8 @@ describe('SessionSidebar', () => {
       const activeSessionText = screen.getByText('Active Session')
       expect(activeSessionText).toBeInTheDocument()
 
-      // The parent element has role="button" (it's a div, not a button)
-      const activeButton = activeSessionText.closest('[role="button"]')
+      // The session content is rendered inside the clickable session button
+      const activeButton = activeSessionText.closest('button')
       expect(activeButton).toBeInTheDocument()
     })
   })
@@ -335,10 +335,12 @@ describe('SessionSidebar', () => {
 
       render(<SessionSidebar onSessionSelect={mockOnSessionSelect} />)
 
-      // Session items use role="button" on a div, not <button> elements
-      const sessionButton = screen.getByText('Clickable Session').closest('[role="button"]')
+      const sessionButton = screen.getByText('Clickable Session').closest('button')
       expect(sessionButton).toBeInTheDocument()
-      await user.click(sessionButton!)
+      if (!sessionButton) {
+        throw new Error('Session button not found')
+      }
+      await user.click(sessionButton)
 
       expect(mockOnSessionSelect).toHaveBeenCalledWith('session-123')
     })
@@ -352,10 +354,12 @@ describe('SessionSidebar', () => {
 
       render(<SessionSidebar onSessionSelect={mockOnSessionSelect} />)
 
-      // Session items use role="button" on a div, not <button> elements
-      const sessionButton = screen.getByText('Hover Session').closest('[role="button"]')
+      const sessionButton = screen.getByText('Hover Session').closest('button')
       expect(sessionButton).toBeInTheDocument()
-      fireEvent.mouseEnter(sessionButton!)
+      if (!sessionButton) {
+        throw new Error('Session button not found')
+      }
+      fireEvent.mouseEnter(sessionButton)
 
       expect(mockPrefetchSession).toHaveBeenCalledWith('session-hover-test')
     })

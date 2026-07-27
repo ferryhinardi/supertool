@@ -458,7 +458,7 @@ export function FilePreviewModal({
               >
                 {Array.from({ length: lineCount }, (_, i) => (
                   <div
-                    key={i}
+                    key={`ln-${i + 1}`}
                     className={css({
                       fontSize: 'xs',
                       fontFamily: 'mono',

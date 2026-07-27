@@ -8,7 +8,6 @@ import {
   Eye,
   FileImage,
   Image as ImageIcon,
-  Lightbulb,
   Maximize2,
   Settings,
   Sparkles,
@@ -18,7 +17,6 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 

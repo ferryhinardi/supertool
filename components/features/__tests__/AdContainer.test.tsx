@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { getPriorityAdNetwork } from '@/lib/services/ads-config'
 import { AdContainer } from '../ads/AdContainer'
 
 // Mock all ad components
@@ -314,6 +315,18 @@ describe('AdContainer Component', () => {
 
     it('should not throw errors with minimal props', () => {
       expect(() => render(<AdContainer />)).not.toThrow()
+    })
+
+    it('returns null when ads are enabled but no network is resolved', () => {
+      mockEnv({
+        NEXT_PUBLIC_ENABLE_ADS: 'true',
+        NEXT_PUBLIC_ENABLE_ADSENSE: 'true',
+      })
+      vi.mocked(getPriorityAdNetwork).mockReturnValueOnce(null)
+
+      const { container } = render(<AdContainer />)
+
+      expect(container.firstChild).toBeNull()
     })
   })
 

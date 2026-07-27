@@ -571,7 +571,7 @@ ${generatedDocument
                         <span className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
                           {industry.label}
                         </span>
-                        <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
                           {industry.description}
                         </span>
                       </button>
@@ -637,7 +637,7 @@ ${generatedDocument
                             />
                           )}
                         </div>
-                        <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
                           {jurisdiction.description}
                         </span>
                       </button>
@@ -793,7 +793,7 @@ ${generatedDocument
                     justifyContent: 'center',
                     minH: '500px',
                     textAlign: 'center',
-                    color: 'gray.500',
+                    color: 'gray.400',
                   })}
                 >
                   <Shield className={css({ w: '16', h: '16', mb: '4', opacity: 0.3 })} />

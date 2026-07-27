@@ -20,12 +20,14 @@ interface CurrencyConverterProps {
   compact?: boolean
 }
 
+const EMPTY_AMOUNTS: Array<{ label: string; value: number }> = []
+
 export function CurrencyConverter({
   baseCurrency,
   targetCurrency,
   onBaseCurrencyChange,
   onTargetCurrencyChange,
-  amounts = [],
+  amounts = EMPTY_AMOUNTS,
   compact = false,
 }: CurrencyConverterProps) {
   const {

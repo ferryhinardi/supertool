@@ -340,8 +340,9 @@ export default function IPLookupPage() {
                 <div
                   className={css({
                     display: 'grid',
+                    w: 'full',
                     gap: '6',
-                    gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
                   })}
                 >
                   <div className={css({ spaceY: '2' })}>
@@ -441,9 +442,10 @@ export default function IPLookupPage() {
                   <div
                     className={css({
                       display: 'grid',
+                      w: 'full',
                       gap: '4',
                       gridTemplateColumns: {
-                        base: '1',
+                        base: '1fr',
                         sm: 'repeat(2, 1fr)',
                         lg: 'repeat(3, 1fr)',
                       },
@@ -487,8 +489,9 @@ export default function IPLookupPage() {
                   <div
                     className={css({
                       display: 'grid',
+                      w: 'full',
                       gap: '4',
-                      gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)' },
+                      gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
                     })}
                   >
                     <InfoItem label="ISP / Organization" value={ipInfo.isp} />
@@ -514,8 +517,9 @@ export default function IPLookupPage() {
                   <div
                     className={css({
                       display: 'grid',
+                      w: 'full',
                       gap: '4',
-                      gridTemplateColumns: { base: '1', sm: 'repeat(3, 1fr)' },
+                      gridTemplateColumns: { base: '1fr', sm: 'repeat(3, 1fr)' },
                     })}
                   >
                     <SecurityBadge label="Mobile" value={ipInfo.mobile} />
@@ -533,8 +537,9 @@ export default function IPLookupPage() {
       <div
         className={css({
           display: 'grid',
+          w: 'full',
           gap: '4',
-          gridTemplateColumns: { base: '1', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+          gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
           animation: 'slideUp 0.5s ease-out forwards',
           animationDelay: '0.3s',
           opacity: 0,

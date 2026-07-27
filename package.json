@@ -2,10 +2,25 @@
   "name": "supertool",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "panda codegen && next dev",
     "prebuild": "panda codegen --clean",
     "build": "next build",
+    "coverage:task15": "vitest run --coverage --config vitest.coverage.task15.config.mts",
+    "coverage:task15:features": "vitest run --coverage --config vitest.coverage.task15.features.config.mts",
+    "coverage:task15:features:ads": "vitest run --coverage --config vitest.coverage.task15.features.ads.config.mts",
+    "coverage:task15:features:core": "vitest run --coverage --config vitest.coverage.task15.features.core.config.mts",
+    "coverage:task15:features:currency": "vitest run --coverage --config vitest.coverage.task15.features.currency.config.mts",
+    "coverage:task15:features:media": "vitest run --coverage --config vitest.coverage.task15.features.media.config.mts",
+    "coverage:task15:features:shared": "vitest run --coverage --config vitest.coverage.task15.features.shared.config.mts",
+    "coverage:task15:features:tools": "vitest run --coverage --config vitest.coverage.task15.features.tools.config.mts",
+    "coverage:task15:features:support": "vitest run --coverage --config vitest.coverage.task15.features.support.config.mts",
+    "coverage:task15:lib": "vitest run --coverage --config vitest.coverage.task15.lib.config.mts",
+    "perf:baseline": "node scripts/lighthouse-baseline.mjs",
+    "seo:audit": "node scripts/seo-audit.mjs",
     "postinstall": "panda codegen",
     "start": "next start",
     "lint": "biome check --write .",
@@ -98,30 +113,32 @@
     "resend": "^6.6.0",
     "sonner": "^2.0.7",
     "tesseract.js": "^6.0.1",
+    "web-vitals": "^5.2.0",
     "xlsx": "^0.18.5",
     "zod": "^4.1.13",
     "zustand": "^5.0.8",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
     "@biomejs/biome": "^2.3.1",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.38.0",
     "@next/bundle-analyzer": "^16.0.1",
     "@next/eslint-plugin-next": "^16.0.0",
     "@pandacss/dev": "1.4.3",
+    "@playwright/test": "^1.59.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/luxon": "^3.7.1",
     "@types/mockdate": "^3.0.0",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/pngjs": "^6.0.5",
     "@types/qrcode": "^1.5.6",
     "@types/qrcode.react": "^3.0.0",
     "@types/react": "^19.2.6",
     "@types/react-dom": "19",
-
     "@types/zxcvbn": "^4.4.5",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/browser": "^4.0.5",
@@ -135,7 +152,7 @@
     "jsdom": "^25.0.1",
     "lint-staged": "^16.2.6",
     "mockdate": "^3.0.5",
-    "playwright": "^1.49.1",
+    "playwright": "^1.59.1",
     "postcss": "^8.5.6",
     "typescript": "^5",
     "typescript-eslint": "^8.46.2",
@@ -154,5 +171,6 @@
       "markdown-it": ">=14.1.1",
       "diff": ">=5.2.2"
     }
-  }
+  },
+  "packageManager": "pnpm@10.33.1+sha512.05ba3c1d5d1c18f68df06470d74055e62d41fc110a0c660db1b2dfb2785327f04cf0f68345d4609bc52089e7fa0343c31593b2f9594e2c5d5da426230acc9820"
 }

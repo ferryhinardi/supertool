@@ -68,6 +68,8 @@ export default defineConfig({
       '**/__screenshots__/**',
       '**/dist/**',
       '**/.next/**',
+      '**/tests/mobile/**',
+      '**/tests/a11y/**',
     ],
     // Browser mode is only enabled for specific tests that need it (e.g., screenshot tests)
     // Most tests will use jsdom environment for better performance and compatibility

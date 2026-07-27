@@ -27,13 +27,18 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
 
   const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const parts = text.split(new RegExp(`(${escapeRegex(query)})`, 'gi'))
+  let currentOffset = 0
 
   return (
     <>
-      {parts.map((part, i) =>
-        part.toLowerCase() === query.toLowerCase() ? (
+      {parts.map((part) => {
+        const partOffset = currentOffset
+        const partKey = `${partOffset}-${part}`
+        currentOffset += part.length
+
+        return part.toLowerCase() === query.toLowerCase() ? (
           <mark
-            key={i}
+            key={partKey}
             className={css({
               bg: 'rgba(234, 179, 8, 0.4)',
               color: 'inherit',
@@ -44,9 +49,9 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
             {part}
           </mark>
         ) : (
-          <span key={i}>{part}</span>
+          <span key={partKey}>{part}</span>
         )
-      )}
+      })}
     </>
   )
 }

@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 
 import { Input } from '@/components/ui/input'
 import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
@@ -287,7 +287,8 @@ export default function URLShortenerPage() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1', sm: 'repeat(3, 1fr)' },
+          w: 'full',
+          gridTemplateColumns: { base: '1fr', sm: 'repeat(3, 1fr)' },
           gap: { base: '4', sm: '4' },
         })}
       >

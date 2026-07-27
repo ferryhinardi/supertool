@@ -466,7 +466,7 @@ export default function SQLFormatterPage() {
               color: 'gray.100',
               resize: 'vertical',
               transition: 'all 0.2s',
-              _placeholder: { color: 'gray.500' },
+              _placeholder: { color: 'gray.400' },
               _hover: { borderColor: 'gray.600' },
               _focus: {
                 outline: 'none',
@@ -481,7 +481,7 @@ export default function SQLFormatterPage() {
               display: 'flex',
               justifyContent: 'space-between',
               fontSize: 'xs',
-              color: 'gray.500',
+              color: 'gray.400',
             })}
           >
             <span>{inputSQL.length} characters</span>
@@ -564,7 +564,7 @@ export default function SQLFormatterPage() {
             ) : formattedSQL ? (
               formattedSQL
             ) : (
-              <span className={css({ color: 'gray.500' })}>Formatted SQL will appear here...</span>
+              <span className={css({ color: 'gray.400' })}>Formatted SQL will appear here...</span>
             )}
           </div>
           {formattedSQL && (

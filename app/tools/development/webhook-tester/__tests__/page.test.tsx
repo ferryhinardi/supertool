@@ -576,7 +576,10 @@ describe('WebhookTesterPage', () => {
       const allCreateButtons = screen.getAllByRole('button', { name: /Create Webhook/i })
       const formSubmitButton = allCreateButtons.find((btn) => btn.querySelector('svg'))
       expect(formSubmitButton).toBeDefined()
-      fireEvent.click(formSubmitButton!)
+      if (!formSubmitButton) {
+        throw new Error('Webhook form submit button not found')
+      }
+      fireEvent.click(formSubmitButton)
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith('Webhook endpoint created!')
@@ -1078,7 +1081,10 @@ describe('WebhookTesterPage', () => {
       const allCreateButtons = screen.getAllByRole('button', { name: /Create Webhook/i })
       const formSubmitButton = allCreateButtons.find((btn) => btn.querySelector('svg'))
       expect(formSubmitButton).toBeDefined()
-      fireEvent.click(formSubmitButton!)
+      if (!formSubmitButton) {
+        throw new Error('Webhook form submit button not found')
+      }
+      fireEvent.click(formSubmitButton)
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith('Creation failed')

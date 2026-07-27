@@ -212,7 +212,7 @@ describe('rate-limiter', () => {
         const headers = limiter.getHeaders(result)
 
         expect(headers['Retry-After']).toBeDefined()
-        expect(Number.parseInt(headers['Retry-After'])).toBeGreaterThan(0)
+        expect(Number.parseInt(headers['Retry-After'], 10)).toBeGreaterThan(0)
       })
     })
 

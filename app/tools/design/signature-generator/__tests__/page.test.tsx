@@ -17,10 +17,18 @@ vi.mock('sonner', () => ({
 
 // Mock URL APIs
 let blobUrlCount = 0
-const mockCreateObjectURL = vi.fn((blob) => `blob:mock-url-${blobUrlCount++}`)
+const mockCreateObjectURL = vi.fn((_blob) => `blob:mock-url-${blobUrlCount++}`)
 const mockRevokeObjectURL = vi.fn()
 URL.createObjectURL = mockCreateObjectURL
 URL.revokeObjectURL = mockRevokeObjectURL
+
+const getRequiredButton = (button: HTMLButtonElement | null, label: string): HTMLButtonElement => {
+  if (!button) {
+    throw new Error(`${label} button not found`)
+  }
+
+  return button
+}
 
 // Mock canvas context
 const mockCanvasContext = {
@@ -38,18 +46,6 @@ const mockCanvasContext = {
   textAlign: '',
   textBaseline: '',
   lineWidth: 1,
-}
-
-// Mock canvas element
-const mockCanvas = {
-  width: 800,
-  height: 300,
-  getContext: vi.fn(() => mockCanvasContext),
-  toBlob: vi.fn((callback, mimeType, quality) => {
-    const mockBlob = new Blob(['mock-image-data'], { type: mimeType || 'image/png' })
-    callback(mockBlob)
-  }),
-  toDataURL: vi.fn(() => 'data:image/png;base64,mockdata'),
 }
 
 // Mock HTMLCanvasElement.prototype.getContext
@@ -313,7 +309,7 @@ describe('SignatureGeneratorPage', () => {
       render(<SignatureGeneratorPage />)
 
       const cursiveButton = screen.getByText('Cursive').closest('button')
-      fireEvent.click(cursiveButton!)
+      fireEvent.click(getRequiredButton(cursiveButton, 'Cursive style'))
 
       // The clicked button should now be selected (visually indicated)
       await waitFor(() => {
@@ -325,7 +321,7 @@ describe('SignatureGeneratorPage', () => {
       render(<SignatureGeneratorPage />)
 
       const modernButton = screen.getByText('Modern').closest('button')
-      fireEvent.click(modernButton!)
+      fireEvent.click(getRequiredButton(modernButton, 'Modern style'))
 
       expect(modernButton).toBeInTheDocument()
     })
@@ -334,7 +330,7 @@ describe('SignatureGeneratorPage', () => {
       render(<SignatureGeneratorPage />)
 
       const elegantButton = screen.getByText('Elegant').closest('button')
-      fireEvent.click(elegantButton!)
+      fireEvent.click(getRequiredButton(elegantButton, 'Elegant style'))
 
       expect(elegantButton).toBeInTheDocument()
     })
@@ -343,7 +339,7 @@ describe('SignatureGeneratorPage', () => {
       render(<SignatureGeneratorPage />)
 
       const boldButton = screen.getByText('Bold').closest('button')
-      fireEvent.click(boldButton!)
+      fireEvent.click(getRequiredButton(boldButton, 'Bold style'))
 
       expect(boldButton).toBeInTheDocument()
     })
@@ -352,7 +348,7 @@ describe('SignatureGeneratorPage', () => {
       render(<SignatureGeneratorPage />)
 
       const minimalButton = screen.getByText('Minimal').closest('button')
-      fireEvent.click(minimalButton!)
+      fireEvent.click(getRequiredButton(minimalButton, 'Minimal style'))
 
       expect(minimalButton).toBeInTheDocument()
     })
@@ -762,7 +758,7 @@ describe('SignatureGeneratorPage', () => {
 
       // Change style
       const cursiveButton = screen.getByText('Cursive').closest('button')
-      fireEvent.click(cursiveButton!)
+      fireEvent.click(getRequiredButton(cursiveButton, 'Cursive style'))
 
       await waitFor(() => {
         const clearButton = screen.getByRole('button', { name: /Clear/i })

@@ -44,7 +44,7 @@ importers:
         version: 0.12.2
       '@graphiql/toolkit':
         specifier: ^0.11.3
-        version: 0.11.3(@types/node@20.19.25)(graphql@16.12.0)
+        version: 0.11.3(@types/node@24.10.1)(graphql@16.12.0)
       '@imgly/background-removal':
         specifier: ^1.7.0
         version: 1.7.0(onnxruntime-web@1.21.0)
@@ -80,13 +80,13 @@ importers:
         version: 1.0.3
       '@uiw/react-codemirror':
         specifier: ^4.25.2
-        version: 4.25.3(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.11.3)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.38.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 4.25.3(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.0.0)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.38.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@vercel/analytics':
         specifier: ^1.5.0
-        version: 1.5.0(next@16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        version: 1.5.0(next@16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       '@vercel/speed-insights':
         specifier: ^1.2.0
-        version: 1.2.0(next@16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        version: 1.2.0(next@16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
@@ -95,7 +95,7 @@ importers:
         version: 2.0.2
       codemirror-graphql:
         specifier: ^2.2.4
-        version: 2.2.4(@codemirror/language@6.11.3)(graphql@16.12.0)
+        version: 2.2.4(@codemirror/language@6.0.0)(graphql@16.12.0)
       cron-parser:
         specifier: ^5.4.0
         version: 5.4.0
@@ -128,7 +128,7 @@ importers:
         version: 5.3.0
       graphiql:
         specifier: ^5.2.2
-        version: 5.2.2(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+        version: 5.2.2(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
       graphql:
         specifier: ^16.12.0
         version: 16.12.0
@@ -185,10 +185,10 @@ importers:
         version: 5.1.6
       next:
         specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       nuqs:
         specifier: ^2.7.2
-        version: 2.8.1(next@16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        version: 2.8.1(next@16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       openai:
         specifier: ^6.7.0
         version: 6.9.1(ws@8.18.3)(zod@4.1.13)
@@ -231,6 +231,9 @@ importers:
       tesseract.js:
         specifier: ^6.0.1
         version: 6.0.1
+      web-vitals:
+        specifier: ^5.2.0
+        version: 5.2.0
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
@@ -244,6 +247,9 @@ importers:
         specifier: ^4.4.2
         version: 4.4.2
     devDependencies:
+      '@axe-core/playwright':
+        specifier: ^4.11.2
+        version: 4.11.2(playwright-core@1.59.1)
       '@biomejs/biome':
         specifier: ^2.3.1
         version: 2.3.7
@@ -262,6 +268,9 @@ importers:
       '@pandacss/dev':
         specifier: 1.4.3
         version: 1.4.3(jsdom@25.0.1)(typescript@5.9.3)
+      '@playwright/test':
+        specifier: ^1.59.1
+        version: 1.59.1
       '@testing-library/jest-dom':
         specifier: ^6.6.3
         version: 6.9.1
@@ -278,8 +287,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       '@types/node':
-        specifier: ^20
-        version: 20.19.25
+        specifier: ^24
+        version: 24.10.1
       '@types/pngjs':
         specifier: ^6.0.5
         version: 6.0.5
@@ -300,16 +309,16 @@ importers:
         version: 4.4.5
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.7.0(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))
+        version: 4.7.0(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))
       '@vitest/browser':
         specifier: ^4.0.5
-        version: 4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
+        version: 4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
       '@vitest/browser-playwright':
         specifier: ^4.0.5
-        version: 4.0.13(playwright@1.56.1)(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
+        version: 4.0.13(playwright@1.59.1)(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
       '@vitest/coverage-v8':
         specifier: ^4.0.13
-        version: 4.0.13(@vitest/browser@4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13))(vitest@4.0.13)
+        version: 4.0.13(@vitest/browser@4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13))(vitest@4.0.13)
       '@vitest/ui':
         specifier: ^4.0.5
         version: 4.0.13(vitest@4.0.13)
@@ -335,8 +344,8 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       playwright:
-        specifier: ^1.49.1
-        version: 1.56.1
+        specifier: ^1.59.1
+        version: 1.59.1
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -348,10 +357,10 @@ importers:
         version: 8.47.0(eslint@9.39.1)(typescript@5.9.3)
       vite:
         specifier: ^6.0.7
-        version: 6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1)
+        version: 6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1)
       vitest:
         specifier: ^4.0.5
-        version: 4.0.13(@types/debug@4.1.12)(@types/node@20.19.25)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
+        version: 4.0.13(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
       webdriverio:
         specifier: ^9.4.2
         version: 9.20.1
@@ -369,6 +378,11 @@ packages:
 
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
+
+  '@axe-core/playwright@4.11.2':
+    resolution: {integrity: sha512-iP6hfNl9G0j/SEUSo8M7D80RbcDo9KRAAfDP4IT5OHB+Wm6zUHIrm8Y51BKI+Oyqduvipf9u1hcRy57zCBKzWQ==}
+    peerDependencies:
+      playwright-core: '>= 1.0.0'
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -567,6 +581,9 @@ packages:
 
   '@codemirror/lang-json@6.0.2':
     resolution: {integrity: sha512-x2OtO+AvwEHrEwR0FyyPtfDUiloG3rnVTSZV1W8UteaLL8/MajQd8DpvUb2YVzC+/T18aSDv0H9mu+xw0EStoQ==}
+
+  '@codemirror/language@6.0.0':
+    resolution: {integrity: sha512-rtjk5ifyMzOna1c7PBu7J1VCt0PvA5wy3o8eMVnxMKb7z8KA7JFecvD04dSn14vj/bBaAbqRsGed5OjtofEnLA==}
 
   '@codemirror/language@6.11.3':
     resolution: {integrity: sha512-9HBM2XnwDj7fnu0551HkGdrUrrqmYq/WC5iv6nbY2WdicXdGbhR/gfbZOH73Aqj4351alY1+aoG9rCNfiwS1RA==}
@@ -1432,6 +1449,11 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@playwright/test@1.59.1':
+    resolution: {integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@polar-sh/sdk@0.42.1':
     resolution: {integrity: sha512-4euyChnpZcjho2KhwnSXCBhJr5m8k+oaIicvwFHOZ/cXxKIKh7+EicJagSKg6jmuuq4YMOFhsxreHk3qqKXdWQ==}
@@ -2841,6 +2863,10 @@ packages:
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
+
+  axe-core@4.11.3:
+    resolution: {integrity: sha512-zBQouZixDTbo3jMGqHKyePxYxr1e5W8UdTmBQ7sNtaA9M2bE32daxxPLS/jojhKOHxQ7LWwPjfiwf/fhaJWzlg==}
+    engines: {node: '>=4'}
 
   b4a@1.7.3:
     resolution: {integrity: sha512-5Q2mfq2WfGuFp3uS//0s6baOJLMoVduPYVeNmDYxu5OUA1/cBfvr2RIS7vi62LdNj/urk1hfmj867I3qt6uZ7Q==}
@@ -4749,13 +4775,13 @@ packages:
   platform@1.3.6:
     resolution: {integrity: sha512-fnWVljUchTro6RiCFvCXBbNhJc2NijN7oIQxbwsyL0buWJPG85v81ehlHI9fXrJsMNgTofEoWIQeClKpgxFLrg==}
 
-  playwright-core@1.56.1:
-    resolution: {integrity: sha512-hutraynyn31F+Bifme+Ps9Vq59hKuUCz7H1kDOcBs+2oGguKkWTU50bBWrtz34OUWmIwpBTWDxaRPXrIXkgvmQ==}
+  playwright-core@1.59.1:
+    resolution: {integrity: sha512-HBV/RJg81z5BiiZ9yPzIiClYV/QMsDCKUyogwH9p3MCP6IYjUFu/MActgYAvK0oWyV9NlwM3GLBjADyWgydVyg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.56.1:
-    resolution: {integrity: sha512-aFi5B0WovBHTEvpM3DzXTUaeN6eN0qWnTkKx4NQaH4Wvcmc153PdaY2UBdSYKaGYw+UyWXSVyxDUg5DoPEttjw==}
+  playwright@1.59.1:
+    resolution: {integrity: sha512-C8oWjPR3F81yljW9o5OxcWzfh6avkVwDD2VYdwIGqTkl+OGFISgypqzfu7dOe4QNLL2aqcWBmI3PMtLIK233lw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -5666,6 +5692,9 @@ packages:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
 
+  web-vitals@5.2.0:
+    resolution: {integrity: sha512-i2z98bEmaCqSDiHEDu+gHl/dmR4Q+TxFmG3/13KkMO+o8UxQzCqWaDRCiLgEa41nlO4VpXSI0ASa1xWmO9sBlA==}
+
   webdriver@9.20.1:
     resolution: {integrity: sha512-QtvYqPai2NOnq7qePPH6kNSwk7+tnmSvnlOnY8dIT/Y24TPdQp44NjF/BUYAWIlqoBlZqHClQFTSVwT2qvO2Tw==}
     engines: {node: '>=18.20.0'}
@@ -5975,6 +6004,11 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
 
+  '@axe-core/playwright@4.11.2(playwright-core@1.59.1)':
+    dependencies:
+      axe-core: 4.11.3
+      playwright-core: 1.59.1
+
   '@babel/code-frame@7.27.1':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
@@ -6207,6 +6241,15 @@ snapshots:
     dependencies:
       '@codemirror/language': 6.11.3
       '@lezer/json': 1.0.3
+
+  '@codemirror/language@6.0.0':
+    dependencies:
+      '@codemirror/state': 6.5.2
+      '@codemirror/view': 6.38.8
+      '@lezer/common': 1.5.0
+      '@lezer/highlight': 1.2.3
+      '@lezer/lr': 1.4.3
+      style-mod: 4.1.3
 
   '@codemirror/language@6.11.3':
     dependencies:
@@ -6538,9 +6581,9 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@graphiql/plugin-doc-explorer@0.4.1(@graphiql/react@0.37.3(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
+  '@graphiql/plugin-doc-explorer@0.4.1(@graphiql/react@0.37.3(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
     dependencies:
-      '@graphiql/react': 0.37.3(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/react': 0.37.3(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
       '@headlessui/react': 2.2.9(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       graphql: 16.12.0
       react: 19.2.0
@@ -6552,10 +6595,10 @@ snapshots:
       - immer
       - use-sync-external-store
 
-  '@graphiql/plugin-history@0.4.1(@graphiql/react@0.37.3(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/node@20.19.25)(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
+  '@graphiql/plugin-history@0.4.1(@graphiql/react@0.37.3(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/node@24.10.1)(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
     dependencies:
-      '@graphiql/react': 0.37.3(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
-      '@graphiql/toolkit': 0.11.3(@types/node@20.19.25)(graphql@16.12.0)
+      '@graphiql/react': 0.37.3(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/toolkit': 0.11.3(@types/node@24.10.1)(graphql@16.12.0)
       react: 19.2.0
       react-compiler-runtime: 19.1.0-rc.1(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
@@ -6568,9 +6611,9 @@ snapshots:
       - immer
       - use-sync-external-store
 
-  '@graphiql/react@0.37.3(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
+  '@graphiql/react@0.37.3(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))':
     dependencies:
-      '@graphiql/toolkit': 0.11.3(@types/node@20.19.25)(graphql@16.12.0)
+      '@graphiql/toolkit': 0.11.3(@types/node@24.10.1)(graphql@16.12.0)
       '@radix-ui/react-dialog': 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@radix-ui/react-dropdown-menu': 2.1.16(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@radix-ui/react-tooltip': 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -6599,11 +6642,11 @@ snapshots:
       - immer
       - use-sync-external-store
 
-  '@graphiql/toolkit@0.11.3(@types/node@20.19.25)(graphql@16.12.0)':
+  '@graphiql/toolkit@0.11.3(@types/node@24.10.1)(graphql@16.12.0)':
     dependencies:
       '@n1ru4l/push-pull-async-iterable-iterator': 3.2.0
       graphql: 16.12.0
-      meros: 1.3.2(@types/node@20.19.25)
+      meros: 1.3.2(@types/node@24.10.1)
     transitivePeerDependencies:
       - '@types/node'
 
@@ -7138,6 +7181,10 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
+
+  '@playwright/test@1.59.1':
+    dependencies:
+      playwright: 1.59.1
 
   '@polar-sh/sdk@0.42.1':
     dependencies:
@@ -7955,7 +8002,7 @@ snapshots:
 
   '@types/pngjs@6.0.5':
     dependencies:
-      '@types/node': 20.19.25
+      '@types/node': 24.10.1
 
   '@types/qrcode.react@3.0.0(react@19.2.0)':
     dependencies:
@@ -7965,7 +8012,7 @@ snapshots:
 
   '@types/qrcode@1.5.6':
     dependencies:
-      '@types/node': 20.19.25
+      '@types/node': 24.10.1
 
   '@types/raf@3.4.3':
     optional: true
@@ -7993,11 +8040,11 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 20.19.25
+      '@types/node': 24.10.1
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.19.25
+      '@types/node': 24.10.1
     optional: true
 
   '@types/zxcvbn@4.4.5': {}
@@ -8095,24 +8142,24 @@ snapshots:
       '@typescript-eslint/types': 8.47.0
       eslint-visitor-keys: 4.2.1
 
-  '@uiw/codemirror-extensions-basic-setup@4.25.3(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.0)(@codemirror/language@6.11.3)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/view@6.38.8)':
+  '@uiw/codemirror-extensions-basic-setup@4.25.3(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.0)(@codemirror/language@6.0.0)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/view@6.38.8)':
     dependencies:
       '@codemirror/autocomplete': 6.20.0
       '@codemirror/commands': 6.10.0
-      '@codemirror/language': 6.11.3
+      '@codemirror/language': 6.0.0
       '@codemirror/lint': 6.9.2
       '@codemirror/search': 6.5.11
       '@codemirror/state': 6.5.2
       '@codemirror/view': 6.38.8
 
-  '@uiw/react-codemirror@4.25.3(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.11.3)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.38.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@uiw/react-codemirror@4.25.3(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.0.0)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.38.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@babel/runtime': 7.28.4
       '@codemirror/commands': 6.10.0
       '@codemirror/state': 6.5.2
       '@codemirror/theme-one-dark': 6.1.3
       '@codemirror/view': 6.38.8
-      '@uiw/codemirror-extensions-basic-setup': 4.25.3(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.0)(@codemirror/language@6.11.3)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/view@6.38.8)
+      '@uiw/codemirror-extensions-basic-setup': 4.25.3(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.0)(@codemirror/language@6.0.0)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/view@6.38.8)
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
     transitivePeerDependencies:
@@ -8121,17 +8168,17 @@ snapshots:
       - '@codemirror/lint'
       - '@codemirror/search'
 
-  '@vercel/analytics@1.5.0(next@16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
+  '@vercel/analytics@1.5.0(next@16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
     optionalDependencies:
-      next: 16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      next: 16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react: 19.2.0
 
-  '@vercel/speed-insights@1.2.0(next@16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
+  '@vercel/speed-insights@1.2.0(next@16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
     optionalDependencies:
-      next: 16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      next: 16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react: 19.2.0
 
-  '@vitejs/plugin-react@4.7.0(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))':
+  '@vitejs/plugin-react@4.7.0(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -8139,33 +8186,33 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/browser-playwright@4.0.13(playwright@1.56.1)(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)':
+  '@vitest/browser-playwright@4.0.13(playwright@1.59.1)(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)':
     dependencies:
-      '@vitest/browser': 4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
-      '@vitest/mocker': 4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))
-      playwright: 1.56.1
+      '@vitest/browser': 4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
+      '@vitest/mocker': 4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))
+      playwright: 1.59.1
       tinyrainbow: 3.0.3
-      vitest: 4.0.13(@types/debug@4.1.12)(@types/node@20.19.25)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
+      vitest: 4.0.13(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
     transitivePeerDependencies:
       - bufferutil
       - msw
       - utf-8-validate
       - vite
 
-  '@vitest/browser@4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)':
+  '@vitest/browser@4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)':
     dependencies:
-      '@vitest/mocker': 4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))
+      '@vitest/mocker': 4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))
       '@vitest/utils': 4.0.13
       magic-string: 0.30.21
       pixelmatch: 7.1.0
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.0.3
-      vitest: 4.0.13(@types/debug@4.1.12)(@types/node@20.19.25)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
+      vitest: 4.0.13(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
       ws: 8.18.3
     transitivePeerDependencies:
       - bufferutil
@@ -8173,7 +8220,7 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@vitest/coverage-v8@4.0.13(@vitest/browser@4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13))(vitest@4.0.13)':
+  '@vitest/coverage-v8@4.0.13(@vitest/browser@4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13))(vitest@4.0.13)':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.0.13
@@ -8186,9 +8233,9 @@ snapshots:
       magicast: 0.5.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.13(@types/debug@4.1.12)(@types/node@20.19.25)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
+      vitest: 4.0.13(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
     optionalDependencies:
-      '@vitest/browser': 4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
+      '@vitest/browser': 4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
     transitivePeerDependencies:
       - supports-color
 
@@ -8201,13 +8248,13 @@ snapshots:
       chai: 6.2.1
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))':
+  '@vitest/mocker@4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))':
     dependencies:
       '@vitest/spy': 4.0.13
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1)
 
   '@vitest/pretty-format@4.0.13':
     dependencies:
@@ -8235,7 +8282,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.13(@types/debug@4.1.12)(@types/node@20.19.25)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
+      vitest: 4.0.13(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1)
 
   '@vitest/utils@4.0.13':
     dependencies:
@@ -8972,6 +9019,8 @@ snapshots:
 
   asynckit@0.4.0: {}
 
+  axe-core@4.11.3: {}
+
   b4a@1.7.3: {}
 
   babel-plugin-macros@3.1.0:
@@ -9205,9 +9254,9 @@ snapshots:
 
   code-block-writer@13.0.3: {}
 
-  codemirror-graphql@2.2.4(@codemirror/language@6.11.3)(graphql@16.12.0):
+  codemirror-graphql@2.2.4(@codemirror/language@6.0.0)(graphql@16.12.0):
     dependencies:
-      '@codemirror/language': 6.11.3
+      '@codemirror/language': 6.0.0
       '@types/codemirror': 0.0.90
       graphql: 16.12.0
       graphql-language-service: 5.5.0(graphql@16.12.0)
@@ -9953,11 +10002,11 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  graphiql@5.2.2(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)):
+  graphiql@5.2.2(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)):
     dependencies:
-      '@graphiql/plugin-doc-explorer': 0.4.1(@graphiql/react@0.37.3(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
-      '@graphiql/plugin-history': 0.4.1(@graphiql/react@0.37.3(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/node@20.19.25)(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
-      '@graphiql/react': 0.37.3(@types/node@20.19.25)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/plugin-doc-explorer': 0.4.1(@graphiql/react@0.37.3(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/plugin-history': 0.4.1(@graphiql/react@0.37.3(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0)))(@types/node@24.10.1)(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
+      '@graphiql/react': 0.37.3(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(graphql@16.12.0)(immer@11.1.3)(react-compiler-runtime@19.1.0-rc.1(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
       graphql: 16.12.0
       react: 19.2.0
       react-compiler-runtime: 19.1.0-rc.1(react@19.2.0)
@@ -10495,9 +10544,9 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  meros@1.3.2(@types/node@20.19.25):
+  meros@1.3.2(@types/node@24.10.1):
     optionalDependencies:
-      '@types/node': 20.19.25
+      '@types/node': 24.10.1
 
   microdiff@1.5.0: {}
 
@@ -10575,7 +10624,7 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  next@16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  next@16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@next/env': 16.1.6
       '@swc/helpers': 0.5.15
@@ -10594,6 +10643,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.1.6
       '@next/swc-win32-arm64-msvc': 16.1.6
       '@next/swc-win32-x64-msvc': 16.1.6
+      '@playwright/test': 1.59.1
       babel-plugin-react-compiler: 1.0.0
       sharp: 0.34.5
     transitivePeerDependencies:
@@ -10630,12 +10680,12 @@ snapshots:
 
   nullthrows@1.1.1: {}
 
-  nuqs@2.8.1(next@16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0):
+  nuqs@2.8.1(next@16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0):
     dependencies:
       '@standard-schema/spec': 1.0.0
       react: 19.2.0
     optionalDependencies:
-      next: 16.1.6(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      next: 16.1.6(@babel/core@7.28.5)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   nwsapi@2.2.22: {}
 
@@ -10817,11 +10867,11 @@ snapshots:
 
   platform@1.3.6: {}
 
-  playwright-core@1.56.1: {}
+  playwright-core@1.59.1: {}
 
-  playwright@1.56.1:
+  playwright@1.59.1:
     dependencies:
-      playwright-core: 1.56.1
+      playwright-core: 1.59.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -10918,7 +10968,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.19.25
+      '@types/node': 24.10.1
       long: 5.3.2
 
   proxy-agent@6.5.0:
@@ -11680,7 +11730,7 @@ snapshots:
       string_decoder: 1.3.0
       util-deprecate: 1.0.2
 
-  vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1):
+  vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
@@ -11689,15 +11739,15 @@ snapshots:
       rollup: 4.53.3
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 20.19.25
+      '@types/node': 24.10.1
       fsevents: 2.3.3
       lightningcss: 1.25.1
       yaml: 2.8.1
 
-  vitest@4.0.13(@types/debug@4.1.12)(@types/node@20.19.25)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1):
+  vitest@4.0.13(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/browser-playwright@4.0.13)(@vitest/ui@4.0.13)(jsdom@25.0.1)(lightningcss@1.25.1)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.13
-      '@vitest/mocker': 4.0.13(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))
+      '@vitest/mocker': 4.0.13(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))
       '@vitest/pretty-format': 4.0.13
       '@vitest/runner': 4.0.13
       '@vitest/snapshot': 4.0.13
@@ -11714,12 +11764,12 @@ snapshots:
       tinyexec: 0.3.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/debug': 4.1.12
-      '@types/node': 20.19.25
-      '@vitest/browser-playwright': 4.0.13(playwright@1.56.1)(vite@6.4.1(@types/node@20.19.25)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
+      '@types/node': 24.10.1
+      '@vitest/browser-playwright': 4.0.13(playwright@1.59.1)(vite@6.4.1(@types/node@24.10.1)(lightningcss@1.25.1)(yaml@2.8.1))(vitest@4.0.13)
       '@vitest/ui': 4.0.13(vitest@4.0.13)
       jsdom: 25.0.1
     transitivePeerDependencies:
@@ -11755,6 +11805,8 @@ snapshots:
   wasm-feature-detect@1.8.0: {}
 
   web-streams-polyfill@3.3.3: {}
+
+  web-vitals@5.2.0: {}
 
   webdriver@9.20.1:
     dependencies:

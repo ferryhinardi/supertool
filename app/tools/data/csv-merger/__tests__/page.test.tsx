@@ -527,8 +527,7 @@ describe('CSV Merger - Integration Tests', () => {
     const file2 = createMockCSVFile('test2.csv', 'Name,Age\nJane,25\n')
 
     // Delete the old property and define a new one
-    // biome-ignore lint/suspicious/noExplicitAny: Testing file input manipulation requires any type
-    delete (input as any).files
+    Reflect.deleteProperty(input, 'files')
     Object.defineProperty(input, 'files', {
       value: [file1, file2],
       writable: false,

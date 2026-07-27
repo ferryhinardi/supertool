@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import CharacterMapPage from '../page'
@@ -11,6 +11,17 @@ vi.mock('@/lib/services/analytics', () => ({
 }))
 
 describe('CharacterMapPage', () => {
+  const getRequiredButton = (
+    button: HTMLButtonElement | null,
+    label: string
+  ): HTMLButtonElement => {
+    if (!button) {
+      throw new Error(`${label} button not found`)
+    }
+
+    return button
+  }
+
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     mockTrackToolEvent.mockClear()
@@ -67,7 +78,6 @@ describe('CharacterMapPage', () => {
       render(<CharacterMapPage />)
 
       // Should show all characters initially
-      const allCharacters = getAllCharacters()
       // Check that some characters are rendered (buttons for each character)
       const charButtons = screen.getAllByRole('button').filter((button) => {
         // Character buttons have the character as text content
@@ -99,8 +109,9 @@ describe('CharacterMapPage', () => {
     it('shows initial character count for all characters', () => {
       render(<CharacterMapPage />)
 
-      const allCharacters = getAllCharacters()
-      expect(screen.getByText(`Showing all ${allCharacters.length} characters`)).toBeInTheDocument()
+      expect(
+        screen.getByText(`Showing all ${getAllCharacters().length} characters`)
+      ).toBeInTheDocument()
     })
   })
 
@@ -370,9 +381,11 @@ describe('CharacterMapPage', () => {
       render(<CharacterMapPage />)
 
       // Find and click the right arrow character
-      const arrowButton = screen.getByText('→').closest('button')
-      expect(arrowButton).not.toBeNull()
-      await user.click(arrowButton!)
+      const arrowButton = getRequiredButton(
+        screen.getByText('→').closest('button'),
+        'Right arrow character'
+      )
+      await user.click(arrowButton)
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('→')
     })
@@ -383,8 +396,11 @@ describe('CharacterMapPage', () => {
       render(<CharacterMapPage />)
 
       // Find and click the right arrow character
-      const arrowButton = screen.getByText('→').closest('button')
-      await user.click(arrowButton!)
+      const arrowButton = getRequiredButton(
+        screen.getByText('→').closest('button'),
+        'Right arrow character'
+      )
+      await user.click(arrowButton)
 
       expect(mockTrackToolEvent).toHaveBeenCalledWith('character_map_character_copied', {
         character_name: 'Rightwards Arrow',
@@ -397,12 +413,15 @@ describe('CharacterMapPage', () => {
       render(<CharacterMapPage />)
 
       // Find and click the euro character
-      const euroButton = screen.getByText('€').closest('button')
-      await user.click(euroButton!)
+      const euroButton = getRequiredButton(
+        screen.getByText('€').closest('button'),
+        'Euro character'
+      )
+      await user.click(euroButton)
 
       // Wait for the checkmark to appear (lucide-react Check icon has class 'lucide-check')
       await waitFor(() => {
-        const checkIcon = euroButton?.querySelector('.lucide-check')
+        const checkIcon = euroButton.querySelector('.lucide-check')
         expect(checkIcon).toBeInTheDocument()
       })
     })
@@ -413,12 +432,15 @@ describe('CharacterMapPage', () => {
       render(<CharacterMapPage />)
 
       // Find and click the euro character
-      const euroButton = screen.getByText('€').closest('button')
-      await user.click(euroButton!)
+      const euroButton = getRequiredButton(
+        screen.getByText('€').closest('button'),
+        'Euro character'
+      )
+      await user.click(euroButton)
 
       // Verify checkmark appears
       await waitFor(() => {
-        const checkIcon = euroButton?.querySelector('.lucide-check')
+        const checkIcon = euroButton.querySelector('.lucide-check')
         expect(checkIcon).toBeInTheDocument()
       })
 
@@ -427,7 +449,7 @@ describe('CharacterMapPage', () => {
 
       // Checkmark should be gone
       await waitFor(() => {
-        const checkIcon = euroButton?.querySelector('.lucide-check')
+        const checkIcon = euroButton.querySelector('.lucide-check')
         expect(checkIcon).not.toBeInTheDocument()
       })
     })
@@ -439,8 +461,11 @@ describe('CharacterMapPage', () => {
 
       render(<CharacterMapPage />)
 
-      const arrowButton = screen.getByText('→').closest('button')
-      await user.click(arrowButton!)
+      const arrowButton = getRequiredButton(
+        screen.getByText('→').closest('button'),
+        'Right arrow character'
+      )
+      await user.click(arrowButton)
 
       expect(consoleError).toHaveBeenCalledWith('Failed to copy:', expect.any(Error))
 
@@ -455,8 +480,11 @@ describe('CharacterMapPage', () => {
       render(<CharacterMapPage />)
       mockTrackToolEvent.mockClear()
 
-      const arrowButton = screen.getByText('→').closest('button')
-      await user.click(arrowButton!)
+      const arrowButton = getRequiredButton(
+        screen.getByText('→').closest('button'),
+        'Right arrow character'
+      )
+      await user.click(arrowButton)
 
       // Copy event should still be tracked because it's called before the try/catch
       // Actually looking at the code, trackToolEvent is called after successful writeText
@@ -475,18 +503,24 @@ describe('CharacterMapPage', () => {
       render(<CharacterMapPage />)
 
       // Click euro
-      const euroButton = screen.getByText('€').closest('button')
-      await user.click(euroButton!)
+      const euroButton = getRequiredButton(
+        screen.getByText('€').closest('button'),
+        'Euro character'
+      )
+      await user.click(euroButton)
 
       // Euro should have checkmark
       await waitFor(() => {
-        const checkIcon = euroButton?.querySelector('.lucide-check')
+        const checkIcon = euroButton.querySelector('.lucide-check')
         expect(checkIcon).toBeInTheDocument()
       })
 
       // Right arrow should NOT have checkmark
-      const arrowButton = screen.getByText('→').closest('button')
-      const arrowCheckIcon = arrowButton?.querySelector('.lucide-check')
+      const arrowButton = getRequiredButton(
+        screen.getByText('→').closest('button'),
+        'Right arrow character'
+      )
+      const arrowCheckIcon = arrowButton.querySelector('.lucide-check')
       expect(arrowCheckIcon).not.toBeInTheDocument()
     })
 
@@ -496,24 +530,30 @@ describe('CharacterMapPage', () => {
       render(<CharacterMapPage />)
 
       // Click euro
-      const euroButton = screen.getByText('€').closest('button')
-      await user.click(euroButton!)
+      const euroButton = getRequiredButton(
+        screen.getByText('€').closest('button'),
+        'Euro character'
+      )
+      await user.click(euroButton)
 
       await waitFor(() => {
-        const checkIcon = euroButton?.querySelector('.lucide-check')
+        const checkIcon = euroButton.querySelector('.lucide-check')
         expect(checkIcon).toBeInTheDocument()
       })
 
       // Click arrow
-      const arrowButton = screen.getByText('→').closest('button')
-      await user.click(arrowButton!)
+      const arrowButton = getRequiredButton(
+        screen.getByText('→').closest('button'),
+        'Right arrow character'
+      )
+      await user.click(arrowButton)
 
       await waitFor(() => {
         // Arrow should have checkmark now
-        const arrowCheckIcon = arrowButton?.querySelector('.lucide-check')
+        const arrowCheckIcon = arrowButton.querySelector('.lucide-check')
         expect(arrowCheckIcon).toBeInTheDocument()
         // Euro should NOT have checkmark anymore
-        const euroCheckIcon = euroButton?.querySelector('.lucide-check')
+        const euroCheckIcon = euroButton.querySelector('.lucide-check')
         expect(euroCheckIcon).not.toBeInTheDocument()
       })
     })
@@ -739,8 +779,11 @@ describe('CharacterMapPage', () => {
       expect(screen.queryByRole('button', { name: /math symbols/i })).not.toBeInTheDocument()
 
       // 3. Copy the infinity character
-      const infinityButton = screen.getByText('∞').closest('button')
-      await user.click(infinityButton!)
+      const infinityButton = getRequiredButton(
+        screen.getByText('∞').closest('button'),
+        'Infinity character'
+      )
+      await user.click(infinityButton)
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('∞')
       expect(mockTrackToolEvent).toHaveBeenCalledWith('character_map_character_copied', {
@@ -749,14 +792,14 @@ describe('CharacterMapPage', () => {
 
       // 4. Verify checkmark appears and disappears
       await waitFor(() => {
-        const checkIcon = infinityButton?.querySelector('.lucide-check')
+        const checkIcon = infinityButton.querySelector('.lucide-check')
         expect(checkIcon).toBeInTheDocument()
       })
 
       await vi.advanceTimersByTimeAsync(2000)
 
       await waitFor(() => {
-        const checkIcon = infinityButton?.querySelector('.lucide-check')
+        const checkIcon = infinityButton.querySelector('.lucide-check')
         expect(checkIcon).not.toBeInTheDocument()
       })
     })
