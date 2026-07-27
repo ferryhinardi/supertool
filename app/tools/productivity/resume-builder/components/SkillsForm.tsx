@@ -160,7 +160,7 @@ export function SkillsForm({ data, onChange }: SkillsFormProps) {
           <p
             className={css({
               fontSize: 'xs',
-              color: 'gray.500',
+              color: 'gray.400',
               mt: '3',
             })}
           >
@@ -202,7 +202,7 @@ export function SkillsForm({ data, onChange }: SkillsFormProps) {
           <p
             className={css({
               fontSize: 'sm',
-              color: 'gray.500',
+              color: 'gray.400',
               mb: '4',
             })}
           >

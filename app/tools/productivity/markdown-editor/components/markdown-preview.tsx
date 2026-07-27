@@ -58,10 +58,17 @@ export function MarkdownPreview({ content, className }: MarkdownPreviewProps) {
 
       // Sanitize HTML to prevent XSS (only if DOMPurify is loaded)
       if (DOMPurify) {
-        return DOMPurify.sanitize(rawHtml, {
-          ADD_ATTR: ['target', 'rel', 'class', 'checked', 'disabled', 'type'],
+        const sanitized = DOMPurify.sanitize(rawHtml, {
+          ADD_ATTR: ['target', 'rel', 'class', 'checked', 'disabled', 'type', 'aria-label'],
           ADD_TAGS: ['input'],
           FORBID_TAGS: ['style', 'script'],
+        })
+        // Add aria-labels to task list checkboxes (decorative, read-only in preview)
+        return sanitized.replace(/<input\b([^>]*?)type="checkbox"([^>]*)>/gi, (match) => {
+          if (match.includes('aria-label')) return match
+          const isChecked = /checked/.test(match)
+          const label = isChecked ? 'Completed task' : 'Incomplete task'
+          return match.replace('>', ` aria-label="${label}">`)
         })
       }
 

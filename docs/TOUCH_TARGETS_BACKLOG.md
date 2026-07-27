@@ -8,7 +8,7 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 
 - Route: `/tools/productivity/unit-converter`
 - Source: `app/tools/productivity/unit-converter/page.tsx`
-- Violations: 131
+- Violations: 132
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -143,12 +143,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## JSON Beautifier & Formatter
 
 - Route: `/tools/data/json-beautify`
 - Source: `app/tools/data/json-beautify/page.tsx`
-- Violations: 127
+- Violations: 128
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -279,12 +280,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Base64 Encoder & Decoder
 
 - Route: `/tools/security/base64`
 - Source: `app/tools/security/base64/page.tsx`
-- Violations: 125
+- Violations: 126
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -407,18 +409,19 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `a[href="/tools/development/website-screenshot"]{text="Website Screenshot Tool"}` | 267x41px | 44x44px |
 | `a[href="/tools/development/yaml-json"]{text="YAML ↔ JSON Converter"}` | 267x41px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `input` | 235.58x36px | 44x44px |
+| `input[aria-label="Upload file to encode as Base64"]` | 235.58x36px | 44x44px |
 | `button[aria-label="Rate 1 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 2 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## URL Encoder/Decoder
 
 - Route: `/tools/development/url-encoder`
 - Source: `app/tools/development/url-encoder/page.tsx`
-- Violations: 127
+- Violations: 128
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -549,12 +552,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## QR Code Generator
 
 - Route: `/tools/productivity/qr-code`
 - Source: `app/tools/productivity/qr-code/page.tsx`
-- Violations: 154
+- Violations: 155
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -677,12 +681,12 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `a[href="/tools/development/website-screenshot"]{text="Website Screenshot Tool"}` | 267x41px | 44x44px |
 | `a[href="/tools/development/yaml-json"]{text="YAML ↔ JSON Converter"}` | 267x41px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `input` | 275x36px | 44x44px |
-| `input` | 133.5x36px | 44x44px |
-| `input` | 133.5x36px | 44x44px |
-| `input` | 133.5x36px | 44x44px |
-| `input` | 133.5x36px | 44x44px |
-| `input` | 129x16px | 44x44px |
+| `input[aria-label="URL to generate QR code"]` | 275x36px | 44x44px |
+| `input[aria-label="Foreground color picker"]` | 133.5x36px | 44x44px |
+| `input[aria-label="Foreground color hex value"]` | 133.5x36px | 44x44px |
+| `input[aria-label="Background color picker"]` | 133.5x36px | 44x44px |
+| `input[aria-label="Background color hex value"]` | 133.5x36px | 44x44px |
+| `input[aria-label="QR code size, currently 256px"]` | 129x16px | 44x44px |
 | `input` | 13x13px | 44x44px |
 | `input` | 13x13px | 44x44px |
 | `button{text="classic"}` | 131.5x24px | 44x44px |
@@ -695,9 +699,9 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button{text="sunset"}` | 131.5x24px | 44x44px |
 | `button{text="forest"}` | 131.5x24px | 44x44px |
 | `button{text="neon"}` | 131.5x24px | 44x44px |
-| `input` | 344x24px | 44x44px |
+| `input[aria-label="Upload logo image for QR code"]` | 344x24px | 44x44px |
 | `button{text="Upload Logo"}` | 152.66x36px | 44x44px |
-| `input` | 275x24px | 44x44px |
+| `input[aria-label="Upload CSV file for bulk QR code generation"]` | 275x24px | 44x44px |
 | `button{text="Upload CSV"}` | 275x36px | 44x44px |
 | `button{text="Download Sample"}` | 275x36px | 44x44px |
 | `button{text="Download PNG"}` | 59.75x36px | 44x44px |
@@ -712,12 +716,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Password Strength Analyzer
 
 - Route: `/tools/security/password-strength`
 - Source: `app/tools/security/password-strength/page.tsx`
-- Violations: 120
+- Violations: 121
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -840,13 +845,14 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `a[href="/tools/development/website-screenshot"]{text="Website Screenshot Tool"}` | 267x41px | 44x44px |
 | `a[href="/tools/development/yaml-json"]{text="YAML ↔ JSON Converter"}` | 267x41px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `button` | 36x36px | 44x44px |
+| `button[aria-label="Show password"]` | 36x36px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Color Picker & Palette Generator
 
 - Route: `/tools/design/color-picker`
 - Source: `app/tools/design/color-picker/page.tsx`
-- Violations: 134
+- Violations: 135
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -969,27 +975,28 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `a[href="/tools/development/website-screenshot"]{text="Website Screenshot Tool"}` | 267x41px | 44x44px |
 | `a[href="/tools/development/yaml-json"]{text="YAML ↔ JSON Converter"}` | 267x41px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `button` | 16x16px | 44x44px |
+| `button[aria-label="Randomize color"]` | 16x16px | 44x44px |
 | `button{text="Random Color"}` | 163.34x36px | 44x44px |
-| `button` | 16x16px | 44x44px |
-| `button` | 16x16px | 44x44px |
-| `button` | 16x16px | 44x44px |
-| `button` | 16x16px | 44x44px |
-| `button` | 16x16px | 44x44px |
+| `button[aria-label="Copy HEX color"]` | 16x16px | 44x44px |
+| `button[aria-label="Copy RGB color"]` | 16x16px | 44x44px |
+| `button[aria-label="Copy HSL color"]` | 16x16px | 44x44px |
+| `button[aria-label="Copy HSV color"]` | 16x16px | 44x44px |
+| `button[aria-label="Copy color palette"]` | 16x16px | 44x44px |
 | `button{text="complementary"}` | 352x24px | 44x44px |
 | `button{text="analogous"}` | 352x24px | 44x44px |
 | `button{text="triadic"}` | 352x24px | 44x44px |
 | `button{text="tetradic"}` | 352x24px | 44x44px |
 | `button{text="monochromatic"}` | 352x24px | 44x44px |
 | `button{text="shades"}` | 352x24px | 44x44px |
-| `button` | 14x14px | 44x44px |
-| `button` | 14x14px | 44x44px |
+| `button[aria-label="Copy color #667EEA"]` | 14x14px | 44x44px |
+| `button[aria-label="Copy color #EAD266"]` | 14x14px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Regex Tester
 
 - Route: `/tools/development/regex-tester`
 - Source: `app/tools/development/regex-tester/page.tsx`
-- Violations: 134
+- Violations: 135
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -1127,12 +1134,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button{text="Copy Pattern"}` | 154.83x40px | 44x44px |
 | `button{text="Clear All"}` | 119.34x40px | 44x44px |
 | `button{text="Code Generation"}` | 277x27px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Markdown Editor & Preview
 
 - Route: `/tools/productivity/markdown-editor`
 - Source: `app/tools/productivity/markdown-editor/page.tsx`
-- Violations: 130
+- Violations: 131
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -1255,23 +1263,24 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `a[href="/tools/development/website-screenshot"]{text="Website Screenshot Tool"}` | 267x41px | 44x44px |
 | `a[href="/tools/development/yaml-json"]{text="YAML ↔ JSON Converter"}` | 267x41px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `input` | 16x16px | 44x44px |
-| `input` | 16x16px | 44x44px |
-| `input` | 16x16px | 44x44px |
-| `input` | 16x16px | 44x44px |
-| `input` | 16x16px | 44x44px |
+| `input[aria-label="Completed task"]` | 16x16px | 44x44px |
+| `input[aria-label="Completed task"]` | 16x16px | 44x44px |
+| `input[aria-label="Completed task"]` | 16x16px | 44x44px |
+| `input[aria-label="Incomplete task"]` | 16x16px | 44x44px |
+| `input[aria-label="Incomplete task"]` | 16x16px | 44x44px |
 | `a[href="https://github.com"]{text="GitHub"}` | 52.2x20px | 44x44px |
 | `button[aria-label="Rate 1 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 2 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## JWT Decoder & Inspector
 
 - Route: `/tools/development/jwt-decoder`
 - Source: `app/tools/development/jwt-decoder/page.tsx`
-- Violations: 120
+- Violations: 121
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -1395,12 +1404,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `a[href="/tools/development/yaml-json"]{text="YAML ↔ JSON Converter"}` | 267x41px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
 | `button{text="Clear"}` | 96.06x36px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Case Converter
 
 - Route: `/tools/productivity/case-converter`
 - Source: `app/tools/productivity/case-converter/page.tsx`
-- Violations: 125
+- Violations: 126
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -1529,12 +1539,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Random Generator
 
 - Route: `/tools/data/random-generator`
 - Source: `app/tools/data/random-generator/page.tsx`
-- Violations: 129
+- Violations: 130
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -1667,12 +1678,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Countdown Timer
 
 - Route: `/tools/productivity/countdown-timer`
 - Source: `app/tools/productivity/countdown-timer/page.tsx`
-- Violations: 128
+- Violations: 129
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -1804,12 +1816,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Resume Builder Pro
 
 - Route: `/tools/productivity/resume-builder`
 - Source: `app/tools/productivity/resume-builder/page.tsx`
-- Violations: 140
+- Violations: 142
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -1953,12 +1966,14 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `input#linkedin` | 621.8x36px | 44x44px |
 | `input#github` | 621.8x36px | 44x44px |
 | `input#portfolio` | 621.8x36px | 44x44px |
+| `button{text="Generate AI Summary"}` | 571.8x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Cover Letter Builder
 
 - Route: `/tools/productivity/cover-letter-builder`
 - Source: `app/tools/productivity/cover-letter-builder/page.tsx`
-- Violations: 146
+- Violations: 147
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -2108,12 +2123,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button{text="Generate Closing"}` | 795.69x24px | 44x44px |
 | `button{text="Improve Content"}` | 795.69x24px | 44x44px |
 | `button{text="Check Tone"}` | 795.69x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Privacy Policy Generator
 
 - Route: `/tools/productivity/privacy-policy-generator`
 - Source: `app/tools/productivity/privacy-policy-generator/page.tsx`
-- Violations: 130
+- Violations: 131
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -2247,12 +2263,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `input` | 16x16px | 44x44px |
 | `input` | 16x16px | 44x44px |
 | `input` | 16x16px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Code Diff Viewer
 
 - Route: `/tools/development/diff`
 - Source: `app/tools/development/diff/page.tsx`
-- Violations: 124
+- Violations: 125
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -2380,12 +2397,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 4 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 5 stars"]` | 24x24px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## AI Code Converter
 
 - Route: `/tools/development/ai-code-converter`
 - Source: `app/tools/development/ai-code-converter/page.tsx`
-- Violations: 122
+- Violations: 123
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -2511,12 +2529,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `input` | 16x16px | 44x44px |
 | `input` | 16x16px | 44x44px |
 | `input` | 16x16px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Webhook Tester
 
 - Route: `/tools/development/webhook-tester`
 - Source: `app/tools/development/webhook-tester/page.tsx`
-- Violations: 119
+- Violations: 120
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -2639,12 +2658,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `a[href="/tools/development/website-screenshot"]{text="Website Screenshot Tool"}` | 267x41px | 44x44px |
 | `a[href="/tools/development/yaml-json"]{text="YAML ↔ JSON Converter"}` | 267x41px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## SQL Formatter
 
 - Route: `/tools/development/sql-formatter`
 - Source: `app/tools/development/sql-formatter/page.tsx`
-- Violations: 129
+- Violations: 130
 
 | Selector | Actual Size | Required |
 | --- | --- | --- |
@@ -2777,4 +2797,5 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button{text="INSERT"}` | 80.86x36px | 44x44px |
 | `button{text="UPDATE"}` | 86.75x36px | 44x44px |
 | `button{text="Clear"}` | 84.06x36px | 44x44px |
+| `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 

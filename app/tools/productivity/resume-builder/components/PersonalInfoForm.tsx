@@ -71,7 +71,7 @@ export function PersonalInfoForm({ data, onChange }: PersonalInfoFormProps) {
           required
           className={css({ w: 'full' })}
         />
-        <p className={css({ mt: '1', fontSize: 'xs', color: 'gray.500' })}>
+        <p className={css({ mt: '1', fontSize: 'xs', color: 'gray.400' })}>
           Your current or target job title
         </p>
       </div>
@@ -177,7 +177,7 @@ export function PersonalInfoForm({ data, onChange }: PersonalInfoFormProps) {
           required
           className={css({ w: 'full' })}
         />
-        <p className={css({ mt: '1', fontSize: 'xs', color: 'gray.500' })}>
+        <p className={css({ mt: '1', fontSize: 'xs', color: 'gray.400' })}>
           City, State or City, Country
         </p>
       </div>
@@ -367,7 +367,7 @@ export function PersonalInfoForm({ data, onChange }: PersonalInfoFormProps) {
               ringColor: 'blue.500/20',
             },
             _placeholder: {
-              color: 'gray.500',
+              color: 'gray.400',
             },
           })}
         />
@@ -395,7 +395,7 @@ export function PersonalInfoForm({ data, onChange }: PersonalInfoFormProps) {
                 ? 'Too long - keep it under 500 characters'
                 : 'Good length'}
           </p>
-          <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+          <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
             {data.summary.length} characters
           </p>
         </div>

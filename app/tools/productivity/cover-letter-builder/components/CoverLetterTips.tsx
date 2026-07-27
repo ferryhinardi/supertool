@@ -60,7 +60,7 @@ export function CoverLetterTips() {
       <CardContent className={css({ spaceY: '4' })}>
         {/* Best Practices */}
         <div className={css({ spaceY: '3' })}>
-          <div className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'gray.700' })}>
+          <div className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'gray.300' })}>
             Best Practices
           </div>
           <div className={css({ spaceY: '3' })}>
@@ -93,7 +93,7 @@ export function CoverLetterTips() {
                     {tip.title}
                   </div>
                   <div
-                    className={css({ fontSize: 'xs', color: 'gray.600', lineHeight: 'relaxed' })}
+                    className={css({ fontSize: 'xs', color: 'gray.700', lineHeight: 'relaxed' })}
                   >
                     {tip.description}
                   </div>
@@ -107,12 +107,12 @@ export function CoverLetterTips() {
         <div
           className={css({ spaceY: '2', pt: '3', borderTop: '1px solid', borderColor: 'gray.200' })}
         >
-          <div className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'gray.700' })}>
+          <div className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'gray.300' })}>
             Common Mistakes to Avoid
           </div>
           <ul className={css({ pl: '4', spaceY: '1', listStyle: 'disc' })}>
             {commonMistakes.map((mistake) => (
-              <li key={mistake} className={css({ fontSize: 'xs', color: 'gray.600' })}>
+              <li key={mistake} className={css({ fontSize: 'xs', color: 'gray.300' })}>
                 {mistake}
               </li>
             ))}

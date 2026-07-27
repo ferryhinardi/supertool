@@ -981,6 +981,7 @@ export default function ResumeBuilderPage() {
                           border: '1px solid',
                           borderColor: 'gray.300',
                           bg: 'white',
+                          color: 'gray.800',
                           cursor: 'pointer',
                           _hover: {
                             borderColor: 'gray.400',
@@ -992,6 +993,7 @@ export default function ResumeBuilderPage() {
                             ringColor: 'blue.200',
                           },
                         })}
+                        aria-label="Choose a sample persona to preview"
                         title="Choose a sample persona to preview"
                       >
                         {Object.values(SAMPLE_PERSONAS).map((persona) => (
@@ -1033,7 +1035,7 @@ export default function ResumeBuilderPage() {
                     position: 'absolute',
                     top: '2',
                     right: '2',
-                    bg: 'blue.500',
+                    bg: 'blue.700',
                     color: 'white',
                     px: '2',
                     py: '1',
@@ -1047,6 +1049,10 @@ export default function ResumeBuilderPage() {
                   {TEMPLATES.find((t) => t.id === selectedTemplate)?.name}
                 </div>
                 <div
+                  role="region"
+                  // biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable region must be keyboard-accessible (WCAG 2.1 SC 2.1.1)
+                  tabIndex={0}
+                  aria-label="Resume preview, scrollable"
                   className={css({
                     w: 'full',
                     h: 'full',

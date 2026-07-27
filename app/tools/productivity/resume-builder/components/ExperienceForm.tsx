@@ -91,7 +91,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
           <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', mb: '1' })}>
             Work Experience
           </h3>
-          <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+          <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
             Add your work history, starting with most recent
           </p>
         </div>
@@ -115,7 +115,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
           <Briefcase
             className={css({ w: '12', h: '12', mx: 'auto', mb: '3', color: 'gray.700' })}
           />
-          <p className={css({ color: 'gray.500', mb: '4' })}>No work experience added yet</p>
+          <p className={css({ color: 'gray.400', mb: '4' })}>No work experience added yet</p>
           <Button onClick={handleAdd} size="sm">
             <Plus className={css({ w: '4', h: '4', mr: '2' })} />
             Add Your First Job
@@ -303,7 +303,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
                     </div>
                   </div>
                   {experience.startDate && (
-                    <p className={css({ mt: '1', fontSize: 'xs', color: 'gray.500' })}>
+                    <p className={css({ mt: '1', fontSize: 'xs', color: 'gray.400' })}>
                       {experience.endDate === 'Present'
                         ? formatDateRange(experience.startDate, 'Present')
                         : experience.endDate
@@ -389,7 +389,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
                               onClick={() => handleRemoveAchievement(experience.id, achIndex)}
                               size="sm"
                               variant="ghost"
-                              className={css({ color: 'gray.500', _hover: { color: 'red.400' } })}
+                              className={css({ color: 'gray.400', _hover: { color: 'red.400' } })}
                             >
                               <X className={css({ w: '4', h: '4' })} />
                             </Button>
@@ -439,7 +439,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
                     )
                   })}
                 </div>
-                <p className={css({ mt: '2', fontSize: 'xs', color: 'gray.500' })}>
+                <p className={css({ mt: '2', fontSize: 'xs', color: 'gray.400' })}>
                   💡 Start with action verbs, include metrics and impact. Aim for 3-5 bullet points
                   per role.
                 </p>

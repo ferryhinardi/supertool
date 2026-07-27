@@ -237,7 +237,7 @@ export function AISuggestions({
         </CardHeader>
         <CardContent className={css({ spaceY: '4' })}>
           <div className={css({ spaceY: '2' })}>
-            <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.700' })}>
+            <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
               Generate Content
             </div>
             <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
@@ -287,7 +287,7 @@ export function AISuggestions({
           </div>
 
           <div className={css({ spaceY: '2' })}>
-            <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.700' })}>
+            <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
               Improve & Analyze
             </div>
             <div className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
@@ -323,7 +323,7 @@ export function AISuggestions({
           </div>
 
           {typeof remainingQuota === 'number' && (
-            <div className={css({ fontSize: 'sm', color: 'gray.600' })}>
+            <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
               Remaining free AI uses today: {remainingQuota}
             </div>
           )}
@@ -367,7 +367,7 @@ export function AISuggestions({
                     Suggested Opening:
                   </div>
                   <div
-                    className={css({ fontSize: 'sm', color: 'gray.700', whiteSpace: 'pre-wrap' })}
+                    className={css({ fontSize: 'sm', color: 'gray.300', whiteSpace: 'pre-wrap' })}
                   >
                     {result.opening}
                   </div>
@@ -385,7 +385,7 @@ export function AISuggestions({
                     Suggested Body:
                   </div>
                   <div
-                    className={css({ fontSize: 'sm', color: 'gray.700', whiteSpace: 'pre-wrap' })}
+                    className={css({ fontSize: 'sm', color: 'gray.300', whiteSpace: 'pre-wrap' })}
                   >
                     {result.body}
                   </div>
@@ -403,7 +403,7 @@ export function AISuggestions({
                     Suggested Closing:
                   </div>
                   <div
-                    className={css({ fontSize: 'sm', color: 'gray.700', whiteSpace: 'pre-wrap' })}
+                    className={css({ fontSize: 'sm', color: 'gray.300', whiteSpace: 'pre-wrap' })}
                   >
                     {result.closing}
                   </div>
@@ -421,12 +421,12 @@ export function AISuggestions({
                     Improved Version:
                   </div>
                   <div
-                    className={css({ fontSize: 'sm', color: 'gray.700', whiteSpace: 'pre-wrap' })}
+                    className={css({ fontSize: 'sm', color: 'gray.300', whiteSpace: 'pre-wrap' })}
                   >
                     {result.improved}
                   </div>
                   {result.score && (
-                    <div className={css({ fontSize: 'sm', color: 'gray.600' })}>
+                    <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
                       Original score: {result.score}/10
                     </div>
                   )}
@@ -446,7 +446,7 @@ export function AISuggestions({
                           pl: '4',
                           listStyle: 'disc',
                           fontSize: 'sm',
-                          color: 'gray.700',
+                          color: 'gray.300',
                         })}
                       >
                         {result.suggestions.map((suggestion) => (
@@ -465,9 +465,9 @@ export function AISuggestions({
                   >
                     Tone Analysis:
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'gray.700' })}>{result.tone}</div>
+                  <div className={css({ fontSize: 'sm', color: 'gray.300' })}>{result.tone}</div>
                   {result.score && (
-                    <div className={css({ fontSize: 'sm', color: 'gray.600' })}>
+                    <div className={css({ fontSize: 'sm', color: 'gray.300' })}>
                       Tone score: {result.score}/10
                     </div>
                   )}
@@ -487,7 +487,7 @@ export function AISuggestions({
                           pl: '4',
                           listStyle: 'disc',
                           fontSize: 'sm',
-                          color: 'gray.700',
+                          color: 'gray.300',
                         })}
                       >
                         {result.strengths.map((strength) => (
@@ -512,7 +512,7 @@ export function AISuggestions({
                           pl: '4',
                           listStyle: 'disc',
                           fontSize: 'sm',
-                          color: 'gray.700',
+                          color: 'gray.300',
                         })}
                       >
                         {result.suggestions.map((suggestion) => (
@@ -538,7 +538,7 @@ export function AISuggestions({
           <div
             className={css({
               fontSize: 'xs',
-              color: 'gray.500',
+              color: 'gray.400',
               pt: '2',
               borderTop: '1px solid',
               borderColor: 'gray.200',

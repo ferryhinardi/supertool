@@ -450,6 +450,21 @@ function JSONBeautifyContent() {
     loadExtension()
   }, [])
 
+  // Add aria-label to CodeMirror content elements for accessibility (ARIA rule: input field name)
+  useEffect(() => {
+    const labelEditors = () => {
+      document.querySelectorAll<HTMLElement>('.cm-content[role="textbox"]').forEach((el) => {
+        if (!el.getAttribute('aria-label')) {
+          el.setAttribute('aria-label', 'JSON editor')
+        }
+      })
+    }
+    labelEditors()
+    const observer = new MutationObserver(labelEditors)
+    observer.observe(document.body, { childList: true, subtree: true })
+    return () => observer.disconnect()
+  }, [])
+
   // Calculate stats
   const stats = useMemo(() => {
     const lines = value.split('\n').length
@@ -780,6 +795,13 @@ function JSONBeautifyContent() {
 
   return (
     <TooltipProvider>
+      {/* Override CodeMirror string color to meet WCAG AA 4.5:1 contrast on dark editor background */}
+      <style
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: CSS override for CodeMirror contrast compliance
+        dangerouslySetInnerHTML={{
+          __html: '.cm-editor .cm-content .ͼ19 { color: #f08a9a !important; }',
+        }}
+      />
       <main
         className={css({
           mx: 'auto',

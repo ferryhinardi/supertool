@@ -164,7 +164,7 @@ export function EducationForm({ data, onChange }: EducationFormProps) {
           <p
             className={css({
               fontSize: 'sm',
-              color: 'gray.500',
+              color: 'gray.400',
               mb: '4',
             })}
           >
@@ -470,7 +470,7 @@ export function EducationForm({ data, onChange }: EducationFormProps) {
               onChange={(e) => handleFieldChange(edu.id, 'honors', e.target.value)}
               placeholder="e.g., Summa Cum Laude, Dean's List"
             />
-            <p className={css({ fontSize: 'xs', color: 'gray.500', mt: '1' })}>
+            <p className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
               Add major honors, scholarships, or distinctions
             </p>
           </div>

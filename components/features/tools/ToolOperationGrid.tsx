@@ -331,7 +331,7 @@ function OperationButton({ operation, isSelected, onClick, disabled }: Operation
           <p
             className={css({
               fontSize: 'xs',
-              color: isSelected ? 'currentColor/80' : 'gray.500',
+              color: isSelected ? 'currentColor/80' : 'gray.400',
               lineHeight: 'tight',
             })}
           >

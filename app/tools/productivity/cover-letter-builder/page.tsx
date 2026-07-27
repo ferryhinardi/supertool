@@ -372,7 +372,7 @@ export default function CoverLetterBuilderPage() {
                     >
                       {template.name}
                     </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
                       {template.description}
                     </div>
                   </button>
@@ -419,7 +419,7 @@ export default function CoverLetterBuilderPage() {
               <div
                 className={css({
                   fontSize: 'xs',
-                  color: 'gray.500',
+                  color: 'gray.400',
                   p: '2',
                   bg: 'gray.900',
                   rounded: 'md',
@@ -622,7 +622,7 @@ export default function CoverLetterBuilderPage() {
             maxW: '7xl',
             mx: 'auto',
             fontSize: 'xs',
-            color: 'gray.500',
+            color: 'gray.400',
             textAlign: 'center',
           })}
         >

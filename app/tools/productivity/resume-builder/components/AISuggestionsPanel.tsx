@@ -246,7 +246,7 @@ export function AISuggestionsPanel({
           <div
             className={css({
               fontSize: 'xs',
-              color: 'gray.500',
+              color: 'gray.400',
               pt: '2',
               borderTop: '1px solid',
               borderColor: 'gray.200',

@@ -340,6 +340,7 @@ function Base64Content() {
           <CardContent>
             <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
               <Textarea
+                aria-label={mode === 'encode' ? 'Text to encode' : 'Base64 string to decode'}
                 placeholder={
                   mode === 'encode' ? 'Enter text to encode...' : 'Paste Base64 string to decode...'
                 }
@@ -356,6 +357,7 @@ function Base64Content() {
                 <div>
                   <Input
                     type="file"
+                    aria-label="Upload file to encode as Base64"
                     onChange={handleFileUpload}
                     className={css({ cursor: 'pointer' })}
                     accept="*/*"
@@ -406,6 +408,7 @@ function Base64Content() {
           <CardContent>
             <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '4' })}>
               <Textarea
+                aria-label={mode === 'encode' ? 'Base64 encoded output' : 'Decoded text output'}
                 value={output}
                 readOnly
                 placeholder="Output will appear here..."
