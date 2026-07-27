@@ -115,11 +115,9 @@ export default function VideoSubtitleCombinerPage() {
   useEffect(() => {
     const checkServer = async () => {
       try {
-        console.log('🔵 Checking server status...')
         const response = await fetch('/api/video-subtitle', {
           cache: 'no-store',
         })
-        console.log('🔵 Response status:', response.status, response.ok)
 
         if (!response.ok) {
           const errorText = await response.text().catch(() => 'Unknown error')
@@ -128,7 +126,6 @@ export default function VideoSubtitleCombinerPage() {
         }
 
         const data = await response.json()
-        console.log('🔵 Server response:', data)
 
         if (data.status === 'ok') {
           setServerStatus({

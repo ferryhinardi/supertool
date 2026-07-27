@@ -6,13 +6,19 @@ import { PaywallModal } from '@/components/features/monetization/PaywallModal'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { supabase } from '@/lib/auth/supabaseClient'
+import type { ToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import type { AIContentResponse, ResumeData } from '../types'
+
+type ResumeAISuggestionEvent = Extract<
+  ToolEvent,
+  'resume_ai_suggestion_requested' | 'resume_ai_suggestion_applied'
+>
 
 interface AISuggestionsPanelProps {
   resume: ResumeData
   onApplySummary: (summary: string) => void
-  onAnalyticsEvent?: (event: string, data?: Record<string, unknown>) => void
+  onAnalyticsEvent?: (event: ResumeAISuggestionEvent, data?: Record<string, unknown>) => void
 }
 
 interface PaywallState {

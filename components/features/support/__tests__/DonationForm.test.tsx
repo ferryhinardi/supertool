@@ -150,6 +150,71 @@ describe('DonationForm', () => {
     expect(mockConsoleError).toHaveBeenCalled()
   })
 
+  it('surfaces network failures and restores the submit button state', async () => {
+    const user = userEvent.setup()
+    mockFetch.mockRejectedValueOnce(new Error('Network unavailable'))
+
+    render(<DonationForm />)
+
+    await user.click(screen.getByRole('button', { name: 'Continue to Checkout →' }))
+
+    expect(await screen.findByText('Network unavailable')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continue to Checkout →' })).toBeEnabled()
+    expect(mockConsoleError).toHaveBeenCalled()
+  })
+
+  it('falls back to a helpful error when the checkout error response is not valid JSON', async () => {
+    const user = userEvent.setup()
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      json: async () => {
+        throw new Error('Unexpected token < in JSON at position 0')
+      },
+    })
+
+    render(<DonationForm />)
+
+    await user.click(screen.getByRole('button', { name: 'Continue to Checkout →' }))
+
+    expect(await screen.findByText('Failed to create checkout')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continue to Checkout →' })).toBeEnabled()
+    expect(mockConsoleError).toHaveBeenCalled()
+  })
+
+  it('shows a helpful error when the checkout success response is not valid JSON', async () => {
+    const user = userEvent.setup()
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => {
+        throw new Error('Unexpected token < in JSON at position 0')
+      },
+    })
+
+    render(<DonationForm />)
+
+    await user.click(screen.getByRole('button', { name: 'Continue to Checkout →' }))
+
+    expect(await screen.findByText('Failed to read checkout response')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continue to Checkout →' })).toBeEnabled()
+    expect(mockConsoleError).toHaveBeenCalled()
+  })
+
+  it('shows a configuration error before calling checkout when the donation product is missing', async () => {
+    const user = userEvent.setup()
+    process.env.NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID = ''
+
+    render(<DonationForm />)
+
+    await user.click(screen.getByRole('button', { name: 'Continue to Checkout →' }))
+
+    expect(
+      await screen.findByText(
+        'Donation checkout is not configured right now. Please contact support.'
+      )
+    ).toBeInTheDocument()
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
   it('surfaces a missing checkout URL response', async () => {
     const user = userEvent.setup()
     mockFetch.mockResolvedValueOnce({

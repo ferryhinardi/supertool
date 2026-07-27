@@ -105,6 +105,14 @@ const createDataTransfer = (files: File[]): DataTransfer => {
   } as DataTransfer
 }
 
+const getRequiredButton = (button: HTMLButtonElement | null, label: string): HTMLButtonElement => {
+  if (!button) {
+    throw new Error(`${label} button not found`)
+  }
+
+  return button
+}
+
 // Helper to simulate file upload via fireEvent.change
 // More reliable than userEvent.upload() in Vitest browser mode
 const simulateFileUpload = (fileInput: HTMLInputElement, file: File) => {
@@ -185,8 +193,11 @@ describe('CSVExcelConverterPage', () => {
       const user = userEvent.setup()
       render(<CSVExcelConverterPage />)
 
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       expect(screen.getByText('Drop Excel file here or click to browse')).toBeInTheDocument()
       expect(screen.getByText('Supports .xlsx and .xls files up to 50MB')).toBeInTheDocument()
@@ -245,8 +256,11 @@ describe('CSVExcelConverterPage', () => {
       const user = userEvent.setup()
       render(<CSVExcelConverterPage />)
 
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
       expect(fileInput.accept).toContain('.xlsx')
@@ -436,8 +450,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const excelFile = createMockExcelFile('data.xlsx')
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
@@ -473,8 +490,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const excelFile = createMockExcelFile('multisheet.xlsx')
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
@@ -500,8 +520,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const excelFile = createMockExcelFile('empty.xlsx')
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
@@ -518,8 +541,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const wrongFile = new File(['content'], 'test.csv', { type: 'text/csv' })
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
@@ -537,8 +563,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const xlsFile = new File(['content'], 'old.xls', { type: 'application/vnd.ms-excel' })
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
@@ -602,8 +631,11 @@ describe('CSVExcelConverterPage', () => {
         .mockImplementation(() => mockAnchor as unknown as Node)
 
       try {
-        const downloadButton = screen.getByText(/Download Excel/).closest('button')
-        await user.click(downloadButton!)
+        const downloadButton = getRequiredButton(
+          screen.getByText(/Download Excel/).closest('button'),
+          'Download Excel'
+        )
+        await user.click(downloadButton)
 
         expect(mockCreateObjectURL).toHaveBeenCalled()
         expect(mockAnchor.click).toHaveBeenCalled()
@@ -624,8 +656,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const excelFile = createMockExcelFile('data.xlsx')
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
@@ -655,8 +690,11 @@ describe('CSVExcelConverterPage', () => {
         .mockImplementation(() => mockAnchor as unknown as Node)
 
       try {
-        const downloadButton = screen.getByText(/Download CSV/).closest('button')
-        await user.click(downloadButton!)
+        const downloadButton = getRequiredButton(
+          screen.getByText(/Download CSV/).closest('button'),
+          'Download CSV'
+        )
+        await user.click(downloadButton)
 
         expect(mockToast.success).toHaveBeenCalledWith('CSV file downloaded successfully')
       } finally {
@@ -682,8 +720,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const excelFile = createMockExcelFile('multisheet.xlsx')
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
@@ -734,8 +775,11 @@ describe('CSVExcelConverterPage', () => {
         .mockImplementation(() => mockAnchor as unknown as Node)
 
       try {
-        const downloadButton = screen.getByText(/Download Excel/).closest('button')
-        await user.click(downloadButton!)
+        const downloadButton = getRequiredButton(
+          screen.getByText(/Download Excel/).closest('button'),
+          'Download Excel'
+        )
+        await user.click(downloadButton)
 
         expect(mockTrackToolEvent).toHaveBeenCalledWith(
           'csv_excel_download',
@@ -783,8 +827,11 @@ describe('CSVExcelConverterPage', () => {
         expect(screen.getByText('✅ Converted')).toBeInTheDocument()
       })
 
-      const resetButton = screen.getByText('Convert Another File').closest('button')
-      await user.click(resetButton!)
+      const resetButton = getRequiredButton(
+        screen.getByText('Convert Another File').closest('button'),
+        'Convert Another File'
+      )
+      await user.click(resetButton)
 
       expect(screen.queryByText('✅ Converted')).not.toBeInTheDocument()
       // Check that download button is gone (not the instructional text in How to Use section)
@@ -862,8 +909,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const excelFile = createMockExcelFile('report.xlsx')
       const fileInput = document.getElementById('file-upload') as HTMLInputElement
@@ -987,8 +1037,11 @@ describe('CSVExcelConverterPage', () => {
       render(<CSVExcelConverterPage />)
 
       // Switch to Excel mode
-      const excelButton = screen.getByText('Excel → CSV').closest('button')
-      await user.click(excelButton!)
+      const excelButton = getRequiredButton(
+        screen.getByText('Excel → CSV').closest('button'),
+        'Excel → CSV'
+      )
+      await user.click(excelButton)
 
       const excelFile = createMockExcelFile('data.xlsx')
       const fileInput = document.getElementById('file-upload') as HTMLInputElement

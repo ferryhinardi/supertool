@@ -435,7 +435,7 @@ describe('POST /api/ai-code-converter', () => {
       expect(mockRecordUsage).not.toHaveBeenCalled()
     })
 
-    it('should record usage after a successful authenticated conversion and return remaining quota', async () => {
+    it('should preserve reserved remaining quota for authenticated free-tier conversions', async () => {
       mockCreate.mockResolvedValueOnce({
         choices: [
           {
@@ -478,13 +478,9 @@ describe('POST /api/ai-code-converter', () => {
         freeQuotaPerDay: 10,
         ipAddress: '198.51.100.21',
       })
-      expect(mockRecordUsage).toHaveBeenCalledWith({
-        userId: 'user-123',
-        metricName: 'ai-code-converter',
-        quantity: 1,
-      })
+      expect(mockRecordUsage).not.toHaveBeenCalled()
       expect(response.status).toBe(200)
-      expect(data.remaining).toBe(9)
+      expect(data.remaining).toBe(10)
     })
   })
 

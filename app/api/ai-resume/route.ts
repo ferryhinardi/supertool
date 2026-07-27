@@ -5,6 +5,7 @@ import type {
   AIContentResponse,
 } from '@/app/tools/productivity/resume-builder/types'
 import { getSupabaseServer } from '@/lib/auth/supabaseServer'
+import { getClientIdentifier } from '@/lib/services/api/rate-limiter'
 import { checkPremiumAccess, recordUsage } from '@/lib/services/premium-gate'
 
 const openai = new OpenAI({
@@ -85,9 +86,8 @@ Current content: ${context.currentContent || 'No current content provided'}`,
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization')
-    const forwardedFor = request.headers.get('x-forwarded-for')
-    const realIp = request.headers.get('x-real-ip')
-    const ipAddress = forwardedFor?.split(',')[0]?.trim() || realIp || undefined
+    const clientIdentifier = getClientIdentifier(request)
+    const ipAddress = clientIdentifier === 'unknown' ? undefined : clientIdentifier
 
     let userId: string | undefined
 
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
 
     const parsedResult = JSON.parse(result) as AIContentResponse
 
-    if (userId) {
+    if (userId && premiumAccess.reason === 'subscription') {
       await recordUsage({
         userId,
         metricName: 'resume-builder',
@@ -158,15 +158,10 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const remainingAfterUsage =
-      userId && premiumAccess.reason === 'within-quota'
-        ? Math.max(0, premiumAccess.remaining - 1)
-        : premiumAccess.remaining
-
     return NextResponse.json({
       success: true,
       data: parsedResult,
-      remaining: remainingAfterUsage,
+      remaining: premiumAccess.remaining,
     })
   } catch (error) {
     console.error('AI Resume API error:', error)

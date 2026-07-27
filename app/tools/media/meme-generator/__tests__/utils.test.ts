@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { MemeConfig, MemeTemplate, TextBox } from '../types'
+import type { MemeConfig, TextBox } from '../types'
 import {
   calculateOptimalFontSize,
   createDefaultTextBoxes,
@@ -1048,7 +1048,6 @@ describe('loadImage', () => {
 // generateMeme Tests (requires document/canvas mock)
 // ============================================================================
 describe('generateMeme', () => {
-  let originalDocument: typeof document
   let mockCanvas: HTMLCanvasElement
   let mockCtx: CanvasRenderingContext2D
 

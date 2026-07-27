@@ -507,7 +507,7 @@ export function OperationGrid({
       {/* Categories */}
 
       {filteredCategories.length > 0 ? (
-        filteredCategories.map((category, categoryIndex) => {
+        filteredCategories.map((category) => {
           const isCollapsed = collapsedCategories.has(category.label)
 
           return (

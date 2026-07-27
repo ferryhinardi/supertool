@@ -3,6 +3,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import PlaceholderGeneratorPage from '../page'
 
+const getRequiredButton = (button: HTMLButtonElement | null, label: string): HTMLButtonElement => {
+  if (!button) {
+    throw new Error(`${label} button not found`)
+  }
+
+  return button
+}
+
 // Mock analytics
 vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
@@ -497,7 +505,7 @@ describe('PlaceholderGeneratorPage', () => {
       render(<PlaceholderGeneratorPage />)
 
       const fullHDPreset = screen.getByText('Full HD').closest('button')
-      fireEvent.click(fullHDPreset!)
+      fireEvent.click(getRequiredButton(fullHDPreset, 'Full HD preset'))
 
       const widthInput = screen.getByLabelText('Width (px)') as HTMLInputElement
       const heightInput = screen.getByLabelText('Height (px)') as HTMLInputElement
@@ -510,7 +518,7 @@ describe('PlaceholderGeneratorPage', () => {
       render(<PlaceholderGeneratorPage />)
 
       const fullHDPreset = screen.getByText('Full HD').closest('button')
-      fireEvent.click(fullHDPreset!)
+      fireEvent.click(getRequiredButton(fullHDPreset, 'Full HD preset'))
 
       expect(trackToolEvent).toHaveBeenCalledWith('placeholder_generator_preset_selected', {
         preset: 'Full HD',
@@ -730,7 +738,7 @@ describe('PlaceholderGeneratorPage', () => {
 
       // Select a preset
       const fullHDPreset = screen.getByText('Full HD').closest('button')
-      fireEvent.click(fullHDPreset!)
+      fireEvent.click(getRequiredButton(fullHDPreset, 'Full HD preset'))
 
       // Change background color
       const bgColorPicker = screen.getByLabelText('Background Color')
@@ -768,7 +776,7 @@ describe('PlaceholderGeneratorPage', () => {
 
       // Select a preset
       const fullHDPreset = screen.getByText('Full HD').closest('button')
-      fireEvent.click(fullHDPreset!)
+      fireEvent.click(getRequiredButton(fullHDPreset, 'Full HD preset'))
 
       // Custom text should be preserved
       expect((textInput as HTMLInputElement).value).toBe('My Custom Text')
@@ -783,7 +791,7 @@ describe('PlaceholderGeneratorPage', () => {
 
       // Select a preset
       const fullHDPreset = screen.getByText('Full HD').closest('button')
-      fireEvent.click(fullHDPreset!)
+      fireEvent.click(getRequiredButton(fullHDPreset, 'Full HD preset'))
 
       // Text should update to new dimensions
       expect(textInput.value).toBe('1920 × 1080')

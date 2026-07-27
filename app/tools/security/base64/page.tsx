@@ -1,6 +1,6 @@
 'use client'
 
-import { Copy, Download, ImageIcon, Lightbulb, Lock, Unlock, Upload } from 'lucide-react'
+import { Copy, Download, ImageIcon, Lock, Unlock, Upload } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'

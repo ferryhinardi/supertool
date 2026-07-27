@@ -74,6 +74,14 @@ import { toast } from 'sonner'
 import { trackToolEvent } from '@/lib/services/analytics'
 import URLEncoderPage from '../page'
 
+const getRequiredButton = (button: HTMLButtonElement | null, label: string): HTMLButtonElement => {
+  if (!button) {
+    throw new Error(`${label} button not found`)
+  }
+
+  return button
+}
+
 describe('URLEncoderPage', () => {
   // Setup userEvent once at describe level
   const user = userEvent.setup()
@@ -204,7 +212,7 @@ describe('URLEncoderPage', () => {
 
       // Click encodeURI button
       const encodeURIButton = screen.getByText('encodeURI').closest('button')
-      await user.click(encodeURIButton!)
+      await user.click(getRequiredButton(encodeURIButton, 'encodeURI'))
 
       expect(mockSetMethod).toHaveBeenCalledWith('encodeURI')
     })
@@ -213,7 +221,7 @@ describe('URLEncoderPage', () => {
       render(<URLEncoderPage />)
 
       const decodeButton = screen.getByText('decodeURIComponent').closest('button')
-      await user.click(decodeButton!)
+      await user.click(getRequiredButton(decodeButton, 'decodeURIComponent'))
 
       expect(mockSetMethod).toHaveBeenCalledWith('decodeURIComponent')
     })
@@ -222,7 +230,7 @@ describe('URLEncoderPage', () => {
       render(<URLEncoderPage />)
 
       const decodeURIButton = screen.getByText('decodeURI').closest('button')
-      await user.click(decodeURIButton!)
+      await user.click(getRequiredButton(decodeURIButton, 'decodeURI'))
 
       expect(mockSetMethod).toHaveBeenCalledWith('decodeURI')
     })
@@ -337,7 +345,7 @@ describe('URLEncoderPage', () => {
       render(<URLEncoderPage />)
 
       const exampleButton = screen.getByText('Hello World').closest('button')
-      await user.click(exampleButton!)
+      await user.click(getRequiredButton(exampleButton, 'Hello World example'))
 
       await waitFor(() => {
         const input = screen.getByLabelText(/Input/)
@@ -349,7 +357,7 @@ describe('URLEncoderPage', () => {
       render(<URLEncoderPage />)
 
       const exampleButton = screen.getByText('name=John&age=30').closest('button')
-      await user.click(exampleButton!)
+      await user.click(getRequiredButton(exampleButton, 'name=John&age=30 example'))
 
       await waitFor(() => {
         const input = screen.getByLabelText(/Input/)
@@ -363,7 +371,9 @@ describe('URLEncoderPage', () => {
       const exampleButton = screen
         .getByText('https://example.com/path?q=test value')
         .closest('button')
-      await user.click(exampleButton!)
+      await user.click(
+        getRequiredButton(exampleButton, 'https://example.com/path?q=test value example')
+      )
 
       await waitFor(() => {
         const input = screen.getByLabelText(/Input/)
@@ -375,7 +385,7 @@ describe('URLEncoderPage', () => {
       render(<URLEncoderPage />)
 
       const exampleButton = screen.getByText('Hello%20World%21').closest('button')
-      await user.click(exampleButton!)
+      await user.click(getRequiredButton(exampleButton, 'Hello%20World%21 example'))
 
       expect(mockSetMethod).toHaveBeenCalledWith('decodeURIComponent')
     })
@@ -384,7 +394,7 @@ describe('URLEncoderPage', () => {
       render(<URLEncoderPage />)
 
       const exampleButton = screen.getByText('Hello World').closest('button')
-      await user.click(exampleButton!)
+      await user.click(getRequiredButton(exampleButton, 'Hello World example'))
 
       expect(mockSetMethod).toHaveBeenCalledWith('encodeURIComponent')
     })
@@ -395,7 +405,7 @@ describe('URLEncoderPage', () => {
       // The Unicode example contains Café with accent (é = \u00E9), coffee emoji, and Chinese characters
       // Find button by the 'Unicode' label text
       const exampleButton = screen.getByText('Unicode').closest('button')
-      await user.click(exampleButton!)
+      await user.click(getRequiredButton(exampleButton, 'Unicode example'))
 
       await waitFor(() => {
         const input = screen.getByLabelText(/Input/)
@@ -408,7 +418,7 @@ describe('URLEncoderPage', () => {
       render(<URLEncoderPage />)
 
       const exampleButton = screen.getByText('user@example.com').closest('button')
-      await user.click(exampleButton!)
+      await user.click(getRequiredButton(exampleButton, 'user@example.com example'))
 
       await waitFor(() => {
         const input = screen.getByLabelText(/Input/)
@@ -484,9 +494,7 @@ describe('URLEncoderPage', () => {
       expect(copyButton).toBeDisabled()
     })
 
-    // TODO: Fix clipboard rejection mock - userEvent.setup() overrides clipboard mock
-    // making it difficult to test rejection scenarios reliably
-    it.skip('shows error toast when clipboard fails', async () => {
+    it('shows error toast when clipboard fails', async () => {
       // Override mockWriteText to reject for this test only
       mockWriteText.mockRejectedValueOnce(new Error('Clipboard error'))
 
@@ -506,6 +514,8 @@ describe('URLEncoderPage', () => {
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith('Failed to copy to clipboard')
       })
+
+      mockWriteText.mockResolvedValue(undefined)
     })
   })
 

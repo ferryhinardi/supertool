@@ -1,6 +1,6 @@
 # 🚀 SuperTool - Modern Developer Toolkit
 
-![Coverage](https://img.shields.io/badge/coverage-0%25-orange)
+![Coverage](https://codecov.io/gh/ferryhinardi/supertool/branch/main/graph/badge.svg)
 
 Professional toolkit with 36+ implemented tools for developers, designers, and productivity enthusiasts. All tools work offline in your browser with no registration required.
 

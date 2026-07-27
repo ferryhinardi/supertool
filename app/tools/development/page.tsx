@@ -411,7 +411,7 @@ export default function DevelopmentToolsPage() {
           opacity: 0,
         })}
       >
-        {categoryTools.map((tool, index) => (
+        {categoryTools.map((tool) => (
           <div
             key={tool.href}
             className={css({

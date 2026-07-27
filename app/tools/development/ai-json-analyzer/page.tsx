@@ -26,6 +26,20 @@ interface PaywallState {
   remaining?: number
 }
 
+function normalizeAnalysisList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter(
+      (item): item is string => typeof item === 'string' && item.trim().length > 0
+    )
+  }
+
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return [value]
+  }
+
+  return []
+}
+
 function AIJsonAnalyzerContent() {
   const [jsonInput, setJsonInput] = useState('')
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
@@ -98,9 +112,9 @@ function AIJsonAnalyzerContent() {
       setAnalysis({
         summary: data.summary,
         structure: data.structure,
-        patterns: data.patterns || [],
-        insights: data.insights || [],
-        relationships: data.relationships || [],
+        patterns: normalizeAnalysisList(data.patterns),
+        insights: normalizeAnalysisList(data.insights),
+        relationships: normalizeAnalysisList(data.relationships),
       })
 
       toast.success('JSON analyzed successfully!')

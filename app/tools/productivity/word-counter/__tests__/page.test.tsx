@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
 import { trackToolEvent } from '@/lib/services/analytics'
 import WordCounterPage from '../page'
-import { analyzeText, calculateKeywordDensity, formatTime, sampleTexts } from '../templates'
+import { analyzeText, formatTime, sampleTexts } from '../templates'
 
 // Mock Panda CSS
 vi.mock('@/styled-system/css', () => ({

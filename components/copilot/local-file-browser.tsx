@@ -271,20 +271,6 @@ function SpinnerIcon() {
   )
 }
 
-function CheckIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className={css({ w: '3', h: '3', flexShrink: 0 })}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-    </svg>
-  )
-}
-
 function UploadIcon() {
   return (
     <svg
@@ -466,8 +452,8 @@ function LocalTreeNodeItem({
     [handleClick]
   )
 
-  const handleCheckboxClick = useCallback(
-    (e: React.MouseEvent) => {
+  const handleCheckboxChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation()
       onSelect(node)
     },
@@ -476,10 +462,7 @@ function LocalTreeNodeItem({
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
+      <div
         className={css({
           w: 'full',
           display: 'flex',
@@ -497,105 +480,120 @@ function LocalTreeNodeItem({
           },
         })}
         style={{ paddingLeft: `${depth * 16 + 8}px` }}
-        aria-expanded={node.isDirectory ? isExpanded : undefined}
       >
         {/* Checkbox for multi-select */}
         {multiSelect && !node.isDirectory && (
-          <span
-            role="checkbox"
-            tabIndex={0}
-            aria-checked={isSelected}
-            onClick={handleCheckboxClick}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                handleCheckboxClick(e as unknown as React.MouseEvent)
-              }
-            }}
+          <label
             className={css({
               w: '4',
               h: '4',
-              rounded: 'sm',
-              border: '1px solid',
-              borderColor: isSelected ? 'rgb(59, 130, 246)' : 'rgba(255, 255, 255, 0.3)',
-              bg: isSelected ? 'rgb(59, 130, 246)' : 'transparent',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
-              transition: 'all 0.15s',
               cursor: 'pointer',
             })}
           >
-            {isSelected && (
-              <span className={css({ color: 'white' })}>
-                <CheckIcon />
-              </span>
-            )}
-          </span>
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={handleCheckboxChange}
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`Select ${node.name}`}
+              className={css({
+                w: '4',
+                h: '4',
+                rounded: 'sm',
+                border: '1px solid',
+                borderColor: isSelected ? 'rgb(59, 130, 246)' : 'rgba(255, 255, 255, 0.3)',
+                bg: isSelected ? 'rgb(59, 130, 246)' : 'transparent',
+                cursor: 'pointer',
+                accentColor: 'rgb(59, 130, 246)',
+              })}
+            />
+          </label>
         )}
 
-        {/* Expand/Collapse Icon for Directories */}
-        {node.isDirectory ? (
-          <span className={css({ color: 'rgba(255, 255, 255, 0.4)' })}>
-            <ChevronRightIcon isExpanded={isExpanded} />
-          </span>
-        ) : (
-          !multiSelect && <span className={css({ w: '3' })} />
-        )}
-
-        {/* File/Folder Icon */}
-        <span
-          className={css({
-            color: node.isDirectory ? 'rgb(251, 191, 36)' : getCategoryColor(node.category),
-          })}
-        >
-          {node.isDirectory ? <FolderIcon isOpen={isExpanded} /> : getCategoryIcon(node.category)}
-        </span>
-
-        {/* Name */}
-        <span
+        <button
+          type="button"
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
           className={css({
             flex: '1',
-            fontSize: 'sm',
-            color: isSelected ? 'rgb(147, 197, 253)' : 'rgba(255, 255, 255, 0.9)',
+            minW: '0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2',
+            bg: 'transparent',
+            border: 'none',
+            p: '0',
             textAlign: 'left',
-            truncate: true,
+            cursor: 'pointer',
           })}
+          aria-expanded={node.isDirectory ? isExpanded : undefined}
         >
-          {node.name}
-        </span>
+          {/* Expand/Collapse Icon for Directories */}
+          {node.isDirectory ? (
+            <span className={css({ color: 'rgba(255, 255, 255, 0.4)' })}>
+              <ChevronRightIcon isExpanded={isExpanded} />
+            </span>
+          ) : (
+            !multiSelect && <span className={css({ w: '3' })} />
+          )}
 
-        {/* Category Badge */}
-        {!node.isDirectory && (
+          {/* File/Folder Icon */}
           <span
             className={css({
-              fontSize: 'xs',
-              px: '1.5',
-              py: '0.5',
-              rounded: 'full',
-              bg: 'rgba(255, 255, 255, 0.1)',
-              color: getCategoryColor(node.category),
-              flexShrink: 0,
+              color: node.isDirectory ? 'rgb(251, 191, 36)' : getCategoryColor(node.category),
             })}
           >
-            {node.category}
+            {node.isDirectory ? <FolderIcon isOpen={isExpanded} /> : getCategoryIcon(node.category)}
           </span>
-        )}
 
-        {/* File Size */}
-        {!node.isDirectory && node.size > 0 && (
+          {/* Name */}
           <span
             className={css({
-              fontSize: 'xs',
-              color: 'rgba(255, 255, 255, 0.4)',
-              flexShrink: 0,
+              flex: '1',
+              fontSize: 'sm',
+              color: isSelected ? 'rgb(147, 197, 253)' : 'rgba(255, 255, 255, 0.9)',
+              textAlign: 'left',
+              truncate: true,
             })}
           >
-            {formatFileSize(node.size)}
+            {node.name}
           </span>
-        )}
-      </button>
+
+          {/* Category Badge */}
+          {!node.isDirectory && (
+            <span
+              className={css({
+                fontSize: 'xs',
+                px: '1.5',
+                py: '0.5',
+                rounded: 'full',
+                bg: 'rgba(255, 255, 255, 0.1)',
+                color: getCategoryColor(node.category),
+                flexShrink: 0,
+              })}
+            >
+              {node.category}
+            </span>
+          )}
+
+          {/* File Size */}
+          {!node.isDirectory && node.size > 0 && (
+            <span
+              className={css({
+                fontSize: 'xs',
+                color: 'rgba(255, 255, 255, 0.4)',
+                flexShrink: 0,
+              })}
+            >
+              {formatFileSize(node.size)}
+            </span>
+          )}
+        </button>
+      </div>
 
       {/* Children */}
       {node.isDirectory && isExpanded && node.children.length > 0 && (
@@ -937,8 +935,7 @@ export function LocalFileBrowser({
   // Empty state / Drop zone
   if (files.length === 0) {
     return (
-      <div
-        role="region"
+      <section
         aria-label="File drop zone"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -977,7 +974,7 @@ export function LocalFileBrowser({
         <p className={css({ fontSize: 'xs', color: 'rgba(255, 255, 255, 0.3)' })}>
           Or use the file picker below
         </p>
-      </div>
+      </section>
     )
   }
 

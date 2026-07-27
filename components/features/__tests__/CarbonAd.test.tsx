@@ -248,5 +248,22 @@ describe('CarbonAd Component', () => {
       // Script should be removed
       expect(document.getElementById('_carbonads_js')).not.toBeInTheDocument()
     })
+
+    it('removes the rendered carbon container on unmount', () => {
+      mockEnv({
+        NEXT_PUBLIC_ENABLE_ADS: 'true',
+        NEXT_PUBLIC_ENABLE_CARBON: 'true',
+        NEXT_PUBLIC_CARBON_SERVE_ID: 'test-serve-id',
+      })
+
+      const { unmount } = render(<CarbonAd />)
+      const carbonContainer = document.createElement('div')
+      carbonContainer.id = 'carbonads'
+      document.body.appendChild(carbonContainer)
+
+      unmount()
+
+      expect(document.getElementById('carbonads')).not.toBeInTheDocument()
+    })
   })
 })

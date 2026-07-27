@@ -469,10 +469,11 @@ function AIImageCaptionContent() {
               <div
                 className={css({
                   display: 'grid',
+                  w: 'full',
                   gridTemplateColumns: {
-                    base: '1',
-                    sm: '2',
-                    md: '4',
+                    base: '1fr',
+                    sm: 'repeat(2, 1fr)',
+                    md: 'repeat(4, 1fr)',
                   },
                   gap: '3',
                 })}

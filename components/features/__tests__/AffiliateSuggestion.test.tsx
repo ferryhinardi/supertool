@@ -211,6 +211,26 @@ describe('AffiliateSuggestion Component', () => {
     })
   })
 
+  describe('Logo maker tools', () => {
+    beforeEach(() => {
+      mockEnv({
+        NEXT_PUBLIC_ENABLE_ADS: 'true',
+        NEXT_PUBLIC_ENABLE_AFFILIATES: 'true',
+        NEXT_PUBLIC_AFFILIATE_CLOUDINARY_REF: '/ref/cloudinary',
+        NEXT_PUBLIC_AFFILIATE_POSTMAN_REF: '/ref/postman',
+        NEXT_PUBLIC_AFFILIATE_TINYPNG_REF: '/ref/tinypng',
+      })
+    })
+
+    it('shows design affiliate suggestions for logo-maker', () => {
+      render(<AffiliateSuggestion tool="logo-maker" />)
+
+      expect(screen.getByText('Canva')).toBeInTheDocument()
+      expect(screen.getByText('Figma')).toBeInTheDocument()
+      expect(screen.getByText('Adobe Express')).toBeInTheDocument()
+    })
+  })
+
   describe('Variants', () => {
     beforeEach(() => {
       mockEnv({

@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { ToolEvent } from '@/lib/services/analytics'
 import * as analytics from '@/lib/services/analytics'
 import ResumeBuilderPage from '../page'
 
@@ -122,7 +123,10 @@ vi.mock('../components/AISuggestionsPanel', () => ({
   AISuggestionsPanel: ({
     onAnalyticsEvent,
   }: {
-    onAnalyticsEvent?: (event: string, data?: Record<string, unknown>) => void
+    onAnalyticsEvent?: (
+      event: Extract<ToolEvent, 'resume_ai_suggestion_requested' | 'resume_ai_suggestion_applied'>,
+      data?: Record<string, unknown>
+    ) => void
   }) => (
     <div data-testid="resume-ai-suggestions-panel">
       <button

@@ -4,7 +4,7 @@ import { Activity, Info, Ruler, Scale, Sparkles, TrendingUp } from 'lucide-react
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'

@@ -4,7 +4,6 @@ import {
   Calculator,
   Calendar,
   DollarSign,
-  Info,
   Percent,
   PiggyBank,
   Plus,

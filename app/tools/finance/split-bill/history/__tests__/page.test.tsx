@@ -808,11 +808,12 @@ describe('BillHistoryPage', () => {
     })
 
     it('should handle unknown status', async () => {
-      mockGetAllBills.mockResolvedValue([
-        createMockBill({
-          status: 'unknown' as any,
-        }),
-      ])
+      const unknownStatusBill = {
+        ...createMockBill(),
+        status: 'unknown',
+      } satisfies Omit<SplitBillSummary, 'status'> & { status: string }
+
+      mockGetAllBills.mockResolvedValue([unknownStatusBill])
 
       render(<BillHistoryPage />)
 

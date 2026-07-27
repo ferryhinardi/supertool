@@ -179,7 +179,7 @@ describe('FileInspectorPage', () => {
 
     it('shows "Analyzing file..." text while hashing', async () => {
       // Create a promise that we can control
-      let resolveDigest: (value: ArrayBuffer) => void
+      let resolveDigest: ((value: ArrayBuffer) => void) | undefined
       const digestPromise = new Promise<ArrayBuffer>((resolve) => {
         resolveDigest = resolve
       })
@@ -198,7 +198,12 @@ describe('FileInspectorPage', () => {
       })
 
       // Resolve the digest
-      resolveDigest!(createFakeHashBuffer(32))
+      const currentResolveDigest = resolveDigest
+      if (!currentResolveDigest) {
+        throw new Error('Expected resolveDigest to be assigned')
+      }
+
+      currentResolveDigest(createFakeHashBuffer(32))
 
       await waitFor(() => {
         expect(screen.queryByText('Analyzing file...')).not.toBeInTheDocument()
@@ -693,7 +698,7 @@ describe('FileInspectorPage', () => {
     it('handles very long file names', async () => {
       render(<FileInspectorPage />)
       const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
-      const longName = 'a'.repeat(200) + '.txt'
+      const longName = `${'a'.repeat(200)}.txt`
       const mockFile = createMockFile(longName, 100, 'text/plain')
 
       fireEvent.change(fileInput, { target: { files: [mockFile] } })

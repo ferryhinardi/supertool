@@ -74,28 +74,35 @@ global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
 global.URL.revokeObjectURL = vi.fn()
 
 // Mock FileReader
+type MockFileReaderEvent = {
+  target: {
+    result: string | ArrayBuffer
+  }
+}
+
 class MockFileReader {
   readAsDataURL = vi.fn(function (this: MockFileReader) {
     setTimeout(() => {
       if (this.onload) {
-        // biome-ignore lint/suspicious/noExplicitAny: Mock event object for testing
-        this.onload({ target: { result: 'data:application/pdf;base64,mock' } } as any)
+        this.onload({ target: { result: 'data:application/pdf;base64,mock' } })
       }
     }, 10)
   })
   readAsArrayBuffer = vi.fn(function (this: MockFileReader) {
     setTimeout(() => {
       if (this.onload) {
-        // biome-ignore lint/suspicious/noExplicitAny: Mock event object for testing
-        this.onload({ target: { result: new ArrayBuffer(8) } } as any)
+        this.onload({ target: { result: new ArrayBuffer(8) } })
       }
     }, 10)
   })
-  // biome-ignore lint/suspicious/noExplicitAny: FileReader event type is complex for mocking
-  onload: ((event: any) => void) | null = null
+  onload: ((event: MockFileReaderEvent) => void) | null = null
 }
-// biome-ignore lint/suspicious/noExplicitAny: Mock class assignment to global
-global.FileReader = MockFileReader as any
+
+Object.defineProperty(globalThis, 'FileReader', {
+  value: MockFileReader,
+  configurable: true,
+  writable: true,
+})
 
 describe('PDF Tools Page', () => {
   beforeEach(() => {

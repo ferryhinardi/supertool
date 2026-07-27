@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock analytics - MUST use vi.hoisted()
@@ -55,54 +55,6 @@ vi.mock('../utils', () => ({
   downloadMeme: mockDownloadMeme,
   formatFileSize: mockFormatFileSize,
 }))
-
-// Mock templates - MUST use vi.hoisted()
-const mockTemplates = vi.hoisted(() => [
-  {
-    id: '181913649',
-    name: 'Drake Hotline Bling',
-    category: 'classic',
-    imageUrl: 'https://i.imgflip.com/30b1gx.jpg',
-    width: 1200,
-    height: 1200,
-    boxCount: 2,
-    keywords: ['drake', 'choice', 'prefer'],
-    popularity: 10,
-  },
-  {
-    id: '87743020',
-    name: 'Two Buttons',
-    category: 'classic',
-    imageUrl: 'https://i.imgflip.com/1g8my4.jpg',
-    width: 600,
-    height: 908,
-    boxCount: 3,
-    keywords: ['choice', 'decision', 'buttons'],
-    popularity: 9,
-  },
-  {
-    id: '89370399',
-    name: 'Roll Safe Think About It',
-    category: 'reaction',
-    imageUrl: 'https://i.imgflip.com/1h7in3.jpg',
-    width: 702,
-    height: 395,
-    boxCount: 2,
-    keywords: ['smart', 'think', 'genius'],
-    popularity: 8,
-  },
-  {
-    id: 'wholesome-1',
-    name: 'Wholesome Seal',
-    category: 'wholesome',
-    imageUrl: 'https://example.com/seal.jpg',
-    width: 600,
-    height: 600,
-    boxCount: 2,
-    keywords: ['cute', 'seal', 'happy'],
-    popularity: 7,
-  },
-])
 
 const mockGetTemplatesByCategory = vi.hoisted(() =>
   vi.fn().mockImplementation((category: string) => {
@@ -266,6 +218,25 @@ vi.mock('../templates', () => ({
 // Import component after mocks
 import MemeGeneratorPage from '../page'
 
+const getRequiredButton = (button: HTMLButtonElement | null, label: string): HTMLButtonElement => {
+  if (!button) {
+    throw new Error(`${label} button not found`)
+  }
+
+  return button
+}
+
+const getRequiredFileInput = (
+  input: Element | null | undefined,
+  label: string
+): HTMLInputElement => {
+  if (!(input instanceof HTMLInputElement)) {
+    throw new Error(`${label} file input not found`)
+  }
+
+  return input
+}
+
 describe('MemeGeneratorPage', () => {
   beforeEach(() => {
     vi.useFakeTimers()
@@ -392,7 +363,7 @@ describe('MemeGeneratorPage', () => {
       // Click on Drake template
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
       expect(drakeTemplate).toBeInTheDocument()
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       // Advance timers for Image onload
       await act(async () => {
@@ -407,7 +378,7 @@ describe('MemeGeneratorPage', () => {
 
       // Click on Drake template (boxCount: 2)
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -420,7 +391,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -433,7 +404,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -448,14 +419,12 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeButton = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeButton!)
+      fireEvent.click(getRequiredButton(drakeButton, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
       })
 
-      // The check icon should appear in the selected template button
-      const checkIcon = drakeButton?.querySelector('svg')
       expect(drakeButton).toBeInTheDocument()
     })
   })
@@ -602,7 +571,9 @@ describe('MemeGeneratorPage', () => {
       const fileInput = uploadButton.parentElement?.querySelector('input[type="file"]')
 
       expect(fileInput).toBeInTheDocument()
-      fireEvent.change(fileInput!, { target: { files: [file] } })
+      fireEvent.change(getRequiredFileInput(fileInput, 'Upload custom image'), {
+        target: { files: [file] },
+      })
 
       await act(async () => {
         vi.advanceTimersByTime(100)
@@ -622,7 +593,9 @@ describe('MemeGeneratorPage', () => {
       const uploadButton = screen.getByRole('button', { name: /upload custom image/i })
       const fileInput = uploadButton.parentElement?.querySelector('input[type="file"]')
 
-      fireEvent.change(fileInput!, { target: { files: [file] } })
+      fireEvent.change(getRequiredFileInput(fileInput, 'Upload custom image'), {
+        target: { files: [file] },
+      })
 
       await act(async () => {
         vi.advanceTimersByTime(100)
@@ -641,7 +614,9 @@ describe('MemeGeneratorPage', () => {
       const uploadButton = screen.getByRole('button', { name: /upload custom image/i })
       const fileInput = uploadButton.parentElement?.querySelector('input[type="file"]')
 
-      fireEvent.change(fileInput!, { target: { files: [file] } })
+      fireEvent.change(getRequiredFileInput(fileInput, 'Upload custom image'), {
+        target: { files: [file] },
+      })
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -657,7 +632,9 @@ describe('MemeGeneratorPage', () => {
       const uploadButton = screen.getByRole('button', { name: /upload custom image/i })
       const fileInput = uploadButton.parentElement?.querySelector('input[type="file"]')
 
-      fireEvent.change(fileInput!, { target: { files: [file] } })
+      fireEvent.change(getRequiredFileInput(fileInput, 'Upload custom image'), {
+        target: { files: [file] },
+      })
 
       await act(async () => {
         vi.advanceTimersByTime(100)
@@ -673,7 +650,9 @@ describe('MemeGeneratorPage', () => {
       const uploadButton = screen.getByRole('button', { name: /upload custom image/i })
       const fileInput = uploadButton.parentElement?.querySelector('input[type="file"]')
 
-      fireEvent.change(fileInput!, { target: { files: [file] } })
+      fireEvent.change(getRequiredFileInput(fileInput, 'Upload custom image'), {
+        target: { files: [file] },
+      })
 
       await act(async () => {
         vi.advanceTimersByTime(100)
@@ -691,7 +670,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -705,7 +684,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -721,7 +700,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -747,7 +726,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -775,7 +754,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -788,7 +767,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -814,7 +793,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -851,7 +830,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -863,8 +842,11 @@ describe('MemeGeneratorPage', () => {
     it('disables generate button when no text is entered', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -877,8 +859,11 @@ describe('MemeGeneratorPage', () => {
     it('enables generate button when text is entered', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -898,8 +883,11 @@ describe('MemeGeneratorPage', () => {
     it('calls generateMeme with correct config', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -926,8 +914,11 @@ describe('MemeGeneratorPage', () => {
     it('shows success toast on successful generation', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -949,8 +940,11 @@ describe('MemeGeneratorPage', () => {
     it('tracks meme generation event', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -976,8 +970,11 @@ describe('MemeGeneratorPage', () => {
 
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1000,8 +997,11 @@ describe('MemeGeneratorPage', () => {
     it('shows preview after generation', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1029,8 +1029,11 @@ describe('MemeGeneratorPage', () => {
     it('shows download button after generation', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1052,8 +1055,11 @@ describe('MemeGeneratorPage', () => {
     it('calls downloadMeme function on download click', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1081,8 +1087,11 @@ describe('MemeGeneratorPage', () => {
     it('tracks download event', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1109,8 +1118,11 @@ describe('MemeGeneratorPage', () => {
     it('shows success toast on download', async () => {
       render(<MemeGeneratorPage />)
 
-      const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      const drakeTemplate = getRequiredButton(
+        screen.getByText('Drake Hotline Bling').closest('button'),
+        'Drake Hotline Bling template'
+      )
+      fireEvent.click(drakeTemplate)
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1144,7 +1156,7 @@ describe('MemeGeneratorPage', () => {
 
       // Select template
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1154,7 +1166,6 @@ describe('MemeGeneratorPage', () => {
       expect(screen.getByText('Text Editor')).toBeInTheDocument()
 
       // Click reset button (X button)
-      const resetButton = screen.getByRole('button', { name: '' }) // X icon button
       const buttons = screen.getAllByRole('button')
       const xButton = buttons.find((btn) => btn.querySelector('svg') && btn.textContent === '')
 
@@ -1174,7 +1185,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1201,7 +1212,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1234,7 +1245,7 @@ describe('MemeGeneratorPage', () => {
 
       // Select first template
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1244,7 +1255,7 @@ describe('MemeGeneratorPage', () => {
 
       // Select second template (with 3 boxes)
       const twoButtonsTemplate = screen.getByText('Two Buttons').closest('button')
-      fireEvent.click(twoButtonsTemplate!)
+      fireEvent.click(getRequiredButton(twoButtonsTemplate, 'Two Buttons template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1261,7 +1272,9 @@ describe('MemeGeneratorPage', () => {
       const uploadButton = screen.getByRole('button', { name: /upload custom image/i })
       const fileInput = uploadButton.parentElement?.querySelector('input[type="file"]')
 
-      fireEvent.change(fileInput!, { target: { files: [file] } })
+      fireEvent.change(getRequiredFileInput(fileInput, 'Upload custom image'), {
+        target: { files: [file] },
+      })
 
       await act(async () => {
         vi.advanceTimersByTime(100)
@@ -1272,7 +1285,7 @@ describe('MemeGeneratorPage', () => {
 
       // Now select a template
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1287,7 +1300,7 @@ describe('MemeGeneratorPage', () => {
 
       // First select a template
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1298,7 +1311,9 @@ describe('MemeGeneratorPage', () => {
       const uploadButton = screen.getByRole('button', { name: /upload custom image/i })
       const fileInput = uploadButton.parentElement?.querySelector('input[type="file"]')
 
-      fireEvent.change(fileInput!, { target: { files: [file] } })
+      fireEvent.change(getRequiredFileInput(fileInput, 'Upload custom image'), {
+        target: { files: [file] },
+      })
 
       await act(async () => {
         vi.advanceTimersByTime(100)
@@ -1315,7 +1330,9 @@ describe('MemeGeneratorPage', () => {
       const fileInput = uploadButton.parentElement?.querySelector('input[type="file"]')
 
       // Trigger change with no files
-      fireEvent.change(fileInput!, { target: { files: [] } })
+      fireEvent.change(getRequiredFileInput(fileInput, 'Upload custom image'), {
+        target: { files: [] },
+      })
 
       await act(async () => {
         vi.advanceTimersByTime(50)
@@ -1350,7 +1367,7 @@ describe('MemeGeneratorPage', () => {
       render(<MemeGeneratorPage />)
 
       const drakeTemplate = screen.getByText('Drake Hotline Bling').closest('button')
-      fireEvent.click(drakeTemplate!)
+      fireEvent.click(getRequiredButton(drakeTemplate, 'Drake Hotline Bling template'))
 
       await act(async () => {
         vi.advanceTimersByTime(50)

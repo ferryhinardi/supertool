@@ -30,8 +30,13 @@ const createMockContext = () => ({
 // Setup canvas mock before each test
 beforeEach(() => {
   const mockContext = createMockContext()
-  // biome-ignore lint/suspicious/noExplicitAny: Canvas prototype mock requires any cast
-  HTMLCanvasElement.prototype.getContext = vi.fn(() => mockContext) as any
+  Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+    value: vi.fn((contextId: string) =>
+      contextId === '2d' ? (mockContext as unknown as CanvasRenderingContext2D) : null
+    ),
+    configurable: true,
+    writable: true,
+  })
 })
 
 describe('WatermarkPreview', () => {
@@ -158,9 +163,14 @@ describe('WatermarkPreview', () => {
 
   describe('canvas drawing', () => {
     it('should call getContext on mount', () => {
-      const mockGetContext = vi.fn(() => createMockContext())
-      // biome-ignore lint/suspicious/noExplicitAny: Canvas prototype mock requires any cast
-      HTMLCanvasElement.prototype.getContext = mockGetContext as any
+      const mockGetContext = vi.fn((contextId: string) =>
+        contextId === '2d' ? (createMockContext() as unknown as CanvasRenderingContext2D) : null
+      )
+      Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+        value: mockGetContext,
+        configurable: true,
+        writable: true,
+      })
 
       render(<WatermarkPreview {...defaultProps} />)
       expect(mockGetContext).toHaveBeenCalledWith('2d')

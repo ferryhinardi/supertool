@@ -667,7 +667,6 @@ describe('Character Map Templates', () => {
   describe('Edge Cases and Data Integrity', () => {
     it('should not have duplicate characters across categories', () => {
       const allChars = getAllCharacters()
-      const charSet = new Set(allChars.map((c) => c.char))
       // Some characters might appear in multiple categories, so we check for exact duplicates
       const charCodeSet = new Set(allChars.map((c) => `${c.char}-${c.code}`))
       expect(charCodeSet.size).toBe(allChars.length)

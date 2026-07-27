@@ -46,8 +46,14 @@ const mockCanvasContext = {
   putImageData: vi.fn(),
   canvas: { toBlob: vi.fn((cb) => cb(new Blob())) },
 }
-// biome-ignore lint/suspicious/noExplicitAny: Canvas context mock requires flexible typing for test environment
-HTMLCanvasElement.prototype.getContext = vi.fn(() => mockCanvasContext) as any
+
+Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+  value: vi.fn((contextId: string) =>
+    contextId === '2d' ? (mockCanvasContext as unknown as CanvasRenderingContext2D) : null
+  ),
+  configurable: true,
+  writable: true,
+})
 
 // Mock URL.createObjectURL and revokeObjectURL
 global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')

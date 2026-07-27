@@ -302,6 +302,35 @@ describe('AI JSON Analyzer - Analysis Tests', () => {
     }
   })
 
+  it('should normalize string analysis sections returned by the API', async () => {
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse({
+        summary: 'Test summary of JSON data',
+        structure: 'Test structure analysis',
+        patterns: 'Test patterns detected',
+        insights: 'Test insights and recommendations',
+        relationships: 'Test relationships between fields',
+        usage: { total_tokens: 150 },
+      })
+    )
+
+    render(<AIJSONAnalyzerPage />)
+
+    const textarea = screen.getByPlaceholderText(/users.*id.*name.*Alice/i)
+    fireEvent.change(textarea, { target: { value: '{"test": "data"}' } })
+
+    const analyzeButton = screen.getByRole('button', { name: /Analyze JSON/i })
+    await userEvent.click(analyzeButton)
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith('JSON analyzed successfully!')
+    })
+
+    expect(screen.getByText('Test patterns detected')).toBeInTheDocument()
+    expect(screen.getByText('Test insights and recommendations')).toBeInTheDocument()
+    expect(screen.getByText('Test relationships between fields')).toBeInTheDocument()
+  })
+
   it('should track analytics on successful analysis', async () => {
     mockFetch.mockResolvedValueOnce(
       createMockResponse({
@@ -607,6 +636,30 @@ describe('AI JSON Analyzer - Copy Functionality Tests', () => {
         })
       }
     }
+  })
+
+  it('should show a helpful error for oversized payload responses', async () => {
+    mockFetch.mockResolvedValueOnce(
+      createMockResponse(
+        { error: 'JSON payload is too large. Please reduce the size and try again.' },
+        false,
+        413
+      )
+    )
+
+    render(<AIJSONAnalyzerPage />)
+
+    const textarea = screen.getByPlaceholderText(/users.*id.*name.*Alice/i)
+    fireEvent.change(textarea, { target: { value: '{"test": "data"}' } })
+
+    const analyzeButton = screen.getByRole('button', { name: /Analyze JSON/i })
+    await userEvent.click(analyzeButton)
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'JSON payload is too large. Please reduce the size and try again.'
+      )
+    })
   })
 
   it('should track analytics when copying', async () => {

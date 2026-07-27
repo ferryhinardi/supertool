@@ -149,7 +149,7 @@ describe('POST /api/ai-cover-letter', () => {
       expect(mockRecordUsage).not.toHaveBeenCalled()
     })
 
-    it('should record usage after a successful authenticated AI request and return remaining quota', async () => {
+    it('should preserve reserved remaining quota for authenticated free-tier AI requests', async () => {
       mockCreate.mockResolvedValueOnce({
         choices: [{ message: { content: JSON.stringify({ opening: 'Premium-safe opening.' }) } }],
         usage: { prompt_tokens: 90, completion_tokens: 120, total_tokens: 210 },
@@ -181,12 +181,8 @@ describe('POST /api/ai-cover-letter', () => {
         freeQuotaPerDay: 3,
         ipAddress: '198.51.100.41',
       })
-      expect(mockRecordUsage).toHaveBeenCalledWith({
-        userId: 'user-123',
-        metricName: 'cover-letter-builder',
-        quantity: 1,
-      })
-      expect(data.remaining).toBe(2)
+      expect(mockRecordUsage).not.toHaveBeenCalled()
+      expect(data.remaining).toBe(3)
     })
 
     it('should allow subscribed users to bypass quota checks without decrementing remaining', async () => {

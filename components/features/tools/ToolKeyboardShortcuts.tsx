@@ -112,12 +112,8 @@ export function ToolKeyboardShortcuts({
         <>
           {/* Backdrop */}
           <div
-            role="button"
-            tabIndex={0}
+            aria-hidden="true"
             onClick={() => setIsOpen(false)}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape' || e.key === 'Enter') setIsOpen(false)
-            }}
             className={css({
               position: 'fixed',
               inset: '0',

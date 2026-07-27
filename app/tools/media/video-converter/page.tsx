@@ -80,10 +80,6 @@ export default function VideoConverterPage() {
       const ffmpeg = new FFmpeg()
       ffmpegRef.current = ffmpeg
 
-      ffmpeg.on('log', ({ message }) => {
-        console.log('[FFmpeg]', message)
-      })
-
       ffmpeg.on('progress', ({ progress }) => {
         // Update progress for current video
         setVideos((prev) =>

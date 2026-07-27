@@ -46,6 +46,7 @@ import { POST } from '../route'
 describe('AI JSON Analyze API Route', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.unstubAllEnvs()
     vi.stubEnv('OPENAI_API_KEY', 'test-api-key')
     mockCheckPremiumAccess.mockResolvedValue({
       allowed: true,
@@ -68,6 +69,21 @@ describe('AI JSON Analyze API Route', () => {
 
   describe('POST /api/ai-json-analyze', () => {
     describe('Input Validation', () => {
+      it('should return 413 when the request payload exceeds the configured limit', async () => {
+        vi.stubEnv('AI_JSON_ANALYZER_MAX_PAYLOAD_BYTES', '40')
+
+        const request = createRequest({
+          jsonData: { value: 'payload that is definitely too large' },
+        })
+
+        const response = await POST(request as never)
+        const data = await response.json()
+
+        expect(response.status).toBe(413)
+        expect(data.error).toContain('payload is too large')
+        expect(mockCreate).not.toHaveBeenCalled()
+      })
+
       it('should return 500 if OPENAI_API_KEY is not configured', async () => {
         vi.stubEnv('OPENAI_API_KEY', '')
 
@@ -156,9 +172,9 @@ describe('AI JSON Analyze API Route', () => {
         const mockAnalysis = {
           summary: 'This JSON represents a user profile with basic personal information.',
           structure: 'Single-level flat object with 3 string fields and 1 numeric field.',
-          patterns: 'Uses camelCase naming convention, all primitive types.',
-          insights: 'Consider adding validation for email format and age range.',
-          relationships: 'Name and email are independent, age could be derived from birthDate.',
+          patterns: ['Uses camelCase naming convention, all primitive types.'],
+          insights: ['Consider adding validation for email format and age range.'],
+          relationships: ['Name and email are independent, age could be derived from birthDate.'],
         }
 
         mockCreate.mockResolvedValueOnce({
@@ -184,10 +200,41 @@ describe('AI JSON Analyze API Route', () => {
         expect(response.status).toBe(200)
         expect(data.summary).toBe(mockAnalysis.summary)
         expect(data.structure).toBe(mockAnalysis.structure)
-        expect(data.patterns).toBe(mockAnalysis.patterns)
-        expect(data.insights).toBe(mockAnalysis.insights)
-        expect(data.relationships).toBe(mockAnalysis.relationships)
+        expect(data.patterns).toEqual(mockAnalysis.patterns)
+        expect(data.insights).toEqual(mockAnalysis.insights)
+        expect(data.relationships).toEqual(mockAnalysis.relationships)
         expect(data.usage).toBeDefined()
+      })
+
+      it('should normalize string analysis sections into arrays', async () => {
+        const mockAnalysis = {
+          summary: 'This JSON represents a user profile with basic personal information.',
+          structure: 'Single-level flat object with 3 string fields and 1 numeric field.',
+          patterns: 'Uses camelCase naming convention, all primitive types.',
+          insights: 'Consider adding validation for email format and age range.',
+          relationships: 'Name and email are independent, age could be derived from birthDate.',
+        }
+
+        mockCreate.mockResolvedValueOnce({
+          choices: [{ message: { content: JSON.stringify(mockAnalysis) } }],
+          usage: { prompt_tokens: 100, completion_tokens: 200, total_tokens: 300 },
+        })
+
+        const request = createRequest({
+          jsonData: {
+            name: 'John Doe',
+            email: 'john@example.com',
+            age: 30,
+          },
+        })
+
+        const response = await POST(request as never)
+        const data = await response.json()
+
+        expect(response.status).toBe(200)
+        expect(data.patterns).toEqual([mockAnalysis.patterns])
+        expect(data.insights).toEqual([mockAnalysis.insights])
+        expect(data.relationships).toEqual([mockAnalysis.relationships])
       })
 
       it('should return complete analysis for nested object', async () => {
@@ -320,9 +367,9 @@ describe('AI JSON Analyze API Route', () => {
         const data = await response.json()
 
         expect(response.status).toBe(200)
-        expect(data.patterns).toBe('No patterns detected.')
-        expect(data.insights).toBe('No insights available.')
-        expect(data.relationships).toBe('No relationships detected.')
+        expect(data.patterns).toEqual([])
+        expect(data.insights).toEqual([])
+        expect(data.relationships).toEqual([])
       })
     })
 
@@ -358,7 +405,7 @@ describe('AI JSON Analyze API Route', () => {
         expect(mockRecordUsage).not.toHaveBeenCalled()
       })
 
-      it('should record usage after a successful authenticated analysis and return remaining quota', async () => {
+      it('should preserve reserved remaining quota for authenticated free-tier analysis', async () => {
         const mockAnalysis = {
           summary: 'This JSON represents a user profile with basic personal information.',
           structure: 'Single-level flat object with 3 string fields and 1 numeric field.',
@@ -390,13 +437,9 @@ describe('AI JSON Analyze API Route', () => {
           freeQuotaPerDay: 8,
           ipAddress: '198.51.100.31',
         })
-        expect(mockRecordUsage).toHaveBeenCalledWith({
-          userId: 'user-123',
-          metricName: 'ai-json-analyzer',
-          quantity: 1,
-        })
+        expect(mockRecordUsage).not.toHaveBeenCalled()
         expect(response.status).toBe(200)
-        expect(data.remaining).toBe(7)
+        expect(data.remaining).toBe(8)
       })
 
       it('should allow subscribed users to bypass gating while preserving premium remaining quota', async () => {

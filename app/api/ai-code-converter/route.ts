@@ -6,6 +6,7 @@ import type {
 } from '@/app/tools/development/ai-code-converter/templates'
 import { generateSystemPrompt } from '@/app/tools/development/ai-code-converter/templates'
 import { getSupabaseServer } from '@/lib/auth/supabaseServer'
+import { getClientIdentifier } from '@/lib/services/api/rate-limiter'
 import { checkPremiumAccess, recordUsage } from '@/lib/services/premium-gate'
 
 // Initialize OpenAI client
@@ -16,9 +17,8 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   try {
     const authorizationHeader = request.headers.get('authorization')
-    const forwardedFor = request.headers.get('x-forwarded-for')
-    const realIp = request.headers.get('x-real-ip')
-    const ipAddress = forwardedFor?.split(',')[0]?.trim() || realIp || undefined
+    const clientIdentifier = getClientIdentifier(request)
+    const ipAddress = clientIdentifier === 'unknown' ? undefined : clientIdentifier
 
     let userId: string | undefined
 
@@ -171,7 +171,7 @@ Convert it to ${targetLanguage}.`
         : undefined,
     }
 
-    if (userId) {
+    if (userId && premiumAccess.reason === 'subscription') {
       await recordUsage({
         userId,
         metricName: 'ai-code-converter',
@@ -179,14 +179,9 @@ Convert it to ${targetLanguage}.`
       })
     }
 
-    const remainingAfterUsage =
-      userId && premiumAccess.reason === 'within-quota'
-        ? Math.max(0, premiumAccess.remaining - 1)
-        : premiumAccess.remaining
-
     return NextResponse.json({
       ...result,
-      remaining: remainingAfterUsage,
+      remaining: premiumAccess.remaining,
     })
   } catch (error: unknown) {
     console.error('Error converting code:', error)

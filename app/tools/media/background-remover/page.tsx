@@ -5,7 +5,6 @@ import {
   CheckCircle,
   Download,
   ImageIcon,
-  Lightbulb,
   RefreshCw,
   Sparkles,
   Trash2,
@@ -16,7 +15,6 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 

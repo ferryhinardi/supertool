@@ -16,7 +16,6 @@ import {
   Globe,
   History,
   Image as ImageIcon,
-  Lightbulb,
   Link,
   Mail,
   MapPin,

@@ -712,10 +712,7 @@ export default function ResumeBuilderPage() {
                     resume={resume}
                     onApplySummary={handleApplyAISummary}
                     onAnalyticsEvent={(event, data) =>
-                      trackToolEvent(
-                        event as Parameters<typeof trackToolEvent>[0],
-                        sanitizeAnalyticsPayload(data)
-                      )
+                      trackToolEvent(event, sanitizeAnalyticsPayload(data))
                     }
                   />
                 </div>

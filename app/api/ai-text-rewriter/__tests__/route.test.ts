@@ -113,7 +113,7 @@ describe('AI Text Rewriter API Route', () => {
       })
     })
 
-    it('records usage after a successful authenticated rewrite and returns remaining quota', async () => {
+    it('preserves reserved remaining quota for authenticated free-tier rewrites', async () => {
       mockCreate.mockResolvedValueOnce({
         choices: [
           {
@@ -143,7 +143,7 @@ describe('AI Text Rewriter API Route', () => {
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.remaining).toBe(4)
+      expect(data.remaining).toBe(5)
       expect(mockGetUser).toHaveBeenCalledWith('valid-token')
       expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
         userId: 'user-123',
@@ -151,11 +151,7 @@ describe('AI Text Rewriter API Route', () => {
         freeQuotaPerDay: 5,
         ipAddress: '198.51.100.8',
       })
-      expect(mockRecordUsage).toHaveBeenCalledWith({
-        userId: 'user-123',
-        metricName: 'ai-text-rewriter',
-        quantity: 1,
-      })
+      expect(mockRecordUsage).not.toHaveBeenCalled()
     })
     describe('Environment Configuration', () => {
       it('should return 500 if OPENAI_API_KEY is not configured', async () => {

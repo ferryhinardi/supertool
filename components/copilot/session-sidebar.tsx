@@ -470,20 +470,6 @@ function SessionItem({
 
   return (
     <div
-      role="button"
-      tabIndex={isEditing ? -1 : 0}
-      onClick={isEditing ? undefined : onSelect}
-      onKeyDown={
-        isEditing
-          ? undefined
-          : (e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                onSelect()
-              }
-            }
-      }
-      onMouseEnter={onHover}
       className={css({
         w: 'full',
         textAlign: 'left',
@@ -493,6 +479,7 @@ function SessionItem({
         transition: 'all 0.2s',
         bg: isActive ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
         borderLeft: isActive ? '2px solid rgb(59, 130, 246)' : '2px solid transparent',
+        position: 'relative',
         _hover: {
           bg: isActive ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.05)',
         },
@@ -563,13 +550,26 @@ function SessionItem({
           </div>
         </div>
       ) : (
-        <>
-          <div
+        <div
+          className={css({
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: '2',
+          })}
+        >
+          <button
+            type="button"
+            onClick={onSelect}
+            onMouseEnter={onHover}
             className={css({
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'space-between',
-              gap: '2',
+              flex: '1',
+              minW: '0',
+              bg: 'transparent',
+              border: 'none',
+              p: '0',
+              textAlign: 'left',
+              cursor: 'pointer',
             })}
           >
             <div className={css({ flex: '1', minW: '0' })}>
@@ -599,106 +599,106 @@ function SessionItem({
                   <HighlightText text={session.preview} query={searchQuery} />
                 </p>
               )}
-            </div>
 
-            {/* Action buttons */}
-            <div
-              className={css({
-                display: 'flex',
-                gap: '1',
-                opacity: '0',
-                transition: 'opacity 0.2s',
-                _groupHover: { opacity: '1' },
-              })}
-              style={{ opacity: isActive ? 1 : undefined }}
-            >
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onExport()
-                }}
-                disabled={isExporting}
+              {/* Meta info */}
+              <div
                 className={css({
-                  p: '1',
-                  rounded: 'md',
-                  color: 'rgba(255, 255, 255, 0.5)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  _hover: {
-                    color: 'rgba(167, 139, 250, 1)',
-                    bg: 'rgba(139, 92, 246, 0.1)',
-                  },
-                  _disabled: {
-                    opacity: 0.5,
-                    cursor: 'not-allowed',
-                  },
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  mt: '1',
+                  fontSize: 'xs',
+                  color: 'rgba(255, 255, 255, 0.4)',
                 })}
-                aria-label="Export session as Markdown"
               >
-                {isExporting ? <LoadingSpinner /> : <DownloadIcon />}
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onStartRename()
-                }}
-                className={css({
-                  p: '1',
-                  rounded: 'md',
-                  color: 'rgba(255, 255, 255, 0.5)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  _hover: {
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    bg: 'rgba(255, 255, 255, 0.1)',
-                  },
-                })}
-                aria-label="Rename session"
-              >
-                <EditIcon />
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onDeleteConfirm()
-                }}
-                className={css({
-                  p: '1',
-                  rounded: 'md',
-                  color: 'rgba(255, 255, 255, 0.5)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  _hover: {
-                    color: 'rgb(252, 165, 165)',
-                    bg: 'rgba(239, 68, 68, 0.1)',
-                  },
-                })}
-                aria-label="Delete session"
-              >
-                <TrashIcon />
-              </button>
+                <span>{session.messageCount} messages</span>
+                <span>•</span>
+                <span>{formatDate(session.updatedAt)}</span>
+              </div>
             </div>
-          </div>
+          </button>
 
-          {/* Meta info */}
+          {/* Action buttons */}
           <div
             className={css({
               display: 'flex',
-              alignItems: 'center',
-              gap: '2',
-              mt: '1',
-              fontSize: 'xs',
-              color: 'rgba(255, 255, 255, 0.4)',
+              gap: '1',
+              opacity: '0',
+              transition: 'opacity 0.2s',
+              _groupHover: { opacity: '1' },
             })}
+            style={{ opacity: isActive ? 1 : undefined }}
           >
-            <span>{session.messageCount} messages</span>
-            <span>•</span>
-            <span>{formatDate(session.updatedAt)}</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                onExport()
+              }}
+              disabled={isExporting}
+              className={css({
+                p: '1',
+                rounded: 'md',
+                color: 'rgba(255, 255, 255, 0.5)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                _hover: {
+                  color: 'rgba(167, 139, 250, 1)',
+                  bg: 'rgba(139, 92, 246, 0.1)',
+                },
+                _disabled: {
+                  opacity: 0.5,
+                  cursor: 'not-allowed',
+                },
+              })}
+              aria-label="Export session as Markdown"
+            >
+              {isExporting ? <LoadingSpinner /> : <DownloadIcon />}
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                onStartRename()
+              }}
+              className={css({
+                p: '1',
+                rounded: 'md',
+                color: 'rgba(255, 255, 255, 0.5)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                _hover: {
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  bg: 'rgba(255, 255, 255, 0.1)',
+                },
+              })}
+              aria-label="Rename session"
+            >
+              <EditIcon />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                onDeleteConfirm()
+              }}
+              className={css({
+                p: '1',
+                rounded: 'md',
+                color: 'rgba(255, 255, 255, 0.5)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                _hover: {
+                  color: 'rgb(252, 165, 165)',
+                  bg: 'rgba(239, 68, 68, 0.1)',
+                },
+              })}
+              aria-label="Delete session"
+            >
+              <TrashIcon />
+            </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   )
@@ -716,7 +716,7 @@ function LoadingState() {
     >
       {[1, 2, 3].map((i) => (
         <div
-          key={i}
+          key={`skeleton-${i}`}
           className={css({
             p: '3',
             rounded: 'lg',
@@ -882,13 +882,18 @@ function HighlightText({ text, query }: { text: string; query?: string }) {
   const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const regex = new RegExp(`(${escapedQuery})`, 'gi')
   const parts = text.split(regex)
+  let currentOffset = 0
 
   return (
     <>
-      {parts.map((part, index) =>
-        part.toLowerCase() === query.toLowerCase() ? (
+      {parts.map((part) => {
+        const partOffset = currentOffset
+        const partKey = `${partOffset}-${part}`
+        currentOffset += part.length
+
+        return part.toLowerCase() === query.toLowerCase() ? (
           <mark
-            key={index}
+            key={partKey}
             className={css({
               bg: 'rgba(59, 130, 246, 0.3)',
               color: 'rgb(191, 219, 254)',
@@ -901,7 +906,7 @@ function HighlightText({ text, query }: { text: string; query?: string }) {
         ) : (
           part
         )
-      )}
+      })}
     </>
   )
 }

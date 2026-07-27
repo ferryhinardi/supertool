@@ -61,6 +61,13 @@ export default function DonationForm() {
       return
     }
 
+    const donationProductId = process.env.NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID
+
+    if (!donationProductId) {
+      setError('Donation checkout is not configured right now. Please contact support.')
+      return
+    }
+
     trackToolEvent('support_cta_clicked', {
       tier: selectedTier?.id ?? 'custom',
       source: 'support_page_checkout',
@@ -76,17 +83,31 @@ export default function DonationForm() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          productId: process.env.NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID,
+          productId: donationProductId,
           amount: amountCents,
         }),
       })
 
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to create checkout')
+        let errorMessage = 'Failed to create checkout'
+
+        try {
+          const data = (await response.json()) as { error?: string }
+          errorMessage = data.error || errorMessage
+        } catch {
+          // Fall back to the default checkout error message when the response is malformed.
+        }
+
+        throw new Error(errorMessage)
       }
 
-      const data = await response.json()
+      let data: { url?: string }
+
+      try {
+        data = (await response.json()) as { url?: string }
+      } catch {
+        throw new Error('Failed to read checkout response')
+      }
 
       // Redirect to Polar checkout
       if (data.url) {

@@ -33,6 +33,14 @@ interface ParsedLine {
   newLineNumber?: number
 }
 
+function getParsedLineKey(line: ParsedLine, index: number) {
+  if (line.type === 'header') {
+    return `header-${line.content}-${index}`
+  }
+
+  return `${line.type}-${line.oldLineNumber ?? 'none'}-${line.newLineNumber ?? 'none'}-${line.content}`
+}
+
 type FileStatusFilter = 'all' | 'added' | 'modified' | 'removed' | 'renamed'
 
 // ============================================
@@ -529,20 +537,7 @@ function DiffFile({ file, isExpanded, isSelected, onToggle, onSelect }: DiffFile
           p: '3',
           bg: isSelected ? 'rgba(59, 130, 246, 0.1)' : 'rgba(0, 0, 0, 0.3)',
           borderBottom: isExpanded ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
-          cursor: 'pointer',
-          _hover: {
-            bg: isSelected ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.4)',
-          },
         })}
-        onClick={onSelect}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            onSelect()
-          }
-        }}
-        role="button"
-        tabIndex={0}
       >
         {/* Expand/Collapse Toggle */}
         <button
@@ -566,98 +561,120 @@ function DiffFile({ file, isExpanded, isSelected, onToggle, onSelect }: DiffFile
         </button>
 
         {/* Status Icon */}
-        <span style={{ color: statusInfo.color }}>{statusInfo.icon}</span>
+        <button
+          type="button"
+          onClick={onSelect}
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2',
+            flex: '1',
+            minW: '0',
+            textAlign: 'left',
+            cursor: 'pointer',
+            rounded: 'md',
+            bg: 'transparent',
+            border: 'none',
+            p: '0',
+            _hover: {
+              bg: isSelected ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.4)',
+            },
+          })}
+          aria-pressed={isSelected}
+        >
+          <span style={{ color: statusInfo.color }}>{statusInfo.icon}</span>
 
-        {/* Filename */}
-        <div className={css({ flex: '1', minW: '0' })}>
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1',
-            })}
-          >
-            <span
+          {/* Filename */}
+          <div className={css({ flex: '1', minW: '0' })}>
+            <div
               className={css({
-                fontSize: 'sm',
-                fontWeight: 'medium',
-                color: isSelected ? 'rgb(147, 197, 253)' : 'rgba(255, 255, 255, 0.9)',
-                truncate: true,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1',
               })}
             >
-              {fileName}
-            </span>
-            {file.previous_filename && (
+              <span
+                className={css({
+                  fontSize: 'sm',
+                  fontWeight: 'medium',
+                  color: isSelected ? 'rgb(147, 197, 253)' : 'rgba(255, 255, 255, 0.9)',
+                  truncate: true,
+                })}
+              >
+                {fileName}
+              </span>
+              {file.previous_filename && (
+                <span
+                  className={css({
+                    fontSize: 'xs',
+                    color: 'rgba(255, 255, 255, 0.4)',
+                  })}
+                >
+                  ← {getFileName(file.previous_filename)}
+                </span>
+              )}
+            </div>
+            {directory && (
               <span
                 className={css({
                   fontSize: 'xs',
                   color: 'rgba(255, 255, 255, 0.4)',
+                  truncate: true,
                 })}
               >
-                ← {getFileName(file.previous_filename)}
+                {directory}
               </span>
             )}
           </div>
-          {directory && (
+
+          {/* Stats */}
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '3',
+              flexShrink: 0,
+            })}
+          >
             <span
               className={css({
                 fontSize: 'xs',
-                color: 'rgba(255, 255, 255, 0.4)',
-                truncate: true,
+                color: 'rgb(34, 197, 94)',
+                fontWeight: 'medium',
               })}
             >
-              {directory}
+              +{file.additions}
             </span>
-          )}
-        </div>
+            <span
+              className={css({
+                fontSize: 'xs',
+                color: 'rgb(239, 68, 68)',
+                fontWeight: 'medium',
+              })}
+            >
+              -{file.deletions}
+            </span>
+          </div>
 
-        {/* Stats */}
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            gap: '3',
-            flexShrink: 0,
-          })}
-        >
+          {/* Status Badge */}
           <span
             className={css({
+              px: '2',
+              py: '0.5',
+              rounded: 'full',
               fontSize: 'xs',
-              color: 'rgb(34, 197, 94)',
               fontWeight: 'medium',
+              flexShrink: 0,
             })}
+            style={{
+              backgroundColor: statusInfo.bgColor,
+              color: statusInfo.color,
+              border: `1px solid ${statusInfo.borderColor}`,
+            }}
           >
-            +{file.additions}
+            {statusInfo.label}
           </span>
-          <span
-            className={css({
-              fontSize: 'xs',
-              color: 'rgb(239, 68, 68)',
-              fontWeight: 'medium',
-            })}
-          >
-            -{file.deletions}
-          </span>
-        </div>
-
-        {/* Status Badge */}
-        <span
-          className={css({
-            px: '2',
-            py: '0.5',
-            rounded: 'full',
-            fontSize: 'xs',
-            fontWeight: 'medium',
-            flexShrink: 0,
-          })}
-          style={{
-            backgroundColor: statusInfo.bgColor,
-            color: statusInfo.color,
-            border: `1px solid ${statusInfo.borderColor}`,
-          }}
-        >
-          {statusInfo.label}
-        </span>
+        </button>
       </div>
 
       {/* Diff Content */}
@@ -669,10 +686,10 @@ function DiffFile({ file, isExpanded, isSelected, onToggle, onSelect }: DiffFile
           })}
         >
           {hunks.length > 0 ? (
-            hunks.map((hunk, hunkIndex) => (
-              <div key={hunkIndex}>
+            hunks.map((hunk) => (
+              <div key={`${hunk.oldStart}-${hunk.newStart}`}>
                 {hunk.lines.map((line, lineIndex) => (
-                  <DiffLine key={`${hunkIndex}-${lineIndex}`} line={line} />
+                  <DiffLine key={getParsedLineKey(line, lineIndex)} line={line} />
                 ))}
               </div>
             ))

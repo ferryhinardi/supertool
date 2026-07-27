@@ -1,7 +1,25 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { DragDropZone } from '../media/DragDropZone'
+
+function createDragEvent(type: string, files: File[] = []) {
+  const event = new Event(type, { bubbles: true, cancelable: true })
+
+  Object.defineProperty(event, 'dataTransfer', {
+    value: {
+      files,
+      items: files.map((file) => ({
+        kind: 'file',
+        type: file.type,
+        getAsFile: () => file,
+      })),
+      types: files.length > 0 ? ['Files'] : [],
+    },
+  })
+
+  return event
+}
 
 describe('DragDropZone', () => {
   const mockOnFilesSelected = vi.fn()
@@ -116,66 +134,53 @@ describe('DragDropZone', () => {
   })
 
   describe('Drag and Drop', () => {
-    it.skip('should change appearance on drag over', async () => {
-      // Skip: DragEvent not available in JSDOM
+    it('should change appearance on drag over', () => {
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} />)
 
       const dropzone = screen.getByRole('button')
-      const _file = new File(['test'], 'test.txt', { type: 'text/plain' })
 
-      // Simulate drag enter
-      await userEvent.pointer([{ target: dropzone, keys: '[MouseLeft>]', coords: { x: 0, y: 0 } }])
+      fireEvent(dropzone, createDragEvent('dragenter'))
 
-      // Should show "Drop your file here" text (this will be visible during drag)
-      // const dragEvent = new DragEvent('dragenter', {
-      //   bubbles: true,
-      //   cancelable: true,
-      //   dataTransfer: new DataTransfer(),
-      // })
-      // dropzone.dispatchEvent(dragEvent)
-
-      // Verify dragenter was handled
-      expect(dropzone).toBeInTheDocument()
+      expect(screen.getByText('Drop your file here')).toBeInTheDocument()
+      expect(screen.queryByText('Click to upload')).not.toBeInTheDocument()
     })
 
-    it.skip('should handle file drop', async () => {
-      // Skip: DragEvent/DataTransfer not available in JSDOM
+    it('should reset drag appearance on drag leave', () => {
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} />)
 
-      const _dropzone = screen.getByRole('button')
-      const _file = new File(['test'], 'test.txt', { type: 'text/plain' })
+      const dropzone = screen.getByRole('button')
 
-      // const dataTransfer = new DataTransfer()
-      // dataTransfer.items.add(file)
+      fireEvent(dropzone, createDragEvent('dragenter'))
+      expect(screen.getByText('Drop your file here')).toBeInTheDocument()
 
-      // const dropEvent = new DragEvent('drop', {
-      //   bubbles: true,
-      //   cancelable: true,
-      //   dataTransfer,
-      // })
+      fireEvent(dropzone, createDragEvent('dragleave'))
 
-      // dropzone.dispatchEvent(dropEvent)
-
-      expect(mockOnFilesSelected).toHaveBeenCalledTimes(1)
+      expect(screen.getByText('Click to upload')).toBeInTheDocument()
+      expect(screen.queryByText('Drop your file here')).not.toBeInTheDocument()
     })
 
-    it.skip('should not handle drop when disabled', () => {
-      // Skip: DragEvent/DataTransfer not available in JSDOM
+    it('should handle file drop', () => {
+      render(<DragDropZone onFilesSelected={mockOnFilesSelected} />)
+
+      const dropzone = screen.getByRole('button')
+      const file = new File(['test'], 'test.txt', { type: 'text/plain' })
+
+      fireEvent(dropzone, createDragEvent('dragenter'))
+      fireEvent(dropzone, createDragEvent('drop', [file]))
+
+      expect(mockOnFilesSelected).toHaveBeenCalledTimes(1)
+      expect(mockOnFilesSelected.mock.calls[0][0]).toHaveLength(1)
+      expect(mockOnFilesSelected.mock.calls[0][0][0]).toBe(file)
+      expect(screen.getByText('Click to upload')).toBeInTheDocument()
+    })
+
+    it('should not handle drop when disabled', () => {
       render(<DragDropZone onFilesSelected={mockOnFilesSelected} disabled />)
 
-      const _dropzone = screen.getByRole('button')
-      const _file = new File(['test'], 'test.txt', { type: 'text/plain' })
+      const dropzone = screen.getByRole('button')
+      const file = new File(['test'], 'test.txt', { type: 'text/plain' })
 
-      // const dataTransfer = new DataTransfer()
-      // dataTransfer.items.add(file)
-
-      // const dropEvent = new DragEvent('drop', {
-      //   bubbles: true,
-      //   cancelable: true,
-      //   dataTransfer,
-      // })
-
-      // dropzone.dispatchEvent(dropEvent)
+      fireEvent(dropzone, createDragEvent('drop', [file]))
 
       expect(mockOnFilesSelected).not.toHaveBeenCalled()
     })

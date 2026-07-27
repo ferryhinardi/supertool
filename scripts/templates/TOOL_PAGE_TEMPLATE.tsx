@@ -36,12 +36,12 @@ export default function ToolPageTemplate() {
 
     setIsLoading(true)
     try {
-      // TODO: Replace 'json_beautify' with your actual tool event
+      // Example analytics event. Rename this when creating a real tool page.
       trackToolEvent('json_beautify', {
         success: true,
         input_length: input.length,
       })
-      // TODO: Add your processing logic here
+      // Example placeholder result. Replace with the tool's actual processing flow.
       setOutput('Processed result')
       toast.success('Success!')
     } catch (error) {
@@ -57,7 +57,7 @@ export default function ToolPageTemplate() {
     try {
       await navigator.clipboard.writeText(output)
       toast.success('Copied to clipboard!')
-      // TODO: Replace 'json_copy' with your actual tool event
+      // Example analytics event. Rename this when creating a real tool page.
       trackToolEvent('json_copy', { length: output.length })
     } catch {
       toast.error('Failed to copy')
@@ -67,8 +67,8 @@ export default function ToolPageTemplate() {
   const handleReset = () => {
     setInput('')
     setOutput('')
-    // TODO: Replace with your actual tool event
-    trackToolEvent('json_beautify', {})
+    // Example analytics event. Rename this when creating a real tool page.
+    trackToolEvent('json_history_clear', {})
   }
 
   return (

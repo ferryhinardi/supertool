@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { getSupabaseServer } from '@/lib/auth/supabaseServer'
+import { getClientIdentifier } from '@/lib/services/api/rate-limiter'
 import { checkPremiumAccess, recordUsage } from '@/lib/services/premium-gate'
 
 // Initialize OpenAI client
@@ -11,9 +12,8 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization')
-    const forwardedFor = request.headers.get('x-forwarded-for')
-    const realIp = request.headers.get('x-real-ip')
-    const ipAddress = forwardedFor?.split(',')[0]?.trim() || realIp || undefined
+    const clientIdentifier = getClientIdentifier(request)
+    const ipAddress = clientIdentifier === 'unknown' ? undefined : clientIdentifier
 
     let userId: string | undefined
 
@@ -191,7 +191,7 @@ Industry/Company Context: ${data.companyName || 'corporate'} - ${data.department
 
     const parsedResult = JSON.parse(result)
 
-    if (userId) {
+    if (userId && premiumAccess.reason === 'subscription') {
       await recordUsage({
         userId,
         metricName: 'cover-letter-builder',
@@ -199,15 +199,10 @@ Industry/Company Context: ${data.companyName || 'corporate'} - ${data.department
       })
     }
 
-    const remainingAfterUsage =
-      userId && premiumAccess.reason === 'within-quota'
-        ? Math.max(0, premiumAccess.remaining - 1)
-        : premiumAccess.remaining
-
     return NextResponse.json({
       success: true,
       data: parsedResult,
-      remaining: remainingAfterUsage,
+      remaining: premiumAccess.remaining,
     })
   } catch (error) {
     console.error('AI Cover Letter API error:', error)

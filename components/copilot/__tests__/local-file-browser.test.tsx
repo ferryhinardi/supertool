@@ -224,7 +224,6 @@ describe('LocalFileBrowser', () => {
     })
 
     it('allows selecting multiple files in multiSelect mode', async () => {
-      const user = userEvent.setup()
       const onFilesSelect = vi.fn()
       render(
         <LocalFileBrowser files={mockFiles} onFilesSelect={onFilesSelect} multiSelect={true} />

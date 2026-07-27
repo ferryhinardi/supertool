@@ -89,17 +89,11 @@ function SpeedTestContent() {
   }
 
   const measureDownloadSpeed = async (): Promise<number> => {
-    console.log('▶ measureDownloadSpeed() called')
     const fileSizes = [100, 500, 1000, 2000] // KB
     const speeds: number[] = []
 
-    console.log('Download test: Testing with file sizes:', fileSizes, 'KB')
-
     for (let i = 0; i < fileSizes.length; i++) {
       const size = fileSizes[i] * 1024 // Convert to bytes
-      console.log(
-        `Download test: Starting test for ${fileSizes[i]} KB (${i + 1}/${fileSizes.length})`
-      )
 
       try {
         // Use actual network requests to measure download speed
@@ -108,7 +102,6 @@ function SpeedTestContent() {
 
         for (let j = 0; j < iterations; j++) {
           try {
-            console.log(`  Iteration ${j + 1}/${iterations} for ${fileSizes[i]} KB`)
             const start = performance.now()
 
             // Try multiple endpoints with shorter timeout (3s instead of 10s)
@@ -142,9 +135,6 @@ function SpeedTestContent() {
               // Ensure we have a minimum duration to avoid division by very small numbers
               if (durationSeconds > 0.01) {
                 const speedMbps = (size * 8) / (durationSeconds * 1000000)
-                console.log(
-                  `  Speed: ${speedMbps.toFixed(2)} Mbps (${durationSeconds.toFixed(2)}s)`
-                )
                 iterationSpeeds.push(speedMbps)
               }
             } catch (fetchError) {
@@ -165,7 +155,6 @@ function SpeedTestContent() {
                 // Apply a scaling factor to simulate network conditions
                 const rawSpeed = (size * 8) / (fallbackDuration * 1000000)
                 const scaledSpeed = Math.min(rawSpeed * 0.1, 100) // Scale down and cap at 100 Mbps
-                console.log(`  Fallback speed: ${scaledSpeed.toFixed(2)} Mbps (simulated)`)
                 iterationSpeeds.push(scaledSpeed)
               }
             }
@@ -182,7 +171,6 @@ function SpeedTestContent() {
           const cappedSpeed = Math.min(avgSpeed, 1000)
           speeds.push(cappedSpeed)
           setDownloadSpeed(cappedSpeed)
-          console.log(`File size ${fileSizes[i]} KB average: ${cappedSpeed.toFixed(2)} Mbps`)
         } else {
           console.warn(`No valid speeds recorded for ${fileSizes[i]} KB`)
         }
@@ -195,27 +183,19 @@ function SpeedTestContent() {
     }
 
     const finalSpeed = speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
-    console.log('◀ measureDownloadSpeed() returning:', finalSpeed.toFixed(2), 'Mbps')
     // Return average or 0 if no valid measurements
     return finalSpeed
   }
 
   const measureUploadSpeed = async (): Promise<number> => {
-    console.log('▶ measureUploadSpeed() called - VERSION 2024-11-01-v2')
     const fileSizes = [100, 500, 1000] // KB
     const speeds: number[] = []
 
-    console.log('Upload test: Testing with file sizes:', fileSizes, 'KB')
-
     for (let i = 0; i < fileSizes.length; i++) {
       const size = fileSizes[i] * 1024
-      console.log(
-        `Upload test: Starting test for ${fileSizes[i]} KB (${i + 1}/${fileSizes.length})`
-      )
 
       // Update progress immediately when starting each file size test
       const startProgress = (i / fileSizes.length) * 100
-      console.log(`Upload progress: ${startProgress.toFixed(0)}%`)
       setProgress(startProgress)
 
       try {
@@ -225,28 +205,20 @@ function SpeedTestContent() {
 
         for (let j = 0; j < iterations; j++) {
           try {
-            console.log(`  Iteration ${j + 1}/${iterations} for ${fileSizes[i]} KB`)
-
             // Generate random data to upload
-            console.log('    Generating random data...')
             const randomData = generateRandomData(size)
-            console.log('    Creating blob...')
             const blob = new Blob([randomData])
-            console.log(`    Blob created: ${blob.size} bytes`)
 
             const start = performance.now()
 
             // Upload with 10s timeout (increased from 3s)
-            console.log('    Setting up abort controller...')
             const controller = new AbortController()
             const timeoutId = setTimeout(() => {
               console.warn(`  Upload timeout after 10s for ${fileSizes[i]} KB`)
               controller.abort()
             }, 10000) // 10s timeout
-            console.log('    Abort controller ready')
 
             try {
-              console.log(`  Uploading to httpbin.org...`)
               // Upload to httpbin which echoes back the data
               const response = await fetch('https://httpbin.org/post', {
                 method: 'POST',
@@ -271,18 +243,11 @@ function SpeedTestContent() {
               // Ensure minimum duration
               if (durationSeconds > 0.01) {
                 const speedMbps = (size * 8) / (durationSeconds * 1000000)
-                console.log(
-                  `  Speed: ${speedMbps.toFixed(2)} Mbps (${durationSeconds.toFixed(2)}s)`
-                )
                 iterationSpeeds.push(speedMbps)
               }
             } catch (fetchError) {
               clearTimeout(timeoutId)
               console.error(`  httpbin.org failed for upload:`, fetchError)
-              console.log(`  Error details:`, {
-                name: (fetchError as Error)?.name,
-                message: (fetchError as Error)?.message,
-              })
               console.warn(`  Using fallback method for ${fileSizes[i]} KB`)
 
               // Fallback: Use download speed as a baseline
@@ -300,9 +265,6 @@ function SpeedTestContent() {
                 const rawSpeed = (size * 8) / (fallbackDuration * 1000000)
                 // Scale to 30-50% of raw speed to simulate upload being slower than download
                 const scaledSpeed = Math.min(rawSpeed * 0.4, 50) // 40% of raw speed, cap at 50 Mbps
-                console.log(
-                  `  Fallback speed: ${scaledSpeed.toFixed(2)} Mbps (simulated, ~40% of download)`
-                )
                 iterationSpeeds.push(scaledSpeed)
               } else {
                 console.warn(`  Fallback duration too short, skipping`)
@@ -326,7 +288,6 @@ function SpeedTestContent() {
           const cappedSpeed = Math.min(avgSpeed, 500)
           speeds.push(cappedSpeed)
           setUploadSpeed(cappedSpeed)
-          console.log(`File size ${fileSizes[i]} KB average: ${cappedSpeed.toFixed(2)} Mbps`)
         } else {
           console.warn(`No valid speeds recorded for ${fileSizes[i]} KB`)
         }
@@ -337,14 +298,10 @@ function SpeedTestContent() {
 
       // Update progress after completing each file size test
       const endProgress = ((i + 1) / fileSizes.length) * 100
-      console.log(
-        `Upload progress: ${endProgress.toFixed(0)}% (completed ${i + 1}/${fileSizes.length})`
-      )
       setProgress(endProgress)
     }
 
     const finalSpeed = speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0
-    console.log('◀ measureUploadSpeed() returning:', finalSpeed.toFixed(2), 'Mbps')
     // Set final progress to 100%
     setProgress(100)
     // Return average or 0 if no valid measurements
@@ -352,7 +309,6 @@ function SpeedTestContent() {
   }
 
   const runSpeedTest = async () => {
-    console.log('🚀 runSpeedTest() started')
     let measuredLatency = 0
     let measuredJitter = 0
     let downloadSpeedResult = 0
@@ -371,7 +327,6 @@ function SpeedTestContent() {
 
       // Measure latency
       try {
-        console.log('=== PHASE 1: Starting latency test ===')
         setPhase('latency')
         setProgress(0)
         const latencyResult = await measureLatency()
@@ -379,7 +334,6 @@ function SpeedTestContent() {
         measuredJitter = latencyResult.jitter
         setLatency(measuredLatency)
         setJitter(measuredJitter)
-        console.log('✓ Latency test completed:', measuredLatency.toFixed(2), 'ms')
         toast.success(
           `Latency: ${measuredLatency.toFixed(0)}ms | Jitter: ${measuredJitter.toFixed(0)}ms`
         )
@@ -393,7 +347,6 @@ function SpeedTestContent() {
 
       // Measure download speed
       try {
-        console.log('=== PHASE 2: Starting download test ===')
         setPhase('download')
         setProgress(0)
 
@@ -407,52 +360,32 @@ function SpeedTestContent() {
         })
 
         downloadSpeedResult = await Promise.race([downloadPromise, timeoutPromise])
-        console.log('✓ Download test completed:', downloadSpeedResult.toFixed(2), 'Mbps')
         toast.success(`Download speed: ${downloadSpeedResult.toFixed(2)} Mbps`)
-        console.log('DEBUG: Toast for download completed, about to continue')
       } catch (downloadError) {
         console.error('✗ Download test failed, but continuing:', downloadError)
         // Continue anyway with 0 speed
       }
-      console.log('DEBUG: Exited download test try-catch block')
 
       // Small delay between phases for better UX
-      console.log('=== Waiting 500ms before upload test ===')
-      console.log('DEBUG: About to wait 500ms...')
       await new Promise((resolve) => setTimeout(resolve, 500))
-      console.log('DEBUG: 500ms wait completed')
-      console.log('DEBUG: *** CHECKPOINT BEFORE UPLOAD TEST ***')
 
       // Measure upload speed - ALWAYS RUN THIS
       // Wrap in a self-executing function to avoid any state update blocking
-      console.log('DEBUG: About to execute upload test section')
-      console.log('DEBUG: Current phase:', phase)
-      console.log('DEBUG: Download result:', downloadSpeedResult)
-
       uploadSpeedResult = await (async () => {
-        console.log('DEBUG: Inside upload test IIFE')
         try {
-          console.log('=== PHASE 3: Starting upload test ===')
-
           // Update UI in a non-blocking way with error handling
           try {
-            console.log('DEBUG: About to call setPhase(upload)')
             setTimeout(() => {
               try {
-                console.log('DEBUG: Setting phase to upload in setTimeout')
                 setPhase('upload')
-                console.log('DEBUG: setPhase(upload) succeeded')
               } catch (e) {
                 console.error('DEBUG: setPhase(upload) failed:', e)
               }
             }, 0)
 
-            console.log('DEBUG: About to call setProgress(0)')
             setTimeout(() => {
               try {
-                console.log('DEBUG: Setting progress to 0 in setTimeout')
                 setProgress(0)
-                console.log('DEBUG: setProgress(0) succeeded')
               } catch (e) {
                 console.error('DEBUG: setProgress(0) failed:', e)
               }
@@ -462,24 +395,17 @@ function SpeedTestContent() {
             // Continue anyway - state updates are not critical
           }
 
-          console.log('DEBUG: Creating uploadPromise')
           // Add a maximum timeout of 30 seconds for the entire upload test
           const uploadPromise = measureUploadSpeed()
-          console.log('DEBUG: uploadPromise created successfully')
 
-          console.log('DEBUG: Creating timeoutPromise (30s)')
           const timeoutPromise = new Promise<number>((resolve) => {
             setTimeout(() => {
               console.warn('⚠️ Upload test exceeded 30s timeout, forcing completion')
               resolve(0)
             }, 30000) // 30 seconds max
           })
-          console.log('DEBUG: timeoutPromise created successfully')
 
-          console.log('DEBUG: Starting Promise.race for upload')
           const result = await Promise.race([uploadPromise, timeoutPromise])
-          console.log('DEBUG: Promise.race completed, result:', result)
-          console.log('✓ Upload test completed:', result.toFixed(2), 'Mbps')
 
           // Show toast in a non-blocking way
           setTimeout(() => {
@@ -497,10 +423,8 @@ function SpeedTestContent() {
           return 0
         }
       })()
-      console.log('DEBUG: Exited upload test IIFE, result:', uploadSpeedResult)
 
       // Complete
-      console.log('=== PHASE 4: Finalizing results ===')
       setPhase('complete')
       setProgress(100)
       const finalResult: SpeedTestResult = {
@@ -519,7 +443,6 @@ function SpeedTestContent() {
       })
 
       toast.success('All tests completed successfully!')
-      console.log('=== ALL TESTS COMPLETED ===')
     } catch (error) {
       console.error('!!! CRITICAL ERROR in runSpeedTest:', error)
       toast.error('Failed to complete speed test. Please try again.')

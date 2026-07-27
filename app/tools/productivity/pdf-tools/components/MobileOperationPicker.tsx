@@ -58,12 +58,8 @@ export function MobileOperationPicker({
         <>
           {/* Overlay */}
           <div
-            role="button"
-            tabIndex={0}
+            aria-hidden="true"
             onClick={() => setIsOpen(false)}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape' || e.key === 'Enter') setIsOpen(false)
-            }}
             className={css({
               position: 'fixed',
               inset: '0',
@@ -91,7 +87,9 @@ export function MobileOperationPicker({
             })}
           >
             {/* Handle */}
-            <div
+            <button
+              type="button"
+              aria-label="Close drawer"
               className={css({
                 mx: 'auto',
                 mt: '4',
@@ -100,9 +98,9 @@ export function MobileOperationPicker({
                 rounded: 'full',
                 bg: 'gray.700',
                 cursor: 'pointer',
+                border: 'none',
               })}
               onClick={() => setIsOpen(false)}
-              aria-hidden="true"
             />
 
             {/* Header */}

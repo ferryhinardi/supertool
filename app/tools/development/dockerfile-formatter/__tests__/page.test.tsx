@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import type * as React from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import DockerfileFormatterPage from '../page'
 

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -614,7 +614,6 @@ describe('CaseConverterPage', () => {
     })
 
     it('case type buttons are clickable', async () => {
-      const user = userEvent.setup()
       render(<CaseConverterPage />)
 
       // All case type buttons should be clickable

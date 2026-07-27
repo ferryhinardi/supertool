@@ -11,7 +11,6 @@ import {
   Download,
   Eraser,
   Hash,
-  Lightbulb,
   Minus,
   RemoveFormatting,
   Replace,
@@ -22,7 +21,6 @@ import {
 } from 'lucide-react'
 import { parseAsBoolean, parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'

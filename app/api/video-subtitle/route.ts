@@ -23,11 +23,9 @@ async function getFFmpegPath(): Promise<string> {
       try {
         await access(tmpFFmpegPath)
         FFMPEG_PATH = tmpFFmpegPath
-        console.log('✅ Using cached FFmpeg from /tmp')
         return FFMPEG_PATH
       } catch {
         // Download FFmpeg binary on first request
-        console.log('📥 Downloading FFmpeg binary...')
         const response = await fetch(
           'https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-x64.gz'
         )
@@ -53,18 +51,15 @@ async function getFFmpegPath(): Promise<string> {
         await pipeline(nodeReadable, gunzip, writeStream)
 
         FFMPEG_PATH = tmpFFmpegPath
-        console.log('✅ FFmpeg downloaded and cached to /tmp')
       }
     } else {
       // Development: try ffmpeg-static first, fallback to system ffmpeg
       try {
         const ffmpegStatic = await import('ffmpeg-static')
         FFMPEG_PATH = ffmpegStatic.default || ''
-        console.log('💻 Using ffmpeg-static for development:', FFMPEG_PATH)
       } catch {
         // Fallback to system ffmpeg (brew install ffmpeg)
         FFMPEG_PATH = 'ffmpeg'
-        console.log('💻 Using system FFmpeg for development')
       }
     }
 
@@ -74,7 +69,6 @@ async function getFFmpegPath(): Promise<string> {
 
     // Validate the binary exists and is executable
     await access(FFMPEG_PATH)
-    console.log('✅ FFmpeg binary verified at:', FFMPEG_PATH)
 
     return FFMPEG_PATH
   } catch (error) {
@@ -172,8 +166,6 @@ export async function POST(request: NextRequest) {
   let tempDir: string | null = null
 
   try {
-    console.log('🔵 Video subtitle API called')
-
     // Parse multipart form data
     const formData = await request.formData()
     const videoFile = formData.get('video') as File
@@ -195,15 +187,6 @@ export async function POST(request: NextRequest) {
     const vignette = formData.get('vignette')
     const temperature = formData.get('temperature')
     const exportPreset = formData.get('exportPreset')
-
-    console.log('🔵 Files received:', {
-      video: videoFile?.name,
-      videoSize: videoFile?.size,
-      subtitle: subtitleFile?.name,
-      subtitleSize: subtitleFile?.size,
-      trimStart,
-      trimEnd,
-    })
 
     // Validate inputs
     if (!videoFile || !subtitleFile) {
@@ -332,34 +315,9 @@ export async function POST(request: NextRequest) {
 
     ffmpegArgs.push('-y', outputVideoPath) // Overwrite output file
 
-    // Execute FFmpeg command with progress tracking
-    console.log('Executing FFmpeg with args:', [ffmpegPath, ...ffmpegArgs].join(' '))
-
-    // First, get video duration for progress calculation
-    const durationArgs = ['-i', inputVideoPath, '-f', 'null', '-']
-    let totalDuration = 0
-
-    try {
-      await execFileAsync(ffmpegPath, durationArgs)
-    } catch (durationError: unknown) {
-      // FFmpeg outputs duration info to stderr even on "error"
-      const stderr = (durationError as { stderr?: string })?.stderr
-      const durationMatch = stderr?.match(/Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2})/)
-      if (durationMatch) {
-        const hours = parseInt(durationMatch[1], 10)
-        const minutes = parseInt(durationMatch[2], 10)
-        const seconds = parseInt(durationMatch[3], 10)
-        totalDuration = hours * 3600 + minutes * 60 + seconds
-        console.log(`Video duration: ${totalDuration} seconds`)
-      }
-    }
-
-    const { stdout, stderr } = await execFileAsync(ffmpegPath, ffmpegArgs, {
+    await execFileAsync(ffmpegPath, ffmpegArgs, {
       maxBuffer: 10 * 1024 * 1024, // 10MB buffer for output
     })
-
-    console.log('FFmpeg stdout:', stdout)
-    if (stderr) console.log('FFmpeg stderr:', stderr)
 
     // Read the output file
     const outputBuffer = await readFile(outputVideoPath)

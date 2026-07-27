@@ -100,9 +100,7 @@ export default function SharedBillPage() {
   useEffect(() => {
     if (!billId) return
 
-    const unsubscribe = subscribeToBillUpdates(billId, (payload) => {
-      console.log('Real-time update:', payload)
-
+    const unsubscribe = subscribeToBillUpdates(billId, () => {
       // Reload bill data to get latest state
       getBillById(billId).then((data) => {
         if (data) {

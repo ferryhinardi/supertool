@@ -308,30 +308,37 @@ function ShortcutKeys({
     keys = formatted.split('+').filter((k) => k.trim())
   }
 
+  const keyOccurrences = new Map<string, number>()
+
   return (
     <div className={css({ display: 'flex', alignItems: 'center', gap: '1' })}>
-      {keys.map((key, index) => (
-        <kbd
-          key={`${key}-${index}`}
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minW: '6',
-            h: '6',
-            px: '1.5',
-            rounded: 'md',
-            bg: 'rgba(139, 92, 246, 0.15)',
-            border: '1px solid rgba(139, 92, 246, 0.3)',
-            color: 'rgba(167, 139, 250, 0.9)',
-            fontSize: 'xs',
-            fontFamily: 'mono',
-            fontWeight: '500',
-          })}
-        >
-          {key}
-        </kbd>
-      ))}
+      {keys.map((key) => {
+        const occurrence = keyOccurrences.get(key) ?? 0
+        keyOccurrences.set(key, occurrence + 1)
+
+        return (
+          <kbd
+            key={`${key}-${occurrence}`}
+            className={css({
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minW: '6',
+              h: '6',
+              px: '1.5',
+              rounded: 'md',
+              bg: 'rgba(139, 92, 246, 0.15)',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              color: 'rgba(167, 139, 250, 0.9)',
+              fontSize: 'xs',
+              fontFamily: 'mono',
+              fontWeight: '500',
+            })}
+          >
+            {key}
+          </kbd>
+        )
+      })}
     </div>
   )
 }
