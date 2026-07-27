@@ -77,6 +77,59 @@ describe('stopwatch-utils', () => {
       consoleSpy.mockRestore()
       vi.unstubAllGlobals()
     })
+
+    it('should fall back to webkitAudioContext when AudioContext is unavailable', () => {
+      const mockOscillator = {
+        connect: vi.fn(),
+        frequency: { value: 0 },
+        type: 'sine',
+        start: vi.fn(),
+        stop: vi.fn(),
+      }
+      const mockGainNode = {
+        connect: vi.fn(),
+        gain: {
+          setValueAtTime: vi.fn(),
+          exponentialRampToValueAtTime: vi.fn(),
+        },
+      }
+      const mockAudioContext = {
+        createOscillator: vi.fn(() => mockOscillator),
+        createGain: vi.fn(() => mockGainNode),
+        destination: {},
+        currentTime: 0,
+      }
+
+      class MockWebkitAudioContext {
+        createOscillator = mockAudioContext.createOscillator
+        createGain = mockAudioContext.createGain
+        destination = mockAudioContext.destination
+        currentTime = mockAudioContext.currentTime
+      }
+
+      Object.defineProperty(window, 'AudioContext', {
+        value: undefined,
+        configurable: true,
+        writable: true,
+      })
+      Object.defineProperty(window, 'webkitAudioContext', {
+        value: MockWebkitAudioContext,
+        configurable: true,
+        writable: true,
+      })
+
+      expect(() => playBeepSound()).not.toThrow()
+      expect(mockAudioContext.createOscillator).toHaveBeenCalled()
+      expect(mockAudioContext.createGain).toHaveBeenCalled()
+      expect(mockOscillator.connect).toHaveBeenCalledWith(mockGainNode)
+      expect(mockGainNode.connect).toHaveBeenCalledWith(mockAudioContext.destination)
+      expect(mockOscillator.start).toHaveBeenCalled()
+      expect(mockOscillator.stop).toHaveBeenCalled()
+
+      delete (window as Window & { webkitAudioContext?: typeof MockWebkitAudioContext })
+        .webkitAudioContext
+      vi.unstubAllGlobals()
+    })
   })
 
   describe('exportLapsAsCSV', () => {

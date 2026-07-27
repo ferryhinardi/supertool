@@ -29,9 +29,13 @@ interface ActiveSubscriptionRow {
   id: string
 }
 
+interface ReservedUsageRow {
+  allowed?: boolean
+  reason?: PremiumAccessReason | string | null
+  remaining?: number | string | null
+}
+
 const ANONYMOUS_DAILY_LIMIT = 3
-const ANONYMOUS_METRIC_TABLE = 'ai_anonymous'
-const ANONYMOUS_WINDOW_MINUTES = 1440
 
 const getTodayPeriod = () => {
   const now = new Date()
@@ -60,11 +64,61 @@ const normalizeQuantity = (value: number | string | null | undefined): number =>
   return 0
 }
 
+const isPremiumAccessReason = (value: string | null | undefined): value is PremiumAccessReason => {
+  return (
+    value === 'subscription' ||
+    value === 'within-quota' ||
+    value === 'quota-exceeded' ||
+    value === 'anonymous-blocked'
+  )
+}
+
 const failClosed = (): PremiumAccessResult => ({
   allowed: false,
   reason: 'quota-exceeded',
   remaining: 0,
 })
+
+const reserveQuota = async ({
+  userId,
+  metricName,
+  freeQuotaPerDay,
+  anonymousId,
+}: {
+  userId?: string
+  metricName: string
+  freeQuotaPerDay: number
+  anonymousId?: string
+}): Promise<PremiumAccessResult> => {
+  const supabase = getSupabaseServer()
+  const { periodStart, periodEnd } = getTodayPeriod()
+  const { data, error } = await supabase.rpc('reserve_premium_usage', {
+    p_anonymous_id: anonymousId ?? null,
+    p_free_quota_per_day: freeQuotaPerDay,
+    p_metric_name: metricName,
+    p_period_end: periodEnd.toISOString(),
+    p_period_start: periodStart.toISOString(),
+    p_user_id: userId ?? null,
+  })
+
+  if (error) {
+    console.error('Failed to reserve premium usage:', error)
+    return failClosed()
+  }
+
+  const reservation = (data ?? {}) as ReservedUsageRow
+  const reason = isPremiumAccessReason(reservation.reason) ? reservation.reason : 'quota-exceeded'
+
+  if (typeof reservation.allowed !== 'boolean') {
+    return failClosed()
+  }
+
+  return {
+    allowed: reservation.allowed,
+    reason,
+    remaining: Math.max(0, normalizeQuantity(reservation.remaining)),
+  }
+}
 
 export async function checkPremiumAccess({
   userId,
@@ -73,10 +127,8 @@ export async function checkPremiumAccess({
   ipAddress,
 }: CheckPremiumAccessParams): Promise<PremiumAccessResult> {
   try {
-    const supabase = getSupabaseServer()
-
     if (!userId) {
-      if (!ipAddress) {
+      if (!ipAddress || ipAddress === 'unknown') {
         return {
           allowed: false,
           reason: 'anonymous-blocked',
@@ -84,33 +136,14 @@ export async function checkPremiumAccess({
         }
       }
 
-      const { data, error } = await supabase.rpc('check_rate_limit', {
-        p_ip_address: ipAddress,
-        p_max_requests: ANONYMOUS_DAILY_LIMIT,
-        p_table_name: ANONYMOUS_METRIC_TABLE,
-        p_time_window_minutes: ANONYMOUS_WINDOW_MINUTES,
+      return await reserveQuota({
+        metricName,
+        freeQuotaPerDay: ANONYMOUS_DAILY_LIMIT,
+        anonymousId: ipAddress,
       })
-
-      if (error) {
-        console.error('Failed to check premium access:', error)
-        return failClosed()
-      }
-
-      if (!data) {
-        return {
-          allowed: false,
-          reason: 'anonymous-blocked',
-          remaining: 0,
-        }
-      }
-
-      return {
-        allowed: true,
-        reason: 'within-quota',
-        remaining: ANONYMOUS_DAILY_LIMIT - 1,
-      }
     }
 
+    const supabase = getSupabaseServer()
     const { data: subscriptionRows, error: subscriptionError } = await supabase
       .from('active_subscriptions')
       .select('id')
@@ -132,36 +165,11 @@ export async function checkPremiumAccess({
       }
     }
 
-    const { periodStart } = getTodayPeriod()
-    const { data: usageRows, error: usageError } = await supabase
-      .from('usage_records')
-      .select('sum_quantity:quantity.sum()')
-      .eq('user_id', userId)
-      .eq('metric_name', metricName)
-      .gte('period_start', periodStart.toISOString())
-
-    if (usageError) {
-      console.error('Failed to check premium access:', usageError)
-      return failClosed()
-    }
-
-    const usageAggregate = ((usageRows ?? []) as AggregateUsageRow[])[0]
-    const usedQuantity = normalizeQuantity(usageAggregate?.sum_quantity)
-    const remaining = Math.max(0, freeQuotaPerDay - usedQuantity)
-
-    if (usedQuantity < freeQuotaPerDay) {
-      return {
-        allowed: true,
-        reason: 'within-quota',
-        remaining,
-      }
-    }
-
-    return {
-      allowed: false,
-      reason: 'quota-exceeded',
-      remaining: 0,
-    }
+    return await reserveQuota({
+      userId,
+      metricName,
+      freeQuotaPerDay,
+    })
   } catch (error) {
     console.error('Failed to check premium access:', error)
     return failClosed()

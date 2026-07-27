@@ -7,7 +7,7 @@ type GTagEvent = {
   value?: number
 }
 
-type ToolEvent =
+export type ToolEvent =
   | 'json_beautify'
   | 'json_minify'
   | 'json_copy'
@@ -585,6 +585,8 @@ type ToolEvent =
   | 'resume_sample_data_toggle'
   | 'resume_persona_view'
   | 'resume_persona_load_sample'
+  | 'resume_ai_suggestion_requested'
+  | 'resume_ai_suggestion_applied'
   | 'cover_letter_builder_open'
   | 'cover_letter_loaded_from_storage'
   | 'cover_letter_form_updated'

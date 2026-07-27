@@ -20,20 +20,6 @@ function createSubscriptionQueryResult(data: unknown, error: unknown = null) {
   }
 }
 
-function createUsageQueryResult(sum: number | string | null, error: unknown = null) {
-  const gte = vi.fn().mockResolvedValue({ data: [{ sum_quantity: sum }], error })
-  const eqMetric = vi.fn().mockReturnValue({ gte })
-  const eqUser = vi.fn().mockReturnValue({ eq: eqMetric })
-  const select = vi.fn().mockReturnValue({ eq: eqUser })
-
-  return {
-    select,
-    eqUser,
-    eqMetric,
-    gte,
-  }
-}
-
 function createInsertResult(error: unknown = null) {
   const insert = vi.fn().mockResolvedValue({ error })
 
@@ -57,7 +43,7 @@ describe('premium-gate', () => {
     vi.restoreAllMocks()
   })
 
-  it('allows access for an active subscription without checking usage quota', async () => {
+  it('allows access for an active subscription without reserving free quota', async () => {
     const activeSubscriptionQuery = createSubscriptionQueryResult([{ id: 'sub-1' }])
     mockFrom.mockImplementation((table: string) => {
       if (table === 'active_subscriptions') return activeSubscriptionQuery
@@ -75,20 +61,22 @@ describe('premium-gate', () => {
     expect(result).toEqual({
       allowed: true,
       reason: 'subscription',
-      remaining: expect.any(Number),
+      remaining: Number.POSITIVE_INFINITY,
     })
     expect(mockFrom).toHaveBeenCalledTimes(1)
     expect(mockFrom).toHaveBeenCalledWith('active_subscriptions')
+    expect(mockRpc).not.toHaveBeenCalled()
   })
 
-  it('allows access within quota and returns remaining free usage', async () => {
+  it('allows authenticated non-subscribers within quota using reservation RPC', async () => {
     const activeSubscriptionQuery = createSubscriptionQueryResult([])
-    const usageQuery = createUsageQueryResult(2)
-
     mockFrom.mockImplementation((table: string) => {
       if (table === 'active_subscriptions') return activeSubscriptionQuery
-      if (table === 'usage_records') return usageQuery
       throw new Error(`Unexpected table: ${table}`)
+    })
+    mockRpc.mockResolvedValue({
+      data: { allowed: true, reason: 'within-quota', remaining: 3 },
+      error: null,
     })
 
     const { checkPremiumAccess } = await import('../premium-gate')
@@ -104,16 +92,28 @@ describe('premium-gate', () => {
       reason: 'within-quota',
       remaining: 3,
     })
+    expect(mockRpc).toHaveBeenCalledWith(
+      'reserve_premium_usage',
+      expect.objectContaining({
+        p_anonymous_id: null,
+        p_free_quota_per_day: 5,
+        p_metric_name: 'ai_text_rewriter',
+        p_period_end: expect.stringMatching(/T23:59:59\.999Z$/),
+        p_period_start: expect.stringMatching(/T00:00:00\.000Z$/),
+        p_user_id: 'user-2',
+      })
+    )
   })
 
-  it('blocks access when the free quota is exceeded', async () => {
+  it('blocks authenticated non-subscribers when reservation RPC denies access', async () => {
     const activeSubscriptionQuery = createSubscriptionQueryResult([])
-    const usageQuery = createUsageQueryResult('5')
-
     mockFrom.mockImplementation((table: string) => {
       if (table === 'active_subscriptions') return activeSubscriptionQuery
-      if (table === 'usage_records') return usageQuery
       throw new Error(`Unexpected table: ${table}`)
+    })
+    mockRpc.mockResolvedValue({
+      data: { allowed: false, reason: 'quota-exceeded', remaining: 0 },
+      error: null,
     })
 
     const { checkPremiumAccess } = await import('../premium-gate')
@@ -131,8 +131,11 @@ describe('premium-gate', () => {
     })
   })
 
-  it('allows anonymous access when the rate-limit RPC returns true', async () => {
-    mockRpc.mockResolvedValue({ data: true, error: null })
+  it('allows anonymous access with trusted identifier using reservation RPC', async () => {
+    mockRpc.mockResolvedValue({
+      data: { allowed: true, reason: 'within-quota', remaining: 2 },
+      error: null,
+    })
 
     const { checkPremiumAccess } = await import('../premium-gate')
 
@@ -147,33 +150,20 @@ describe('premium-gate', () => {
       reason: 'within-quota',
       remaining: 2,
     })
-    expect(mockRpc).toHaveBeenCalledWith('check_rate_limit', {
-      p_ip_address: '127.0.0.1',
-      p_max_requests: 3,
-      p_table_name: 'ai_anonymous',
-      p_time_window_minutes: 1440,
-    })
+    expect(mockRpc).toHaveBeenCalledWith(
+      'reserve_premium_usage',
+      expect.objectContaining({
+        p_anonymous_id: '127.0.0.1',
+        p_free_quota_per_day: 3,
+        p_metric_name: 'ai_text_rewriter',
+        p_period_end: expect.stringMatching(/T23:59:59\.999Z$/),
+        p_period_start: expect.stringMatching(/T00:00:00\.000Z$/),
+        p_user_id: null,
+      })
+    )
   })
 
-  it('blocks anonymous access when the rate-limit RPC returns false', async () => {
-    mockRpc.mockResolvedValue({ data: false, error: null })
-
-    const { checkPremiumAccess } = await import('../premium-gate')
-
-    const result = await checkPremiumAccess({
-      metricName: 'ai_text_rewriter',
-      freeQuotaPerDay: 5,
-      ipAddress: '127.0.0.1',
-    })
-
-    expect(result).toEqual({
-      allowed: false,
-      reason: 'anonymous-blocked',
-      remaining: 0,
-    })
-  })
-
-  it('blocks anonymous access when no ip address is provided', async () => {
+  it('blocks anonymous access when no identifier is provided', async () => {
     const { checkPremiumAccess } = await import('../premium-gate')
 
     const result = await checkPremiumAccess({
@@ -189,7 +179,7 @@ describe('premium-gate', () => {
     expect(mockRpc).not.toHaveBeenCalled()
   })
 
-  it('fails closed when the anonymous rate-limit RPC returns an error', async () => {
+  it('fails closed when the reservation RPC returns an error', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
     mockRpc.mockResolvedValue({ data: null, error: new Error('rpc failed') })
 
@@ -206,7 +196,7 @@ describe('premium-gate', () => {
       reason: 'quota-exceeded',
       remaining: 0,
     })
-    expect(consoleError).toHaveBeenCalledWith('Failed to check premium access:', expect.any(Error))
+    expect(consoleError).toHaveBeenCalledWith('Failed to reserve premium usage:', expect.any(Error))
   })
 
   it('fails closed when the active subscription query returns an error', async () => {
@@ -237,21 +227,21 @@ describe('premium-gate', () => {
     expect(consoleError).toHaveBeenCalledWith('Failed to check premium access:', expect.any(Error))
   })
 
-  it('fails closed when the usage query returns an error', async () => {
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  it('fails closed when the reservation RPC returns malformed data', async () => {
     const activeSubscriptionQuery = createSubscriptionQueryResult([])
-    const usageQuery = createUsageQueryResult(null, new Error('usage failed'))
-
     mockFrom.mockImplementation((table: string) => {
       if (table === 'active_subscriptions') return activeSubscriptionQuery
-      if (table === 'usage_records') return usageQuery
       throw new Error(`Unexpected table: ${table}`)
+    })
+    mockRpc.mockResolvedValue({
+      data: { allowed: 'yes', reason: 'within-quota', remaining: 4 },
+      error: null,
     })
 
     const { checkPremiumAccess } = await import('../premium-gate')
 
     const result = await checkPremiumAccess({
-      userId: 'user-usage-error',
+      userId: 'user-invalid-reservation',
       metricName: 'ai_text_rewriter',
       freeQuotaPerDay: 5,
     })
@@ -260,32 +250,6 @@ describe('premium-gate', () => {
       allowed: false,
       reason: 'quota-exceeded',
       remaining: 0,
-    })
-    expect(consoleError).toHaveBeenCalledWith('Failed to check premium access:', expect.any(Error))
-  })
-
-  it('treats invalid usage aggregates as zero and allows access', async () => {
-    const activeSubscriptionQuery = createSubscriptionQueryResult([])
-    const usageQuery = createUsageQueryResult('not-a-number')
-
-    mockFrom.mockImplementation((table: string) => {
-      if (table === 'active_subscriptions') return activeSubscriptionQuery
-      if (table === 'usage_records') return usageQuery
-      throw new Error(`Unexpected table: ${table}`)
-    })
-
-    const { checkPremiumAccess } = await import('../premium-gate')
-
-    const result = await checkPremiumAccess({
-      userId: 'user-invalid-aggregate',
-      metricName: 'ai_text_rewriter',
-      freeQuotaPerDay: 5,
-    })
-
-    expect(result).toEqual({
-      allowed: true,
-      reason: 'within-quota',
-      remaining: 5,
     })
   })
 
@@ -303,8 +267,11 @@ describe('premium-gate', () => {
       freeQuotaPerDay: 5,
     })
 
-    expect(result.allowed).toBe(false)
-    expect(result.remaining).toBe(0)
+    expect(result).toEqual({
+      allowed: false,
+      reason: 'quota-exceeded',
+      remaining: 0,
+    })
     expect(consoleError).toHaveBeenCalledWith('Failed to check premium access:', expect.any(Error))
   })
 

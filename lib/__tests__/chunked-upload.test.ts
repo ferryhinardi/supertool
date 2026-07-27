@@ -9,25 +9,38 @@ import {
 } from '../chunked-upload'
 
 describe('chunked-upload', () => {
+  const originalFormData = globalThis.FormData
+
   beforeEach(() => {
     vi.spyOn(console, 'log').mockImplementation(() => {})
     vi.spyOn(console, 'error').mockImplementation(() => {})
     global.fetch = vi.fn()
-    global.FormData = class MockFormData {
-      // biome-ignore lint/suspicious/noExplicitAny: Mock storage accepts any value types for testing
-      private data: Map<string, any> = new Map()
-      // biome-ignore lint/suspicious/noExplicitAny: Mock append accepts any value for testing
-      append(key: string, value: any) {
+
+    class MockFormData {
+      private data = new Map<string, string | Blob>()
+
+      append(key: string, value: string | Blob) {
         this.data.set(key, value)
       }
+
       get(key: string) {
         return this.data.get(key)
       }
-      // biome-ignore lint/suspicious/noExplicitAny: Mock class cast required for incomplete FormData implementation
-    } as any
+    }
+
+    Object.defineProperty(globalThis, 'FormData', {
+      value: MockFormData,
+      configurable: true,
+      writable: true,
+    })
   })
 
   afterEach(() => {
+    Object.defineProperty(globalThis, 'FormData', {
+      value: originalFormData,
+      configurable: true,
+      writable: true,
+    })
     vi.restoreAllMocks()
   })
 

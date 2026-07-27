@@ -56,6 +56,8 @@ bin/
 
 # test files
 test-output.txt
+playwright-report/
+test-results/
 
 # firebase
 firebase-debug.log
@@ -65,9 +67,23 @@ turbopack-backtrace.log
 
 # biome
 biome-logs/
+graphify-out/
 
 # opencode
 .opencode/
 
 # sisyphus agent workspace
 .sisyphus/
+
+# playwright MCP
+.playwright-mcp/
+
+# serena
+.serena/
+
+# task15 coverage scratch
+coverage-task15-*/
+vitest.coverage.task15*.mts
+
+# task19 snapshots
+task19-ai-text-rewriter-snapshot.md

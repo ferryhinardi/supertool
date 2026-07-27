@@ -1,7 +1,22 @@
 name: Test Coverage
 
 on:
-  workflow_dispatch: # Manual trigger only — auto runs disabled due to chronic CI timeouts
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'hooks/**'
+      - 'tests/**'
+      - 'vitest*.mts'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'codecov.yml'
+      - '.github/workflows/coverage.yml'
+      - 'README.md'
+  workflow_dispatch: # Manual trigger retained for coverage debugging and recovery runs
 
 permissions:
   contents: write
@@ -94,39 +109,3 @@ jobs:
           name: coverage-report
           path: coverage/
           retention-days: 30
-
-      - name: Update README with coverage badge
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          # Update README with coverage percentage
-          COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
-          COVERAGE_INT=$(printf "%.0f" $COVERAGE)
-          
-          # Determine badge color
-          if (( $(echo "$COVERAGE >= 80" | bc -l) )); then
-            COLOR="brightgreen"
-          elif (( $(echo "$COVERAGE >= 50" | bc -l) )); then
-            COLOR="yellow"
-          else
-            COLOR="orange"
-          fi
-          
-          # Create coverage badge URL
-          BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE_INT}%25-${COLOR}"
-          
-          # Update README if badge placeholder exists
-          if grep -q "!\[Coverage\]" README.md; then
-            sed -i "s|!\[Coverage\](.*)|![Coverage](${BADGE_URL})|g" README.md
-          else
-            # Add badge to README
-            sed -i "1s|^|![Coverage](${BADGE_URL})\n\n|" README.md
-          fi
-          
-          # Commit and push if changes exist
-          if [[ $(git status --porcelain README.md) ]]; then
-            git config --local user.email "github-actions[bot]@users.noreply.github.com"
-            git config --local user.name "github-actions[bot]"
-            git add README.md
-            git commit -m "docs: update coverage badge to ${COVERAGE_INT}%"
-            git push
-          fi
