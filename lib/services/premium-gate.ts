@@ -21,10 +21,6 @@ interface PremiumAccessResult {
   remaining: number
 }
 
-interface AggregateUsageRow {
-  sum_quantity: number | string | null
-}
-
 interface ActiveSubscriptionRow {
   id: string
 }
@@ -106,12 +102,15 @@ const reserveQuota = async ({
     return failClosed()
   }
 
-  const reservation = (data ?? {}) as ReservedUsageRow
-  const reason = isPremiumAccessReason(reservation.reason) ? reservation.reason : 'quota-exceeded'
+  // The RPC function RETURNS TABLE, so PostgREST yields an array of rows;
+  // tolerate a bare object as well for forward compatibility.
+  const reservation = ((Array.isArray(data) ? data[0] : data) ?? {}) as ReservedUsageRow
 
   if (typeof reservation.allowed !== 'boolean') {
     return failClosed()
   }
+
+  const reason = isPremiumAccessReason(reservation.reason) ? reservation.reason : 'quota-exceeded'
 
   return {
     allowed: reservation.allowed,

@@ -158,7 +158,7 @@ describe('POST /api/ai-caption', () => {
       })
     })
 
-    it('should record usage after a successful authenticated caption generation and return remaining quota', async () => {
+    it('should preserve reserved remaining quota for authenticated free-tier caption generation', async () => {
       mockCreate.mockResolvedValueOnce({
         choices: [{ message: { content: 'Accessible mountain sunset caption' } }],
         usage: { prompt_tokens: 100, completion_tokens: 20, total_tokens: 120 },
@@ -179,7 +179,9 @@ describe('POST /api/ai-caption', () => {
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.remaining).toBe(2)
+      // checkPremiumAccess reserves the usage via RPC and already returns the
+      // post-reservation remaining, so the route must not decrement it again.
+      expect(data.remaining).toBe(3)
       expect(mockGetUser).toHaveBeenCalledWith('valid-token')
       expect(mockCheckPremiumAccess).toHaveBeenCalledWith({
         userId: 'user-123',
@@ -187,11 +189,44 @@ describe('POST /api/ai-caption', () => {
         freeQuotaPerDay: 3,
         ipAddress: '198.51.100.8',
       })
+      // The reservation RPC records free-tier usage; recordUsage is only for
+      // metered subscribers.
+      expect(mockRecordUsage).not.toHaveBeenCalled()
+    })
+
+    it('should record metered usage for subscribed users after successful caption generation', async () => {
+      mockCheckPremiumAccess.mockResolvedValueOnce({
+        allowed: true,
+        reason: 'subscription',
+        remaining: 3,
+      })
+      mockCreate.mockResolvedValueOnce({
+        choices: [{ message: { content: 'Subscriber mountain sunset caption' } }],
+        usage: { prompt_tokens: 100, completion_tokens: 20, total_tokens: 120 },
+      })
+
+      const request = createRequest(
+        {
+          image: validBase64Image,
+          captionType: 'altText',
+        },
+        {
+          authorization: 'Bearer premium-token',
+          'x-real-ip': '198.51.100.9',
+        }
+      )
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(200)
+      expect(mockGetUser).toHaveBeenCalledWith('premium-token')
       expect(mockRecordUsage).toHaveBeenCalledWith({
         userId: 'user-123',
         metricName: 'ai-image-caption',
         quantity: 1,
       })
+      expect(data.remaining).toBe(3)
     })
   })
 

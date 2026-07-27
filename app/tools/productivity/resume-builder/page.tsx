@@ -1048,8 +1048,7 @@ export default function ResumeBuilderPage() {
                 >
                   {TEMPLATES.find((t) => t.id === selectedTemplate)?.name}
                 </div>
-                <div
-                  role="region"
+                <section
                   // biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable region must be keyboard-accessible (WCAG 2.1 SC 2.1.1)
                   tabIndex={0}
                   aria-label="Resume preview, scrollable"
@@ -1070,7 +1069,7 @@ export default function ResumeBuilderPage() {
                   >
                     <ResumePreview data={previewData} templateId={selectedTemplate} />
                   </div>
-                </div>
+                </section>
               </div>
             </CardContent>
           </Card>

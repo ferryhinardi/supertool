@@ -1,12 +1,12 @@
 -- Reserve premium usage atomically for anonymous and free-tier users
 
 CREATE OR REPLACE FUNCTION reserve_premium_usage(
-  p_user_id UUID DEFAULT NULL,
-  p_anonymous_id TEXT DEFAULT NULL,
   p_metric_name TEXT,
   p_free_quota_per_day INTEGER,
   p_period_start TIMESTAMPTZ,
-  p_period_end TIMESTAMPTZ
+  p_period_end TIMESTAMPTZ,
+  p_user_id UUID DEFAULT NULL,
+  p_anonymous_id TEXT DEFAULT NULL
 )
 RETURNS TABLE(
   allowed BOOLEAN,
@@ -25,6 +25,12 @@ BEGIN
     RETURN QUERY SELECT FALSE, 'anonymous-blocked'::TEXT, 0;
     RETURN;
   END IF;
+
+  -- Serialize concurrent reservations for the same identity + metric so the
+  -- check-then-insert below cannot double-spend the daily quota.
+  PERFORM pg_advisory_xact_lock(
+    hashtext(COALESCE(p_user_id::TEXT, p_anonymous_id) || ':' || p_metric_name)
+  );
 
   IF p_user_id IS NOT NULL THEN
     SELECT COALESCE(SUM(quantity), 0)
@@ -83,7 +89,10 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION reserve_premium_usage(UUID, TEXT, TEXT, INTEGER, TIMESTAMPTZ, TIMESTAMPTZ) TO service_role;
+-- SECURITY DEFINER: make sure only the server (service_role) can call this,
+-- otherwise anon/authenticated PostgREST roles could insert usage records directly.
+REVOKE ALL ON FUNCTION reserve_premium_usage(TEXT, INTEGER, TIMESTAMPTZ, TIMESTAMPTZ, UUID, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION reserve_premium_usage(TEXT, INTEGER, TIMESTAMPTZ, TIMESTAMPTZ, UUID, TEXT) TO service_role;
 
 CREATE INDEX IF NOT EXISTS idx_usage_records_anonymous_metric_period
   ON usage_records ((metadata->>'anonymousId'), metric_name, period_start)

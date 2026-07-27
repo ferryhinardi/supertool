@@ -75,7 +75,7 @@ describe('premium-gate', () => {
       throw new Error(`Unexpected table: ${table}`)
     })
     mockRpc.mockResolvedValue({
-      data: { allowed: true, reason: 'within-quota', remaining: 3 },
+      data: [{ allowed: true, reason: 'within-quota', remaining: 3 }],
       error: null,
     })
 
@@ -112,7 +112,7 @@ describe('premium-gate', () => {
       throw new Error(`Unexpected table: ${table}`)
     })
     mockRpc.mockResolvedValue({
-      data: { allowed: false, reason: 'quota-exceeded', remaining: 0 },
+      data: [{ allowed: false, reason: 'quota-exceeded', remaining: 0 }],
       error: null,
     })
 
@@ -133,7 +133,7 @@ describe('premium-gate', () => {
 
   it('allows anonymous access with trusted identifier using reservation RPC', async () => {
     mockRpc.mockResolvedValue({
-      data: { allowed: true, reason: 'within-quota', remaining: 2 },
+      data: [{ allowed: true, reason: 'within-quota', remaining: 2 }],
       error: null,
     })
 
@@ -234,7 +234,7 @@ describe('premium-gate', () => {
       throw new Error(`Unexpected table: ${table}`)
     })
     mockRpc.mockResolvedValue({
-      data: { allowed: 'yes', reason: 'within-quota', remaining: 4 },
+      data: [{ allowed: 'yes', reason: 'within-quota', remaining: 4 }],
       error: null,
     })
 
@@ -250,6 +250,55 @@ describe('premium-gate', () => {
       allowed: false,
       reason: 'quota-exceeded',
       remaining: 0,
+    })
+  })
+
+  it('fails closed when the reservation RPC returns an empty result set', async () => {
+    const activeSubscriptionQuery = createSubscriptionQueryResult([])
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'active_subscriptions') return activeSubscriptionQuery
+      throw new Error(`Unexpected table: ${table}`)
+    })
+    mockRpc.mockResolvedValue({ data: [], error: null })
+
+    const { checkPremiumAccess } = await import('../premium-gate')
+
+    const result = await checkPremiumAccess({
+      userId: 'user-empty-reservation',
+      metricName: 'ai_text_rewriter',
+      freeQuotaPerDay: 5,
+    })
+
+    expect(result).toEqual({
+      allowed: false,
+      reason: 'quota-exceeded',
+      remaining: 0,
+    })
+  })
+
+  it('accepts a single-object reservation payload for forward compatibility', async () => {
+    const activeSubscriptionQuery = createSubscriptionQueryResult([])
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'active_subscriptions') return activeSubscriptionQuery
+      throw new Error(`Unexpected table: ${table}`)
+    })
+    mockRpc.mockResolvedValue({
+      data: { allowed: true, reason: 'within-quota', remaining: 1 },
+      error: null,
+    })
+
+    const { checkPremiumAccess } = await import('../premium-gate')
+
+    const result = await checkPremiumAccess({
+      userId: 'user-object-reservation',
+      metricName: 'ai_text_rewriter',
+      freeQuotaPerDay: 5,
+    })
+
+    expect(result).toEqual({
+      allowed: true,
+      reason: 'within-quota',
+      remaining: 1,
     })
   })
 
