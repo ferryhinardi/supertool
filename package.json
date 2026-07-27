@@ -2,6 +2,9 @@
   "name": "supertool",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "panda codegen && next dev",
     "prebuild": "panda codegen --clean",
@@ -130,7 +133,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/luxon": "^3.7.1",
     "@types/mockdate": "^3.0.0",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/pngjs": "^6.0.5",
     "@types/qrcode": "^1.5.6",
     "@types/qrcode.react": "^3.0.0",
