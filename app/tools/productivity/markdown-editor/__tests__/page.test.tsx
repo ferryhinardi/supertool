@@ -83,6 +83,22 @@ describe('Markdown Editor Page', () => {
       }
     })
 
+    it('uses the editor as the focused mobile pane', async () => {
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = vi.fn().mockReturnValue({ matches: true })
+
+      try {
+        render(<MarkdownEditorPage />)
+
+        await waitFor(() => {
+          expect(screen.getByTestId('markdown-editor-panel')).toBeInTheDocument()
+          expect(screen.queryByTestId('markdown-preview-panel')).not.toBeInTheDocument()
+        })
+      } finally {
+        window.matchMedia = originalMatchMedia
+      }
+    })
+
     it('switches to preview-only mode', async () => {
       const user = userEvent.setup()
       render(<MarkdownEditorPage />)
@@ -408,6 +424,14 @@ describe('Markdown Editor Page', () => {
           expect(screen.queryByText('New Heading')).toBeTruthy()
         })
       }
+    })
+
+    it('wraps rendered tables in a local scroll container', async () => {
+      render(<MarkdownEditorPage />)
+
+      await waitFor(() => {
+        expect(document.querySelector('.markdown-table-scroll')).toBeInTheDocument()
+      })
     })
   })
 })

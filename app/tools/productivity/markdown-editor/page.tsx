@@ -11,7 +11,7 @@ import {
   SplitSquareHorizontal,
   Upload,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import {
   TOOL_COLORS,
@@ -133,6 +133,12 @@ Happy writing! 🚀
 export default function MarkdownEditorPage() {
   const [value, setValue] = useState(defaultMarkdown)
   const [viewMode, setViewMode] = useState<ViewMode>('split')
+
+  useEffect(() => {
+    if (window.matchMedia?.('(max-width: 1023px)').matches) {
+      setViewMode('editor')
+    }
+  }, [])
 
   // Calculate stats (derived values - React Compiler handles optimization)
   const lines = value.split('\n').length
@@ -705,6 +711,7 @@ export default function MarkdownEditorPage() {
           {/* Editor */}
           {(viewMode === 'editor' || viewMode === 'split') && (
             <Card
+              data-testid="markdown-editor-panel"
               className={css({
                 border: '1px solid',
                 borderColor: 'gray.800',
@@ -735,7 +742,7 @@ export default function MarkdownEditorPage() {
                   onChange={(e) => setValue(e.target.value)}
                   placeholder="Start typing markdown here..."
                   className={css({
-                    minH: '600px',
+                    minH: { base: '50vh', sm: '600px' },
                     resize: 'none',
                     border: '1px solid',
                     borderColor: 'gray.700',
@@ -756,6 +763,7 @@ export default function MarkdownEditorPage() {
           {/* Preview */}
           {(viewMode === 'preview' || viewMode === 'split') && (
             <Card
+              data-testid="markdown-preview-panel"
               className={css({
                 border: '1px solid',
                 borderColor: 'gray.800',
@@ -781,7 +789,7 @@ export default function MarkdownEditorPage() {
               <CardContent>
                 <div
                   className={css({
-                    minH: '600px',
+                    minH: { base: '50vh', sm: '600px' },
                     w: 'full',
                     maxW: 'none',
                     overflow: 'auto',
@@ -789,7 +797,7 @@ export default function MarkdownEditorPage() {
                     border: '1px solid',
                     borderColor: 'gray.700',
                     bg: 'gray.950',
-                    p: '6',
+                    p: { base: '3', sm: '6' },
                   })}
                 >
                   <div
