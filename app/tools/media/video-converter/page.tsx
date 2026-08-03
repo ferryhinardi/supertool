@@ -602,7 +602,10 @@ export default function VideoConverterPage() {
       {videos.length > 0 && (
         <div
           className={css({
-            sm: { gridTemplateColumns: 'repeat(4, 1fr)' },
+            display: 'grid',
+            gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
+            gap: '4',
+            w: 'full',
             animation: 'slideUp 0.5s ease-out forwards',
             animationDelay: '0.1s',
             opacity: 0,
@@ -1130,13 +1133,20 @@ export default function VideoConverterPage() {
                             p: '4',
                           })}
                         >
-                          <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+                          <div
+                            className={css({
+                              display: 'flex',
+                              flexDirection: { base: 'column', sm: 'row' },
+                              alignItems: { base: 'stretch', sm: 'start' },
+                              gap: '4',
+                            })}
+                          >
                             {/* Video Preview */}
                             <div
                               className={css({
                                 position: 'relative',
-                                h: '20',
-                                w: '32',
+                                h: { base: '40', sm: '20' },
+                                w: { base: 'full', sm: '32' },
                                 flexShrink: '0',
                                 overflow: 'hidden',
                                 rounded: 'lg',
@@ -1302,8 +1312,10 @@ export default function VideoConverterPage() {
       {/* Features Info */}
       <div
         className={css({
-          sm: { gridTemplateColumns: 'repeat(2, 1fr)' },
-          lg: { gridTemplateColumns: 'repeat(4, 1fr)' },
+          display: 'grid',
+          gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+          gap: '4',
+          w: 'full',
           animation: 'slideUp 0.5s ease-out forwards',
           animationDelay: '0.4s',
           opacity: 0,

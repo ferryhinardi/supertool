@@ -335,15 +335,15 @@ export default function ImageOptimizerPage() {
     >
       {/* Header */}
       <div
-        style={{
+        className={css({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '1rem',
+          gap: '4',
           textAlign: 'center',
-          width: '100%',
-          maxWidth: '1400px',
-        }}
+          w: 'full',
+          maxW: '1400px',
+        })}
       >
         <div
           className={css({
@@ -974,13 +974,20 @@ export default function ImageOptimizerPage() {
                             p: '4',
                           })}
                         >
-                          <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
+                          <div
+                            className={css({
+                              display: 'flex',
+                              flexDirection: { base: 'column', sm: 'row' },
+                              alignItems: { base: 'stretch', sm: 'start' },
+                              gap: '4',
+                            })}
+                          >
                             {/* Image Preview */}
                             <div
                               className={css({
                                 position: 'relative',
-                                h: '20',
-                                w: '20',
+                                h: { base: '40', sm: '20' },
+                                w: { base: 'full', sm: '20' },
                                 flexShrink: '0',
                                 overflow: 'hidden',
                                 rounded: 'lg',

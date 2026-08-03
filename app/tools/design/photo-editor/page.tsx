@@ -673,12 +673,14 @@ export default function PhotoEditorPage() {
                     rounded: 'lg',
                     p: '4',
                     overflow: 'auto',
+                    w: 'full',
                   })}
                 >
                   <canvas
                     ref={canvasRef}
                     className={css({
                       maxW: 'full',
+                      w: 'full',
                       maxH: '96',
                       rounded: 'lg',
                       shadow: 'xl',
@@ -821,7 +823,13 @@ export default function PhotoEditorPage() {
                       >
                         Rotate
                       </h3>
-                      <div className={css({ display: 'flex', gap: '3' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexDirection: { base: 'column', sm: 'row' },
+                          gap: '3',
+                        })}
+                      >
                         <Button
                           onClick={() => handleRotate('left')}
                           className={css({

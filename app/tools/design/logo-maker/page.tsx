@@ -639,6 +639,7 @@ export default function LogoMakerPage() {
                   justifyContent: 'center',
                   minH: '300px',
                   p: '8',
+                  overflowX: 'auto',
                   bg: backgroundColor === 'transparent' ? 'gray.900' : backgroundColor,
                   rounded: 'lg',
                   border: '1px dashed',
@@ -703,7 +704,14 @@ export default function LogoMakerPage() {
               </div>
 
               {/* Download Buttons */}
-              <div className={css({ display: 'flex', gap: '3', mt: '4' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
+                  gap: '3',
+                  mt: '4',
+                })}
+              >
                 <Button onClick={downloadPNG} className={css({ flex: '1' })}>
                   <Download className={css({ w: '4', h: '4', mr: '2' })} />
                   Download PNG

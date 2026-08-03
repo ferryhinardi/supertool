@@ -238,6 +238,7 @@ export default function FaviconGeneratorPage() {
         <div
           className={css({
             display: 'flex',
+            flexDirection: { base: 'column', sm: 'row' },
             gap: '4',
             mb: '6',
           })}
@@ -352,7 +353,7 @@ export default function FaviconGeneratorPage() {
             <div
               className={css({
                 display: 'grid',
-                gridTemplateColumns: 'repeat(8, 1fr)',
+                gridTemplateColumns: { base: 'repeat(5, 1fr)', sm: 'repeat(8, 1fr)' },
                 gap: '2',
                 mb: '4',
               })}
@@ -532,7 +533,7 @@ export default function FaviconGeneratorPage() {
               onClick={handleDownloadIco}
               className={css({
                 flex: '1',
-                minW: '200px',
+                w: { base: 'full', sm: 'auto' },
                 bg: 'violet.500',
                 _hover: { bg: 'violet.600' },
               })}
