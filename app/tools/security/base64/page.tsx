@@ -444,6 +444,8 @@ function Base64Content() {
                     src={imagePreview}
                     alt="Decoded base64"
                     className={css({
+                      w: 'full',
+                      maxW: 'full',
                       maxH: '64',
                       rounded: 'lg',
                       objectFit: 'contain',

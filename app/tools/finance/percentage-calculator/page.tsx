@@ -470,15 +470,18 @@ function PercentageCalculatorContent() {
                   <div className={css({ position: 'relative' })}>
                     <div
                       className={css({
-                        h: '20',
+                        minH: '20',
+                        h: 'auto',
                         rounded: 'lg',
                         border: '1px solid',
                         borderColor: 'purple.500/30',
                         bg: 'purple.500/10',
                         px: '6',
                         display: 'flex',
+                        flexDirection: { base: 'column', sm: 'row' },
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        gap: '3',
                       })}
                     >
                       <span
@@ -486,6 +489,7 @@ function PercentageCalculatorContent() {
                           fontSize: '3xl',
                           fontWeight: 'bold',
                           color: 'purple.300',
+                          overflowWrap: 'anywhere',
                         })}
                       >
                         {result.result}
@@ -527,7 +531,14 @@ function PercentageCalculatorContent() {
                       Calculation
                     </span>
                   </div>
-                  <p className={css({ fontSize: 'sm', color: 'white', fontFamily: 'mono' })}>
+                  <p
+                    className={css({
+                      fontSize: 'sm',
+                      color: 'white',
+                      fontFamily: 'mono',
+                      overflowWrap: 'anywhere',
+                    })}
+                  >
                     {result.formula}
                   </p>
                 </div>

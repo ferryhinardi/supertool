@@ -486,7 +486,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(3, 1fr)' },
                   gap: '3',
                 })}
               >
@@ -823,6 +823,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                     fontSize: 'sm',
                     color: 'white',
                     fontFamily: 'mono',
+                    overflowWrap: 'anywhere',
                   })}
                 >
                   Bill: ${calculation.billAmount.toFixed(2)} + Tip: $
