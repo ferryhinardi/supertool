@@ -1426,8 +1426,10 @@ function ApiTesterContent() {
               <div
                 className={css({
                   display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
                   justifyContent: 'space-between',
-                  alignItems: 'center',
+                  alignItems: { base: 'start', sm: 'center' },
+                  gap: '2',
                 })}
               >
                 <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
@@ -1463,7 +1465,13 @@ function ApiTesterContent() {
                   to send
                 </div>
               </div>
-              <div className={css({ display: 'flex', gap: '3' })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: 'auto minmax(0, 1fr) auto' },
+                  gap: '3',
+                })}
+              >
                 <select
                   value={method}
                   onChange={(e) => {
@@ -1472,7 +1480,7 @@ function ApiTesterContent() {
                   }}
                   className={css({
                     h: '12',
-                    minW: '32',
+                    minW: { base: '0', sm: '32' },
                     rounded: 'lg',
                     border: '1px solid',
                     borderColor: 'gray.700',
@@ -1504,6 +1512,7 @@ function ApiTesterContent() {
                   placeholder="https://api.example.com/endpoint"
                   className={css({
                     h: '12',
+                    minW: '0',
                     fontSize: 'base',
                     bg: 'gray.800/50',
                     border: '1px solid',
@@ -1546,6 +1555,7 @@ function ApiTesterContent() {
                 className={css({
                   display: 'flex',
                   gap: '2',
+                  overflowX: 'auto',
                   borderBottom: '1px solid',
                   borderColor: 'gray.800',
                   mb: '4',
@@ -1579,6 +1589,8 @@ function ApiTesterContent() {
                     className={css({
                       px: '4',
                       py: '2',
+                      minH: '11',
+                      flexShrink: '0',
                       fontSize: 'sm',
                       fontWeight: 'medium',
                       color: activeRequestTab === tab.id ? 'blue.400' : 'gray.400',
