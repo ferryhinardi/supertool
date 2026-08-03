@@ -283,8 +283,17 @@ export default function SharedBillPage() {
         })}
       >
         <div className={css({ textAlign: 'center' })}>
-          <Loader2 className="h-12 w-12 animate-spin text-green-500 mx-auto mb-4" />
-          <p className="text-lg text-gray-300">Loading bill...</p>
+          <Loader2
+            className={css({
+              h: '12',
+              w: '12',
+              mx: 'auto',
+              mb: '4',
+              animation: 'spin 1s linear infinite',
+              color: 'green.500',
+            })}
+          />
+          <p className={css({ fontSize: 'lg', color: 'gray.300' })}>Loading bill...</p>
         </div>
       </main>
     )
@@ -307,17 +316,20 @@ export default function SharedBillPage() {
         })}
       >
         <div className={css({ textAlign: 'center' })}>
-          <X className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-white mb-2">Bill Not Found</h1>
-          <p className="text-gray-400 mb-6">
+          <X className={css({ h: '16', w: '16', mx: 'auto', mb: '4', color: 'red.500' })} />
+          <h1 className={css({ mb: '2', fontSize: '2xl', fontWeight: 'bold', color: 'white' })}>
+            Bill Not Found
+          </h1>
+          <p className={css({ mb: '6', color: 'gray.400' })}>
             {error || 'This bill does not exist or has been deleted'}
           </p>
           <Button
             onClick={() => {
               window.location.href = '/tools/split-bill'
             }}
+            className={css({ minH: '11' })}
           >
-            <ExternalLink className="h-4 w-4 mr-2" />
+            <ExternalLink className={css({ mr: '2', h: '4', w: '4' })} />
             Create New Bill
           </Button>
         </div>
@@ -367,41 +379,110 @@ export default function SharedBillPage() {
           })}
         >
           <div
-            className="animate-pulse rounded-xl bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 p-2.5 shadow-2xl shadow-green-500/60 sm:rounded-2xl sm:p-4"
-            style={{ animationDuration: '2s' }}
+            className={css({
+              flexShrink: 0,
+              animation: 'pulse 2s infinite',
+              rounded: { base: 'xl', sm: '2xl' },
+              bgGradient: 'to-br',
+              gradientFrom: 'green.600',
+              gradientVia: 'emerald.600',
+              gradientTo: 'teal.700',
+              p: { base: '2.5', sm: '4' },
+              shadow: '2xl',
+              boxShadow: '0 25px 50px rgba(34, 197, 94, 0.6)',
+            })}
           >
-            <Users className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+            <Users
+              className={css({
+                h: { base: '6', sm: '8' },
+                w: { base: '6', sm: '8' },
+                color: 'white',
+              })}
+            />
           </div>
-          <div className="flex-1">
-            <h1 className="bg-gradient-to-r from-green-300 via-emerald-400 to-teal-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl">
+          <div className={css({ minW: 0, flex: '1' })}>
+            <h1
+              className={css({
+                overflowWrap: 'anywhere',
+                bgGradient: 'to-r',
+                gradientFrom: 'green.300',
+                gradientVia: 'emerald.400',
+                gradientTo: 'teal.300',
+                bgClip: 'text',
+                fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
+                fontWeight: 'extrabold',
+                color: 'transparent',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
+              })}
+            >
               {bill.title}
             </h1>
             {bill.description && (
-              <p className="text-sm text-gray-300 sm:text-base mt-1">{bill.description}</p>
+              <p
+                className={css({
+                  mt: '1',
+                  overflowWrap: 'anywhere',
+                  fontSize: { base: 'sm', sm: 'base' },
+                  color: 'gray.300',
+                })}
+              >
+                {bill.description}
+              </p>
             )}
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
-          <Button onClick={handleCopyLink} size="sm" variant="outline">
-            <Copy className="h-4 w-4 mr-1" />
+        <div
+          className={css({
+            display: 'grid',
+            gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(5, auto)' },
+            gap: '2',
+          })}
+        >
+          <Button
+            onClick={handleCopyLink}
+            size="sm"
+            variant="outline"
+            className={css({ minH: '11' })}
+          >
+            <Copy className={css({ mr: '1', h: '4', w: '4' })} />
             Copy Link
           </Button>
-          <Button onClick={handleRefresh} size="sm" variant="outline">
-            <RefreshCw className="h-4 w-4 mr-1" />
+          <Button
+            onClick={handleRefresh}
+            size="sm"
+            variant="outline"
+            className={css({ minH: '11' })}
+          >
+            <RefreshCw className={css({ mr: '1', h: '4', w: '4' })} />
             Refresh
           </Button>
-          <Button onClick={handleExportPDF} size="sm" variant="outline">
-            <Download className="h-4 w-4 mr-1" />
+          <Button
+            onClick={handleExportPDF}
+            size="sm"
+            variant="outline"
+            className={css({ minH: '11' })}
+          >
+            <Download className={css({ mr: '1', h: '4', w: '4' })} />
             Export PDF
           </Button>
-          <Button onClick={handleExportCSV} size="sm" variant="outline">
-            <FileText className="h-4 w-4 mr-1" />
+          <Button
+            onClick={handleExportCSV}
+            size="sm"
+            variant="outline"
+            className={css({ minH: '11' })}
+          >
+            <FileText className={css({ mr: '1', h: '4', w: '4' })} />
             Export CSV
           </Button>
-          <Button onClick={handleShareSummary} size="sm" variant="outline">
-            <Share2 className="h-4 w-4 mr-1" />
+          <Button
+            onClick={handleShareSummary}
+            size="sm"
+            variant="outline"
+            className={css({ minH: '11' })}
+          >
+            <Share2 className={css({ mr: '1', h: '4', w: '4' })} />
             Share Summary
           </Button>
         </div>
@@ -449,14 +530,29 @@ export default function SharedBillPage() {
           })}
         >
           <div className={css({ textAlign: 'center' })}>
-            <div className="text-3xl font-bold text-green-400">
+            <div
+              className={css({
+                overflowWrap: 'anywhere',
+                fontSize: { base: '2xl', sm: '3xl' },
+                fontWeight: 'bold',
+                color: 'green.400',
+              })}
+            >
               {currencySymbol}
               {formatCurrency(Number(bill.total_amount), bill.currency)}
             </div>
             <div className="text-sm text-gray-400">Total Bill</div>
           </div>
           <div className={css({ textAlign: 'center' })}>
-            <div className="text-3xl font-bold text-emerald-400">{participants.length}</div>
+            <div
+              className={css({
+                fontSize: { base: '2xl', sm: '3xl' },
+                fontWeight: 'bold',
+                color: 'emerald.400',
+              })}
+            >
+              {participants.length}
+            </div>
             <div className="text-sm text-gray-400">People</div>
           </div>
           <div className={css({ textAlign: 'center' })}>

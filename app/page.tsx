@@ -644,8 +644,9 @@ export default function HomePage() {
             w: 'full',
             maxW: { base: 'full', md: '100%' },
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            flexDirection: { base: 'column', sm: 'row' },
+            alignItems: { base: 'stretch', sm: 'center' },
+            justifyContent: { sm: 'space-between' },
             gap: '4',
           })}
         >
@@ -654,6 +655,7 @@ export default function HomePage() {
             className={css({
               display: 'flex',
               gap: '1',
+              w: { base: 'full', sm: 'auto' },
               rounded: 'lg',
               border: '1px solid',
               borderColor: 'gray.700',
@@ -672,8 +674,10 @@ export default function HomePage() {
               aria-label="Popular tools"
               aria-pressed={toolsView === 'popular'}
               className={css({
-                h: '9',
-                px: '4',
+                h: { base: '11', sm: '9' },
+                flex: { base: '1', sm: 'initial' },
+                justifyContent: 'center',
+                px: { base: '2', sm: '4' },
                 gap: '2',
                 fontSize: 'sm',
                 fontWeight: 'semibold',
@@ -723,7 +727,7 @@ export default function HomePage() {
             className={css({
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'flex-end',
+              justifyContent: { base: 'flex-end', sm: 'flex-end' },
             })}
           >
             {/* View Mode Toggle */}
@@ -748,8 +752,8 @@ export default function HomePage() {
                     aria-label="Grid view"
                     aria-pressed={viewMode === 'grid'}
                     className={css({
-                      h: '9',
-                      w: '9',
+                      h: { base: '11', sm: '9' },
+                      w: { base: '11', sm: '9' },
                       p: '0',
                       ...(viewMode === 'grid'
                         ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
@@ -789,7 +793,14 @@ export default function HomePage() {
 
         {/* Results count */}
         {searchQuery && (
-          <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+          <div
+            className={css({
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: '3',
+            })}
+          >
             <div
               className={css({
                 display: 'flex',
@@ -890,8 +901,10 @@ export default function HomePage() {
                     className={css({
                       mb: '6',
                       display: 'flex',
-                      alignItems: 'center',
+                      flexDirection: { base: 'column', sm: 'row' },
+                      alignItems: { base: 'stretch', sm: 'center' },
                       justifyContent: 'space-between',
+                      gap: { base: '3', sm: '4' },
                       pb: '4',
                       borderBottom: '2px solid',
                       borderColor: 'gray.800',
@@ -899,8 +912,10 @@ export default function HomePage() {
                   >
                     <div
                       className={css({
+                        minH: '11',
                         display: 'flex',
                         alignItems: 'center',
+                        minW: 0,
                         gap: '4',
                       })}
                     >
@@ -922,7 +937,7 @@ export default function HomePage() {
                           })}
                         />
                       </div>
-                      <div>
+                      <div className={css({ minW: 0 })}>
                         <h2
                           className={css({
                             fontSize: { base: '2xl', sm: '3xl' },
@@ -965,6 +980,7 @@ export default function HomePage() {
                       onClick={() => toggleCategory(category.value)}
                       className={css({
                         gap: '2',
+                        alignSelf: { base: 'flex-end', sm: 'auto' },
                         color: 'gray.400',
                         _hover: { color: 'purple.400' },
                       })}
@@ -1174,16 +1190,16 @@ export default function HomePage() {
 
       {/* Fixed Position Buttons - Feedback & Support */}
       <div
-        style={{
+        className={css({
           position: 'fixed',
-          right: '1rem',
-          bottom: '1rem',
-          zIndex: 9999,
+          right: { base: '3', sm: '4' },
+          bottom: { base: '3', sm: '4' },
+          zIndex: 'docked',
           display: 'flex',
           flexDirection: 'column',
-          gap: '0.75rem',
+          gap: '3',
           pointerEvents: 'none',
-        }}
+        })}
       >
         <div style={{ pointerEvents: 'auto' }}>
           <TreatMeDialog />
@@ -1442,7 +1458,8 @@ const ToolCard = memo(function ToolCard({
             <div
               className={css({
                 display: 'flex',
-                alignItems: 'flex-start',
+                flexDirection: { base: 'column', sm: 'row' },
+                alignItems: { base: 'stretch', sm: 'flex-start' },
                 gap: '5',
               })}
             >
@@ -1588,6 +1605,7 @@ const ToolCard = memo(function ToolCard({
 
               <ArrowRight
                 className={css({
+                  display: { base: 'none', sm: 'block' },
                   h: '6',
                   w: '6',
                   flexShrink: 0,
