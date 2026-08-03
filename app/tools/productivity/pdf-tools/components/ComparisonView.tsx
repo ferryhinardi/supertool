@@ -49,6 +49,8 @@ export function ComparisonView({
         justifyContent: 'center',
         bg: 'black/60',
         backdropFilter: 'blur(4px)',
+        overflowY: 'auto',
+        p: { base: '3', sm: '4' },
       })}
       onClick={onClose}
       onKeyDown={(e) => e.key === 'Escape' && onClose()}
@@ -57,7 +59,8 @@ export function ComparisonView({
         className={css({
           maxW: '4xl',
           w: 'full',
-          mx: '4',
+          maxH: 'full',
+          my: 'auto',
           bg: 'gray.900',
           border: '1px solid',
           borderColor: 'red.500/20',
@@ -70,9 +73,12 @@ export function ComparisonView({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              gap: '3',
             })}
           >
-            <CardTitle className={css({ color: 'red.400' })}>Before & After Comparison</CardTitle>
+            <CardTitle className={css({ color: 'red.400', minW: '0' })}>
+              Before & After Comparison
+            </CardTitle>
             <button
               type="button"
               onClick={onClose}
@@ -88,12 +94,12 @@ export function ComparisonView({
           </div>
         </CardHeader>
         <CardContent>
-          <div className={css({ p: '6', spaceY: '6' })}>
+          <div className={css({ p: { base: '4', sm: '6' }, spaceY: '6' })}>
             {/* Statistics */}
             <div
               className={css({
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateColumns: { base: '1fr', sm: 'repeat(3, 1fr)' },
                 gap: '4',
                 p: '4',
                 rounded: 'lg',
@@ -122,7 +128,11 @@ export function ComparisonView({
 
             {/* Side-by-side comparison */}
             <div
-              className={css({ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '4' })}
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                gap: '4',
+              })}
             >
               {/* Original */}
               <div
@@ -188,11 +198,18 @@ export function ComparisonView({
             </div>
 
             {/* Actions */}
-            <div className={css({ display: 'flex', gap: '3', pt: '4' })}>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                gap: '3',
+                pt: '4',
+              })}
+            >
               <Button
                 onClick={onDownload}
                 className={css({
-                  flex: '1',
+                  w: 'full',
                   gap: '2',
                   bg: 'red.600',
                   _hover: { bg: 'red.700' },
@@ -201,7 +218,7 @@ export function ComparisonView({
                 <Download className={css({ h: '4', w: '4' })} />
                 Download Processed File
               </Button>
-              <Button variant="outline" onClick={onClose} className={css({ flex: '1' })}>
+              <Button variant="outline" onClick={onClose} className={css({ w: 'full' })}>
                 Close
               </Button>
             </div>

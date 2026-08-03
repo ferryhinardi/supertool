@@ -2523,7 +2523,7 @@ export default function PDFToolsPage() {
                     <div
                       className={css({
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gridTemplateColumns: { base: '1fr', sm: 'repeat(3, 1fr)' },
                         gap: '2',
                         w: 'full',
                       })}
@@ -3141,7 +3141,7 @@ export default function PDFToolsPage() {
                     <div
                       className={css({
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
                         gap: '2',
                         w: 'full',
                       })}

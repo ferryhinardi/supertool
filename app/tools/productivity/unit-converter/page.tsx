@@ -1037,7 +1037,13 @@ function UnitConverterContent() {
               >
                 From
               </label>
-              <div className={css({ display: 'grid', gridTemplateColumns: '1fr auto', gap: '3' })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: 'minmax(0, 1fr) auto' },
+                  gap: '3',
+                })}
+              >
                 <Input
                   id="from-value"
                   type="text"
@@ -1062,7 +1068,8 @@ function UnitConverterContent() {
                   onChange={(e) => setFromUnit(e.target.value)}
                   className={css({
                     h: '14',
-                    minW: '40',
+                    w: { base: 'full', sm: 'auto' },
+                    minW: { sm: '40' },
                     rounded: 'lg',
                     border: '1px solid',
                     borderColor: 'gray.700',
@@ -1231,6 +1238,7 @@ function UnitConverterContent() {
                     }}
                     size="sm"
                     className={css({
+                      flex: { base: '1', sm: 'initial' },
                       gap: '2',
                       bg: 'transparent',
                       color: 'blue.400',
@@ -1384,8 +1392,10 @@ function UnitConverterContent() {
             <div
               className={css({
                 display: 'flex',
+                flexDirection: { base: 'column', sm: 'row' },
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                gap: '3',
               })}
             >
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
@@ -1403,6 +1413,7 @@ function UnitConverterContent() {
                     onClick={handleAddChainStep}
                     size="sm"
                     className={css({
+                      flex: { base: '1', sm: 'initial' },
                       gap: '2',
                       bg: 'teal.500/20',
                       color: 'teal.300',
@@ -1564,12 +1575,13 @@ function UnitConverterContent() {
                           <div
                             className={css({
                               display: 'flex',
+                              flexDirection: { base: 'column', sm: 'row' },
                               alignItems: 'center',
                               gap: '3',
                               justifyContent: 'space-between',
                             })}
                           >
-                            <div className={css({ flex: '1', spaceY: '2' })}>
+                            <div className={css({ flex: '1', minW: '0', w: 'full', spaceY: '2' })}>
                               <div
                                 className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
                               >
@@ -1594,7 +1606,12 @@ function UnitConverterContent() {
                               </div>
 
                               <div
-                                className={css({ display: 'flex', alignItems: 'center', gap: '3' })}
+                                className={css({
+                                  display: 'flex',
+                                  flexDirection: { base: 'column', sm: 'row' },
+                                  alignItems: { base: 'stretch', sm: 'center' },
+                                  gap: '3',
+                                })}
                               >
                                 <select
                                   value={step.unit}
@@ -1634,7 +1651,8 @@ function UnitConverterContent() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '2',
-                                    minW: '32',
+                                    minW: '0',
+                                    w: { base: 'full', sm: '32' },
                                   })}
                                 >
                                   <span
@@ -2137,6 +2155,7 @@ function UnitConverterContent() {
                       key={favorite.id}
                       className={css({
                         display: 'flex',
+                        minW: '0',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         rounded: 'lg',
@@ -2227,11 +2246,20 @@ function UnitConverterContent() {
               <div
                 className={css({
                   display: 'flex',
-                  alignItems: 'center',
+                  flexDirection: { base: 'column', sm: 'row' },
+                  alignItems: { base: 'stretch', sm: 'center' },
                   justifyContent: 'space-between',
+                  gap: '3',
                 })}
               >
-                <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2',
+                    minW: '0',
+                  })}
+                >
                   <History className={css({ h: '5', w: '5', color: 'purple.400' })} />
                   <CardTitle>Conversion History</CardTitle>
                   <Badge
@@ -2245,7 +2273,9 @@ function UnitConverterContent() {
                     {history.length}
                   </Badge>
                 </div>
-                <div className={css({ display: 'flex', gap: '2' })}>
+                <div
+                  className={css({ display: 'flex', gap: '2', w: { base: 'full', sm: 'auto' } })}
+                >
                   <Button
                     onClick={handleExportHistory}
                     size="sm"

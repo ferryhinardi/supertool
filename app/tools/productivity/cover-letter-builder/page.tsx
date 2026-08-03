@@ -315,6 +315,7 @@ export default function CoverLetterBuilderPage() {
           gap: { base: '4', md: '6' },
           maxW: '7xl',
           mx: 'auto',
+          w: 'full',
           p: { base: '4', sm: '6' },
           minH: 'calc(100vh - 140px)',
         })}
@@ -576,6 +577,7 @@ export default function CoverLetterBuilderPage() {
               <div
                 className={css({
                   w: 'full',
+                  aspectRatio: '210/297',
                   overflow: 'hidden',
                   rounded: 'md',
                   border: '1px solid',
@@ -590,7 +592,7 @@ export default function CoverLetterBuilderPage() {
                     w: '210mm',
                     minH: '297mm',
                     bg: 'white',
-                    transform: 'scale(0.28)',
+                    transform: { base: 'scale(0.28)', sm: 'scale(0.42)', lg: 'scale(0.28)' },
                     transformOrigin: 'top left',
                     overflow: 'hidden',
                   })}
