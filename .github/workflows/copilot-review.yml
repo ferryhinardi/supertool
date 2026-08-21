@@ -638,8 +638,22 @@ jobs:
               comment += 'Error reading analysis reports: ' + error.message + '\n';
             }
 
-            comment += '\n\n---\n';
-            comment += `*Analysis completed at: ${new Date().toISOString()}*`;
+            const footer = '\n\n---\n' + `*Analysis completed at: ${new Date().toISOString()}*`;
+
+            // GitHub rejects issue comment bodies over 65536 characters, which
+            // large PRs used to hit and fail the job. Trim the report instead and
+            // point at the full copy in the ai-review-report artifact.
+            const MAX_COMMENT_LENGTH = 65536;
+            const truncationNotice =
+              '\n\n> [!NOTE]\n' +
+              "> This report was truncated to fit GitHub's 65536-character comment limit. " +
+              'The complete report is available in the **ai-review-report** workflow artifact.\n';
+
+            let body = comment + footer;
+            if (body.length > MAX_COMMENT_LENGTH) {
+              const room = MAX_COMMENT_LENGTH - footer.length - truncationNotice.length;
+              body = comment.slice(0, room) + truncationNotice + footer;
+            }
 
             // Find existing bot comment
             const { data: comments } = await github.rest.issues.listComments({
@@ -658,14 +672,14 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
-                body: comment
+                body
               });
             } else {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: comment
+                body
               });
             }
 
@@ -818,8 +832,23 @@ jobs:
               comment += 'Error reading fix suggestions: ' + error.message + '\n';
             }
 
-            comment += '\n\n---\n';
-            comment += '*These suggestions are AI-generated. Please review and adapt as needed.*';
+            const footer =
+              '\n\n---\n' +
+              '*These suggestions are AI-generated. Please review and adapt as needed.*';
+
+            // Captured CI output can be arbitrarily long; stay under GitHub's
+            // 65536-character comment limit so posting cannot fail the job.
+            const MAX_COMMENT_LENGTH = 65536;
+            const truncationNotice =
+              '\n\n> [!NOTE]\n' +
+              "> These suggestions were truncated to fit GitHub's 65536-character comment limit. " +
+              'See the workflow logs for the full output.\n';
+
+            let body = comment + footer;
+            if (body.length > MAX_COMMENT_LENGTH) {
+              const room = MAX_COMMENT_LENGTH - footer.length - truncationNotice.length;
+              body = comment.slice(0, room) + truncationNotice + footer;
+            }
 
             // Find existing fix suggestion comment
             const { data: comments } = await github.rest.issues.listComments({
@@ -838,14 +867,14 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: existingComment.id,
-                body: comment
+                body
               });
             } else {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: comment
+                body
               });
             }
 
