@@ -85,20 +85,6 @@ pnpm mcp:validate                 # Validate MCP tool definitions
   }
   ```
 
-## Copilot CLI
-Source aliases: `source scripts/copilot-aliases.sh`
-
-| Alias | Purpose |
-|-------|---------|
-| `cop` | Quick explain - `cop "what does this do"` |
-| `copg` | Git help - `copg "undo last commit"` |
-| `cop-lint` | Fix lint errors with AI guidance |
-| `cop-test` | Generate/fix tests |
-| `cop-commit` | Generate commit message |
-| `cop-new-tool` | Scaffold new tool page |
-
-Full docs: `docs/COPILOT_CLI.md`
-
 ## CI/CD Workflow
 Primary workflow: `.github/workflows/copilot-review.yml`
 

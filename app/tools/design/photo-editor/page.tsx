@@ -679,8 +679,10 @@ export default function PhotoEditorPage() {
                   <canvas
                     ref={canvasRef}
                     className={css({
+                      // No `w: 'full'`: a definite width plus maxH clamps only the
+                      // height, so the canvas stretches (measured 1.82 vs a true
+                      // 1.33 ratio at 1440px). maxW keeps both axes auto.
                       maxW: 'full',
-                      w: 'full',
                       maxH: '96',
                       rounded: 'lg',
                       shadow: 'xl',

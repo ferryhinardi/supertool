@@ -649,10 +649,29 @@ jobs:
               "> This report was truncated to fit GitHub's 65536-character comment limit. " +
               'The complete report is available in the **ai-review-report** workflow artifact.\n';
 
+            // Reserve room for a fence we may have to close (see below).
+            const FENCE = '\n```';
+
             let body = comment + footer;
             if (body.length > MAX_COMMENT_LENGTH) {
-              const room = MAX_COMMENT_LENGTH - footer.length - truncationNotice.length;
-              body = comment.slice(0, room) + truncationNotice + footer;
+              const room =
+                MAX_COMMENT_LENGTH - footer.length - truncationNotice.length - FENCE.length;
+              let head = comment.slice(0, room);
+
+              // slice() cuts UTF-16 code units, so cutting between the halves of a
+              // surrogate pair leaves a lone surrogate and the API rejects the body
+              // with a 422 - the very failure this truncation exists to avoid.
+              if (/[\uD800-\uDBFF]$/.test(head)) {
+                head = head.slice(0, -1);
+              }
+
+              // If the cut landed inside a code fence, close it, or the notice and
+              // footer render as code instead of markdown.
+              if ((head.match(/^```/gm) || []).length % 2 === 1) {
+                head += FENCE;
+              }
+
+              body = head + truncationNotice + footer;
             }
 
             // Find existing bot comment
@@ -795,22 +814,6 @@ jobs:
           echo "\`\`\`" >> fix-suggestions.md
           echo "" >> fix-suggestions.md
 
-          # Copilot CLI suggestions
-          echo "### Using Copilot CLI" >> fix-suggestions.md
-          echo "" >> fix-suggestions.md
-          echo "If you have Copilot CLI installed, you can use these commands:" >> fix-suggestions.md
-          echo "" >> fix-suggestions.md
-          echo "\`\`\`bash" >> fix-suggestions.md
-          echo "# Source the aliases" >> fix-suggestions.md
-          echo "source scripts/copilot-aliases.sh" >> fix-suggestions.md
-          echo "" >> fix-suggestions.md
-          echo "# Get AI help for lint errors" >> fix-suggestions.md
-          echo "cop-lint" >> fix-suggestions.md
-          echo "" >> fix-suggestions.md
-          echo "# Get AI help for test failures" >> fix-suggestions.md
-          echo "cop-test" >> fix-suggestions.md
-          echo "\`\`\`" >> fix-suggestions.md
-
           cat fix-suggestions.md
 
       - name: Comment Fix Suggestions
@@ -844,10 +847,26 @@ jobs:
               "> These suggestions were truncated to fit GitHub's 65536-character comment limit. " +
               'See the workflow logs for the full output.\n';
 
+            // Reserve room for a fence we may have to close (see below).
+            const FENCE = '\n```';
+
             let body = comment + footer;
             if (body.length > MAX_COMMENT_LENGTH) {
-              const room = MAX_COMMENT_LENGTH - footer.length - truncationNotice.length;
-              body = comment.slice(0, room) + truncationNotice + footer;
+              const room =
+                MAX_COMMENT_LENGTH - footer.length - truncationNotice.length - FENCE.length;
+              let head = comment.slice(0, room);
+
+              // Captured CI output is full of code fences and can contain emoji, so
+              // guard both: a cut between surrogate halves makes the API reject the
+              // body with a 422, and a cut inside a fence swallows the notice.
+              if (/[\uD800-\uDBFF]$/.test(head)) {
+                head = head.slice(0, -1);
+              }
+              if ((head.match(/^```/gm) || []).length % 2 === 1) {
+                head += FENCE;
+              }
+
+              body = head + truncationNotice + footer;
             }
 
             // Find existing fix suggestion comment

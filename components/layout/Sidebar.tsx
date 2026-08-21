@@ -61,6 +61,10 @@ const navLinkStyles = cva({
     rounded: 'lg',
     px: '4',
     py: '2.5',
+    // px/py alone render these links 41px tall - 3px under the 44px minimum
+    // touch target, which is the single largest source of violations in
+    // docs/TOUCH_TARGETS_BACKLOG.md (2200 of 2611, one per link per route).
+    minH: '11',
     transition: 'all 0.2s',
     _hover: {
       bg: 'rgba(139, 92, 246, 0.1)',
@@ -316,6 +320,7 @@ export function Sidebar() {
                   <button
                     type="button"
                     onClick={() => toggleCategory(cat.id)}
+                    aria-expanded={!isCollapsed}
                     className={css({
                       display: 'flex',
                       alignItems: 'center',
@@ -323,6 +328,10 @@ export function Sidebar() {
                       w: 'full',
                       px: '3',
                       py: '2',
+                      // px/py alone render these 34px tall; 140 of the remaining
+                      // touch-target violations are this one button per category
+                      // per route.
+                      minH: '11',
                       rounded: 'md',
                       cursor: 'pointer',
                       transition: 'all 0.2s',

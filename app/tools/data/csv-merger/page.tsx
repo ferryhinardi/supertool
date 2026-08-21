@@ -477,7 +477,9 @@ export default function CSVMergerPage() {
                 }}
                 className={css({
                   flex: '1',
-                  minW: '200px',
+                  // Matches the sibling mode button's responsive floor.
+                  minW: { base: '0', sm: '200px' },
+                  w: { base: 'full', sm: 'auto' },
                   h: 'auto',
                   py: '4',
                   px: '6',

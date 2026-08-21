@@ -307,6 +307,22 @@ export default defineConfig({
     },
   },
 
+  // Recipe variants are selected at runtime - e.g. `button({ variant, size })`
+  // in components/ui/button.tsx - so Panda's static extractor can only see each
+  // recipe's defaultVariants. Without this, `size="sm"` and `variant="outline"`
+  // emitted no CSS at all: no height, no padding, no border. Generate every
+  // variant of every recipe instead.
+  staticCss: {
+    recipes: {
+      button: ['*'],
+      card: ['*'],
+      badge: ['*'],
+      input: ['*'],
+      textarea: ['*'],
+      progress: ['*'],
+    },
+  },
+
   // Conditions for responsive and interactive styles
   conditions: {
     extend: {
