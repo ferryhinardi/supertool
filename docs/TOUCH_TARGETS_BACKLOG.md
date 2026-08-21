@@ -14,13 +14,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | --- | --- | --- |
 | `a[href="/"]{text="⚡SuperTool"}` | 267x36px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `button{text="Add to Favorites"}` | 137.31x24px | 44x44px |
+| `button{text="Add to Favorites"}` | 148.48x32px | 44x44px |
 | `button{text="Swap Units"}` | 145.41x36px | 44x44px |
 | `button{text="Show Details"}` | 76.84x32px | 44x44px |
-| `button{text="Start Chain"}` | 108.03x24px | 44x44px |
+| `button{text="Start Chain"}` | 132.03x32px | 44x44px |
 | `button{text="Start Chain"}` | 140.03x36px | 44x44px |
-| `button{text="Export CSV"}` | 110.75x24px | 44x44px |
-| `button{text="Clear"}` | 64.06x24px | 44x44px |
+| `button{text="Export CSV"}` | 134.75x32px | 44x44px |
+| `button{text="Clear"}` | 88.06x32px | 44x44px |
 | `button[aria-label="Rate 1 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 2 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
@@ -76,9 +76,9 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | --- | --- | --- |
 | `a[href="/"]{text="⚡SuperTool"}` | 267x36px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `button{text="Swap"}` | 74.14x24px | 44x44px |
-| `button{text="Clear"}` | 72.06x24px | 44x44px |
-| `button{text="Copy"}` | 67.77x24px | 44x44px |
+| `button{text="Swap"}` | 98.14x32px | 44x44px |
+| `button{text="Clear"}` | 96.06x32px | 44x44px |
+| `button{text="Copy"}` | 91.77x32px | 44x44px |
 | `button[aria-label="Rate 1 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 2 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
@@ -104,16 +104,16 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `input[aria-label="QR code size, currently 256px"]` | 129x16px | 44x44px |
 | `input` | 13x13px | 44x44px |
 | `input` | 13x13px | 44x44px |
-| `button{text="classic"}` | 135.5x24px | 44x44px |
-| `button{text="modern"}` | 135.5x24px | 44x44px |
-| `button{text="branded"}` | 135.5x24px | 44x44px |
-| `button{text="minimalist"}` | 135.5x24px | 44x44px |
-| `button{text="professional"}` | 135.5x24px | 44x44px |
-| `button{text="vibrant"}` | 135.5x24px | 44x44px |
-| `button{text="ocean"}` | 135.5x24px | 44x44px |
-| `button{text="sunset"}` | 135.5x24px | 44x44px |
-| `button{text="forest"}` | 135.5x24px | 44x44px |
-| `button{text="neon"}` | 135.5x24px | 44x44px |
+| `button{text="classic"}` | 135.5x32px | 44x44px |
+| `button{text="modern"}` | 135.5x32px | 44x44px |
+| `button{text="branded"}` | 135.5x32px | 44x44px |
+| `button{text="minimalist"}` | 135.5x32px | 44x44px |
+| `button{text="professional"}` | 135.5x32px | 44x44px |
+| `button{text="vibrant"}` | 135.5x32px | 44x44px |
+| `button{text="ocean"}` | 135.5x32px | 44x44px |
+| `button{text="sunset"}` | 135.5x32px | 44x44px |
+| `button{text="forest"}` | 135.5x32px | 44x44px |
+| `button{text="neon"}` | 135.5x32px | 44x44px |
 | `input[aria-label="Upload logo image for QR code"]` | 344x24px | 44x44px |
 | `button{text="Upload Logo"}` | 152.66x36px | 44x44px |
 | `input[aria-label="Upload CSV file for bulk QR code generation"]` | 283x24px | 44x44px |
@@ -123,9 +123,9 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button{text="Download SVG"}` | 61.75x36px | 44x44px |
 | `button{text="Copy Image"}` | 61.75x36px | 44x44px |
 | `button{text="Save to History"}` | 61.75x36px | 44x44px |
-| `button{text="Show"}` | 42.13x24px | 44x44px |
-| `button{text="Show"}` | 42.13x24px | 44x44px |
-| `button{text="Show"}` | 42.13x24px | 44x44px |
+| `button{text="Show"}` | 65.11x32px | 44x44px |
+| `button{text="Show"}` | 66.13x32px | 44x44px |
+| `button{text="Show"}` | 66.13x32px | 44x44px |
 | `button[aria-label="Rate 1 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 2 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
@@ -156,21 +156,21 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | --- | --- | --- |
 | `a[href="/"]{text="⚡SuperTool"}` | 267x36px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `button[aria-label="Randomize color"]` | 16x16px | 44x44px |
+| `button[aria-label="Randomize color"]` | 40x32px | 44x44px |
 | `button{text="Random Color"}` | 163.34x36px | 44x44px |
-| `button[aria-label="Copy HEX color"]` | 16x16px | 44x44px |
-| `button[aria-label="Copy RGB color"]` | 16x16px | 44x44px |
-| `button[aria-label="Copy HSL color"]` | 16x16px | 44x44px |
-| `button[aria-label="Copy HSV color"]` | 16x16px | 44x44px |
-| `button[aria-label="Copy color palette"]` | 16x16px | 44x44px |
-| `button{text="complementary"}` | 352x24px | 44x44px |
-| `button{text="analogous"}` | 352x24px | 44x44px |
-| `button{text="triadic"}` | 352x24px | 44x44px |
-| `button{text="tetradic"}` | 352x24px | 44x44px |
-| `button{text="monochromatic"}` | 352x24px | 44x44px |
-| `button{text="shades"}` | 352x24px | 44x44px |
-| `button[aria-label="Copy color #667EEA"]` | 14x14px | 44x44px |
-| `button[aria-label="Copy color #EAD266"]` | 14x14px | 44x44px |
+| `button[aria-label="Copy HEX color"]` | 40x32px | 44x44px |
+| `button[aria-label="Copy RGB color"]` | 40x32px | 44x44px |
+| `button[aria-label="Copy HSL color"]` | 40x32px | 44x44px |
+| `button[aria-label="Copy HSV color"]` | 40x32px | 44x44px |
+| `button[aria-label="Copy color palette"]` | 40x32px | 44x44px |
+| `button{text="complementary"}` | 352x32px | 44x44px |
+| `button{text="analogous"}` | 352x32px | 44x44px |
+| `button{text="triadic"}` | 352x32px | 44x44px |
+| `button{text="tetradic"}` | 352x32px | 44x44px |
+| `button{text="monochromatic"}` | 352x32px | 44x44px |
+| `button{text="shades"}` | 352x32px | 44x44px |
+| `button[aria-label="Copy color #667EEA"]` | 38x32px | 44x44px |
+| `button[aria-label="Copy color #EAD266"]` | 38x32px | 44x44px |
 | `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Regex Tester
@@ -240,7 +240,7 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | --- | --- | --- |
 | `a[href="/"]{text="⚡SuperTool"}` | 267x36px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `button{text="Clear"}` | 72.06x24px | 44x44px |
+| `button{text="Clear"}` | 96.06x32px | 44x44px |
 | `button[aria-label="Rate 1 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 2 stars"]` | 24x24px | 44x44px |
 | `button[aria-label="Rate 3 stars"]` | 24x24px | 44x44px |
@@ -301,13 +301,13 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | --- | --- | --- |
 | `a[href="/"]{text="⚡SuperTool"}` | 267x36px | 44x44px |
 | `a[href="https://github.com/ferryhinardi"]{text="Ferry"}` | 30.22x15px | 44x44px |
-| `button{text="Save"}` | 69.03x24px | 44x44px |
-| `button{text="Preview"}` | 92x24px | 44x44px |
-| `button{text="Export PDF"}` | 116.97x24px | 44x44px |
-| `button{text="Simple PDF"}` | 118.88x24px | 44x44px |
-| `button{text="JSON"}` | 75.69x24px | 44x44px |
-| `a[href="/tools/productivity/cover-letter-builder"]{text="Cover Letter"}` | 157.55x26px | 44x44px |
-| `button{text="Cover Letter"}` | 157.55x24px | 44x44px |
+| `button{text="Save"}` | 93.03x32px | 44x44px |
+| `button{text="Preview"}` | 116x32px | 44x44px |
+| `button{text="Export PDF"}` | 140.97x32px | 44x44px |
+| `button{text="Simple PDF"}` | 142.88x32px | 44x44px |
+| `button{text="JSON"}` | 99.69x32px | 44x44px |
+| `a[href="/tools/productivity/cover-letter-builder"]{text="Cover Letter"}` | 181.55x32px | 44x44px |
+| `button{text="Cover Letter"}` | 181.55x32px | 44x44px |
 | `button{text="Personal Info"}` | 155.14x40px | 44x44px |
 | `button{text="Experience"}` | 140.78x40px | 44x44px |
 | `button{text="Education"}` | 131.31x40px | 44x44px |
@@ -322,7 +322,7 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `input#linkedin` | 621.8x36px | 44x44px |
 | `input#github` | 621.8x36px | 44x44px |
 | `input#portfolio` | 621.8x36px | 44x44px |
-| `button{text="Generate AI Summary"}` | 571.8x24px | 44x44px |
+| `button{text="Generate AI Summary"}` | 571.8x32px | 44x44px |
 | `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Cover Letter Builder
@@ -357,11 +357,11 @@ Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
 | `button{text="📄 Visual PDF"}` | 795.69x36px | 44x44px |
 | `button{text="📝 ATS-Friendly PDF"}` | 795.69x36px | 44x44px |
 | `button{text="💾 Export JSON"}` | 795.69x36px | 44x44px |
-| `button{text="Generate Opening"}` | 795.69x24px | 44x44px |
-| `button{text="Generate Body"}` | 795.69x24px | 44x44px |
-| `button{text="Generate Closing"}` | 795.69x24px | 44x44px |
-| `button{text="Improve Content"}` | 795.69x24px | 44x44px |
-| `button{text="Check Tone"}` | 795.69x24px | 44x44px |
+| `button{text="Generate Opening"}` | 795.69x32px | 44x44px |
+| `button{text="Generate Body"}` | 795.69x32px | 44x44px |
+| `button{text="Generate Closing"}` | 795.69x32px | 44x44px |
+| `button{text="Improve Content"}` | 795.69x32px | 44x44px |
+| `button{text="Check Tone"}` | 795.69x32px | 44x44px |
 | `button#next-logo[aria-label="Open Next.js Dev Tools"]` | 32x32px | 44x44px |
 
 ## Privacy Policy Generator
