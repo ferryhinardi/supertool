@@ -425,8 +425,9 @@ export default function DeviceMockupPage() {
                   <canvas
                     ref={canvasRef}
                     className={css({
+                      // No `w: 'full'`: a definite width plus maxH clamps only the
+                      // height, which flattens tall device frames into letterboxes.
                       maxW: 'full',
-                      w: 'full',
                       maxH: '600px',
                       h: 'auto',
                     })}
