@@ -480,7 +480,9 @@ export default function CSVExcelConverterPage() {
                 onClick={() => setMode('excel-to-csv')}
                 className={css({
                   flex: '1',
-                  minW: '200px',
+                  // Matches the sibling mode button; a fixed 200px floor overflows
+                  // the single-column grid on very narrow screens.
+                  minW: { base: '0', sm: '200px' },
                   h: 'auto',
                   py: '4',
                   px: '6',

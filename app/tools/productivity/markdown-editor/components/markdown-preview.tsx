@@ -38,9 +38,11 @@ function escapeHtml(text: string): string {
   return div.innerHTML
 }
 function makeTablesScrollable(html: string): string {
+  // tabindex/role/aria-label: a rendered markdown table holds no focusable
+  // element, so without them the horizontal scroll is unreachable by keyboard.
   return html.replace(
     /<table(\s[^>]*)?>([\s\S]*?)<\/table>/gi,
-    '<div class="markdown-table-scroll"><table$1>$2</table></div>'
+    '<div class="markdown-table-scroll" tabindex="0" role="region" aria-label="Table, scrollable"><table$1>$2</table></div>'
   )
 }
 
@@ -149,7 +151,8 @@ const previewStyles = css({
     bg: 'gray.800',
     px: '1.5',
     py: '0.5',
-    fontSize: { base: 'xs', sm: 'sm' },
+    // Stays at sm: `xs` is 12px, and this is the smallest text in the preview.
+    fontSize: 'sm',
     color: 'pink.400',
     overflowWrap: 'anywhere',
   },
@@ -176,6 +179,13 @@ const previewStyles = css({
     maxW: 'full',
     overflowX: 'auto',
     overscrollBehaviorX: 'contain',
+    // The container is focusable so it can be scrolled by keyboard; make that
+    // focus visible.
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'purple.400',
+      outlineOffset: '2px',
+    },
   },
   '& table': {
     minW: 'max-content',
