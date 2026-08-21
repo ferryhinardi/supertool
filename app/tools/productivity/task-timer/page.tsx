@@ -326,6 +326,9 @@ function TaskTimerContent() {
           className={css({
             display: 'inline-flex',
             alignItems: 'center',
+            maxW: 'full',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
             gap: '3',
             rounded: 'full',
             border: '1px solid',
@@ -399,7 +402,13 @@ function TaskTimerContent() {
           </CardHeader>
           <CardContent className={css({ spaceY: '4' })}>
             {!currentSession ? (
-              <div className={css({ display: 'flex', gap: '3', flexWrap: 'wrap' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
+                  gap: '3',
+                })}
+              >
                 <Input
                   placeholder="Session name (optional)"
                   value={sessionName}
@@ -409,7 +418,8 @@ function TaskTimerContent() {
                   }}
                   className={css({
                     flex: '1',
-                    minW: '60',
+                    minW: '0',
+                    w: 'full',
                     bg: 'gray.800/50',
                     border: '1px solid',
                     borderColor: 'gray.700',
@@ -419,6 +429,7 @@ function TaskTimerContent() {
                   onClick={handleStartSession}
                   className={css({
                     gap: '2',
+                    w: { base: 'full', sm: 'auto' },
                     bg: 'purple.500/20',
                     border: '1px solid',
                     borderColor: 'purple.500/50',
@@ -431,7 +442,13 @@ function TaskTimerContent() {
                 </Button>
               </div>
             ) : (
-              <div className={css({ display: 'flex', gap: '3', flexWrap: 'wrap' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
+                  gap: '3',
+                })}
+              >
                 <div
                   className={css({
                     flex: '1',
@@ -479,7 +496,11 @@ function TaskTimerContent() {
 
             {currentSession && (
               <div
-                className={css({ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '3' })}
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: 'repeat(3, 1fr)' },
+                  gap: '3',
+                })}
               >
                 <div
                   className={css({
@@ -587,7 +608,13 @@ function TaskTimerContent() {
               <CardDescription>Create a new timer to track a specific task</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className={css({ display: 'flex', gap: '3', flexWrap: 'wrap' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
+                  gap: '3',
+                })}
+              >
                 <Input
                   placeholder="Task name (optional)"
                   value={newTimerName}
@@ -597,7 +624,8 @@ function TaskTimerContent() {
                   }}
                   className={css({
                     flex: '1',
-                    minW: '60',
+                    minW: '0',
+                    w: 'full',
                     bg: 'gray.800/50',
                     border: '1px solid',
                     borderColor: 'gray.700',
@@ -677,7 +705,7 @@ function TaskTimerContent() {
                         gap: '3',
                       })}
                     >
-                      <div className={css({ flex: '1', minW: '40' })}>
+                      <div className={css({ flex: '1', minW: '0' })}>
                         <div
                           className={css({
                             fontSize: 'lg',

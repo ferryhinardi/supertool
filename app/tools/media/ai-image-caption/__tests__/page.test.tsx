@@ -416,14 +416,15 @@ describe('AI Image Caption Generator - Caption Generation Tests', () => {
   })
 
   it('should display loading state during generation', async () => {
-    mockFetch.mockImplementation(
+    // Hold the request open with a deferred instead of a real timer, so the
+    // pending state is observable without the component's async work being able
+    // to outlive the test and call setState after jsdom teardown.
+    let resolveCaption: ((value: Response) => void) | undefined
+    mockFetch.mockImplementationOnce(
       () =>
-        new Promise((resolve) =>
-          setTimeout(
-            () => resolve(createMockResponse({ caption: 'Test', usage: { total_tokens: 100 } })),
-            1000
-          )
-        )
+        new Promise<Response>((resolve) => {
+          resolveCaption = resolve
+        })
     )
 
     render(<AIImageCaptionPage />)
@@ -437,22 +438,24 @@ describe('AI Image Caption Generator - Caption Generation Tests', () => {
       expect(screen.getByAltText('Preview')).toBeInTheDocument()
     })
 
-    const buttons = screen.getAllByRole('button')
-    const generateButton = buttons.find((btn) => btn.textContent?.includes('Generate Caption'))
+    await userEvent.click(screen.getByRole('button', { name: /Generate Caption/i }))
 
-    if (generateButton) {
-      await userEvent.click(generateButton)
+    // Check that the button shows "Generating..." immediately
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Generating\.\.\./i })).toBeInTheDocument()
+    })
 
-      // Check that the button shows "Generating..." immediately
-      await waitFor(
-        () => {
-          const allButtons = screen.getAllByRole('button')
-          const loadingButton = allButtons.find((btn) => btn.textContent?.includes('Generating...'))
-          expect(loadingButton).toBeDefined()
-        },
-        { timeout: 500 }
-      )
+    const settleCaption = resolveCaption
+    if (!settleCaption) {
+      throw new Error('Expected the caption request to be pending')
     }
+
+    settleCaption(createMockResponse({ caption: 'Test', usage: { total_tokens: 100 } }))
+
+    // Wait for the component to settle before the test exits.
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Generate Caption/i })).toBeInTheDocument()
+    })
   })
 
   it('should track analytics on successful generation', async () => {

@@ -67,7 +67,10 @@ turbopack-backtrace.log
 
 # biome
 biome-logs/
+
+# graphify knowledge graph (state dir renamed graphify-out/ -> .graphify/ in v0.17)
 graphify-out/
+.graphify/
 
 # opencode
 .opencode/

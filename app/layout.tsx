@@ -176,13 +176,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   position: 'relative',
                   zIndex: '1',
                   minH: { base: '100vh', md: '100vh' },
-                  w: { base: '100vw', md: 'calc(100vw - 16rem)' },
+                  w: { base: 'full', md: 'calc(100vw - 16rem)' },
                   flex: { base: '1', md: '1' },
                   overflowX: 'hidden',
-                  p: { base: '4', sm: '6', md: '8', lg: '10', xl: '12' },
+                  p: { base: '3', sm: '4', md: '8', lg: '10', xl: '12' },
                   pt: {
+                    // The fixed mobile menu button spans 16px-66px, so this must
+                    // clear 66px. '18' is not a spacing token and would emit a raw
+                    // 18px, painting headings under the button.
                     base: '20', // Space for mobile menu button
-                    sm: '24',
+                    sm: '20',
                     md: '8',
                     lg: '10',
                   },
@@ -196,8 +199,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     top: '0',
                     right: '0',
                     zIndex: '0',
-                    h: '700px',
-                    w: '700px',
+                    h: { base: '360px', md: '700px' },
+                    w: { base: '360px', md: '700px' },
                     animation: 'pulse 4s infinite',
                     rounded: 'full',
                     bgGradient: 'to-br',
@@ -232,8 +235,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     top: '50%',
                     left: '50%',
                     zIndex: '0',
-                    h: '500px',
-                    w: '500px',
+                    h: { base: '280px', md: '500px' },
+                    w: { base: '280px', md: '500px' },
                     transform: 'translate(-50%, -50%)',
                     animation: 'pulse 6s 2s infinite',
                     rounded: 'full',

@@ -37,6 +37,12 @@ function escapeHtml(text: string): string {
   div.textContent = text
   return div.innerHTML
 }
+function makeTablesScrollable(html: string): string {
+  return html.replace(
+    /<table(\s[^>]*)?>([\s\S]*?)<\/table>/gi,
+    '<div class="markdown-table-scroll"><table$1>$2</table></div>'
+  )
+}
 
 /**
  * MarkdownPreview - Renders markdown using marked for the markdown editor page
@@ -64,16 +70,20 @@ export function MarkdownPreview({ content, className }: MarkdownPreviewProps) {
           FORBID_TAGS: ['style', 'script'],
         })
         // Add aria-labels to task list checkboxes (decorative, read-only in preview)
-        return sanitized.replace(/<input\b([^>]*?)type="checkbox"([^>]*)>/gi, (match) => {
-          if (match.includes('aria-label')) return match
-          const isChecked = /checked/.test(match)
-          const label = isChecked ? 'Completed task' : 'Incomplete task'
-          return match.replace('>', ` aria-label="${label}">`)
-        })
+        const accessibleHtml = sanitized.replace(
+          /<input\b([^>]*?)type="checkbox"([^>]*)>/gi,
+          (match) => {
+            if (match.includes('aria-label')) return match
+            const isChecked = /checked/.test(match)
+            const label = isChecked ? 'Completed task' : 'Incomplete task'
+            return match.replace('>', ` aria-label="${label}">`)
+          }
+        )
+        return makeTablesScrollable(accessibleHtml)
       }
 
       // If DOMPurify hasn't loaded yet, return the raw HTML
-      return rawHtml
+      return makeTablesScrollable(rawHtml)
     } catch (error) {
       console.error('Markdown parsing error:', error)
       return `<pre>${escapeHtml(content)}</pre>`
@@ -94,6 +104,9 @@ const previewStyles = css({
   w: 'full',
   maxW: 'none',
   color: 'white',
+  fontSize: { base: 'sm', sm: 'base' },
+  lineHeight: 'relaxed',
+  overflowWrap: 'anywhere',
 
   // Headings
   '& h1': {
@@ -101,7 +114,7 @@ const previewStyles = css({
     borderBottom: '1px solid',
     borderColor: 'gray.700',
     pb: '2',
-    fontSize: '3xl',
+    fontSize: { base: '2xl', sm: '3xl' },
     fontWeight: 'bold',
   },
   '& h2': {
@@ -110,19 +123,20 @@ const previewStyles = css({
     borderBottom: '1px solid',
     borderColor: 'gray.800',
     pb: '2',
-    fontSize: '2xl',
+    fontSize: { base: 'xl', sm: '2xl' },
     fontWeight: 'bold',
   },
   '& h3': {
     mt: '5',
     mb: '2',
-    fontSize: 'xl',
+    fontSize: { base: 'lg', sm: 'xl' },
     fontWeight: 'bold',
   },
 
   // Links
   '& a': {
     color: 'blue.400',
+    overflowWrap: 'anywhere',
     _hover: {
       color: 'blue.300',
       textDecoration: 'underline',
@@ -135,8 +149,9 @@ const previewStyles = css({
     bg: 'gray.800',
     px: '1.5',
     py: '0.5',
-    fontSize: 'sm',
+    fontSize: { base: 'xs', sm: 'sm' },
     color: 'pink.400',
+    overflowWrap: 'anywhere',
   },
 
   // Code blocks
@@ -146,7 +161,8 @@ const previewStyles = css({
     border: '1px solid',
     borderColor: 'gray.700',
     bg: 'gray.900',
-    p: '4',
+    maxW: 'full',
+    p: { base: '3', sm: '4' },
   },
   '& pre code': {
     bg: 'transparent',
@@ -156,8 +172,13 @@ const previewStyles = css({
   },
 
   // Tables
+  '& .markdown-table-scroll': {
+    maxW: 'full',
+    overflowX: 'auto',
+    overscrollBehaviorX: 'contain',
+  },
   '& table': {
-    minW: 'full',
+    minW: 'max-content',
     borderCollapse: 'collapse',
     border: '1px solid',
     borderColor: 'gray.700',
@@ -166,7 +187,7 @@ const previewStyles = css({
     border: '1px solid',
     borderColor: 'gray.700',
     bg: 'gray.800',
-    px: '4',
+    px: { base: '3', sm: '4' },
     py: '2',
     textAlign: 'left',
     fontWeight: 'bold',
@@ -216,5 +237,9 @@ const previewStyles = css({
   // Paragraphs
   '& p': {
     mb: '3',
+  },
+  '& img, & video, & iframe': {
+    maxW: 'full',
+    h: 'auto',
   },
 })

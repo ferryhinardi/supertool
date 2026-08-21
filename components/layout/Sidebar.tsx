@@ -169,7 +169,7 @@ export function Sidebar() {
             display: { base: 'block', md: 'none' },
             position: 'fixed',
             inset: '0',
-            zIndex: 'overlay',
+            zIndex: 'modal-backdrop',
             bg: 'rgba(0, 0, 0, 0.5)',
             backdropFilter: 'blur(4px)',
             cursor: 'pointer',

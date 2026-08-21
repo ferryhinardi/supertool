@@ -97,7 +97,7 @@ export default function SupportPage() {
             bg: 'rgba(255, 255, 255, 0.05)',
             backdropFilter: 'blur(10px)',
             borderRadius: 'xl',
-            p: '6',
+            p: { base: '4', sm: '6' },
             textAlign: 'center',
             border: '1px solid rgba(255, 255, 255, 0.1)',
           })}
@@ -168,7 +168,7 @@ export default function SupportPage() {
                 bg: 'rgba(255, 255, 255, 0.05)',
                 backdropFilter: 'blur(10px)',
                 borderRadius: 'lg',
-                p: '6',
+                p: { base: '4', sm: '6' },
                 border: '1px solid rgba(255, 255, 255, 0.1)',
               })}
             >
@@ -189,7 +189,7 @@ export default function SupportPage() {
           textAlign: 'center',
           maxW: '2xl',
           mx: 'auto',
-          p: '8',
+          p: { base: '5', sm: '8' },
           bg: 'rgba(59, 130, 246, 0.1)',
           borderRadius: 'xl',
           border: '1px solid rgba(59, 130, 246, 0.2)',

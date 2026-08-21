@@ -381,8 +381,10 @@ export default function DeviceMockupPage() {
               <div
                 className={css({
                   display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
                   justifyContent: 'space-between',
-                  alignItems: 'center',
+                  alignItems: { base: 'start', sm: 'center' },
+                  gap: '3',
                 })}
               >
                 <div>
@@ -391,7 +393,7 @@ export default function DeviceMockupPage() {
                     {selectedDevice ? selectedDevice.name : 'Select a device frame'}
                   </CardDescription>
                 </div>
-                <div className={css({ display: 'flex', gap: '2' })}>
+                <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
                   {selectedDevice && (
                     <Button onClick={toggleOrientation} variant="outline" size="sm">
                       <RotateCw className={css({ w: '4', h: '4', mr: '2' })} />
@@ -416,6 +418,7 @@ export default function DeviceMockupPage() {
                   rounded: 'lg',
                   overflow: 'auto',
                   p: '4',
+                  w: 'full',
                 })}
               >
                 {selectedDevice ? (
@@ -423,6 +426,7 @@ export default function DeviceMockupPage() {
                     ref={canvasRef}
                     className={css({
                       maxW: 'full',
+                      w: 'full',
                       maxH: '600px',
                       h: 'auto',
                     })}

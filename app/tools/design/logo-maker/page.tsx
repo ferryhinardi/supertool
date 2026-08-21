@@ -636,9 +636,12 @@ export default function LogoMakerPage() {
                 className={css({
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  // Centering is done with `margin: auto` on the child rather than
+                  // `justifyContent: center`, which would split the overflow to both
+                  // sides and make the left part of a wide logo unreachable.
                   minH: '300px',
                   p: '8',
+                  overflowX: 'auto',
                   bg: backgroundColor === 'transparent' ? 'gray.900' : backgroundColor,
                   rounded: 'lg',
                   border: '1px dashed',
@@ -657,6 +660,7 @@ export default function LogoMakerPage() {
                     flexDirection: layout === 'vertical' ? 'column' : 'row',
                     alignItems: 'center',
                     gap: `${spacing}px`,
+                    margin: 'auto',
                   })}
                 >
                   {selectedIcon && layout !== 'text-only' && (
@@ -703,7 +707,14 @@ export default function LogoMakerPage() {
               </div>
 
               {/* Download Buttons */}
-              <div className={css({ display: 'flex', gap: '3', mt: '4' })}>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
+                  gap: '3',
+                  mt: '4',
+                })}
+              >
                 <Button onClick={downloadPNG} className={css({ flex: '1' })}>
                   <Download className={css({ w: '4', h: '4', mr: '2' })} />
                   Download PNG

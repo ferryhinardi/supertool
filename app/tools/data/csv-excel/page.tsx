@@ -416,13 +416,20 @@ export default function CSVExcelConverterPage() {
           </CardHeader>
           <CardContent>
             <div
-              className={css({ display: 'flex', flexWrap: 'wrap', gap: '3', alignItems: 'center' })}
+              className={css({
+                display: { base: 'grid', sm: 'flex' },
+                gridTemplateColumns: { base: '1fr' },
+                flexWrap: 'wrap',
+                gap: '3',
+                alignItems: 'center',
+              })}
             >
               <Button
                 onClick={() => setMode('csv-to-excel')}
                 className={css({
                   flex: '1',
-                  minW: '200px',
+                  minW: { base: '0', sm: '200px' },
+                  w: { base: 'full', sm: 'auto' },
                   h: 'auto',
                   py: '4',
                   px: '6',
@@ -450,6 +457,8 @@ export default function CSVExcelConverterPage() {
                     aria-label="Switch conversion mode"
                     className={css({
                       rounded: 'full',
+                      minH: '11',
+                      minW: '11',
                       p: '3',
                       bg: 'green.500/20',
                       border: '1px solid',

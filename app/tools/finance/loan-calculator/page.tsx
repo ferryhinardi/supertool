@@ -696,8 +696,10 @@ function LoanCalculatorContent() {
             <div
               className={css({
                 display: 'flex',
+                flexDirection: { base: 'column', sm: 'row' },
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                gap: '3',
               })}
             >
               <div>
@@ -770,7 +772,10 @@ function LoanCalculatorContent() {
                       <div
                         className={css({
                           display: 'grid',
-                          gridTemplateColumns: 'repeat(4, 1fr)',
+                          gridTemplateColumns: {
+                            base: 'repeat(2, minmax(0, 1fr))',
+                            sm: 'repeat(4, 1fr)',
+                          },
                           gap: '4',
                           fontSize: 'sm',
                         })}
@@ -909,7 +914,14 @@ function LoanCalculatorContent() {
                         </button>
                       </div>
                       <div className={css({ spaceY: '2', fontSize: 'sm' })}>
-                        <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
+                        <div
+                          className={css({
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            justifyContent: 'space-between',
+                            gap: '1',
+                          })}
+                        >
                           <span className={css({ color: 'white' })}>Loan Amount:</span>
                           <span className={css({ color: 'gray.200' })}>
                             {new Intl.NumberFormat('en-US', {

@@ -549,21 +549,49 @@ function JWTDecoderContent() {
                   </h4>
                   <div className={css({ display: 'grid', gap: '2', fontSize: 'sm' })}>
                     {decodedJWT.payload.iss && (
-                      <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'white', minW: '16' })}>Issuer (iss):</span>
-                        <span className={css({ color: 'white' })}>{decodedJWT.payload.iss}</span>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexDirection: { base: 'column', sm: 'row' },
+                          gap: '2',
+                        })}
+                      >
+                        <span className={css({ color: 'white', minW: { base: '0', sm: '16' } })}>
+                          Issuer (iss):
+                        </span>
+                        <span className={css({ color: 'white', overflowWrap: 'anywhere' })}>
+                          {decodedJWT.payload.iss}
+                        </span>
                       </div>
                     )}
                     {decodedJWT.payload.sub && (
-                      <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'white', minW: '16' })}>Subject (sub):</span>
-                        <span className={css({ color: 'white' })}>{decodedJWT.payload.sub}</span>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexDirection: { base: 'column', sm: 'row' },
+                          gap: '2',
+                        })}
+                      >
+                        <span className={css({ color: 'white', minW: { base: '0', sm: '16' } })}>
+                          Subject (sub):
+                        </span>
+                        <span className={css({ color: 'white', overflowWrap: 'anywhere' })}>
+                          {decodedJWT.payload.sub}
+                        </span>
                       </div>
                     )}
                     {decodedJWT.payload.aud && (
-                      <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'white', minW: '16' })}>Audience (aud):</span>
-                        <span className={css({ color: 'white' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexDirection: { base: 'column', sm: 'row' },
+                          gap: '2',
+                        })}
+                      >
+                        <span className={css({ color: 'white', minW: { base: '0', sm: '16' } })}>
+                          Audience (aud):
+                        </span>
+                        <span className={css({ color: 'white', overflowWrap: 'anywhere' })}>
                           {Array.isArray(decodedJWT.payload.aud)
                             ? decodedJWT.payload.aud.join(', ')
                             : decodedJWT.payload.aud}
@@ -571,31 +599,49 @@ function JWTDecoderContent() {
                       </div>
                     )}
                     {decodedJWT.payload.exp && (
-                      <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'white', minW: '16' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexDirection: { base: 'column', sm: 'row' },
+                          gap: '2',
+                        })}
+                      >
+                        <span className={css({ color: 'white', minW: { base: '0', sm: '16' } })}>
                           Expiration (exp):
                         </span>
-                        <span className={css({ color: 'white' })}>
+                        <span className={css({ color: 'white', overflowWrap: 'anywhere' })}>
                           {formatTimestamp(decodedJWT.payload.exp)}
                         </span>
                       </div>
                     )}
                     {decodedJWT.payload.iat && (
-                      <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'white', minW: '16' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexDirection: { base: 'column', sm: 'row' },
+                          gap: '2',
+                        })}
+                      >
+                        <span className={css({ color: 'white', minW: { base: '0', sm: '16' } })}>
                           Issued At (iat):
                         </span>
-                        <span className={css({ color: 'white' })}>
+                        <span className={css({ color: 'white', overflowWrap: 'anywhere' })}>
                           {formatTimestamp(decodedJWT.payload.iat)}
                         </span>
                       </div>
                     )}
                     {decodedJWT.payload.nbf && (
-                      <div className={css({ display: 'flex', gap: '2' })}>
-                        <span className={css({ color: 'white', minW: '16' })}>
+                      <div
+                        className={css({
+                          display: 'flex',
+                          flexDirection: { base: 'column', sm: 'row' },
+                          gap: '2',
+                        })}
+                      >
+                        <span className={css({ color: 'white', minW: { base: '0', sm: '16' } })}>
                           Not Before (nbf):
                         </span>
-                        <span className={css({ color: 'white' })}>
+                        <span className={css({ color: 'white', overflowWrap: 'anywhere' })}>
                           {formatTimestamp(decodedJWT.payload.nbf)}
                         </span>
                       </div>

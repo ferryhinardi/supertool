@@ -189,6 +189,8 @@ export default function MarkdownTablePage() {
         type="button"
         onClick={() => onChange(alignment)}
         className={css({
+          minW: '11',
+          minH: '11',
           p: '1',
           rounded: 'md',
           transition: 'all 0.2s',
@@ -455,7 +457,15 @@ export default function MarkdownTablePage() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <div className={css({ display: 'flex', alignItems: 'center', gap: '3', mb: '4' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexDirection: { base: 'column', sm: 'row' },
+                alignItems: { base: 'stretch', sm: 'center' },
+                gap: '3',
+                mb: '4',
+              })}
+            >
               <h3
                 className={css({
                   fontSize: { base: 'base', sm: 'lg' },
@@ -465,7 +475,7 @@ export default function MarkdownTablePage() {
               >
                 Import Data
               </h3>
-              <div className={css({ display: 'flex', gap: '2' })}>
+              <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
                 <Button
                   onClick={() => setImportMode('csv')}
                   size="sm"
@@ -516,7 +526,14 @@ export default function MarkdownTablePage() {
                 _placeholder: { color: 'gray.500' },
               })}
             />
-            <div className={css({ display: 'flex', gap: '2', mt: '3' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexDirection: { base: 'column', sm: 'row' },
+                gap: '2',
+                mt: '3',
+              })}
+            >
               <Button onClick={handleImport} disabled={!importText.trim()}>
                 Import Data
               </Button>
@@ -541,8 +558,10 @@ export default function MarkdownTablePage() {
           <div
             className={css({
               display: 'flex',
-              alignItems: 'center',
+              flexDirection: { base: 'column', sm: 'row' },
+              alignItems: { base: 'stretch', sm: 'center' },
               justifyContent: 'space-between',
+              gap: '3',
               borderBottom: '1px solid',
               borderColor: 'purple.500/20',
               bg: 'rgba(168, 85, 247, 0.05)',
@@ -559,10 +578,15 @@ export default function MarkdownTablePage() {
             >
               Table Editor
             </h3>
-            <div className={css({ display: 'flex', gap: '2' })}>
+            <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="sm" variant="outline" onClick={handleAddColumn}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleAddColumn}
+                    className={css({ minH: '11' })}
+                  >
                     <Plus className={css({ h: '4', w: '4', mr: '1' })} />
                     Column
                   </Button>
@@ -571,7 +595,12 @@ export default function MarkdownTablePage() {
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="sm" variant="outline" onClick={handleAddRow}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleAddRow}
+                    className={css({ minH: '11' })}
+                  >
                     <Plus className={css({ h: '4', w: '4', mr: '1' })} />
                     Row
                   </Button>

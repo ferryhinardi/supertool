@@ -526,23 +526,15 @@ describe('AI Text Rewriter - Rewriting Tests', () => {
   })
 
   it('should display loading state during rewriting', async () => {
-    mockFetch.mockImplementation(
+    // Hold the request open with a deferred instead of a real timer, so the
+    // pending state is observable without the component's async work being able
+    // to outlive the test and call setState after jsdom teardown.
+    let resolveRewrite: ((value: Response) => void) | undefined
+    mockFetch.mockImplementationOnce(
       () =>
-        new Promise((resolve) =>
-          setTimeout(
-            () =>
-              resolve(
-                createMockResponse({
-                  variants: ['Rewritten'],
-                  improvements: ['test'],
-                  tone: 'professional',
-                  style: 'balanced',
-                  originalLength: 12,
-                })
-              ),
-            1000
-          )
-        )
+        new Promise<Response>((resolve) => {
+          resolveRewrite = resolve
+        })
     )
 
     render(<AITextRewriterPage />)
@@ -550,21 +542,31 @@ describe('AI Text Rewriter - Rewriting Tests', () => {
     const textarea = screen.getByPlaceholderText(/Enter your text here/i)
     fireEvent.change(textarea, { target: { value: 'Test message' } })
 
-    const buttons = screen.getAllByRole('button')
-    const rewriteButton = buttons.find((btn) => btn.textContent?.includes('Rewrite Text'))
+    await userEvent.click(screen.getByRole('button', { name: /Rewrite Text/i }))
 
-    if (rewriteButton) {
-      await userEvent.click(rewriteButton)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Rewriting\.\.\./i })).toBeInTheDocument()
+    })
 
-      await waitFor(
-        () => {
-          const allButtons = screen.getAllByRole('button')
-          const loadingButton = allButtons.find((btn) => btn.textContent?.includes('Rewriting...'))
-          expect(loadingButton).toBeDefined()
-        },
-        { timeout: 500 }
-      )
+    const settleRewrite = resolveRewrite
+    if (!settleRewrite) {
+      throw new Error('Expected the rewrite request to be pending')
     }
+
+    settleRewrite(
+      createMockResponse({
+        variants: ['Rewritten'],
+        improvements: ['test'],
+        tone: 'professional',
+        style: 'balanced',
+        originalLength: 12,
+      })
+    )
+
+    // Wait for the component to settle before the test exits.
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Rewrite Text/i })).toBeInTheDocument()
+    })
   })
 
   it('should display multiple variants', async () => {

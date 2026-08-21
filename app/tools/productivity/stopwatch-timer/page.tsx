@@ -893,7 +893,13 @@ function StopwatchTimerContent() {
                   })}
                 />
 
-                <div className={css({ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3' })}>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                    gap: '3',
+                  })}
+                >
                   <div>
                     <label
                       htmlFor="minutes"
@@ -940,12 +946,17 @@ function StopwatchTimerContent() {
                   </div>
                 </div>
 
-                <div className={css({ display: 'flex', gap: '3', flexWrap: 'wrap' })}>
+                <div
+                  className={css({
+                    display: 'grid',
+                    gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                    gap: '3',
+                  })}
+                >
                   <Button
                     onClick={handleAddTimer}
                     className={css({
-                      flex: '1',
-                      minW: '40',
+                      w: 'full',
                       gap: '2',
                       bg: 'orange.500/20',
                       border: '1px solid',

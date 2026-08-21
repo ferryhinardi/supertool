@@ -356,7 +356,13 @@ function CurrencyConverterContent() {
               >
                 From
               </label>
-              <div className={css({ display: 'grid', gridTemplateColumns: '1fr auto', gap: '3' })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: 'minmax(0, 1fr) auto' },
+                  gap: '3',
+                })}
+              >
                 <Input
                   id="from-value"
                   type="text"
@@ -391,7 +397,7 @@ function CurrencyConverterContent() {
                   disabled={loading}
                   className={css({
                     h: '14',
-                    minW: '40',
+                    w: { base: 'full', sm: '40' },
                     rounded: 'lg',
                     border: '1px solid',
                     borderColor: 'gray.700',
@@ -605,6 +611,7 @@ function CurrencyConverterContent() {
                       key={favorite.id}
                       className={css({
                         display: 'flex',
+                        flexDirection: { base: 'column', sm: 'row' },
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         rounded: 'lg',
@@ -624,11 +631,13 @@ function CurrencyConverterContent() {
                           alignItems: 'center',
                           gap: '3',
                           flex: '1',
+                          minW: '0',
                           bg: 'transparent',
                           border: 'none',
                           cursor: 'pointer',
                           textAlign: 'left',
                           p: '0',
+                          w: { base: 'full', sm: 'auto' },
                         })}
                         onClick={() => handleLoadFavorite(favorite)}
                       >

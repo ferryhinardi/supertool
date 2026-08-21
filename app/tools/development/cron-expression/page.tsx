@@ -667,9 +667,9 @@ function CronExpressionContent() {
               <div
                 className={css({
                   display: 'flex',
+                  flexDirection: { base: 'column', sm: 'row' },
                   gap: '3',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
+                  alignItems: { base: 'stretch', sm: 'center' },
                 })}
               >
                 <label
@@ -684,7 +684,7 @@ function CronExpressionContent() {
                   onChange={(e) => setExportPlatform(e.target.value as typeof exportPlatform)}
                   className={css({
                     flex: '1',
-                    minW: '48',
+                    minW: { base: '0', sm: '48' },
                     h: '10',
                     rounded: 'lg',
                     border: '1px solid',

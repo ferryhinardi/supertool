@@ -432,7 +432,14 @@ export default function CSVMergerPage() {
             <CardDescription>Choose whether to merge or split CSV files</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '3' })}>
+            <div
+              className={css({
+                display: { base: 'grid', sm: 'flex' },
+                gridTemplateColumns: { base: '1fr' },
+                flexWrap: 'wrap',
+                gap: '3',
+              })}
+            >
               <Button
                 onClick={() => {
                   setMode('merge')
@@ -440,7 +447,8 @@ export default function CSVMergerPage() {
                 }}
                 className={css({
                   flex: '1',
-                  minW: '200px',
+                  minW: { base: '0', sm: '200px' },
+                  w: { base: 'full', sm: 'auto' },
                   h: 'auto',
                   py: '4',
                   px: '6',
@@ -677,8 +685,10 @@ export default function CSVMergerPage() {
                   key={`${file.name}-${index}`}
                   className={css({
                     display: 'flex',
-                    alignItems: 'center',
+                    flexDirection: { base: 'column', sm: 'row' },
+                    alignItems: { base: 'stretch', sm: 'center' },
                     justifyContent: 'space-between',
+                    gap: '3',
                     rounded: 'lg',
                     border: '1px solid',
                     borderColor: 'gray.700',
@@ -686,11 +696,20 @@ export default function CSVMergerPage() {
                     p: '4',
                   })}
                 >
-                  <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+                  <div
+                    className={css({ display: 'flex', alignItems: 'center', gap: '3', minW: '0' })}
+                  >
                     <FileSpreadsheet className={css({ h: '5', w: '5', color: 'teal.400' })} />
-                    <div>
+                    <div className={css({ minW: '0' })}>
                       <p
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.200' })}
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'gray.200',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        })}
                       >
                         {file.name}
                       </p>
@@ -796,7 +815,13 @@ export default function CSVMergerPage() {
                 <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
                   Split By
                 </div>
-                <div className={css({ display: 'flex', gap: '3' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexDirection: { base: 'column', sm: 'row' },
+                    gap: '3',
+                  })}
+                >
                   <Button
                     onClick={() => setSplitBy('rows')}
                     className={css({

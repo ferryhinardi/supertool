@@ -20,7 +20,7 @@ function AuthErrorContent() {
         alignItems: 'center',
         justifyContent: 'center',
         bg: 'gray.50',
-        p: 4,
+        p: { base: '4', sm: '6' },
       })}
     >
       <div
@@ -31,7 +31,7 @@ function AuthErrorContent() {
           bg: 'white',
           rounded: 'lg',
           shadow: 'lg',
-          p: 8,
+          p: { base: '5', sm: '8' },
           textAlign: 'center',
         })}
       >
@@ -51,7 +51,7 @@ function AuthErrorContent() {
 
         <div className={vstack({ gap: 2 })}>
           <h1 className={css({ fontSize: '2xl', fontWeight: 'bold' })}>Authentication Error</h1>
-          <p className={css({ color: 'gray.600' })}>
+          <p className={css({ color: 'gray.600', overflowWrap: 'anywhere' })}>
             {errorDescription || error || 'Something went wrong during authentication'}
           </p>
         </div>
@@ -61,6 +61,10 @@ function AuthErrorContent() {
           className={css({
             px: 6,
             py: 3,
+            minH: '11',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             bg: 'blue.600',
             color: 'white',
             fontWeight: 'medium',

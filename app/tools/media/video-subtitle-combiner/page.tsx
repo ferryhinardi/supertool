@@ -1564,7 +1564,13 @@ export default function VideoSubtitleCombinerPage() {
                   <video
                     src={file.videoPreview}
                     controls
-                    className={css({ w: 'full', rounded: 'md', bg: 'black', h: '40' })}
+                    className={css({
+                      w: 'full',
+                      rounded: 'md',
+                      bg: 'black',
+                      h: { base: 'auto', sm: '40' },
+                      aspectRatio: { base: '16/9', sm: 'auto' },
+                    })}
                   />
 
                   {/* File Info */}
