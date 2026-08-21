@@ -32,7 +32,10 @@
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  /* No overflow-x here: a non-visible overflow on html moves viewport overflow
+     propagation off body, which turns body into a scroll container that never
+     scrolls, so every position: sticky descendant stops sticking. Measured: the
+     sidebar scrolled fully out of view. Horizontal clipping stays on body. */
 }
 
 body {
