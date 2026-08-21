@@ -180,22 +180,15 @@ describe('AI Snippet Generator - Code Generation Tests', () => {
   })
 
   it('should display loading state during generation', async () => {
-    mockFetch.mockImplementation(
+    // Hold the request open with a deferred instead of a real timer, so the
+    // pending state is observable without the component's async work being able
+    // to outlive the test and call setState after jsdom teardown.
+    let resolveGeneration: ((value: Response) => void) | undefined
+    mockFetch.mockImplementationOnce(
       () =>
-        new Promise((resolve) =>
-          setTimeout(
-            () =>
-              resolve(
-                createMockResponse({
-                  code: 'test code',
-                  language: 'javascript',
-                  explanation: 'test',
-                  usage: { total_tokens: 100 },
-                })
-              ),
-            1000
-          )
-        )
+        new Promise<Response>((resolve) => {
+          resolveGeneration = resolve
+        })
     )
 
     render(<AISnippetGeneratorPage />)
@@ -203,21 +196,30 @@ describe('AI Snippet Generator - Code Generation Tests', () => {
     const textarea = screen.getByPlaceholderText(/Create a function that validates/)
     await userEvent.type(textarea, 'test prompt')
 
-    const buttons = screen.getAllByRole('button')
-    const generateButton = buttons.find((btn) => btn.textContent?.includes('Generate Code'))
+    await userEvent.click(screen.getByRole('button', { name: /Generate Code/i }))
 
-    if (generateButton) {
-      await userEvent.click(generateButton)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Generating\.\.\./i })).toBeInTheDocument()
+    })
 
-      await waitFor(
-        () => {
-          const allButtons = screen.getAllByRole('button')
-          const loadingButton = allButtons.find((btn) => btn.textContent?.includes('Generating...'))
-          expect(loadingButton).toBeDefined()
-        },
-        { timeout: 500 }
-      )
+    const settleGeneration = resolveGeneration
+    if (!settleGeneration) {
+      throw new Error('Expected the generation request to be pending')
     }
+
+    settleGeneration(
+      createMockResponse({
+        code: 'test code',
+        language: 'javascript',
+        explanation: 'test',
+        usage: { total_tokens: 100 },
+      })
+    )
+
+    // Wait for the component to settle before the test exits.
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Generate Code/i })).toBeInTheDocument()
+    })
   })
 
   it('should display generated code with explanation', async () => {

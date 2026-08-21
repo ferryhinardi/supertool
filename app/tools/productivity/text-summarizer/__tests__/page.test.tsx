@@ -219,27 +219,15 @@ describe('Text Summarizer - Summarization Tests', () => {
   })
 
   it('should display loading state during summarization', async () => {
-    mockFetch.mockImplementation(
+    // Hold the request open with a deferred instead of a real timer, so the
+    // pending state is observable without the component's async work being able
+    // to outlive the test and call setState after jsdom teardown.
+    let resolveSummary: ((value: Response) => void) | undefined
+    mockFetch.mockImplementationOnce(
       () =>
-        new Promise((resolve) =>
-          setTimeout(
-            () =>
-              resolve(
-                createMockResponse({
-                  summary: 'Test summary',
-                  highlights: [],
-                  stats: {
-                    wordCount: 2,
-                    charCount: 12,
-                    originalWordCount: 50,
-                    originalCharCount: 300,
-                  },
-                  usage: { total_tokens: 150 },
-                })
-              ),
-            1000
-          )
-        )
+        new Promise<Response>((resolve) => {
+          resolveSummary = resolve
+        })
     )
 
     render(<TextSummarizerPage />)
@@ -247,23 +235,35 @@ describe('Text Summarizer - Summarization Tests', () => {
     const textarea = screen.getByPlaceholderText(/Paste your article, document/)
     await userEvent.type(textarea, longText)
 
-    const buttons = screen.getAllByRole('button')
-    const summarizeButton = buttons.find((btn) => btn.textContent?.includes('Summarize Text'))
+    await userEvent.click(screen.getByRole('button', { name: /Summarize Text/i }))
 
-    if (summarizeButton) {
-      await userEvent.click(summarizeButton)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Summarizing\.\.\./i })).toBeInTheDocument()
+    })
 
-      await waitFor(
-        () => {
-          const allButtons = screen.getAllByRole('button')
-          const loadingButton = allButtons.find((btn) =>
-            btn.textContent?.includes('Summarizing...')
-          )
-          expect(loadingButton).toBeDefined()
-        },
-        { timeout: 500 }
-      )
+    const settleSummary = resolveSummary
+    if (!settleSummary) {
+      throw new Error('Expected the summarization request to be pending')
     }
+
+    settleSummary(
+      createMockResponse({
+        summary: 'Test summary',
+        highlights: [],
+        stats: {
+          wordCount: 2,
+          charCount: 12,
+          originalWordCount: 50,
+          originalCharCount: 300,
+        },
+        usage: { total_tokens: 150 },
+      })
+    )
+
+    // Wait for the component to settle before the test exits.
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Summarize Text/i })).toBeInTheDocument()
+    })
   })
 
   it('should display summary with key highlights', async () => {

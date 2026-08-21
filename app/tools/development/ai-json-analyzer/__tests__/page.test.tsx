@@ -220,24 +220,15 @@ describe('AI JSON Analyzer - Analysis Tests', () => {
   })
 
   it('should display loading state during analysis', async () => {
-    mockFetch.mockImplementation(
+    // Hold the request open with a deferred instead of a real timer, so the
+    // pending state is observable without the component's async work being able
+    // to outlive the test and call setState after jsdom teardown.
+    let resolveAnalysis: ((value: Response) => void) | undefined
+    mockFetch.mockImplementationOnce(
       () =>
-        new Promise((resolve) =>
-          setTimeout(
-            () =>
-              resolve(
-                createMockResponse({
-                  summary: 'test',
-                  structure: 'test',
-                  patterns: ['test'],
-                  insights: ['test'],
-                  relationships: ['test'],
-                  usage: { total_tokens: 100 },
-                })
-              ),
-            1000
-          )
-        )
+        new Promise<Response>((resolve) => {
+          resolveAnalysis = resolve
+        })
     )
 
     render(<AIJSONAnalyzerPage />)
@@ -245,21 +236,32 @@ describe('AI JSON Analyzer - Analysis Tests', () => {
     const textarea = screen.getByPlaceholderText(/users.*id.*name.*Alice/i)
     fireEvent.change(textarea, { target: { value: '{"test": "data"}' } })
 
-    const buttons = screen.getAllByRole('button')
-    const analyzeButton = buttons.find((btn) => btn.textContent?.includes('Analyze JSON'))
+    await userEvent.click(screen.getByRole('button', { name: /Analyze JSON/i }))
 
-    if (analyzeButton) {
-      await userEvent.click(analyzeButton)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Analyzing\.\.\./i })).toBeInTheDocument()
+    })
 
-      await waitFor(
-        () => {
-          const allButtons = screen.getAllByRole('button')
-          const loadingButton = allButtons.find((btn) => btn.textContent?.includes('Analyzing...'))
-          expect(loadingButton).toBeDefined()
-        },
-        { timeout: 500 }
-      )
+    const settleAnalysis = resolveAnalysis
+    if (!settleAnalysis) {
+      throw new Error('Expected the analysis request to be pending')
     }
+
+    settleAnalysis(
+      createMockResponse({
+        summary: 'test',
+        structure: 'test',
+        patterns: ['test'],
+        insights: ['test'],
+        relationships: ['test'],
+        usage: { total_tokens: 100 },
+      })
+    )
+
+    // Wait for the component to settle before the test exits.
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Analyze JSON/i })).toBeInTheDocument()
+    })
   })
 
   it('should display analysis results with all sections', async () => {
