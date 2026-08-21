@@ -703,8 +703,12 @@ export default function HomePage() {
               aria-label="All tools"
               aria-pressed={toolsView === 'all'}
               className={css({
-                h: '9',
-                px: '4',
+                // Mirrors the sibling "Popular" button so both pills share one
+                // height and split the row evenly at narrow widths.
+                h: { base: '11', sm: '9' },
+                flex: { base: '1', sm: 'initial' },
+                justifyContent: 'center',
+                px: { base: '2', sm: '4' },
                 gap: '2',
                 fontSize: 'sm',
                 fontWeight: 'semibold',
@@ -774,8 +778,9 @@ export default function HomePage() {
                     aria-label="List view"
                     aria-pressed={viewMode === 'list'}
                     className={css({
-                      h: '9',
-                      w: '9',
+                      // Matches the sibling "Grid view" button's mobile tap target.
+                      h: { base: '11', sm: '9' },
+                      w: { base: '11', sm: '9' },
                       p: '0',
                       ...(viewMode === 'list'
                         ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
@@ -1194,7 +1199,7 @@ export default function HomePage() {
           position: 'fixed',
           right: { base: '3', sm: '4' },
           bottom: { base: '3', sm: '4' },
-          zIndex: 'docked',
+          zIndex: 'toast',
           display: 'flex',
           flexDirection: 'column',
           gap: '3',

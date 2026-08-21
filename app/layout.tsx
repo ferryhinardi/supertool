@@ -181,7 +181,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   overflowX: 'hidden',
                   p: { base: '3', sm: '4', md: '8', lg: '10', xl: '12' },
                   pt: {
-                    base: '18', // Space for mobile menu button
+                    // The fixed mobile menu button spans 16px-66px, so this must
+                    // clear 66px. '18' is not a spacing token and would emit a raw
+                    // 18px, painting headings under the button.
+                    base: '20', // Space for mobile menu button
                     sm: '20',
                     md: '8',
                     lg: '10',

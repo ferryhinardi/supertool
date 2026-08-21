@@ -412,7 +412,10 @@ export default function SharedBillPage() {
                 fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
                 fontWeight: 'extrabold',
                 color: 'transparent',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
+                // filter, not textShadow: the gradient is a background clipped to the
+                // glyphs, and a text-shadow paints over that background instead of
+                // behind it, muddying the gradient.
+                filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))',
               })}
             >
               {bill.title}

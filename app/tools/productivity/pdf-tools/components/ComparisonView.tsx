@@ -59,7 +59,8 @@ export function ComparisonView({
         className={css({
           maxW: '4xl',
           w: 'full',
-          maxH: 'full',
+          // No maxH here: the overlay scrolls (overflowY: auto), so clamping the
+          // card would make tall content spill outside its own background.
           my: 'auto',
           bg: 'gray.900',
           border: '1px solid',

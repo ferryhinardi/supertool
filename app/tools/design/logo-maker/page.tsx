@@ -636,7 +636,9 @@ export default function LogoMakerPage() {
                 className={css({
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  // Centering is done with `margin: auto` on the child rather than
+                  // `justifyContent: center`, which would split the overflow to both
+                  // sides and make the left part of a wide logo unreachable.
                   minH: '300px',
                   p: '8',
                   overflowX: 'auto',
@@ -658,6 +660,7 @@ export default function LogoMakerPage() {
                     flexDirection: layout === 'vertical' ? 'column' : 'row',
                     alignItems: 'center',
                     gap: `${spacing}px`,
+                    margin: 'auto',
                   })}
                 >
                   {selectedIcon && layout !== 'text-only' && (
