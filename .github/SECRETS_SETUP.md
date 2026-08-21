@@ -6,27 +6,6 @@ This guide explains how to configure GitHub repository secrets for CI/CD.
 
 ## 📋 Required Secrets
 
-### Agentic Workflows (AI Automation)
-
-The repository uses GitHub Agentic Workflows for automated code review, issue triage, and dependency management. These **require** the following secret:
-
-#### `COPILOT_GITHUB_TOKEN`
-
-- **Description:** Fine-grained PAT used exclusively by the GitHub Copilot CLI engine for AI inference
-- **Required permission:** `Copilot` → Read-only (**only** this permission is needed)
-- **Required by:** All 4 agentic workflows (code-review, issue-triage, test-coverage-check, dependency-update-helper)
-- **Symptoms when missing:** Workflows fail with "⚠️ Secret Verification Failed"
-- **⚠️ Security:** This is a **private** secret — treat it like a password and never expose it in code or logs (unlike the `NEXT_PUBLIC_*` Supabase keys below, which are intentionally public)
-- **How to get:** Create a Fine-grained PAT scoped to this repository with only the **Copilot (read)** permission — see [full instructions in AGENTIC_WORKFLOWS_SETUP.md](AGENTIC_WORKFLOWS_SETUP.md#2-create-personal-access-token-for-copilot_github_token)
-- **How to set:**
-  ```bash
-  gh secret set COPILOT_GITHUB_TOKEN --body "<your-token>" --repo ferryhinardi/supertool
-  # Or using gh-aw:
-  gh aw secrets set COPILOT_GITHUB_TOKEN --owner ferryhinardi --repo supertool
-  ```
-
----
-
 ### CI/CD Pipeline (Supabase Features)
 
 #### 1. `NEXT_PUBLIC_SUPABASE_URL`
@@ -132,12 +111,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 ---
 
 ## 🐛 Troubleshooting
-
-### Agentic workflow fails with "⚠️ Secret Verification Failed"
-
-- **Cause:** `COPILOT_GITHUB_TOKEN` secret is not configured
-- **Fix:** Add the secret using the instructions in the "Required Secrets → Agentic Workflows" section above
-- **Verify:** Run `gh aw secrets bootstrap --non-interactive` to check which secrets are missing
 
 ### Build fails with "supabaseUrl is required"
 

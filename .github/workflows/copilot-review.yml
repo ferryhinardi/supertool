@@ -814,22 +814,6 @@ jobs:
           echo "\`\`\`" >> fix-suggestions.md
           echo "" >> fix-suggestions.md
 
-          # Copilot CLI suggestions
-          echo "### Using Copilot CLI" >> fix-suggestions.md
-          echo "" >> fix-suggestions.md
-          echo "If you have Copilot CLI installed, you can use these commands:" >> fix-suggestions.md
-          echo "" >> fix-suggestions.md
-          echo "\`\`\`bash" >> fix-suggestions.md
-          echo "# Source the aliases" >> fix-suggestions.md
-          echo "source scripts/copilot-aliases.sh" >> fix-suggestions.md
-          echo "" >> fix-suggestions.md
-          echo "# Get AI help for lint errors" >> fix-suggestions.md
-          echo "cop-lint" >> fix-suggestions.md
-          echo "" >> fix-suggestions.md
-          echo "# Get AI help for test failures" >> fix-suggestions.md
-          echo "cop-test" >> fix-suggestions.md
-          echo "\`\`\`" >> fix-suggestions.md
-
           cat fix-suggestions.md
 
       - name: Comment Fix Suggestions
