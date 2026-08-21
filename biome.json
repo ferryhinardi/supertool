@@ -25,7 +25,9 @@
       "!**/pnpm-lock.yaml",
       "!**/styled-system",
       "!**/graphify-out",
+      "!**/.graphify",
       "!**/.mcp",
+      "!**/.claude",
       "!**/scripts"
     ]
   },
