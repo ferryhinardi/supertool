@@ -60,6 +60,11 @@ export default defineConfig({
       '**/__screenshots__/**',
       '**/dist/**',
       '**/.next/**',
+      // Playwright suites, run by playwright.config.ts. Vitest cannot execute
+      // Playwright's test()/test.use(), so collecting them fails the whole run.
+      // Keep in sync with vitest.config.mts.
+      '**/tests/mobile/**',
+      '**/tests/a11y/**',
     ],
     environment: 'jsdom',
     browser: {
