@@ -837,9 +837,15 @@ describe('ImageToTextPage', () => {
 
   describe('Button Disabled State', () => {
     it('disables upload button during processing', async () => {
-      // Make processing take longer
-      mockCreateWorker.mockImplementation(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100))
+      // Hold worker creation open with a deferred rather than a real timer. With a
+      // timer the test returned while it was still pending, and when it fired the
+      // component called mockRecognize again - inside a *later* test, which is why
+      // "allows uploading another image after processing" saw 3 calls instead of 2.
+      let startWorker: (() => void) | undefined
+      mockCreateWorker.mockImplementationOnce(async () => {
+        await new Promise<void>((resolve) => {
+          startWorker = resolve
+        })
         return {
           recognize: mockRecognize,
           terminate: mockTerminate,
@@ -851,18 +857,32 @@ describe('ImageToTextPage', () => {
       const file = createMockImageFile()
       uploadFile(file)
 
-      // Find the upload button
-      const uploadButton = screen
-        .getAllByRole('button')
-        .find((btn) => btn.textContent?.includes('Processing'))
+      await waitFor(() => {
+        const uploadButton = screen
+          .getAllByRole('button')
+          .find((btn) => btn.textContent?.includes('Processing'))
+        expect(uploadButton).toBeDisabled()
+      })
 
-      expect(uploadButton).toBeDisabled()
+      const releaseWorker = startWorker
+      if (!releaseWorker) {
+        throw new Error('Expected worker creation to be pending')
+      }
+      releaseWorker()
+
+      // Let processing finish inside the test so nothing is pending on exit.
+      await waitFor(() => {
+        expect(screen.getByText('Extracted text from image')).toBeInTheDocument()
+      })
     })
 
     it('disables language selector during processing', async () => {
-      // Make processing take longer
-      mockCreateWorker.mockImplementation(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100))
+      // Same deferred hold as above, for the same reason.
+      let startWorker: (() => void) | undefined
+      mockCreateWorker.mockImplementationOnce(async () => {
+        await new Promise<void>((resolve) => {
+          startWorker = resolve
+        })
         return {
           recognize: mockRecognize,
           terminate: mockTerminate,
@@ -875,7 +895,20 @@ describe('ImageToTextPage', () => {
       uploadFile(file)
 
       const select = screen.getByLabelText('Language') as HTMLSelectElement
-      expect(select).toBeDisabled()
+      await waitFor(() => {
+        expect(select).toBeDisabled()
+      })
+
+      const releaseWorker = startWorker
+      if (!releaseWorker) {
+        throw new Error('Expected worker creation to be pending')
+      }
+      releaseWorker()
+
+      // Let processing finish inside the test so nothing is pending on exit.
+      await waitFor(() => {
+        expect(screen.getByText('Extracted text from image')).toBeInTheDocument()
+      })
     })
 
     it('re-enables controls after processing completes', async () => {
