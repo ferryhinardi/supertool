@@ -165,25 +165,23 @@ describe('SocialMediaResizerPage', () => {
         Object.defineProperty(this, 'naturalHeight', { value: 1500, writable: true })
         Object.defineProperty(this, 'width', { value: 2000, writable: true })
         Object.defineProperty(this, 'height', { value: 1500, writable: true })
-        // Fire onload on next microtask after src is set
-        const self = this
+        // Fire onload on next microtask after src is set (arrow functions keep `this` bound
+        // to the image instance)
         const originalSrcDescriptor = Object.getOwnPropertyDescriptor(
           HTMLImageElement.prototype,
           'src'
         )
         Object.defineProperty(this, 'src', {
-          set(value: string) {
+          set: (value: string) => {
             if (originalSrcDescriptor?.set) {
-              originalSrcDescriptor.set.call(self, value)
+              originalSrcDescriptor.set.call(this, value)
             }
             // Fire onload asynchronously
             Promise.resolve().then(() => {
-              if (self.onload) self.onload(new Event('load'))
+              if (this.onload) this.onload(new Event('load'))
             })
           },
-          get() {
-            return originalSrcDescriptor?.get?.call(self) ?? ''
-          },
+          get: () => originalSrcDescriptor?.get?.call(this) ?? '',
           configurable: true,
         })
       }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { LocalFileAnalysisResult, LocalFileInfo } from '@/lib/services/local-files'
 import { formatFileSize, getCategoryForExtension } from '@/lib/services/local-files'
 import { css } from '@/styled-system/css'
@@ -734,7 +734,7 @@ export function LocalFileBrowser({
   )
 
   // Auto-expand when searching
-  useMemo(() => {
+  useEffect(() => {
     if (searchQuery.trim()) {
       const getAllPaths = (nodes: LocalTreeNode[]): string[] => {
         const paths: string[] = []

@@ -994,7 +994,6 @@ export default function ImageOptimizerPage() {
                                 bg: 'gray.800',
                               })}
                             >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
                                 src={image.preview}
                                 alt={image.file.name}
@@ -1274,7 +1273,6 @@ export default function ImageOptimizerPage() {
                                   }}
                                 >
                                   {/* Original Image (Background - Full) */}
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
                                   <img
                                     src={image.preview}
                                     alt="Original"
@@ -1299,7 +1297,6 @@ export default function ImageOptimizerPage() {
                                       clipPath: `inset(0 ${100 - comparePosition}% 0 0)`,
                                     }}
                                   >
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                       src={image.compressedPreview}
                                       alt="Optimized"

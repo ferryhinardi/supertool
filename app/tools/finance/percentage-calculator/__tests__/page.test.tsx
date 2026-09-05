@@ -20,7 +20,6 @@ vi.mock('nuqs', () => ({
     }),
   }),
   useQueryState: (_key: string, parser: { defaultValue: unknown }) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useState(parser.defaultValue)
   },
 }))

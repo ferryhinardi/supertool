@@ -393,7 +393,6 @@ export default function BackgroundRemoverPage() {
                         bg: 'gray.800',
                       })}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={imageState.original}
                         alt="Original"
@@ -441,7 +440,6 @@ export default function BackgroundRemoverPage() {
                       }}
                     >
                       {imageState.processed ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img
                           src={imageState.processed}
                           alt="Background removed"

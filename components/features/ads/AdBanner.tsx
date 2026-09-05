@@ -46,9 +46,9 @@ export function AdBanner({
 
     try {
       // Push ad to adsbygoogle array if using Google AdSense
-      // @ts-expect-error
+      // @ts-expect-error adsbygoogle is injected by the AdSense script, not typed on Window
       if (window.adsbygoogle?.push) {
-        // @ts-expect-error
+        // @ts-expect-error adsbygoogle is injected by the AdSense script, not typed on Window
         window.adsbygoogle.push({})
       }
     } catch (error) {

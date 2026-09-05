@@ -48,7 +48,6 @@ class MockFileReader {
   onerror: ((event: ProgressEvent<FileReader>) => void) | null = null
   result: string | ArrayBuffer | null = null
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   readAsDataURL(_blob: Blob) {
     setTimeout(() => {
       this.result =
@@ -83,7 +82,6 @@ const mockCanvasContext = {
 }
 
 // Mock toBlob
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockToBlob = vi.fn((callback: BlobCallback, _mimeType?: string, _quality?: number) => {
   const blob = new Blob(['test-image-data'], { type: 'image/png' })
   Object.defineProperty(blob, 'size', { value: 5000 })

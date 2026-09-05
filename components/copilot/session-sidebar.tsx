@@ -881,15 +881,17 @@ function HighlightText({ text, query }: { text: string; query?: string }) {
 
   const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const regex = new RegExp(`(${escapedQuery})`, 'gi')
-  const parts = text.split(regex)
-  let currentOffset = 0
+  const parts: { part: string; offset: number }[] = []
+  let offset = 0
+  for (const part of text.split(regex)) {
+    parts.push({ part, offset })
+    offset += part.length
+  }
 
   return (
     <>
-      {parts.map((part) => {
-        const partOffset = currentOffset
+      {parts.map(({ part, offset: partOffset }) => {
         const partKey = `${partOffset}-${part}`
-        currentOffset += part.length
 
         return part.toLowerCase() === query.toLowerCase() ? (
           <mark

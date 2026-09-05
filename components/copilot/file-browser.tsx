@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { FileTree, FileTreeItem } from '@/lib/services/github/types'
 import { css } from '@/styled-system/css'
 
@@ -576,7 +576,7 @@ export function FileBrowser({
   }, [treeNodes, searchQuery])
 
   // Auto-expand all directories when searching
-  useMemo(() => {
+  useEffect(() => {
     if (searchQuery.trim()) {
       const getAllPaths = (nodes: TreeNode[]): string[] => {
         const paths: string[] = []

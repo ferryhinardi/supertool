@@ -22,19 +22,27 @@ interface ChatMessageProps {
 /**
  * Helper component to highlight search matches in text
  */
+/** Splits text by a regex and records each part's character offset so keys stay stable. */
+function splitWithOffsets(text: string, regex: RegExp): { part: string; offset: number }[] {
+  const result: { part: string; offset: number }[] = []
+  let offset = 0
+  for (const part of text.split(regex)) {
+    result.push({ part, offset })
+    offset += part.length
+  }
+  return result
+}
+
 function HighlightedText({ text, query }: { text: string; query: string }) {
   if (!query.trim()) return <>{text}</>
 
   const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const parts = text.split(new RegExp(`(${escapeRegex(query)})`, 'gi'))
-  let currentOffset = 0
+  const parts = splitWithOffsets(text, new RegExp(`(${escapeRegex(query)})`, 'gi'))
 
   return (
     <>
-      {parts.map((part) => {
-        const partOffset = currentOffset
-        const partKey = `${partOffset}-${part}`
-        currentOffset += part.length
+      {parts.map(({ part, offset }) => {
+        const partKey = `${offset}-${part}`
 
         return part.toLowerCase() === query.toLowerCase() ? (
           <mark

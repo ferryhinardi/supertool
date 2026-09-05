@@ -8,7 +8,7 @@ class MockImageData {
   data: Uint8ClampedArray
   width: number
   height: number
-  colorSpace: 'srgb' = 'srgb'
+  colorSpace = 'srgb' as const
 
   constructor(data: Uint8ClampedArray | number, widthOrHeight?: number, height?: number) {
     if (typeof data === 'number') {
