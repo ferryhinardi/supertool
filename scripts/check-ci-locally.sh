@@ -43,7 +43,7 @@ run_check "TypeScript Check" "pnpm exec tsc --noEmit"
 # 2. Lint Check
 echo "🔍 Step 2: Lint Check"
 echo "----------------------------"
-run_check "ESLint" "pnpm lint" || echo -e "${YELLOW}⚠️  Lint has warnings (continue-on-error in CI)${NC}"
+run_check "Biome lint" "pnpm lint:check" || echo -e "${YELLOW}⚠️  Lint has warnings (continue-on-error in CI)${NC}"
 echo ""
 
 # 3. Core Tests
