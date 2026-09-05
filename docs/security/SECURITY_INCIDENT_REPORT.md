@@ -16,7 +16,7 @@ A Resend API key was accidentally committed to the public GitHub repository in a
 
 - **Exposed Credential**: Resend API Key
 - **Key Value**: `re_8ADBFpxn_CZ3YDHVmbhFBzt8f5cQfFL7Y` ⚠️ **REVOKED**
-- **File Path**: `docs/TESTING_RESULTS_DONATION_SYSTEM.md:247`
+- **File Path**: `docs/archive/TESTING_RESULTS_DONATION_SYSTEM.md:247`
 - **Commit Hash**: `fb9ce9e2a13b2f45240359b12f4597ff58557616`
 - **Commit Date**: January 2, 2026 20:01:07 +0700
 - **Commit Message**: "Add comprehensive donation system testing results"
@@ -38,7 +38,7 @@ During documentation of the donation system testing process, environment variabl
 ### ✅ 1. Code Remediation (Automated)
 - **Commit**: `b1a8925` - "security: redact exposed Resend API key from documentation"
 - **Action**: Replaced actual API key with placeholder `re_YOUR_API_KEY_HERE`
-- **File**: `docs/TESTING_RESULTS_DONATION_SYSTEM.md:247`
+- **File**: `docs/archive/TESTING_RESULTS_DONATION_SYSTEM.md:247`
 
 ### ✅ 2. Key Revocation and Rotation (Manual - COMPLETED)
 
@@ -129,7 +129,7 @@ During documentation of the donation system testing process, environment variabl
 ## Related Files
 
 - Remediation commit: `b1a8925`
-- Affected file: `docs/TESTING_RESULTS_DONATION_SYSTEM.md`
+- Affected file: `docs/archive/TESTING_RESULTS_DONATION_SYSTEM.md`
 - Offending commit: `fb9ce9e2a13b2f45240359b12f4597ff58557616`
 
 ## Contact

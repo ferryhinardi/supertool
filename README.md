@@ -9,27 +9,27 @@ Professional toolkit with 36+ implemented tools for developers, designers, and p
 ### 🚀 Getting Started
 
 - **[Full Documentation](./docs/README.md)** - Complete project documentation
-- **[Testing Guide](./docs/TESTING.md)** - Testing setup and guidelines
-- **[Quick Start](./docs/TESTING_QUICKSTART.md)** - Get started quickly
+- **[Testing Guide](./docs/guides/TESTING.md)** - Testing setup and guidelines
+- **[Quick Start](./docs/guides/TESTING_QUICKSTART.md)** - Get started quickly
 - **[Contributing](./CONTRIBUTING.md)** - How to contribute
 
 ### 🔧 Development Guides
 
-- **[MCP Setup](./docs/MCP_SETUP.md)** - Model Context Protocol integration
+- **[MCP Setup](./docs/guides/MCP_SETUP.md)** - Model Context Protocol integration
 - **[CI/CD Setup](./docs/CI_CD_SETUP.md)** - Continuous integration guide
-- **[Panda CSS Guide](./docs/PANDA_CSS_GUIDE.md)** - Styling system documentation
-- **[Recent Tools Tracking](./docs/RECENT_TOOLS_TRACKING.md)** - Usage tracking system
+- **[Panda CSS Guide](./docs/guides/PANDA_CSS_GUIDE.md)** - Styling system documentation
+- **[Recent Tools Tracking](./docs/guides/RECENT_TOOLS_TRACKING.md)** - Usage tracking system
 
 ### 📖 Tool Documentation (30+ Guides)
 
-- **[JSON Beautifier](./docs/01_JSON_BEAUTIFIER.md)** - JSON formatting and validation
-- **[Code Diff Viewer](./docs/05_CODE_DIFF_VIEWER.md)** - Text and code comparison
+- **[JSON Beautifier](./docs/tools/data/01_JSON_BEAUTIFIER.md)** - JSON formatting and validation
+- **[Code Diff Viewer](./docs/tools/development/05_CODE_DIFF_VIEWER.md)** - Text and code comparison
 - **[API Request Tester](./docs/26_API_REQUEST_TESTER.md)** - REST API testing tool
-- **[Image Optimizer](./docs/09_IMAGE_OPTIMIZER.md)** - Image compression and conversion
+- **[Image Optimizer](./docs/tools/media/09_IMAGE_OPTIMIZER.md)** - Image compression and conversion
 - **[Video Converter](./docs/10_VIDEO_CONVERTER.md)** - Video format conversion
-- **[Encryption Tool](./docs/21_ENCRYPTION_TOOL.md)** - AES-256 encryption
-- **[Currency Converter](./docs/24_CURRENCY_CONVERTER.md)** - Real-time exchange rates
-- **[Password Generator](./docs/04_PASSWORD_GENERATOR.md)** - Secure password creation
+- **[Encryption Tool](./docs/tools/security/21_ENCRYPTION_TOOL.md)** - AES-256 encryption
+- **[Currency Converter](./docs/tools/finance/24_CURRENCY_CONVERTER.md)** - Real-time exchange rates
+- **[Password Generator](./docs/tools/security/04_PASSWORD_GENERATOR.md)** - Secure password creation
 - **[... and 22+ more](./docs/)** - Complete tool documentation
 
 ## ✨ Features
@@ -142,7 +142,7 @@ cp .env.example .env
 - 🧠 Memory and context persistence
 - 🤔 Sequential thinking capabilities
 
-See [docs/MCP_SETUP.md](./docs/MCP_SETUP.md) for complete setup instructions.
+See [docs/guides/MCP_SETUP.md](./docs/guides/MCP_SETUP.md) for complete setup instructions.
 
 ## 📝 Available Scripts
 
@@ -180,7 +180,7 @@ pnpm test:browser
 pnpm test:ui
 ```
 
-See [TESTING_QUICKSTART.md](./docs/TESTING_QUICKSTART.md) for more details.
+See [TESTING_QUICKSTART.md](./docs/guides/TESTING_QUICKSTART.md) for more details.
 
 ## 📁 Project Structure
 
@@ -238,7 +238,7 @@ This project uses **Panda CSS** for styling with **Ark UI** components:
 - **[Panda CSS](https://panda-css.com/)** - Modern CSS-in-JS with zero runtime
 - **[Ark UI](https://ark-ui.com/)** - Headless UI components with accessibility
 
-For styling guidelines, see [docs/PANDA_CSS_GUIDE.md](./docs/PANDA_CSS_GUIDE.md)
+For styling guidelines, see [docs/guides/PANDA_CSS_GUIDE.md](./docs/guides/PANDA_CSS_GUIDE.md)
 
 ## 🤝 Contributing
 

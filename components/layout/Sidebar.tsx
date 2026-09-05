@@ -63,7 +63,7 @@ const navLinkStyles = cva({
     py: '2.5',
     // px/py alone render these links 41px tall - 3px under the 44px minimum
     // touch target, which is the single largest source of violations in
-    // docs/TOUCH_TARGETS_BACKLOG.md (2200 of 2611, one per link per route).
+    // docs/planning/TOUCH_TARGETS_BACKLOG.md (2200 of 2611, one per link per route).
     minH: '11',
     transition: 'all 0.2s',
     _hover: {

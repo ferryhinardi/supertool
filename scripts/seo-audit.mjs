@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path'
 
 const BASE_URL = (process.env.SEO_AUDIT_BASE_URL || 'http://127.0.0.1:3000').replace(/\/$/, '')
 const EVIDENCE_PATH = resolve('.sisyphus/evidence/seo-audit-2026-04.json')
-const BACKLOG_PATH = resolve('docs/SEO_BACKLOG.md')
+const BACKLOG_PATH = resolve('docs/planning/SEO_BACKLOG.md')
 const TOOL_ROOT = resolve('app/tools')
 const TITLE_LIMIT = 60
 const DESCRIPTION_LIMIT = 160

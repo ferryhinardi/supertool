@@ -34,7 +34,7 @@ interface ToolA11yResult {
 }
 
 const EVIDENCE_PATH = resolve(process.cwd(), '.sisyphus/evidence/a11y-violations-2026-04.json')
-const BACKLOG_PATH = resolve(process.cwd(), 'docs/A11Y_BACKLOG.md')
+const BACKLOG_PATH = resolve(process.cwd(), 'docs/planning/A11Y_BACKLOG.md')
 
 const baselineTopTen: ToolTarget[] = [
   {

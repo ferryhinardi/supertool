@@ -129,4 +129,4 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 
 ---
 
-**Need help?** Check the [GitHub Actions logs](../../actions) for detailed error messages.
+**Need help?** Check the [GitHub Actions logs](https://github.com/ferryhinardi/supertool/actions) for detailed error messages.

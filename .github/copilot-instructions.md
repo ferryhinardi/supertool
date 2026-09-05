@@ -1048,7 +1048,7 @@ Update the changelog whenever you:
 4. **Format** your entry:
    ```markdown
    #### Added
-   - New Tool: JSON Beautifier with syntax highlighting [Reference: docs/01_JSON_BEAUTIFIER.md]
+   - New Tool: JSON Beautifier with syntax highlighting [Reference: docs/tools/data/01_JSON_BEAUTIFIER.md]
    - Analytics tracking for all user interactions
    
    #### Fixed
@@ -1069,7 +1069,7 @@ Update the changelog whenever you:
 ## [Unreleased]
 
 ### Added
-- New Tool: Password Generator with customizable options [Reference: docs/04_PASSWORD_GENERATOR.md]
+- New Tool: Password Generator with customizable options [Reference: docs/tools/security/04_PASSWORD_GENERATOR.md]
 - Copy-to-clipboard functionality with visual feedback
 - Character type selection (uppercase, lowercase, numbers, symbols)
 - Password strength indicator with real-time validation

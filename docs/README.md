@@ -1,160 +1,111 @@
-# 🚀 SuperTool - Modern Developer Toolkit
+# SuperTool Documentation
 
-Beautiful, fast, and powerful developer tools built with modern web technologies.
+This folder is the documentation hub for SuperTool. Start with the root
+[README](../README.md) for a project overview and the [contributing guide](../CONTRIBUTING.md)
+for the development workflow; the agent-oriented quick reference lives in
+[AGENTS.md](../AGENTS.md).
 
-## ✨ Features
+## Layout
 
-- 🎨 **JSON Beautifier** - Format, validate, and minify JSON with syntax highlighting
-- 📁 **File Upload** - Upload files to cloud storage with drag-and-drop support
-- 🎯 **More Coming Soon** - Image optimization, API testing, and more!
+| Folder | What lives here |
+| --- | --- |
+| [`guides/`](./guides/) | Developer how-tos: testing, styling, formatting, MCP, feature flags, env vars |
+| [`setup/`](./setup/) | Operations: CI/CD, Vercel, DNS, email deliverability, Polar payments, Supabase |
+| [`tools/`](./tools/) | Per-tool documentation, grouped by the same categories as `app/tools/` |
+| [`features/`](./features/) | Cross-cutting product features: ads, analytics, feedback, donations |
+| [`architecture/`](./architecture/) | System design notes and business model |
+| [`security/`](./security/) | Security fixes and incident reports |
+| [`planning/`](./planning/) | Roadmaps, improvement plans and backlogs (a11y, SEO, touch targets) |
+| [`archive/`](./archive/) | Historical session summaries, completion reports and finished migrations |
+| [`CHANGE_LOG.md`](./CHANGE_LOG.md) | Project change log |
 
-## 🛠️ Tech Stack
+## Start here
 
-- **Framework:** Next.js 16 (React 19)
-- **Styling:** Tailwind CSS v4
-- **UI Components:** Radix UI + shadcn/ui
-- **Animations:** Framer Motion
-- **Testing:** Vitest with Browser Mode
-- **Code Quality:** ESLint, Prettier, Husky
-- **Package Manager:** pnpm
+### Working on the codebase
 
-## 🚀 Getting Started
+- [Testing with Vitest Browser Mode](./guides/TESTING.md) and the
+  [testing quick start](./guides/TESTING_QUICKSTART.md)
+- [Panda CSS + Ark UI integration guide](./guides/PANDA_CSS_GUIDE.md) — the styling system
+- [Code formatting](./guides/CODE_FORMATTING.md) — Biome configuration and editor setup
+- [Tool component library](./guides/TOOL_COMPONENTS.md) — shared building blocks for tool pages
+- [Environment variables](./guides/ENV_VARS.md) and [feature flags](./guides/FEATURE_FLAGS.md)
+- [nuqs integration](./guides/NUQS_INTEGRATION.md) — URL state for tool pages
+- [Speculation Rules](./guides/SPECULATION_RULES.md) — prerendering/prefetching setup
+- [MCP configuration](./guides/MCP_SETUP.md) — Model Context Protocol servers for AI tooling
+- [Recent tools tracking](./guides/RECENT_TOOLS_TRACKING.md)
+- [Performance testing](./guides/PERFORMANCE_TESTING_GUIDE.md)
+- [WARP development guide](./guides/WARP.md) — long-form project walkthrough
 
-### Prerequisites
+### Deploying and operating
 
-- Node.js 20+
-- pnpm 8+
+- [CI/CD setup](./setup/CI_CD_SETUP.md) and the
+  [production deployment checklist](./setup/PRODUCTION_DEPLOYMENT_CHECKLIST.md)
+- Vercel: [deployment guide](./setup/VERCEL_DEPLOYMENT.md),
+  [FFmpeg on Vercel](./setup/VERCEL_FFMPEG_SETUP.md)
+- DNS: [quick start](./setup/DNS_QUICK_START.md), [full guide](./setup/DNS_SETUP_GUIDE.md),
+  [Vercel DNS](./setup/DNS_VERCEL_SETUP.md), [GoDaddy](./setup/DOMAIN_SETUP_GODADDY.md),
+  [checklist](./setup/DNS_CHECKLIST.md)
+- Email: [deliverability guide](./setup/EMAIL_DELIVERABILITY_GUIDE.md),
+  [production checklist](./setup/EMAIL_PRODUCTION_CHECKLIST.md),
+  [donation thank-you emails](./setup/EMAIL_SETUP_DONATION.md)
+- Payments (Polar): [setup checklist](./setup/POLAR_SETUP_CHECKLIST.md),
+  [environment variables](./setup/POLAR_ENV_SETUP_GUIDE.md),
+  [Vercel env setup](./setup/POLAR_VERCEL_ENV_SETUP.md),
+  [testing guide](./setup/POLAR_PAYMENT_TESTING_GUIDE.md),
+  [end-to-end test](./setup/POLAR_END_TO_END_TEST.md)
+- Database: [Supabase migrations](./setup/SUPABASE_MIGRATION_GUIDE.md),
+  [URL shortener setup](./setup/URL_SHORTENER_SETUP.md)
 
-### Installation
+### Tool documentation
 
-```bash
-# Clone the repository
-git clone https://github.com/ferryhinardi/supertool.git
-cd supertool
+[`tools/README.md`](./tools/README.md) is the master index with per-tool status. Guides are
+grouped by category, mirroring the routes under `app/tools/`:
 
-# Install dependencies
-pnpm install
+| Category | Folder | Examples |
+| --- | --- | --- |
+| Data | [`tools/data/`](./tools/data/) | JSON Beautifier, JSON ↔ CSV, CSV/Excel, UUID, Date Formatter |
+| Design | [`tools/design/`](./tools/design/) | Color Contrast, Gradient, Favicon, Screenshot Diff, SVG Optimizer |
+| Development | [`tools/development/`](./tools/development/) | API Tester, Regex, JWT, Cron, GraphQL, Webhook Tester |
+| Finance | [`tools/finance/`](./tools/finance/) | Split Bill, Currency, Loan, Tip, Percentage |
+| Media | [`tools/media/`](./tools/media/) | Image Optimizer, Video Converter, OCR, Meme Generator |
+| Productivity | [`tools/productivity/`](./tools/productivity/) | Markdown Editor, PDF Tools, Resume Builder, Pomodoro |
+| Security | [`tools/security/`](./tools/security/) | Password Generator, Hash, Encryption, Steganography |
 
-# Run development server
-pnpm dev
-```
+Numbered files (for example `01_JSON_BEAUTIFIER.md`) follow the original documentation
+series; unnumbered files are later additions or Pro-feature companions.
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+### Product features
 
-## 📝 Available Scripts
+- [Ads integration](./features/ADS_INTEGRATION.md) and the
+  [multi-network ads system](./features/MULTI_ADS_SYSTEM.md)
+- [Analytics (GA4)](./features/ANALYTICS.md)
+- [Feedback system](./features/FEEDBACK_SYSTEM.md)
+- Donations: [tiers](./features/DONATION_TIERS_IMPLEMENTATION.md),
+  [thank-you emails](./features/DONATION_EMAIL_IMPLEMENTATION.md)
 
-| Command             | Description               |
-| ------------------- | ------------------------- |
-| `pnpm dev`          | Start development server  |
-| `pnpm build`        | Build for production      |
-| `pnpm start`        | Start production server   |
-| `pnpm lint`         | Run ESLint                |
-| `pnpm lint:fix`     | Fix ESLint errors         |
-| `pnpm format`       | Format code with Prettier |
-| `pnpm test`         | Run tests in watch mode   |
-| `pnpm test:ui`      | Open Vitest UI            |
-| `pnpm test:browser` | Run browser tests         |
+### Architecture and business
 
-## 🧪 Testing
+- [Revenue model](./architecture/REVENUE_MODEL.md)
+- [Payment gateway comparison](./architecture/PAYMENT_GATEWAY_COMPARISON.md)
+- [Ark UI homepage redesign](./architecture/ARK_UI_HOMEPAGE_REDESIGN.md)
 
-This project uses Vitest with Browser Mode powered by Playwright.
+### Security
 
-### Quick Start
+- [Security incident report](./security/SECURITY_INCIDENT_REPORT.md)
+- [Security fixes (2025-12-31)](./security/SECURITY_FIXES_2025_12_31.md) and
+  [summary](./security/SECURITY_FIXES_SUMMARY.md)
 
-```bash
-# Install Playwright browsers (first time only)
-pnpm exec playwright install chromium
+### Planning
 
-# Run tests
-pnpm test
+Living backlogs that scripts write to:
+[accessibility](./planning/A11Y_BACKLOG.md), [SEO](./planning/SEO_BACKLOG.md),
+[touch targets](./planning/TOUCH_TARGETS_BACKLOG.md). Roadmaps and improvement plans are in
+[`planning/`](./planning/).
 
-# Run tests in browser mode
-pnpm test:browser
+## Conventions
 
-# Open Vitest UI
-pnpm test:ui
-```
-
-See [TESTING_QUICKSTART.md](./docs/TESTING_QUICKSTART.md) for more details.
-
-## � CI/CD
-
-This project uses GitHub Actions for continuous integration and deployment:
-
-- ✅ **Automated Testing** - Runs all 83 tests on every push
-- 🔍 **Code Quality** - ESLint and TypeScript checks
-- 📦 **Build Verification** - Ensures production builds succeed
-- 📊 **Coverage Reports** - Automatic coverage tracking
-
-### CI Workflow
-
-```
-Lint & Type Check ──┬──→ Unit Tests (parallel)
-                    └──→ Build (parallel)
-```
-
-See [CI_CD_SETUP.md](./docs/CI_CD_SETUP.md) for detailed setup instructions.
-
-## 🎨 Styling with Panda CSS
-
-This project uses **Panda CSS** for styling with **Ark UI** components:
-
-- ✅ **Zero-runtime** - CSS-in-JS with zero runtime overhead
-- 🎯 **Type-safe** - Full TypeScript support with autocomplete
-- 📦 **Optimized** - Only generates CSS for styles you use
-- ♿ **Accessible** - Built on Ark UI's accessible components
-
-For styling guidelines and best practices, see:
-
-- [PANDA_CSS_GUIDE.md](./docs/PANDA_CSS_GUIDE.md) - Complete Panda CSS guide
-- [Panda CSS Documentation](https://panda-css.com)
-- [Ark UI Documentation](https://ark-ui.com)
-
-## 📁 Project Structure
-
-```
-supertool/
-├── app/                    # Next.js app directory
-│   ├── tools/             # Tool pages
-│   │   ├── json-beautify/ # JSON beautifier
-│   │   └── upload/        # File upload
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
-├── components/            # React components
-│   ├── layout/           # Layout components
-│   ├── features/         # Feature components
-│   └── ui/               # UI components (Ark UI)
-├── lib/                  # Utilities and helpers
-├── styled-system/        # Panda CSS generated files
-├── docs/                 # Documentation
-└── public/              # Static assets
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org/)
-- [Panda CSS](https://panda-css.com/)
-- [Ark UI](https://ark-ui.com/)
-- [Radix UI](https://www.radix-ui.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Vitest](https://vitest.dev/)
-
-## 📧 Contact
-
-Ferry Hinardi - [@ferryhinardi](https://github.com/ferryhinardi)
-
-Project Link: [https://github.com/ferryhinardi/supertool](https://github.com/ferryhinardi/supertool)
+- File names are `SCREAMING_SNAKE_CASE.md`. Tool guides keep their series number prefix.
+- Put new tool docs in `tools/<category>/` using the same category as the route.
+- Documents that describe finished work (session summaries, "complete" reports) go to
+  `archive/` rather than being deleted, so history stays searchable.
+- Link between documents with relative paths so links survive folder moves.
