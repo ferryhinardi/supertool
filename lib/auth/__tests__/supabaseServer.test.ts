@@ -172,7 +172,7 @@ describe('supabaseServer', () => {
       expect(serverModule.supabaseServer).toBeDefined()
 
       // Only throw when actually used
-      expect(() => module.getSupabaseServer()).toThrow()
+      expect(() => serverModule.getSupabaseServer()).toThrow()
     })
   })
 })
