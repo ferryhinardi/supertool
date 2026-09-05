@@ -1,271 +1,128 @@
-# 🚀 SuperTool - Modern Developer Toolkit
+# SuperTool
 
 ![Coverage](https://codecov.io/gh/ferryhinardi/supertool/branch/main/graph/badge.svg)
 
-Professional toolkit with 36+ implemented tools for developers, designers, and productivity enthusiasts. All tools work offline in your browser with no registration required.
+SuperTool is a browser-based toolkit of 110+ utilities for developers, designers and
+productivity work: JSON and CSV converters, image/video processing, PDF tools, password and hash
+generators, calculators, timers and more. Almost everything runs client-side, with no account
+required.
 
-## 📚 Documentation
+- **Live app:** the tools live under `/tools/<category>/<slug>` (for example `/tools/data/json-beautify`)
+- **Documentation hub:** [`docs/README.md`](./docs/README.md)
+- **Contributing:** [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+- **Agent quick reference:** [`AGENTS.md`](./AGENTS.md)
 
-### 🚀 Getting Started
+## Tool categories
 
-- **[Full Documentation](./docs/README.md)** - Complete project documentation
-- **[Testing Guide](./docs/guides/TESTING.md)** - Testing setup and guidelines
-- **[Quick Start](./docs/guides/TESTING_QUICKSTART.md)** - Get started quickly
-- **[Contributing](./CONTRIBUTING.md)** - How to contribute
+| Category | Route prefix | Examples |
+| --- | --- | --- |
+| Data | `/tools/data` | JSON Beautifier, JSON ↔ CSV, CSV/Excel converter, JSON Schema, UUID, Date Formatter |
+| Design | `/tools/design` | Color Contrast Checker, Gradient Generator, Favicon Generator, Screenshot Diff, SVG Optimizer |
+| Development | `/tools/development` | API Tester, Regex Tester, JWT Debugger, Cron Builder, GraphQL Playground, Webhook Tester |
+| Finance | `/tools/finance` | Split Bill, Currency Converter, Loan, Tip and Percentage calculators |
+| Media | `/tools/media` | Image Optimizer, Video Converter, Background Remover, OCR, Meme Generator |
+| Productivity | `/tools/productivity` | Markdown Editor, PDF Tools, Resume Builder, Pomodoro, Unit Converter, URL Shortener |
+| Security | `/tools/security` | Password Generator, Hash Generator, AES Encryption, Steganography, SSL Checker |
 
-### 🔧 Development Guides
+The registry in [`lib/data/tools.ts`](./lib/data/tools.ts) is the single source of truth for
+tool metadata (name, category, route, status); the sidebar, homepage and sitemap all read from it.
 
-- **[MCP Setup](./docs/guides/MCP_SETUP.md)** - Model Context Protocol integration
-- **[CI/CD Setup](./docs/CI_CD_SETUP.md)** - Continuous integration guide
-- **[Panda CSS Guide](./docs/guides/PANDA_CSS_GUIDE.md)** - Styling system documentation
-- **[Recent Tools Tracking](./docs/guides/RECENT_TOOLS_TRACKING.md)** - Usage tracking system
+## Tech stack
 
-### 📖 Tool Documentation (30+ Guides)
+| Area | Choice |
+| --- | --- |
+| Framework | [Next.js 16](https://nextjs.org/) App Router, React 19 with the React Compiler |
+| Styling | [Panda CSS](https://panda-css.com/) (`css()` + recipes), [Ark UI](https://ark-ui.com/) headless components |
+| State / URL | React hooks, [nuqs](https://nuqs.dev/) for URL state, zustand for a few global stores |
+| Backend | Next.js route handlers in `app/api/`, [Supabase](https://supabase.com/) (auth, Postgres), Polar payments, Resend email |
+| Testing | [Vitest](https://vitest.dev/) (jsdom by default, Playwright browser mode on demand), Playwright for e2e/a11y |
+| Quality | [Biome](https://biomejs.dev/) for formatting and linting, ESLint for React Hooks/Next.js rules, TypeScript strict mode, Husky + lint-staged |
+| Tooling | pnpm 10, Node.js 24 |
 
-- **[JSON Beautifier](./docs/tools/data/01_JSON_BEAUTIFIER.md)** - JSON formatting and validation
-- **[Code Diff Viewer](./docs/tools/development/05_CODE_DIFF_VIEWER.md)** - Text and code comparison
-- **[API Request Tester](./docs/26_API_REQUEST_TESTER.md)** - REST API testing tool
-- **[Image Optimizer](./docs/tools/media/09_IMAGE_OPTIMIZER.md)** - Image compression and conversion
-- **[Video Converter](./docs/10_VIDEO_CONVERTER.md)** - Video format conversion
-- **[Encryption Tool](./docs/tools/security/21_ENCRYPTION_TOOL.md)** - AES-256 encryption
-- **[Currency Converter](./docs/tools/finance/24_CURRENCY_CONVERTER.md)** - Real-time exchange rates
-- **[Password Generator](./docs/tools/security/04_PASSWORD_GENERATOR.md)** - Secure password creation
-- **[... and 22+ more](./docs/)** - Complete tool documentation
+## Getting started
 
-## ✨ Features
-
-### 🔥 Currently Active Tools (36+ Tools)
-
-**Data Processing & Development:**
-
-- 🎨 **JSON Beautifier** - Format, validate, and minify JSON with syntax highlighting
-- 🔄 **Code Diff Viewer** - GitHub-style diff comparison for text, JSON, and code
-- 📊 **JSON to CSV** - Convert JSON arrays to CSV with nested object support
-- 🔗 **JSON Schema Generator** - Auto-generate schemas from sample JSON data
-- 🌐 **API Request Tester** - Lightweight Postman alternative for testing REST APIs
-- 📋 **JSON to Markdown Table** - Convert JSON to formatted Markdown tables
-
-**Media & Design Tools:**
-
-- 🖼️ **Image Optimizer** - Compress and convert images with WebP/AVIF support
-- 🎬 **Video Converter** - Convert video formats using in-browser FFmpeg
-- 🎨 **Gradient Generator** - Create CSS gradients with visual editor
-- 🎯 **Color Contrast Checker** - WCAG 2.1 accessibility compliance checker
-- 📸 **Screenshot Diff Tool** - Compare UI screenshots pixel-by-pixel
-
-**Productivity & Utilities:**
-
-- ✂️ **Text Transformer** - Case conversion, word count, duplicate removal
-- 📝 **Markdown Editor** - Real-time GitHub-flavored markdown editor
-- 🔗 **URL Shortener** - Create short links with analytics and QR codes
-- ⏰ **Stopwatch & Timer** - Multi-timer with lap tracking and presets
-- � **Tally Counter** - Simple counting tool with keyboard shortcuts
-- 📅 **Daily Task Summary** - Organize and track daily productivity
-
-**Security & Encryption:**
-
-- 🔐 **Base64 Encoder** - Convert text/files to Base64 with image preview
-- 🔒 **Encryption Tool** - AES-256 encryption with secure password protection
-- #️⃣ **Hash Generator** - Generate MD5, SHA-256, SHA-512 hashes
-- 🔑 **Password Generator** - Cryptographically secure password creation
-- 🛡️ **Password Strength Analyzer** - Measure password entropy and security
-
-**Finance & Calculators:**
-
-- 💰 **Split Bill Calculator** - Divide expenses with tip and tax calculations
-- 💱 **Currency Converter** - Real-time exchange rates for 150+ currencies
-- 📊 **BMI Calculator** - Health metrics with personalized recommendations
-- ⏱️ **Pomodoro Timer** - Focus sessions with task tracking
-
-**Development Tools:**
-
-- 🌐 **IP Address Lookup** - Get geolocation and ISP information
-- 📱 **Website Screenshot** - Capture full-page screenshots of any site
-- 🔍 **Browser Fingerprint Viewer** - Analyze device characteristics for privacy
-- 📏 **Unit Converter** - Convert between 30+ measurement categories
-
-**Additional Features:**
-
-- 🤖 **MCP Integration** - AI-enhanced development with GitHub, Git, and more
-- 🧪 **Fully Tested** - 109+ tests with Vitest + Browser Mode
-- 🔄 **Real-time Processing** - All tools work offline in your browser
-- 📱 **Mobile Optimized** - Responsive design for all screen sizes
-- 🎯 **38+ More Coming** - Advanced AI tools, premium features, and more!
-
-## 🛠️ Tech Stack
-
-- **Framework:** Next.js 16 (React 19)
-- **Styling:** Panda CSS
-- **UI Components:** Ark UI + Radix UI
-- **Animations:** Framer Motion
-- **Testing:** Vitest with Browser Mode
-- **Code Quality:** ESLint, Prettier, Husky
-- **MCP:** Model Context Protocol for AI integration
-- **Package Manager:** pnpm
-
-## � Quick Start
+Prerequisites: Node.js 24 (see `.nvmrc`) and pnpm 10 (`corepack enable` picks up the version in
+`package.json`).
 
 ```bash
-# Clone the repository
 git clone https://github.com/ferryhinardi/supertool.git
 cd supertool
-
-# Install dependencies
-pnpm install
-
-# Run development server
-pnpm dev
-
-# Run tests
-pnpm test
+pnpm install                 # also runs `panda codegen`
+cp .env.example .env.local   # fill in the services you need (Supabase, OpenAI, Polar, ...)
+pnpm dev                     # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+Most tools work without any environment variables. Server-backed features (auth, URL
+shortener, AI tools, payments, email) need the keys documented in
+[`docs/guides/ENV_VARS.md`](./docs/guides/ENV_VARS.md).
 
-## 🤖 MCP Integration
+## Scripts
 
-SuperTool includes Model Context Protocol (MCP) integration for enhanced AI-assisted development:
+| Command | Description |
+| --- | --- |
+| `pnpm dev` | Run Panda codegen and start the dev server |
+| `pnpm build` / `pnpm start` | Production build / serve |
+| `pnpm lint` | Biome format + lint with auto-fix |
+| `pnpm lint:check` | Biome check only (what CI runs) |
+| `pnpm lint:eslint` | ESLint (React Hooks, React Compiler and Next.js rules) |
+| `pnpm exec tsc --noEmit` | Type check |
+| `pnpm test` | Vitest in watch mode (`CI=true pnpm test run` for a single pass) |
+| `pnpm test:ui` / `pnpm test:browser` | Vitest UI / force Playwright browser mode |
+| `pnpm test:e2e` | Playwright suites in `tests/` (a11y, mobile touch targets) |
+| `pnpm mcp:validate` | Validate the MCP server configuration in `.mcp/` |
+| `pnpm seo:audit` / `pnpm perf:baseline` | Refresh the SEO backlog / Lighthouse baseline |
 
-```bash
-# Validate MCP setup
-pnpm mcp:validate
+First-time test setup: `pnpm exec playwright install chromium`.
 
-# Set up environment (first time)
-cp .env.example .env
-# Edit .env and add your GITHUB_TOKEN
-```
-
-**MCP Features:**
-
-- 🔗 GitHub integration (issues, PRs, actions)
-- 📁 Filesystem and Git operations
-- 🧠 Memory and context persistence
-- 🤔 Sequential thinking capabilities
-
-See [docs/guides/MCP_SETUP.md](./docs/guides/MCP_SETUP.md) for complete setup instructions.
-
-## 📝 Available Scripts
-
-| Command             | Description                |
-| ------------------- | -------------------------- |
-| `pnpm dev`          | Start development server   |
-| `pnpm build`        | Build for production       |
-| `pnpm start`        | Start production server    |
-| `pnpm lint`         | Run ESLint                 |
-| `pnpm lint:fix`     | Fix ESLint errors          |
-| `pnpm format`       | Format code with Prettier  |
-| `pnpm test`         | Run tests in watch mode    |
-| `pnpm test:ui`      | Open Vitest UI             |
-| `pnpm test:browser` | Run browser tests          |
-| `pnpm mcp:validate` | Validate MCP configuration |
-| `pnpm mcp:setup`    | Set up MCP integration     |
-
-## 🧪 Testing
-
-This project uses Vitest with Browser Mode powered by Playwright.
-
-### Quick Start
-
-```bash
-# Install Playwright browsers (first time only)
-pnpm exec playwright install chromium
-
-# Run tests
-pnpm test
-
-# Run tests in browser mode
-pnpm test:browser
-
-# Open Vitest UI
-pnpm test:ui
-```
-
-See [TESTING_QUICKSTART.md](./docs/guides/TESTING_QUICKSTART.md) for more details.
-
-## 📁 Project Structure
+## Repository layout
 
 ```
 supertool/
-├── app/                    # Next.js app directory
-│   ├── tools/             # Tool pages (36+ implemented tools)
-│   │   ├── json-beautify/ # JSON beautifier & formatter
-│   │   ├── diff/          # Code diff viewer
-│   │   ├── upload/        # Cloud file upload
-│   │   ├── api-tester/    # API request tester
-│   │   ├── base64/        # Base64 encoder/decoder
-│   │   ├── encryption-tool/ # AES encryption tool
-│   │   ├── hash-generator/ # Cryptographic hash tool
-│   │   ├── image-optimizer/ # Image compression
-│   │   ├── video-converter/ # Video format converter
-│   │   ├── password-generator/ # Secure password creation
-│   │   ├── qr-code/       # QR code generator
-│   │   ├── url-shortener/ # URL shortening service
-│   │   ├── markdown-editor/ # Markdown editor with preview
-│   │   ├── text-transformer/ # Text manipulation tools
-│   │   ├── unit-converter/ # Unit conversion utility
-│   │   ├── currency-converter/ # Currency exchange rates
-│   │   ├── split-bill/    # Bill splitting calculator
-│   │   ├── gradient-generator/ # CSS gradient creator
-│   │   ├── color-contrast/ # WCAG accessibility checker
-│   │   ├── stopwatch-timer/ # Multi-timer with presets
-│   │   ├── pomodoro/      # Pomodoro focus timer
-│   │   ├── json-to-csv/   # JSON to CSV converter
-│   │   ├── json-schema/   # JSON schema generator
-│   │   └── ... (20+ more) # Additional implemented tools
-│   ├── layout.tsx         # Root layout with sidebar
-│   ├── page.tsx           # Homepage with tool showcase
-│   └── globals.css        # Global styles and themes
-├── components/            # React components
-│   ├── layout/           # Sidebar, navigation components
-│   ├── features/         # Tool-specific features (DragDrop, etc.)
-│   └── ui/               # Base UI components (Ark UI + Panda CSS)
-├── lib/                  # Utilities and helpers
-│   ├── tools.ts          # Tool definitions and metadata
-│   ├── analytics.ts      # Google Analytics integration
-│   ├── utils.ts          # Common utilities
-│   └── supabaseClient.ts # Database client
-├── styled-system/        # Panda CSS generated files
-├── docs/                 # Comprehensive documentation (30+ guides)
-├── hooks/               # Custom React hooks
-├── __tests__/           # Test files (Vitest + Browser Mode)
-└── public/              # Static assets and icons
+├── app/                    Next.js App Router
+│   ├── api/                Route handlers (AI tools, payments, webhooks, shortener, ...)
+│   ├── auth/               Auth callback pages
+│   ├── s/                  Short-link redirects
+│   ├── support/            Donation / support pages
+│   └── tools/<category>/   One folder per tool: page.tsx, layout.tsx (SEO), __tests__/
+├── components/
+│   ├── ui/                 Base components (Button, Card, Dialog, Tabs, ...) on Ark UI + Panda
+│   ├── features/           Feature modules: ads, currency, media, monetization, support, tools
+│   ├── layout/             Header and Sidebar
+│   ├── copilot/            Copilot chat UI
+│   └── providers/          React context providers
+├── hooks/                  Reusable hooks (common/, tools/, github/)
+├── lib/
+│   ├── data/               Tool registry, metadata, structured data, donation tiers
+│   ├── services/           Analytics, ads, email, Polar, GitHub, copilot, ratings
+│   ├── tools/              Pure logic for individual tools (unit-tested)
+│   ├── auth/               Supabase clients and auth store
+│   ├── seo/, media/, utils/, types/
+│   └── analytics.ts, feature-flags.ts
+├── supabase/               Database migrations and SQL scripts
+├── tests/                  Playwright suites (a11y/, mobile/) and manual test pages
+├── scripts/                Maintenance scripts (MCP validation, SEO audit, Lighthouse, Polar checks)
+├── docs/                   Documentation hub — see docs/README.md
+├── panda.config.ts         Design tokens, recipes and static CSS
+├── biome.json              Formatter and linter configuration
+└── vitest.config.mts       Test runner (jsdom + on-demand Playwright browser mode)
 ```
 
-## 🎨 Styling & UI
+Generated folders (`styled-system/`, `.next/`, `coverage/`) are git-ignored.
 
-This project uses **Panda CSS** for styling with **Ark UI** components:
+## Development workflow
 
-- **[Panda CSS](https://panda-css.com/)** - Modern CSS-in-JS with zero runtime
-- **[Ark UI](https://ark-ui.com/)** - Headless UI components with accessibility
+1. Create a branch (`feat/<scope>`, `fix/<scope>`, `chore/<scope>`, `docs/<scope>`).
+2. Add a tool with the scaffolder skill in `.agents/skills/new-tool-scaffolder/` or by copying an
+   existing `app/tools/<category>/<slug>/` folder, then register it in `lib/data/tools.ts`.
+3. Style tool pages with Panda CSS `css()` — see
+   [`docs/guides/PANDA_CSS_GUIDE.md`](./docs/guides/PANDA_CSS_GUIDE.md) and the canonical example in
+   `app/tools/productivity/unit-converter/page.tsx`.
+4. Run `pnpm lint`, `pnpm exec tsc --noEmit` and the relevant tests before opening a PR. Commits
+   follow [Conventional Commits](https://www.conventionalcommits.org/) and are checked in CI.
 
-For styling guidelines, see [docs/guides/PANDA_CSS_GUIDE.md](./docs/guides/PANDA_CSS_GUIDE.md)
+CI (`.github/workflows/ci.yml`) runs Biome, type checking, the Vitest suite in eight shards and a
+production build; `coverage.yml` uploads coverage to Codecov.
 
-## 🤝 Contributing
+## License
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org/)
-- [Panda CSS](https://panda-css.com/)
-- [Ark UI](https://ark-ui.com/)
-- [Radix UI](https://www.radix-ui.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Vitest](https://vitest.dev/)
-
-## 📧 Contact
-
-Ferry Hinardi - [@ferryhinardi](https://github.com/ferryhinardi)
-
-Project Link: [https://github.com/ferryhinardi/supertool](https://github.com/ferryhinardi/supertool)
-# CI Test
+[MIT](./LICENSE) — Ferry Hinardi ([@ferryhinardi](https://github.com/ferryhinardi))

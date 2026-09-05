@@ -6,7 +6,7 @@ description: Scaffolds a complete new tool page for SuperTool. Use this skill wh
 # new-tool-scaffolder
 
 ## Project Context
-SuperTool is a Next.js 16 (React 19) developer toolkit with 36+ browser-based tools. Uses Panda CSS for styling, Vitest + Playwright for testing, and deploys to Vercel.
+SuperTool is a Next.js 16 (React 19) developer toolkit with 110+ browser-based tools. Uses Panda CSS for styling, Vitest + Playwright for testing, and deploys to Vercel.
 
 ## Tool Structure
 Each tool lives under `app/tools/<category>/<tool-slug>/` where category is one of: `data`, `media`, `development`, `productivity`, `security`, `finance`, `design`.
@@ -14,7 +14,7 @@ Each tool lives under `app/tools/<category>/<tool-slug>/` where category is one 
 ### Required files per tool:
 1. **`page.tsx`** — Main tool component (use `'use client'`). Copy patterns from `scripts/templates/TOOL_PAGE_TEMPLATE.tsx`:
    - Panda CSS via `css()` from `@/styled-system/css` (NOT Tailwind)
-   - Framer Motion animations with `useReducedMotion` support
+   - Respect `prefers-reduced-motion` for any animation (no Framer Motion; it is not a dependency)
    - `trackToolEvent()` from `@/lib/services/analytics` for analytics
    - 44px minimum touch targets
    - Mobile-first responsive layout with `maxW: '7xl'`
@@ -28,7 +28,7 @@ Each tool lives under `app/tools/<category>/<tool-slug>/` where category is one 
    import { render, screen } from '@testing-library/react'
    import { describe, it, expect } from 'vitest'
 4. __tests__/logic.test.ts — Unit tests for pure logic/utility functions.
-5. docs/<NUMBER>_<TOOL_NAME>.md — Documentation with: Overview, Purpose, Key Features, Technical Details sections. Number sequentially after the last existing doc.
+5. docs/tools/<category>/<NUMBER>_<TOOL_NAME>.md — Documentation with: Overview, Purpose, Key Features, Technical Details sections. Number sequentially after the last existing doc.
 
 Tool Registration
 Add the tool entry to lib/data/tools.ts in the tools array with:

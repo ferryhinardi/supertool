@@ -1,224 +1,153 @@
 # Contributing to SuperTool
 
-Thank you for your interest in contributing to SuperTool! 🎉
+Thanks for your interest in contributing. This guide covers the development workflow; the
+[documentation hub](./docs/README.md) has deeper guides for testing, styling and deployment.
 
-## 📋 Table of Contents
+## Table of contents
 
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Workflow](#development-workflow)
-- [Adding a New Tool](#adding-a-new-tool)
-- [Coding Standards](#coding-standards)
-- [Commit Guidelines](#commit-guidelines)
-- [Pull Request Process](#pull-request-process)
+- [Code of conduct](#code-of-conduct)
+- [Getting started](#getting-started)
+- [Development workflow](#development-workflow)
+- [Adding a new tool](#adding-a-new-tool)
+- [Coding standards](#coding-standards)
+- [Testing](#testing)
+- [Commit guidelines](#commit-guidelines)
+- [Pull request process](#pull-request-process)
 
-## Code of Conduct
+## Code of conduct
 
-Be respectful, inclusive, and constructive in all interactions.
+Be respectful, inclusive and constructive in all interactions.
 
-## Getting Started
+## Getting started
 
-1. **Fork the repository**
-
-   ```bash
-   # Click the "Fork" button on GitHub
-   ```
-
-2. **Clone your fork**
-
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/supertool.git
-   cd supertool
-   ```
-
-3. **Add upstream remote**
-
-   ```bash
-   git remote add upstream https://github.com/ferryhinardi/supertool.git
-   ```
-
-4. **Install dependencies**
-
-   ```bash
-   yarn install
-   ```
-
-5. **Set up environment variables**
-
-   ```bash
-   cp .env.local.example .env.local
-   # Edit .env.local with your Supabase credentials
-   ```
-
-6. **Run the development server**
-   ```bash
-   yarn dev
-   ```
-
-## Development Workflow
-
-### Create a feature branch
-
-Follow the branch naming convention:
-
-- `feat/<scope>` - New features (e.g., `feat/markdown-editor`)
-- `fix/<scope>` - Bug fixes (e.g., `fix/json-parse-error`)
-- `chore/<scope>` - Maintenance tasks (e.g., `chore/update-deps`)
-- `docs/<scope>` - Documentation updates
+Prerequisites: Node.js 24 (`.nvmrc`) and pnpm 10 (`corepack enable` installs the version pinned in
+`package.json`).
 
 ```bash
-git checkout -b feat/my-awesome-feature
+git clone https://github.com/YOUR_USERNAME/supertool.git
+cd supertool
+git remote add upstream https://github.com/ferryhinardi/supertool.git
+
+pnpm install                          # runs panda codegen + husky via postinstall/prepare
+cp .env.local.example .env.local      # only needed for server-backed features
+pnpm exec playwright install chromium # first-time test setup
+pnpm dev                              # http://localhost:3000
 ```
 
-### Keep your fork updated
+## Development workflow
 
-```bash
-git fetch upstream
-git rebase upstream/main
-```
+Branch names follow `<type>/<scope>`:
 
-## Adding a New Tool
+- `feat/<scope>` — new features (`feat/markdown-editor`)
+- `fix/<scope>` — bug fixes (`fix/json-parse-error`)
+- `chore/<scope>` — maintenance (`chore/update-deps`)
+- `docs/<scope>` — documentation
 
-1. **Create the tool page**
+Keep your fork current with `git fetch upstream && git rebase upstream/main`.
 
-   ```bash
-   mkdir -p app/tools/my-tool
-   touch app/tools/my-tool/page.tsx
-   ```
+## Adding a new tool
 
-2. **Implement the tool**
+Tools live at `app/tools/<category>/<slug>/`, where `category` is one of `data`, `design`,
+`development`, `finance`, `media`, `productivity` or `security`.
 
-   ```tsx
-   // app/tools/my-tool/page.tsx
-   'use client'
+1. **Scaffold the folder** — copy an existing tool (the canonical example is
+   `app/tools/productivity/unit-converter/`) or use the scaffolder skill in
+   `.agents/skills/new-tool-scaffolder/`. A tool consists of:
+   - `page.tsx` — the client component (`'use client'`)
+   - `layout.tsx` — SEO metadata via `generateToolMetadata()` from `@/lib/data/metadata`
+   - `__tests__/page.test.tsx` and, for non-trivial logic, `__tests__/logic.test.ts`
+   - optional `utils.ts` for pure logic that is easy to unit test
+2. **Register it** in `lib/data/tools.ts`. The sidebar, homepage, search and sitemap all read
+   from this registry, so nothing else needs editing for navigation.
+3. **Track usage** with `trackToolEvent()` from `@/lib/services/analytics` (never send PII).
+4. **Document it** in `docs/tools/<category>/` and add a row to `docs/tools/README.md`.
+5. Run `pnpm dev` and open `/tools/<category>/<slug>`.
 
-   import { Button } from '@/components/ui/button'
+## Coding standards
 
-   export default function MyToolPage() {
-     return (
-       <main className="mx-auto max-w-5xl space-y-4">
-         <h1 className="text-2xl font-semibold">My Tool</h1>
-         {/* Your tool UI */}
-       </main>
-     )
-   }
-   ```
+### TypeScript and React
 
-3. **Add to sidebar navigation**
-
-   ```tsx
-   // components/layout/Sidebar.tsx
-   // Add your tool to the navItems array
-   ```
-
-4. **Test your tool**
-   ```bash
-   yarn dev
-   # Visit http://localhost:3000/tools/my-tool
-   ```
-
-## Coding Standards
-
-### TypeScript
-
-- Use TypeScript for all new code
-- Enable strict mode
-- Avoid `any` types - use proper typing
-
-### React
-
-- Use functional components with hooks
-- Use `'use client'` directive for client components
-- Keep components small and focused
+- Strict TypeScript; avoid `any` — use proper types or `unknown` with narrowing.
+- Functional components with hooks; mark client components with `'use client'`.
+- The React Compiler is enabled: avoid mutating values during render and setting state inside
+  `useMemo`. `pnpm lint:eslint` reports compiler diagnostics.
 
 ### Styling
 
-- Use Tailwind CSS utility classes
-- Follow existing color scheme (dark theme)
-- Ensure responsive design (mobile-first)
+- Use Panda CSS `css()` from `@/styled-system/css` and the recipes in `panda.recipes.ts`.
+  Do not use Tailwind-style utility classes or inline `style` objects in tool pages.
+- Mobile first: stack on small screens, grid on larger; keep interactive targets at least 44px.
+- See [`docs/guides/PANDA_CSS_GUIDE.md`](./docs/guides/PANDA_CSS_GUIDE.md).
 
 ### Imports
 
-- Use absolute imports with `@/` prefix
-- Group imports: React → Third-party → Local
-- Example:
-  ```tsx
-  import { useState } from 'react'
-  import { Button } from '@/components/ui/button'
-  import { supabase } from '@/lib/supabaseClient'
-  ```
+Use the `@/` alias and group imports: React/Next → third-party → UI components → features →
+utils/lib. Biome's `organizeImports` enforces the order on save/commit.
+
+### Formatting and linting
+
+Biome is the formatter and primary linter (2-space indent, single quotes, no semicolons,
+100-character lines). It runs on staged files through Husky + lint-staged.
+
+```bash
+pnpm lint            # format + lint with auto-fix
+pnpm lint:check      # what CI runs
+pnpm lint:eslint     # React Hooks / React Compiler / Next.js rules
+pnpm exec tsc --noEmit
+```
 
 ### Performance
 
-- Note expected performance impact (TTI, bundle size, network calls)
-- Prefer streaming, caching, and incremental computation
-- Flag any bundle increase > 20KB gzip and suggest reductions
+Note the expected impact of a change (bundle size, network calls, TTI). Prefer lazy loading for
+heavy libraries (FFmpeg, PDF.js, Tesseract) and flag any bundle increase above ~20 KB gzip.
 
-## Commit Guidelines
+## Testing
 
-Use conventional commits format:
+Vitest runs in jsdom by default; add `// @vitest-environment browser` to a file that needs real
+browser APIs (Playwright browser mode). Tests live in `__tests__/` folders next to the source.
+
+```bash
+pnpm test                                   # watch mode
+CI=true pnpm test run                       # single pass
+pnpm test -- app/tools/data/json-beautify   # one folder
+pnpm test:e2e                               # Playwright a11y / mobile suites in tests/
+```
+
+See [`docs/guides/TESTING.md`](./docs/guides/TESTING.md) for patterns and mocking guidance.
+
+## Commit guidelines
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/) and are validated in
+CI:
 
 ```
 <type>(<scope>): <subject>
-
-<body>
-
-<footer>
 ```
 
-**Types:**
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`.
 
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, no logic change)
-- `refactor`: Code refactoring
-- `perf`: Performance improvements
-- `test`: Adding/updating tests
-- `chore`: Maintenance tasks
-
-**Examples:**
-
-```bash
+```
 feat(json-beautify): add syntax highlighting
 fix(upload): handle large file uploads
 docs(readme): update installation steps
 ```
 
-## Pull Request Process
+## Pull request process
 
-1. **Ensure your code is ready**
-   - [ ] Run linter: `yarn lint`
-   - [ ] Type check: `npx tsc --noEmit`
-   - [ ] Test locally: `yarn dev`
-   - [ ] Build successfully: `yarn build`
+1. Before opening the PR, make sure these pass locally:
+   - `pnpm lint:check`
+   - `pnpm exec tsc --noEmit`
+   - the tests for the areas you touched (`CI=true pnpm test run <path>`)
+   - `pnpm build`
+2. Update documentation: the tool guide in `docs/tools/`, `docs/tools/README.md` and, for
+   user-facing changes, `docs/CHANGE_LOG.md`.
+3. Fill in the PR template, link related issues and attach screenshots or recordings for UI
+   changes.
+4. Address review feedback and re-request review when ready. PRs are squash-merged, so the PR
+   title must itself be a valid conventional commit message.
 
-2. **Update documentation**
-   - Update README.md if adding a new tool
-   - Add JSDoc comments for complex functions
-   - Update type definitions if needed
+## Need help?
 
-3. **Create the PR**
-   - Use the PR template
-   - Link related issues
-   - Add screenshots/videos if UI changes
-   - Request review from maintainers
-
-4. **Address feedback**
-   - Respond to review comments
-   - Make requested changes
-   - Re-request review when ready
-
-5. **Squash merge**
-   - PRs will be squash merged to keep history clean
-   - Ensure your PR title follows commit guidelines
-
-## Need Help?
-
-- 📖 Check the [README](./README.md)
-- 🐛 [Open an issue](https://github.com/ferryhinardi/supertool/issues/new/choose)
-- 💬 Ask questions in your PR
-
----
-
-Thank you for contributing! 🚀
+- Read the [README](./README.md) and [docs](./docs/README.md)
+- [Open an issue](https://github.com/ferryhinardi/supertool/issues/new/choose)
+- Ask questions in your PR

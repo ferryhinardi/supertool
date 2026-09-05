@@ -4,13 +4,13 @@ Modern Next.js 16 developer toolkit with React 19, Panda CSS, and Vitest browser
 
 ## Architecture Overview
 
-**App Router Structure**: All pages use Next.js App Router (`app/` directory). Tools are namespaced under `app/tools/[tool-name]/page.tsx`. Each tool is a self-contained client component with analytics tracking.
+**App Router Structure**: All pages use Next.js App Router (`app/` directory). Tools are namespaced under `app/tools/<category>/<slug>/page.tsx` (categories: data, design, development, finance, media, productivity, security) and registered in `lib/data/tools.ts`. Each tool is a self-contained client component with analytics tracking.
 
-**Styling System Duality**: This project uses **BOTH Panda CSS AND Tailwind CSS v4**:
+**Styling System**: This project uses **Panda CSS** exclusively (Tailwind is not a dependency):
 
 - **Panda CSS + Ark UI** - Type-safe UI components in `components/ui/` using recipes from `panda.recipes.ts`. Import with `import { button } from '@/styled-system/recipes'`
-- **Tailwind CSS v4** - Utility classes for app pages and layouts. Used alongside Panda CSS.
-- **Integration** - Both `globals.css` and `panda.css` are imported in `app/layout.tsx`. Use `.glass` class for glassmorphism effects.
+- **`css()` for pages** - Tool pages and layouts use `css()` from `@/styled-system/css`; never utility-class strings.
+- **Integration** - Both `globals.css` (CSS variables, global resets) and `panda.css` are imported in `app/layout.tsx`. Use `.glass` class for glassmorphism effects.
 
 The design system is dark-themed with purple/pink/blue gradients (see `app/globals.css` CSS variables) and glassmorphism effects (backdrop-blur, transparent borders).
 
@@ -161,16 +161,17 @@ All code must pass coverage thresholds before committing. The CI pipeline will r
 ### Code Quality Automation
 
 ```bash
-pnpm format            # Prettier auto-fix (REQUIRED before commits)
-pnpm lint:fix          # ESLint auto-fix
+pnpm lint              # Biome format + lint auto-fix (REQUIRED before commits)
+pnpm lint:check        # Biome check only (what CI runs)
+pnpm lint:eslint       # ESLint: React Hooks / React Compiler / Next.js rules
 pnpm build             # Production build check (runs Panda codegen first)
 ```
 
-**Pre-commit**: Husky runs Prettier on staged files automatically via `lint-staged`.
+**Pre-commit**: Husky runs Biome on staged files automatically via `lint-staged`.
 
-**ESLint**: React Compiler rules enabled (`react-compiler/react-compiler: error`). Ignore patterns include `.mcp/**` and `scripts/**`.
+**Biome**: Formatter and primary linter - no semicolons, single quotes, 100-char line width, 2-space indentation (see `biome.json`).
 
-**Prettier**: No semicolons, single quotes, 100-char line width, 2-space indentation (see `.prettierrc`).
+**ESLint**: Secondary; provides `react-hooks` (including React Compiler diagnostics as warnings) and `@next/next` rules. Ignore patterns include `.mcp/**` and `scripts/**`.
 
 ### CI/CD Pipeline Debugging
 
@@ -312,7 +313,7 @@ gh run view --job=[JOB_ID] --log-failed
 ```
 ✓ Approve build scripts for ffmpeg-static
 ✓ Install dependencies
-✓ Run ESLint (warnings allowed)
+✓ Run Biome lint (pnpm lint:check)
 ✓ Type check (no errors)
 ```
 
@@ -1006,7 +1007,7 @@ export default function ToolLayout({
     - Make each documentation unique with different structure and focus areas
 14. **Update tool documentation** whenever implementation changes to keep docs current
 15. **Run local CI checks** to ensure CI pipeline won't break (matches `.github/workflows/ci.yml`):
-     - `pnpm lint` - ESLint validation
+     - `pnpm lint:check` - Biome format + lint validation
      - `pnpm exec tsc --noEmit` - Type checking
      - `CI=true pnpm test run` - Unit & integration tests (requires Playwright: `pnpm exec playwright install chromium`)
      - `pnpm build` - Production build verification
@@ -1689,7 +1690,7 @@ export async function GET(request: NextRequest) {
 
 **Validation**: Run `pnpm mcp:validate` to check MCP configuration. Ark UI MCP provides instant access to component APIs, props, composition patterns, and styling examples without needing to search docs.
 
-**Framer Motion**: Use `useReducedMotion()` hook for accessibility. Stagger animations on homepage tool cards (see `app/page.tsx` for container/item animation variants pattern).
+**Animations**: Framer Motion is not a dependency. Use CSS transitions/keyframes via Panda and respect `prefers-reduced-motion` .
 
 **CodeMirror**: JSON tool uses `@uiw/react-codemirror` with `@codemirror/lang-json` extension. Dark theme with purple accent colors.
 
@@ -1703,7 +1704,7 @@ export async function GET(request: NextRequest) {
 ❌ **Don't** use Tailwind utilities in tool pages - use Panda CSS `css()` exclusively (e.g., `className="flex gap-4"` is WRONG, use `className={css({ display: 'flex', gap: '4' })}`)  
 ❌ **Don't** forget `'use client'` directive for interactive components  
 ❌ **Don't** skip analytics tracking on user actions  
-❌ **Don't** use semicolons (Prettier will remove them)  
+❌ **Don't** use semicolons (Biome will remove them)  
 ❌ **Don't** use invalid grid syntax like `gridTemplateColumns: { base: '1' }` - use `'1fr'` instead (see Styling Guidelines section)
 
 ✅ **Do** run `pnpm format` before every commit (Husky enforces this)  
