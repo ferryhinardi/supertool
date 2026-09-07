@@ -59,6 +59,14 @@ describe('useMediaQuery', () => {
     expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 1023px)')
   })
 
+  it('returns false when matchMedia is unavailable', () => {
+    // @ts-expect-error jsdom may omit matchMedia
+    window.matchMedia = undefined
+
+    const { result } = renderHook(() => useMediaQuery('(max-width: 1023px)'))
+    expect(result.current).toBe(false)
+  })
+
   it('updates when the media query changes', () => {
     const mediaQueryList = createMockMediaQueryList(false)
     window.matchMedia = vi.fn().mockReturnValue(mediaQueryList)
