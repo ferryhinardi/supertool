@@ -1,6 +1,6 @@
 # Tool Documentation Master Index
 
-**Last Updated**: January 8, 2026  
+**Last Updated**: September 7, 2026  
 **Total Tools**: 96  
 **Documentation Status**: 76 Documented (79.2% Complete)  
 **SEO Layout Status**: 94/96 tools have layout.tsx (97.9% Complete) ✅
@@ -18,7 +18,7 @@
 | Security | 8 | 6 | 75% | 8/8 ✅ |
 | **TOTAL** | **96** | **76** | **79.2%** | **94/96** |
 
-> **Note**: 14 duplicate documentation files identified. See [DUPLICATE_DOCS_RESOLUTION.md](../planning/DUPLICATE_DOCS_RESOLUTION.md) for consolidation plan.
+> **Note**: Numbered vs unnumbered user-guide pairs were merged into the numbered files. See [DUPLICATE_DOCS_RESOLUTION.md](../planning/DUPLICATE_DOCS_RESOLUTION.md).
 
 ---
 
@@ -43,7 +43,7 @@ Each tool documentation file follows this structure:
 - **Complexity**: Moderate
 - **Key Features**: Bidirectional conversion, drag-and-drop, multi-sheet support, preview
 - **Special**: XLSX.js library for Excel processing
-- **Documentation**: ✅ `docs/tools/data/70_CSV_EXCEL_CONVERTER.md` + `docs/tools/data/CSV_EXCEL_CONVERTER.md`
+- **Documentation**: ✅ `docs/tools/data/70_CSV_EXCEL_CONVERTER.md`
 - **Priority**: Tier 2
 
 ### 2. CSV Merger & Splitter (`/tools/data/csv-merger`)
@@ -57,7 +57,7 @@ Each tool documentation file follows this structure:
 - **Complexity**: Moderate
 - **Key Features**: Multiple date formats, timezone support, batch processing
 - **Special**: Custom format strings
-- **Documentation**: ✅ `docs/32_DATE_FORMATTER_PARSER.md` + `docs/tools/data/81_DATE_FORMATTER.md`
+- **Documentation**: ✅ `docs/tools/data/81_DATE_FORMATTER.md`
 - **Priority**: Tier 3
 
 ### 4. JSON Beautifier Pro (`/tools/data/json-beautify`)
@@ -92,7 +92,7 @@ Each tool documentation file follows this structure:
 - **Complexity**: Simple
 - **Key Features**: Multiple UUID versions (v1, v4, v5), bulk generation, validation
 - **Special**: UUID validation and version detection
-- **Documentation**: ✅ `docs/tools/data/72_UUID_GENERATOR.md` + `docs/tools/data/UUID_GENERATOR.md`
+- **Documentation**: ✅ `docs/tools/data/72_UUID_GENERATOR.md`
 - **Priority**: Tier 3
 
 ---
@@ -186,7 +186,7 @@ Each tool documentation file follows this structure:
 - **Complexity**: Very Complex
 - **Key Features**: Convert between 12+ programming languages using AI
 - **Special**: OpenAI GPT-4 integration
-- **Documentation**: ✅ `docs/tools/development/56_AI_CODE_CONVERTER.md` + `docs/tools/development/AI_CODE_CONVERTER.md`
+- **Documentation**: ✅ `docs/tools/development/56_AI_CODE_CONVERTER.md`
 - **Priority**: Tier 1
 
 #### 2. AI Command Explainer (`/tools/development/ai-command-explainer`)
@@ -400,7 +400,7 @@ Each tool documentation file follows this structure:
 - **Complexity**: Complex
 - **Special**: Tesseract.js 4.x OCR engine, client-side processing
 - **Key Features**: 12+ languages, PNG/JPEG/WEBP support, 10MB max, copy/download, progress tracking
-- **Documentation**: ✅ `docs/tools/media/IMAGE_TO_TEXT_OCR.md`
+- **Documentation**: ✅ `docs/tools/media/100_IMAGE_TO_TEXT_OCR.md`
 - **Priority**: Tier 1
 
 ### 6. Meme Generator (`/tools/media/meme-generator`)
@@ -449,7 +449,7 @@ Each tool documentation file follows this structure:
 - **Complexity**: Complex
 - **Special**: OpenAI GPT-4o-mini integration
 - **Key Features**: 10 tones, 3 styles, 1-3 variants, AI-powered improvements
-- **Documentation**: ✅ `docs/tools/productivity/AI_TEXT_REWRITER.md`
+- **Documentation**: ✅ `docs/tools/productivity/97_AI_TEXT_REWRITER.md`
 - **Priority**: Tier 1
 
 ### 3. Batch File Rename (`/tools/productivity/batch-rename`)
@@ -504,7 +504,7 @@ Each tool documentation file follows this structure:
 - **Complexity**: Complex
 - **Special**: OpenAI GPT-4o-mini, 5 error categories
 - **Key Features**: Grammar/spelling/punctuation/style/clarity checking, apply fixes individually
-- **Documentation**: ✅ `docs/tools/productivity/GRAMMAR_CHECKER.md`
+- **Documentation**: ✅ `docs/tools/productivity/98_GRAMMAR_CHECKER.md`
 - **Priority**: Tier 1
 
 ### 12. Invoice Generator (`/tools/productivity/invoice-generator`)
@@ -553,7 +553,7 @@ Each tool documentation file follows this structure:
 ### 19. QR Code Generator (`/tools/productivity/qr-code`)
 - **Complexity**: Complex
 - **Key Features**: 12+ content types, styling, logo embedding, scanner
-- **Documentation**: ✅ `docs/03_QR_CODE_GENERATOR.md` + `docs/tools/productivity/QR_CODE_GENERATOR.md`
+- **Documentation**: ✅ `docs/tools/productivity/93_QR_CODE_GENERATOR.md`
 - **Priority**: Tier 3
 
 ### 20. Resume Builder (`/tools/productivity/resume-builder`)
@@ -591,7 +591,7 @@ Each tool documentation file follows this structure:
 - **Complexity**: Complex
 - **Special**: OpenAI GPT-4o-mini, adjustable length, multiple formats
 - **Key Features**: Short/Medium/Long summaries, Paragraph/Bullet formats, key highlights extraction, TXT/MD download
-- **Documentation**: ✅ `docs/tools/productivity/TEXT_SUMMARIZER.md`
+- **Documentation**: ✅ `docs/tools/productivity/99_TEXT_SUMMARIZER.md`
 - **Priority**: Tier 1
 
 ### 26. Text Transformer (`/tools/productivity/text-transformer`)

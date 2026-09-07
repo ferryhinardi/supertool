@@ -71,8 +71,9 @@ grouped by category, mirroring the routes under `app/tools/`:
 | Productivity | [`tools/productivity/`](./tools/productivity/) | Markdown Editor, PDF Tools, Resume Builder, Pomodoro |
 | Security | [`tools/security/`](./tools/security/) | Password Generator, Hash, Encryption, Steganography |
 
-Numbered files (for example `01_JSON_BEAUTIFIER.md`) follow the original documentation
-series; unnumbered files are later additions or Pro-feature companions.
+Numbered files (for example `01_JSON_BEAUTIFIER.md`) are the canonical per-tool
+guides. Unnumbered companions (for example `JSON_BEAUTIFIER_PRO_EXAMPLES.md`) hold
+extra examples or Pro-feature notes.
 
 ### Product features
 

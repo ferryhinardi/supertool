@@ -1,161 +1,66 @@
-# Duplicate Documentation Resolution Plan
+# Duplicate Documentation Resolution
 
 > **Generated**: January 8, 2026  
-> **Status**: Action Required  
-> **Purpose**: Consolidate 14 duplicate documentation pairs to reduce maintenance burden
+> **Resolved**: September 7, 2026  
+> **Status**: Complete  
+> **Purpose**: Record how duplicate tool docs were consolidated
 
-## Overview
+## What was resolved
 
-The `/docs/` folder contains 14 pairs of duplicate documentation files. This creates confusion, increases maintenance effort, and risks documentation drift where one file gets updated while the other becomes stale.
+Two kinds of duplicates existed after the `docs/` reorg:
 
-## Root Cause Analysis
+1. **Numbered vs numbered** (the original 14-pair inventory). The extra numbered copies (`87_`, `88_`, `89_`, `90_`, `91_`, `92_`, `94_`, `95_`, `96_`, `03_`, `10_`, `32_`, `61_`, `82_`) were already gone after the folder move; only one numbered file remains per tool.
+2. **Numbered technical docs vs unnumbered user guides** (12 pairs). Complementary content: numbered files are implementation notes; unnumbered files are how-to guides. These were merged on September 7, 2026.
 
-The duplicates appear to have been created due to:
-1. **Renumbering during reorganization** - Original docs (01-50) were duplicated when new numbering scheme was introduced (77-103)
-2. **Pro feature additions** - Some duplicates may contain Pro-enhanced documentation
-3. **Naming inconsistencies** - Same tools with different naming conventions
+## Merged pairs (keep numbered, append user guide, delete unnumbered)
 
-## Duplicate Pairs Inventory
+| Canonical file | User guide absorbed |
+| --- | --- |
+| `docs/tools/data/70_CSV_EXCEL_CONVERTER.md` | `CSV_EXCEL_CONVERTER.md` |
+| `docs/tools/data/14_JSON_TO_CSV.md` | `JSON_TO_CSV.md` |
+| `docs/tools/data/72_UUID_GENERATOR.md` | `UUID_GENERATOR.md` |
+| `docs/tools/design/29_COLOR_CONTRAST_CHECKER.md` | `COLOR_CONTRAST_CHECKER.md` |
+| `docs/tools/development/56_AI_CODE_CONVERTER.md` | `AI_CODE_CONVERTER.md` |
+| `docs/tools/development/52_REGEX_TESTER.md` | `REGEX_TESTER.md` |
+| `docs/tools/media/100_IMAGE_TO_TEXT_OCR.md` | `IMAGE_TO_TEXT_OCR.md` |
+| `docs/tools/productivity/97_AI_TEXT_REWRITER.md` | `AI_TEXT_REWRITER.md` |
+| `docs/tools/productivity/98_GRAMMAR_CHECKER.md` | `GRAMMAR_CHECKER.md` |
+| `docs/tools/productivity/93_QR_CODE_GENERATOR.md` | `QR_CODE_GENERATOR.md` |
+| `docs/tools/productivity/99_TEXT_SUMMARIZER.md` | `TEXT_SUMMARIZER.md` |
+| `docs/tools/security/13_HASH_GENERATOR.md` | `HASH_GENERATOR.md` |
 
-| # | Primary (Keep) | Duplicate (Review) | Tool | Action Required |
-|---|----------------|-------------------|------|-----------------|
-| 1 | `03_QR_CODE_GENERATOR.md` | `93_QR_CODE_GENERATOR.md` | qr-code | Merge Pro features → Delete 93 |
-| 2 | `04_PASSWORD_GENERATOR.md` | `95_PASSWORD_GENERATOR.md` | password-generator | Merge Pro features → Delete 95 |
-| 3 | `06_MARKDOWN_EDITOR.md` | `96_MARKDOWN_EDITOR.md` | markdown-editor | Merge Pro features → Delete 96 |
-| 4 | `10_VIDEO_CONVERTER.md` | `61_VIDEO_CONVERTER_COMPRESSOR.md` | video-converter | Compare & merge → Delete 61 |
-| 5 | `13_HASH_GENERATOR.md` | `92_HASH_GENERATOR.md` | hash-generator | Compare → Delete 92 |
-| 6 | `14_JSON_TO_CSV.md` | `89_JSON_TO_CSV.md` | json-to-csv | Compare → Delete 89 |
-| 7 | `15_UNIT_CONVERTER.md` | `94_UNIT_CONVERTER.md` | unit-converter | Compare → Delete 94 |
-| 8 | `26_API_REQUEST_TESTER.md` | `77_API_TESTER.md` | api-tester | Compare → Delete 77 |
-| 9 | `29_COLOR_CONTRAST_CHECKER.md` | `90_COLOR_CONTRAST_CHECKER.md` | color-contrast | Compare → Delete 90 |
-| 10 | `32_DATE_FORMATTER_PARSER.md` | `81_DATE_FORMATTER.md` | date-formatter | Compare → Delete 81 |
-| 11 | `52_REGEX_TESTER.md` | `91_REGEX_TESTER.md` | regex-tester | Merge Pro features → Delete 91 |
-| 12 | `70_CSV_EXCEL_CONVERTER.md` | `87_CSV_EXCEL_CONVERTER.md` | csv-excel | Compare → Delete 87 |
-| 13 | `72_UUID_GENERATOR.md` | `88_UUID_GENERATOR.md` | uuid-generator | Compare → Delete 88 |
-| 14 | `82_LOAN_CALCULATOR.md` | `86_LOAN_CALCULATOR.md` | loan-calculator | Compare → Delete 86 |
+Merge method: append the user guide after the technical content, demote its headings by one level, and label that section `## User Guide`. Live index links in `docs/tools/README.md` now point only at the numbered files.
 
----
+## Left as companions (not duplicates)
 
-## Resolution Process
+These unnumbered files are extra examples or Pro notes, not a second full guide:
 
-### Step 1: Pre-Merge Audit (Per File Pair)
+- `docs/tools/data/JSON_BEAUTIFIER_PRO_EXAMPLES.md`
+- `docs/tools/productivity/RESUME_BUILDER_DOCUMENTATION.md`
+- `docs/tools/security/PASSWORD_GENERATOR_PRO_EXAMPLES.md`
 
-Before merging, verify:
+## Historical inventory (original 14 numbered pairs)
 
-```bash
-# Compare file sizes to identify which has more content
-wc -l docs/03_QR_CODE_GENERATOR.md docs/tools/productivity/93_QR_CODE_GENERATOR.md
+The January 8 plan listed numbered-vs-numbered pairs. After the folder reorg those extra numbered files no longer exist; the surviving canonical files are:
 
-# Diff the files to see actual differences
-diff docs/03_QR_CODE_GENERATOR.md docs/tools/productivity/93_QR_CODE_GENERATOR.md
-```
+| Tool | Canonical file |
+| --- | --- |
+| QR Code Generator | `docs/tools/productivity/93_QR_CODE_GENERATOR.md` |
+| Password Generator | `docs/tools/security/04_PASSWORD_GENERATOR.md` |
+| Markdown Editor | `docs/tools/productivity/06_MARKDOWN_EDITOR.md` |
+| Video Converter | `docs/tools/media/61_VIDEO_CONVERTER_COMPRESSOR.md` |
+| Hash Generator | `docs/tools/security/13_HASH_GENERATOR.md` |
+| JSON to CSV | `docs/tools/data/14_JSON_TO_CSV.md` |
+| Unit Converter | `docs/tools/productivity/15_UNIT_CONVERTER.md` |
+| API Tester | `docs/tools/development/77_API_TESTER.md` |
+| Color Contrast | `docs/tools/design/29_COLOR_CONTRAST_CHECKER.md` |
+| Date Formatter | `docs/tools/data/81_DATE_FORMATTER.md` |
+| Regex Tester | `docs/tools/development/52_REGEX_TESTER.md` |
+| CSV/Excel | `docs/tools/data/70_CSV_EXCEL_CONVERTER.md` |
+| UUID Generator | `docs/tools/data/72_UUID_GENERATOR.md` |
+| Loan Calculator | `docs/tools/finance/86_LOAN_CALCULATOR.md` |
 
-### Step 2: Merge Strategy
-
-For each pair:
-
-1. **If identical**: Delete the higher-numbered duplicate
-2. **If one has Pro features**: Merge Pro content into primary, delete duplicate
-3. **If both have unique content**: Manually merge best of both into primary
-
-### Step 3: Update References
-
-After deleting duplicates:
-- [ ] Update `TOOL_DOCUMENTATION_MASTER.md` 
-- [ ] Check for any cross-references in other docs
-- [ ] Verify no broken links in README files
-
----
-
-## Batch Resolution Script
-
-```bash
-#!/bin/bash
-# Run from project root after manual verification
-
-DUPLICATES=(
-  "93_QR_CODE_GENERATOR.md"
-  "95_PASSWORD_GENERATOR.md"
-  "96_MARKDOWN_EDITOR.md"
-  "61_VIDEO_CONVERTER_COMPRESSOR.md"
-  "92_HASH_GENERATOR.md"
-  "89_JSON_TO_CSV.md"
-  "94_UNIT_CONVERTER.md"
-  "77_API_TESTER.md"
-  "90_COLOR_CONTRAST_CHECKER.md"
-  "81_DATE_FORMATTER.md"
-  "91_REGEX_TESTER.md"
-  "87_CSV_EXCEL_CONVERTER.md"
-  "88_UUID_GENERATOR.md"
-  "86_LOAN_CALCULATOR.md"
-)
-
-for file in "${DUPLICATES[@]}"; do
-  if [ -f "docs/$file" ]; then
-    echo "Removing: docs/$file"
-    # Uncomment to actually delete:
-    # rm "docs/$file"
-  fi
-done
-```
-
----
-
-## Special Cases
-
-### Pro-Enhanced Tools (Require Manual Merge)
-
-These tools have Pro feature documentation that MUST be preserved:
-
-| Tool | Primary Doc | Pro Features Location |
-|------|-------------|----------------------|
-| QR Code Generator | `03_QR_CODE_GENERATOR.md` | May be in 93 |
-| Password Generator | `04_PASSWORD_GENERATOR.md` | May be in 95 |
-| Regex Tester | `52_REGEX_TESTER.md` | May be in 91 |
-| Markdown Editor | `06_MARKDOWN_EDITOR.md` | May be in 96 |
-
-### Recommended Merge Order
-
-1. **First** - Simple duplicates (Hash, UUID, CSV converters)
-2. **Second** - Tools with potential content differences (API Tester, Date Formatter)
-3. **Last** - Pro-enhanced tools (require careful content merge)
-
----
-
-## Post-Resolution Verification
-
-After completing resolution:
-
-```bash
-# Count remaining docs (should reduce by 14)
-ls -la docs/*.md | wc -l
-
-# Verify no orphan references
-grep -r "93_QR_CODE" docs/
-grep -r "95_PASSWORD" docs/
-# ... (repeat for all removed files)
-```
-
----
-
-## Timeline
-
-| Phase | Task | Owner | Due |
-|-------|------|-------|-----|
-| 1 | Audit all 14 pairs for content differences | TBD | Week 1 |
-| 2 | Merge Pro-enhanced docs (4 files) | TBD | Week 1 |
-| 3 | Delete remaining duplicates (10 files) | TBD | Week 2 |
-| 4 | Update master index | TBD | Week 2 |
-| 5 | Verify no broken references | TBD | Week 2 |
-
----
-
-## Related Issues
-
-- Duplicate tools in codebase: `jwt-debugger` vs `jwt-decoder`, `cron-expression` vs `cron-builder`
-- Missing doc numbers: #22, #48 (available for new tools)
-
-## Related Documents
+## Related documents
 
 - [Documentation Gaps Analysis](./DOCUMENTATION_GAPS_ANALYSIS.md)
 - [Tool Documentation Master](../tools/README.md)
