@@ -224,6 +224,9 @@ export function Sidebar() {
             href="/"
             onClick={closeMobileMenu}
             className={css({
+              display: 'flex',
+              alignItems: 'center',
+              minH: '11',
               mb: { base: '6', md: '8' },
               textDecoration: 'none !important',
             })}
@@ -449,6 +452,11 @@ export function Sidebar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={css({
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minH: '11',
+                  minW: '11',
                   color: 'gray.400',
                   fontWeight: 'medium',
                   textDecoration: 'none !important',
