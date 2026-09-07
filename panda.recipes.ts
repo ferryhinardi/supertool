@@ -81,15 +81,15 @@ export const buttonRecipe = defineRecipe({
       },
     },
     size: {
-      default: { h: '9', px: '4', py: '2' },
-      sm: { h: '8', rounded: 'md', px: '3', fontSize: 'xs' },
+      default: { h: { base: '11', md: '9' }, px: '4', py: '2' },
+      sm: { h: { base: '11', md: '8' }, rounded: 'md', px: '3', fontSize: 'xs' },
       lg: {
         h: { base: '11', sm: '12', md: '14' },
         rounded: 'lg',
         px: { base: '6', sm: '7', md: '8' },
         fontSize: { base: 'base', sm: 'lg', md: 'xl' },
       },
-      icon: { h: '9', w: '9' },
+      icon: { h: { base: '11', md: '9' }, w: { base: '11', md: '9' } },
     },
   },
   defaultVariants: {
@@ -224,7 +224,7 @@ export const inputRecipe = defineRecipe({
   description: 'Input component styles',
   base: {
     display: 'flex',
-    h: '9',
+    h: { base: '11', md: '9' },
     w: 'full',
     rounded: 'md',
     border: '1px solid',

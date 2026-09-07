@@ -37,6 +37,21 @@ const BACKLOG_PATH = resolve(process.cwd(), 'docs/planning/TOUCH_TARGETS_BACKLOG
 const SELECTOR = 'button, a, input, select, [role="button"]'
 const MIN_TOUCH_TARGET = 44
 
+/** Next.js Dev Tools chrome is not product UI and inflates violation counts (~20 per sweep). */
+async function isNextJsDevToolsElement(locator: Locator): Promise<boolean> {
+  return locator.evaluate((element) => {
+    if (element.id === 'next-logo') {
+      return true
+    }
+
+    if (element.getAttribute('aria-label') === 'Open Next.js Dev Tools') {
+      return true
+    }
+
+    return element.closest('[data-nextjs-dev-tools]') !== null
+  })
+}
+
 const baselineTopTen: ToolTarget[] = [
   {
     title: 'Unit Converter',
@@ -168,6 +183,11 @@ async function collectToolResult(page: Page, tool: ToolTarget): Promise<ToolTouc
 
   for (let index = 0; index < scannedElementCount; index += 1) {
     const element = elements.nth(index)
+
+    if (await isNextJsDevToolsElement(element)) {
+      continue
+    }
+
     const box = await element.boundingBox()
 
     if (!box || !(await element.isVisible().catch(() => false))) {
