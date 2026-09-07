@@ -40,7 +40,10 @@ const ENCODING_METHODS: { id: EncodingMethod; label: string; description: string
   },
 ]
 
-function transformInput(text: string, selectedMethod: EncodingMethod): {
+function transformInput(
+  text: string,
+  selectedMethod: EncodingMethod
+): {
   output: string
   error: string | null
 } {

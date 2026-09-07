@@ -39,10 +39,7 @@ function PasswordStrengthContent() {
     trackToolEvent('password_strength_open', {})
   }, [])
 
-  const analysis = useMemo(
-    () => (password ? analyzePassword(password) : null),
-    [password]
-  )
+  const analysis = useMemo(() => (password ? analyzePassword(password) : null), [password])
 
   useEffect(() => {
     if (analysis && password.length >= 3) {

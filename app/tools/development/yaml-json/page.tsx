@@ -53,7 +53,7 @@ function YamlJsonConverterContent() {
       direction,
       input_length: inputText.length,
       success: !error,
-      error: error ?? undefined,
+      ...(error ? { error } : {}),
     })
   }, [inputText, direction, error])
 

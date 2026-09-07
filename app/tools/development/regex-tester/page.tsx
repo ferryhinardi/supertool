@@ -51,7 +51,12 @@ export default function RegexTesterPage() {
 
   const { matches, isValid, error, hasMatch } = useMemo(() => {
     if (!pattern) {
-      return { matches: [] as RegexMatch[], isValid: true, error: undefined as string | undefined, hasMatch: false }
+      return {
+        matches: [] as RegexMatch[],
+        isValid: true,
+        error: undefined as string | undefined,
+        hasMatch: false,
+      }
     }
     const result = testRegex(pattern, flags, testString)
     return {

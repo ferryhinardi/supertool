@@ -7,7 +7,7 @@
  * Handles SSE streaming, message state, and error recovery.
  */
 
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { create } from 'zustand'
 import type {
   CopilotContext,
@@ -483,7 +483,9 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
     ]
   )
 
-  sendMessageRef.current = sendMessage
+  useEffect(() => {
+    sendMessageRef.current = sendMessage
+  })
 
   return {
     // State
