@@ -94,7 +94,7 @@ Create memorable short links:
 
 ### Production: Supabase Integration
 
-See `docs/URL_SHORTENER_SETUP.md` for:
+See `docs/setup/URL_SHORTENER_SETUP.md` for:
 
 - Database schema
 - API implementation
@@ -225,7 +225,7 @@ app/s/[code]/
 
 ## 📚 Documentation
 
-- **Setup Guide**: `docs/URL_SHORTENER_SETUP.md`
+- **Setup Guide**: `docs/setup/URL_SHORTENER_SETUP.md`
 - **Database Schema**: See setup guide
 - **API Documentation**: See setup guide
 - **Testing Guide**: `__tests__/logic.test.ts`

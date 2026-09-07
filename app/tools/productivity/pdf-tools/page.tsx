@@ -1967,21 +1967,21 @@ export default function PDFToolsPage() {
     setSelectedPages(new Set())
   }
 
-  // Reset selected pages when operation changes
-  useEffect(() => {
-    if (operation !== 'deletePages' && operation !== 'duplicatePages') {
+  const handleOperationChange = (newOperation: OperationType) => {
+    setOperation(newOperation)
+    if (newOperation !== 'deletePages' && newOperation !== 'duplicatePages') {
       setSelectedPages(new Set())
     }
-    if (operation !== 'duplicatePages') {
+    if (newOperation !== 'duplicatePages') {
       setDuplicateCount(1)
     }
-    if (operation !== 'unlock') {
+    if (newOperation !== 'unlock') {
       setUnlockPassword('')
     }
-    if (operation !== 'reorder') {
+    if (newOperation !== 'reorder') {
       setPageOrder([])
     }
-  }, [operation])
+  }
 
   // Initialize page order when operation is reorder and PDF is loaded
   useEffect(() => {
@@ -2446,7 +2446,7 @@ export default function PDFToolsPage() {
                 <div className={css({ display: { base: 'none', lg: 'block' } })}>
                   <OperationGrid
                     selectedOperation={operation}
-                    onOperationChange={setOperation}
+                    onOperationChange={handleOperationChange}
                     disabled={isProcessing}
                   />
                 </div>
@@ -2455,7 +2455,7 @@ export default function PDFToolsPage() {
                 <div className={css({ display: { base: 'block', lg: 'none' } })}>
                   <MobileOperationPicker
                     selectedOperation={operation}
-                    onOperationChange={setOperation}
+                    onOperationChange={handleOperationChange}
                     operationLabel={
                       operations.find((op) => op.value === operation)?.label || 'Select Operation'
                     }
@@ -5404,7 +5404,7 @@ export default function PDFToolsPage() {
                     <EmptyState
                       operation={operation}
                       onUploadClick={() => fileInputRef.current?.click()}
-                      onOperationChange={setOperation}
+                      onOperationChange={handleOperationChange}
                     />
                     {/* Mobile-specific upload buttons with camera support */}
                     <MobileUploadButton

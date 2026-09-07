@@ -17,6 +17,7 @@ import {
   type LapTime,
   playBeepSound,
 } from '@/lib/tools/stopwatch/stopwatch-utils'
+import { createId } from '@/lib/utils/id'
 import { css } from '@/styled-system/css'
 
 interface Timer {
@@ -206,7 +207,7 @@ function StopwatchTimerContent() {
               e.preventDefault()
               const lapDuration = laps.length > 0 ? stopwatchTime - laps[0].time : stopwatchTime
               const newLap: LapTime = {
-                id: Date.now().toString(),
+                id: createId(),
                 time: stopwatchTime,
                 lapDuration,
               }
@@ -243,7 +244,7 @@ function StopwatchTimerContent() {
   const handleLap = () => {
     const lapDuration = laps.length > 0 ? stopwatchTime - laps[0].time : stopwatchTime
     const newLap: LapTime = {
-      id: Date.now().toString(),
+      id: createId(),
       time: stopwatchTime,
       lapDuration,
     }
@@ -262,7 +263,7 @@ function StopwatchTimerContent() {
     }
 
     const newTimer: Timer = {
-      id: Date.now().toString(),
+      id: createId(),
       name: newTimerName || `Timer ${timers.length + 1}`,
       duration: totalSeconds,
       remaining: totalSeconds,
@@ -313,7 +314,7 @@ function StopwatchTimerContent() {
 
     const presetName = newTimerName || `${minutes}m ${seconds}s`
     const newPreset: TimerPreset = {
-      id: Date.now().toString(),
+      id: createId(),
       name: presetName,
       duration: totalSeconds,
     }
@@ -325,7 +326,7 @@ function StopwatchTimerContent() {
 
   const handleLoadPreset = (preset: TimerPreset) => {
     const newTimer: Timer = {
-      id: Date.now().toString(),
+      id: createId(),
       name: preset.name,
       duration: preset.duration,
       remaining: preset.duration,

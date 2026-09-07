@@ -11,7 +11,7 @@ import {
   SplitSquareHorizontal,
   Upload,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import {
   TOOL_COLORS,
@@ -30,6 +30,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
+import { useMediaQuery } from '@/hooks/common/useMediaQuery'
 import { css } from '@/styled-system/css'
 import { MarkdownPreview } from './components/markdown-preview'
 
@@ -132,13 +133,9 @@ Happy writing! 🚀
 
 export default function MarkdownEditorPage() {
   const [value, setValue] = useState(defaultMarkdown)
-  const [viewMode, setViewMode] = useState<ViewMode>('split')
-
-  useEffect(() => {
-    if (window.matchMedia?.('(max-width: 1023px)').matches) {
-      setViewMode('editor')
-    }
-  }, [])
+  const [chosenViewMode, setChosenViewMode] = useState<ViewMode | null>(null)
+  const isNarrowScreen = useMediaQuery('(max-width: 1023px)')
+  const viewMode = chosenViewMode ?? (isNarrowScreen ? 'editor' : 'split')
 
   // Calculate stats (derived values - React Compiler handles optimization)
   const lines = value.split('\n').length
@@ -383,7 +380,7 @@ export default function MarkdownEditorPage() {
                 <ToolOperationGrid
                   operations={VIEW_MODE_OPERATIONS}
                   selectedOperation={viewMode}
-                  onOperationChange={(newMode) => setViewMode(newMode as ViewMode)}
+                  onOperationChange={(newMode) => setChosenViewMode(newMode as ViewMode)}
                   columns={{ base: 1, sm: 3 }}
                   analyticsCategory="markdown_editor"
                 />
@@ -402,7 +399,7 @@ export default function MarkdownEditorPage() {
                   <ToolOperationGrid
                     operations={VIEW_MODE_OPERATIONS}
                     selectedOperation={viewMode}
-                    onOperationChange={(newMode) => setViewMode(newMode as ViewMode)}
+                    onOperationChange={(newMode) => setChosenViewMode(newMode as ViewMode)}
                     columns={{ base: 1 }}
                     analyticsCategory="markdown_editor"
                   />

@@ -259,8 +259,8 @@ Apply the same Ark UI patterns to tool pages:
 ## References
 
 - **Ark UI Documentation**: https://ark-ui.com
-- **Panda CSS Guide**: `docs/PANDA_CSS_GUIDE.md`
-- **Testing Guide**: `docs/TESTING.md`
+- **Panda CSS Guide**: `docs/guides/PANDA_CSS_GUIDE.md`
+- **Testing Guide**: `docs/guides/TESTING.md`
 - **Copilot Instructions**: `.github/copilot-instructions.md`
 
 ---

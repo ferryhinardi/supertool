@@ -50,9 +50,20 @@ const defaultSettings: FormatSettings = {
   normalizeLineBreaks: true,
 }
 
+function getOutputKey(input: string, formatSettings: FormatSettings): string {
+  return JSON.stringify({
+    input,
+    autoFormat: formatSettings.autoFormat,
+    tabSize: formatSettings.tabSize,
+    removeEmptyLines: formatSettings.removeEmptyLines,
+    trimLines: formatSettings.trimLines,
+    normalizeLineBreaks: formatSettings.normalizeLineBreaks,
+  })
+}
+
 function ClipboardFormatterPageContent() {
   const [inputText, setInputText] = useQueryState('input', parseAsString.withDefault(''))
-  const [outputText, setOutputText] = useState('')
+  const [outputOverride, setOutputOverride] = useState<{ key: string; value: string } | null>(null)
   const [settings, setSettings] = useState<FormatSettings>(defaultSettings)
   const [copied, setCopied] = useState(false)
   const [history, setHistory] = useState<HistoryItem[]>([])
@@ -134,15 +145,19 @@ function ClipboardFormatterPageContent() {
     }
   }
 
-  // Auto-format when input changes
-  useEffect(() => {
+  const autoOutput = useMemo(() => {
     if (settings.autoFormat && inputText) {
-      const formatted = formatText(inputText)
-      setOutputText(formatted)
-    } else {
-      setOutputText(inputText)
+      return formatText(inputText)
     }
+    return inputText
   }, [inputText, formatText, settings.autoFormat])
+
+  const outputKey = getOutputKey(inputText, settings)
+  const outputText = outputOverride?.key === outputKey ? outputOverride.value : autoOutput
+
+  const setOutputText = (value: string) => {
+    setOutputOverride({ key: outputKey, value })
+  }
 
   // Handle paste event
   const handlePaste = async () => {
@@ -232,14 +247,14 @@ function ClipboardFormatterPageContent() {
   // Reset
   const handleReset = () => {
     setInputText('')
-    setOutputText('')
+    setOutputOverride(null)
     trackToolEvent('clipboard_reset')
   }
 
   // Load from history
   const loadFromHistory = (item: HistoryItem) => {
     setInputText(item.original)
-    setOutputText(item.formatted)
+    setOutputOverride({ key: getOutputKey(item.original, settings), value: item.formatted })
     trackToolEvent('clipboard_load_history')
   }
 

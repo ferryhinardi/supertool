@@ -34,7 +34,6 @@ class MockFileReader {
   onerror: ((event: ProgressEvent<FileReader>) => void) | null = null
   result: string | ArrayBuffer | null = null
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   readAsText(_file: File) {
     setTimeout(() => {
       this.result =
@@ -52,7 +51,6 @@ class MockFileReaderWithWidthHeight {
   onerror: ((event: ProgressEvent<FileReader>) => void) | null = null
   result: string | ArrayBuffer | null = null
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   readAsText(_file: File) {
     setTimeout(() => {
       this.result =
@@ -70,7 +68,6 @@ class MockFileReaderNoDimensions {
   onerror: ((event: ProgressEvent<FileReader>) => void) | null = null
   result: string | ArrayBuffer | null = null
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   readAsText(_file: File) {
     setTimeout(() => {
       this.result = '<svg xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40"/></svg>'

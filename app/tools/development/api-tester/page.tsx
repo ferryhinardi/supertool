@@ -22,7 +22,7 @@ import {
   X,
 } from 'lucide-react'
 import { nanoid } from 'nanoid'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { Badge } from '@/components/ui/badge'
@@ -40,11 +40,9 @@ hljs.registerLanguage('json', json)
 const HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'] as const
 type HttpMethod = (typeof HTTP_METHODS)[number]
 
-const AUTH_TYPES = ['none', 'bearer', 'basic', 'api-key'] as const
-type AuthType = (typeof AUTH_TYPES)[number]
+type AuthType = 'none' | 'bearer' | 'basic' | 'api-key'
 
-const BODY_TYPES = ['none', 'json', 'text', 'form-data'] as const
-type BodyType = (typeof BODY_TYPES)[number]
+type BodyType = 'none' | 'json' | 'text' | 'form-data'
 
 interface Header {
   id: string
@@ -232,24 +230,6 @@ function ApiTesterContent() {
   useEffect(() => {
     trackToolEvent('api_tester_open', {})
   }, [])
-
-  // Keyboard shortcuts
-  // biome-ignore lint/correctness/useExhaustiveDependencies: handleSendRequest is stable and doesn't need to be in deps
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Cmd/Ctrl+Enter to send request
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-        e.preventDefault()
-        if (url.trim() && !loading) {
-          trackToolEvent('api_tester_keyboard_shortcut_used', { shortcut: 'cmd_enter' })
-          handleSendRequest()
-        }
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [url, loading])
 
   const getCurrentConfig = (): RequestConfig => ({
     method,
@@ -496,6 +476,25 @@ function ApiTesterContent() {
       setLoading(false)
     }
   }
+
+  const onSendShortcut = useEffectEvent(() => {
+    if (url.trim() && !loading) {
+      trackToolEvent('api_tester_keyboard_shortcut_used', { shortcut: 'cmd_enter' })
+      handleSendRequest()
+    }
+  })
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault()
+        onSendShortcut()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   const handleSavePreset = () => {
     const name = prompt('Enter preset name:')

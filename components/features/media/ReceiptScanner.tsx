@@ -1,13 +1,14 @@
 'use client'
 
 import { Camera, FileImage, Loader2, Upload, X } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { createWorker, PSM } from 'tesseract.js'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { parseReceiptText } from '@/lib/tools/split-bill/receipt-parser'
+import { createId } from '@/lib/utils/id'
 import { css } from '@/styled-system/css'
 import { type ExtractedItem, ItemPreviewModal } from './ItemPreviewModal'
 
@@ -358,6 +359,19 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
     if (cameraInputRef.current) cameraInputRef.current.value = ''
   }
 
+  const previewItems: ExtractedItem[] = useMemo(
+    () =>
+      (extractedData?.items ?? []).map((item) => ({
+        id: createId('item'),
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        confidence: 'medium' as const,
+        rawText: item.name,
+      })),
+    [extractedData?.items]
+  )
+
   return (
     <div
       className={css({
@@ -540,16 +554,7 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
             setShowItemPreview(false)
             setExtractedData(null)
           }}
-          items={
-            extractedData.items.map((item, index) => ({
-              id: `${Date.now()}_${index}`,
-              name: item.name,
-              price: item.price,
-              quantity: item.quantity,
-              confidence: 'medium' as const, // Default fallback if confidence not provided
-              rawText: item.name, // Use name as rawText fallback
-            })) as ExtractedItem[]
-          }
+          items={previewItems}
           onConfirm={handleItemsConfirmed}
         />
       )}

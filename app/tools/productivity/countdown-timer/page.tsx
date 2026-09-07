@@ -2,7 +2,7 @@
 
 import { Calendar, Check, Clock, Link2, RotateCcw, Share2 } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
-import { Suspense, useCallback, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -23,9 +23,8 @@ interface TimeRemaining {
   total: number
 }
 
-function calculateTimeRemaining(targetDate: Date): TimeRemaining {
-  const now = new Date()
-  const total = targetDate.getTime() - now.getTime()
+function calculateTimeRemaining(targetDate: Date, nowMs: number): TimeRemaining {
+  const total = targetDate.getTime() - nowMs
 
   if (total <= 0) {
     return { days: 0, hours: 0, minutes: 0, seconds: 0, total }
@@ -52,41 +51,27 @@ function CountdownTimerContent() {
   const [eventName, setEventName] = useQueryState('event', parseAsString.withDefault(''))
   const [targetDateTime, setTargetDateTime] = useQueryState('target', parseAsString.withDefault(''))
 
-  const [timeRemaining, setTimeRemaining] = useState<TimeRemaining | null>(null)
   const [copied, setCopied] = useState(false)
-  const [isStarted, setIsStarted] = useState(false)
+  const [now, setNow] = useState(() => Date.now())
+
+  const isStarted = Boolean(targetDateTime)
+  const timeRemaining = useMemo(() => {
+    if (!targetDateTime || !isStarted) return null
+    const targetDate = new Date(targetDateTime)
+    if (Number.isNaN(targetDate.getTime())) return null
+    return calculateTimeRemaining(targetDate, now)
+  }, [targetDateTime, isStarted, now])
 
   useEffect(() => {
     trackToolEvent('countdown_timer_open', {})
   }, [])
 
-  // Initialize from URL params
   useEffect(() => {
-    if (targetDateTime) {
-      setIsStarted(true)
-    }
-  }, [targetDateTime])
-
-  // Update countdown every second
-  useEffect(() => {
-    if (!targetDateTime || !isStarted) {
-      setTimeRemaining(null)
-      return
-    }
-
-    const targetDate = new Date(targetDateTime)
-    if (Number.isNaN(targetDate.getTime())) {
-      setTimeRemaining(null)
-      return
-    }
-
-    const updateCountdown = () => {
-      setTimeRemaining(calculateTimeRemaining(targetDate))
-    }
-
-    updateCountdown()
-    const interval = setInterval(updateCountdown, 1000)
-
+    if (!targetDateTime || !isStarted) return
+    setNow(Date.now())
+    const interval = setInterval(() => {
+      setNow(Date.now())
+    }, 1000)
     return () => clearInterval(interval)
   }, [targetDateTime, isStarted])
 
@@ -106,7 +91,6 @@ function CountdownTimerContent() {
       toast.warning('Target date is in the past. The countdown will show as completed.')
     }
 
-    setIsStarted(true)
     trackToolEvent('countdown_timer_start', {})
     toast.success('Countdown started!')
   }, [targetDateTime])
@@ -114,8 +98,6 @@ function CountdownTimerContent() {
   const handleClear = useCallback(() => {
     setEventName('')
     setTargetDateTime('')
-    setTimeRemaining(null)
-    setIsStarted(false)
     toast.success('Timer cleared!')
   }, [setEventName, setTargetDateTime])
 

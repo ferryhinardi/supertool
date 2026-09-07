@@ -1,8 +1,7 @@
 'use client'
 
-import type dayjs from 'dayjs'
 import { Calendar, Clock, Copy, Info } from 'lucide-react'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -16,7 +15,6 @@ import {
   COMMON_TIMEZONES,
   calculateDifference,
   convertTimezone,
-  type DateDifference,
   FORMAT_PRESETS,
   type FormatPreset,
   formatDate,
@@ -30,52 +28,37 @@ import {
 
 function DateFormatterContent() {
   const [inputDate, setInputDate] = useState('')
-  const [parsedDate, setParsedDate] = useState<dayjs.Dayjs | null>(null)
   const [selectedFormat, _setSelectedFormat] = useState<FormatPreset>('ISO 8601')
   const [customFormat, _setCustomFormat] = useState('')
   const [selectedTimezone, _setSelectedTimezone] = useState('UTC')
   const [targetTimezone, setTargetTimezone] = useState('America/New_York')
-  const [convertedDate, setConvertedDate] = useState<dayjs.Dayjs | null>(null)
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
-  const [dateDiff, setDateDiff] = useState<DateDifference | null>(null)
-  const [formattedOutputs, setFormattedOutputs] = useState<Record<string, string>>({})
 
   useEffect(() => {
     trackToolEvent('date_formatter_open', {})
   }, [])
 
-  useEffect(() => {
-    const parsed = parseDate(inputDate)
-    setParsedDate(parsed)
-
-    if (isValidDate(parsed)) {
-      const outputs = getFormattedOutputs(parsed)
-      setFormattedOutputs(outputs)
-    } else {
-      setFormattedOutputs({})
+  const parsedDate = useMemo(() => parseDate(inputDate), [inputDate])
+  const formattedOutputs = useMemo(() => {
+    if (isValidDate(parsedDate)) {
+      return getFormattedOutputs(parsedDate)
     }
-  }, [inputDate])
-
-  useEffect(() => {
+    return {}
+  }, [parsedDate])
+  const convertedDate = useMemo(() => {
     if (parsedDate && isValidDate(parsedDate)) {
-      const converted = convertTimezone(parsedDate, targetTimezone)
-      setConvertedDate(converted)
-    } else {
-      setConvertedDate(null)
+      return convertTimezone(parsedDate, targetTimezone)
     }
+    return null
   }, [parsedDate, targetTimezone])
-
-  useEffect(() => {
+  const dateDiff = useMemo(() => {
     const start = parseDate(startDate)
     const end = parseDate(endDate)
-
     if (isValidDate(start) && isValidDate(end)) {
-      const diff = calculateDifference(start, end)
-      setDateDiff(diff)
-    } else {
-      setDateDiff(null)
+      return calculateDifference(start, end)
     }
+    return null
   }, [startDate, endDate])
 
   const handleSetCurrentDate = () => {

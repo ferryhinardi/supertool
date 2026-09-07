@@ -333,8 +333,8 @@ When adding new features, please:
 ---
 
 ## Related Documentation
-- [VIDEO_SUBTITLE_COMBINER_IMPLEMENTATION.md](../../docs/VIDEO_SUBTITLE_COMBINER_IMPLEMENTATION.md) - Implementation guide
-- [API Route Documentation](../../app/api/video-subtitle/route.ts) - API implementation
+- [VIDEO_SUBTITLE_COMBINER_IMPLEMENTATION.md](../../../../../docs/archive/VIDEO_SUBTITLE_COMBINER_IMPLEMENTATION.md) - Implementation guide
+- [API Route Documentation](../../../../../app/api/video-subtitle/route.ts) - API implementation
 - [Component Documentation](../page.tsx) - Main component
 
 ---

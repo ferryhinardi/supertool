@@ -130,7 +130,6 @@ export const PDFPageThumbnails: React.FC<PDFPageThumbnailsProps> = ({
     return () => {
       cancelled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pdfjsLib, pdfFile, order])
 
   const sensors = useSensors(useSensor(PointerSensor))

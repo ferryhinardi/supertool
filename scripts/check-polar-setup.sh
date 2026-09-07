@@ -62,7 +62,7 @@ if [ "$all_set" = false ]; then
   echo -e "${RED}❌ Missing required environment variables${NC}"
   echo ""
   echo "Please add missing variables to .env.local"
-  echo "See: docs/POLAR_PAYMENT_SETUP_FIX.md"
+  echo "See: docs/setup/POLAR_PAYMENT_SETUP_FIX.md"
   exit 1
 fi
 
@@ -187,7 +187,7 @@ if [ "$all_set" = true ] && [ "$http_code" = "200" ]; then
   echo "4. Enable live mode"
   echo "   ${BLUE}https://polar.sh/dashboard/settings${NC}"
   echo ""
-  echo "See detailed guide: ${BLUE}docs/POLAR_PAYMENT_SETUP_FIX.md${NC}"
+  echo "See detailed guide: ${BLUE}docs/setup/POLAR_PAYMENT_SETUP_FIX.md${NC}"
 else
   echo -e "${RED}❌ Setup incomplete${NC}"
   echo ""

@@ -51,12 +51,12 @@ let pdfjsLib: typeof PdfjsTypes | null = null
 const initPdfjs = async () => {
   if (pdfjsLib) return pdfjsLib
 
-  const module = await import('pdfjs-dist')
-  pdfjsLib = module
+  const pdfjs = await import('pdfjs-dist')
+  pdfjsLib = pdfjs
   if (typeof window !== 'undefined') {
-    module.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${module.version}/pdf.worker.min.js`
+    pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
   }
-  return module
+  return pdfjs
 }
 
 export function PDFEditor({ pdfFile, onSave, onClose }: PDFEditorProps) {

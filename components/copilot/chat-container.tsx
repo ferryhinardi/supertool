@@ -49,7 +49,7 @@ export function ChatContainer({ sessionId, selectedFiles = [] }: ChatContainerPr
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [currentMatchIndex, setCurrentMatchIndex] = useState(0)
+  const [matchCursor, setMatchCursor] = useState({ count: 0, index: 0 })
 
   // Compute matching message indices based on search query
   const matchingIndices = useMemo(() => {
@@ -60,12 +60,7 @@ export function ChatContainer({ sessionId, selectedFiles = [] }: ChatContainerPr
       .filter((idx) => idx !== -1)
   }, [messages, searchQuery])
 
-  // Reset current match when matches change
-  useEffect(() => {
-    if (matchingIndices.length > 0) {
-      setCurrentMatchIndex(0)
-    }
-  }, [matchingIndices.length])
+  const currentMatchIndex = matchCursor.count === matchingIndices.length ? matchCursor.index : 0
 
   // Keyboard shortcut for Cmd/Ctrl+F to open search
   useEffect(() => {
@@ -118,18 +113,24 @@ export function ChatContainer({ sessionId, selectedFiles = [] }: ChatContainerPr
   const handleCloseSearch = useCallback(() => {
     setIsSearchOpen(false)
     setSearchQuery('')
-    setCurrentMatchIndex(0)
+    setMatchCursor({ count: 0, index: 0 })
   }, [])
 
   const handlePrevMatch = useCallback(() => {
     if (matchingIndices.length === 0) return
-    setCurrentMatchIndex((prev) => (prev === 0 ? matchingIndices.length - 1 : prev - 1))
-  }, [matchingIndices.length])
+    setMatchCursor({
+      count: matchingIndices.length,
+      index: currentMatchIndex === 0 ? matchingIndices.length - 1 : currentMatchIndex - 1,
+    })
+  }, [matchingIndices.length, currentMatchIndex])
 
   const handleNextMatch = useCallback(() => {
     if (matchingIndices.length === 0) return
-    setCurrentMatchIndex((prev) => (prev === matchingIndices.length - 1 ? 0 : prev + 1))
-  }, [matchingIndices.length])
+    setMatchCursor({
+      count: matchingIndices.length,
+      index: currentMatchIndex === matchingIndices.length - 1 ? 0 : currentMatchIndex + 1,
+    })
+  }, [matchingIndices.length, currentMatchIndex])
 
   // Helper to register message refs
   const setMessageRef = useCallback((id: string, element: HTMLDivElement | null) => {

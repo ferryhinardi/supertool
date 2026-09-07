@@ -95,10 +95,6 @@ export function ToolSearch({ open: controlledOpen, onOpenChange }: ToolSearchPro
   // Keyboard navigation for results
   const [selectedIndex, setSelectedIndex] = useState(0)
 
-  useEffect(() => {
-    setSelectedIndex(0)
-  }, [])
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault()

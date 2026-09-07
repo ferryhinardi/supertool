@@ -26,7 +26,6 @@ import { useToolHistory } from '@/hooks/tools/useToolHistory'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
-  type DecodedJWT,
   decodeJWT,
   generateJWT,
   type JWTAlgorithm,
@@ -49,7 +48,7 @@ function JWTDebuggerContent() {
   const [algorithm, setAlgorithm] = useState<JWTAlgorithm>('HS256')
 
   // Generator state
-  const [payloadInput, setPayloadInput] = useState(
+  const [payloadInput, setPayloadInput] = useState(() =>
     JSON.stringify(
       { sub: '1234567890', name: 'John Doe', iat: Math.floor(Date.now() / 1000) },
       null,
@@ -59,10 +58,9 @@ function JWTDebuggerContent() {
   const [generatedToken, setGeneratedToken] = useState('')
 
   // Decoded state
-  const [decodedToken, setDecodedToken] = useState<DecodedJWT | null>(null)
-  const [verificationResult, setVerificationResult] = useState<{
-    isValid: boolean
-    error?: string
+  const [verification, setVerification] = useState<{
+    key: string
+    result: { isValid: boolean; error?: string }
   } | null>(null)
 
   // History
@@ -73,30 +71,29 @@ function JWTDebuggerContent() {
 
   const [historySearch, setHistorySearch] = useState('')
   const [historySortBy, setHistorySortBy] = useState<'newest' | 'oldest' | 'favorites'>('newest')
-  const showFavoritesOnly = false // Reserved for future implementation
 
-  // Decode token automatically
+  const decodedToken = useMemo(() => (token ? decodeJWT(token) : null), [token])
+  const verificationKey = `${token}::${secret}::${algorithm}`
+  const verificationResult = verification?.key === verificationKey ? verification.result : null
+
   useEffect(() => {
-    if (!token) {
-      setDecodedToken(null)
-      setVerificationResult(null)
+    if (!token) return
+    trackToolEvent('jwt_debugger_decode', { hasToken: true })
+  }, [token])
+
+  useEffect(() => {
+    if (!token || !secret || !decodedToken?.isValid) {
       return
     }
 
-    const decoded = decodeJWT(token)
-    setDecodedToken(decoded)
-    trackToolEvent('jwt_debugger_decode', { hasToken: true })
-
-    // Auto verify if we have a secret
-    if (secret && decoded.isValid) {
-      verifyJWT(token, secret, algorithm).then((result) => {
-        setVerificationResult(result)
-        if (result.isValid) {
-          trackToolEvent('jwt_debugger_verify', { algorithm, success: true })
-        }
-      })
-    }
-  }, [token, secret, algorithm])
+    const key = `${token}::${secret}::${algorithm}`
+    verifyJWT(token, secret, algorithm).then((result) => {
+      setVerification({ key, result })
+      if (result.isValid) {
+        trackToolEvent('jwt_debugger_verify', { algorithm, success: true })
+      }
+    })
+  }, [token, secret, algorithm, decodedToken])
 
   // Handle token input
   const handleTokenChange = (value: string) => {
@@ -116,7 +113,7 @@ function JWTDebuggerContent() {
     }
 
     const result = await verifyJWT(token, secret, algorithm)
-    setVerificationResult(result)
+    setVerification({ key: `${token}::${secret}::${algorithm}`, result })
 
     if (result.isValid) {
       toast.success('Signature verified successfully!')
@@ -209,7 +206,7 @@ function JWTDebuggerContent() {
       searchQuery: historySearch,
       searchFields: ['token', 'algorithm'],
       sortBy: historySortBy,
-      showFavoritesOnly,
+      showFavoritesOnly: false,
     })
   }, [history, historySearch, historySortBy])
 

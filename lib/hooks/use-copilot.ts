@@ -7,7 +7,7 @@
  * Handles SSE streaming, message state, and error recovery.
  */
 
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { create } from 'zustand'
 import type {
   CopilotContext,
@@ -239,6 +239,15 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
     setError(null)
   }, [setError])
 
+  type SendMessageFn = (
+    sessionId: string,
+    message: string,
+    context?: CopilotContext,
+    attachments?: FileAttachment[]
+  ) => Promise<void>
+
+  const sendMessageRef = useRef<SendMessageFn | null>(null)
+
   const sendMessage = useCallback(
     async (
       sessionId: string,
@@ -309,7 +318,7 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
             retryCountRef.current++
             const delay = copilotError.retryAfter || retryDelay * retryCountRef.current
             await new Promise((resolve) => setTimeout(resolve, delay))
-            return sendMessage(sessionId, message, context, attachments)
+            return sendMessageRef.current?.(sessionId, message, context, attachments)
           }
 
           throw copilotError
@@ -473,6 +482,10 @@ export function useCopilot(options: UseCopilotOptions = {}): UseCopilotReturn {
       updateLastMessage,
     ]
   )
+
+  useEffect(() => {
+    sendMessageRef.current = sendMessage
+  })
 
   return {
     // State

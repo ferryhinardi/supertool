@@ -158,7 +158,7 @@ function main() {
     log('  1. Copy .env.example to .env')
     log('  2. Set required environment variables')
     log('  3. Run this validator again')
-    log('\nSee docs/MCP_SETUP.md for detailed instructions.')
+    log('\nSee docs/guides/MCP_SETUP.md for detailed instructions.')
   }
 
   console.log()

@@ -37,8 +37,9 @@ export function useCurrencyConverter(baseCurrency: string): UseCurrencyConverter
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [rates, setRates] = useState<ExchangeRates | null>(null)
-  const [cacheAge, setCacheAge] = useState<number | null>(null)
-  const [isFresh, setIsFresh] = useState(false)
+
+  const cacheAge = rates ? getCacheAge(baseCurrency) : null
+  const isFresh = rates ? isCacheFresh(baseCurrency) : false
 
   const loadRates = useCallback(async () => {
     try {
@@ -68,14 +69,6 @@ export function useCurrencyConverter(baseCurrency: string): UseCurrencyConverter
   useEffect(() => {
     loadRates()
   }, [loadRates])
-
-  // Update cache info
-  useEffect(() => {
-    if (rates) {
-      setCacheAge(getCacheAge(baseCurrency))
-      setIsFresh(isCacheFresh(baseCurrency))
-    }
-  }, [rates, baseCurrency])
 
   const convert = useCallback(
     async (amount: number, fromCurrency: string, toCurrency: string): Promise<ConversionResult> => {

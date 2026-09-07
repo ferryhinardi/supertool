@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef } from 'react'
 import { css } from '@/styled-system/css'
 
-interface LabelProps extends ComponentPropsWithoutRef<'label'> {}
+export type LabelProps = ComponentPropsWithoutRef<'label'>
 
 export function Label({ className = '', children, ...props }: LabelProps) {
   const baseStyles = css({

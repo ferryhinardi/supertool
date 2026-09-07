@@ -25,7 +25,6 @@ concurrency:
 
 env:
   NODE_VERSION: '24'
-  PNPM_VERSION: '9.15.3'
 
 jobs:
   # ============================================================================
@@ -118,9 +117,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: ${{ env.PNPM_VERSION }}
+        uses: pnpm/action-setup@v4 # pnpm version is read from package.json#packageManager
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -289,9 +286,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: ${{ env.PNPM_VERSION }}
+        uses: pnpm/action-setup@v4 # pnpm version is read from package.json#packageManager
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -317,7 +312,7 @@ jobs:
       - name: Run Lint Check
         id: lint
         run: |
-          pnpm lint > lint-output.txt 2>&1 || true
+          pnpm lint:check > lint-output.txt 2>&1 || true
           if grep -qE "(error|Error)" lint-output.txt; then
             echo "lint_passed=false" >> $GITHUB_OUTPUT
             echo "lint_errors<<EOF" >> $GITHUB_OUTPUT

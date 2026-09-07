@@ -33,7 +33,7 @@ interface ToolTouchTargetResult {
 }
 
 const EVIDENCE_PATH = resolve(process.cwd(), '.sisyphus/evidence/touch-targets-2026-04.json')
-const BACKLOG_PATH = resolve(process.cwd(), 'docs/TOUCH_TARGETS_BACKLOG.md')
+const BACKLOG_PATH = resolve(process.cwd(), 'docs/planning/TOUCH_TARGETS_BACKLOG.md')
 const SELECTOR = 'button, a, input, select, [role="button"]'
 const MIN_TOUCH_TARGET = 44
 

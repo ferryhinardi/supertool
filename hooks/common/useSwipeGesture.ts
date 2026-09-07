@@ -4,7 +4,7 @@
  */
 
 import type React from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 export interface SwipeGestureOptions {
   onSwipeLeft?: () => void
@@ -136,7 +136,6 @@ export function useSwipeGesture(options: SwipeGestureOptions) {
  */
 export function useSwipeToDelete(onDelete: () => void) {
   const [isDeleting, setIsDeleting] = useState(false)
-  const [deleteProgress, setDeleteProgress] = useState(0)
 
   const { swipeState, handlers } = useSwipeGesture({
     onSwipeLeft: () => {
@@ -144,22 +143,16 @@ export function useSwipeToDelete(onDelete: () => void) {
       setTimeout(() => {
         onDelete()
         setIsDeleting(false)
-        setDeleteProgress(0)
       }, 300)
     },
     threshold: 120,
     velocityThreshold: 0.5,
   })
 
-  // Calculate delete progress (0-100%)
-  useEffect(() => {
-    if (swipeState.isSwiping && swipeState.direction === 'left') {
-      const progress = Math.min((swipeState.distance / 120) * 100, 100)
-      setDeleteProgress(progress)
-    } else if (!swipeState.isSwiping) {
-      setDeleteProgress(0)
-    }
-  }, [swipeState])
+  const deleteProgress =
+    swipeState.isSwiping && swipeState.direction === 'left'
+      ? Math.min((swipeState.distance / 120) * 100, 100)
+      : 0
 
   return {
     handlers,

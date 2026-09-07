@@ -166,13 +166,13 @@ describe('supabaseServer', () => {
       vi.resetModules()
 
       // Import should not throw
-      const module = await import('../supabaseServer')
+      const serverModule = await import('../supabaseServer')
 
-      expect(module.getSupabaseServer).toBeDefined()
-      expect(module.supabaseServer).toBeDefined()
+      expect(serverModule.getSupabaseServer).toBeDefined()
+      expect(serverModule.supabaseServer).toBeDefined()
 
       // Only throw when actually used
-      expect(() => module.getSupabaseServer()).toThrow()
+      expect(() => serverModule.getSupabaseServer()).toThrow()
     })
   })
 })

@@ -1,7 +1,7 @@
 'use client'
 
 import { Check, Copy, Download, ImagePlus } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -37,7 +37,6 @@ export default function PlaceholderGeneratorPage() {
   const [text, setText] = useState('800 × 600')
   const [textColor, setTextColor] = useState('#333333')
   const [fontSize, setFontSize] = useState(48)
-  const [previewSVG, setPreviewSVG] = useState('')
   const [activeCategory, setActiveCategory] = useState<SizePreset['category']>('web')
   const [copiedDataURL, setCopiedDataURL] = useState(false)
   const [recentSizes, setRecentSizes] = useState<Array<{ width: number; height: number }>>([])
@@ -54,24 +53,20 @@ export default function PlaceholderGeneratorPage() {
     }
   }, [])
 
-  // Generate preview whenever inputs change
-  useEffect(() => {
-    const svg = generateSVG(width, height, bgColor, text, textColor, fontSize)
-    setPreviewSVG(svg)
-  }, [width, height, bgColor, text, textColor, fontSize])
-
-  // Update text when dimensions change (only if text matches old dimensions)
-  useEffect(() => {
-    const dimensionPattern = /^\d+\s*[×x]\s*\d+$/
-    if (dimensionPattern.test(text.trim())) {
-      setText(`${width} × ${height}`)
-    }
-  }, [width, height, text])
+  const previewSVG = useMemo(
+    () => generateSVG(width, height, bgColor, text, textColor, fontSize),
+    [width, height, bgColor, text, textColor, fontSize]
+  )
 
   // Handle dimension change
   const handleDimensionChange = (newWidth: number, newHeight: number) => {
     setWidth(newWidth)
     setHeight(newHeight)
+
+    const dimensionPattern = /^\d+\s*[×x]\s*\d+$/
+    if (dimensionPattern.test(text.trim())) {
+      setText(`${newWidth} × ${newHeight}`)
+    }
 
     // Add to recent sizes
     const newRecent = [

@@ -12,6 +12,17 @@ interface DragDropZoneProps {
   className?: string
 }
 
+interface AcceptIconProps {
+  accept?: string
+  style: React.CSSProperties
+}
+
+function AcceptIcon({ accept, style }: AcceptIconProps) {
+  if (accept?.includes('video')) return <Film style={style} />
+  if (accept?.includes('srt') || accept?.includes('text')) return <FileText style={style} />
+  return <Upload style={style} />
+}
+
 export function DragDropZone({
   onFilesSelected,
   accept,
@@ -77,15 +88,6 @@ export function DragDropZone({
       inputRef.current.click()
     }
   }, [disabled])
-
-  // Determine icon based on accept type
-  const getIcon = () => {
-    if (accept?.includes('video')) return Film
-    if (accept?.includes('srt') || accept?.includes('text')) return FileText
-    return Upload
-  }
-
-  const Icon = getIcon()
 
   // Container styles
   const containerStyle: React.CSSProperties = {
@@ -203,7 +205,7 @@ export function DragDropZone({
         >
           {/* Icon */}
           <div style={iconContainerStyle}>
-            <Icon style={iconStyle} />
+            <AcceptIcon accept={accept} style={iconStyle} />
           </div>
 
           {/* Text */}

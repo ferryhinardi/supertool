@@ -27,6 +27,7 @@ export default function ClipboardHistoryPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [isListening, setIsListening] = useState(false)
+  const [now, setNow] = useState(() => Date.now())
 
   // Load history from localStorage on mount
   useEffect(() => {
@@ -40,6 +41,13 @@ export default function ClipboardHistoryPage() {
         console.error('Failed to parse clipboard history:', error)
       }
     }
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now())
+    }, 60_000)
+    return () => clearInterval(interval)
   }, [])
 
   // Save history to localStorage whenever it changes
@@ -189,7 +197,6 @@ export default function ClipboardHistoryPage() {
 
   // Format timestamp
   const formatTime = (timestamp: number) => {
-    const now = Date.now()
     const diff = now - timestamp
     const minutes = Math.floor(diff / 60000)
     const hours = Math.floor(diff / 3600000)
