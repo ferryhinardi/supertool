@@ -69,6 +69,7 @@ import {
   saveBillTemplate,
 } from '@/lib/tools/split-bill/split-bill-storage'
 import type { CreateParticipantData } from '@/lib/tools/split-bill/split-bill-types'
+import { createId } from '@/lib/utils/id'
 import { css } from '@/styled-system/css'
 
 // Dynamic import for ReceiptScanner to avoid loading Tesseract.js (~2-3MB) on initial page load
@@ -113,7 +114,22 @@ export default function SplitBillPage() {
     { id: '2', name: 'Person 2', hasPaid: false, percentage: 50 },
   ])
   const [items, setItems] = useState<BillItem[]>([])
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+
+  const draftKey = useMemo(
+    () =>
+      JSON.stringify({
+        billAmount,
+        tipPercent,
+        taxPercent,
+        currency: currency.code,
+        people,
+        items,
+        splitType,
+      }),
+    [billAmount, tipPercent, taxPercent, currency, people, items, splitType]
+  )
+  const [savedDraftKey, setSavedDraftKey] = useState('')
+  const hasUnsavedChanges = draftKey !== savedDraftKey
 
   // Mobile/touch detection
   const [isTouchDevice, setIsTouchDevice] = useState(false)
@@ -189,13 +205,11 @@ export default function SplitBillPage() {
         items,
         splitType,
       })
-      setHasUnsavedChanges(false)
-    }, 2000) // Auto-save after 2 seconds of inactivity
-
-    setHasUnsavedChanges(true)
+      setSavedDraftKey(draftKey)
+    }, 2000)
 
     return () => clearTimeout(timeoutId)
-  }, [billAmount, tipPercent, taxPercent, currency, people, items, splitType])
+  }, [billAmount, tipPercent, taxPercent, currency, people, items, splitType, draftKey])
 
   // Warn before leaving with unsaved changes
   useEffect(() => {
@@ -329,7 +343,7 @@ export default function SplitBillPage() {
 
   // Add person
   const addPerson = () => {
-    const newId = String(Date.now())
+    const newId = createId()
     const defaultPercentage = splitType === 'percentage' ? 0 : undefined
     const newPersonName = `Person ${people.length + 1}`
     setPeople([
@@ -383,7 +397,7 @@ export default function SplitBillPage() {
 
     const duplicated: BillItem = {
       ...item,
-      id: String(Date.now()),
+      id: createId(),
       name: `${item.name} (Copy)`,
     }
     setItems([...items, duplicated])
@@ -475,7 +489,7 @@ export default function SplitBillPage() {
     }
 
     const newItem: BillItem = {
-      id: String(Date.now()),
+      id: createId(),
       name: newItemName.trim(),
       price,
       quantity,
@@ -669,8 +683,8 @@ export default function SplitBillPage() {
     }
 
     // Set people
-    const loadedPeople: Person[] = template.people.map((p, index) => ({
-      id: `person-${Date.now()}-${index}`,
+    const loadedPeople: Person[] = template.people.map((p) => ({
+      id: createId('person'),
       name: p.name,
       hasPaid: false,
       percentage: p.percentage,
@@ -680,7 +694,6 @@ export default function SplitBillPage() {
     // Clear items when loading template
     setItems([])
 
-    setHasUnsavedChanges(true)
     announceToScreenReader(
       `Template ${template.name} loaded with ${template.people.length} people and ${template.splitType} split type.`
     )
@@ -747,8 +760,8 @@ export default function SplitBillPage() {
     // If we have line items, switch to items mode and populate them
     if (data.items && data.items.length > 0) {
       setSplitType('items')
-      const newItems: BillItem[] = data.items.map((item, index) => ({
-        id: String(Date.now() + index),
+      const newItems: BillItem[] = data.items.map((item) => ({
+        id: createId(),
         name: item.name,
         price: item.price,
         quantity: item.quantity,

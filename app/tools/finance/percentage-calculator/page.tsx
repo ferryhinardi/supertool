@@ -2,7 +2,7 @@
 
 import { Calculator, Copy, Info, Percent, RotateCcw, Sparkles, TrendingUp } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -169,43 +169,39 @@ function PercentageCalculatorContent() {
   )
   const [input1, setInput1] = useQueryState('input1', { defaultValue: '' })
   const [input2, setInput2] = useQueryState('input2', { defaultValue: '' })
-  const [result, setResult] = useState<{ result: string; formula: string } | null>(null)
 
   // Track page visit
   useEffect(() => {
     trackToolEvent('percentage_calculator_open', {})
   }, [])
 
-  // Calculate result whenever inputs change
-  useEffect(() => {
-    const currentMode = modes[mode]
+  const result = useMemo(() => {
     if (input1 && input2) {
-      const calculationResult = currentMode.calculate([input1, input2])
-      setResult(calculationResult)
-      if (calculationResult) {
-        trackToolEvent('percentage_calculator_calculate', {
-          mode,
-          input1,
-          input2,
-        })
-      }
-    } else {
-      setResult(null)
+      return modes[mode].calculate([input1, input2])
     }
+    return null
   }, [mode, input1, input2])
+
+  useEffect(() => {
+    if (result) {
+      trackToolEvent('percentage_calculator_calculate', {
+        mode,
+        input1,
+        input2,
+      })
+    }
+  }, [result, mode, input1, input2])
 
   const handleModeChange = (newMode: CalculationMode) => {
     setMode(newMode)
     setInput1('')
     setInput2('')
-    setResult(null)
     trackToolEvent('percentage_calculator_mode_change', { mode: newMode })
   }
 
   const handleClear = () => {
     setInput1('')
     setInput2('')
-    setResult(null)
     trackToolEvent('percentage_calculator_clear', { mode })
   }
 

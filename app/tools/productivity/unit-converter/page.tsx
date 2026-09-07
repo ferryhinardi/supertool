@@ -80,6 +80,39 @@ interface ConversionStep {
   value: string
 }
 
+function computeChainValues(
+  steps: Array<{ id: string; unit: string }>,
+  inputValue: string,
+  unitCategory: UnitCategory
+): ConversionStep[] {
+  if (steps.length === 0) return []
+
+  const result: ConversionStep[] = [{ id: steps[0].id, unit: steps[0].unit, value: inputValue }]
+
+  for (let i = 1; i < steps.length; i++) {
+    const prevStep = result[i - 1]
+    const current = steps[i]
+    try {
+      const converted = convertUnit(
+        Number(prevStep.value),
+        prevStep.unit,
+        current.unit,
+        unitCategory
+      )
+      result.push({
+        id: current.id,
+        unit: current.unit,
+        value: converted.toFixed(8).replace(/\.?0+$/, ''),
+      })
+    } catch (error) {
+      console.error('Chain conversion error:', error)
+      result.push({ id: current.id, unit: current.unit, value: 'Error' })
+    }
+  }
+
+  return result
+}
+
 interface SavedChain {
   id: string
   name: string
@@ -345,7 +378,7 @@ function UnitConverterContent() {
   })
 
   const [showFormulaDetails, setShowFormulaDetails] = useState(false)
-  const [conversionChain, setConversionChain] = useState<ConversionStep[]>([])
+  const [chainSteps, setChainSteps] = useState<Array<{ id: string; unit: string }>>([])
   const [chainInputValue, setChainInputValue] = useState('100')
   const [savedChains, setSavedChains] = useState<SavedChain[]>(() => {
     if (typeof window === 'undefined') return []
@@ -674,98 +707,41 @@ function UnitConverterContent() {
 
   const formulaExplanation = useMemo(() => getFormulaExplanation(), [getFormulaExplanation])
 
+  const conversionChain = useMemo(
+    () => computeChainValues(chainSteps, chainInputValue, category),
+    [chainSteps, chainInputValue, category]
+  )
+
   // Multi-Step Conversion Handlers
   const handleAddChainStep = () => {
-    if (conversionChain.length === 0) {
-      // Initialize chain with current from and to units
-      setConversionChain([
-        { id: Date.now().toString(), unit: fromUnit, value: chainInputValue },
-        { id: (Date.now() + 1).toString(), unit: toUnit, value: '' },
+    if (chainSteps.length === 0) {
+      setChainSteps([
+        { id: Date.now().toString(), unit: fromUnit },
+        { id: (Date.now() + 1).toString(), unit: toUnit },
       ])
     } else {
-      // Add a new step with the last unit from the chain
-      const lastUnit = conversionChain[conversionChain.length - 1].unit
+      const lastUnit = chainSteps[chainSteps.length - 1].unit
       const availableUnits = getUnitsForCategory(category)
       const nextUnit = availableUnits.find((u) => u !== lastUnit) || availableUnits[0]
-      setConversionChain([
-        ...conversionChain,
-        { id: Date.now().toString(), unit: nextUnit, value: '' },
-      ])
+      setChainSteps([...chainSteps, { id: Date.now().toString(), unit: nextUnit }])
     }
     trackToolEvent('unit_converter_chain_add_step', { category })
   }
 
   const handleRemoveChainStep = (id: string) => {
-    setConversionChain(conversionChain.filter((step) => step.id !== id))
+    setChainSteps(chainSteps.filter((step) => step.id !== id))
     trackToolEvent('unit_converter_chain_remove_step', { category })
   }
 
   const handleClearChain = () => {
-    setConversionChain([])
+    setChainSteps([])
     setChainInputValue('100')
     trackToolEvent('unit_converter_chain_clear', { category })
   }
 
   const handleChainUnitChange = (id: string, newUnit: string) => {
-    setConversionChain(
-      conversionChain.map((step) => (step.id === id ? { ...step, unit: newUnit } : step))
-    )
+    setChainSteps(chainSteps.map((step) => (step.id === id ? { ...step, unit: newUnit } : step)))
   }
-
-  // Calculate chain values
-  useEffect(() => {
-    if (conversionChain.length === 0) return
-
-    const updatedChain = [...conversionChain]
-    updatedChain[0].value = chainInputValue
-
-    for (let i = 1; i < updatedChain.length; i++) {
-      const prevStep = updatedChain[i - 1]
-      const currentStep = updatedChain[i]
-
-      try {
-        const result = convertUnit(
-          Number(prevStep.value),
-          prevStep.unit,
-          currentStep.unit,
-          category
-        )
-        currentStep.value = result.toFixed(8).replace(/\.?0+$/, '')
-      } catch (error) {
-        console.error('Chain conversion error:', error)
-        currentStep.value = 'Error'
-      }
-    }
-
-    setConversionChain(updatedChain)
-  }, [chainInputValue, category, conversionChain])
-
-  // Recalculate chain when units change
-  useEffect(() => {
-    if (conversionChain.length === 0) return
-
-    const updatedChain = [...conversionChain]
-
-    for (let i = 1; i < updatedChain.length; i++) {
-      const prevStep = updatedChain[i - 1]
-      const currentStep = updatedChain[i]
-
-      try {
-        const result = convertUnit(
-          Number(prevStep.value),
-          prevStep.unit,
-          currentStep.unit,
-          category
-        )
-        currentStep.value = result.toFixed(8).replace(/\.?0+$/, '')
-      } catch (error) {
-        console.error('Chain conversion error:', error)
-        currentStep.value = 'Error'
-      }
-    }
-
-    setConversionChain(updatedChain)
-  }, [category, conversionChain])
 
   // Enhanced Chain Handlers
   const handleSaveChain = (name: string) => {
@@ -789,11 +765,10 @@ function UnitConverterContent() {
 
   const handleLoadSavedChain = (chain: SavedChain) => {
     setCategory(chain.category)
-    setConversionChain(
+    setChainSteps(
       chain.steps.map((step, index) => ({
         id: `${Date.now()}-${index}`,
         unit: step.unit,
-        value: index === 0 ? chainInputValue : '',
       }))
     )
     toast.success(`Loaded chain: ${chain.name}`)
@@ -814,11 +789,10 @@ function UnitConverterContent() {
       setChainInputValue(preset.defaultValue)
     }
 
-    setConversionChain(
+    setChainSteps(
       preset.steps.map((unit, index) => ({
         id: `${Date.now()}-${index}`,
         unit,
-        value: index === 0 ? preset.defaultValue || chainInputValue : '',
       }))
     )
 

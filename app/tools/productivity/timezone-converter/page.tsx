@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { trackToolEvent } from '@/lib/services/analytics'
+import { createId } from '@/lib/utils/id'
 import { css } from '@/styled-system/css'
 
 interface TimezoneItem {
@@ -116,7 +117,7 @@ function TimezoneConverterContent() {
   const handleAddTimezone = (timezone: string) => {
     const tzData = ALL_TIMEZONES.find((tz) => tz.value === timezone)
     const newTimezone: TimezoneItem = {
-      id: Date.now().toString(),
+      id: createId(),
       timezone,
       label: tzData?.label,
     }
@@ -140,7 +141,7 @@ function TimezoneConverterContent() {
 
   const handleAddFavorite = () => {
     const newFavorite: Favorite = {
-      id: Date.now().toString(),
+      id: createId(),
       timezones: timezones.map((tz) => tz.timezone),
     }
     setFavorites([...favorites, newFavorite])
@@ -155,10 +156,10 @@ function TimezoneConverterContent() {
   }
 
   const handleLoadFavorite = (favorite: Favorite) => {
-    const newTimezones: TimezoneItem[] = favorite.timezones.map((tz, index) => {
+    const newTimezones: TimezoneItem[] = favorite.timezones.map((tz) => {
       const tzData = ALL_TIMEZONES.find((t) => t.value === tz)
       return {
-        id: `${Date.now()}_${index}`,
+        id: createId(),
         timezone: tz,
         label: tzData?.label,
       }

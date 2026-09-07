@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Parse permissions
-    let permissions = {
+    // Parse permissions (stored for the future encryption implementation)
+    let _permissions = {
       printing: false,
       modifying: false,
       copying: false,
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     if (permissionsStr) {
       try {
         const parsed = JSON.parse(permissionsStr)
-        permissions = { ...permissions, ...parsed }
+        _permissions = { ..._permissions, ...parsed }
       } catch (e) {
         console.error('Failed to parse permissions:', e)
       }

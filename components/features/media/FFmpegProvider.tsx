@@ -1,7 +1,7 @@
 'use client'
 
 import type { FFmpeg } from '@ffmpeg/ffmpeg'
-import { createContext, useContext, useRef, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 interface FFmpegContextValue {
   ffmpeg: FFmpeg | null
@@ -22,13 +22,13 @@ export function useFFmpeg() {
 }
 
 export function FFmpegProvider({ children }: { children: React.ReactNode }) {
+  const [ffmpeg, setFFmpeg] = useState<FFmpeg | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  const ffmpegRef = useRef<FFmpeg | null>(null)
 
   const load = async () => {
-    if (ffmpegRef.current || isLoading) return
+    if (ffmpeg || isLoading) return
 
     setIsLoading(true)
     setIsError(false)
@@ -39,28 +39,28 @@ export function FFmpegProvider({ children }: { children: React.ReactNode }) {
       const ffmpegModule = await import('@ffmpeg/ffmpeg')
       const utilModule = await import('@ffmpeg/util')
 
-      const ffmpeg = new ffmpegModule.FFmpeg()
+      const loaded = new ffmpegModule.FFmpeg()
       const { toBlobURL } = utilModule
 
       const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm'
 
-      await ffmpeg.load({
+      await loaded.load({
         coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
         wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
       })
 
-      ffmpegRef.current = ffmpeg
+      setFFmpeg(loaded)
       setIsLoading(false)
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Failed to load FFmpeg')
-      setError(error)
+      const loadError = err instanceof Error ? err : new Error('Failed to load FFmpeg')
+      setError(loadError)
       setIsError(true)
       setIsLoading(false)
     }
   }
 
   const value: FFmpegContextValue = {
-    ffmpeg: ffmpegRef.current,
+    ffmpeg,
     isLoading,
     isError,
     error,

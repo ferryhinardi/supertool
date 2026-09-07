@@ -2,7 +2,7 @@
 
 import { ArrowLeftRight, Check, Copy, Link2, RotateCcw, Sparkles } from 'lucide-react'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
-import { Suspense, useCallback, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -40,6 +40,41 @@ const ENCODING_METHODS: { id: EncodingMethod; label: string; description: string
   },
 ]
 
+function transformInput(text: string, selectedMethod: EncodingMethod): {
+  output: string
+  error: string | null
+} {
+  if (!text.trim()) {
+    return { output: '', error: null }
+  }
+
+  try {
+    let result: string
+    switch (selectedMethod) {
+      case 'encodeURI':
+        result = encodeURI(text)
+        break
+      case 'encodeURIComponent':
+        result = encodeURIComponent(text)
+        break
+      case 'decodeURI':
+        result = decodeURI(text)
+        break
+      case 'decodeURIComponent':
+        result = decodeURIComponent(text)
+        break
+      default:
+        result = text
+    }
+    return { output: result, error: null }
+  } catch (err) {
+    return {
+      output: '',
+      error: err instanceof Error ? err.message : 'An error occurred during processing',
+    }
+  }
+}
+
 function URLEncoderContent() {
   const [method, setMethod] = useQueryState(
     'method',
@@ -51,56 +86,21 @@ function URLEncoderContent() {
     ]).withDefault('encodeURIComponent')
   )
   const [input, setInput] = useState('')
-  const [output, setOutput] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     trackToolEvent('url_encoder_open', {})
   }, [])
 
-  const processInput = useCallback((text: string, selectedMethod: EncodingMethod) => {
-    if (!text.trim()) {
-      setOutput('')
-      setError(null)
-      return
-    }
-
-    try {
-      let result: string
-      switch (selectedMethod) {
-        case 'encodeURI':
-          result = encodeURI(text)
-          break
-        case 'encodeURIComponent':
-          result = encodeURIComponent(text)
-          break
-        case 'decodeURI':
-          result = decodeURI(text)
-          break
-        case 'decodeURIComponent':
-          result = decodeURIComponent(text)
-          break
-        default:
-          result = text
-      }
-      setOutput(result)
-      setError(null)
-
-      // Track encode/decode action
-      const isEncode = selectedMethod.startsWith('encode')
-      trackToolEvent(isEncode ? 'url_encoder_encode' : 'url_encoder_decode', {
-        method: selectedMethod,
-      })
-    } catch (err) {
-      setOutput('')
-      setError(err instanceof Error ? err.message : 'An error occurred during processing')
-    }
-  }, [])
+  const { output, error } = useMemo(() => transformInput(input, method), [input, method])
 
   useEffect(() => {
-    processInput(input, method)
-  }, [input, method, processInput])
+    if (!input.trim() || error) return
+    const isEncode = method.startsWith('encode')
+    trackToolEvent(isEncode ? 'url_encoder_encode' : 'url_encoder_decode', {
+      method,
+    })
+  }, [input, method, error])
 
   const handleCopy = useCallback(async () => {
     if (!output) return
@@ -118,8 +118,6 @@ function URLEncoderContent() {
 
   const handleClear = useCallback(() => {
     setInput('')
-    setOutput('')
-    setError(null)
     trackToolEvent('url_encoder_clear', {})
     toast.success('Cleared!')
   }, [])

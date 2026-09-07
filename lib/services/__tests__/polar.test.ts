@@ -228,8 +228,8 @@ describe('polar', () => {
 
   describe('PolarWebhookEvent type', () => {
     it('should allow valid event values', async () => {
-      const { POLAR_WEBHOOK_EVENTS } = await import('../polar')
-      type PolarWebhookEvent = (typeof POLAR_WEBHOOK_EVENTS)[keyof typeof POLAR_WEBHOOK_EVENTS]
+      type PolarEvents = typeof import('../polar').POLAR_WEBHOOK_EVENTS
+      type PolarWebhookEvent = PolarEvents[keyof PolarEvents]
 
       // Type assertion tests - these should compile without error
       const validEvent1: PolarWebhookEvent = 'subscription.created'

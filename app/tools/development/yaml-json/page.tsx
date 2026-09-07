@@ -2,7 +2,7 @@
 
 import * as yaml from 'js-yaml'
 import { ArrowLeftRight, Check, Copy, Download, FileJson, Info, Sparkles } from 'lucide-react'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,8 +15,6 @@ type ConversionDirection = 'yaml-to-json' | 'json-to-yaml'
 function YamlJsonConverterContent() {
   const [direction, setDirection] = useState<ConversionDirection>('yaml-to-json')
   const [inputText, setInputText] = useState('')
-  const [outputText, setOutputText] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
   // Track page visit
@@ -24,52 +22,40 @@ function YamlJsonConverterContent() {
     trackToolEvent('yaml_json_converter_open', {})
   }, [])
 
-  // Perform conversion
-  useEffect(() => {
+  const { outputText, error } = useMemo(() => {
     if (!inputText.trim()) {
-      setOutputText('')
-      setError(null)
-      return
+      return { outputText: '', error: null as string | null }
     }
 
     try {
       let result: string
       if (direction === 'yaml-to-json') {
-        // Parse YAML to object
         const parsed = yaml.load(inputText)
-        // Convert to JSON with pretty formatting
         result = JSON.stringify(parsed, null, 2)
       } else {
-        // Parse JSON to object
         const parsed = JSON.parse(inputText)
-        // Convert to YAML
         result = yaml.dump(parsed, {
           indent: 2,
-          lineWidth: -1, // Don't wrap lines
-          noRefs: true, // Don't use anchors/aliases
+          lineWidth: -1,
+          noRefs: true,
         })
       }
-      setOutputText(result)
-      setError(null)
-
-      trackToolEvent('yaml_json_converter_convert', {
-        direction,
-        input_length: inputText.length,
-        success: true,
-      })
+      return { outputText: result, error: null as string | null }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Invalid input format'
-      setError(errorMessage)
-      setOutputText('')
-
-      trackToolEvent('yaml_json_converter_convert', {
-        direction,
-        input_length: inputText.length,
-        success: false,
-        error: errorMessage,
-      })
+      return { outputText: '', error: errorMessage }
     }
   }, [inputText, direction])
+
+  useEffect(() => {
+    if (!inputText.trim()) return
+    trackToolEvent('yaml_json_converter_convert', {
+      direction,
+      input_length: inputText.length,
+      success: !error,
+      error: error ?? undefined,
+    })
+  }, [inputText, direction, error])
 
   const handleSwapDirection = () => {
     const newDirection: ConversionDirection =
@@ -79,7 +65,6 @@ function YamlJsonConverterContent() {
     // Swap input and output if output exists
     if (outputText) {
       setInputText(outputText)
-      setOutputText('')
     }
 
     trackToolEvent('yaml_json_converter_swap', { new_direction: newDirection })
@@ -121,8 +106,6 @@ function YamlJsonConverterContent() {
 
   const handleClear = () => {
     setInputText('')
-    setOutputText('')
-    setError(null)
     trackToolEvent('yaml_json_converter_clear', {})
   }
 

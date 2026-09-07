@@ -469,8 +469,8 @@ describe('ads-config', () => {
 
   describe('AdNetwork type', () => {
     it('should export AdNetwork type that accepts valid values', async () => {
-      const { isAdNetworkEnabled } = await import('../ads-config')
-      type AdNetwork = Parameters<typeof isAdNetworkEnabled>[0]
+      type AdsConfig = typeof import('../ads-config')
+      type AdNetwork = Parameters<AdsConfig['isAdNetworkEnabled']>[0]
 
       // This test validates the type works at runtime
       const networks: AdNetwork[] = ['adsense', 'carbon', 'ethical', 'affiliate']

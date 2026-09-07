@@ -11,7 +11,7 @@ import {
   Trash2,
   Upload,
 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -27,6 +27,12 @@ interface FileItem {
   originalName: string
   newName: string
   error?: string
+}
+
+interface SourceFile {
+  id: string
+  file: File
+  originalName: string
 }
 
 type CaseTransform = 'none' | 'lowercase' | 'uppercase' | 'capitalize' | 'camelCase' | 'kebabCase'
@@ -126,8 +132,38 @@ const validateFileName = (fileName: string): string | undefined => {
   return undefined
 }
 
+const previewRenames = (sourceFiles: SourceFile[], pattern: RenamePattern): FileItem[] => {
+  if (sourceFiles.length === 0) return []
+
+  const updatedFiles = sourceFiles.map((fileItem, index) => {
+    const sequenceNum = pattern.sequenceStart + index * pattern.sequenceStep
+    const newName = applyRenamePattern(fileItem.originalName, pattern, sequenceNum)
+    const error = validateFileName(newName)
+
+    return {
+      ...fileItem,
+      newName,
+      error,
+    }
+  })
+
+  const nameCount = new Map<string, number>()
+  updatedFiles.forEach((item) => {
+    const count = nameCount.get(item.newName) || 0
+    nameCount.set(item.newName, count + 1)
+  })
+
+  return updatedFiles.map((item) => {
+    const count = nameCount.get(item.newName) ?? 0
+    if (count > 1 && !item.error) {
+      return { ...item, error: 'Duplicate filename' }
+    }
+    return item
+  })
+}
+
 export default function BatchRenamePage() {
-  const [files, setFiles] = useState<FileItem[]>([])
+  const [sourceFiles, setSourceFiles] = useState<SourceFile[]>([])
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -148,54 +184,18 @@ export default function BatchRenamePage() {
     trackToolEvent('batch_rename_open', {})
   }, [])
 
-  // Update preview when pattern changes
-  useEffect(() => {
-    setFiles((prevFiles) => {
-      if (prevFiles.length === 0) return prevFiles
-
-      const updatedFiles = prevFiles.map((fileItem, index) => {
-        const sequenceNum = pattern.sequenceStart + index * pattern.sequenceStep
-        const newName = applyRenamePattern(fileItem.originalName, pattern, sequenceNum)
-        const error = validateFileName(newName)
-
-        return {
-          ...fileItem,
-          newName,
-          error,
-        }
-      })
-
-      // Check for duplicate names
-      const nameCount = new Map<string, number>()
-      updatedFiles.forEach((item) => {
-        const count = nameCount.get(item.newName) || 0
-        nameCount.set(item.newName, count + 1)
-      })
-
-      // Mark duplicates
-      const finalFiles = updatedFiles.map((item) => {
-        const count = nameCount.get(item.newName) ?? 0
-        if (count > 1 && !item.error) {
-          return { ...item, error: 'Duplicate filename' }
-        }
-        return item
-      })
-
-      return finalFiles
-    })
-  }, [pattern])
+  const files = useMemo(() => previewRenames(sourceFiles, pattern), [sourceFiles, pattern])
 
   const handleFileSelect = (selectedFiles: FileList | null) => {
     if (!selectedFiles) return
 
-    const newFiles: FileItem[] = Array.from(selectedFiles).map((file) => ({
+    const newFiles: SourceFile[] = Array.from(selectedFiles).map((file) => ({
       id: `${file.name}-${Date.now()}-${Math.random()}`,
       file,
       originalName: file.name,
-      newName: file.name,
     }))
 
-    setFiles((prev) => [...prev, ...newFiles])
+    setSourceFiles((prev) => [...prev, ...newFiles])
     toast.success(`Added ${selectedFiles.length} file${selectedFiles.length > 1 ? 's' : ''}`)
 
     trackToolEvent('batch_rename_upload', { file_count: selectedFiles.length })
@@ -217,12 +217,12 @@ export default function BatchRenamePage() {
   }
 
   const handleRemoveFile = (id: string) => {
-    setFiles((prev) => prev.filter((f) => f.id !== id))
+    setSourceFiles((prev) => prev.filter((f) => f.id !== id))
     trackToolEvent('batch_rename_remove_file', {})
   }
 
   const handleClearAll = () => {
-    setFiles([])
+    setSourceFiles([])
     trackToolEvent('batch_rename_clear', {})
   }
 

@@ -29,34 +29,30 @@ import {
   getPasswordStrengthPercentage,
   getStrengthColor,
   getStrengthLabel,
-  type PasswordAnalysis,
 } from './utils'
 
 function PasswordStrengthContent() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null)
 
   useEffect(() => {
     trackToolEvent('password_strength_open', {})
   }, [])
 
-  useEffect(() => {
-    if (password) {
-      const result = analyzePassword(password)
-      setAnalysis(result)
+  const analysis = useMemo(
+    () => (password ? analyzePassword(password) : null),
+    [password]
+  )
 
-      if (password.length >= 3) {
-        trackToolEvent('password_strength_checked', {
-          score: result.score,
-          length: result.length,
-          strength_level: result.strengthLevel,
-        })
-      }
-    } else {
-      setAnalysis(null)
+  useEffect(() => {
+    if (analysis && password.length >= 3) {
+      trackToolEvent('password_strength_checked', {
+        score: analysis.score,
+        length: analysis.length,
+        strength_level: analysis.strengthLevel,
+      })
     }
-  }, [password])
+  }, [analysis, password])
 
   const suggestions = useMemo(() => {
     if (!analysis) return []

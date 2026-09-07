@@ -491,14 +491,15 @@ function JSONBeautifyContent() {
   }, [value])
 
   // Get filtered history items
+  const { getFilteredItems } = history
   const filteredHistory = useMemo(() => {
-    return history.getFilteredItems({
+    return getFilteredItems({
       searchQuery: historySearchQuery,
       searchFields: ['preview', 'action'],
       sortBy: historySortBy,
       showFavoritesOnly,
     })
-  }, [history.getFilteredItems, historySearchQuery, historySortBy, showFavoritesOnly])
+  }, [getFilteredItems, historySearchQuery, historySortBy, showFavoritesOnly])
 
   const handleBeautify = () => {
     try {

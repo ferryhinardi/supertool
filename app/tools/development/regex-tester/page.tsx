@@ -13,7 +13,7 @@ import {
   Search,
   XCircle,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
@@ -35,9 +35,6 @@ export default function RegexTesterPage() {
   const [pattern, setPattern] = useState('')
   const [testString, setTestString] = useState('')
   const [flags, setFlags] = useState<RegexFlag[]>(['g'])
-  const [matches, setMatches] = useState<RegexMatch[]>([])
-  const [isValid, setIsValid] = useState(true)
-  const [error, setError] = useState<string>()
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [selectedLanguage, setSelectedLanguage] = useState('javascript')
   const [showPatterns, setShowPatterns] = useState(true)
@@ -52,26 +49,26 @@ export default function RegexTesterPage() {
     gradient: 'from-purple-500 to-pink-500',
   })
 
-  // Test regex whenever pattern, flags, or test string changes
-  useEffect(() => {
+  const { matches, isValid, error, hasMatch } = useMemo(() => {
     if (!pattern) {
-      setMatches([])
-      setIsValid(true)
-      setError(undefined)
-      return
+      return { matches: [] as RegexMatch[], isValid: true, error: undefined as string | undefined, hasMatch: false }
     }
-
     const result = testRegex(pattern, flags, testString)
-    setIsValid(result.isValid)
-    setError(result.error)
-    setMatches(result.matches)
-
-    if (result.isValid && result.hasMatch) {
-      trackToolEvent('regex_tester_match_found', {
-        match_count: result.matches.length,
-      })
+    return {
+      matches: result.matches,
+      isValid: result.isValid,
+      error: result.error,
+      hasMatch: result.isValid && result.hasMatch,
     }
   }, [pattern, flags, testString])
+
+  useEffect(() => {
+    if (hasMatch) {
+      trackToolEvent('regex_tester_match_found', {
+        match_count: matches.length,
+      })
+    }
+  }, [hasMatch, matches.length])
 
   const toggleFlag = (flag: RegexFlag) => {
     setFlags((prev) => (prev.includes(flag) ? prev.filter((f) => f !== flag) : [...prev, flag]))
@@ -93,9 +90,6 @@ export default function RegexTesterPage() {
     setPattern('')
     setTestString('')
     setFlags(['g'])
-    setMatches([])
-    setIsValid(true)
-    setError(undefined)
     trackToolEvent('regex_tester_cleared')
   }
 

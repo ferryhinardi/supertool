@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { FileTree, FileTreeItem } from '@/lib/services/github/types'
 import { css } from '@/styled-system/css'
 
@@ -405,6 +405,17 @@ function filterTree(nodes: TreeNode[], query: string): TreeNode[] {
   return filterNodes(nodes)
 }
 
+function getDirectoryPaths(nodes: TreeNode[]): string[] {
+  const paths: string[] = []
+  for (const node of nodes) {
+    if (node.type === 'directory') {
+      paths.push(node.path)
+      paths.push(...getDirectoryPaths(node.children))
+    }
+  }
+  return paths
+}
+
 // ============================================
 // Sub-components
 // ============================================
@@ -575,22 +586,12 @@ export function FileBrowser({
     return filterTree(treeNodes, searchQuery)
   }, [treeNodes, searchQuery])
 
-  // Auto-expand all directories when searching
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      const getAllPaths = (nodes: TreeNode[]): string[] => {
-        const paths: string[] = []
-        for (const node of nodes) {
-          if (node.type === 'directory') {
-            paths.push(node.path)
-            paths.push(...getAllPaths(node.children))
-          }
-        }
-        return paths
-      }
-      setExpandedPaths(new Set(getAllPaths(filteredNodes)))
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query)
+    if (query.trim()) {
+      setExpandedPaths(new Set(getDirectoryPaths(filterTree(treeNodes, query))))
     }
-  }, [searchQuery, filteredNodes])
+  }
 
   const handleToggle = useCallback((path: string) => {
     setExpandedPaths((prev) => {
@@ -605,17 +606,7 @@ export function FileBrowser({
   }, [])
 
   const handleExpandAll = useCallback(() => {
-    const getAllPaths = (nodes: TreeNode[]): string[] => {
-      const paths: string[] = []
-      for (const node of nodes) {
-        if (node.type === 'directory') {
-          paths.push(node.path)
-          paths.push(...getAllPaths(node.children))
-        }
-      }
-      return paths
-    }
-    setExpandedPaths(new Set(getAllPaths(treeNodes)))
+    setExpandedPaths(new Set(getDirectoryPaths(treeNodes)))
   }, [treeNodes])
 
   const handleCollapseAll = useCallback(() => {
@@ -752,7 +743,7 @@ export function FileBrowser({
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search files..."
             className={css({
               flex: '1',

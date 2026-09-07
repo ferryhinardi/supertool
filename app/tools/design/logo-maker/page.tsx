@@ -489,6 +489,7 @@ export default function LogoMakerPage() {
     // Add text
     if (brandName && layout !== 'icon-only') {
       const text = document.createElementNS(svgNS, 'text')
+      text.textContent = brandName
       text.setAttribute('font-family', selectedFont.value)
       text.setAttribute('font-size', String(fontSize))
       text.setAttribute('font-weight', fontWeight)
@@ -507,19 +508,18 @@ export default function LogoMakerPage() {
 
       text.setAttribute('x', String(textX))
       text.setAttribute('y', String(textY))
-      text.textContent = brandName
       svg.appendChild(text)
 
       // Tagline
       if (tagline) {
         const taglineText = document.createElementNS(svgNS, 'text')
+        taglineText.textContent = tagline
         taglineText.setAttribute('font-family', selectedFont.value)
         taglineText.setAttribute('font-size', String(fontSize / 2))
         taglineText.setAttribute('fill', secondaryColor)
         taglineText.setAttribute('text-anchor', 'middle')
         taglineText.setAttribute('x', '256')
         taglineText.setAttribute('y', String(textY + fontSize + 10))
-        taglineText.textContent = tagline
         svg.appendChild(taglineText)
       }
     }

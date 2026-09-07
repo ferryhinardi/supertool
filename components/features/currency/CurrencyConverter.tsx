@@ -1,7 +1,7 @@
 'use client'
 
 import { ArrowRightLeft, RefreshCw } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useCurrencyConverter } from '@/hooks/tools/useCurrencyConverter'
 import {
@@ -40,20 +40,17 @@ export function CurrencyConverter({
     getRate,
   } = useCurrencyConverter(baseCurrency)
 
-  const [convertedAmounts, setConvertedAmounts] = useState<Record<string, number>>({})
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const rate = getRate(baseCurrency, targetCurrency)
 
-  // Convert amounts when rate or amounts change
-  useEffect(() => {
-    if (rate) {
-      const converted: Record<string, number> = {}
-      for (const amount of amounts) {
-        converted[amount.label] = amount.value * rate
-      }
-      setConvertedAmounts(converted)
+  const convertedAmounts = useMemo(() => {
+    if (!rate) return {}
+    const converted: Record<string, number> = {}
+    for (const amount of amounts) {
+      converted[amount.label] = amount.value * rate
     }
+    return converted
   }, [rate, amounts])
 
   const handleRefresh = async () => {

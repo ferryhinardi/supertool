@@ -1,7 +1,7 @@
 'use client'
 
 import hljs from 'highlight.js'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import type { GeneratedFile } from '@/lib/services/copilot/types'
 import { css } from '@/styled-system/css'
 
@@ -188,7 +188,6 @@ export function FilePreviewModal({
   copied,
 }: FilePreviewModalProps) {
   const codeRef = useRef<HTMLElement>(null)
-  const [lineCount, setLineCount] = useState(0)
 
   // Decode content if base64
   const decodedContent = useMemo(() => {
@@ -211,12 +210,10 @@ export function FilePreviewModal({
     [file.name, file.mimeType]
   )
 
-  // Count lines
-  useEffect(() => {
-    if (decodedContent) {
-      setLineCount(decodedContent.split('\n').length)
-    }
-  }, [decodedContent])
+  const lineCount = useMemo(
+    () => (decodedContent ? decodedContent.split('\n').length : 0),
+    [decodedContent]
+  )
 
   // Apply syntax highlighting
   useEffect(() => {
