@@ -21,7 +21,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type React from 'react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { type Tool, type ToolCategory, tools } from '@/lib/data/tools'
 import { css, cva } from '@/styled-system/css'
@@ -93,6 +93,16 @@ export function Sidebar() {
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
 
+  // Prevent background scroll while the mobile drawer is open
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [mobileMenuOpen])
+
   const toggleCategory = useCallback((category: ToolCategory) => {
     setCollapsedCategories((prev) => {
       const next = new Set(prev)
@@ -144,6 +154,8 @@ export function Sidebar() {
           zIndex: 'tooltip',
           alignItems: 'center',
           justifyContent: 'center',
+          minH: '11',
+          minW: '11',
           rounded: 'lg',
           border: '1px solid rgba(139, 92, 246, 0.2)',
           bg: 'rgba(17, 24, 39, 0.9)',
@@ -225,6 +237,9 @@ export function Sidebar() {
             onClick={closeMobileMenu}
             className={css({
               mb: { base: '6', md: '8' },
+              display: 'flex',
+              alignItems: 'center',
+              minH: '11',
               textDecoration: 'none !important',
             })}
           >
@@ -449,6 +464,10 @@ export function Sidebar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={css({
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  minH: '11',
+                  px: '1',
                   color: 'gray.400',
                   fontWeight: 'medium',
                   textDecoration: 'none !important',
@@ -578,6 +597,8 @@ function AuthSection() {
             gap: '3',
             px: '3',
             py: '2',
+            minH: '11',
+            w: 'full',
             rounded: 'lg',
             fontSize: 'sm',
             color: 'gray.400',
@@ -616,6 +637,7 @@ function AuthSection() {
           gap: '3',
           px: '4',
           py: '2.5',
+          minH: '11',
           rounded: 'lg',
           fontSize: 'sm',
           fontWeight: 'semibold',

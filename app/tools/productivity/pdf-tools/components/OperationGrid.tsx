@@ -480,6 +480,7 @@ export function OperationGrid({
             className={css({
               px: '4',
               py: '2',
+              minH: '11',
               rounded: 'full',
               fontSize: 'sm',
               fontWeight: 'medium',

@@ -272,7 +272,8 @@ export default function CronBuilderPage() {
                     onChange={handlePlatformChange}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -318,7 +319,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => setFilterCategory(e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -436,7 +438,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('minute', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -486,7 +489,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('hour', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -536,7 +540,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('dayOfMonth', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -586,7 +591,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('month', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -636,7 +642,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('dayOfWeek', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',

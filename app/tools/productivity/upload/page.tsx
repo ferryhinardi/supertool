@@ -700,6 +700,8 @@ function UploadToolContent() {
                 gap: '2',
                 px: { base: '3', sm: '4' },
                 py: '2',
+                minH: '11',
+                minW: '11',
                 fontSize: { base: 'sm', sm: 'base' },
                 ...(activeTab === tab.id
                   ? {
@@ -942,7 +944,7 @@ function UploadToolContent() {
                                         // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
                                         handleCopy(queuedFile.publicUrl!, queuedFile.id)
                                       }
-                                      className={css({ p: '1', h: 'auto' })}
+                                      className={css({ minH: '11', minW: '11', p: '2' })}
                                     >
                                       {copied === queuedFile.id ? (
                                         <Check
@@ -956,7 +958,7 @@ function UploadToolContent() {
                                       variant="ghost"
                                       size="sm"
                                       asChild
-                                      className={css({ p: '1', h: 'auto' })}
+                                      className={css({ minH: '11', minW: '11', p: '2' })}
                                     >
                                       <a
                                         href={queuedFile.publicUrl}
@@ -973,7 +975,7 @@ function UploadToolContent() {
                                         // biome-ignore lint/style/noNonNullAssertion: publicUrl is guaranteed by parent conditional check
                                         openQRModal(queuedFile.publicUrl!, queuedFile.file.name)
                                       }
-                                      className={css({ p: '1', h: 'auto' })}
+                                      className={css({ minH: '11', minW: '11', p: '2' })}
                                       title="Generate QR Code"
                                     >
                                       <QrCode className={css({ h: '4', w: '4' })} />
@@ -988,7 +990,7 @@ function UploadToolContent() {
                                           queuedFile.file.name
                                         )
                                       }
-                                      className={css({ p: '1', h: 'auto' })}
+                                      className={css({ minH: '11', minW: '11', p: '2' })}
                                       title="Share"
                                     >
                                       <Share2 className={css({ h: '4', w: '4' })} />
@@ -1020,7 +1022,12 @@ function UploadToolContent() {
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => removeFromQueue(queuedFile.id)}
-                                    className={css({ p: '1', h: 'auto', color: 'gray.500' })}
+                                    className={css({
+                                      minH: '11',
+                                      minW: '11',
+                                      p: '2',
+                                      color: 'gray.500',
+                                    })}
                                   >
                                     <X className={css({ h: '4', w: '4' })} />
                                   </Button>
@@ -1255,7 +1262,6 @@ function UploadToolContent() {
                               onClick={() => toggleFavorite(item)}
                               className={css({
                                 p: '2',
-                                h: 'auto',
                                 color: isFavorited(item.publicUrl) ? 'yellow.400' : 'gray.500',
                                 _hover: { color: 'yellow.400' },
                               })}
@@ -1272,7 +1278,7 @@ function UploadToolContent() {
                               onClick={() =>
                                 handleCopyWithExpiration(item.publicUrl, item.expiresAt)
                               }
-                              className={css({ p: '2', h: 'auto' })}
+                              className={css({ minH: '11', minW: '11', p: '2' })}
                               title="Copy URL"
                             >
                               {copied === item.id ? (
@@ -1285,7 +1291,7 @@ function UploadToolContent() {
                               variant="ghost"
                               size="sm"
                               asChild
-                              className={css({ p: '2', h: 'auto' })}
+                              className={css({ minH: '11', minW: '11', p: '2' })}
                               title="Open in new tab"
                             >
                               <a href={item.publicUrl} target="_blank" rel="noopener noreferrer">
@@ -1296,7 +1302,7 @@ function UploadToolContent() {
                               variant="ghost"
                               size="sm"
                               onClick={() => openQRModal(item.publicUrl, item.fileName)}
-                              className={css({ p: '2', h: 'auto' })}
+                              className={css({ minH: '11', minW: '11', p: '2' })}
                               title="Generate QR Code"
                             >
                               <QrCode className={css({ h: '4', w: '4' })} />
@@ -1305,7 +1311,7 @@ function UploadToolContent() {
                               variant="ghost"
                               size="sm"
                               onClick={() => openShareModal(item.publicUrl, item.fileName)}
-                              className={css({ p: '2', h: 'auto' })}
+                              className={css({ minH: '11', minW: '11', p: '2' })}
                               title="Share"
                             >
                               <Share2 className={css({ h: '4', w: '4' })} />
@@ -1414,7 +1420,7 @@ function UploadToolContent() {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleCopy(item.publicUrl, item.id)}
-                            className={css({ p: '2', h: 'auto' })}
+                            className={css({ minH: '11', minW: '11', p: '2' })}
                             title="Copy URL"
                           >
                             {copied === item.id ? (
@@ -1427,7 +1433,7 @@ function UploadToolContent() {
                             variant="ghost"
                             size="sm"
                             asChild
-                            className={css({ p: '2', h: 'auto' })}
+                            className={css({ minH: '11', minW: '11', p: '2' })}
                             title="Open in new tab"
                           >
                             <a href={item.publicUrl} target="_blank" rel="noopener noreferrer">
@@ -1438,7 +1444,7 @@ function UploadToolContent() {
                             variant="ghost"
                             size="sm"
                             onClick={() => openQRModal(item.publicUrl, item.fileName)}
-                            className={css({ p: '2', h: 'auto' })}
+                            className={css({ minH: '11', minW: '11', p: '2' })}
                             title="Generate QR Code"
                           >
                             <QrCode className={css({ h: '4', w: '4' })} />
@@ -1447,7 +1453,7 @@ function UploadToolContent() {
                             variant="ghost"
                             size="sm"
                             onClick={() => openShareModal(item.publicUrl, item.fileName)}
-                            className={css({ p: '2', h: 'auto' })}
+                            className={css({ minH: '11', minW: '11', p: '2' })}
                             title="Share"
                           >
                             <Share2 className={css({ h: '4', w: '4' })} />
@@ -1456,7 +1462,7 @@ function UploadToolContent() {
                             variant="ghost"
                             size="sm"
                             onClick={() => removeFromFavorites(item.publicUrl)}
-                            className={css({ p: '2', h: 'auto', color: 'red.400' })}
+                            className={css({ minH: '11', minW: '11', p: '2', color: 'red.400' })}
                             title="Remove from favorites"
                           >
                             <Trash2 className={css({ h: '4', w: '4' })} />
@@ -1649,7 +1655,7 @@ function UploadToolContent() {
                 variant="ghost"
                 size="sm"
                 onClick={closeQRModal}
-                className={css({ p: '1', h: 'auto' })}
+                className={css({ minH: '11', minW: '11', p: '2' })}
               >
                 <X className={css({ h: '5', w: '5' })} />
               </Button>
@@ -1794,7 +1800,7 @@ function UploadToolContent() {
                 variant="ghost"
                 size="sm"
                 onClick={closeShareModal}
-                className={css({ p: '1', h: 'auto' })}
+                className={css({ minH: '11', minW: '11', p: '2' })}
               >
                 <X className={css({ h: '5', w: '5' })} />
               </Button>

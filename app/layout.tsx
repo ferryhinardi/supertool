@@ -180,7 +180,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   w: { base: 'full', md: 'calc(100vw - 16rem)' },
                   flex: { base: '1', md: '1' },
                   overflowX: 'hidden',
-                  p: { base: '3', sm: '4', md: '8', lg: '10', xl: '12' },
+                  // Keep mobile horizontal padding light — tool pages already add their own px
+                  px: { base: '2', sm: '4', md: '8', lg: '10', xl: '12' },
+                  pb: { base: '4', sm: '4', md: '8', lg: '10', xl: '12' },
                   pt: {
                     // The fixed mobile menu button spans 16px-66px, so this must
                     // clear 66px. '18' is not a spacing token and would emit a raw
@@ -218,8 +220,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     bottom: '0',
                     left: '0',
                     zIndex: '0',
-                    h: '700px',
-                    w: '700px',
+                    h: { base: '360px', md: '700px' },
+                    w: { base: '360px', md: '700px' },
                     animation: 'pulse 5s 1s infinite',
                     rounded: 'full',
                     bgGradient: 'to-tr',
@@ -236,8 +238,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     top: '50%',
                     left: '50%',
                     zIndex: '0',
-                    h: { base: '280px', md: '500px' },
-                    w: { base: '280px', md: '500px' },
+                    h: { base: '220px', md: '500px' },
+                    w: { base: '220px', md: '500px' },
                     transform: 'translate(-50%, -50%)',
                     animation: 'pulse 6s 2s infinite',
                     rounded: 'full',

@@ -145,3 +145,10 @@ input:-webkit-input-placeholder {
     color: #a3a3a3;
   }
 }
+
+/* Compact floating support CTA on phones so it doesn't cover tool cards */
+@media (max-width: 639px) {
+  .treat-me-label {
+    display: none;
+  }
+}

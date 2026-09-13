@@ -94,7 +94,12 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
             background: 'transparent',
             border: 'none',
             cursor: hasRated ? 'default' : 'pointer',
-            padding: 0,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minH: '11',
+            minW: '11',
+            p: '2',
             transition: 'transform 0.1s',
             _hover: {
               transform: hasRated ? 'none' : 'scale(1.1)',

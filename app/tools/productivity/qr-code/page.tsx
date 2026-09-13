@@ -1735,7 +1735,7 @@ url,https://github.com,GitHub,#000000`
                   <div
                     className={css({
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' },
                       gap: '2',
                     })}
                   >
@@ -2476,7 +2476,7 @@ url,https://github.com,GitHub,#000000`
                     <div
                       className={css({
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gridTemplateColumns: { base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
                         gap: '2',
                       })}
                     >
@@ -2786,11 +2786,18 @@ url,https://github.com,GitHub,#000000`
             >
               Actions
             </h2>
-            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '3' })}>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                gap: '3',
+                w: 'full',
+              })}
+            >
               <Button
                 onClick={() => downloadQRCode('png')}
                 disabled={!hasValidInput}
-                className={css({ flex: '1' })}
+                className={css({ w: 'full', minH: '11' })}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download PNG
@@ -2799,7 +2806,7 @@ url,https://github.com,GitHub,#000000`
                 onClick={() => downloadQRCode('svg')}
                 disabled={!hasValidInput}
                 variant="outline"
-                className={css({ flex: '1' })}
+                className={css({ w: 'full', minH: '11' })}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download SVG
@@ -2808,7 +2815,7 @@ url,https://github.com,GitHub,#000000`
                 onClick={copyQRCode}
                 disabled={!hasValidInput}
                 variant="outline"
-                className={css({ flex: '1' })}
+                className={css({ w: 'full', minH: '11' })}
               >
                 <Copy className="mr-2 h-4 w-4" />
                 Copy Image
@@ -2817,7 +2824,7 @@ url,https://github.com,GitHub,#000000`
                 onClick={handleSaveToHistory}
                 disabled={!hasValidInput}
                 variant="outline"
-                className={css({ flex: '1' })}
+                className={css({ w: 'full', minH: '11' })}
               >
                 <History className="mr-2 h-4 w-4" />
                 Save to History
