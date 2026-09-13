@@ -467,7 +467,13 @@ function CurrencyConverterContent() {
               >
                 To
               </label>
-              <div className={css({ display: 'grid', gridTemplateColumns: '1fr auto', gap: '3' })}>
+              <div
+                className={css({
+                  display: 'grid',
+                  gridTemplateColumns: { base: '1fr', sm: 'minmax(0, 1fr) auto' },
+                  gap: '3',
+                })}
+              >
                 <Input
                   id="to-value"
                   type="text"
@@ -482,6 +488,8 @@ function CurrencyConverterContent() {
                   placeholder="Result"
                   className={css({
                     h: '14',
+                    minW: '0',
+                    w: 'full',
                     fontSize: 'xl',
                     fontWeight: 'bold',
                     bg: 'emerald.500/10',
@@ -497,7 +505,8 @@ function CurrencyConverterContent() {
                   disabled={loading}
                   className={css({
                     h: '14',
-                    minW: '40',
+                    w: { base: 'full', sm: '40' },
+                    minW: { base: '0', sm: '40' },
                     rounded: 'lg',
                     border: '1px solid',
                     borderColor: 'gray.700',

@@ -63,6 +63,7 @@ export function ToolMobilePicker({
         onClick={() => setIsOpen(true)}
         className={css({
           w: 'full',
+          minH: '12',
           justifyContent: 'space-between',
           gap: '2',
           px: '4',

@@ -273,8 +273,10 @@ export default function PlaceholderGeneratorPage() {
                       value={bgColor}
                       onChange={(e) => handleColorChange('bg', e.target.value)}
                       className={css({
-                        w: '12',
-                        h: '10',
+                        w: '11',
+                        h: '11',
+                        minW: '11',
+                        minH: '11',
                         borderRadius: 'md',
                         border: '1px solid',
                         borderColor: 'gray.700',
@@ -295,7 +297,7 @@ export default function PlaceholderGeneratorPage() {
                     className={css({
                       display: 'grid',
                       gridTemplateColumns: {
-                        base: 'repeat(6, minmax(0, 1fr))',
+                        base: 'repeat(auto-fill, minmax(44px, 1fr))',
                         sm: 'repeat(11, minmax(0, 1fr))',
                       },
                       gap: '1',
@@ -311,7 +313,7 @@ export default function PlaceholderGeneratorPage() {
                         onClick={() => handleColorChange('bg', color)}
                         className={css({
                           w: 'full',
-                          minW: '0',
+                          minW: '11',
                           minH: '11',
                           h: '11',
                           borderRadius: 'md',
@@ -339,8 +341,10 @@ export default function PlaceholderGeneratorPage() {
                       value={textColor}
                       onChange={(e) => handleColorChange('text', e.target.value)}
                       className={css({
-                        w: '12',
-                        h: '10',
+                        w: '11',
+                        h: '11',
+                        minW: '11',
+                        minH: '11',
                         borderRadius: 'md',
                         border: '1px solid',
                         borderColor: 'gray.700',
@@ -361,7 +365,7 @@ export default function PlaceholderGeneratorPage() {
                     className={css({
                       display: 'grid',
                       gridTemplateColumns: {
-                        base: 'repeat(6, minmax(0, 1fr))',
+                        base: 'repeat(auto-fill, minmax(44px, 1fr))',
                         sm: 'repeat(11, minmax(0, 1fr))',
                       },
                       gap: '1',
@@ -377,7 +381,7 @@ export default function PlaceholderGeneratorPage() {
                         onClick={() => handleColorChange('text', color)}
                         className={css({
                           w: 'full',
-                          minW: '0',
+                          minW: '11',
                           minH: '11',
                           h: '11',
                           borderRadius: 'md',

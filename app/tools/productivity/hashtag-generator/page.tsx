@@ -318,6 +318,7 @@ export default function HashtagGeneratorPage() {
                         gap: 1.5,
                         px: 3,
                         py: 2,
+                        minH: '11',
                         fontSize: 'sm',
                         fontWeight: 'medium',
                         rounded: 'lg',
@@ -332,6 +333,7 @@ export default function HashtagGeneratorPage() {
                           borderColor: 'pink.500',
                         },
                       })}
+                      data-touch-chip
                     >
                       <Icon className={css({ w: 4, h: 4 })} />
                       {data.name}

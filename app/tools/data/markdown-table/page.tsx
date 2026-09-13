@@ -651,6 +651,7 @@ export default function MarkdownTablePage() {
                           className={css({
                             w: 'full',
                             minW: '100px',
+                            minH: '11',
                             rounded: 'md',
                             border: '1px solid',
                             borderColor: 'gray.700',
@@ -698,6 +699,11 @@ export default function MarkdownTablePage() {
                               onClick={() => handleRemoveColumn(colIndex)}
                               className={css({
                                 p: '1',
+                                minW: '11',
+                                minH: '11',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                                 rounded: 'md',
                                 color: 'gray.500',
                                 _hover: { bg: 'red.500/20', color: 'red.400' },
@@ -726,6 +732,11 @@ export default function MarkdownTablePage() {
                           onClick={() => handleRemoveRow(rowIndex)}
                           className={css({
                             p: '1',
+                            minW: '11',
+                            minH: '11',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                             rounded: 'md',
                             color: 'gray.500',
                             _hover: { bg: 'red.500/20', color: 'red.400' },

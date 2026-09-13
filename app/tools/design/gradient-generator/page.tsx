@@ -656,7 +656,7 @@ export default function GradientGeneratorPage() {
                     {colorStops.length > 2 && (
                       <Button
                         variant="outline"
-                        size="sm"
+                        size="icon"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleRemoveColorStop(stop.id)

@@ -576,7 +576,7 @@ export default function PomodoroTimerPage() {
                   onOpenChange={(details) => setShowSettings(details.open)}
                 >
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm" aria-label="Open settings">
+                    <Button variant="ghost" size="icon" aria-label="Open settings">
                       <Settings className={css({ h: '4', w: '4' })} />
                     </Button>
                   </DialogTrigger>
@@ -587,7 +587,7 @@ export default function PomodoroTimerPage() {
 
                 <Dialog open={showStats} onOpenChange={(details) => setShowStats(details.open)}>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm" aria-label="View statistics">
+                    <Button variant="ghost" size="icon" aria-label="View statistics">
                       <BarChart3 className={css({ h: '4', w: '4' })} />
                     </Button>
                   </DialogTrigger>

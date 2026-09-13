@@ -393,7 +393,8 @@ export default function TallyCounterPage() {
                       }}
                       className={css({
                         flex: 1,
-                        h: { base: '10', sm: 'auto' },
+                        minH: '11',
+                        h: { base: '11', sm: 'auto' },
                         px: '2',
                         py: { base: '2', sm: '1' },
                         rounded: 'md',

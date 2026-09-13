@@ -195,6 +195,7 @@ export default function RegexTesterPage() {
             alignItems: 'center',
             justifyContent: 'space-between',
             w: 'full',
+            minH: '11',
             cursor: 'pointer',
             _hover: { opacity: 0.8 },
           })}
@@ -228,6 +229,7 @@ export default function RegexTesterPage() {
                   className={css({
                     px: '3',
                     py: '1.5',
+                    minH: '11',
                     borderRadius: 'lg',
                     fontSize: 'sm',
                     fontWeight: '500',
@@ -242,6 +244,7 @@ export default function RegexTesterPage() {
                       bg: selectedCategory === category ? 'purple.600' : 'rgba(255, 255, 255, 0.1)',
                     },
                   })}
+                  data-touch-chip
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
                 </button>

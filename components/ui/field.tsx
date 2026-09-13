@@ -81,7 +81,8 @@ const FieldInput = React.forwardRef<
       cx(
         css({
           display: 'flex',
-          h: '10',
+          h: '11',
+          minH: '11',
           w: 'full',
           rounded: 'md',
           border: '1px solid',
@@ -167,7 +168,8 @@ const FieldSelect = React.forwardRef<
     className={cx(
       css({
         display: 'flex',
-        h: '10',
+        h: '11',
+        minH: '11',
         w: 'full',
         rounded: 'md',
         border: '1px solid',

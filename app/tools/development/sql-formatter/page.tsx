@@ -384,6 +384,7 @@ export default function SQLFormatterPage() {
               className={css({
                 px: 3,
                 py: 1.5,
+                minH: '11',
                 rounded: 'md',
                 border: '1px solid',
                 borderColor: 'gray.700',
@@ -395,6 +396,7 @@ export default function SQLFormatterPage() {
                 cursor: 'pointer',
                 _hover: { borderColor: 'blue.500', color: 'blue.400' },
               })}
+              data-touch-chip
             >
               {example.name}
             </button>

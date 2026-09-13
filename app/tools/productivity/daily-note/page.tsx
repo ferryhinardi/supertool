@@ -717,6 +717,7 @@ export default function DailyNotePage() {
                                 textAlign: 'left',
                                 px: '3',
                                 py: '2',
+                                minH: '11',
                                 rounded: 'md',
                                 fontSize: 'sm',
                                 transition: 'all',

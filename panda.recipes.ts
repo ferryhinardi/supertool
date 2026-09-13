@@ -82,16 +82,17 @@ export const buttonRecipe = defineRecipe({
     },
     size: {
       // Mobile-first: keep a 44px minimum touch target (spacing token '11')
-      default: { h: '11', minH: '11', px: '4', py: '2' },
-      sm: { h: '11', minH: '11', rounded: 'md', px: '3', fontSize: 'xs' },
+      // minW on sm covers icon-only buttons; 45px minH avoids subpixel <44 failures
+      default: { h: '11', minH: '45px', px: '4', py: '2' },
+      sm: { h: '11', minH: '45px', minW: '11', rounded: 'md', px: '3', fontSize: 'xs' },
       lg: {
         h: { base: '11', sm: '12', md: '14' },
-        minH: '11',
+        minH: '45px',
         rounded: 'lg',
         px: { base: '6', sm: '7', md: '8' },
         fontSize: { base: 'base', sm: 'lg', md: 'xl' },
       },
-      icon: { h: '11', w: '11', minH: '11', minW: '11' },
+      icon: { h: '11', w: '11', minH: '45px', minW: '11' },
     },
   },
   defaultVariants: {

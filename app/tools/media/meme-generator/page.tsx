@@ -324,6 +324,7 @@ export default function MemeGeneratorPage() {
                         className={css({
                           px: '3',
                           py: '1.5',
+                          minH: '11',
                           borderRadius: 'full',
                           fontSize: 'sm',
                           fontWeight: 'medium',
@@ -337,6 +338,7 @@ export default function MemeGeneratorPage() {
                             bg: selectedCategory === key ? 'purple.700' : 'gray.700',
                           },
                         })}
+                        data-touch-chip
                       >
                         {info.emoji} {info.label}
                       </button>

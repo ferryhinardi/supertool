@@ -408,7 +408,7 @@ function TimezoneConverterContent() {
                       <Button
                         onClick={() => handleRemoveTimezone(tz.id)}
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         className={css({ color: 'red.400', _hover: { color: 'red.300' } })}
                       >
                         <Trash2 className={css({ h: '4', w: '4' })} />
@@ -552,7 +552,7 @@ function TimezoneConverterContent() {
                       <Button
                         onClick={() => handleRemoveFavorite(fav.id)}
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         className={css({ color: 'red.400', _hover: { color: 'red.300' } })}
                       >
                         <X className={css({ h: '4', w: '4' })} />

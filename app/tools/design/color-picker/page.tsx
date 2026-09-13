@@ -495,7 +495,7 @@ function ColorPickerContent() {
                         backdropFilter: 'blur(8px)',
                         _hover: { bg: 'gray.800/80' },
                       })}
-                      size="sm"
+                      size="icon"
                     >
                       <Shuffle className={css({ h: '4', w: '4' })} />
                     </Button>

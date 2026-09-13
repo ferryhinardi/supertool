@@ -328,7 +328,7 @@ export default function IPLookupPage() {
                   </div>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={() => handleCopy(ipInfo.ip, 'IP Address')}
                   >
                     <Copy className={css({ h: '4', w: '4' })} />
@@ -381,7 +381,7 @@ export default function IPLookupPage() {
                       </code>
                       <Button
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         onClick={() => handleCopy(ipInfo.ip, 'IP Address')}
                       >
                         <Copy className={css({ h: '4', w: '4' })} />
