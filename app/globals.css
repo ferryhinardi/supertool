@@ -197,7 +197,7 @@ input:-webkit-input-placeholder {
   input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
       [type="file"]
     ) {
-    min-height: 44px;
+    min-height: 45px;
     min-width: 44px;
   }
 }
