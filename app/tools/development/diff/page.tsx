@@ -707,8 +707,8 @@ export default function DiffTool() {
         </Card>
       )}
 
-      <RelatedTools currentToolPath="/tools/diff" category="development" />
-      <ToolRating toolId="/tools/diff" toolName="Code Diff Viewer" />
+      <RelatedTools currentToolPath="/tools/development/diff" category="development" />
+      <ToolRating toolId="/tools/development/diff" toolName="Code Diff Viewer" />
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

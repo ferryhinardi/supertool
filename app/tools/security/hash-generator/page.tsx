@@ -1059,7 +1059,7 @@ export default function HashGeneratorPage() {
       >
         <SocialShare
           toolName="Hash Generator"
-          toolUrl="/tools/hash-generator"
+          toolUrl="/tools/security/hash-generator"
           description="Generate cryptographic hashes with MD5, SHA-1, SHA-256, SHA-384, and SHA-512 algorithms for data integrity verification"
           hashtags={['Cryptography', 'Security', 'WebDev', 'DataIntegrity']}
         />
@@ -1080,7 +1080,7 @@ export default function HashGeneratorPage() {
           opacity: 0,
         })}
       >
-        <RelatedTools currentToolPath="/tools/hash-generator" category="security" />
+        <RelatedTools currentToolPath="/tools/security/hash-generator" category="security" />
       </div>
 
       <div
@@ -1090,7 +1090,7 @@ export default function HashGeneratorPage() {
           opacity: 0,
         })}
       >
-        <ToolRating toolId="/tools/hash-generator" toolName="Hash Generator" />
+        <ToolRating toolId="/tools/security/hash-generator" toolName="Hash Generator" />
       </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

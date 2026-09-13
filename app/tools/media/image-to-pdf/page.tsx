@@ -1006,12 +1006,12 @@ export default function ImageToPdfPage() {
       </div>
 
       {/* Related Tools */}
-      <RelatedTools currentToolPath="/tools/image-to-pdf" category="media" />
+      <RelatedTools currentToolPath="/tools/media/image-to-pdf" category="media" />
 
       {/* Social Share */}
       <SocialShare
         toolName="Image to PDF Converter"
-        toolUrl="/tools/image-to-pdf"
+        toolUrl="/tools/media/image-to-pdf"
         description="Convert JPG, PNG, and other images to PDF instantly. No registration required!"
       />
 

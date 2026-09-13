@@ -27,11 +27,11 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
+    default: 'SuperTool - Modern Developer Toolkit | 100+ Free Online Tools',
     template: '%s | SuperTool',
   },
   description:
-    'Professional toolkit with 40+ free tools for developers and productivity enthusiasts. JSON formatter, image optimizer, video converter, password generator, and more - all free, fast, and privacy-focused. No registration required.',
+    'Professional toolkit with 100+ free tools for developers and productivity enthusiasts. JSON formatter, image optimizer, video converter, password generator, and more - all free, fast, and privacy-focused. No registration required.',
   keywords: [
     'developer tools',
     'online tools indonesia',
@@ -79,9 +79,9 @@ export const metadata: Metadata = {
     locale: 'id_ID',
     alternateLocale: ['en_US'],
     url: baseUrl,
-    title: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
+    title: 'SuperTool - Modern Developer Toolkit | 100+ Free Online Tools',
     description:
-      'Professional toolkit with 40+ tools for developers and productivity. JSON formatter, image optimizer, video converter, and more - all free and privacy-focused.',
+      'Professional toolkit with 100+ tools for developers and productivity. JSON formatter, image optimizer, video converter, and more - all free and privacy-focused.',
     siteName: 'SuperTool',
     images: [
       {
@@ -95,9 +95,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
+    title: 'SuperTool - Modern Developer Toolkit | 100+ Free Online Tools',
     description:
-      'Professional toolkit with 40+ tools for developers and productivity. All free and privacy-focused.',
+      'Professional toolkit with 100+ tools for developers and productivity. All free and privacy-focused.',
     creator: '@ferryhinardi',
     images: [`${baseUrl}/og-image.png`],
     site: '@supertool_id',

@@ -1561,16 +1561,46 @@ url,https://github.com,GitHub,#000000`
           className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
         >
           <div
-            className="animate-pulse rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-600 p-2.5 shadow-2xl shadow-violet-500/60 sm:rounded-2xl sm:p-4"
-            style={{ animationDuration: '2s' }}
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              p: { base: '2.5', sm: '4' },
+              bgGradient: 'to-br',
+              gradientFrom: 'violet.500',
+              gradientVia: 'purple.500',
+              gradientTo: 'fuchsia.600',
+              boxShadow: '0 25px 50px rgba(139, 92, 246, 0.4)',
+              animation: 'pulse 2s ease-in-out infinite',
+            })}
           >
-            <QrCode className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+            <QrCode
+              className={css({
+                h: { base: '6', sm: '8' },
+                w: { base: '6', sm: '8' },
+                color: 'white',
+              })}
+            />
           </div>
           <div>
-            <h1 className="bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
+            <h1
+              className={css({
+                fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
+                fontWeight: 'extrabold',
+                bgGradient: 'to-r',
+                gradientFrom: 'violet.300',
+                gradientVia: 'purple.400',
+                gradientTo: 'fuchsia.300',
+                backgroundClip: 'text',
+                color: 'transparent',
+              })}
+            >
               QR Code Generator
             </h1>
-            <p className="text-sm text-gray-200 sm:text-base md:text-lg">
+            <p
+              className={css({
+                fontSize: { base: 'sm', sm: 'base', md: 'lg' },
+                color: 'gray.200',
+              })}
+            >
               Create customizable QR codes for URLs, text, WiFi, and contact cards
             </p>
           </div>
@@ -3070,7 +3100,7 @@ url,https://github.com,GitHub,#000000`
                     })}
                   >
                     <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                      <PackageOpen className="h-4 w-4 text-emerald.400" />
+                      <PackageOpen className={css({ h: '4', w: '4', color: 'emerald.400' })} />
                       <span className={css({ fontSize: 'sm', color: 'white' })}>
                         Estimated File Size:{' '}
                         <strong className={css({ color: 'emerald.400' })}>
@@ -3293,7 +3323,7 @@ url,https://github.com,GitHub,#000000`
                         },
                       })}
                     >
-                      <Upload className="h-12 w-12 text-cyan.400 mb-3" />
+                      <Upload className={css({ h: '12', w: '12', color: 'cyan.400', mb: '3' })} />
                       <p className={css({ color: 'white', fontSize: 'sm' })}>
                         Click to upload QR code image
                       </p>
@@ -3327,7 +3357,7 @@ url,https://github.com,GitHub,#000000`
                     <div
                       className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '3' })}
                     >
-                      <CheckCircle2 className="h-5 w-5 text-cyan.400" />
+                      <CheckCircle2 className={css({ h: '5', w: '5', color: 'cyan.400' })} />
                       <span
                         className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'cyan.300' })}
                       >
@@ -3413,7 +3443,7 @@ url,https://github.com,GitHub,#000000`
                       className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '3' })}
                     >
                       {validationResult.score >= 80 ? (
-                        <CheckCircle2 className="h-5 w-5 text-emerald.400" />
+                        <CheckCircle2 className={css({ h: '5', w: '5', color: 'emerald.400' })} />
                       ) : (
                         <AlertTriangle
                           className={css({
@@ -4024,12 +4054,12 @@ url,https://github.com,GitHub,#000000`
 
       <SocialShare
         toolName="QR Code Generator"
-        toolUrl="/tools/qr-code"
+        toolUrl="/tools/productivity/qr-code"
         description="Create custom QR codes for free - URLs, WiFi, vCards, and more with instant generation and high-resolution downloads"
         hashtags={['QRCode', 'Marketing', 'Business', 'WebDev']}
       />
-      <RelatedTools currentToolPath="/tools/qr-code" category="productivity" />
-      <ToolRating toolId="/tools/qr-code" toolName="QR Code Generator" />
+      <RelatedTools currentToolPath="/tools/productivity/qr-code" category="productivity" />
+      <ToolRating toolId="/tools/productivity/qr-code" toolName="QR Code Generator" />
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

@@ -99,6 +99,10 @@ const colorMap: Record<string, string> = {
   'indigo-500': '#6366f1',
   'rose-500': '#f43f5e',
   'fuchsia-500': '#d946ef',
+  'violet-500': '#8b5cf6',
+  'amber-500': '#f59e0b',
+  'gray-500': '#6b7280',
+  'slate-700': '#334155',
 }
 
 // Cache for gradient conversions to avoid recalculating

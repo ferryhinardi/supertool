@@ -1065,7 +1065,7 @@ function TextTransformerContent() {
       >
         <SocialShare
           toolName="Text Transformer"
-          toolUrl="/tools/text-transformer"
+          toolUrl="/tools/productivity/text-transformer"
           description="Free online text transformer with case conversion, duplicate removal, word counting, sorting, and find-replace with regex support"
           hashtags={['TextTools', 'Programming', 'TextProcessing', 'Developer', 'Productivity']}
         />
@@ -1088,7 +1088,10 @@ function TextTransformerContent() {
           opacity: 0,
         })}
       >
-        <RelatedTools currentToolPath="/tools/text-transformer" category="productivity" />
+        <RelatedTools
+          currentToolPath="/tools/productivity/text-transformer"
+          category="productivity"
+        />
       </div>
 
       {/* Tool Rating */}
@@ -1099,7 +1102,7 @@ function TextTransformerContent() {
           opacity: 0,
         })}
       >
-        <ToolRating toolId="/tools/text-transformer" toolName="Text Transformer" />
+        <ToolRating toolId="/tools/productivity/text-transformer" toolName="Text Transformer" />
       </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

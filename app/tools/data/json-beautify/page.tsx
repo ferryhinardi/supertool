@@ -2339,12 +2339,12 @@ function JSONBeautifyContent() {
 
         <SocialShare
           toolName="JSON Beautifier"
-          toolUrl="/tools/json-beautify"
+          toolUrl="/tools/data/json-beautify"
           description="Format and validate JSON with this free online JSON beautifier - minify, compare, and convert JSON to TypeScript"
           hashtags={['JSON', 'WebDev', 'Developer', 'Productivity']}
         />
-        <RelatedTools currentToolPath="/tools/json-beautify" category="data" />
-        <ToolRating toolId="/tools/json-beautify" toolName="JSON Beautifier" />
+        <RelatedTools currentToolPath="/tools/data/json-beautify" category="data" />
+        <ToolRating toolId="/tools/data/json-beautify" toolName="JSON Beautifier" />
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
         <ToolSearch />

@@ -580,7 +580,7 @@ function Base64Content() {
           opacity: 0,
         })}
       >
-        <RelatedTools currentToolPath="/tools/base64" category="converter" />
+        <RelatedTools currentToolPath="/tools/security/base64" category="security" />
       </div>
 
       {/* Tool Rating */}
@@ -593,7 +593,7 @@ function Base64Content() {
           opacity: 0,
         })}
       >
-        <ToolRating toolId="/tools/base64" toolName="Base64 Encoder & Decoder" />
+        <ToolRating toolId="/tools/security/base64" toolName="Base64 Encoder & Decoder" />
       </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

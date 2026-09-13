@@ -751,7 +751,7 @@ export default function GradientGeneratorPage() {
       >
         <SocialShare
           toolName="Gradient Generator"
-          toolUrl="/tools/gradient-generator"
+          toolUrl="/tools/design/gradient-generator"
           description="Create stunning CSS gradients visually with unlimited color stops and export options"
           hashtags={['CSS', 'Gradient', 'WebDesign', 'CSSTools', 'FrontendDev']}
         />
@@ -765,7 +765,7 @@ export default function GradientGeneratorPage() {
           animationFillMode: 'both',
         })}
       >
-        <RelatedTools currentToolPath="/tools/gradient-generator" category="design" />
+        <RelatedTools currentToolPath="/tools/design/gradient-generator" category="design" />
       </div>
 
       {/* Tool Rating */}
@@ -776,7 +776,7 @@ export default function GradientGeneratorPage() {
           animationFillMode: 'both',
         })}
       >
-        <ToolRating toolId="/tools/gradient-generator" toolName="Gradient Generator" />
+        <ToolRating toolId="/tools/design/gradient-generator" toolName="Gradient Generator" />
       </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

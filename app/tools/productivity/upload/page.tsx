@@ -737,7 +737,16 @@ function UploadToolContent() {
         {activeTab === 'upload' && (
           <div className={css({ spaceY: '6' })}>
             {/* Upload Card */}
-            <Card className="glass-card border-2 border-blue-500/30 shadow-2xl shadow-blue-500/20">
+            <Card
+              className={css({
+                borderWidth: '2px',
+                borderStyle: 'solid',
+                borderColor: 'blue.500/30',
+                bg: 'rgba(17, 24, 39, 0.55)',
+                backdropFilter: 'blur(16px)',
+                boxShadow: '0 25px 50px rgba(59, 130, 246, 0.2)',
+              })}
+            >
               <CardContent withTopPadding>
                 <div
                   className={css({
@@ -1075,7 +1084,16 @@ function UploadToolContent() {
         {/* History Tab */}
         {activeTab === 'history' && (
           <div className={css({ spaceY: '6' })}>
-            <Card className="glass-card border-2 border-purple-500/30 shadow-xl shadow-purple-500/20">
+            <Card
+              className={css({
+                borderWidth: '2px',
+                borderStyle: 'solid',
+                borderColor: 'purple.500/30',
+                bg: 'rgba(17, 24, 39, 0.55)',
+                backdropFilter: 'blur(16px)',
+                boxShadow: '0 20px 25px rgba(168, 85, 247, 0.2)',
+              })}
+            >
               <CardHeader>
                 <div
                   className={css({
@@ -1306,7 +1324,16 @@ function UploadToolContent() {
         {/* Favorites Tab */}
         {activeTab === 'favorites' && (
           <div className={css({ spaceY: '6' })}>
-            <Card className="glass-card border-2 border-yellow-500/30 shadow-xl shadow-yellow-500/20">
+            <Card
+              className={css({
+                borderWidth: '2px',
+                borderStyle: 'solid',
+                borderColor: 'yellow.500/30',
+                bg: 'rgba(17, 24, 39, 0.55)',
+                backdropFilter: 'blur(16px)',
+                boxShadow: '0 20px 25px rgba(234, 179, 8, 0.2)',
+              })}
+            >
               <CardHeader>
                 <div>
                   <CardTitle
@@ -1445,7 +1472,16 @@ function UploadToolContent() {
         )}
 
         {/* Info Card */}
-        <Card className="glass-card border-2 border-cyan-500/30 shadow-xl shadow-cyan-500/20">
+        <Card
+          className={css({
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            borderColor: 'cyan.500/30',
+            bg: 'rgba(17, 24, 39, 0.55)',
+            backdropFilter: 'blur(16px)',
+            boxShadow: '0 20px 25px rgba(6, 182, 212, 0.2)',
+          })}
+        >
           <CardHeader>
             <div className={css({ spaceY: { base: '2', sm: '3' }, p: { base: '2', sm: '3' } })}>
               <CardTitle
@@ -1529,7 +1565,7 @@ function UploadToolContent() {
         </Card>
 
         {/* Related Tools */}
-        <RelatedTools currentToolPath="/tools/productivity/upload" category="Productivity" />
+        <RelatedTools currentToolPath="/tools/productivity/upload" category="productivity" />
 
         {/* Social Share & Rating */}
         <div
