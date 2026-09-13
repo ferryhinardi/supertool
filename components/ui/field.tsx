@@ -82,7 +82,7 @@ const FieldInput = React.forwardRef<
         css({
           display: 'flex',
           h: '11',
-          minH: '11',
+          minH: '45px',
           w: 'full',
           rounded: 'md',
           border: '1px solid',
