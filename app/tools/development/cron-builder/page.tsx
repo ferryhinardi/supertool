@@ -1,7 +1,7 @@
 'use client'
 
 import { AlertCircle, Calendar, Check, Clock, Copy, Download, Settings2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -77,7 +77,20 @@ export default function CronBuilderPage() {
   const humanReadable = validation.isValid
     ? getHumanReadable(cronExpression, platform)
     : 'Invalid expression'
-  const nextExecutions = validation.isValid ? getNextExecutions(cronExpression, platform, 10) : []
+
+  // Next-run relative strings ("in 31 seconds") must not render on the server —
+  // they drift between SSR and hydration. Compute after mount only.
+  const [nextExecutions, setNextExecutions] = useState<ReturnType<typeof getNextExecutions>>([])
+  useEffect(() => {
+    if (!validation.isValid) {
+      setNextExecutions([])
+      return
+    }
+    const update = () => setNextExecutions(getNextExecutions(cronExpression, platform, 10))
+    update()
+    const id = window.setInterval(update, 1000)
+    return () => window.clearInterval(id)
+  }, [cronExpression, platform, validation.isValid])
 
   // Handlers
   const handlePresetSelect = (presetName: string) => {
