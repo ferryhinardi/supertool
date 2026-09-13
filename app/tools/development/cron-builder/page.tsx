@@ -58,8 +58,21 @@ export default function CronBuilderPage() {
   const [selectedPreset, setSelectedPreset] = useState<string>('')
   const [filterCategory, setFilterCategory] = useState<string>('all')
 
+  // Resolve "custom" UI placeholders to typed values for expression generation
+  const effectiveConfig: CronConfig = {
+    minute: cronConfig.minute === 'custom' ? customValues.minute || '*' : cronConfig.minute,
+    hour: cronConfig.hour === 'custom' ? customValues.hour || '*' : cronConfig.hour,
+    dayOfMonth:
+      cronConfig.dayOfMonth === 'custom' ? customValues.dayOfMonth || '*' : cronConfig.dayOfMonth,
+    month: cronConfig.month === 'custom' ? customValues.month || '*' : cronConfig.month,
+    dayOfWeek:
+      cronConfig.dayOfWeek === 'custom' ? customValues.dayOfWeek || '*' : cronConfig.dayOfWeek,
+    year: cronConfig.year,
+    seconds: cronConfig.seconds === 'custom' ? customValues.seconds || '0' : cronConfig.seconds,
+  }
+
   // Generate cron expression
-  const cronExpression = generateCronExpression(cronConfig, platform)
+  const cronExpression = generateCronExpression(effectiveConfig, platform)
   const validation = validateCronExpression(cronExpression, platform)
   const humanReadable = validation.isValid
     ? getHumanReadable(cronExpression, platform)
@@ -82,16 +95,12 @@ export default function CronBuilderPage() {
   }
 
   const handleFieldChange = (field: keyof CronConfig, value: string) => {
-    if (value === 'custom') {
-      return
-    }
     setCronConfig((prev) => ({ ...prev, [field]: value }))
     setSelectedPreset('')
   }
 
   const handleCustomValueChange = (field: keyof CronConfig, value: string) => {
     setCustomValues((prev) => ({ ...prev, [field]: value }))
-    setCronConfig((prev) => ({ ...prev, [field]: value }))
     setSelectedPreset('')
   }
 
