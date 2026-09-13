@@ -31,7 +31,7 @@ export const metadata: Metadata = generateToolMetadata({
     'command line tutorial',
   ],
   category: 'development',
-  path: '/tools/ai-command-explainer',
+  path: '/tools/development/ai-command-explainer',
 })
 
 // Structured data for SEO
@@ -39,7 +39,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(
   [
     { name: 'Home', url: '/' },
     { name: 'Tools', url: '/#tools' },
-    { name: 'AI Command Explainer', url: '/tools/ai-command-explainer' },
+    { name: 'AI Command Explainer', url: '/tools/development/ai-command-explainer' },
   ],
   baseUrl
 )
@@ -49,7 +49,7 @@ const softwareSchema = generateSoftwareApplicationSchema(
     name: 'AI Command Explainer',
     description:
       'Explain complex CLI commands with AI assistance. Understand bash, git, docker, kubectl commands with detailed breakdowns, parameter explanations, safety warnings, and alternatives.',
-    url: '/tools/ai-command-explainer',
+    url: '/tools/development/ai-command-explainer',
     category: 'development',
     keywords: [
       'AI command explainer',
@@ -120,7 +120,7 @@ const howToSchema = generateHowToSchema(
     },
   ],
   baseUrl,
-  '/tools/ai-command-explainer'
+  '/tools/development/ai-command-explainer'
 )
 
 export default function AICommandExplainerLayout({ children }: { children: React.ReactNode }) {

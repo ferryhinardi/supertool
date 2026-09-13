@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'screenshot testing',
   ],
   category: 'development',
-  path: '/tools/screenshot-diff',
+  path: '/tools/design/screenshot-diff',
 })
 
 export default function ScreenshotDiffLayout({ children }: { children: React.ReactNode }) {

@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'mortgage amortization',
   ],
   category: 'finance',
-  path: '/tools/loan-calculator',
+  path: '/tools/finance/loan-calculator',
 })
 
 export default function LoanCalculatorLayout({ children }: { children: React.ReactNode }) {

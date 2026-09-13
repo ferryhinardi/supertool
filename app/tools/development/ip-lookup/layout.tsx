@@ -18,7 +18,7 @@ export const metadata: Metadata = generateToolMetadata({
     'ip location',
   ],
   category: 'development',
-  path: '/tools/ip-lookup',
+  path: '/tools/development/ip-lookup',
 })
 
 export default function IPLookupLayout({ children }: { children: React.ReactNode }) {

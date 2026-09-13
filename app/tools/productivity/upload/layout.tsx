@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'file storage',
   ],
   category: 'utilities',
-  path: '/tools/upload',
+  path: '/tools/productivity/upload',
 })
 
 export default function UploadLayout({ children }: { children: React.ReactNode }) {

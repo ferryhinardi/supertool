@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'json schema tool',
   ],
   category: 'data',
-  path: '/tools/json-schema',
+  path: '/tools/data/json-schema',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

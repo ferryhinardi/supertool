@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'bmi online',
   ],
   category: 'health',
-  path: '/tools/bmi-calculator',
+  path: '/tools/productivity/bmi-calculator',
 })
 
 export default function BMICalculatorLayout({ children }: { children: React.ReactNode }) {

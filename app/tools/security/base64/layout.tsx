@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'base64 conversion',
   ],
   category: 'development',
-  path: '/tools/base64',
+  path: '/tools/security/base64',
 })
 
 export default function Base64Layout({ children }: { children: React.ReactNode }) {

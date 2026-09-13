@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'time tracking',
   ],
   category: 'productivity',
-  path: '/tools/stopwatch-timer',
+  path: '/tools/productivity/stopwatch-timer',
 })
 
 export default function StopwatchTimerLayout({ children }: { children: React.ReactNode }) {

@@ -18,7 +18,7 @@ export const metadata: Metadata = generateToolMetadata({
     'online pdf maker',
   ],
   category: 'media',
-  path: '/tools/image-to-pdf',
+  path: '/tools/media/image-to-pdf',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

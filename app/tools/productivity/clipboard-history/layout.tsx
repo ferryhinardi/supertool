@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'privacy clipboard',
   ],
   category: 'productivity',
-  path: '/tools/clipboard-history',
+  path: '/tools/productivity/clipboard-history',
 })
 
 export default function ClipboardHistoryLayout({ children }: { children: React.ReactNode }) {

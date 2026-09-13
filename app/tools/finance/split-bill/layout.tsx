@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'expense sharing',
   ],
   category: 'finance',
-  path: '/tools/split-bill',
+  path: '/tools/finance/split-bill',
   ogTitle: 'Free Split Bill Calculator - Divide Restaurant Bills & Calculate Tips Instantly',
   ogDescription:
     'Split bills fairly in seconds! 🧾 AI-powered receipt scanner, automatic tip calculation, and easy sharing. Perfect for group dinners and shared expenses. 100% free.',
@@ -108,7 +108,7 @@ export default function SplitBillLayout({ children }: { children: React.ReactNod
               'Learn how to fairly split restaurant bills, shared expenses, and group payments with automatic tip calculation and receipt scanning using our free bill splitter tool.',
               howToSteps,
               baseUrl,
-              '/tools/split-bill'
+              '/tools/finance/split-bill'
             )
           ),
         }}

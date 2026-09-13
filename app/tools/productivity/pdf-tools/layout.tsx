@@ -27,7 +27,7 @@ export const metadata: Metadata = generateToolMetadata({
     'pdf black and white',
   ],
   category: 'productivity',
-  path: '/tools/pdf-tools',
+  path: '/tools/productivity/pdf-tools',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'json transformation',
   ],
   category: 'development',
-  path: '/tools/json-to-csv',
+  path: '/tools/data/json-to-csv',
 })
 
 export default function JSONToCSVLayout({ children }: { children: React.ReactNode }) {

@@ -25,7 +25,7 @@ export const metadata: Metadata = generateToolMetadata({
     'bidirectional converter',
   ],
   category: 'development',
-  path: '/tools/csv-excel',
+  path: '/tools/data/csv-excel',
 })
 
 export default function CSVExcelLayout({ children }: { children: React.ReactNode }) {

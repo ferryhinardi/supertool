@@ -23,7 +23,7 @@ export const metadata: Metadata = generateToolMetadata({
     'image to text',
   ],
   category: 'media',
-  path: '/tools/ai-image-caption',
+  path: '/tools/media/ai-image-caption',
 })
 
 export default function AIImageCaptionLayout({ children }: { children: React.ReactNode }) {

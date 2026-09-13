@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'diff tool',
   ],
   category: 'development',
-  path: '/tools/diff',
+  path: '/tools/development/diff',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
@@ -110,7 +110,7 @@ export default function DiffLayout({ children }: { children: React.ReactNode }) 
               'Learn how to use our online diff viewer to compare two text or code files. Identify additions, deletions, and modifications with syntax highlighting for easy code review and text comparison.',
               howToSteps,
               baseUrl,
-              '/tools/diff'
+              '/tools/development/diff'
             )
           ),
         }}

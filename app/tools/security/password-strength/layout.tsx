@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'password recommendations',
   ],
   category: 'security',
-  path: '/tools/password-strength',
+  path: '/tools/security/password-strength',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

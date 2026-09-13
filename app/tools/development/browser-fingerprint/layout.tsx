@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'browser identification',
   ],
   category: 'development',
-  path: '/tools/browser-fingerprint',
+  path: '/tools/development/browser-fingerprint',
 })
 
 export default function BrowserFingerprintLayout({ children }: { children: React.ReactNode }) {

@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'world currencies',
   ],
   category: 'finance',
-  path: '/tools/currency-converter',
+  path: '/tools/finance/currency-converter',
 })
 
 export default function CurrencyConverterLayout({ children }: { children: React.ReactNode }) {

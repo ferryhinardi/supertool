@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'work sessions',
   ],
   category: 'productivity',
-  path: '/tools/pomodoro',
+  path: '/tools/productivity/pomodoro',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

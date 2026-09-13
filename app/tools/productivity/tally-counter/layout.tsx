@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'step counter',
   ],
   category: 'productivity',
-  path: '/tools/tally-counter',
+  path: '/tools/productivity/tally-counter',
 })
 
 export default function TallyCounterLayout({ children }: { children: React.ReactNode }) {

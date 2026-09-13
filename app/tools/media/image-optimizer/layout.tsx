@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'image quality',
   ],
   category: 'media',
-  path: '/tools/image-optimizer',
+  path: '/tools/media/image-optimizer',
 })
 
 export default function ImageOptimizerLayout({ children }: { children: React.ReactNode }) {

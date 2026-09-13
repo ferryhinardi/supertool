@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'cryptography tool',
   ],
   category: 'security',
-  path: '/tools/encryption-tool',
+  path: '/tools/security/encryption-tool',
 })
 
 export default function EncryptionToolLayout({ children }: { children: React.ReactNode }) {

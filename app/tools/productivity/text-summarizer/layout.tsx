@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'quick summary',
   ],
   category: 'productivity',
-  path: '/tools/text-summarizer',
+  path: '/tools/productivity/text-summarizer',
 })
 
 export default function TextSummarizerLayout({ children }: { children: React.ReactNode }) {
