@@ -1015,7 +1015,9 @@ export default function SplitBillPage() {
               display: 'flex',
               gap: '2',
               justifyContent: 'center',
+              flexDirection: { base: 'column', sm: 'row' },
               flexWrap: 'wrap',
+              w: 'full',
             })}
           >
             <Button
@@ -1023,7 +1025,8 @@ export default function SplitBillPage() {
               variant={mode === 'calculator' ? 'default' : 'outline'}
               size="sm"
               className={css({
-                flex: { base: '1', sm: 'initial' },
+                w: { base: 'full', sm: 'auto' },
+                minH: '11',
               })}
             >
               Calculator
@@ -1033,26 +1036,34 @@ export default function SplitBillPage() {
               variant={mode === 'create' ? 'default' : 'outline'}
               size="sm"
               className={css({
-                flex: { base: '1', sm: 'initial' },
+                w: { base: 'full', sm: 'auto' },
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '2',
+                minH: '11',
               })}
             >
-              <Link2 className={css({ h: '4', w: '4' })} />
+              <Link2 className={css({ h: '4', w: '4', flexShrink: 0 })} />
               Create Shareable Bill
             </Button>
-            <Link href="/tools/finance/split-bill/history">
+            <Link
+              href="/tools/finance/split-bill/history"
+              className={css({ w: { base: 'full', sm: 'auto' } })}
+            >
               <Button
                 variant="outline"
                 size="sm"
                 className={css({
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '2',
+                  w: 'full',
+                  minH: '11',
                 })}
               >
-                <Clock className={css({ h: '4', w: '4' })} />
+                <Clock className={css({ h: '4', w: '4', flexShrink: 0 })} />
                 View History
               </Button>
             </Link>
