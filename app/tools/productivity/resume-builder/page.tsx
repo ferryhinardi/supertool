@@ -548,6 +548,9 @@ export default function ResumeBuilderPage() {
               gap: '3',
               overflowX: 'auto',
               pb: '2',
+              w: 'full',
+              maxW: 'full',
+              minW: '0',
               scrollSnapType: 'x mandatory',
               '&::-webkit-scrollbar': {
                 height: '6px',
@@ -592,13 +595,25 @@ export default function ResumeBuilderPage() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: 'minmax(0, 1fr) 420px' },
+          gridTemplateColumns: { base: 'minmax(0, 1fr)', lg: 'minmax(0, 1fr) 420px' },
           gap: '6',
           alignItems: 'start',
+          w: 'full',
+          maxW: 'full',
+          minW: '0',
         })}
       >
         {/* Left Side - Templates (Desktop) + Forms + ATS Score */}
-        <div className={css({ display: 'flex', flexDirection: 'column', gap: '6' })}>
+        <div
+          className={css({
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6',
+            minW: '0',
+            maxW: 'full',
+            w: 'full',
+          })}
+        >
           {/* Desktop Template Selector */}
           <Card className={css({ display: { base: 'none', lg: 'block' } })}>
             <CardHeader>
@@ -647,6 +662,9 @@ export default function ResumeBuilderPage() {
               mb: '4',
               overflowX: 'auto',
               pb: '2',
+              w: 'full',
+              maxW: 'full',
+              minW: '0',
               '&::-webkit-scrollbar': {
                 height: '6px',
               },
@@ -676,6 +694,8 @@ export default function ResumeBuilderPage() {
                     fontSize: 'sm',
                     fontWeight: 'medium',
                     whiteSpace: 'nowrap',
+                    flexShrink: '0',
+                    minH: '11',
                     border: '1px solid',
                     borderColor: activeSection === section.id ? 'blue.500' : 'gray.700',
                     bg: activeSection === section.id ? 'blue.500/20' : 'gray.800',
@@ -896,7 +916,7 @@ export default function ResumeBuilderPage() {
                       size="icon"
                       onClick={() => setZoom((prev) => Math.max(50, prev - 25))}
                       disabled={zoom <= 50}
-                      className={css({ h: '8', w: '8' })}
+                      className={css({ h: '11', w: '11', minH: '11', minW: '11' })}
                       title="Zoom out"
                     >
                       <ZoomOut className={css({ h: '4', w: '4' })} />
@@ -916,7 +936,7 @@ export default function ResumeBuilderPage() {
                       size="icon"
                       onClick={() => setZoom((prev) => Math.min(150, prev + 25))}
                       disabled={zoom >= 150}
-                      className={css({ h: '8', w: '8' })}
+                      className={css({ h: '11', w: '11', minH: '11', minW: '11' })}
                       title="Zoom in"
                     >
                       <ZoomIn className={css({ h: '4', w: '4' })} />
@@ -926,7 +946,7 @@ export default function ResumeBuilderPage() {
                       size="icon"
                       onClick={() => setZoom(100)}
                       disabled={zoom === 100}
-                      className={css({ h: '8', w: '8' })}
+                      className={css({ h: '11', w: '11', minH: '11', minW: '11' })}
                       title="Reset zoom"
                     >
                       <Maximize2 className={css({ h: '4', w: '4' })} />

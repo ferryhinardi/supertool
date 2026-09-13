@@ -407,12 +407,15 @@ export default function GradientGeneratorPage() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: 'minmax(0, 2fr) minmax(0, 1fr)' },
+          gridTemplateColumns: { base: 'minmax(0, 1fr)', lg: 'minmax(0, 2fr) minmax(0, 1fr)' },
           gap: '6',
+          w: 'full',
+          maxW: 'full',
+          minW: '0',
         })}
       >
         {/* Main Preview and Controls */}
-        <div className={css({ spaceY: '6' })}>
+        <div className={css({ spaceY: '6', minW: '0', maxW: 'full', w: 'full' })}>
           {/* Preview Card */}
           <Card
             className={css({
@@ -462,8 +465,18 @@ export default function GradientGeneratorPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className={css({ display: 'flex', gap: '3', mt: '4' })}>
-              <Button onClick={handleCopyCSS} className={css({ flex: '1' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '3',
+                mt: '4',
+                w: 'full',
+                maxW: 'full',
+                minW: '0',
+              })}
+            >
+              <Button onClick={handleCopyCSS} className={css({ flex: '1', minW: '0', minH: '11' })}>
                 {copied === 'css' ? (
                   <>
                     <Check className={css({ mr: '2', h: '4', w: '4' })} />
@@ -476,14 +489,28 @@ export default function GradientGeneratorPage() {
                   </>
                 )}
               </Button>
-              <Button onClick={handleDownload} variant="outline">
+              <Button
+                onClick={handleDownload}
+                variant="outline"
+                className={css({ minH: '11', whiteSpace: 'normal' })}
+              >
                 <Download className={css({ mr: '2', h: '4', w: '4' })} />
                 Download PNG
               </Button>
-              <Button onClick={handleRandomize} variant="outline">
+              <Button
+                onClick={handleRandomize}
+                variant="outline"
+                className={css({ minH: '11', minW: '11' })}
+                aria-label="Randomize gradient"
+              >
                 <Shuffle className={css({ h: '4', w: '4' })} />
               </Button>
-              <Button onClick={handleReverse} variant="outline">
+              <Button
+                onClick={handleReverse}
+                variant="outline"
+                className={css({ minH: '11', minW: '11' })}
+                aria-label="Reverse color stops"
+              >
                 <RotateCcw className={css({ h: '4', w: '4' })} />
               </Button>
             </div>
@@ -506,14 +533,19 @@ export default function GradientGeneratorPage() {
             {/* Gradient Type */}
             <Field>
               <FieldLabel>Gradient Type</FieldLabel>
-              <div className={css({ display: 'flex', gap: '2' })}>
+              <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2', w: 'full' })}>
                 {(['linear', 'radial', 'conic'] as GradientType[]).map((type) => (
                   <Button
                     key={type}
                     variant={gradientType === type ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setGradientType(type)}
-                    className={css({ flex: '1', textTransform: 'capitalize' })}
+                    className={css({
+                      flex: '1',
+                      minW: { base: 'full', sm: '0' },
+                      minH: '11',
+                      textTransform: 'capitalize',
+                    })}
                   >
                     {type}
                   </Button>
@@ -571,6 +603,9 @@ export default function GradientGeneratorPage() {
                       borderColor: selectedStopId === stop.id ? 'purple.500/30' : 'gray.700',
                       cursor: 'pointer',
                       width: 'full',
+                      maxW: 'full',
+                      minW: '0',
+                      flexWrap: 'wrap',
                     })}
                     onClick={() => setSelectedStopId(stop.id)}
                     onKeyDown={(e) => {
@@ -586,7 +621,7 @@ export default function GradientGeneratorPage() {
                       onChange={(e) => handleUpdateColorStop(stop.id, { color: e.target.value })}
                       className={css({ w: '12', h: '12', rounded: 'lg', cursor: 'pointer' })}
                     />
-                    <div className={css({ flex: '1', spaceY: '2' })}>
+                    <div className={css({ flex: '1', spaceY: '2', minW: '0' })}>
                       <Input
                         value={stop.color}
                         onChange={(e) => handleUpdateColorStop(stop.id, { color: e.target.value })}
@@ -649,7 +684,10 @@ export default function GradientGeneratorPage() {
                     fontSize: 'sm',
                     fontFamily: 'mono',
                     color: 'white',
-                    overflow: 'auto',
+                    overflowX: 'auto',
+                    maxW: 'full',
+                    whiteSpace: 'pre-wrap',
+                    overflowWrap: 'anywhere',
                   })}
                 >
                   background: {gradientCSS}
@@ -659,8 +697,7 @@ export default function GradientGeneratorPage() {
           </Card>
         </div>
 
-        {/* Presets Sidebar */}
-        <div className={css({ spaceY: '6' })}>
+        <div className={css({ spaceY: '6', minW: '0', maxW: 'full', w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',

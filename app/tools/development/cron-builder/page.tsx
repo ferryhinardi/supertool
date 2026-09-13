@@ -224,9 +224,11 @@ export default function CronBuilderPage() {
         <div
           className={css({
             display: 'grid',
-            gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+            gridTemplateColumns: { base: 'minmax(0, 1fr)', lg: 'repeat(3, minmax(0, 1fr))' },
             gap: '6',
             w: 'full',
+            maxW: 'full',
+            minW: '0',
           })}
         >
           {/* Settings Panel */}
@@ -369,12 +371,37 @@ export default function CronBuilderPage() {
                       <Button
                         key={preset.name}
                         variant={selectedPreset === preset.name ? 'default' : 'outline'}
-                        className={css({ w: 'full', justifyContent: 'start', textAlign: 'left' })}
+                        className={css({
+                          w: 'full',
+                          maxW: 'full',
+                          minW: '0',
+                          minH: '11',
+                          justifyContent: 'start',
+                          textAlign: 'left',
+                          whiteSpace: 'normal',
+                          overflowWrap: 'anywhere',
+                          h: 'auto',
+                          py: '3',
+                        })}
                         onClick={() => handlePresetSelect(preset.name)}
                       >
-                        <div className={css({ spaceY: '1' })}>
-                          <div className={css({ fontWeight: 'medium' })}>{preset.name}</div>
-                          <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <div className={css({ spaceY: '1', minW: '0', maxW: 'full' })}>
+                          <div
+                            className={css({
+                              fontWeight: 'medium',
+                              overflowWrap: 'anywhere',
+                            })}
+                          >
+                            {preset.name}
+                          </div>
+                          <div
+                            className={css({
+                              fontSize: 'xs',
+                              color: 'gray.500',
+                              whiteSpace: 'normal',
+                              overflowWrap: 'anywhere',
+                            })}
+                          >
                             {preset.description}
                           </div>
                         </div>

@@ -251,6 +251,12 @@ function URLEncoderContent() {
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     textAlign: 'left',
+                    w: 'full',
+                    maxW: 'full',
+                    minW: '0',
+                    minH: '11',
+                    whiteSpace: 'normal',
+                    overflowWrap: 'anywhere',
                     _hover: {
                       borderColor: 'cyan.500/50',
                       bg: 'cyan.500/5',
@@ -263,6 +269,7 @@ function URLEncoderContent() {
                       fontWeight: 'medium',
                       color: method === m.id ? 'cyan.400' : 'gray.200',
                       fontFamily: 'mono',
+                      overflowWrap: 'anywhere',
                     })}
                   >
                     {m.label}
@@ -272,6 +279,8 @@ function URLEncoderContent() {
                       fontSize: 'xs',
                       color: 'gray.500',
                       mt: '1',
+                      whiteSpace: 'normal',
+                      overflowWrap: 'anywhere',
                     })}
                   >
                     {m.description}
@@ -533,6 +542,12 @@ function URLEncoderContent() {
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     textAlign: 'left',
+                    w: 'full',
+                    maxW: 'full',
+                    minW: '0',
+                    minH: '11',
+                    whiteSpace: 'normal',
+                    overflowWrap: 'anywhere',
                     _hover: {
                       borderColor: 'cyan.500/50',
                       bg: 'cyan.500/5',
@@ -547,9 +562,10 @@ function URLEncoderContent() {
                       fontSize: 'sm',
                       color: 'gray.300',
                       fontFamily: 'mono',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
+                      whiteSpace: 'normal',
+                      overflowWrap: 'anywhere',
+                      wordBreak: 'break-word',
+                      maxW: 'full',
                     })}
                   >
                     {example.value}

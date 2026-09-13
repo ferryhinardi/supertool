@@ -39,13 +39,18 @@ export function MobileOperationPicker({
           fontWeight: 'semibold',
           borderColor: 'red.500/30',
           bg: 'gray.900/50',
+          minH: '11',
+          whiteSpace: 'normal',
+          overflowWrap: 'anywhere',
           _hover: {
             bg: 'gray.900/80',
             borderColor: 'red.500/50',
           },
         })}
       >
-        <span>Operation: {operationLabel}</span>
+        <span className={css({ minW: '0', overflowWrap: 'anywhere', textAlign: 'left' })}>
+          Operation: {operationLabel}
+        </span>
         <ChevronUp
           className={css({
             h: '5',

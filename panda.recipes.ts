@@ -105,6 +105,8 @@ export const cardRecipe = defineRecipe({
   description: 'Card component styles',
   base: {
     w: 'full',
+    minW: '0',
+    maxW: 'full',
     rounded: { base: 'xl', sm: '2xl' },
     border: '1px solid',
     borderColor: 'border',

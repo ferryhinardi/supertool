@@ -466,8 +466,10 @@ export function Sidebar() {
                 className={css({
                   display: 'inline-flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   minH: '11',
-                  px: '1',
+                  minW: '11',
+                  px: '2',
                   color: 'gray.400',
                   fontWeight: 'medium',
                   textDecoration: 'none !important',

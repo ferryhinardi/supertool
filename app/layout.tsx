@@ -141,11 +141,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-        <Script
-          src="https://cdn.visitors.now/v.js"
-          data-token="57002aa7-44fa-459e-b332-ecb6111a00ef"
-          strategy="afterInteractive"
-        />
+        {process.env.NODE_ENV === 'production' && (
+          <Script
+            src="https://cdn.visitors.now/v.js"
+            data-token="57002aa7-44fa-459e-b332-ecb6111a00ef"
+            strategy="afterInteractive"
+          />
+        )}
       </head>
       <body
         suppressHydrationWarning

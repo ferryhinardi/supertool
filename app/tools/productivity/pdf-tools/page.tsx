@@ -2399,9 +2399,14 @@ export default function PDFToolsPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: '1fr 1fr 1fr' },
+          gridTemplateColumns: {
+            base: 'minmax(0, 1fr)',
+            md: 'minmax(0, 1fr) minmax(0, 2fr)',
+            lg: 'repeat(3, minmax(0, 1fr))',
+          },
           w: 'full',
           maxW: '1400px',
+          minW: '0',
         })}
       >
         {/* Settings Panel */}
@@ -2409,6 +2414,9 @@ export default function PDFToolsPage() {
           style={{ width: '100%' }}
           className={css({
             gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 2' },
+            minW: '0',
+            maxW: 'full',
+            w: 'full',
           })}
         >
           <Card
@@ -5356,6 +5364,9 @@ export default function PDFToolsPage() {
           style={{ width: '100%' }}
           className={css({
             gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 1' },
+            minW: '0',
+            maxW: 'full',
+            w: 'full',
           })}
         >
           <Card

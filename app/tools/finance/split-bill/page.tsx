@@ -1327,7 +1327,7 @@ export default function SplitBillPage() {
             Bill Details
           </h2>
 
-          <Field>
+          <Field className={css({ minW: '0', maxW: 'full', w: 'full' })}>
             <FieldLabel
               htmlFor="currency-select"
               className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
@@ -1348,6 +1348,10 @@ export default function SplitBillPage() {
                 }
               }}
               className={css({
+                w: 'full',
+                maxW: 'full',
+                minW: '0',
+                minH: '11',
                 rounded: 'lg',
                 border: '2px solid',
                 borderColor: 'gray.700',

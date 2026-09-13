@@ -1226,12 +1226,18 @@ function ApiTesterContent() {
                                       key={variable.id}
                                       className={css({
                                         display: 'grid',
-                                        gridTemplateColumns: 'auto 1fr 1fr auto auto auto',
+                                        gridTemplateColumns: {
+                                          base: 'auto minmax(0, 1fr)',
+                                          sm: 'auto minmax(0, 1fr) minmax(0, 1fr) auto auto auto',
+                                        },
                                         gap: '2',
                                         alignItems: 'center',
                                         p: '2',
                                         rounded: 'md',
                                         bg: 'gray.800/50',
+                                        w: 'full',
+                                        maxW: 'full',
+                                        minW: '0',
                                       })}
                                     >
                                       {/* Enabled checkbox */}
@@ -1768,7 +1774,16 @@ function ApiTesterContent() {
 
                   {authType === 'basic' && (
                     <div
-                      className={css({ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3' })}
+                      className={css({
+                        display: 'grid',
+                        gridTemplateColumns: {
+                          base: 'minmax(0, 1fr)',
+                          sm: 'repeat(2, minmax(0, 1fr))',
+                        },
+                        gap: '3',
+                        w: 'full',
+                        minW: '0',
+                      })}
                     >
                       <Input
                         type="text"

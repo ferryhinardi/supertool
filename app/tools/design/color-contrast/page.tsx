@@ -441,6 +441,9 @@ function ColorContrastContent() {
                   display: 'flex',
                   gap: '3',
                   alignItems: 'center',
+                  w: 'full',
+                  maxW: 'full',
+                  minW: '0',
                 })}
               >
                 <input
@@ -454,6 +457,7 @@ function ColorContrastContent() {
                   className={css({
                     w: '16',
                     h: '16',
+                    flexShrink: '0',
                     rounded: 'lg',
                     cursor: 'pointer',
                     border: '2px solid',
@@ -473,6 +477,7 @@ function ColorContrastContent() {
                   placeholder="#000000"
                   className={css({
                     flex: '1',
+                    minW: '0',
                     h: '12',
                     rounded: 'lg',
                     border: '1px solid',
@@ -496,6 +501,9 @@ function ColorContrastContent() {
                     gap: '2',
                     bg: 'gray.800',
                     color: 'white',
+                    minH: '11',
+                    minW: '11',
+                    flexShrink: '0',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -545,6 +553,9 @@ function ColorContrastContent() {
                   display: 'flex',
                   gap: '3',
                   alignItems: 'center',
+                  w: 'full',
+                  maxW: 'full',
+                  minW: '0',
                 })}
               >
                 <input
@@ -558,6 +569,7 @@ function ColorContrastContent() {
                   className={css({
                     w: '16',
                     h: '16',
+                    flexShrink: '0',
                     rounded: 'lg',
                     cursor: 'pointer',
                     border: '2px solid',
@@ -577,6 +589,7 @@ function ColorContrastContent() {
                   placeholder="#FFFFFF"
                   className={css({
                     flex: '1',
+                    minW: '0',
                     h: '12',
                     rounded: 'lg',
                     border: '1px solid',
@@ -600,6 +613,9 @@ function ColorContrastContent() {
                     gap: '2',
                     bg: 'gray.800',
                     color: 'white',
+                    minH: '11',
+                    minW: '11',
+                    flexShrink: '0',
                     _hover: { bg: 'gray.700' },
                   })}
                 >

@@ -553,6 +553,9 @@ export default function MarkdownTablePage() {
             bg: 'rgba(17, 24, 39, 0.5)',
             overflow: 'hidden',
             backdropFilter: 'blur(16px)',
+            maxW: 'full',
+            w: 'full',
+            minW: '0',
           })}
         >
           <div
@@ -610,8 +613,23 @@ export default function MarkdownTablePage() {
             </div>
           </div>
 
-          <div className={css({ overflowX: 'auto', p: { base: '4', sm: '6' } })}>
-            <table className={css({ w: 'full', borderCollapse: 'collapse' })}>
+          <div
+            className={css({
+              overflowX: 'auto',
+              maxW: 'full',
+              w: 'full',
+              minW: '0',
+              p: { base: '4', sm: '6' },
+            })}
+          >
+            <table
+              className={css({
+                w: 'full',
+                maxW: 'full',
+                borderCollapse: 'collapse',
+                minW: '0',
+              })}
+            >
               <thead>
                 <tr>
                   <th className={css({ w: '40px', p: '2' })} />

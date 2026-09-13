@@ -436,12 +436,15 @@ function ColorPickerContent() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: 'minmax(0, 2fr) minmax(0, 1fr)' },
+          gridTemplateColumns: { base: 'minmax(0, 1fr)', lg: 'minmax(0, 2fr) minmax(0, 1fr)' },
           gap: '6',
+          w: 'full',
+          maxW: 'full',
+          minW: '0',
         })}
       >
         {/* Main Section */}
-        <div className={css({ spaceY: '6' })}>
+        <div className={css({ spaceY: '6', minW: '0', maxW: 'full', w: 'full' })}>
           {/* Color Picker */}
           <div
             className={css({
@@ -500,7 +503,16 @@ function ColorPickerContent() {
                 </div>
 
                 {/* Color Input */}
-                <div className={css({ display: 'flex', gap: '3', alignItems: 'center' })}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: '3',
+                    alignItems: 'center',
+                    w: 'full',
+                    maxW: 'full',
+                    minW: '0',
+                  })}
+                >
                   <input
                     type="color"
                     aria-label="Color picker"
@@ -512,6 +524,7 @@ function ColorPickerContent() {
                     className={css({
                       w: '20',
                       h: '20',
+                      flexShrink: '0',
                       rounded: 'lg',
                       cursor: 'pointer',
                       border: '2px solid',
@@ -530,6 +543,7 @@ function ColorPickerContent() {
                     placeholder="#667EEA"
                     className={css({
                       flex: '1',
+                      minW: '0',
                       h: '14',
                       rounded: 'lg',
                       border: '1px solid',
@@ -588,16 +602,27 @@ function ColorPickerContent() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    gap: '3',
                     p: '4',
                     rounded: 'lg',
                     bg: 'gray.800/50',
                     border: '1px solid',
                     borderColor: 'gray.700',
+                    minW: '0',
+                    maxW: 'full',
+                    flexWrap: 'wrap',
                   })}
                 >
-                  <div>
+                  <div className={css({ minW: '0', flex: '1' })}>
                     <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>HEX</div>
-                    <div className={css({ fontSize: 'lg', fontFamily: 'mono', color: 'gray.200' })}>
+                    <div
+                      className={css({
+                        fontSize: { base: 'base', sm: 'lg' },
+                        fontFamily: 'mono',
+                        color: 'gray.200',
+                        overflowWrap: 'anywhere',
+                      })}
+                    >
                       {color}
                     </div>
                   </div>
@@ -606,7 +631,7 @@ function ColorPickerContent() {
                     onClick={() => handleCopyColor(color, 'HEX')}
                     variant="outline"
                     size="sm"
-                    className={css({ gap: '2' })}
+                    className={css({ gap: '2', minH: '11', minW: '11', flexShrink: '0' })}
                   >
                     {copiedColor === color ? (
                       <Check className={css({ h: '4', w: '4' })} />
@@ -622,16 +647,27 @@ function ColorPickerContent() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    gap: '3',
                     p: '4',
                     rounded: 'lg',
                     bg: 'gray.800/50',
                     border: '1px solid',
                     borderColor: 'gray.700',
+                    minW: '0',
+                    maxW: 'full',
+                    flexWrap: 'wrap',
                   })}
                 >
-                  <div>
+                  <div className={css({ minW: '0', flex: '1' })}>
                     <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>RGB</div>
-                    <div className={css({ fontSize: 'lg', fontFamily: 'mono', color: 'gray.200' })}>
+                    <div
+                      className={css({
+                        fontSize: { base: 'base', sm: 'lg' },
+                        fontFamily: 'mono',
+                        color: 'gray.200',
+                        overflowWrap: 'anywhere',
+                      })}
+                    >
                       rgb({rgb.r}, {rgb.g}, {rgb.b})
                     </div>
                   </div>
@@ -640,7 +676,7 @@ function ColorPickerContent() {
                     onClick={() => handleCopyColor(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`, 'RGB')}
                     variant="outline"
                     size="sm"
-                    className={css({ gap: '2' })}
+                    className={css({ gap: '2', minH: '11', minW: '11', flexShrink: '0' })}
                   >
                     {copiedColor === `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})` ? (
                       <Check className={css({ h: '4', w: '4' })} />
@@ -656,16 +692,27 @@ function ColorPickerContent() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    gap: '3',
                     p: '4',
                     rounded: 'lg',
                     bg: 'gray.800/50',
                     border: '1px solid',
                     borderColor: 'gray.700',
+                    minW: '0',
+                    maxW: 'full',
+                    flexWrap: 'wrap',
                   })}
                 >
-                  <div>
+                  <div className={css({ minW: '0', flex: '1' })}>
                     <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>HSL</div>
-                    <div className={css({ fontSize: 'lg', fontFamily: 'mono', color: 'gray.200' })}>
+                    <div
+                      className={css({
+                        fontSize: { base: 'base', sm: 'lg' },
+                        fontFamily: 'mono',
+                        color: 'gray.200',
+                        overflowWrap: 'anywhere',
+                      })}
+                    >
                       hsl({hsl.h}, {hsl.s}%, {hsl.l}%)
                     </div>
                   </div>
@@ -674,7 +721,7 @@ function ColorPickerContent() {
                     onClick={() => handleCopyColor(`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`, 'HSL')}
                     variant="outline"
                     size="sm"
-                    className={css({ gap: '2' })}
+                    className={css({ gap: '2', minH: '11', minW: '11', flexShrink: '0' })}
                   >
                     {copiedColor === `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)` ? (
                       <Check className={css({ h: '4', w: '4' })} />
@@ -690,16 +737,27 @@ function ColorPickerContent() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    gap: '3',
                     p: '4',
                     rounded: 'lg',
                     bg: 'gray.800/50',
                     border: '1px solid',
                     borderColor: 'gray.700',
+                    minW: '0',
+                    maxW: 'full',
+                    flexWrap: 'wrap',
                   })}
                 >
-                  <div>
+                  <div className={css({ minW: '0', flex: '1' })}>
                     <div className={css({ fontSize: 'sm', color: 'white', mb: '1' })}>HSV</div>
-                    <div className={css({ fontSize: 'lg', fontFamily: 'mono', color: 'gray.200' })}>
+                    <div
+                      className={css({
+                        fontSize: { base: 'base', sm: 'lg' },
+                        fontFamily: 'mono',
+                        color: 'gray.200',
+                        overflowWrap: 'anywhere',
+                      })}
+                    >
                       hsv({hsv.h}°, {hsv.s}%, {hsv.v}%)
                     </div>
                   </div>
@@ -708,7 +766,7 @@ function ColorPickerContent() {
                     onClick={() => handleCopyColor(`hsv(${hsv.h}°, ${hsv.s}%, ${hsv.v}%)`, 'HSV')}
                     variant="outline"
                     size="sm"
-                    className={css({ gap: '2' })}
+                    className={css({ gap: '2', minH: '11', minW: '11', flexShrink: '0' })}
                   >
                     {copiedColor === `hsv(${hsv.h}°, ${hsv.s}%, ${hsv.v}%)` ? (
                       <Check className={css({ h: '4', w: '4' })} />
@@ -885,7 +943,7 @@ function ColorPickerContent() {
         </div>
 
         {/* Palette Generator Sidebar */}
-        <div className={css({ spaceY: '6' })}>
+        <div className={css({ spaceY: '6', minW: '0', maxW: 'full', w: 'full' })}>
           <div
             className={css({
               animation: 'slideUp 0.5s ease-out forwards',

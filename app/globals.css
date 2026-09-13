@@ -152,3 +152,14 @@ input:-webkit-input-placeholder {
     display: none;
   }
 }
+
+/* Mobile-friendly native form control defaults */
+@media (max-width: 639px) {
+  select {
+    max-width: 100%;
+    min-height: 44px;
+  }
+  input[type="range"] {
+    min-height: 44px;
+  }
+}
