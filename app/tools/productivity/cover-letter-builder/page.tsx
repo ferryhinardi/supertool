@@ -592,48 +592,40 @@ export default function CoverLetterBuilderPage() {
                   w: 'full',
                   maxW: 'full',
                   minW: '0',
-                  overflowX: 'auto',
+                  overflow: 'hidden',
+                  rounded: 'md',
+                  border: '1px solid',
+                  borderColor: 'gray.800',
+                  bg: 'white',
+                  position: 'relative',
                 })}
               >
+                {/* A4 aspect-ratio spacer — absolute preview alone collapses height */}
                 <div
+                  aria-hidden
                   className={css({
                     w: 'full',
-                    maxW: 'full',
-                    aspectRatio: '210/297',
-                    overflow: 'hidden',
-                    rounded: 'md',
-                    border: '1px solid',
-                    borderColor: 'gray.800',
-                    bg: 'white',
-                    position: 'relative',
-                    minW: '0',
+                    paddingBottom: '141.42%', // 297 / 210
                   })}
+                />
+                <div
+                  id="cover-letter-preview"
+                  className={css({
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    bg: 'white',
+                    overflow: 'hidden',
+                  })}
+                  style={{
+                    width: '210mm',
+                    minHeight: '297mm',
+                    // Inline transform: Panda classnames for scale() are not emitted
+                    transform: 'scale(var(--cover-letter-preview-scale, 0.35))',
+                    transformOrigin: 'top left',
+                  }}
                 >
-                  <div
-                    id="cover-letter-preview"
-                    className={css({
-                      position: 'absolute',
-                      top: '0',
-                      left: '0',
-                      w: '210mm',
-                      minH: '297mm',
-                      bg: 'white',
-                      transform: {
-                        base: 'scale(0.32)',
-                        sm: 'scale(0.42)',
-                        md: 'scale(0.48)',
-                        lg: 'scale(0.36)',
-                      },
-                      transformOrigin: 'top left',
-                      overflow: 'hidden',
-                    })}
-                    style={{
-                      width: '210mm',
-                      minHeight: '297mm',
-                    }}
-                  >
-                    {renderTemplate()}
-                  </div>
+                  {renderTemplate()}
                 </div>
               </div>
             </CardContent>

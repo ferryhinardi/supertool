@@ -153,6 +153,26 @@ input:-webkit-input-placeholder {
   }
 }
 
+/* Cover letter A4 preview — scale to fit phone / tablet content width */
+#cover-letter-preview {
+  --cover-letter-preview-scale: 0.35;
+}
+@media (min-width: 640px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.45;
+  }
+}
+@media (min-width: 768px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.5;
+  }
+}
+@media (min-width: 1024px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.4;
+  }
+}
+
 /* Mobile-friendly native form control defaults */
 @media (max-width: 639px) {
   select {
