@@ -7,6 +7,8 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // Keep repo AGENTS.md authoritative; Next's auto-injected agent rules are noisy here
+  agentRules: false,
   images: {
     remotePatterns: [
       {
