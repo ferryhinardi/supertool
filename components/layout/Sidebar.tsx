@@ -151,7 +151,9 @@ export function Sidebar() {
           position: 'fixed',
           top: '4',
           left: '4',
-          zIndex: 'tooltip',
+          // Numeric z-index — semantic token `tooltip` was not resolving (computed `auto`)
+          // so homepage content intercepted taps on the hamburger.
+          zIndex: 70,
           alignItems: 'center',
           justifyContent: 'center',
           minH: '11',
@@ -185,7 +187,7 @@ export function Sidebar() {
             display: { base: 'block', md: 'none' },
             position: 'fixed',
             inset: '0',
-            zIndex: 'modal-backdrop',
+            zIndex: 40,
             bg: 'rgba(0, 0, 0, 0.5)',
             backdropFilter: 'blur(4px)',
             cursor: 'pointer',
@@ -203,7 +205,7 @@ export function Sidebar() {
           position: { base: 'fixed', md: 'sticky' },
           top: { base: '0', md: '0' },
           left: { base: mobileMenuOpen ? '0' : '-100%', md: '0' },
-          zIndex: { base: 'modal', md: 'auto' },
+          zIndex: { base: 50, md: 'auto' },
           display: 'flex',
           height: { base: '100vh', md: '100vh' },
           minH: '100vh',
