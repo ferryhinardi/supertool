@@ -4466,10 +4466,10 @@ export default function PDFToolsPage() {
                           })}
                         />
                         <div>
-                          <p className={css({ fontSize: 'sm', color: 'green.300' })}>
-                            Add password protection to secure your PDF. You can set a user password
-                            (required to open) and optionally an owner password (for permissions
-                            control).
+                          <p className={css({ fontSize: 'sm', color: 'amber.300' })}>
+                            PDF password protection is coming soon. Encryption is not available in
+                            this release — choose Unlock to remove protection from an existing PDF,
+                            or pick another operation.
                           </p>
                         </div>
                       </div>

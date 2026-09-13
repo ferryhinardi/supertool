@@ -341,7 +341,7 @@ const operationMetadata: Record<
 }
 
 // Popular operations to showcase
-const popularOperations: OperationType[] = ['merge', 'compress', 'protect', 'watermark']
+const popularOperations: OperationType[] = ['merge', 'compress', 'watermark', 'unlock']
 
 export function EmptyState({
   operation,

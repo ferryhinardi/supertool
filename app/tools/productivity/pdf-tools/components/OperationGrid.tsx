@@ -73,6 +73,8 @@ interface Operation {
   icon: LucideIcon
   color: string
   description: string
+  unavailable?: boolean
+  unavailableReason?: string
 }
 
 interface OperationCategory {
@@ -261,7 +263,10 @@ const operationCategories: OperationCategory[] = [
         label: 'Protect PDF',
         icon: Lock,
         color: '#10b981',
-        description: 'Add password protection',
+        description: 'Coming soon — encryption not available yet',
+        unavailable: true,
+        unavailableReason:
+          'PDF password protection is not available yet. Encryption requires additional server setup.',
       },
       {
         value: 'unlock',
@@ -322,8 +327,8 @@ export function OperationGrid({
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set())
 
-  const handleOperationClick = (operation: OperationType) => {
-    if (disabled) return
+  const handleOperationClick = (operation: OperationType, unavailable?: boolean) => {
+    if (disabled || unavailable) return
 
     onOperationChange(operation)
     trackEvent({
@@ -571,13 +576,16 @@ export function OperationGrid({
                     {category.operations.map((op) => {
                       const isSelected = selectedOperation === op.value
                       const Icon = op.icon
+                      const isUnavailable = Boolean(op.unavailable)
+                      const isDisabled = disabled || isUnavailable
 
                       return (
                         <button
                           type="button"
                           key={op.value}
-                          onClick={() => handleOperationClick(op.value)}
-                          disabled={disabled}
+                          onClick={() => handleOperationClick(op.value, isUnavailable)}
+                          disabled={isDisabled}
+                          title={isUnavailable ? op.unavailableReason : undefined}
                           className={css({
                             position: 'relative',
                             display: 'flex',
@@ -590,9 +598,9 @@ export function OperationGrid({
                             bg: isSelected ? 'currentColor/10' : 'gray.800/50',
                             textAlign: 'left',
                             transition: 'all 0.2s',
-                            cursor: disabled ? 'not-allowed' : 'pointer',
-                            opacity: disabled ? 0.5 : 1,
-                            _hover: disabled
+                            cursor: isDisabled ? 'not-allowed' : 'pointer',
+                            opacity: isDisabled ? 0.5 : 1,
+                            _hover: isDisabled
                               ? {}
                               : {
                                   borderColor: 'currentColor',
@@ -665,6 +673,21 @@ export function OperationGrid({
                               >
                                 {op.label}
                               </h4>
+                              {isUnavailable && (
+                                <span
+                                  className={css({
+                                    fontSize: 'xs',
+                                    px: '1.5',
+                                    py: '0.5',
+                                    rounded: 'full',
+                                    bg: 'gray.700',
+                                    color: 'gray.300',
+                                    fontWeight: 'medium',
+                                  })}
+                                >
+                                  Soon
+                                </span>
+                              )}
                               {isSelected && (
                                 <div
                                   className={css({
