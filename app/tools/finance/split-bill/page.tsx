@@ -1042,7 +1042,7 @@ export default function SplitBillPage() {
               <Link2 className={css({ h: '4', w: '4' })} />
               Create Shareable Bill
             </Button>
-            <Link href="/tools/split-bill/history">
+            <Link href="/tools/finance/split-bill/history">
               <Button
                 variant="outline"
                 size="sm"
@@ -2825,12 +2825,12 @@ export default function SplitBillPage() {
 
         <SocialShare
           toolName="Split Bill Calculator"
-          toolUrl="/tools/split-bill"
+          toolUrl="/tools/finance/split-bill"
           description="Free bill splitting calculator with receipt scanner and tip calculation - perfect for restaurants and group expenses"
           hashtags={['SplitBill', 'Finance', 'Calculator', 'MoneySaving']}
         />
-        <RelatedTools currentToolPath="/tools/split-bill" category="finance" />
-        <ToolRating toolId="/tools/split-bill" toolName="Split Bill Calculator" />
+        <RelatedTools currentToolPath="/tools/finance/split-bill" category="finance" />
+        <ToolRating toolId="/tools/finance/split-bill" toolName="Split Bill Calculator" />
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
         <ToolSearch />

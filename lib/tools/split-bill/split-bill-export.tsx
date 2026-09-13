@@ -343,7 +343,7 @@ export function BillPDFDocument({ billData }: { billData: BillDetailResponse }) 
         {/* Footer */}
         <View style={styles.footer}>
           <Text>Generated from SuperTool - Split Bill Calculator</Text>
-          <Text>Visit: https://supertool.app/tools/split-bill</Text>
+          <Text>Visit: https://supertool.app/tools/finance/split-bill</Text>
         </View>
       </Page>
     </Document>
