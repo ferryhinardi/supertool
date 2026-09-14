@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'online markdown',
   ],
   category: 'development',
-  path: '/tools/markdown-editor',
+  path: '/tools/productivity/markdown-editor',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

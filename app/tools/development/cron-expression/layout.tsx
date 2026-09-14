@@ -23,7 +23,7 @@ export const metadata: Metadata = generateToolMetadata({
     'cron expression tester',
   ],
   category: 'development',
-  path: '/tools/cron-expression',
+  path: '/tools/development/cron-expression',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

@@ -272,12 +272,21 @@ export default function UUIDGeneratorPage() {
             <CardDescription>Generate a cryptographically secure UUID v4</CardDescription>
           </CardHeader>
           <CardContent className={css({ spaceY: '4' })}>
-            <div className={css({ display: 'flex', gap: '3', alignItems: 'center' })}>
+            <div
+              className={css({
+                display: 'flex',
+                flexDirection: { base: 'column', sm: 'row' },
+                gap: '3',
+                alignItems: { base: 'stretch', sm: 'center' },
+              })}
+            >
               <Input
                 readOnly
                 value={generatedUUID}
                 className={css({
                   flex: '1',
+                  minW: '0',
+                  w: 'full',
                   h: '14',
                   fontSize: 'lg',
                   fontFamily: 'mono',

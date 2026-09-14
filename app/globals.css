@@ -145,3 +145,59 @@ input:-webkit-input-placeholder {
     color: #a3a3a3;
   }
 }
+
+/* Compact floating support CTA on phones so it doesn't cover tool cards */
+@media (max-width: 639px) {
+  .treat-me-label {
+    display: none;
+  }
+}
+
+/* Cover letter A4 preview — scale to fit phone / tablet content width */
+#cover-letter-preview {
+  --cover-letter-preview-scale: 0.35;
+}
+@media (min-width: 640px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.45;
+  }
+}
+@media (min-width: 768px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.5;
+  }
+}
+@media (min-width: 1024px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.4;
+  }
+}
+
+/* Mobile-friendly native form control defaults */
+@media (max-width: 639px) {
+  select {
+    max-width: 100%;
+    min-height: 44px;
+  }
+  input[type="range"] {
+    min-height: 44px;
+  }
+  /* 45px avoids subpixel getBoundingClientRect heights of ~43.999 under 44 */
+  button,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"] {
+    min-height: 45px;
+    min-width: 44px;
+  }
+  button.chip,
+  [data-touch-chip] {
+    min-height: 44px;
+  }
+  input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+      [type="file"]
+    ) {
+    min-height: 45px;
+    min-width: 44px;
+  }
+}

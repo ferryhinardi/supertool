@@ -51,6 +51,7 @@ export function TreatMeDialog() {
         style={{
           display: 'inline-flex',
           alignItems: 'center',
+          justifyContent: 'center',
           gap: '0.5rem',
           background: 'linear-gradient(to right, rgb(245, 158, 11), rgb(249, 115, 22))',
           color: 'white',
@@ -59,16 +60,18 @@ export function TreatMeDialog() {
           boxShadow: '0 10px 15px -3px rgba(245, 158, 11, 0.5)',
           transition: 'all 0.3s',
           border: 'none',
-          borderRadius: '0.5rem',
+          borderRadius: '9999px',
           cursor: 'pointer',
-          paddingLeft: '1.5rem',
-          paddingRight: '1.5rem',
+          paddingLeft: '0.875rem',
+          paddingRight: '0.875rem',
           paddingTop: '0.625rem',
           paddingBottom: '0.625rem',
           minHeight: '44px',
+          minWidth: '44px',
           touchAction: 'manipulation',
           WebkitTapHighlightColor: 'transparent',
         }}
+        aria-label="Treat Me"
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.05)'
           e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(245, 158, 11, 0.6)'
@@ -78,8 +81,8 @@ export function TreatMeDialog() {
           e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(245, 158, 11, 0.5)'
         }}
       >
-        <Coffee style={{ width: '1.25rem', height: '1.25rem' }} />
-        <span>Treat Me</span>
+        <Coffee style={{ width: '1.25rem', height: '1.25rem', flexShrink: 0 }} />
+        <span className="treat-me-label">Treat Me</span>
       </button>
 
       {mounted &&

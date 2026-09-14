@@ -157,22 +157,47 @@ export default function BillHistoryPage() {
           })}
         >
           <div
-            className="animate-pulse rounded-xl bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 p-2.5 shadow-2xl shadow-green-500/60 sm:rounded-2xl sm:p-4"
-            style={{ animationDuration: '2s' }}
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              p: { base: '2.5', sm: '4' },
+              bgGradient: 'to-br',
+              gradientFrom: 'green.600',
+              gradientVia: 'emerald.600',
+              gradientTo: 'teal.700',
+              boxShadow: '0 25px 50px rgba(34, 197, 94, 0.35)',
+              animation: 'pulse 2s ease-in-out infinite',
+            })}
           >
-            <Clock className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+            <Clock
+              className={css({
+                h: { base: '6', sm: '8' },
+                w: { base: '6', sm: '8' },
+                color: 'white',
+              })}
+            />
           </div>
           <div>
-            <h1 className="bg-gradient-to-r from-green-300 via-emerald-400 to-teal-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl">
+            <h1
+              className={css({
+                fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
+                fontWeight: 'extrabold',
+                bgGradient: 'to-r',
+                gradientFrom: 'green.300',
+                gradientVia: 'emerald.400',
+                gradientTo: 'teal.300',
+                backgroundClip: 'text',
+                color: 'transparent',
+              })}
+            >
               Bill History
             </h1>
-            <p className="text-sm text-gray-200 sm:text-base">
+            <p className={css({ fontSize: { base: 'sm', sm: 'base' }, color: 'gray.200' })}>
               View and manage all your split bills
             </p>
           </div>
         </div>
 
-        <Link href="/tools/split-bill">
+        <Link href="/tools/finance/split-bill">
           <Button
             size="lg"
             className={css({
@@ -181,7 +206,7 @@ export default function BillHistoryPage() {
               gap: '2',
             })}
           >
-            <Plus className="h-5 w-5" />
+            <Plus className={css({ h: '5', w: '5' })} />
             Create New Bill
           </Button>
         </Link>
@@ -211,22 +236,28 @@ export default function BillHistoryPage() {
           })}
         >
           <div className={css({ textAlign: 'center' })}>
-            <div className="text-3xl font-bold text-green-400">{totalStats.totalBills}</div>
-            <div className="text-sm text-gray-400">Total Bills</div>
+            <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'green.400' })}>
+              {totalStats.totalBills}
+            </div>
+            <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Bills</div>
           </div>
           <div className={css({ textAlign: 'center' })}>
-            <div className="text-3xl font-bold text-emerald-400">{totalStats.activeBills}</div>
-            <div className="text-sm text-gray-400">Active</div>
+            <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'emerald.400' })}>
+              {totalStats.activeBills}
+            </div>
+            <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Active</div>
           </div>
           <div className={css({ textAlign: 'center' })}>
-            <div className="text-3xl font-bold text-teal-400">{totalStats.completedBills}</div>
-            <div className="text-sm text-gray-400">Completed</div>
+            <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'teal.400' })}>
+              {totalStats.completedBills}
+            </div>
+            <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Completed</div>
           </div>
           <div className={css({ textAlign: 'center' })}>
-            <div className="text-3xl font-bold text-green-400">
+            <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'green.400' })}>
               {totalStats.totalAmount.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-400">Total Value</div>
+            <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Value</div>
           </div>
         </div>
       </div>
@@ -293,7 +324,7 @@ export default function BillHistoryPage() {
             alignItems: 'center',
           })}
         >
-          <span className="text-sm text-gray-400">Sort by:</span>
+          <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Sort by:</span>
           <select
             value={sortField}
             onChange={(e) => setSortField(e.target.value as SortField)}
@@ -364,14 +395,16 @@ export default function BillHistoryPage() {
               backdropFilter: 'blur(16px)',
             })}
           >
-            <Users className="mx-auto h-16 w-16 text-gray-600 mb-4" />
-            <h3 className="text-xl font-bold text-gray-300 mb-2">No bills found</h3>
-            <p className="text-gray-400 mb-6">
+            <Users className={css({ mx: 'auto', h: '16', w: '16', color: 'gray.600', mb: '4' })} />
+            <h3 className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'gray.300', mb: '2' })}>
+              No bills found
+            </h3>
+            <p className={css({ color: 'gray.400', mb: '6' })}>
               {filterStatus === 'all'
                 ? "You haven't created any bills yet"
                 : `No ${filterStatus} bills found`}
             </p>
-            <Link href="/tools/split-bill">
+            <Link href="/tools/finance/split-bill">
               <Button size="lg">Create Your First Bill</Button>
             </Link>
           </div>
@@ -441,7 +474,18 @@ export default function BillHistoryPage() {
                     </div>
 
                     {bill.description && (
-                      <p className="text-sm text-gray-400 mb-3 line-clamp-2">{bill.description}</p>
+                      <p
+                        className={css({
+                          fontSize: 'sm',
+                          color: 'gray.400',
+                          mb: '3',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        })}
+                      >
+                        {bill.description}
+                      </p>
                     )}
 
                     <div
@@ -453,23 +497,31 @@ export default function BillHistoryPage() {
                         fontSize: 'sm',
                       })}
                     >
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
+                      <div className={css({ display: 'flex', alignItems: 'center', gap: '1' })}>
+                        <Clock className={css({ h: '4', w: '4' })} />
                         {formatDate(bill.created_at)}
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
+                      <div className={css({ display: 'flex', alignItems: 'center', gap: '1' })}>
+                        <Users className={css({ h: '4', w: '4' })} />
                         {bill.total_participants}{' '}
                         {bill.total_participants === 1 ? 'person' : 'people'}
                       </div>
-                      <div className="flex items-center gap-1 font-semibold text-green-400">
+                      <div
+                        className={css({
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1',
+                          fontWeight: 'semibold',
+                          color: 'green.400',
+                        })}
+                      >
                         {currencySymbol}
                         {formatCurrency(bill.total_amount, bill.currency)}
                       </div>
                     </div>
 
                     {/* Payment Progress */}
-                    <div className="mt-3">
+                    <div className={css({ mt: '3' })}>
                       <div
                         className={css({
                           display: 'flex',
@@ -477,8 +529,10 @@ export default function BillHistoryPage() {
                           mb: '1',
                         })}
                       >
-                        <span className="text-xs text-gray-400">Payment Progress</span>
-                        <span className="text-xs text-gray-400">
+                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                          Payment Progress
+                        </span>
+                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
                           {bill.paid_count}/{bill.total_participants} paid
                         </span>
                       </div>
@@ -525,7 +579,7 @@ export default function BillHistoryPage() {
                           w: 'full',
                         })}
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className={css({ h: '4', w: '4' })} />
                         View Details
                       </Button>
                     </Link>
@@ -547,7 +601,7 @@ export default function BillHistoryPage() {
                         w: { base: 'auto', sm: 'full' },
                       })}
                     >
-                      <Link2 className="h-4 w-4" />
+                      <Link2 className={css({ h: '4', w: '4' })} />
                     </Button>
                   </div>
                 </div>
@@ -564,7 +618,9 @@ export default function BillHistoryPage() {
                   })}
                 >
                   Organized by{' '}
-                  <span className="font-medium text-gray-400">{bill.organizer_name}</span>
+                  <span className={css({ fontWeight: 'medium', color: 'gray.400' })}>
+                    {bill.organizer_name}
+                  </span>
                 </div>
               </div>
             )

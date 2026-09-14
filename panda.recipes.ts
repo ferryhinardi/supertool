@@ -81,15 +81,18 @@ export const buttonRecipe = defineRecipe({
       },
     },
     size: {
-      default: { h: '9', px: '4', py: '2' },
-      sm: { h: '8', rounded: 'md', px: '3', fontSize: 'xs' },
+      // Mobile-first: keep a 44px minimum touch target (spacing token '11')
+      // minW on sm covers icon-only buttons; 45px minH avoids subpixel <44 failures
+      default: { h: '11', minH: '45px', px: '4', py: '2' },
+      sm: { h: '11', minH: '45px', minW: '11', rounded: 'md', px: '3', fontSize: 'xs' },
       lg: {
         h: { base: '11', sm: '12', md: '14' },
+        minH: '45px',
         rounded: 'lg',
         px: { base: '6', sm: '7', md: '8' },
         fontSize: { base: 'base', sm: 'lg', md: 'xl' },
       },
-      icon: { h: '9', w: '9' },
+      icon: { h: '11', w: '11', minH: '45px', minW: '11' },
     },
   },
   defaultVariants: {
@@ -103,6 +106,8 @@ export const cardRecipe = defineRecipe({
   description: 'Card component styles',
   base: {
     w: 'full',
+    minW: '0',
+    maxW: 'full',
     rounded: { base: 'xl', sm: '2xl' },
     border: '1px solid',
     borderColor: 'border',
@@ -224,14 +229,15 @@ export const inputRecipe = defineRecipe({
   description: 'Input component styles',
   base: {
     display: 'flex',
-    h: '9',
+    h: '11',
+    minH: '11',
     w: 'full',
     rounded: 'md',
     border: '1px solid',
     borderColor: 'input',
     bg: 'transparent',
     px: '3',
-    py: '1',
+    py: '2',
     fontSize: 'sm',
     shadow: 'sm',
     transition: 'colors 0.2s',

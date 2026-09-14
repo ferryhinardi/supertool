@@ -473,9 +473,7 @@ describe('CronBuilderPage', () => {
       expect(screen.getByText('*/5 */2 * * *')).toBeInTheDocument()
     })
 
-    // TODO: Component bug - handleFieldChange in page.tsx returns early when value === 'custom',
-    // never setting state to 'custom', so custom inputs never appear. Fix needed in component.
-    it.skip('renders custom input when custom option is selected for minute', async () => {
+    it('renders custom input when custom option is selected for minute', async () => {
       render(<CronBuilderPage />)
 
       const minuteSelect = screen.getByLabelText('Minute')
@@ -485,8 +483,7 @@ describe('CronBuilderPage', () => {
       expect(screen.getByPlaceholderText('e.g., 0-59, */5, 0,15,30,45')).toBeInTheDocument()
     })
 
-    // TODO: Component bug - handleFieldChange returns early when value === 'custom'
-    it.skip('renders custom input when custom option is selected for hour', async () => {
+    it('renders custom input when custom option is selected for hour', async () => {
       render(<CronBuilderPage />)
 
       const hourSelect = screen.getByLabelText('Hour')
@@ -497,9 +494,7 @@ describe('CronBuilderPage', () => {
   })
 
   describe('Custom Value Input', () => {
-    // TODO: Component bug - handleFieldChange returns early when value === 'custom',
-    // so custom inputs never appear. All tests in this section depend on custom inputs.
-    it.skip('updates expression when custom minute value is entered', async () => {
+    it('updates expression when custom minute value is entered', async () => {
       render(<CronBuilderPage />)
 
       const minuteSelect = screen.getByLabelText('Minute')
@@ -511,8 +506,7 @@ describe('CronBuilderPage', () => {
       expect(screen.getByText('0,15,30,45 * * * *')).toBeInTheDocument()
     })
 
-    // TODO: Component bug - handleFieldChange returns early when value === 'custom'
-    it.skip('updates expression when custom hour value is entered', async () => {
+    it('updates expression when custom hour value is entered', async () => {
       render(<CronBuilderPage />)
 
       const hourSelect = screen.getByLabelText('Hour')
@@ -524,8 +518,7 @@ describe('CronBuilderPage', () => {
       expect(screen.getByText('* 9-17 * * *')).toBeInTheDocument()
     })
 
-    // TODO: Component bug - handleFieldChange returns early when value === 'custom'
-    it.skip('clears selected preset when custom value is entered', async () => {
+    it('clears selected preset when custom value is entered', async () => {
       render(<CronBuilderPage />)
 
       // Select a preset first

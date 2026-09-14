@@ -21,7 +21,7 @@ export const metadata: Metadata = generateToolMetadata({
     'api identifier',
   ],
   category: 'data',
-  path: '/tools/uuid-generator',
+  path: '/tools/data/uuid-generator',
 })
 
 export default function UUIDGeneratorLayout({ children }: { children: React.ReactNode }) {
@@ -30,7 +30,7 @@ export default function UUIDGeneratorLayout({ children }: { children: React.Reac
     [
       { name: 'Home', url: '/' },
       { name: 'Tools', url: '/' },
-      { name: 'UUID Generator', url: '/tools/uuid-generator' },
+      { name: 'UUID Generator', url: '/tools/data/uuid-generator' },
     ],
     baseUrl
   )

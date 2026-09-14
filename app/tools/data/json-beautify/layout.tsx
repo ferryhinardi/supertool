@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'json lint',
   ],
   category: 'development',
-  path: '/tools/json-beautify',
+  path: '/tools/data/json-beautify',
   ogTitle: 'Free JSON Beautifier & Formatter - Format, Validate & Minify JSON Online',
   ogDescription:
     'Transform messy JSON into beautifully formatted code instantly! ✨ Free online tool with syntax validation, TypeScript conversion, and real-time error detection. No signup required.',
@@ -108,7 +108,7 @@ export default function JSONBeautifyLayout({ children }: { children: React.React
               'Learn how to format minified JSON data into a readable structure with proper indentation and syntax highlighting using our free online JSON beautifier tool.',
               howToSteps,
               baseUrl,
-              '/tools/json-beautify'
+              '/tools/data/json-beautify'
             )
           ),
         }}

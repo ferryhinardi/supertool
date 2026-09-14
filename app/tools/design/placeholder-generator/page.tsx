@@ -191,13 +191,15 @@ export default function PlaceholderGeneratorPage() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
+          gridTemplateColumns: { base: 'minmax(0, 1fr)', lg: 'repeat(2, minmax(0, 1fr))' },
           gap: { base: '6', lg: '8' },
           w: 'full',
+          maxW: 'full',
+          minW: '0',
         })}
       >
         {/* Left Column - Controls */}
-        <div className={css({ spaceY: '6' })}>
+        <div className={css({ spaceY: '6', minW: '0', maxW: 'full', w: 'full' })}>
           {/* Dimensions */}
           <Card>
             <CardContent className={css({ spaceY: '4' })}>
@@ -271,8 +273,10 @@ export default function PlaceholderGeneratorPage() {
                       value={bgColor}
                       onChange={(e) => handleColorChange('bg', e.target.value)}
                       className={css({
-                        w: '12',
-                        h: '10',
+                        w: '11',
+                        h: '11',
+                        minW: '11',
+                        minH: '11',
                         borderRadius: 'md',
                         border: '1px solid',
                         borderColor: 'gray.700',
@@ -292,9 +296,14 @@ export default function PlaceholderGeneratorPage() {
                   <div
                     className={css({
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(11, 1fr)',
+                      gridTemplateColumns: {
+                        base: 'repeat(auto-fill, minmax(44px, 1fr))',
+                        sm: 'repeat(11, minmax(0, 1fr))',
+                      },
                       gap: '1',
                       mt: '2',
+                      w: 'full',
+                      maxW: 'full',
                     })}
                   >
                     {colorPalette.map((color) => (
@@ -304,13 +313,15 @@ export default function PlaceholderGeneratorPage() {
                         onClick={() => handleColorChange('bg', color)}
                         className={css({
                           w: 'full',
-                          h: '8',
+                          minW: '11',
+                          minH: '11',
+                          h: '11',
                           borderRadius: 'md',
                           border: '2px solid',
                           borderColor: bgColor === color ? 'pink.500' : 'gray.700',
                           cursor: 'pointer',
                           transition: 'all',
-                          _hover: { transform: 'scale(1.1)' },
+                          _hover: { transform: 'scale(1.05)' },
                         })}
                         style={{ backgroundColor: color }}
                         title={color}
@@ -330,8 +341,10 @@ export default function PlaceholderGeneratorPage() {
                       value={textColor}
                       onChange={(e) => handleColorChange('text', e.target.value)}
                       className={css({
-                        w: '12',
-                        h: '10',
+                        w: '11',
+                        h: '11',
+                        minW: '11',
+                        minH: '11',
                         borderRadius: 'md',
                         border: '1px solid',
                         borderColor: 'gray.700',
@@ -351,9 +364,14 @@ export default function PlaceholderGeneratorPage() {
                   <div
                     className={css({
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(11, 1fr)',
+                      gridTemplateColumns: {
+                        base: 'repeat(auto-fill, minmax(44px, 1fr))',
+                        sm: 'repeat(11, minmax(0, 1fr))',
+                      },
                       gap: '1',
                       mt: '2',
+                      w: 'full',
+                      maxW: 'full',
                     })}
                   >
                     {colorPalette.map((color) => (
@@ -363,13 +381,15 @@ export default function PlaceholderGeneratorPage() {
                         onClick={() => handleColorChange('text', color)}
                         className={css({
                           w: 'full',
-                          h: '8',
+                          minW: '11',
+                          minH: '11',
+                          h: '11',
                           borderRadius: 'md',
                           border: '2px solid',
                           borderColor: textColor === color ? 'pink.500' : 'gray.700',
                           cursor: 'pointer',
                           transition: 'all',
-                          _hover: { transform: 'scale(1.1)' },
+                          _hover: { transform: 'scale(1.05)' },
                         })}
                         style={{ backgroundColor: color }}
                         title={color}
@@ -440,7 +460,7 @@ export default function PlaceholderGeneratorPage() {
         </div>
 
         {/* Right Column - Preview & Actions */}
-        <div className={css({ spaceY: '6' })}>
+        <div className={css({ spaceY: '6', minW: '0', maxW: 'full', w: 'full' })}>
           {/* Preview */}
           <Card>
             <CardContent className={css({ spaceY: '4' })}>
@@ -449,8 +469,10 @@ export default function PlaceholderGeneratorPage() {
               <div
                 className={css({
                   w: 'full',
+                  maxW: 'full',
                   maxH: '96',
-                  overflow: 'auto',
+                  overflowX: 'auto',
+                  overflowY: 'auto',
                   borderRadius: 'lg',
                   border: '1px solid',
                   borderColor: 'gray.700',
@@ -459,10 +481,24 @@ export default function PlaceholderGeneratorPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  minW: '0',
                 })}
               >
-                {/* biome-ignore lint/security/noDangerouslySetInnerHtml: SVG is generated internally, not from user input */}
-                <div dangerouslySetInnerHTML={{ __html: previewSVG }} />
+                <div
+                  className={css({
+                    w: 'full',
+                    maxW: 'full',
+                    minW: '0',
+                    '& svg': {
+                      maxW: 'full',
+                      w: 'full',
+                      h: 'auto',
+                      display: 'block',
+                    },
+                  })}
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: SVG is generated internally, not from user input
+                  dangerouslySetInnerHTML={{ __html: previewSVG }}
+                />
               </div>
 
               {/* Actions */}

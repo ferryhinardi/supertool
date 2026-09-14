@@ -1015,7 +1015,9 @@ export default function SplitBillPage() {
               display: 'flex',
               gap: '2',
               justifyContent: 'center',
+              flexDirection: { base: 'column', sm: 'row' },
               flexWrap: 'wrap',
+              w: 'full',
             })}
           >
             <Button
@@ -1023,7 +1025,8 @@ export default function SplitBillPage() {
               variant={mode === 'calculator' ? 'default' : 'outline'}
               size="sm"
               className={css({
-                flex: { base: '1', sm: 'initial' },
+                w: { base: 'full', sm: 'auto' },
+                minH: '11',
               })}
             >
               Calculator
@@ -1033,26 +1036,34 @@ export default function SplitBillPage() {
               variant={mode === 'create' ? 'default' : 'outline'}
               size="sm"
               className={css({
-                flex: { base: '1', sm: 'initial' },
+                w: { base: 'full', sm: 'auto' },
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '2',
+                minH: '11',
               })}
             >
-              <Link2 className={css({ h: '4', w: '4' })} />
+              <Link2 className={css({ h: '4', w: '4', flexShrink: 0 })} />
               Create Shareable Bill
             </Button>
-            <Link href="/tools/split-bill/history">
+            <Link
+              href="/tools/finance/split-bill/history"
+              className={css({ w: { base: 'full', sm: 'auto' } })}
+            >
               <Button
                 variant="outline"
                 size="sm"
                 className={css({
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '2',
+                  w: 'full',
+                  minH: '11',
                 })}
               >
-                <Clock className={css({ h: '4', w: '4' })} />
+                <Clock className={css({ h: '4', w: '4', flexShrink: 0 })} />
                 View History
               </Button>
             </Link>
@@ -1327,7 +1338,7 @@ export default function SplitBillPage() {
             Bill Details
           </h2>
 
-          <Field>
+          <Field className={css({ minW: '0', maxW: 'full', w: 'full' })}>
             <FieldLabel
               htmlFor="currency-select"
               className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
@@ -1348,6 +1359,10 @@ export default function SplitBillPage() {
                 }
               }}
               className={css({
+                w: 'full',
+                maxW: 'full',
+                minW: '0',
+                minH: '11',
                 rounded: 'lg',
                 border: '2px solid',
                 borderColor: 'gray.700',
@@ -2276,8 +2291,10 @@ export default function SplitBillPage() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          h: '8',
-                          w: '8',
+                          h: '11',
+                          w: '11',
+                          minH: '11',
+                          minW: '11',
                           rounded: 'md',
                           bg: person.hasPaid ? 'green.600' : 'gray.700',
                           color: 'white',
@@ -2310,8 +2327,10 @@ export default function SplitBillPage() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          h: '8',
-                          w: '8',
+                          h: '11',
+                          w: '11',
+                          minH: '11',
+                          minW: '11',
                           rounded: 'md',
                           bg: 'red.600',
                           color: 'white',
@@ -2825,12 +2844,12 @@ export default function SplitBillPage() {
 
         <SocialShare
           toolName="Split Bill Calculator"
-          toolUrl="/tools/split-bill"
+          toolUrl="/tools/finance/split-bill"
           description="Free bill splitting calculator with receipt scanner and tip calculation - perfect for restaurants and group expenses"
           hashtags={['SplitBill', 'Finance', 'Calculator', 'MoneySaving']}
         />
-        <RelatedTools currentToolPath="/tools/split-bill" category="finance" />
-        <ToolRating toolId="/tools/split-bill" toolName="Split Bill Calculator" />
+        <RelatedTools currentToolPath="/tools/finance/split-bill" category="finance" />
+        <ToolRating toolId="/tools/finance/split-bill" toolName="Split Bill Calculator" />
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
         <ToolSearch />

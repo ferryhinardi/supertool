@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'no upload file inspector',
   ],
   category: 'development',
-  path: '/tools/file-inspector',
+  path: '/tools/development/file-inspector',
 })
 
 export default function FileInspectorLayout({ children }: { children: React.ReactNode }) {

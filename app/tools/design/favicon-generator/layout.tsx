@@ -24,7 +24,7 @@ export const metadata: Metadata = generateToolMetadata({
     'free favicon generator',
   ],
   category: 'design',
-  path: '/tools/favicon-generator',
+  path: '/tools/design/favicon-generator',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

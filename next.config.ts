@@ -7,6 +7,8 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // Keep repo AGENTS.md authoritative; Next's auto-injected agent rules are noisy here
+  agentRules: false,
   images: {
     remotePatterns: [
       {
@@ -34,6 +36,62 @@ const nextConfig: NextConfig = {
   // Performance optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
+  },
+
+  // Legacy flat tool URLs → category-prefixed routes
+  async redirects() {
+    return [
+      {
+        source: '/tools/split-bill',
+        destination: '/tools/finance/split-bill',
+        permanent: true,
+      },
+      {
+        source: '/tools/split-bill/history',
+        destination: '/tools/finance/split-bill/history',
+        permanent: true,
+      },
+      {
+        source: '/tools/json-beautify',
+        destination: '/tools/data/json-beautify',
+        permanent: true,
+      },
+      {
+        source: '/tools/qr-code',
+        destination: '/tools/productivity/qr-code',
+        permanent: true,
+      },
+      {
+        source: '/tools/pdf-tools',
+        destination: '/tools/productivity/pdf-tools',
+        permanent: true,
+      },
+      {
+        source: '/tools/password-generator',
+        destination: '/tools/security/password-generator',
+        permanent: true,
+      },
+      {
+        source: '/tools/unit-converter',
+        destination: '/tools/productivity/unit-converter',
+        permanent: true,
+      },
+      {
+        source: '/tools/image-optimizer',
+        destination: '/tools/media/image-optimizer',
+        permanent: true,
+      },
+      {
+        source: '/tools/url-shortener',
+        destination: '/tools/productivity/url-shortener',
+        permanent: true,
+      },
+      {
+        source: '/tools/upload',
+        destination: '/tools/productivity/upload',
+        permanent: true,
+      },
+    ]
   },
 
   // Optimize package imports - reduces bundle size

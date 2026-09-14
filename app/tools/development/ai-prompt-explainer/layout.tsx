@@ -23,7 +23,7 @@ export const metadata: Metadata = generateToolMetadata({
     'AI prompt helper',
   ],
   category: 'development',
-  path: '/tools/prompt-explainer',
+  path: '/tools/development/ai-prompt-explainer',
 })
 
 export default function AIPromptExplainerLayout({ children }: { children: React.ReactNode }) {

@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'date utility',
   ],
   category: 'data',
-  path: '/tools/date-formatter',
+  path: '/tools/data/date-formatter',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

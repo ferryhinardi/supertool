@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'prompt structure',
   ],
   category: 'development',
-  path: '/tools/prompt-formatter',
+  path: '/tools/development/prompt-formatter',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

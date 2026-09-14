@@ -553,6 +553,9 @@ export default function MarkdownTablePage() {
             bg: 'rgba(17, 24, 39, 0.5)',
             overflow: 'hidden',
             backdropFilter: 'blur(16px)',
+            maxW: 'full',
+            w: 'full',
+            minW: '0',
           })}
         >
           <div
@@ -610,8 +613,23 @@ export default function MarkdownTablePage() {
             </div>
           </div>
 
-          <div className={css({ overflowX: 'auto', p: { base: '4', sm: '6' } })}>
-            <table className={css({ w: 'full', borderCollapse: 'collapse' })}>
+          <div
+            className={css({
+              overflowX: 'auto',
+              maxW: 'full',
+              w: 'full',
+              minW: '0',
+              p: { base: '4', sm: '6' },
+            })}
+          >
+            <table
+              className={css({
+                w: 'full',
+                maxW: 'full',
+                borderCollapse: 'collapse',
+                minW: '0',
+              })}
+            >
               <thead>
                 <tr>
                   <th className={css({ w: '40px', p: '2' })} />
@@ -633,6 +651,7 @@ export default function MarkdownTablePage() {
                           className={css({
                             w: 'full',
                             minW: '100px',
+                            minH: '11',
                             rounded: 'md',
                             border: '1px solid',
                             borderColor: 'gray.700',
@@ -680,6 +699,11 @@ export default function MarkdownTablePage() {
                               onClick={() => handleRemoveColumn(colIndex)}
                               className={css({
                                 p: '1',
+                                minW: '11',
+                                minH: '11',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                                 rounded: 'md',
                                 color: 'gray.500',
                                 _hover: { bg: 'red.500/20', color: 'red.400' },
@@ -708,6 +732,11 @@ export default function MarkdownTablePage() {
                           onClick={() => handleRemoveRow(rowIndex)}
                           className={css({
                             p: '1',
+                            minW: '11',
+                            minH: '11',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                             rounded: 'md',
                             color: 'gray.500',
                             _hover: { bg: 'red.500/20', color: 'red.400' },

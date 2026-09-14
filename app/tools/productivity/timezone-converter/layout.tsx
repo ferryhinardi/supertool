@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'meeting scheduler',
   ],
   category: 'utilities',
-  path: '/tools/timezone-converter',
+  path: '/tools/productivity/timezone-converter',
 })
 
 export default function TimezoneConverterLayout({ children }: { children: React.ReactNode }) {

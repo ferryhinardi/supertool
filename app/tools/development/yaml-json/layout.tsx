@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'json online',
   ],
   category: 'development',
-  path: '/tools/yaml-json',
+  path: '/tools/development/yaml-json',
 })
 
 export default function YamlJsonConverterLayout({ children }: { children: React.ReactNode }) {

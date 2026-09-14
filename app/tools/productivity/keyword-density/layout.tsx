@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'content seo checker',
   ],
   category: 'productivity',
-  path: '/tools/keyword-density',
+  path: '/tools/productivity/keyword-density',
 })
 
 export default function KeywordDensityLayout({ children }: { children: React.ReactNode }) {

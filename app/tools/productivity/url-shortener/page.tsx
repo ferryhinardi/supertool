@@ -467,12 +467,23 @@ export default function URLShortenerPage() {
               >
                 {isLoading ? (
                   <>
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span
+                      className={css({
+                        h: '4',
+                        w: '4',
+                        rounded: 'full',
+                        borderWidth: '2px',
+                        borderStyle: 'solid',
+                        borderColor: 'white',
+                        borderTopColor: 'transparent',
+                        animation: 'spin 1s linear infinite',
+                      })}
+                    />
                     Shortening...
                   </>
                 ) : (
                   <>
-                    <LinkIcon className="h-4 w-4" />
+                    <LinkIcon className={css({ h: '4', w: '4' })} />
                     Shorten URL
                   </>
                 )}
@@ -1008,8 +1019,8 @@ export default function URLShortenerPage() {
         hashtags={['URLShortener', 'LinkManagement', 'Marketing', 'Analytics']}
       />
 
-      <RelatedTools currentToolPath="/tools/url-shortener" category="productivity" />
-      <ToolRating toolId="/tools/url-shortener" toolName="URL Shortener" />
+      <RelatedTools currentToolPath="/tools/productivity/url-shortener" category="productivity" />
+      <ToolRating toolId="/tools/productivity/url-shortener" toolName="URL Shortener" />
       <ToolSearch />
 
       {/* Keyboard Shortcuts Dialog */}

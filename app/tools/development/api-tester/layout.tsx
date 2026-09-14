@@ -23,7 +23,7 @@ export const metadata: Metadata = generateToolMetadata({
     'json api',
   ],
   category: 'development',
-  path: '/tools/api-tester',
+  path: '/tools/development/api-tester',
 })
 
 export default function ApiTesterLayout({ children }: { children: React.ReactNode }) {

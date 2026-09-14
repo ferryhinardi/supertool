@@ -30,7 +30,7 @@ export const metadata: Metadata = generateToolMetadata({
     'png logo generator',
   ],
   category: 'design',
-  path: '/tools/logo-maker',
+  path: '/tools/design/logo-maker',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

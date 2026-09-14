@@ -340,6 +340,11 @@ function PercentageCalculatorContent() {
                       transition: 'all 0.2s',
                       textAlign: 'left',
                       alignItems: 'flex-start',
+                      w: 'full',
+                      maxW: 'full',
+                      minW: '0',
+                      whiteSpace: 'normal',
+                      overflowWrap: 'anywhere',
                       _hover: {
                         bg: isActive ? 'purple.500/30' : 'gray.800',
                         borderColor: isActive ? 'purple.500/70' : 'gray.600',
@@ -347,10 +352,26 @@ function PercentageCalculatorContent() {
                       },
                     })}
                   >
-                    <span className={css({ fontSize: 'sm', fontWeight: 'semibold' })}>
+                    <span
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'semibold',
+                        overflowWrap: 'anywhere',
+                        whiteSpace: 'normal',
+                      })}
+                    >
                       {modeConfig.name}
                     </span>
-                    <span className={css({ fontSize: 'xs', color: 'white' })}>
+                    <span
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'white',
+                        overflowWrap: 'anywhere',
+                        wordBreak: 'break-word',
+                        whiteSpace: 'normal',
+                        maxW: 'full',
+                      })}
+                    >
                       {modeConfig.description}
                     </span>
                   </Button>

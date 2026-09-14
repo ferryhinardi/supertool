@@ -478,6 +478,7 @@ export default function PhotoEditorPage() {
                       gap: '2',
                       px: '4',
                       py: '2',
+                      minH: '11',
                       rounded: 'lg',
                       fontSize: 'sm',
                       fontWeight: 'semibold',

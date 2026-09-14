@@ -21,7 +21,7 @@ export const metadata: Metadata = generateToolMetadata({
     'percentage formula',
   ],
   category: 'finance',
-  path: '/tools/percentage-calculator',
+  path: '/tools/finance/percentage-calculator',
 })
 
 export default function PercentageCalculatorLayout({ children }: { children: React.ReactNode }) {

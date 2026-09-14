@@ -24,7 +24,7 @@ export const metadata: Metadata = generateToolMetadata({
     'split large csv',
   ],
   category: 'data',
-  path: '/tools/csv-merger',
+  path: '/tools/data/csv-merger',
 })
 
 export default function CSVMergerLayout({ children }: { children: React.ReactNode }) {

@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'qr scanner',
   ],
   category: 'utilities',
-  path: '/tools/qr-code',
+  path: '/tools/productivity/qr-code',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
@@ -110,7 +110,7 @@ export default function QRCodeLayout({ children }: { children: React.ReactNode }
               'Learn how to generate custom QR codes with our free online QR code generator. Create QR codes for URLs, WiFi, text, and more with optional color customization and logo embedding.',
               howToSteps,
               baseUrl,
-              '/tools/qr-code'
+              '/tools/productivity/qr-code'
             )
           ),
         }}

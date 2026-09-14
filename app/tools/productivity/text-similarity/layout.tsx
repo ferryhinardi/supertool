@@ -24,7 +24,7 @@ export const metadata: Metadata = generateToolMetadata({
     'text analysis',
   ],
   category: 'productivity',
-  path: '/tools/text-similarity',
+  path: '/tools/productivity/text-similarity',
 })
 
 export default function TextSimilarityLayout({ children }: { children: React.ReactNode }) {

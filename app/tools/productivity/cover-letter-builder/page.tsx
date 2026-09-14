@@ -311,11 +311,15 @@ export default function CoverLetterBuilderPage() {
       <div
         className={css({
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', lg: '280px 1fr 300px' },
+          gridTemplateColumns: {
+            base: 'minmax(0, 1fr)',
+            lg: 'minmax(0, 280px) minmax(0, 1fr) minmax(0, 300px)',
+          },
           gap: { base: '4', md: '6' },
           maxW: '7xl',
           mx: 'auto',
           w: 'full',
+          minW: '0',
           p: { base: '4', sm: '6' },
           minH: 'calc(100vh - 140px)',
         })}
@@ -327,6 +331,9 @@ export default function CoverLetterBuilderPage() {
             flexDirection: 'column',
             gap: '4',
             h: 'fit-content',
+            minW: '0',
+            maxW: 'full',
+            w: 'full',
             position: { base: 'relative', lg: 'sticky' },
             top: { lg: '6' },
           })}
@@ -493,6 +500,9 @@ export default function CoverLetterBuilderPage() {
             overflowY: 'auto',
             maxH: { base: 'none', lg: 'calc(100vh - 180px)' },
             pr: { lg: '2' },
+            minW: '0',
+            maxW: 'full',
+            w: 'full',
           })}
         >
           <CoverLetterForm data={coverLetter} onChange={handleCoverLetterChange} />
@@ -505,6 +515,9 @@ export default function CoverLetterBuilderPage() {
             flexDirection: 'column',
             gap: '4',
             h: 'fit-content',
+            minW: '0',
+            maxW: 'full',
+            w: 'full',
             position: { base: 'relative', lg: 'sticky' },
             top: { lg: '6' },
           })}
@@ -577,7 +590,8 @@ export default function CoverLetterBuilderPage() {
               <div
                 className={css({
                   w: 'full',
-                  aspectRatio: '210/297',
+                  maxW: 'full',
+                  minW: '0',
                   overflow: 'hidden',
                   rounded: 'md',
                   border: '1px solid',
@@ -586,19 +600,29 @@ export default function CoverLetterBuilderPage() {
                   position: 'relative',
                 })}
               >
+                {/* A4 aspect-ratio spacer — absolute preview alone collapses height */}
+                <div
+                  aria-hidden
+                  className={css({
+                    w: 'full',
+                    paddingBottom: '141.42%', // 297 / 210
+                  })}
+                />
                 <div
                   id="cover-letter-preview"
                   className={css({
-                    w: '210mm',
-                    minH: '297mm',
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
                     bg: 'white',
-                    transform: { base: 'scale(0.28)', sm: 'scale(0.42)', lg: 'scale(0.28)' },
-                    transformOrigin: 'top left',
                     overflow: 'hidden',
                   })}
                   style={{
                     width: '210mm',
                     minHeight: '297mm',
+                    // Inline transform: Panda classnames for scale() are not emitted
+                    transform: 'scale(var(--cover-letter-preview-scale, 0.35))',
+                    transformOrigin: 'top left',
                   }}
                 >
                   {renderTemplate()}
