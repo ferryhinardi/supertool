@@ -282,7 +282,7 @@ export default function SignatureGeneratorPage() {
           <p
             className={css({
               fontSize: 'lg',
-              color: 'gray.600',
+              color: 'gray.400',
               maxW: '2xl',
               mx: 'auto',
             })}
@@ -304,6 +304,7 @@ export default function SignatureGeneratorPage() {
           <div
             className={css({
               bg: 'white',
+              color: 'gray.900',
               borderRadius: 'xl',
               boxShadow: 'lg',
               p: '6',
@@ -329,7 +330,7 @@ export default function SignatureGeneratorPage() {
                   value={config.customText}
                   onChange={(e) => setConfig({ ...config, customText: e.target.value })}
                 />
-                <p className={css({ fontSize: 'sm', color: 'gray.400', mt: '1' })}>
+                <p className={css({ fontSize: 'sm', color: 'gray.500', mt: '1' })}>
                   Leave empty to use your name
                 </p>
               </div>
@@ -355,6 +356,7 @@ export default function SignatureGeneratorPage() {
                         border: '2px solid',
                         borderColor: config.style === style ? 'pink.500' : 'gray.200',
                         bg: config.style === style ? 'pink.50' : 'white',
+                        color: 'gray.900',
                         cursor: 'pointer',
                         transition: 'all 0.2s',
                         _hover: { borderColor: 'pink.300' },
@@ -456,6 +458,7 @@ export default function SignatureGeneratorPage() {
             <div
               className={css({
                 bg: 'white',
+                color: 'gray.900',
                 borderRadius: 'xl',
                 boxShadow: 'lg',
                 p: '8',
@@ -484,6 +487,7 @@ export default function SignatureGeneratorPage() {
               <div
                 className={css({
                   bg: 'white',
+                  color: 'gray.900',
                   borderRadius: 'xl',
                   boxShadow: 'lg',
                   p: '6',
@@ -614,7 +618,7 @@ export default function SignatureGeneratorPage() {
                   <feature.icon className={css({ w: '6', h: '6', color: 'pink.500' })} />
                 </div>
                 <h3 className={css({ fontWeight: 'semibold', mb: '2' })}>{feature.title}</h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.600' })}>{feature.description}</p>
+                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>{feature.description}</p>
               </div>
             ))}
           </div>
@@ -624,6 +628,7 @@ export default function SignatureGeneratorPage() {
         <div
           className={css({
             bg: 'white',
+            color: 'gray.900',
             borderRadius: 'xl',
             boxShadow: 'lg',
             p: '8',

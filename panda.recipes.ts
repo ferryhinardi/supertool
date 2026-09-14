@@ -64,7 +64,8 @@ export const buttonRecipe = defineRecipe({
         color: 'foreground',
         shadow: 'sm',
         _hover: { bg: 'accent', color: 'accent-foreground' },
-        _disabled: { color: 'muted-foreground', opacity: '0.7' },
+        // gray.300 stays readable on dark cards when actions are empty/disabled
+        _disabled: { color: 'gray.300', opacity: '0.85' },
       },
       secondary: {
         bg: 'secondary',
@@ -75,7 +76,7 @@ export const buttonRecipe = defineRecipe({
       ghost: {
         color: 'foreground',
         _hover: { bg: 'accent', color: 'accent-foreground' },
-        _disabled: { color: 'muted-foreground', opacity: '0.7' },
+        _disabled: { color: 'gray.300', opacity: '0.85' },
       },
       link: {
         color: 'foreground',

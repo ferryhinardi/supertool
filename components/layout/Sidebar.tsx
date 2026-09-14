@@ -383,7 +383,8 @@ export function Sidebar() {
                     <span
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.600',
+                        // gray.600 on dark sidebar fails WCAG (~2.3:1); gray.400 stays muted but readable
+                        color: 'gray.400',
                         mr: '1',
                       })}
                     >

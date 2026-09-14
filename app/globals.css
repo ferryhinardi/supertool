@@ -48,11 +48,13 @@ body {
  *   var(--gradient-via-stops, <local from/to>)
  * CSS variables inherit, so a parent with gradientVia (page shells, orbs,
  * section wrappers) makes every descendant bgClip:'text' paint with that
- * parent's colors — often near-black on dark UI. Reset inherited via-stops on
- * clipped-text nodes; elements that set their own gradientVia re-define the
- * variable on the same node and keep working.
+ * parent's colors — often near-black on dark UI.
+ *
+ * Reset inherited via-stops only on clipped-text nodes that do NOT set their
+ * own gradientVia. A blanket `initial` on all bg-cp_text nodes would override
+ * `.grad-via_*` (globals.css loads after Panda) and wipe titles that use via.
  */
-[class*="bg-cp_text"] {
+[class*="bg-cp_text"]:not([class*="grad-via"]) {
   --gradient-via-stops: initial;
 }
 
@@ -151,6 +153,17 @@ input:-webkit-input-placeholder,
 textarea:-webkit-input-placeholder {
   color: #a3a3a3;
   opacity: 1;
+}
+
+/*
+ * Light surfaces inside the dark app must not inherit body white text.
+ * Many tools use bg:white for document previews / form cards without setting
+ * color, which made labels and helper copy invisible (white-on-white).
+ */
+[class*="bg_white"],
+[class*="bg_gray\\.50"],
+[class*="bg_gray\\.100"] {
+  color: var(--colors-gray-900);
 }
 
 /* Compact floating support CTA on phones so it doesn't cover tool cards */
