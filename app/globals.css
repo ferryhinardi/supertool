@@ -157,12 +157,15 @@ textarea:-webkit-input-placeholder {
 
 /*
  * Light surfaces inside the dark app must not inherit body white text.
- * Many tools use bg:white for document previews / form cards without setting
- * color, which made labels and helper copy invisible (white-on-white).
+ * Many tools use bg:white / gray.50 cards without setting color.
+ *
+ * Use [class~="…"] (exact token) — NOT [class*="bg_white"], which also matched
+ * bg_whiteAlpha.* and forced near-black text onto translucent dark buttons.
+ * Same for gray.50 vs gray.500.
  */
-[class*="bg_white"],
-[class*="bg_gray\\.50"],
-[class*="bg_gray\\.100"] {
+[class~="bg_white"],
+[class~="bg_gray.50"],
+[class~="bg_gray.100"] {
   color: var(--colors-gray-900);
 }
 

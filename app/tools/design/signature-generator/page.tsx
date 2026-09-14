@@ -550,6 +550,7 @@ export default function SignatureGeneratorPage() {
         <div
           className={css({
             bg: 'gray.50',
+            color: 'gray.900',
             borderRadius: 'xl',
             p: '8',
           })}
@@ -618,7 +619,7 @@ export default function SignatureGeneratorPage() {
                   <feature.icon className={css({ w: '6', h: '6', color: 'pink.500' })} />
                 </div>
                 <h3 className={css({ fontWeight: 'semibold', mb: '2' })}>{feature.title}</h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>{feature.description}</p>
+                <p className={css({ fontSize: 'sm', color: 'gray.600' })}>{feature.description}</p>
               </div>
             ))}
           </div>
