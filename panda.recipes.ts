@@ -61,8 +61,10 @@ export const buttonRecipe = defineRecipe({
         border: '1px solid',
         borderColor: 'input',
         bg: 'background',
+        color: 'foreground',
         shadow: 'sm',
         _hover: { bg: 'accent', color: 'accent-foreground' },
+        _disabled: { color: 'muted-foreground', opacity: '0.7' },
       },
       secondary: {
         bg: 'secondary',
@@ -71,10 +73,12 @@ export const buttonRecipe = defineRecipe({
         _hover: { bg: 'secondary', opacity: '0.8' },
       },
       ghost: {
+        color: 'foreground',
         _hover: { bg: 'accent', color: 'accent-foreground' },
+        _disabled: { color: 'muted-foreground', opacity: '0.7' },
       },
       link: {
-        color: 'primary',
+        color: 'foreground',
         textDecoration: 'underline',
         textUnderlineOffset: '4px',
         _hover: { textDecoration: 'underline' },

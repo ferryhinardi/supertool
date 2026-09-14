@@ -155,10 +155,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           display: 'flex',
           flexDirection: { base: 'column', md: 'row' },
           minH: '100vh',
-          bgGradient: 'to-br',
-          gradientFrom: 'gray.950',
-          gradientVia: 'gray.900',
-          gradientTo: 'gray.950',
+          // Use explicit backgroundImage — Panda bgGradient+gradientVia sets
+          // inheritable --gradient-via-stops that poison descendant bgClip text
+          // (near-black digits/titles on dark pages).
+          bg: 'gray.950',
+          backgroundImage:
+            'linear-gradient(to bottom right, #0a0a0a 0%, #171717 50%, #0a0a0a 100%)',
           color: 'white',
           position: 'relative',
           overflow: 'auto',
@@ -208,10 +210,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     w: { base: '360px', md: '700px' },
                     animation: 'pulse 4s infinite',
                     rounded: 'full',
-                    bgGradient: 'to-br',
-                    gradientFrom: 'rgba(168, 85, 247, 0.25)',
-                    gradientVia: 'rgba(236, 72, 153, 0.20)',
-                    gradientTo: 'rgba(147, 51, 234, 0.25)',
+                    backgroundImage:
+                      'linear-gradient(to bottom right, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.2), rgba(147, 51, 234, 0.25))',
                     filter: 'blur(96px)',
                   })}
                 />
@@ -226,10 +226,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     w: { base: '360px', md: '700px' },
                     animation: 'pulse 5s 1s infinite',
                     rounded: 'full',
-                    bgGradient: 'to-tr',
-                    gradientFrom: 'rgba(59, 130, 246, 0.25)',
-                    gradientVia: 'rgba(6, 182, 212, 0.20)',
-                    gradientTo: 'rgba(20, 184, 166, 0.25)',
+                    backgroundImage:
+                      'linear-gradient(to top right, rgba(59, 130, 246, 0.25), rgba(6, 182, 212, 0.2), rgba(20, 184, 166, 0.25))',
                     filter: 'blur(96px)',
                   })}
                 />
@@ -245,10 +243,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     transform: 'translate(-50%, -50%)',
                     animation: 'pulse 6s 2s infinite',
                     rounded: 'full',
-                    bgGradient: 'to-r',
-                    gradientFrom: 'rgba(236, 72, 153, 0.15)',
-                    gradientVia: 'rgba(168, 85, 247, 0.10)',
-                    gradientTo: 'rgba(59, 130, 246, 0.15)',
+                    backgroundImage:
+                      'linear-gradient(to right, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.15))',
                     filter: 'blur(96px)',
                   })}
                 />
