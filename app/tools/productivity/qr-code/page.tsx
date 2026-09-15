@@ -2752,11 +2752,12 @@ url,https://github.com,GitHub,#000000`
                       mx: 'auto',
                       h: '16',
                       w: '16',
-                      color: 'white',
-                      opacity: 0.5,
+                      // Preview canvas defaults to light bgColor (#ffffff)
+                      color: 'gray.500',
+                      opacity: 0.7,
                     })}
                   />
-                  <p className={css({ mt: '2', color: 'white' })}>
+                  <p className={css({ mt: '2', color: 'gray.600' })}>
                     Enter content to generate QR code
                   </p>
                 </div>
