@@ -115,6 +115,19 @@ pnpm test:e2e                               # Playwright a11y / mobile suites in
 
 See [`docs/guides/TESTING.md`](./docs/guides/TESTING.md) for patterns and mocking guidance.
 
+### Pre-merge requirement
+
+**Do not merge a PR until E2E has been run and there is no known regression.**
+
+Minimum before merge:
+
+1. `pnpm lint:check`
+2. `pnpm exec tsc --noEmit`
+3. Related unit/component tests: `CI=true pnpm test run <paths>`
+4. **E2E**: `pnpm test:e2e` (install Chromium first if needed: `pnpm exec playwright install chromium`)
+5. Confirm critical flows touched by the PR still work; attach logs or walkthrough evidence in the PR
+
+If E2E is blocked by environment/credentials, do not merge until fixed or a maintainer explicitly approves an exception.
 ## Commit guidelines
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org/) and are validated in
@@ -139,13 +152,17 @@ docs(readme): update installation steps
    - `pnpm exec tsc --noEmit`
    - the tests for the areas you touched (`CI=true pnpm test run <path>`)
    - `pnpm build`
-2. Update documentation: the tool guide in `docs/tools/`, `docs/tools/README.md` and, for
+2. **Before merging**, run E2E and confirm no regression:
+   - `pnpm test:e2e`
+   - Smoke the changed user flows and adjacent high-traffic pages
+   - Attach pass evidence (logs / screenshots / recording) in the PR
+   - Do **not** merge if E2E failed or was skipped without maintainer approval
+3. Update documentation: the tool guide in `docs/tools/`, `docs/tools/README.md` and, for
    user-facing changes, `docs/CHANGE_LOG.md`.
-3. Fill in the PR template, link related issues and attach screenshots or recordings for UI
+4. Fill in the PR template, link related issues and attach screenshots or recordings for UI
    changes.
-4. Address review feedback and re-request review when ready. PRs are squash-merged, so the PR
+5. Address review feedback and re-request review when ready. PRs are squash-merged, so the PR
    title must itself be a valid conventional commit message.
-
 ## Need help?
 
 - Read the [README](./README.md) and [docs](./docs/README.md)
