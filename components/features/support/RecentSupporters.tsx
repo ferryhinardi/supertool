@@ -9,42 +9,56 @@ interface Supporter {
   created_at: string
 }
 
+function Placeholder() {
+  return (
+    <div
+      className={css({
+        maxW: '4xl',
+        mx: 'auto',
+        textAlign: 'center',
+        p: '8',
+        bg: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: 'xl',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+      })}
+    >
+      <p className={css({ color: 'gray.400', fontSize: 'lg' })}>
+        Be the first to support SuperTool! 🚀
+      </p>
+    </div>
+  )
+}
+
 /**
  * Recent Supporters Component
  * Displays the last 10 supporters to build social proof
  * Server component - fetches data from Supabase
  */
 export default async function RecentSupporters() {
-  const supabase = getSupabaseServer()
+  let supporters: Supporter[] | null = null
+  let error: { message?: string } | null = null
 
-  // Fetch last 10 successful donations
-  const { data: supporters, error } = await supabase
-    .from('orders')
-    .select('customer_name, amount, created_at')
-    .eq('status', 'succeeded')
-    .order('created_at', { ascending: false })
-    .limit(10)
+  try {
+    const supabase = getSupabaseServer()
+    const result = await supabase
+      .from('orders')
+      .select('customer_name, amount, created_at')
+      .eq('status', 'succeeded')
+      .order('created_at', { ascending: false })
+      .limit(10)
+
+    supporters = result.data as Supporter[] | null
+    error = result.error
+  } catch {
+    // Missing env (e.g. SUPABASE_SERVICE_ROLE_KEY) or client init failure —
+    // degrade gracefully so /support still renders donation CTAs.
+    return <Placeholder />
+  }
 
   // If error or no supporters, show placeholder
   if (error || !supporters || supporters.length === 0) {
-    return (
-      <div
-        className={css({
-          maxW: '4xl',
-          mx: 'auto',
-          textAlign: 'center',
-          p: '8',
-          bg: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: 'xl',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-        })}
-      >
-        <p className={css({ color: 'gray.400', fontSize: 'lg' })}>
-          Be the first to support SuperTool! 🚀
-        </p>
-      </div>
-    )
+    return <Placeholder />
   }
 
   return (

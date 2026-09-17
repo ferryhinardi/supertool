@@ -84,4 +84,16 @@ describe('RecentSupporters', () => {
     expect(screen.getByText('Be the first to support SuperTool! 🚀')).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Recent Supporters 💙' })).not.toBeInTheDocument()
   })
+
+  it('renders the placeholder when Supabase client init throws (missing env)', async () => {
+    mockGetSupabaseServer.mockImplementationOnce(() => {
+      throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable')
+    })
+
+    render(await RecentSupporters())
+
+    expect(screen.getByText('Be the first to support SuperTool! 🚀')).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Recent Supporters 💙' })).not.toBeInTheDocument()
+    expect(mockFrom).not.toHaveBeenCalled()
+  })
 })

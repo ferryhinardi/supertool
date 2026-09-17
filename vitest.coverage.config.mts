@@ -65,6 +65,7 @@ export default defineConfig({
       // Keep in sync with vitest.config.mts.
       '**/tests/mobile/**',
       '**/tests/a11y/**',
+      '**/tests/regression/**',
     ],
     environment: 'jsdom',
     browser: {

@@ -4,6 +4,7 @@ import { Check, Copy, Lightbulb, Loader2, MessageSquare, Sparkles, Type, Wand2 }
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { PaywallModal } from '@/components/features/monetization/PaywallModal'
+import { SoftSupportCard } from '@/components/features/monetization/SoftSupportCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -970,6 +971,8 @@ function AITextRewriterContent() {
           </CardContent>
         </Card>
       </div>
+
+      <SoftSupportCard toolId="ai-text-rewriter" />
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

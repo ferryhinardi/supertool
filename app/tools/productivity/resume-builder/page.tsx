@@ -19,6 +19,7 @@ import {
 import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { SoftSupportCard } from '@/components/features/monetization/SoftSupportCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
@@ -1095,6 +1096,12 @@ export default function ResumeBuilderPage() {
           </Card>
         </aside>
       </div>
+
+      <SoftSupportCard
+        toolId="resume-builder"
+        headline="Building your resume with SuperTool?"
+        body="This resume builder is free. If it helped your job search, a small tip keeps SuperTool running without ads."
+      />
 
       {/* Mobile Preview Modal */}
       {showMobilePreview && (
