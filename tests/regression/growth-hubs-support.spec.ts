@@ -46,8 +46,12 @@ test.describe('Soft support CTA regression', () => {
       const response = await page.goto(path, { waitUntil: 'domcontentloaded' })
       expect(response?.status(), `${path} HTTP status`).toBeLessThan(400)
 
-      const support = page.getByRole('link', { name: /Support Us/i }).first()
-      await support.scrollIntoViewIfNeeded()
+      // SoftSupportCard (not the sidebar "Support Us" nav link)
+      const card = page.getByRole('region', { name: 'Support SuperTool' })
+      await card.scrollIntoViewIfNeeded()
+      await expect(card).toBeVisible()
+
+      const support = card.getByRole('link', { name: /Support Us/i })
       await expect(support).toBeVisible()
       await expect(support).toHaveAttribute('href', '/support')
     })
