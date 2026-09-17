@@ -759,6 +759,8 @@ export type ToolEvent =
   | 'copilot_local_files_selected'
   | 'copilot_source_changed'
   | 'web_vitals'
+  | 'support_cta_view'
+  | 'support_cta_click'
 
 // Type-safe gtag wrapper
 declare global {
@@ -770,9 +772,35 @@ declare global {
 const GA_MEASUREMENT_ID =
   typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID : undefined
 
-// Check if GA is enabled (production + ID exists)
+/**
+ * Client-side bot / automation heuristic to reduce GA noise.
+ * Complements GA Admin filters (recommended: exclude known datacenter bots).
+ */
+export const isLikelyAutomatedTraffic = (): boolean => {
+  if (typeof navigator === 'undefined') return true
+
+  const ua = navigator.userAgent || ''
+  if (!ua.trim()) return true
+
+  if (navigator.webdriver) return true
+
+  // Headless / crawler signatures commonly seen as Direct+zero-engagement traffic
+  if (
+    /HeadlessChrome|Puppeteer|Playwright|PhantomJS|Slackbot|Discordbot|Twitterbot|facebookexternalhit|LinkedInBot|WhatsApp|TelegramBot|Googlebot|Bingbot|YandexBot|Baiduspider|DuckDuckBot|SemrushBot|AhrefsBot|MJ12bot|DotBot|PetalBot|Bytespider/i.test(
+      ua
+    )
+  ) {
+    return true
+  }
+
+  return false
+}
+
+// Check if GA is enabled (production + ID exists + not obvious bot)
 const isGAEnabled = (): boolean => {
-  return Boolean(GA_MEASUREMENT_ID && typeof window !== 'undefined' && window.gtag)
+  return Boolean(
+    GA_MEASUREMENT_ID && typeof window !== 'undefined' && window.gtag && !isLikelyAutomatedTraffic()
+  )
 }
 
 // Log warning in development when GA ID is missing

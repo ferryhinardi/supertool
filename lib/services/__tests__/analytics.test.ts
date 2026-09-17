@@ -12,6 +12,13 @@ describe('analytics', () => {
     // Suppress console.warn for clean test output
     vi.spyOn(console, 'warn').mockImplementation(() => {})
     vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    // Ensure bot filter treats test env as human traffic
+    vi.stubGlobal('navigator', {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      webdriver: false,
+    })
   })
 
   afterEach(() => {
@@ -473,6 +480,24 @@ describe('analytics', () => {
       expect(() =>
         reportWebVitals({ id: 'test', name: 'CLS', label: 'test', value: 0.1 })
       ).not.toThrow()
+    })
+  })
+
+  describe('bot traffic filter', () => {
+    it('should not send events for headless / bot user agents', async () => {
+      process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123'
+      vi.stubEnv('NODE_ENV', 'production')
+      vi.stubGlobal('navigator', {
+        userAgent: 'HeadlessChrome/120.0.6099.28',
+        webdriver: true,
+      })
+      vi.stubGlobal('window', { gtag: mockGtag })
+
+      const { trackToolEvent, isLikelyAutomatedTraffic } = await import('../analytics')
+
+      expect(isLikelyAutomatedTraffic()).toBe(true)
+      trackToolEvent('json_beautify')
+      expect(mockGtag).not.toHaveBeenCalled()
     })
   })
 })
