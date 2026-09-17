@@ -68,6 +68,36 @@ pnpm mcp:validate                 # Validate MCP tool definitions
   })
   ```
 
+### Pre-merge gate (mandatory)
+
+**Do not merge any PR until E2E testing has passed and there is no known regression.**
+
+Before approving / merging (including squash-merge by humans or agents):
+
+1. **Unit / component tests** for touched areas:
+   ```bash
+   CI=true pnpm test run <path-or-related-tests>
+   ```
+2. **Static checks** (must be green):
+   ```bash
+   pnpm lint:check
+   pnpm exec tsc --noEmit
+   ```
+3. **E2E (required)**:
+   ```bash
+   pnpm exec playwright install chromium   # first time / CI image
+   pnpm test:e2e
+   ```
+   - Cover the user flows changed by the PR (happy path + critical edge cases).
+   - For UI/layout changes, also smoke key related pages to catch visual/functional regressions.
+4. **Regression bar**:
+   - No new failing tests
+   - No broken critical paths (home, category hubs, changed tools, auth/checkout if touched)
+   - No console errors on the flows you exercised
+   - If a full suite is too heavy, run the Playwright projects/specs that map to the changed surface, then add a short manual smoke of adjacent high-traffic pages
+5. **Evidence**: Attach pass logs and/or walkthrough screenshots/video in the PR before merge.
+
+If E2E cannot run (missing env/credentials), document the blocker in the PR and do not merge until it is resolved or a justified exception is approved by a maintainer.
 ## API Routes
 - Use Next.js 15 App Router route handlers in `app/api/` directory
 - Return proper status codes: 200 (success), 400 (bad request), 404 (not found), 409 (conflict), 500 (server error)

@@ -56,6 +56,9 @@ Closes #
 - [ ] Tested locally
 - [ ] Tested in preview deployment
 - [ ] Added/updated tests
+- [ ] Ran E2E (`pnpm test:e2e`) against changed flows
+- [ ] Confirmed no regression on related/high-traffic pages
+- [ ] Attached E2E/pass evidence (logs, screenshots, or recording)
 - [ ] Verified no console errors
 - [ ] Tested on mobile
 - [ ] Tested on different browsers
@@ -74,3 +77,5 @@ Closes #
 - [ ] My changes generate no new warnings
 - [ ] I have updated the documentation accordingly
 - [ ] No hardcoded values (using env variables where appropriate)
+- [ ] E2E passed (or maintainer-approved exception documented above)
+- [ ] Ready to merge only after E2E + no known regressions
