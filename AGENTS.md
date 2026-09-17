@@ -13,6 +13,7 @@ pnpm test -- path/to/test.tsx    # Run single test file
 pnpm test -- --grep "test name"  # Run tests matching pattern
 CI=true pnpm test run            # CI mode (no watch)
 pnpm exec playwright install chromium  # First-time test setup
+pnpm test:e2e                     # Playwright E2E (required before merge)
 pnpm build                        # Production build check
 pnpm mcp:validate                 # Validate MCP tool definitions
 ```
