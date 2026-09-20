@@ -66,6 +66,7 @@ export default defineConfig({
       '**/tests/mobile/**',
       '**/tests/a11y/**',
       '**/tests/regression/**',
+      '**/tests/functional/**',
     ],
     environment: 'jsdom',
     browser: {
