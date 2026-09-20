@@ -28,9 +28,12 @@ function sortCategoryTools(categoryTools: Tool[]): Tool[] {
   })
 }
 
-/** Every route linked from the app sidebar (Home, Support, and active tools by category). */
-export function getSidebarPageTargets(): SidebarAuditTarget[] {
-  const activeTools = tools.filter((tool) => !tool.comingSoon)
+/**
+ * Every active product route: Home, Support Us, and all non–coming-soon `/tools/*` pages
+ * (same set linked from the sidebar, in sidebar category order).
+ */
+export function getAllActiveRouteTargets(): SidebarAuditTarget[] {
+  const activeTools = tools.filter((tool) => !tool.comingSoon && tool.href.startsWith('/tools/'))
   const pages: SidebarAuditTarget[] = [
     {
       title: 'Home',
@@ -59,4 +62,13 @@ export function getSidebarPageTargets(): SidebarAuditTarget[] {
   }
 
   return pages
+}
+
+/** @deprecated Use `getAllActiveRouteTargets` */
+export function getSidebarPageTargets(): SidebarAuditTarget[] {
+  return getAllActiveRouteTargets()
+}
+
+export function countActiveToolRoutes(): number {
+  return tools.filter((tool) => !tool.comingSoon && tool.href.startsWith('/tools/')).length
 }

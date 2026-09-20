@@ -100,7 +100,7 @@ export async function collectPageResult(
     throw new Error(`Failed to load ${target.href}: HTTP ${response.status()}`)
   }
 
-  await page.waitForLoadState('networkidle').catch(() => undefined)
+  await page.waitForLoadState('load').catch(() => undefined)
 
   const elements = page.locator(SELECTOR)
   const scannedElementCount = await elements.count()

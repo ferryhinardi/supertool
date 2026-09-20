@@ -1,8 +1,8 @@
 # Touch Targets Backlog
 
-Playwright mobile touch-target audit for every route linked from the app sidebar (Home, Support Us, and all active tools in sidebar category order).
+Playwright mobile touch-target audit for `/`, `/support`, and every active `/tools/*` route.
 
-Generated: 2026-09-20T06:55:26.855Z
+Generated: 2026-09-20T09:48:20.837Z
 Base URL: `https://supertool.id`
 
 Viewport: iPhone SE 375x667. Minimum touch target: 44x44px.
