@@ -1,58 +1,16 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-
-import { expect, type Locator, type Page, test } from '@playwright/test'
+import { test } from '@playwright/test'
 
 import { tools } from '../../lib/data/tools'
+import {
+  collectPageResult,
+  expectAuditCompleted,
+  type PageTouchTargetResult,
+  TOP_TWENTY_BACKLOG_PATH,
+  TOP_TWENTY_EVIDENCE_PATH,
+  writeTouchTargetArtifacts,
+} from './touch-target-audit.shared'
 
-interface ToolTarget {
-  title: string
-  href: string
-  sourceFile: string
-}
-
-interface TouchTargetViolation {
-  tool: string
-  href: string
-  sourceFile: string
-  selector: string
-  actualWidth: number
-  actualHeight: number
-  minimumWidth: number
-  minimumHeight: number
-}
-
-interface ToolTouchTargetResult {
-  title: string
-  href: string
-  sourceFile: string
-  scannedElementCount: number
-  visibleElementCount: number
-  violationCount: number
-  violations: TouchTargetViolation[]
-}
-
-const EVIDENCE_PATH = resolve(process.cwd(), '.sisyphus/evidence/touch-targets-2026-04.json')
-const BACKLOG_PATH = resolve(process.cwd(), 'docs/planning/TOUCH_TARGETS_BACKLOG.md')
-const SELECTOR = 'button, a, input, select, [role="button"]'
-const MIN_TOUCH_TARGET = 44
-
-/** Next.js Dev Tools chrome is not product UI and inflates violation counts (~20 per sweep). */
-async function isNextJsDevToolsElement(locator: Locator): Promise<boolean> {
-  return locator.evaluate((element) => {
-    if (element.id === 'next-logo') {
-      return true
-    }
-
-    if (element.getAttribute('aria-label') === 'Open Next.js Dev Tools') {
-      return true
-    }
-
-    return element.closest('[data-nextjs-dev-tools]') !== null
-  })
-}
-
-const baselineTopTen: ToolTarget[] = [
+const baselineTopTen = [
   {
     title: 'Unit Converter',
     href: '/tools/productivity/unit-converter',
@@ -128,177 +86,24 @@ test.use({
   viewport: { width: 375, height: 667 },
 })
 
-async function describeElement(locator: Locator) {
-  return locator.evaluate((element) => {
-    const tag = element.tagName.toLowerCase()
-    const id = element.getAttribute('id')
-    const testId = element.getAttribute('data-testid')
-    const ariaLabel = element.getAttribute('aria-label')
-    const title = element.getAttribute('title')
-    const name = element.getAttribute('name')
-    const role = element.getAttribute('role')
-    const href = element instanceof HTMLAnchorElement ? element.getAttribute('href') : null
-    const text = (element.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 40)
-
-    const segments = [tag]
-
-    if (id) {
-      segments.push(`#${id}`)
-    }
-    if (testId) {
-      segments.push(`[data-testid="${testId}"]`)
-    }
-    if (ariaLabel) {
-      segments.push(`[aria-label="${ariaLabel}"]`)
-    }
-    if (title) {
-      segments.push(`[title="${title}"]`)
-    }
-    if (name) {
-      segments.push(`[name="${name}"]`)
-    }
-    if (role) {
-      segments.push(`[role="${role}"]`)
-    }
-    if (href) {
-      segments.push(`[href="${href}"]`)
-    }
-    if (text) {
-      segments.push(`{text="${text}"}`)
-    }
-
-    return segments.join('')
-  })
-}
-
-async function collectToolResult(page: Page, tool: ToolTarget): Promise<ToolTouchTargetResult> {
-  await page.goto(tool.href)
-  await page.waitForLoadState('domcontentloaded')
-  await page.waitForLoadState('networkidle').catch(() => undefined)
-
-  const elements = page.locator(SELECTOR)
-  const scannedElementCount = await elements.count()
-  let visibleElementCount = 0
-  const violations: TouchTargetViolation[] = []
-
-  for (let index = 0; index < scannedElementCount; index += 1) {
-    const element = elements.nth(index)
-
-    if (await isNextJsDevToolsElement(element)) {
-      continue
-    }
-
-    const box = await element.boundingBox()
-
-    if (!box || !(await element.isVisible().catch(() => false))) {
-      continue
-    }
-
-    visibleElementCount += 1
-
-    if (box.width >= MIN_TOUCH_TARGET && box.height >= MIN_TOUCH_TARGET) {
-      continue
-    }
-
-    violations.push({
-      tool: tool.title,
-      href: tool.href,
-      sourceFile: tool.sourceFile,
-      selector: await describeElement(element),
-      actualWidth: Number(box.width.toFixed(2)),
-      actualHeight: Number(box.height.toFixed(2)),
-      minimumWidth: MIN_TOUCH_TARGET,
-      minimumHeight: MIN_TOUCH_TARGET,
-    })
-  }
-
-  return {
-    title: tool.title,
-    href: tool.href,
-    sourceFile: tool.sourceFile,
-    scannedElementCount,
-    visibleElementCount,
-    violationCount: violations.length,
-    violations,
-  }
-}
-
-function writeArtifacts(results: ToolTouchTargetResult[]) {
-  const violations = results.flatMap((result) => result.violations)
-  const payload = {
-    generatedAt: new Date().toISOString(),
-    viewport: {
-      device: 'iPhone SE',
-      width: 375,
-      height: 667,
-    },
-    minimumTouchTarget: {
-      width: MIN_TOUCH_TARGET,
-      height: MIN_TOUCH_TARGET,
-    },
-    scannedToolCount: results.length,
-    scannedElementCount: results.reduce((total, result) => total + result.scannedElementCount, 0),
-    visibleElementCount: results.reduce((total, result) => total + result.visibleElementCount, 0),
-    violationCount: violations.length,
-    toolResults: results,
-    violations,
-  }
-
-  mkdirSync(dirname(EVIDENCE_PATH), { recursive: true })
-  writeFileSync(EVIDENCE_PATH, `${JSON.stringify(payload, null, 2)}\n`)
-
-  const lines = [
-    '# Touch Targets Backlog',
-    '',
-    'Generated from the Task 16 Playwright mobile audit across the top 20 tools.',
-    '',
-    `Viewport: iPhone SE 375x667. Minimum touch target: ${MIN_TOUCH_TARGET}x${MIN_TOUCH_TARGET}px.`,
-    '',
-  ]
-
-  if (violations.length === 0) {
-    lines.push('No touch-target violations were found in the current mobile sweep.', '')
-  } else {
-    for (const result of results) {
-      if (result.violations.length === 0) {
-        continue
-      }
-
-      lines.push(`## ${result.title}`)
-      lines.push('')
-      lines.push(`- Route: \`${result.href}\``)
-      lines.push(`- Source: \`${result.sourceFile}\``)
-      lines.push(`- Violations: ${result.violations.length}`)
-      lines.push('')
-      lines.push('| Selector | Actual Size | Required |')
-      lines.push('| --- | --- | --- |')
-
-      for (const violation of result.violations) {
-        lines.push(
-          `| \`${violation.selector.replace(/`/g, '\\`')}\` | ${violation.actualWidth}x${violation.actualHeight}px | ${violation.minimumWidth}x${violation.minimumHeight}px |`
-        )
-      }
-
-      lines.push('')
-    }
-  }
-
-  mkdirSync(dirname(BACKLOG_PATH), { recursive: true })
-  writeFileSync(BACKLOG_PATH, `${lines.join('\n')}\n`)
-}
-
 test('top tool mobile touch-target audit', async ({ page }) => {
-  const results: ToolTouchTargetResult[] = []
+  const results: PageTouchTargetResult[] = []
 
   try {
     for (const tool of topTwentyTools) {
       await test.step(tool.title, async () => {
-        results.push(await collectToolResult(page, tool))
+        results.push(await collectPageResult(page, tool))
       })
     }
   } finally {
-    writeArtifacts(results)
+    writeTouchTargetArtifacts(results, {
+      evidencePath: TOP_TWENTY_EVIDENCE_PATH,
+      backlogPath: TOP_TWENTY_BACKLOG_PATH,
+      auditDescription:
+        'Playwright mobile touch-target audit across the curated top 20 tools (regression subset).',
+      baseUrl: process.env.BASE_URL,
+    })
   }
 
-  expect(results).toHaveLength(topTwentyTools.length)
+  expectAuditCompleted(results, topTwentyTools.length)
 })
