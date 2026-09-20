@@ -238,10 +238,10 @@ export function Sidebar() {
             href="/"
             onClick={closeMobileMenu}
             className={css({
-              mb: { base: '6', md: '8' },
               display: 'flex',
               alignItems: 'center',
               minH: '11',
+              mb: { base: '6', md: '8' },
               textDecoration: 'none !important',
             })}
           >

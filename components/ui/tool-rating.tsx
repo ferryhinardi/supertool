@@ -91,15 +91,15 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
           key={`star-${filled ? 'filled' : 'hover'}-${starValue}`}
           type="button"
           className={css({
-            background: 'transparent',
-            border: 'none',
-            cursor: hasRated ? 'default' : 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             minH: '11',
             minW: '11',
             p: '2',
+            background: 'transparent',
+            border: 'none',
+            cursor: hasRated ? 'default' : 'pointer',
             transition: 'transform 0.1s',
             _hover: {
               transform: hasRated ? 'none' : 'scale(1.1)',
