@@ -1088,7 +1088,10 @@ export default function BMICalculator() {
           opacity: 0,
         })}
       >
-        <RelatedTools currentToolPath="/tools/bmi-calculator" category="calculator" />
+        <RelatedTools
+          currentToolPath="/tools/productivity/bmi-calculator"
+          category="productivity"
+        />
       </div>
 
       {/* Tool Rating */}
@@ -1099,7 +1102,10 @@ export default function BMICalculator() {
           opacity: 0,
         })}
       >
-        <ToolRating toolId="/tools/bmi-calculator" toolName="BMI & Health Calculator" />
+        <ToolRating
+          toolId="/tools/productivity/bmi-calculator"
+          toolName="BMI & Health Calculator"
+        />
       </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

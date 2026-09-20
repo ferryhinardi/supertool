@@ -31,7 +31,7 @@ export const metadata: Metadata = generateToolMetadata({
     'text transformation',
   ],
   category: 'productivity',
-  path: '/tools/ai-text-rewriter',
+  path: '/tools/productivity/ai-text-rewriter',
 })
 
 // Structured data for SEO
@@ -39,7 +39,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(
   [
     { name: 'Home', url: '/' },
     { name: 'Tools', url: '/#tools' },
-    { name: 'AI Text Rewriter', url: '/tools/ai-text-rewriter' },
+    { name: 'AI Text Rewriter', url: '/tools/productivity/ai-text-rewriter' },
   ],
   baseUrl
 )
@@ -49,7 +49,7 @@ const softwareSchema = generateSoftwareApplicationSchema(
     name: 'AI Text Rewriter',
     description:
       'Rewrite any text with AI in different tones and styles. Generate multiple variants with professional, casual, friendly, formal, persuasive, creative tones and more.',
-    url: '/tools/ai-text-rewriter',
+    url: '/tools/productivity/ai-text-rewriter',
     category: 'productivity',
     keywords: [
       'AI text rewriter',
@@ -116,7 +116,7 @@ const howToSchema = generateHowToSchema(
     },
   ],
   baseUrl,
-  '/tools/ai-text-rewriter'
+  '/tools/productivity/ai-text-rewriter'
 )
 
 export default function AITextRewriterLayout({ children }: { children: React.ReactNode }) {

@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'multi-task timer',
   ],
   category: 'productivity',
-  path: '/tools/task-timer',
+  path: '/tools/productivity/task-timer',
 })
 
 export default function TaskTimerLayout({ children }: { children: React.ReactNode }) {

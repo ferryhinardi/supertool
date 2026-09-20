@@ -703,6 +703,7 @@ export default function CitationGeneratorPage() {
                     className={css({
                       px: 4,
                       py: 2,
+                      minH: '11',
                       rounded: 'lg',
                       fontSize: 'sm',
                       fontWeight: 'medium',
@@ -716,6 +717,7 @@ export default function CitationGeneratorPage() {
                         bg: isSelected ? 'purple.500' : 'gray.800',
                       },
                     })}
+                    data-touch-chip
                   >
                     {config.name}
                   </button>

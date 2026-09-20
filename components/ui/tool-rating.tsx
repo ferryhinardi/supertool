@@ -96,10 +96,10 @@ export function ToolRating({ toolId, toolName }: ToolRatingProps) {
             justifyContent: 'center',
             minH: '11',
             minW: '11',
+            p: '2',
             background: 'transparent',
             border: 'none',
             cursor: hasRated ? 'default' : 'pointer',
-            padding: 0,
             transition: 'transform 0.1s',
             _hover: {
               transform: hasRated ? 'none' : 'scale(1.1)',

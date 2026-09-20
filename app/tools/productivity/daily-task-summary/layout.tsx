@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'to do app',
   ],
   category: 'productivity',
-  path: '/tools/daily-task-summary',
+  path: '/tools/productivity/daily-task-summary',
 })
 
 export default function DailyTaskSummaryLayout({ children }: { children: React.ReactNode }) {

@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'text transformation',
   ],
   category: 'productivity',
-  path: '/tools/clipboard-formatter',
+  path: '/tools/productivity/clipboard-formatter',
 })
 
 export default function ClipboardFormatterLayout({ children }: { children: React.ReactNode }) {

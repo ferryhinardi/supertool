@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'color picker',
   ],
   category: 'design',
-  path: '/tools/color-contrast',
+  path: '/tools/design/color-contrast',
 })
 
 export default function ColorContrastLayout({ children }: { children: React.ReactNode }) {

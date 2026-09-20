@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'complex password',
   ],
   category: 'security',
-  path: '/tools/password-generator',
+  path: '/tools/security/password-generator',
   ogTitle: 'Free Secure Password Generator - Create Strong Random Passwords Instantly',
   ogDescription:
     'Generate ultra-secure passwords in seconds! 🔐 Diceware passphrases, breach checking (HIBP), and crypto-grade randomness. Privacy-first - never stored or transmitted.',
@@ -108,7 +108,7 @@ export default function PasswordGeneratorLayout({ children }: { children: React.
               'Learn how to create strong, random passwords with our secure password generator tool. Follow these simple steps to generate cryptographically secure passwords for your accounts.',
               howToSteps,
               baseUrl,
-              '/tools/password-generator'
+              '/tools/security/password-generator'
             )
           ),
         }}

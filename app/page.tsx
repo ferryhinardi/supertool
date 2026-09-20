@@ -99,6 +99,10 @@ const colorMap: Record<string, string> = {
   'indigo-500': '#6366f1',
   'rose-500': '#f43f5e',
   'fuchsia-500': '#d946ef',
+  'violet-500': '#8b5cf6',
+  'amber-500': '#f59e0b',
+  'gray-500': '#6b7280',
+  'slate-700': '#334155',
 }
 
 // Cache for gradient conversions to avoid recalculating
@@ -407,8 +411,10 @@ export default function HomePage() {
         minH: '100vh',
         w: 'full',
         maxW: { base: 'full', md: 'none' }, // Remove max-width constraint on desktop
-        px: { base: '4', sm: '6', md: '6', lg: '8', xl: '10' },
-        py: { base: '6', sm: '8', md: '10', lg: '12' },
+        px: { base: '3', sm: '6', md: '6', lg: '8', xl: '10' },
+        pt: { base: '6', sm: '8', md: '10', lg: '12' },
+        // Extra bottom space so fixed support FABs don't cover the last cards
+        pb: { base: '24', sm: '16', md: '12', lg: '12' },
         spaceY: { base: '10', sm: '12', lg: '14' },
       })}
     >
@@ -568,10 +574,12 @@ export default function HomePage() {
                     insetY: '0',
                     right: '0',
                     my: 'auto',
-                    mr: '4',
+                    mr: '3',
                     display: 'flex',
-                    h: '8',
-                    w: '8',
+                    h: '11',
+                    w: '11',
+                    minH: '11',
+                    minW: '11',
                     alignItems: 'center',
                     justifyContent: 'center',
                     rounded: 'lg',
@@ -1202,11 +1210,14 @@ export default function HomePage() {
           zIndex: 'toast',
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'flex-end',
           gap: '3',
           pointerEvents: 'none',
+          // Keep FABs from covering the last tool cards on small screens
+          maxW: { base: 'calc(100vw - 1.5rem)', sm: 'none' },
         })}
       >
-        <div style={{ pointerEvents: 'auto' }}>
+        <div style={{ pointerEvents: 'auto' }} className="treat-me-fab">
           <TreatMeDialog />
         </div>
 

@@ -243,6 +243,8 @@ export default function EmailSignatureGenerator() {
         className={css({
           bg: 'rgba(255, 255, 255, 0.05)',
           borderColor: 'rgba(255, 255, 255, 0.1)',
+          color: 'white',
+          _placeholder: { color: 'gray.400' },
           '&:focus': { borderColor: 'purple.500' },
         })}
       />
@@ -836,13 +838,14 @@ export default function EmailSignatureGenerator() {
           {!validation.valid && (
             <Card
               className={css({
-                bg: 'rgba(239, 68, 68, 0.1)',
-                borderColor: 'red.500/30',
+                bg: 'rgba(239, 68, 68, 0.18)',
+                borderColor: 'red.400',
+                borderWidth: '1px',
                 mb: '4',
               })}
             >
               <CardContent className={css({ py: '3' })}>
-                <div className={css({ fontSize: 'sm', color: 'red.400' })}>
+                <div className={css({ fontSize: 'sm', color: 'red.300', fontWeight: 'medium' })}>
                   {validation.errors.map((error, idx) => (
                     // biome-ignore lint/suspicious/noArrayIndexKey: Error messages are static strings without stable IDs
                     <div key={idx}>• {error}</div>
@@ -862,7 +865,13 @@ export default function EmailSignatureGenerator() {
               })}
             >
               <CardHeader className={css({ py: '3', bg: 'gray.100' })}>
-                <CardTitle className={css({ fontSize: 'sm', color: 'gray.600' })}>
+                <CardTitle
+                  className={css({
+                    fontSize: 'sm',
+                    // Important: CardTitle defaults to light fg; preview chrome is light-mode
+                    color: 'gray.700!',
+                  })}
+                >
                   Email Preview
                 </CardTitle>
               </CardHeader>
@@ -870,7 +879,7 @@ export default function EmailSignatureGenerator() {
                 <div
                   // biome-ignore lint/security/noDangerouslySetInnerHtml: Email signature HTML preview for user to verify
                   dangerouslySetInnerHTML={{ __html: signatureHtml }}
-                  className={css({ color: 'gray.900' })}
+                  className={css({ color: 'gray.900!' })}
                 />
               </CardContent>
             </Card>

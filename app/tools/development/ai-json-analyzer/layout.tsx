@@ -31,7 +31,7 @@ export const metadata: Metadata = generateToolMetadata({
     'data analysis',
   ],
   category: 'development',
-  path: '/tools/ai-json-analyzer',
+  path: '/tools/development/ai-json-analyzer',
 })
 
 // Structured data for SEO
@@ -39,7 +39,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(
   [
     { name: 'Home', url: '/' },
     { name: 'Tools', url: '/#tools' },
-    { name: 'AI JSON Analyzer', url: '/tools/ai-json-analyzer' },
+    { name: 'AI JSON Analyzer', url: '/tools/development/ai-json-analyzer' },
   ],
   baseUrl
 )
@@ -49,7 +49,7 @@ const softwareSchema = generateSoftwareApplicationSchema(
     name: 'AI JSON Analyzer',
     description:
       'Analyze JSON data structure with AI-powered insights. Get natural language summaries, pattern detection, optimization recommendations, and relationship mapping.',
-    url: '/tools/ai-json-analyzer',
+    url: '/tools/development/ai-json-analyzer',
     category: 'development',
     keywords: [
       'AI JSON analyzer',
@@ -112,7 +112,7 @@ const howToSchema = generateHowToSchema(
     },
   ],
   baseUrl,
-  '/tools/ai-json-analyzer'
+  '/tools/development/ai-json-analyzer'
 )
 
 export default function AIJSONAnalyzerLayout({ children }: { children: React.ReactNode }) {

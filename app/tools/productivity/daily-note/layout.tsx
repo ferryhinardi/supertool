@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'note keeper',
   ],
   category: 'productivity',
-  path: '/tools/daily-note',
+  path: '/tools/productivity/daily-note',
 })
 
 export default function DailyNoteLayout({ children }: { children: React.ReactNode }) {

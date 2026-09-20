@@ -3,10 +3,10 @@
 import { Check, Copy, RotateCcw, Sparkles, Type } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { SoftSupportCard } from '@/components/features/monetization/SoftSupportCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
 import { Textarea } from '@/components/ui/textarea'
@@ -527,6 +527,8 @@ function CaseConverterContent() {
           </Card>
         </div>
       )}
+
+      <SoftSupportCard toolId="case-converter" />
 
       {/* Related Tools */}
       <RelatedTools currentToolPath="/tools/productivity/case-converter" />

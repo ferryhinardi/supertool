@@ -527,38 +527,87 @@ function TextTransformerContent() {
           {
             label: 'Characters',
             value: stats.chars,
-            from: 'purple.500',
-            to: 'pink.500',
+            // Static css() per row so Panda emits gradient atomics (dynamic maps skip them)
+            valueClass: css({
+              mb: '2',
+              bgGradient: 'to-r',
+              gradientFrom: 'purple.500',
+              gradientTo: 'pink.500',
+              bgClip: 'text',
+              color: 'transparent',
+              fontSize: '3xl',
+              fontWeight: 'bold',
+            }),
           },
           {
             label: 'No Spaces',
             value: stats.charsNoSpaces,
-            from: 'pink.500',
-            to: 'rose.500',
+            valueClass: css({
+              mb: '2',
+              bgGradient: 'to-r',
+              gradientFrom: 'pink.500',
+              gradientTo: 'rose.500',
+              bgClip: 'text',
+              color: 'transparent',
+              fontSize: '3xl',
+              fontWeight: 'bold',
+            }),
           },
           {
             label: 'Words',
             value: stats.words,
-            from: 'blue.500',
-            to: 'cyan.500',
+            valueClass: css({
+              mb: '2',
+              bgGradient: 'to-r',
+              gradientFrom: 'blue.500',
+              gradientTo: 'cyan.500',
+              bgClip: 'text',
+              color: 'transparent',
+              fontSize: '3xl',
+              fontWeight: 'bold',
+            }),
           },
           {
             label: 'Lines',
             value: stats.lines,
-            from: 'green.500',
-            to: 'emerald.500',
+            valueClass: css({
+              mb: '2',
+              bgGradient: 'to-r',
+              gradientFrom: 'green.500',
+              gradientTo: 'emerald.500',
+              bgClip: 'text',
+              color: 'transparent',
+              fontSize: '3xl',
+              fontWeight: 'bold',
+            }),
           },
           {
             label: 'Sentences',
             value: stats.sentences,
-            from: 'orange.500',
-            to: 'red.500',
+            valueClass: css({
+              mb: '2',
+              bgGradient: 'to-r',
+              gradientFrom: 'orange.500',
+              gradientTo: 'red.500',
+              bgClip: 'text',
+              color: 'transparent',
+              fontSize: '3xl',
+              fontWeight: 'bold',
+            }),
           },
           {
             label: 'Paragraphs',
             value: stats.paragraphs,
-            from: 'yellow.500',
-            to: 'amber.500',
+            valueClass: css({
+              mb: '2',
+              bgGradient: 'to-r',
+              gradientFrom: 'yellow.400',
+              gradientTo: 'amber.400',
+              bgClip: 'text',
+              color: 'transparent',
+              fontSize: '3xl',
+              fontWeight: 'bold',
+            }),
           },
         ].map((stat) => (
           <div
@@ -585,16 +634,7 @@ function TextTransformerContent() {
                   })}
                 >
                   <div
-                    className={css({
-                      mb: '2',
-                      bgGradient: 'to-r',
-                      gradientFrom: stat.from,
-                      gradientTo: stat.to,
-                      bgClip: 'text',
-                      color: 'transparent',
-                      fontSize: '3xl',
-                      fontWeight: 'bold',
-                    })}
+                    className={stat.valueClass}
                     style={{
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
@@ -1065,7 +1105,7 @@ function TextTransformerContent() {
       >
         <SocialShare
           toolName="Text Transformer"
-          toolUrl="/tools/text-transformer"
+          toolUrl="/tools/productivity/text-transformer"
           description="Free online text transformer with case conversion, duplicate removal, word counting, sorting, and find-replace with regex support"
           hashtags={['TextTools', 'Programming', 'TextProcessing', 'Developer', 'Productivity']}
         />
@@ -1088,7 +1128,10 @@ function TextTransformerContent() {
           opacity: 0,
         })}
       >
-        <RelatedTools currentToolPath="/tools/text-transformer" category="productivity" />
+        <RelatedTools
+          currentToolPath="/tools/productivity/text-transformer"
+          category="productivity"
+        />
       </div>
 
       {/* Tool Rating */}
@@ -1099,7 +1142,7 @@ function TextTransformerContent() {
           opacity: 0,
         })}
       >
-        <ToolRating toolId="/tools/text-transformer" toolName="Text Transformer" />
+        <ToolRating toolId="/tools/productivity/text-transformer" toolName="Text Transformer" />
       </div>
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

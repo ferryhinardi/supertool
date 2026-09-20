@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'link statistics',
   ],
   category: 'utilities',
-  path: '/tools/url-shortener',
+  path: '/tools/productivity/url-shortener',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

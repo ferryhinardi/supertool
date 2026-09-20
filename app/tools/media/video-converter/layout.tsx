@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'free video converter',
   ],
   category: 'media',
-  path: '/tools/video-converter',
+  path: '/tools/media/video-converter',
 })
 
 export default function VideoConverterLayout({ children }: { children: React.ReactNode }) {

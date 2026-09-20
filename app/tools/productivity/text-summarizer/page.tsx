@@ -1,8 +1,9 @@
 'use client'
 
 import { Check, Copy, Download, FileText, Lightbulb, Minimize2, Sparkles, Type } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { SoftSupportCard } from '@/components/features/monetization/SoftSupportCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -32,10 +33,19 @@ function TextSummarizerContent() {
   const [result, setResult] = useState<SummaryResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const copiedResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Track page visit
   useEffect(() => {
     trackToolEvent('text_summarizer_open', {})
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (copiedResetTimeoutRef.current) {
+        clearTimeout(copiedResetTimeoutRef.current)
+      }
+    }
   }, [])
 
   const handleSummarize = async () => {
@@ -105,7 +115,10 @@ function TextSummarizerContent() {
       navigator.clipboard.writeText(result.summary)
       toast.success('Summary copied to clipboard')
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      if (copiedResetTimeoutRef.current) {
+        clearTimeout(copiedResetTimeoutRef.current)
+      }
+      copiedResetTimeoutRef.current = setTimeout(() => setCopied(false), 2000)
 
       trackToolEvent('text_summarizer_copy', { format })
     }
@@ -640,6 +653,8 @@ function TextSummarizerContent() {
           </ul>
         </div>
       </div>
+
+      <SoftSupportCard toolId="text-summarizer" />
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

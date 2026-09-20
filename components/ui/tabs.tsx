@@ -74,6 +74,7 @@ export function TabsTrigger({ value, children, className = '', ...props }: TabsT
       className={`${css({
         px: '4',
         py: '2',
+        minH: '11',
         fontSize: 'sm',
         fontWeight: 'medium',
         color: isActive ? 'blue.400' : 'gray.400',

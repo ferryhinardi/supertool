@@ -2441,13 +2441,13 @@ function UnitConverterContent() {
       >
         <SocialShare
           toolName="Unit Converter"
-          toolUrl="/tools/unit-converter"
+          toolUrl="/tools/productivity/unit-converter"
           description="Convert between 30+ unit types instantly - length, weight, temperature, volume, and more with high precision"
           hashtags={['UnitConverter', 'Productivity', 'Tools', 'Conversion']}
         />
       </div>
-      <RelatedTools currentToolPath="/tools/unit-converter" category="productivity" />
-      <ToolRating toolId="/tools/unit-converter" toolName="Unit Converter" />
+      <RelatedTools currentToolPath="/tools/productivity/unit-converter" category="productivity" />
+      <ToolRating toolId="/tools/productivity/unit-converter" toolName="Unit Converter" />
 
       {/* Global Tool Search - Cmd+K */}
       <ToolSearch />

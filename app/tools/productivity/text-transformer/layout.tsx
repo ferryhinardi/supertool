@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'case changer',
   ],
   category: 'utilities',
-  path: '/tools/text-transformer',
+  path: '/tools/productivity/text-transformer',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

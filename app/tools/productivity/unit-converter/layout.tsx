@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'mass converter',
   ],
   category: 'utilities',
-  path: '/tools/unit-converter',
+  path: '/tools/productivity/unit-converter',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

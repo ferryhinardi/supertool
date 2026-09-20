@@ -18,7 +18,7 @@ export const metadata: Metadata = generateToolMetadata({
     'burn srt',
   ],
   category: 'media',
-  path: '/tools/video-subtitle-combiner',
+  path: '/tools/media/video-subtitle-combiner',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

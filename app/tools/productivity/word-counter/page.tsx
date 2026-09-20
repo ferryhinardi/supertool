@@ -148,6 +148,7 @@ export default function WordCounterPage() {
                 className={css({
                   px: 3,
                   py: 1.5,
+                  minH: '11',
                   fontSize: 'xs',
                   fontWeight: 'medium',
                   rounded: 'lg',
@@ -159,6 +160,7 @@ export default function WordCounterPage() {
                   transition: 'all 0.2s',
                   _hover: { bg: 'gray.700', borderColor: 'blue.500', color: 'blue.300' },
                 })}
+                data-touch-chip
               >
                 Short Sample
               </button>
@@ -168,6 +170,7 @@ export default function WordCounterPage() {
                 className={css({
                   px: 3,
                   py: 1.5,
+                  minH: '11',
                   fontSize: 'xs',
                   fontWeight: 'medium',
                   rounded: 'lg',
@@ -179,6 +182,7 @@ export default function WordCounterPage() {
                   transition: 'all 0.2s',
                   _hover: { bg: 'gray.700', borderColor: 'blue.500', color: 'blue.300' },
                 })}
+                data-touch-chip
               >
                 Medium Sample
               </button>
@@ -188,6 +192,7 @@ export default function WordCounterPage() {
                 className={css({
                   px: 3,
                   py: 1.5,
+                  minH: '11',
                   fontSize: 'xs',
                   fontWeight: 'medium',
                   rounded: 'lg',
@@ -199,6 +204,7 @@ export default function WordCounterPage() {
                   transition: 'all 0.2s',
                   _hover: { bg: 'gray.700', borderColor: 'blue.500', color: 'blue.300' },
                 })}
+                data-touch-chip
               >
                 Long Sample
               </button>
@@ -241,6 +247,7 @@ export default function WordCounterPage() {
                 gap: 2,
                 px: 4,
                 py: 2,
+                minH: '11',
                 fontSize: 'sm',
                 fontWeight: 'medium',
                 rounded: 'lg',
@@ -265,6 +272,7 @@ export default function WordCounterPage() {
                 gap: 2,
                 px: 4,
                 py: 2,
+                minH: '11',
                 fontSize: 'sm',
                 fontWeight: 'medium',
                 rounded: 'lg',

@@ -1,7 +1,7 @@
 'use client'
 
 import { AlertCircle, Calendar, Check, Clock, Copy, Download, Settings2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -58,13 +58,39 @@ export default function CronBuilderPage() {
   const [selectedPreset, setSelectedPreset] = useState<string>('')
   const [filterCategory, setFilterCategory] = useState<string>('all')
 
+  // Resolve "custom" UI placeholders to typed values for expression generation
+  const effectiveConfig: CronConfig = {
+    minute: cronConfig.minute === 'custom' ? customValues.minute || '*' : cronConfig.minute,
+    hour: cronConfig.hour === 'custom' ? customValues.hour || '*' : cronConfig.hour,
+    dayOfMonth:
+      cronConfig.dayOfMonth === 'custom' ? customValues.dayOfMonth || '*' : cronConfig.dayOfMonth,
+    month: cronConfig.month === 'custom' ? customValues.month || '*' : cronConfig.month,
+    dayOfWeek:
+      cronConfig.dayOfWeek === 'custom' ? customValues.dayOfWeek || '*' : cronConfig.dayOfWeek,
+    year: cronConfig.year,
+    seconds: cronConfig.seconds === 'custom' ? customValues.seconds || '0' : cronConfig.seconds,
+  }
+
   // Generate cron expression
-  const cronExpression = generateCronExpression(cronConfig, platform)
+  const cronExpression = generateCronExpression(effectiveConfig, platform)
   const validation = validateCronExpression(cronExpression, platform)
   const humanReadable = validation.isValid
     ? getHumanReadable(cronExpression, platform)
     : 'Invalid expression'
-  const nextExecutions = validation.isValid ? getNextExecutions(cronExpression, platform, 10) : []
+
+  // Next-run relative strings ("in 31 seconds") must not render on the server —
+  // they drift between SSR and hydration. Compute after mount only.
+  const [nextExecutions, setNextExecutions] = useState<ReturnType<typeof getNextExecutions>>([])
+  useEffect(() => {
+    if (!validation.isValid) {
+      setNextExecutions([])
+      return
+    }
+    const update = () => setNextExecutions(getNextExecutions(cronExpression, platform, 10))
+    update()
+    const id = window.setInterval(update, 1000)
+    return () => window.clearInterval(id)
+  }, [cronExpression, platform, validation.isValid])
 
   // Handlers
   const handlePresetSelect = (presetName: string) => {
@@ -82,16 +108,12 @@ export default function CronBuilderPage() {
   }
 
   const handleFieldChange = (field: keyof CronConfig, value: string) => {
-    if (value === 'custom') {
-      return
-    }
     setCronConfig((prev) => ({ ...prev, [field]: value }))
     setSelectedPreset('')
   }
 
   const handleCustomValueChange = (field: keyof CronConfig, value: string) => {
     setCustomValues((prev) => ({ ...prev, [field]: value }))
-    setCronConfig((prev) => ({ ...prev, [field]: value }))
     setSelectedPreset('')
   }
 
@@ -215,9 +237,11 @@ export default function CronBuilderPage() {
         <div
           className={css({
             display: 'grid',
-            gridTemplateColumns: { base: '1fr', lg: 'repeat(3, 1fr)' },
+            gridTemplateColumns: { base: 'minmax(0, 1fr)', lg: 'repeat(3, minmax(0, 1fr))' },
             gap: '6',
             w: 'full',
+            maxW: 'full',
+            minW: '0',
           })}
         >
           {/* Settings Panel */}
@@ -263,7 +287,8 @@ export default function CronBuilderPage() {
                     onChange={handlePlatformChange}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -309,7 +334,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => setFilterCategory(e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -358,12 +384,37 @@ export default function CronBuilderPage() {
                       <Button
                         key={preset.name}
                         variant={selectedPreset === preset.name ? 'default' : 'outline'}
-                        className={css({ w: 'full', justifyContent: 'start', textAlign: 'left' })}
+                        className={css({
+                          w: 'full',
+                          maxW: 'full',
+                          minW: '0',
+                          minH: '11',
+                          justifyContent: 'start',
+                          textAlign: 'left',
+                          whiteSpace: 'normal',
+                          overflowWrap: 'anywhere',
+                          h: 'auto',
+                          py: '3',
+                        })}
                         onClick={() => handlePresetSelect(preset.name)}
                       >
-                        <div className={css({ spaceY: '1' })}>
-                          <div className={css({ fontWeight: 'medium' })}>{preset.name}</div>
-                          <div className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <div className={css({ spaceY: '1', minW: '0', maxW: 'full' })}>
+                          <div
+                            className={css({
+                              fontWeight: 'medium',
+                              overflowWrap: 'anywhere',
+                            })}
+                          >
+                            {preset.name}
+                          </div>
+                          <div
+                            className={css({
+                              fontSize: 'xs',
+                              color: 'gray.500',
+                              whiteSpace: 'normal',
+                              overflowWrap: 'anywhere',
+                            })}
+                          >
                             {preset.description}
                           </div>
                         </div>
@@ -427,7 +478,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('minute', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -477,7 +529,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('hour', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -527,7 +580,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('dayOfMonth', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -577,7 +631,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('month', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -627,7 +682,8 @@ export default function CronBuilderPage() {
                     onChange={(e) => handleFieldChange('dayOfWeek', e.target.value)}
                     className={css({
                       w: 'full',
-                      p: '2',
+                      minH: '11',
+                      p: '2.5',
                       bg: 'gray.950',
                       border: '1px solid',
                       borderColor: 'gray.700',

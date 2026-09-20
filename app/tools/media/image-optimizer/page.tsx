@@ -1496,7 +1496,7 @@ export default function ImageOptimizerPage() {
       >
         <SocialShare
           toolName="Image Optimizer"
-          toolUrl="/tools/image-optimizer"
+          toolUrl="/tools/media/image-optimizer"
           description="Free online tool to compress and optimize images without quality loss. Batch processing, format conversion, and smart resizing"
           hashtags={['ImageOptimizer', 'WebPerformance', 'ImageCompression', 'WebDev', 'Developer']}
         />
@@ -1509,7 +1509,7 @@ export default function ImageOptimizerPage() {
           maxW: '1400px',
         })}
       >
-        <RelatedTools currentToolPath="/tools/image-optimizer" category="media" />
+        <RelatedTools currentToolPath="/tools/media/image-optimizer" category="media" />
       </div>
 
       {/* Tool Rating */}
@@ -1519,7 +1519,7 @@ export default function ImageOptimizerPage() {
           maxW: '1400px',
         })}
       >
-        <ToolRating toolId="/tools/image-optimizer" toolName="Image Optimizer" />
+        <ToolRating toolId="/tools/media/image-optimizer" toolName="Image Optimizer" />
       </div>
 
       {/* Affiliate Suggestions */}

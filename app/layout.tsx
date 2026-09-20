@@ -27,11 +27,11 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
+    default: 'SuperTool - Modern Developer Toolkit | 100+ Free Online Tools',
     template: '%s | SuperTool',
   },
   description:
-    'Professional toolkit with 40+ free tools for developers and productivity enthusiasts. JSON formatter, image optimizer, video converter, password generator, and more - all free, fast, and privacy-focused. No registration required.',
+    'Professional toolkit with 100+ free tools for developers and productivity enthusiasts. JSON formatter, image optimizer, video converter, password generator, and more - all free, fast, and privacy-focused. No registration required.',
   keywords: [
     'developer tools',
     'online tools indonesia',
@@ -79,9 +79,9 @@ export const metadata: Metadata = {
     locale: 'id_ID',
     alternateLocale: ['en_US'],
     url: baseUrl,
-    title: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
+    title: 'SuperTool - Modern Developer Toolkit | 100+ Free Online Tools',
     description:
-      'Professional toolkit with 40+ tools for developers and productivity. JSON formatter, image optimizer, video converter, and more - all free and privacy-focused.',
+      'Professional toolkit with 100+ tools for developers and productivity. JSON formatter, image optimizer, video converter, and more - all free and privacy-focused.',
     siteName: 'SuperTool',
     images: [
       {
@@ -95,9 +95,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SuperTool - Modern Developer Toolkit | 40+ Free Online Tools',
+    title: 'SuperTool - Modern Developer Toolkit | 100+ Free Online Tools',
     description:
-      'Professional toolkit with 40+ tools for developers and productivity. All free and privacy-focused.',
+      'Professional toolkit with 100+ tools for developers and productivity. All free and privacy-focused.',
     creator: '@ferryhinardi',
     images: [`${baseUrl}/og-image.png`],
     site: '@supertool_id',
@@ -141,11 +141,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-        <Script
-          src="https://cdn.visitors.now/v.js"
-          data-token="57002aa7-44fa-459e-b332-ecb6111a00ef"
-          strategy="afterInteractive"
-        />
+        {process.env.NODE_ENV === 'production' && (
+          <Script
+            src="https://cdn.visitors.now/v.js"
+            data-token="57002aa7-44fa-459e-b332-ecb6111a00ef"
+            strategy="afterInteractive"
+          />
+        )}
       </head>
       <body
         suppressHydrationWarning
@@ -153,10 +155,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           display: 'flex',
           flexDirection: { base: 'column', md: 'row' },
           minH: '100vh',
-          bgGradient: 'to-br',
-          gradientFrom: 'gray.950',
-          gradientVia: 'gray.900',
-          gradientTo: 'gray.950',
+          // Use explicit backgroundImage — Panda bgGradient+gradientVia sets
+          // inheritable --gradient-via-stops that poison descendant bgClip text
+          // (near-black digits/titles on dark pages).
+          bg: 'gray.950',
+          backgroundImage:
+            'linear-gradient(to bottom right, #0a0a0a 0%, #171717 50%, #0a0a0a 100%)',
           color: 'white',
           position: 'relative',
           overflow: 'auto',
@@ -180,7 +184,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   w: { base: 'full', md: 'calc(100vw - 16rem)' },
                   flex: { base: '1', md: '1' },
                   overflowX: 'hidden',
-                  p: { base: '3', sm: '4', md: '8', lg: '10', xl: '12' },
+                  // Keep mobile horizontal padding light — tool pages already add their own px
+                  px: { base: '2', sm: '4', md: '8', lg: '10', xl: '12' },
+                  pb: { base: '4', sm: '4', md: '8', lg: '10', xl: '12' },
                   pt: {
                     // The fixed mobile menu button spans 16px-66px, so this must
                     // clear 66px. '18' is not a spacing token and would emit a raw
@@ -204,10 +210,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     w: { base: '360px', md: '700px' },
                     animation: 'pulse 4s infinite',
                     rounded: 'full',
-                    bgGradient: 'to-br',
-                    gradientFrom: 'rgba(168, 85, 247, 0.25)',
-                    gradientVia: 'rgba(236, 72, 153, 0.20)',
-                    gradientTo: 'rgba(147, 51, 234, 0.25)',
+                    backgroundImage:
+                      'linear-gradient(to bottom right, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.2), rgba(147, 51, 234, 0.25))',
                     filter: 'blur(96px)',
                   })}
                 />
@@ -218,14 +222,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     bottom: '0',
                     left: '0',
                     zIndex: '0',
-                    h: '700px',
-                    w: '700px',
+                    h: { base: '360px', md: '700px' },
+                    w: { base: '360px', md: '700px' },
                     animation: 'pulse 5s 1s infinite',
                     rounded: 'full',
-                    bgGradient: 'to-tr',
-                    gradientFrom: 'rgba(59, 130, 246, 0.25)',
-                    gradientVia: 'rgba(6, 182, 212, 0.20)',
-                    gradientTo: 'rgba(20, 184, 166, 0.25)',
+                    backgroundImage:
+                      'linear-gradient(to top right, rgba(59, 130, 246, 0.25), rgba(6, 182, 212, 0.2), rgba(20, 184, 166, 0.25))',
                     filter: 'blur(96px)',
                   })}
                 />
@@ -236,15 +238,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     top: '50%',
                     left: '50%',
                     zIndex: '0',
-                    h: { base: '280px', md: '500px' },
-                    w: { base: '280px', md: '500px' },
+                    h: { base: '220px', md: '500px' },
+                    w: { base: '220px', md: '500px' },
                     transform: 'translate(-50%, -50%)',
                     animation: 'pulse 6s 2s infinite',
                     rounded: 'full',
-                    bgGradient: 'to-r',
-                    gradientFrom: 'rgba(236, 72, 153, 0.15)',
-                    gradientVia: 'rgba(168, 85, 247, 0.10)',
-                    gradientTo: 'rgba(59, 130, 246, 0.15)',
+                    backgroundImage:
+                      'linear-gradient(to right, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.15))',
                     filter: 'blur(96px)',
                   })}
                 />

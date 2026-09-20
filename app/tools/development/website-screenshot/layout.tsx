@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'site screenshot',
   ],
   category: 'utilities',
-  path: '/tools/website-screenshot',
+  path: '/tools/development/website-screenshot',
 })
 
 export default function WebsiteScreenshotLayout({ children }: { children: React.ReactNode }) {

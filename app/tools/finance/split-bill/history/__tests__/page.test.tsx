@@ -148,7 +148,7 @@ describe('BillHistoryPage', () => {
 
       await waitFor(() => {
         const link = screen.getByText('Create New Bill').closest('a')
-        expect(link).toHaveAttribute('href', '/tools/split-bill')
+        expect(link).toHaveAttribute('href', '/tools/finance/split-bill')
       })
     })
 
@@ -518,7 +518,7 @@ describe('BillHistoryPage', () => {
 
       await waitFor(() => {
         const link = screen.getByText('Create Your First Bill').closest('a')
-        expect(link).toHaveAttribute('href', '/tools/split-bill')
+        expect(link).toHaveAttribute('href', '/tools/finance/split-bill')
       })
     })
 

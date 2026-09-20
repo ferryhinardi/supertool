@@ -892,7 +892,10 @@ export default function MarkdownEditorPage() {
             opacity: 0,
           })}
         >
-          <RelatedTools currentToolPath="/tools/markdown-editor" category="productivity" />
+          <RelatedTools
+            currentToolPath="/tools/productivity/markdown-editor"
+            category="productivity"
+          />
         </div>
 
         {/* Tool Rating */}
@@ -903,7 +906,7 @@ export default function MarkdownEditorPage() {
             opacity: 0,
           })}
         >
-          <ToolRating toolId="/tools/markdown-editor" toolName="Markdown Editor" />
+          <ToolRating toolId="/tools/productivity/markdown-editor" toolName="Markdown Editor" />
         </div>
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

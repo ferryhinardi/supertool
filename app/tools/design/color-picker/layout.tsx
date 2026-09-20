@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'hex color picker',
   ],
   category: 'design',
-  path: '/tools/color-picker',
+  path: '/tools/design/color-picker',
 })
 
 export default function ColorPickerLayout({ children }: { children: React.ReactNode }) {

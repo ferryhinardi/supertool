@@ -68,7 +68,8 @@ export default function VideoSubtitleCombinerPage() {
   const [enableCompression, setEnableCompression] = useState(false)
   const [isCompressing, setIsCompressing] = useState(false)
   const [compressionProgress, setCompressionProgress] = useState(0)
-  const compressionSupported = isCompressionSupported()
+  // Defer browser capability check to avoid SSR/client hydration mismatch
+  const [compressionSupported, setCompressionSupported] = useState(false)
 
   // Chunked upload options
   const [_useChunkedUpload, _setUseChunkedUpload] = useState(false)
@@ -113,6 +114,8 @@ export default function VideoSubtitleCombinerPage() {
 
   // Check server status on mount
   useEffect(() => {
+    setCompressionSupported(isCompressionSupported())
+
     const checkServer = async () => {
       try {
         const response = await fetch('/api/video-subtitle', {

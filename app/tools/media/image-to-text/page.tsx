@@ -487,7 +487,7 @@ export default function ImageToTextPage() {
             >
               <ImageIcon className={css({ w: '16', h: '16', mb: '4', opacity: 0.5 })} />
               <p className={css({ fontSize: 'sm' })}>Upload an image to extract text using OCR</p>
-              <p className={css({ fontSize: 'xs', mt: '2', color: 'gray.600' })}>
+              <p className={css({ fontSize: 'xs', mt: '2', color: 'gray.400' })}>
                 Supported formats: PNG, JPEG, WEBP
               </p>
             </div>

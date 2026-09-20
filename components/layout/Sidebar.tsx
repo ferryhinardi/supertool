@@ -21,7 +21,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type React from 'react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { type Tool, type ToolCategory, tools } from '@/lib/data/tools'
 import { css, cva } from '@/styled-system/css'
@@ -93,6 +93,16 @@ export function Sidebar() {
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
 
+  // Prevent background scroll while the mobile drawer is open
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [mobileMenuOpen])
+
   const toggleCategory = useCallback((category: ToolCategory) => {
     setCollapsedCategories((prev) => {
       const next = new Set(prev)
@@ -141,9 +151,13 @@ export function Sidebar() {
           position: 'fixed',
           top: '4',
           left: '4',
-          zIndex: 'tooltip',
+          // Numeric z-index — semantic token `tooltip` was not resolving (computed `auto`)
+          // so homepage content intercepted taps on the hamburger.
+          zIndex: 70,
           alignItems: 'center',
           justifyContent: 'center',
+          minH: '11',
+          minW: '11',
           rounded: 'lg',
           border: '1px solid rgba(139, 92, 246, 0.2)',
           bg: 'rgba(17, 24, 39, 0.9)',
@@ -173,7 +187,7 @@ export function Sidebar() {
             display: { base: 'block', md: 'none' },
             position: 'fixed',
             inset: '0',
-            zIndex: 'modal-backdrop',
+            zIndex: 40,
             bg: 'rgba(0, 0, 0, 0.5)',
             backdropFilter: 'blur(4px)',
             cursor: 'pointer',
@@ -191,7 +205,7 @@ export function Sidebar() {
           position: { base: 'fixed', md: 'sticky' },
           top: { base: '0', md: '0' },
           left: { base: mobileMenuOpen ? '0' : '-100%', md: '0' },
-          zIndex: { base: 'modal', md: 'auto' },
+          zIndex: { base: 50, md: 'auto' },
           display: 'flex',
           height: { base: '100vh', md: '100vh' },
           minH: '100vh',
@@ -369,7 +383,8 @@ export function Sidebar() {
                     <span
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.600',
+                        // gray.600 on dark sidebar fails WCAG (~2.3:1); gray.400 stays muted but readable
+                        color: 'gray.400',
                         mr: '1',
                       })}
                     >
@@ -457,6 +472,7 @@ export function Sidebar() {
                   justifyContent: 'center',
                   minH: '11',
                   minW: '11',
+                  px: '2',
                   color: 'gray.400',
                   fontWeight: 'medium',
                   textDecoration: 'none !important',
@@ -586,6 +602,8 @@ function AuthSection() {
             gap: '3',
             px: '3',
             py: '2',
+            minH: '11',
+            w: 'full',
             rounded: 'lg',
             fontSize: 'sm',
             color: 'gray.400',
@@ -624,6 +642,7 @@ function AuthSection() {
           gap: '3',
           px: '4',
           py: '2.5',
+          minH: '11',
           rounded: 'lg',
           fontSize: 'sm',
           fontWeight: 'semibold',

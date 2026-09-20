@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'text hash',
   ],
   category: 'security',
-  path: '/tools/hash-generator',
+  path: '/tools/security/hash-generator',
 })
 
 export default function HashGeneratorLayout({ children }: { children: React.ReactNode }) {

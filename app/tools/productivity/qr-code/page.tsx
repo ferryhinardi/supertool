@@ -1561,16 +1561,46 @@ url,https://github.com,GitHub,#000000`
           className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
         >
           <div
-            className="animate-pulse rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-600 p-2.5 shadow-2xl shadow-violet-500/60 sm:rounded-2xl sm:p-4"
-            style={{ animationDuration: '2s' }}
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              p: { base: '2.5', sm: '4' },
+              bgGradient: 'to-br',
+              gradientFrom: 'violet.500',
+              gradientVia: 'purple.500',
+              gradientTo: 'fuchsia.600',
+              boxShadow: '0 25px 50px rgba(139, 92, 246, 0.4)',
+              animation: 'pulse 2s ease-in-out infinite',
+            })}
           >
-            <QrCode className="h-6 w-6 text-white sm:h-8 sm:w-8" />
+            <QrCode
+              className={css({
+                h: { base: '6', sm: '8' },
+                w: { base: '6', sm: '8' },
+                color: 'white',
+              })}
+            />
           </div>
           <div>
-            <h1 className="bg-gradient-to-r from-violet-300 via-purple-400 to-fuchsia-300 bg-clip-text text-2xl font-extrabold text-transparent drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
+            <h1
+              className={css({
+                fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
+                fontWeight: 'extrabold',
+                bgGradient: 'to-r',
+                gradientFrom: 'violet.300',
+                gradientVia: 'purple.400',
+                gradientTo: 'fuchsia.300',
+                backgroundClip: 'text',
+                color: 'transparent',
+              })}
+            >
               QR Code Generator
             </h1>
-            <p className="text-sm text-gray-200 sm:text-base md:text-lg">
+            <p
+              className={css({
+                fontSize: { base: 'sm', sm: 'base', md: 'lg' },
+                color: 'gray.200',
+              })}
+            >
               Create customizable QR codes for URLs, text, WiFi, and contact cards
             </p>
           </div>
@@ -1705,7 +1735,7 @@ url,https://github.com,GitHub,#000000`
                   <div
                     className={css({
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' },
                       gap: '2',
                     })}
                   >
@@ -2446,7 +2476,7 @@ url,https://github.com,GitHub,#000000`
                     <div
                       className={css({
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gridTemplateColumns: { base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
                         gap: '2',
                       })}
                     >
@@ -2722,11 +2752,12 @@ url,https://github.com,GitHub,#000000`
                       mx: 'auto',
                       h: '16',
                       w: '16',
-                      color: 'white',
-                      opacity: 0.5,
+                      // Preview canvas defaults to light bgColor (#ffffff)
+                      color: 'gray.500',
+                      opacity: 0.7,
                     })}
                   />
-                  <p className={css({ mt: '2', color: 'white' })}>
+                  <p className={css({ mt: '2', color: 'gray.600' })}>
                     Enter content to generate QR code
                   </p>
                 </div>
@@ -2756,11 +2787,18 @@ url,https://github.com,GitHub,#000000`
             >
               Actions
             </h2>
-            <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '3' })}>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                gap: '3',
+                w: 'full',
+              })}
+            >
               <Button
                 onClick={() => downloadQRCode('png')}
                 disabled={!hasValidInput}
-                className={css({ flex: '1' })}
+                className={css({ w: 'full', minH: '11' })}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download PNG
@@ -2769,7 +2807,7 @@ url,https://github.com,GitHub,#000000`
                 onClick={() => downloadQRCode('svg')}
                 disabled={!hasValidInput}
                 variant="outline"
-                className={css({ flex: '1' })}
+                className={css({ w: 'full', minH: '11' })}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download SVG
@@ -2778,7 +2816,7 @@ url,https://github.com,GitHub,#000000`
                 onClick={copyQRCode}
                 disabled={!hasValidInput}
                 variant="outline"
-                className={css({ flex: '1' })}
+                className={css({ w: 'full', minH: '11' })}
               >
                 <Copy className="mr-2 h-4 w-4" />
                 Copy Image
@@ -2787,7 +2825,7 @@ url,https://github.com,GitHub,#000000`
                 onClick={handleSaveToHistory}
                 disabled={!hasValidInput}
                 variant="outline"
-                className={css({ flex: '1' })}
+                className={css({ w: 'full', minH: '11' })}
               >
                 <History className="mr-2 h-4 w-4" />
                 Save to History
@@ -3070,7 +3108,7 @@ url,https://github.com,GitHub,#000000`
                     })}
                   >
                     <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                      <PackageOpen className="h-4 w-4 text-emerald.400" />
+                      <PackageOpen className={css({ h: '4', w: '4', color: 'emerald.400' })} />
                       <span className={css({ fontSize: 'sm', color: 'white' })}>
                         Estimated File Size:{' '}
                         <strong className={css({ color: 'emerald.400' })}>
@@ -3293,7 +3331,7 @@ url,https://github.com,GitHub,#000000`
                         },
                       })}
                     >
-                      <Upload className="h-12 w-12 text-cyan.400 mb-3" />
+                      <Upload className={css({ h: '12', w: '12', color: 'cyan.400', mb: '3' })} />
                       <p className={css({ color: 'white', fontSize: 'sm' })}>
                         Click to upload QR code image
                       </p>
@@ -3327,7 +3365,7 @@ url,https://github.com,GitHub,#000000`
                     <div
                       className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '3' })}
                     >
-                      <CheckCircle2 className="h-5 w-5 text-cyan.400" />
+                      <CheckCircle2 className={css({ h: '5', w: '5', color: 'cyan.400' })} />
                       <span
                         className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'cyan.300' })}
                       >
@@ -3413,7 +3451,7 @@ url,https://github.com,GitHub,#000000`
                       className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '3' })}
                     >
                       {validationResult.score >= 80 ? (
-                        <CheckCircle2 className="h-5 w-5 text-emerald.400" />
+                        <CheckCircle2 className={css({ h: '5', w: '5', color: 'emerald.400' })} />
                       ) : (
                         <AlertTriangle
                           className={css({
@@ -4024,12 +4062,12 @@ url,https://github.com,GitHub,#000000`
 
       <SocialShare
         toolName="QR Code Generator"
-        toolUrl="/tools/qr-code"
+        toolUrl="/tools/productivity/qr-code"
         description="Create custom QR codes for free - URLs, WiFi, vCards, and more with instant generation and high-resolution downloads"
         hashtags={['QRCode', 'Marketing', 'Business', 'WebDev']}
       />
-      <RelatedTools currentToolPath="/tools/qr-code" category="productivity" />
-      <ToolRating toolId="/tools/qr-code" toolName="QR Code Generator" />
+      <RelatedTools currentToolPath="/tools/productivity/qr-code" category="productivity" />
+      <ToolRating toolId="/tools/productivity/qr-code" toolName="QR Code Generator" />
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 

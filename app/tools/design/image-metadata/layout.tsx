@@ -23,7 +23,7 @@ export const metadata: Metadata = generateToolMetadata({
     'photo details',
   ],
   category: 'design',
-  path: '/tools/image-metadata',
+  path: '/tools/design/image-metadata',
 })
 
 export default function ImageMetadataLayout({ children }: { children: React.ReactNode }) {

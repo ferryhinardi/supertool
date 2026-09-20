@@ -43,6 +43,21 @@ body {
   overflow-x: hidden;
 }
 
+/*
+ * Panda's bgGradient resolves --gradient-stops as:
+ *   var(--gradient-via-stops, <local from/to>)
+ * CSS variables inherit, so a parent with gradientVia (page shells, orbs,
+ * section wrappers) makes every descendant bgClip:'text' paint with that
+ * parent's colors — often near-black on dark UI.
+ *
+ * Reset inherited via-stops only on clipped-text nodes that do NOT set their
+ * own gradientVia. A blanket `initial` on all bg-cp_text nodes would override
+ * `.grad-via_*` (globals.css loads after Panda) and wipe titles that use via.
+ */
+[class*="bg-cp_text"]:not([class*="grad-via"]) {
+  --gradient-via-stops: initial;
+}
+
 /* Remove default link underlines */
 a {
   text-decoration: none;
@@ -128,20 +143,84 @@ button {
   }
 }
 
-/* High-contrast input placeholder for light and dark mode */
-input::placeholder {
-  color: #6b7280; /* gray-500 for light */
+/* High-contrast input placeholder — app is dark-first, so always use a light gray */
+input::placeholder,
+textarea::placeholder {
+  color: #a3a3a3; /* gray-400 — readable on dark translucent inputs */
   opacity: 1;
 }
-input:-webkit-input-placeholder {
-  color: #6b7280;
+input:-webkit-input-placeholder,
+textarea:-webkit-input-placeholder {
+  color: #a3a3a3;
   opacity: 1;
 }
-@media (prefers-color-scheme: dark) {
-  input::placeholder {
-    color: #a3a3a3; /* gray-400 for dark */
+
+/*
+ * Light surfaces inside the dark app must not inherit body white text.
+ * Many tools use bg:white / gray.50 cards without setting color.
+ *
+ * Use [class~="…"] (exact token) — NOT [class*="bg_white"], which also matched
+ * bg_whiteAlpha.* and forced near-black text onto translucent dark buttons.
+ * Same for gray.50 vs gray.500.
+ */
+[class~="bg_white"],
+[class~="bg_gray.50"],
+[class~="bg_gray.100"] {
+  color: var(--colors-gray-900);
+}
+
+/* Compact floating support CTA on phones so it doesn't cover tool cards */
+@media (max-width: 639px) {
+  .treat-me-label {
+    display: none;
   }
-  input:-webkit-input-placeholder {
-    color: #a3a3a3;
+}
+
+/* Cover letter A4 preview — scale to fit phone / tablet content width */
+#cover-letter-preview {
+  --cover-letter-preview-scale: 0.35;
+}
+@media (min-width: 640px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.45;
+  }
+}
+@media (min-width: 768px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.5;
+  }
+}
+@media (min-width: 1024px) {
+  #cover-letter-preview {
+    --cover-letter-preview-scale: 0.4;
+  }
+}
+
+/* Mobile-friendly native form control defaults */
+@media (max-width: 639px) {
+  select {
+    max-width: 100%;
+    min-height: 44px;
+  }
+  input[type="range"] {
+    min-height: 44px;
+  }
+  /* 45px avoids subpixel getBoundingClientRect heights of ~43.999 under 44 */
+  button,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"] {
+    min-height: 45px;
+    min-width: 44px;
+  }
+  button.chip,
+  [data-touch-chip] {
+    min-height: 44px;
+  }
+  input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+      [type="file"]
+    ) {
+    min-height: 45px;
+    min-width: 44px;
   }
 }

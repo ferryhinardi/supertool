@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'css online',
   ],
   category: 'design',
-  path: '/tools/gradient-generator',
+  path: '/tools/design/gradient-generator',
 })
 
 export default function GradientGeneratorLayout({ children }: { children: React.ReactNode }) {

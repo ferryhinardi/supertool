@@ -351,8 +351,11 @@ function AICommandExplainerContent() {
             <div
               className={css({
                 display: 'grid',
-                gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+                gridTemplateColumns: { base: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))' },
                 gap: '3',
+                w: 'full',
+                maxW: 'full',
+                minW: '0',
               })}
             >
               {EXAMPLE_COMMANDS.map((example) => (
@@ -369,6 +372,12 @@ function AICommandExplainerContent() {
                     p: '4',
                     transition: 'all 0.2s',
                     cursor: 'pointer',
+                    w: 'full',
+                    maxW: 'full',
+                    minW: '0',
+                    minH: '11',
+                    whiteSpace: 'normal',
+                    overflowWrap: 'anywhere',
                     _hover: {
                       bg: 'gray.800',
                       borderColor: 'teal.500/50',
@@ -376,9 +385,14 @@ function AICommandExplainerContent() {
                     },
                   })}
                 >
-                  <div className={css({ spaceY: '2' })}>
+                  <div className={css({ spaceY: '2', minW: '0', maxW: 'full' })}>
                     <h4
-                      className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'teal.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'semibold',
+                        color: 'teal.300',
+                        overflowWrap: 'anywhere',
+                      })}
                     >
                       {example.title}
                     </h4>
@@ -388,9 +402,10 @@ function AICommandExplainerContent() {
                         fontSize: 'xs',
                         fontFamily: 'mono',
                         color: 'white',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
+                        whiteSpace: 'normal',
+                        overflowWrap: 'anywhere',
+                        wordBreak: 'break-word',
+                        maxW: 'full',
                       })}
                     >
                       {example.command}

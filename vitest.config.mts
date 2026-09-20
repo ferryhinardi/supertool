@@ -68,8 +68,10 @@ export default defineConfig({
       '**/__screenshots__/**',
       '**/dist/**',
       '**/.next/**',
+      // Playwright suites (playwright.config.ts) — Vitest cannot load test.describe from @playwright/test
       '**/tests/mobile/**',
       '**/tests/a11y/**',
+      '**/tests/regression/**',
     ],
     // Browser mode is only enabled for specific tests that need it (e.g., screenshot tests)
     // Most tests will use jsdom environment for better performance and compatibility

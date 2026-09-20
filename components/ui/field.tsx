@@ -16,7 +16,10 @@ const FieldLabel = React.forwardRef<
         display: 'block',
         fontSize: 'sm',
         fontWeight: 'medium',
-        color: 'fg.default',
+        // Inherit so labels stay readable on light cards (parent sets dark color)
+        // and on dark surfaces (body foreground). fg.default is near-white and
+        // made labels invisible on white document/preview panels.
+        color: 'inherit',
         mb: '2',
         cursor: 'pointer',
         _disabled: {
@@ -81,7 +84,8 @@ const FieldInput = React.forwardRef<
       cx(
         css({
           display: 'flex',
-          h: '10',
+          h: '11',
+          minH: '45px',
           w: 'full',
           rounded: 'md',
           border: '1px solid',
@@ -167,7 +171,8 @@ const FieldSelect = React.forwardRef<
     className={cx(
       css({
         display: 'flex',
-        h: '10',
+        h: '11',
+        minH: '45px',
         w: 'full',
         rounded: 'md',
         border: '1px solid',

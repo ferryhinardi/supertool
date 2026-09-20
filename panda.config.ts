@@ -40,6 +40,11 @@ export default defineConfig({
           input: { value: 'oklch(1 0 0 / 15%)' }, // Input border
           ring: { value: 'oklch(0.552 0.016 285.938)' }, // Focus ring
 
+          // Aliases used by Card/Field/RelatedTools (were emitted as invalid `color: fg.default`)
+          'fg.default': { value: 'oklch(0.985 0 0)' },
+          'fg.muted': { value: 'oklch(0.705 0.015 286.067)' },
+          'fg.error': { value: 'oklch(0.704 0.191 22.216)' },
+
           // Gray scale for dark theme
           gray: {
             50: { value: '#fafafa' },

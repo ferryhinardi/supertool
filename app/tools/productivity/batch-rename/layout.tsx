@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'case transform files',
   ],
   category: 'productivity',
-  path: '/tools/batch-rename',
+  path: '/tools/productivity/batch-rename',
 })
 
 export default function BatchRenameLayout({ children }: { children: React.ReactNode }) {

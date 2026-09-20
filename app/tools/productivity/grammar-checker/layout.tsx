@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'grammar fixer',
   ],
   category: 'productivity',
-  path: '/tools/grammar-checker',
+  path: '/tools/productivity/grammar-checker',
 })
 
 export default function GrammarCheckerLayout({ children }: { children: React.ReactNode }) {

@@ -23,7 +23,7 @@ export const metadata: Metadata = generateToolMetadata({
     'code automation',
   ],
   category: 'development',
-  path: '/tools/ai-snippet-generator',
+  path: '/tools/development/ai-snippet-generator',
 })
 
 export default function AISnippetGeneratorLayout({ children }: { children: React.ReactNode }) {

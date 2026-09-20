@@ -964,7 +964,7 @@ function TextSimilarityContent() {
             <CardDescription>Click to load and test with sample data</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className={css({ display: 'grid', gap: '3' })}>
+            <div className={css({ display: 'grid', gap: '3', w: 'full', maxW: 'full', minW: '0' })}>
               {examplePairs.map((example) => (
                 <button
                   key={example.name}
@@ -979,6 +979,12 @@ function TextSimilarityContent() {
                     textAlign: 'left',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
+                    w: 'full',
+                    maxW: 'full',
+                    minW: '0',
+                    minH: '11',
+                    whiteSpace: 'normal',
+                    overflowWrap: 'anywhere',
                     _hover: { bg: 'gray.800', borderColor: 'purple.500/50' },
                   })}
                 >
@@ -988,15 +994,32 @@ function TextSimilarityContent() {
                       fontWeight: 'semibold',
                       color: 'purple.300',
                       mb: '2',
+                      overflowWrap: 'anywhere',
                     })}
                   >
                     {example.name}
                   </h4>
-                  <div className={css({ spaceY: '1' })}>
-                    <p className={css({ fontSize: 'xs', color: 'white', truncate: true })}>
+                  <div className={css({ spaceY: '1', minW: '0', maxW: 'full' })}>
+                    <p
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'white',
+                        whiteSpace: 'normal',
+                        overflowWrap: 'anywhere',
+                        wordBreak: 'break-word',
+                      })}
+                    >
                       Text 1: {example.text1}
                     </p>
-                    <p className={css({ fontSize: 'xs', color: 'white', truncate: true })}>
+                    <p
+                      className={css({
+                        fontSize: 'xs',
+                        color: 'white',
+                        whiteSpace: 'normal',
+                        overflowWrap: 'anywhere',
+                        wordBreak: 'break-word',
+                      })}
+                    >
                       Text 2: {example.text2}
                     </p>
                   </div>

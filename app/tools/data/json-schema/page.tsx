@@ -394,7 +394,8 @@ function JSONSchemaContent() {
                     placeholder="My Schema"
                     className={css({
                       w: 'full',
-                      h: '10',
+                      h: '11',
+                      minH: '11',
                       rounded: 'lg',
                       border: '1px solid',
                       borderColor: 'gray.700',
@@ -428,7 +429,8 @@ function JSONSchemaContent() {
                     placeholder="Schema description"
                     className={css({
                       w: 'full',
-                      h: '10',
+                      h: '11',
+                      minH: '11',
                       rounded: 'lg',
                       border: '1px solid',
                       borderColor: 'gray.700',

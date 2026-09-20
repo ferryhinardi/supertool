@@ -25,6 +25,7 @@ import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { SoftSupportCard } from '@/components/features/monetization/SoftSupportCard'
 import {
   TOOL_COLORS,
   ToolMobilePicker,
@@ -2339,12 +2340,13 @@ function JSONBeautifyContent() {
 
         <SocialShare
           toolName="JSON Beautifier"
-          toolUrl="/tools/json-beautify"
+          toolUrl="/tools/data/json-beautify"
           description="Format and validate JSON with this free online JSON beautifier - minify, compare, and convert JSON to TypeScript"
           hashtags={['JSON', 'WebDev', 'Developer', 'Productivity']}
         />
-        <RelatedTools currentToolPath="/tools/json-beautify" category="data" />
-        <ToolRating toolId="/tools/json-beautify" toolName="JSON Beautifier" />
+        <SoftSupportCard toolId="json-beautify" />
+        <RelatedTools currentToolPath="/tools/data/json-beautify" category="data" />
+        <ToolRating toolId="/tools/data/json-beautify" toolName="JSON Beautifier" />
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
         <ToolSearch />

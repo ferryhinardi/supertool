@@ -24,7 +24,7 @@ export const metadata: Metadata = generateToolMetadata({
     'ai photo editor',
   ],
   category: 'design',
-  path: '/tools/photo-editor',
+  path: '/tools/design/photo-editor',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'

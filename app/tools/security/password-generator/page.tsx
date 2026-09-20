@@ -1239,12 +1239,12 @@ function PasswordGeneratorContent() {
 
       <SocialShare
         toolName="Password Generator"
-        toolUrl="/tools/password-generator"
+        toolUrl="/tools/security/password-generator"
         description="Generate secure passwords with our free password generator - supports Diceware, pronounceable passwords, and HIBP breach checking"
         hashtags={['Password', 'Security', 'CyberSecurity', 'WebSecurity']}
       />
-      <RelatedTools currentToolPath="/tools/password-generator" category="security" />
-      <ToolRating toolId="/tools/password-generator" toolName="Password Generator" />
+      <RelatedTools currentToolPath="/tools/security/password-generator" category="security" />
+      <ToolRating toolId="/tools/security/password-generator" toolName="Password Generator" />
 
       {/* Affiliate Suggestions */}
       <AffiliateSuggestion tool="password-generator" variant="banner" />

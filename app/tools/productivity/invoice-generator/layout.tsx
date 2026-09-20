@@ -22,7 +22,7 @@ export const metadata: Metadata = generateToolMetadata({
     'invoice pdf generator',
   ],
   category: 'productivity',
-  path: '/tools/invoice-generator',
+  path: '/tools/productivity/invoice-generator',
 })
 
 export default function InvoiceGeneratorLayout({ children }: { children: React.ReactNode }) {

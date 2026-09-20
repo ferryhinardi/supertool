@@ -20,7 +20,7 @@ export const metadata: Metadata = generateToolMetadata({
     'wifi speed',
   ],
   category: 'utilities',
-  path: '/tools/speed-test',
+  path: '/tools/development/speed-test',
 })
 
 export default function SpeedTestLayout({ children }: { children: React.ReactNode }) {

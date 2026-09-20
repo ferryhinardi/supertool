@@ -325,7 +325,7 @@ export default function SharedBillPage() {
           </p>
           <Button
             onClick={() => {
-              window.location.href = '/tools/split-bill'
+              window.location.href = '/tools/finance/split-bill'
             }}
             className={css({ minH: '11' })}
           >
@@ -920,7 +920,7 @@ export default function SharedBillPage() {
           Created on {new Date(bill.created_at || '').toLocaleDateString()}
         </p>
         <a
-          href="/tools/split-bill"
+          href="/tools/finance/split-bill"
           className="text-sm text-green-400 hover:text-green-300 underline mt-2 inline-block"
         >
           Create your own split bill

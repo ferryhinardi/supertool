@@ -26,7 +26,7 @@ export const metadata: Metadata = generateToolMetadata({
     'readme tool',
   ],
   category: 'productivity',
-  path: '/tools/json-markdown-table',
+  path: '/tools/data/json-markdown-table',
 })
 
 export default function JSONToMarkdownTableLayout({ children }: { children: React.ReactNode }) {
