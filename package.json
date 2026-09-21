@@ -25,6 +25,9 @@
     "test:browser": "vitest --browser",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:e2e:touch-targets:all-routes:production": "BASE_URL=https://supertool.id playwright test tests/mobile/touch-targets-sidebar-all.spec.ts --config=playwright.production.config.ts",
+    "test:e2e:functional:all-routes:production": "BASE_URL=https://supertool.id playwright test tests/functional/sidebar-all-functional.spec.ts --config=playwright.production.config.ts",
+    "test:e2e:all-routes:production": "BASE_URL=https://supertool.id playwright test tests/mobile/touch-targets-sidebar-all.spec.ts tests/functional/sidebar-all-functional.spec.ts --config=playwright.production.config.ts",
     "mcp:validate": "node scripts/validate-mcp.js"
   },
   "lint-staged": {
