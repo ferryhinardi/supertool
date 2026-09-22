@@ -1430,7 +1430,13 @@ export default function VideoSubtitleCombinerPage() {
                   type="color"
                   value={fontColor}
                   onChange={(e) => setFontColor(e.target.value)}
-                  className={css({ w: 'full', h: '10', rounded: 'md', cursor: 'pointer' })}
+                  className={css({
+                    w: 'full',
+                    minH: '11',
+                    h: '11',
+                    rounded: 'md',
+                    cursor: 'pointer',
+                  })}
                 />
               </div>
 
@@ -1444,7 +1450,13 @@ export default function VideoSubtitleCombinerPage() {
                   type="color"
                   value={backgroundColor}
                   onChange={(e) => setBackgroundColor(e.target.value)}
-                  className={css({ w: 'full', h: '10', rounded: 'md', cursor: 'pointer' })}
+                  className={css({
+                    w: 'full',
+                    minH: '11',
+                    h: '11',
+                    rounded: 'md',
+                    cursor: 'pointer',
+                  })}
                 />
               </div>
 
