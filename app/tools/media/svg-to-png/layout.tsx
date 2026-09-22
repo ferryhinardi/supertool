@@ -30,6 +30,7 @@ export const metadata: Metadata = {
   description,
   keywords,
   openGraph: {
+    url: 'https://supertool.id/tools/media/svg-to-png',
     title,
     description,
     type: 'website',
@@ -38,6 +39,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title,
     description,
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/media/svg-to-png',
   },
 }
 

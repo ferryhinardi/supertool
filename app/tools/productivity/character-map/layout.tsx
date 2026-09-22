@@ -19,10 +19,14 @@ export const metadata: Metadata = {
     'unicode characters',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/productivity/character-map',
     title: 'Character Map - Special Characters & Symbols',
     description:
       'Browse and copy special characters, symbols, and Unicode characters. One-click copy to clipboard.',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/productivity/character-map',
   },
 }
 

@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     'webhook simulator',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/development/webhook-tester',
     title: 'Webhook Tester | Test & Debug Webhooks in Real-Time',
     description:
       'Test and debug webhooks in real-time. Generate unique URLs, inspect requests, and customize responses. Perfect for webhook development.',
@@ -27,6 +28,9 @@ export const metadata: Metadata = {
     title: 'Webhook Tester | Test & Debug Webhooks in Real-Time',
     description:
       'Test and debug webhooks in real-time. Generate unique URLs, inspect requests, and customize responses.',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/development/webhook-tester',
   },
 }
 

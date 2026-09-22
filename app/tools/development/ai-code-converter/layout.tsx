@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     'language migration',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/development/ai-code-converter',
     title: 'AI Code Converter | Convert Between 12+ Programming Languages',
     description:
       'Convert code between Python, JavaScript, TypeScript, Java, C++, Go, Rust, and more with AI. Instant translation with syntax highlighting and explanations.',
@@ -29,6 +30,9 @@ export const metadata: Metadata = {
     title: 'AI Code Converter | Convert Between 12+ Programming Languages',
     description:
       'Convert code between Python, JavaScript, TypeScript, Java, C++, Go, Rust, and more with AI. Free AI-powered code converter.',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/development/ai-code-converter',
   },
 }
 

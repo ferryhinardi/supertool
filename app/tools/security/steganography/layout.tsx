@@ -7,7 +7,7 @@ import {
 } from '@/lib/data/structured-data'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
-const toolPath = '/tools/steganography'
+const toolPath = '/tools/security/steganography'
 
 export const metadata: Metadata = generateToolMetadata({
   title: 'Text Steganography Tool - Hide Secret Messages',

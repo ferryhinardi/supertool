@@ -13,10 +13,14 @@ export const metadata: Metadata = {
     'github markdown table',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/data/markdown-table',
     title: 'Markdown Table Generator - Visual Table Editor',
     description:
       'Create beautiful Markdown tables visually. Import CSV/JSON, customize alignment, export to multiple formats.',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/data/markdown-table',
   },
 }
 

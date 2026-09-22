@@ -15,10 +15,14 @@ export const metadata: Metadata = {
     'email branding',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/productivity/email-signature',
     title: 'Email Signature Generator - Professional HTML Signatures',
     description:
       'Create beautiful email signatures with 6 customizable templates, social icons, and branding options. Export as HTML or plain text.',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/productivity/email-signature',
   },
 }
 

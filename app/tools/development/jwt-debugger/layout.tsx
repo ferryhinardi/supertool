@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     'jwt validator',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/development/jwt-debugger',
     title: 'JWT Debugger - Decode & Verify JSON Web Tokens',
     description:
       'Decode, verify, and generate JSON Web Tokens (JWT) with support for multiple algorithms. View header, payload, and signature.',
@@ -27,6 +28,9 @@ export const metadata: Metadata = {
     title: 'JWT Debugger - Decode & Verify JSON Web Tokens',
     description:
       'Decode, verify, and generate JSON Web Tokens (JWT) with support for multiple algorithms. View header, payload, and signature.',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/development/jwt-debugger',
   },
 }
 

@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     'regex python',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/development/regex-tester',
     title: 'Regex Tester - Test Regular Expressions Online',
     description:
       'Free online regex tester with live matching, syntax highlighting, and code generation. Test regular expressions with common patterns library.',
@@ -31,6 +32,9 @@ export const metadata: Metadata = {
     title: 'Regex Tester - Test Regular Expressions Online',
     description:
       'Free online regex tester with live matching, syntax highlighting, and code generation.',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/development/regex-tester',
   },
 }
 
