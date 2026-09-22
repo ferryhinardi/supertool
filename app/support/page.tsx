@@ -201,7 +201,17 @@ export default function SupportPage() {
         </p>
         <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
           Questions? Contact us at{' '}
-          <a href="mailto:support@supertool.id" className={css({ color: 'blue.400' })}>
+          <a
+            href="mailto:support@supertool.id"
+            className={css({
+              display: 'inline-flex',
+              alignItems: 'center',
+              minH: '11',
+              px: '1',
+              color: 'blue.400',
+              _hover: { color: 'blue.300' },
+            })}
+          >
             support@supertool.id
           </a>
         </p>

@@ -219,8 +219,29 @@ textarea:-webkit-input-placeholder {
   }
   input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
       [type="file"]
-    ) {
+    ):not([type="color"]) {
     min-height: 45px;
     min-width: 44px;
+  }
+  /* Native toggles and pickers must meet 44px themselves (audit measures the input).
+     Use 45px to avoid subpixel getBoundingClientRect under-reads of ~43.99. */
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-width: 45px;
+    min-height: 45px;
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+  }
+  input[type="color"] {
+    min-width: 45px;
+    min-height: 45px;
+    width: 45px;
+    height: 45px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  input[type="file"] {
+    min-height: 45px;
   }
 }

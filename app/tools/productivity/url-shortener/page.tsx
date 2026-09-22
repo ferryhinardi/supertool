@@ -588,6 +588,9 @@ export default function URLShortenerPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      minH: '11',
                       flex: '1',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -675,7 +678,13 @@ export default function URLShortenerPage() {
                     href={selectedUrl.originalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Open original URL"
                     className={css({
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minH: '11',
+                      minW: '11',
                       color: 'white',
                       _hover: {
                         color: 'white',
@@ -799,6 +808,9 @@ export default function URLShortenerPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className={css({
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          minH: '11',
                           fontFamily: 'mono',
                           fontSize: 'lg',
                           fontWeight: 'semibold',
