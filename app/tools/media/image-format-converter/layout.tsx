@@ -25,10 +25,14 @@ export const metadata: Metadata = {
     'free image converter',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/media/image-format-converter',
     title: 'Image Format Converter - Convert PNG, JPG, WEBP, GIF',
     description:
       'Convert images between formats instantly. Adjust quality, preview results, and compare file sizes. Free online tool.',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/media/image-format-converter',
   },
 }
 

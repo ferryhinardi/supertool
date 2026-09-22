@@ -25,10 +25,14 @@ export const metadata: Metadata = {
     'ad banner placeholder',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/design/placeholder-generator',
     title: 'Placeholder Image Generator - Custom Mockup Images',
     description:
       'Generate custom placeholder images with custom dimensions, colors, and text. Download as SVG or PNG. Perfect for mockups and prototypes.',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/design/placeholder-generator',
   },
 }
 

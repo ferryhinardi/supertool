@@ -19,10 +19,14 @@ export const metadata: Metadata = {
     'writing tool',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/productivity/word-counter',
     title: 'Word Counter Pro - Free Online Text Statistics Tool',
     description:
       'Count words, characters, sentences, paragraphs. Get reading time estimates and keyword density analysis instantly.',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/productivity/word-counter',
   },
 }
 

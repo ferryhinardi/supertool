@@ -25,6 +25,7 @@ export const metadata: Metadata = {
     'webcam qr reader',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/media/qr-code-scanner',
     title: 'QR Code Scanner - Read QR Codes Online Free',
     description:
       'Scan and read QR codes instantly. Upload images or use your webcam to decode QR codes. Free online tool, no installation required.',
@@ -35,6 +36,9 @@ export const metadata: Metadata = {
     title: 'QR Code Scanner - Read QR Codes Online Free',
     description:
       'Scan and read QR codes instantly. Upload images or use your webcam to decode QR codes.',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/media/qr-code-scanner',
   },
 }
 

@@ -21,10 +21,14 @@ export const metadata: Metadata = {
     'sql query beautifier',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/development/sql-formatter',
     title: 'SQL Formatter - Format & Beautify SQL Queries',
     description:
       'Format, beautify, and minify SQL queries with support for multiple SQL dialects. Free online SQL formatter with syntax highlighting.',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/development/sql-formatter',
   },
 }
 

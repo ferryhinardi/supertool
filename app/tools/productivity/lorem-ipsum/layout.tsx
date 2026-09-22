@@ -19,10 +19,14 @@ export const metadata: Metadata = {
     'content placeholder',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/productivity/lorem-ipsum',
     title: 'Lorem Ipsum Generator - Placeholder Text Generator',
     description:
       'Generate Lorem Ipsum placeholder text for your designs and mockups. Create paragraphs, sentences, or words instantly.',
     type: 'website',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/productivity/lorem-ipsum',
   },
 }
 

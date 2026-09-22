@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     'online mockup generator',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/design/device-mockup',
     title: 'Device Mockup Generator | Professional Device Frames',
     description:
       'Create stunning device mockups with realistic frames. Perfect for showcasing apps, websites, and designs in presentations and portfolios.',
@@ -29,6 +30,9 @@ export const metadata: Metadata = {
     title: 'Device Mockup Generator',
     description:
       'Create professional device mockups with realistic iPhone, MacBook, and Android frames.',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/design/device-mockup',
   },
 }
 

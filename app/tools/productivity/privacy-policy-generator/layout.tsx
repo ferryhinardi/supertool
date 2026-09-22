@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     'saas privacy policy',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/productivity/privacy-policy-generator',
     title: 'Privacy Policy Generator | GDPR & CCPA Compliant',
     description:
       'Create professional, legally compliant privacy policies in minutes. Free templates for all industries with GDPR and CCPA support.',
@@ -29,6 +30,9 @@ export const metadata: Metadata = {
     title: 'Privacy Policy Generator',
     description:
       'Generate GDPR & CCPA compliant privacy policies instantly. Free templates for any business.',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/productivity/privacy-policy-generator',
   },
 }
 

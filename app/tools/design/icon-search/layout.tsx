@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     'icon library',
     'web icons',
   ],
+  alternates: {
+    canonical: 'https://supertool.id/tools/design/icon-search',
+  },
 }
 
 export default function IconSearchLayout({ children }: { children: React.ReactNode }) {

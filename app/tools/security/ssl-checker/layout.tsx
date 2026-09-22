@@ -5,9 +5,13 @@ export const metadata: Metadata = {
   description:
     'Inspect SSL/TLS certificate details, expiration dates, and security status for any website. Check certificate chain, cipher suites, protocol versions, and get detailed security recommendations to improve your website security.',
   openGraph: {
+    url: 'https://supertool.id/tools/security/ssl-checker',
     title: 'SSL/TLS Certificate Checker',
     description:
       'Check SSL certificates, track expiration dates, analyze security configuration, and get recommendations',
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/security/ssl-checker',
   },
 }
 

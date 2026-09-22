@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     'handwriting recognition',
   ],
   openGraph: {
+    url: 'https://supertool.id/tools/media/image-to-text',
     title,
     description,
     type: 'website',
@@ -36,6 +37,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title,
     description,
+  },
+  alternates: {
+    canonical: 'https://supertool.id/tools/media/image-to-text',
   },
 }
 
