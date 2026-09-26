@@ -1,4 +1,5 @@
 import { defineConfig } from '@pandacss/dev'
+import { fontFamilies, palette } from './lib/design-system/tokens'
 import { recipes } from './panda.recipes'
 
 export default defineConfig({
@@ -19,31 +20,53 @@ export default defineConfig({
     extend: {
       tokens: {
         colors: {
-          // Base semantic colors for dark theme
-          background: { value: 'oklch(0.141 0.005 285.823)' }, // Very dark background
-          foreground: { value: 'oklch(0.985 0 0)' }, // Very light text (white)
-          card: { value: 'oklch(0.21 0.006 285.885)' }, // Dark card background
-          'card-foreground': { value: 'oklch(0.985 0 0)' }, // Light card text
-          popover: { value: 'oklch(0.21 0.006 285.885)' }, // Dark popover background
-          'popover-foreground': { value: 'oklch(0.985 0 0)' }, // Light popover text
-          primary: { value: 'oklch(0.21 0.006 285.885)' }, // Dark button background (swapped)
-          'primary-foreground': { value: 'oklch(0.92 0.004 286.32)' }, // Light button text (swapped)
-          secondary: { value: 'oklch(0.274 0.006 286.033)' }, // Slightly lighter dark
-          'secondary-foreground': { value: 'oklch(0.985 0 0)' }, // Light text
-          muted: { value: 'oklch(0.274 0.006 286.033)' }, // Muted background
-          'muted-foreground': { value: 'oklch(0.705 0.015 286.067)' }, // Muted text (gray)
-          accent: { value: 'oklch(0.274 0.006 286.033)' }, // Accent background
-          'accent-foreground': { value: 'oklch(0.985 0 0)' }, // Accent text
-          destructive: { value: 'oklch(0.704 0.191 22.216)' }, // Red/destructive color
-          'destructive-foreground': { value: '#ffffff' }, // White text on destructive
-          border: { value: 'oklch(1 0 0 / 10%)' }, // Subtle border
-          input: { value: 'oklch(1 0 0 / 15%)' }, // Input border
-          ring: { value: 'oklch(0.552 0.016 285.938)' }, // Focus ring
+          // Semantic colors mapped to the Website Revamp palette.
+          background: { value: palette.canvas },
+          foreground: { value: palette.ink },
+          card: { value: palette.surface },
+          'card-foreground': { value: palette.ink },
+          popover: { value: palette.surfaceRaised },
+          'popover-foreground': { value: palette.ink },
+          primary: { value: palette.violet },
+          'primary-foreground': { value: palette.white },
+          secondary: { value: palette.surfaceRaised },
+          'secondary-foreground': { value: palette.ink },
+          muted: { value: palette.surfaceRaised },
+          'muted-foreground': { value: palette.muted },
+          accent: { value: palette.violetSoft },
+          'accent-foreground': { value: palette.ink },
+          destructive: { value: palette.rose },
+          'destructive-foreground': { value: palette.white },
+          border: { value: palette.line },
+          input: { value: palette.line },
+          ring: { value: palette.violet },
 
-          // Aliases used by Card/Field/RelatedTools (were emitted as invalid `color: fg.default`)
-          'fg.default': { value: 'oklch(0.985 0 0)' },
-          'fg.muted': { value: 'oklch(0.705 0.015 286.067)' },
-          'fg.error': { value: 'oklch(0.704 0.191 22.216)' },
+          'fg.default': { value: palette.ink },
+          'fg.muted': { value: palette.muted },
+          'fg.error': { value: palette.rose },
+
+          brand: {
+            canvas: { value: palette.canvas },
+            sidebar: { value: palette.sidebar },
+            surface: { value: palette.surface },
+            surfaceRaised: { value: palette.surfaceRaised },
+            line: { value: palette.line },
+            lineSoft: { value: palette.lineSoft },
+            ink: { value: palette.ink },
+            muted: { value: palette.muted },
+            dim: { value: palette.dim },
+            violet: { value: palette.violet },
+            violetBright: { value: palette.violetBright },
+            violetSoft: { value: palette.violetSoft },
+            violetDeep: { value: palette.violetDeep },
+            mint: { value: palette.mint },
+            rose: { value: palette.rose },
+            amber: { value: palette.amber },
+            cyan: { value: palette.cyan },
+            blue: { value: palette.blue },
+            pink: { value: palette.pink },
+            lime: { value: palette.lime },
+          },
 
           // Gray scale for dark theme
           gray: {
@@ -185,6 +208,11 @@ export default defineConfig({
           '5xl': { value: '3rem' },
           '6xl': { value: '3.75rem' },
           '7xl': { value: '4.5rem' },
+        },
+        fonts: {
+          sans: { value: fontFamilies.sans },
+          display: { value: fontFamilies.display },
+          mono: { value: fontFamilies.mono },
         },
         fontWeights: {
           normal: { value: '400' },

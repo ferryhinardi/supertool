@@ -3,7 +3,7 @@ import './globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { DM_Mono, Inter, Manrope } from 'next/font/google'
 import Script from 'next/script'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Toaster } from 'sonner'
@@ -18,8 +18,22 @@ import { css } from '@/styled-system/css/css.mjs'
 
 const inter = Inter({
   subsets: ['latin'],
-  display: 'swap', // Optimize font loading
+  display: 'swap',
   preload: true,
+  variable: '--font-inter',
+})
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-manrope',
+})
+
+const dmMono = DM_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  display: 'swap',
+  variable: '--font-dm-mono',
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'
@@ -131,7 +145,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const adsConfig = getAdsConfig()
 
   return (
-    <html lang="id" className={inter.className}>
+    <html lang="id" className={`${inter.className} ${manrope.variable} ${dmMono.variable}`}>
       <head>
         {/* Preconnect to external origins - saves ~300ms on LCP */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
@@ -158,10 +172,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           // Use explicit backgroundImage — Panda bgGradient+gradientVia sets
           // inheritable --gradient-via-stops that poison descendant bgClip text
           // (near-black digits/titles on dark pages).
-          bg: 'gray.950',
-          backgroundImage:
-            'linear-gradient(to bottom right, #0a0a0a 0%, #171717 50%, #0a0a0a 100%)',
-          color: 'white',
+          bg: 'brand.canvas',
+          color: 'brand.ink',
           position: 'relative',
           overflow: 'auto',
         })}
@@ -181,7 +193,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   position: 'relative',
                   zIndex: '1',
                   minH: { base: '100vh', md: '100vh' },
-                  w: { base: 'full', md: 'calc(100vw - 16rem)' },
+                  w: { base: 'full', md: 'calc(100vw - 248px)' },
                   flex: { base: '1', md: '1' },
                   overflowX: 'hidden',
                   // Keep mobile horizontal padding light — tool pages already add their own px
@@ -198,54 +210,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   },
                 })}
               >
-                {/* Enhanced background gradient orbs */}
                 <div
+                  aria-hidden
                   className={css({
                     pointerEvents: 'none',
                     position: 'fixed',
-                    top: '0',
-                    right: '0',
+                    top: '-180px',
+                    right: '-120px',
                     zIndex: '0',
-                    h: { base: '360px', md: '700px' },
-                    w: { base: '360px', md: '700px' },
-                    animation: 'pulse 4s infinite',
+                    h: '520px',
+                    w: '520px',
                     rounded: 'full',
                     backgroundImage:
-                      'linear-gradient(to bottom right, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.2), rgba(147, 51, 234, 0.25))',
-                    filter: 'blur(96px)',
-                  })}
-                />
-                <div
-                  className={css({
-                    pointerEvents: 'none',
-                    position: 'fixed',
-                    bottom: '0',
-                    left: '0',
-                    zIndex: '0',
-                    h: { base: '360px', md: '700px' },
-                    w: { base: '360px', md: '700px' },
-                    animation: 'pulse 5s 1s infinite',
-                    rounded: 'full',
-                    backgroundImage:
-                      'linear-gradient(to top right, rgba(59, 130, 246, 0.25), rgba(6, 182, 212, 0.2), rgba(20, 184, 166, 0.25))',
-                    filter: 'blur(96px)',
-                  })}
-                />
-                <div
-                  className={css({
-                    pointerEvents: 'none',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: '0',
-                    h: { base: '220px', md: '500px' },
-                    w: { base: '220px', md: '500px' },
-                    transform: 'translate(-50%, -50%)',
-                    animation: 'pulse 6s 2s infinite',
-                    rounded: 'full',
-                    backgroundImage:
-                      'linear-gradient(to right, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.15))',
-                    filter: 'blur(96px)',
+                      'radial-gradient(circle, rgba(112, 80, 245, 0.14), transparent 66%)',
                   })}
                 />
 
