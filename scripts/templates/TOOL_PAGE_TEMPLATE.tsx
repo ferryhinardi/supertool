@@ -10,13 +10,15 @@
  * - Modern UX patterns (loading states, error handling)
  * - Panda CSS styling (no Tailwind utilities)
  * - Analytics tracking
+ * - Website Revamp tokens (brand.surface, brand.ink, display titles)
  *
- * Reference: /tools/unit-converter/page.tsx for detailed example
+ * Visual source of truth: docs/design-system.md and /design-system
  */
 
 import { Copy, RotateCcw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { Eyebrow } from '@/components/design-system'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -84,43 +86,17 @@ export default function ToolPageTemplate() {
     >
       {/* Header Section */}
       <div className={css({ textAlign: 'center', spaceY: '4', animation: 'fadeIn 0.5s ease-out' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'purple.500/10',
-            px: '4',
-            py: '2',
-          })}
-        >
-          <Sparkles
-            className={css({
-              h: '4',
-              w: '4',
-              color: 'purple.400',
-              flexShrink: '0',
-            })}
-          />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'purple.300',
-            })}
-          >
-            Tool Name
-          </span>
+        <div className={css({ display: 'flex', justifyContent: 'center' })}>
+          <Eyebrow icon={Sparkles}>Tool Name</Eyebrow>
         </div>
 
         <h1
           className={css({
+            fontFamily: 'display',
             fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
             fontWeight: 'extrabold',
-            color: 'white',
+            color: 'brand.ink',
+            letterSpacing: '-0.03em',
           })}
         >
           Tool Title
@@ -131,7 +107,7 @@ export default function ToolPageTemplate() {
             mx: 'auto',
             maxW: '2xl',
             fontSize: { base: 'base', sm: 'lg' },
-            color: 'gray.400',
+            color: 'brand.muted',
           })}
         >
           Clear description of what this tool does
@@ -146,14 +122,7 @@ export default function ToolPageTemplate() {
           opacity: 0,
         })}
       >
-        <Card
-          className={css({
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
+        <Card>
           <CardHeader>
             <CardTitle>Input & Settings</CardTitle>
             <CardDescription>Configure your options</CardDescription>
@@ -166,7 +135,7 @@ export default function ToolPageTemplate() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'brand.muted',
                 })}
               >
                 Input
@@ -179,7 +148,9 @@ export default function ToolPageTemplate() {
                 disabled={isLoading}
                 className={css({
                   h: '11', // 44px for touch targets
-                  bg: 'gray.800/50',
+                  bg: 'brand.canvas',
+                  borderColor: 'brand.line',
+                  color: 'brand.ink',
                   fontSize: { base: 'base', sm: 'sm' },
                 })}
               />
@@ -230,10 +201,7 @@ export default function ToolPageTemplate() {
         <div className={css({ animation: 'fadeIn 0.3s ease-out' })}>
           <Card
             className={css({
-              border: '1px solid',
-              borderColor: 'cyan.500/20',
-              bg: 'cyan.500/5',
-              backdropFilter: 'blur(16px)',
+              borderColor: 'rgba(78, 224, 174, 0.28)',
             })}
           >
             <CardHeader>
@@ -253,8 +221,8 @@ export default function ToolPageTemplate() {
                   size="sm"
                   onClick={handleCopy}
                   className={css({
-                    minH: '10',
-                    minW: '10',
+                    minH: '11',
+                    minW: '11',
                     px: '2',
                   })}
                   aria-label="Copy output"
@@ -267,10 +235,11 @@ export default function ToolPageTemplate() {
               <pre
                 className={css({
                   rounded: 'lg',
-                  bg: 'gray.800/50',
+                  bg: 'brand.canvas',
                   p: '4',
+                  fontFamily: 'mono',
                   fontSize: { base: 'sm', sm: 'base' },
-                  color: 'gray.200',
+                  color: 'brand.ink',
                   wordBreak: 'break-word',
                   maxH: '400px',
                   overflow: 'auto',

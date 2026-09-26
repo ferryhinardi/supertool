@@ -19,17 +19,19 @@ import {
   Star,
   Terminal,
   TrendingUp,
-  X,
   Zap,
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import Script from 'next/script'
 import { memo, startTransition, useEffect, useMemo, useRef, useState } from 'react'
+import { HomeHero } from '@/components/design-system/HomeHero'
+import { IconTile } from '@/components/design-system/IconTile'
+import { PrivacySection } from '@/components/design-system/PrivacySection'
+import { ProofStrip } from '@/components/design-system/ProofStrip'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
-import { Field, FieldInput } from '@/components/ui/field'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
@@ -38,6 +40,7 @@ import {
   generateWebSiteSchema,
 } from '@/lib/data/structured-data'
 import { type Tool, type ToolCategory, tools } from '@/lib/data/tools'
+import { accentForCategory } from '@/lib/design-system'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
@@ -83,61 +86,6 @@ const TreatMeDialog = dynamic(
     ssr: false,
   }
 )
-
-// Color mapping for gradients
-const colorMap: Record<string, string> = {
-  'purple-500': '#a855f7',
-  'pink-500': '#ec4899',
-  'orange-500': '#f97316',
-  'red-500': '#ef4444',
-  'green-500': '#22c55e',
-  'emerald-500': '#10b981',
-  'cyan-500': '#06b6d4',
-  'blue-500': '#3b82f6',
-  'yellow-500': '#eab308',
-  'teal-500': '#14b8a6',
-  'indigo-500': '#6366f1',
-  'rose-500': '#f43f5e',
-  'fuchsia-500': '#d946ef',
-  'violet-500': '#8b5cf6',
-  'amber-500': '#f59e0b',
-  'gray-500': '#6b7280',
-  'slate-700': '#334155',
-}
-
-// Cache for gradient conversions to avoid recalculating
-const gradientCache = new Map<string, string>()
-
-// Convert Tailwind gradient class to CSS gradient string
-const gradientToCss = (gradient: string): string => {
-  // Return cached result if available
-  const cached = gradientCache.get(gradient)
-  if (cached !== undefined) {
-    return cached
-  }
-
-  const match = gradient.match(/from-(\S+)\s+(?:via-(\S+)\s+)?to-(\S+)/)
-  if (!match) {
-    gradientCache.set(gradient, gradient)
-    return gradient
-  }
-
-  const [, from, via, to] = match
-  const fromColor = colorMap[from] || from
-  const toColor = colorMap[to] || to
-
-  let result: string
-  if (via) {
-    const viaColor = colorMap[via] || via
-    result = `linear-gradient(135deg, ${fromColor}, ${viaColor}, ${toColor})`
-  } else {
-    result = `linear-gradient(135deg, ${fromColor}, ${toColor})`
-  }
-
-  // Cache the result
-  gradientCache.set(gradient, result)
-  return result
-}
 
 const categories: {
   value: ToolCategory
@@ -411,240 +359,46 @@ export default function HomePage() {
         minH: '100vh',
         w: 'full',
         maxW: { base: 'full', md: 'none' }, // Remove max-width constraint on desktop
-        px: { base: '3', sm: '6', md: '6', lg: '8', xl: '10' },
-        pt: { base: '6', sm: '8', md: '10', lg: '12' },
+        px: '0',
+        pt: { base: '2', md: '4' },
         // Extra bottom space so fixed support FABs don't cover the last cards
         pb: { base: '24', sm: '16', md: '12', lg: '12' },
         spaceY: { base: '10', sm: '12', lg: '14' },
       })}
     >
-      {/* Hero Section */}
+      <HomeHero
+        toolCount={stats.total}
+        searchQuery={searchQuery}
+        onSearchChange={(value) => {
+          startTransition(() => {
+            setSearchQuery(value)
+          })
+        }}
+        onClearSearch={() => setSearchQuery('')}
+        onBrowse={() => {
+          document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' })
+        }}
+        searchInputRef={searchInputRef}
+      />
+
+      <ProofStrip
+        items={[
+          { value: String(stats.total), label: 'free tools' },
+          { value: 'Private', label: 'in your browser' },
+          { value: '0', label: 'accounts required' },
+          { value: 'Local-first', label: 'whenever possible' },
+        ]}
+      />
+
       <div
         className={css({
           position: 'relative',
           zIndex: '10',
           mx: 'auto',
           w: 'full',
-          maxW: { base: 'full', sm: '3xl', md: '4xl', lg: '5xl' },
-          spaceY: '4',
-          textAlign: 'center',
-        })}
-        style={{ margin: '0 auto' }}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid rgba(168, 85, 247, 0.2)',
-            bg: 'rgba(168, 85, 247, 0.1)',
-            px: '4',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Sparkles className={css({ h: '4', w: '4', color: 'purple.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'purple.300',
-            })}
-          >
-            {stats.total}+ Tools
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'purple.400',
-              gradientVia: 'pink.400',
-              gradientTo: 'blue.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            SuperTool
-          </span>
-        </h1>
-      </div>
-
-      {/* Search and Filter Bar - Skip initial animation to reduce TBT */}
-      <div
-        className={css({
-          position: 'relative',
-          zIndex: '10',
-          mx: 'auto',
-          w: 'full',
-          maxW: { base: 'full', md: '100%' },
           spaceY: '6',
         })}
       >
-        {/* Search Input */}
-        <div
-          className={css({
-            w: { base: 'full', sm: '85%', md: '75%', lg: '60%' },
-          })}
-          style={{ margin: '0 auto' }}
-        >
-          <Field>
-            <div className={css({ position: 'relative', w: 'full' })}>
-              {/* Search Icon */}
-              <div
-                className={css({
-                  position: 'absolute',
-                  left: '4',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  pointerEvents: 'none',
-                  zIndex: '10',
-                })}
-              >
-                <Search className={css({ h: '5', w: '5', color: 'gray.500' })} strokeWidth={2} />
-              </div>
-
-              {/* Input Field */}
-              <FieldInput
-                ref={searchInputRef}
-                type="search"
-                placeholder="Search tools..."
-                value={searchQuery}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const value = e.target.value
-                  // Use startTransition for non-urgent filtering
-                  startTransition(() => {
-                    setSearchQuery(value)
-                  })
-                }}
-                className={css({
-                  h: '16',
-                  w: 'full',
-                  rounded: 'xl',
-                  border: '2px solid',
-                  borderColor: 'gray.800',
-                  bg: 'rgba(17, 24, 39, 0.5)',
-                  fontSize: { base: 'base', sm: 'lg' },
-                  fontWeight: 'medium',
-                  color: 'gray.100',
-                  shadow: 'lg',
-                  boxShadow: '0 10px 15px rgba(0, 0, 0, 0.2)',
-                  backdropFilter: 'blur(8px)',
-                  transition: 'all 0.2s',
-                  _placeholder: { color: 'gray.500' },
-                  _hover: {
-                    borderColor: 'gray.700',
-                    bg: 'rgba(17, 24, 39, 0.7)',
-                  },
-                  _focus: {
-                    borderColor: 'purple.500',
-                    bg: 'rgba(17, 24, 39, 0.8)',
-                    shadow: 'xl',
-                    boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
-                    ring: '4px',
-                    ringColor: 'rgba(139, 92, 246, 0.2)',
-                  },
-                })}
-                style={{
-                  paddingLeft: 40,
-                }}
-                autoComplete="off"
-                spellCheck="false"
-                aria-label="Search tools"
-                aria-describedby="search-hint"
-              />
-
-              {/* Clear Button */}
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className={css({
-                    position: 'absolute',
-                    insetY: '0',
-                    right: '0',
-                    my: 'auto',
-                    mr: '3',
-                    display: 'flex',
-                    h: '11',
-                    w: '11',
-                    minH: '11',
-                    minW: '11',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    rounded: 'lg',
-                    bg: 'gray.800',
-                    color: 'gray.400',
-                    transition: 'all 0.2s',
-                    _hover: { bg: 'gray.700', color: 'gray.200' },
-                    _focus: {
-                      outline: 'none',
-                      ring: '2px',
-                      ringColor: 'rgba(168, 85, 247, 0.5)',
-                    },
-                  })}
-                  aria-label="Clear search"
-                  type="button"
-                >
-                  <X className={css({ h: '4', w: '4' })} strokeWidth={2.5} />
-                </button>
-              )}
-
-              {/* Global Tool Search hint */}
-              {!searchQuery && (
-                <div
-                  id="search-hint"
-                  className={css({
-                    pointerEvents: 'none',
-                    position: 'absolute',
-                    insetY: '0',
-                    right: 8,
-                    display: { base: 'none', sm: 'flex' },
-                    alignItems: 'center',
-                    gap: '2',
-                    pr: '5',
-                  })}
-                >
-                  <span
-                    className={css({
-                      fontSize: 'xs',
-                      color: 'gray.600',
-                      fontWeight: 'medium',
-                    })}
-                  >
-                    Quick search
-                  </span>
-                  <kbd
-                    className={css({
-                      rounded: 'sm',
-                      border: '1px solid',
-                      borderColor: 'gray.700',
-                      bg: 'rgba(31, 41, 55, 0.5)',
-                      px: '2',
-                      py: '1',
-                      fontSize: 'xs',
-                      fontWeight: 'semibold',
-                      color: 'gray.400',
-                    })}
-                  >
-                    ⌘K
-                  </kbd>
-                </div>
-              )}
-            </div>
-          </Field>
-        </div>
-
         {/* Tools View Toggle - Left aligned */}
         <div
           className={css({
@@ -884,17 +638,27 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Tools by Category Sections - Skip initial animation */}
       <div
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          margin: '0 auto',
-          width: '100%',
-          maxWidth: '1400px',
-          padding: '0 1rem',
-        }}
+        id="tools"
+        className={css({ position: 'relative', zIndex: '10', mx: 'auto', w: 'full' })}
       >
+        <div className={css({ mb: '6' })}>
+          <h2
+            className={css({
+              fontFamily: 'display',
+              fontSize: '2xl',
+              fontWeight: 'bold',
+              letterSpacing: '-0.035em',
+            })}
+          >
+            {toolsView === 'popular' && !searchQuery ? 'Popular tools' : 'All tools'}
+          </h2>
+          <p className={css({ mt: '1.5', color: 'brand.muted', fontSize: 'sm' })}>
+            {toolsView === 'popular' && !searchQuery
+              ? 'The community’s most-used utilities, ready in one click.'
+              : 'Every utility in the toolkit, grouped by what it helps you do.'}
+          </p>
+        </div>
         {Object.values(filteredToolsByCategory).flat().length > 0 ? (
           <div
             key={`${viewMode}-${searchQuery}`}
@@ -932,30 +696,15 @@ export default function HomePage() {
                         gap: '4',
                       })}
                     >
-                      <div
-                        className={css({
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          rounded: 'xl',
-                          bg: 'rgba(168, 85, 247, 0.1)',
-                          p: '3',
-                        })}
-                      >
-                        <Icon
-                          className={css({
-                            h: '6',
-                            w: '6',
-                            color: 'purple.400',
-                          })}
-                        />
-                      </div>
+                      <IconTile icon={Icon} accent={accentForCategory(category.value)} />
                       <div className={css({ minW: 0 })}>
                         <h2
                           className={css({
-                            fontSize: { base: '2xl', sm: '3xl' },
+                            fontFamily: 'display',
+                            fontSize: { base: 'xl', sm: '2xl' },
                             fontWeight: 'bold',
-                            color: 'gray.100',
+                            letterSpacing: '-0.03em',
+                            color: 'brand.ink',
                           })}
                         >
                           {category.label}
@@ -1181,6 +930,8 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      <PrivacySection />
 
       {/* Ad Banner Bottom - Feature Flag Guarded - Skip initial animation */}
       <div
@@ -1457,16 +1208,15 @@ const ToolCard = memo(function ToolCard({
               position: 'relative',
               overflow: 'hidden',
               border: '1px solid',
-              borderColor: 'purple.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
-              transition: 'all 0.3s',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
+              transition: 'all 0.22s ease',
               opacity: isComingSoon ? 0.6 : 1,
               _hover: {
-                borderColor: 'purple.500/40',
-                bg: 'gray.900/80',
-                shadow: 'lg',
-                boxShadow: '0 10px 15px rgba(139, 92, 246, 0.1)',
+                transform: 'translateY(-4px)',
+                borderColor: '#6654a7',
+                bg: 'brand.surfaceRaised',
+                boxShadow: '0 16px 35px rgba(0, 0, 0, 0.2)',
               },
             })}
             style={{ padding: '20px' }}
@@ -1479,19 +1229,7 @@ const ToolCard = memo(function ToolCard({
                 gap: '5',
               })}
             >
-              <div
-                className={css({
-                  flexShrink: 0,
-                  rounded: 'xl',
-                  p: '4',
-                  shadow: 'lg',
-                })}
-                style={{
-                  background: gradientToCss(tool.gradient),
-                }}
-              >
-                <Icon className={css({ h: '7', w: '7', color: 'white' })} />
-              </div>
+              <IconTile icon={Icon} accent={accentForCategory(tool.category)} />
 
               <div className={css({ minW: 0, flex: 1 })}>
                 <div
@@ -1658,16 +1396,15 @@ const ToolCard = memo(function ToolCard({
             h: 'full',
             overflow: 'hidden',
             border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
-            transition: 'all 0.3s',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
+            transition: 'all 0.22s ease',
             opacity: isComingSoon ? 0.6 : 1,
             _hover: {
-              borderColor: 'purple.500/50',
-              bg: 'gray.900/80',
-              shadow: 'xl',
-              boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
+              transform: 'translateY(-4px)',
+              borderColor: '#6654a7',
+              bg: 'brand.surfaceRaised',
+              boxShadow: '0 16px 35px rgba(0, 0, 0, 0.2)',
             },
           })}
           style={{ padding: '24px' }}
@@ -1680,18 +1417,7 @@ const ToolCard = memo(function ToolCard({
                 justifyContent: 'space-between',
               })}
             >
-              <div
-                className={css({
-                  rounded: 'xl',
-                  p: '3.5',
-                  shadow: 'lg',
-                })}
-                style={{
-                  background: gradientToCss(tool.gradient),
-                }}
-              >
-                <Icon className={css({ h: '7', w: '7', color: 'white' })} />
-              </div>
+              <IconTile icon={Icon} accent={accentForCategory(tool.category)} />
 
               <div
                 className={css({
@@ -1712,6 +1438,7 @@ const ToolCard = memo(function ToolCard({
                     })}
                   >
                     <TrendingUp className={css({ h: '3.5', w: '3.5' })} />
+                    Popular
                   </Badge>
                 )}
 
@@ -1768,11 +1495,13 @@ const ToolCard = memo(function ToolCard({
             <div>
               <CardTitle
                 className={css({
-                  mb: '3',
-                  fontSize: 'xl',
+                  mb: '2',
+                  fontFamily: 'display',
+                  fontSize: 'sm',
                   lineHeight: 'tight',
                   fontWeight: 'bold',
-                  color: 'gray.100',
+                  letterSpacing: '-0.02em',
+                  color: 'brand.ink',
                 })}
               >
                 {tool.title}

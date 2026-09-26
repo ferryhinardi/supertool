@@ -22,6 +22,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type React from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { BrandMark } from '@/components/design-system/BrandMark'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { type Tool, type ToolCategory, tools } from '@/lib/data/tools'
 import { css, cva } from '@/styled-system/css'
@@ -67,19 +68,20 @@ const navLinkStyles = cva({
     minH: '11',
     transition: 'all 0.2s',
     _hover: {
-      bg: 'rgba(139, 92, 246, 0.1)',
+      color: 'brand.ink',
+      bg: 'rgba(255, 255, 255, 0.035)',
     },
   },
   variants: {
     active: {
       true: {
-        bg: 'rgba(139, 92, 246, 0.15)',
+        bg: 'brand.violetSoft',
         color: 'white',
       },
       false: {
-        color: 'gray.400',
+        color: 'brand.muted',
         _hover: {
-          color: 'white',
+          color: 'brand.ink',
         },
       },
     },
@@ -159,22 +161,23 @@ export function Sidebar() {
           minH: '11',
           minW: '11',
           rounded: 'lg',
-          border: '1px solid rgba(139, 92, 246, 0.2)',
-          bg: 'rgba(17, 24, 39, 0.9)',
+          border: '1px solid',
+          borderColor: 'brand.line',
+          bg: 'brand.surface',
+          color: 'brand.muted',
           p: '3',
-          backdropFilter: 'blur(16px)',
           transition: 'all 0.2s',
           _hover: {
-            bg: 'rgba(139, 92, 246, 0.15)',
+            color: 'brand.ink',
+            bg: 'brand.surfaceRaised',
           },
         })}
-        style={{ WebkitBackdropFilter: 'blur(16px)' }}
         aria-label="Toggle menu"
       >
         {mobileMenuOpen ? (
-          <X className={css({ h: '6', w: '6', color: 'purple.400' })} />
+          <X className={css({ h: '6', w: '6' })} />
         ) : (
-          <Menu className={css({ h: '6', w: '6', color: 'purple.400' })} />
+          <Menu className={css({ h: '6', w: '6' })} />
         )}
       </button>
 
@@ -209,8 +212,8 @@ export function Sidebar() {
           display: 'flex',
           height: { base: '100vh', md: '100vh' },
           minH: '100vh',
-          width: { base: '80vw', sm: '20rem', md: '16rem' },
-          maxW: { base: '20rem', md: '16rem' },
+          width: { base: '80vw', sm: '20rem', md: '248px' },
+          maxW: { base: '20rem', md: '248px' },
           flexShrink: 0,
           flexDirection: 'column',
           overflow: 'hidden',
@@ -220,10 +223,8 @@ export function Sidebar() {
           transition: 'left 0.3s ease-in-out',
         })}
         style={{
-          borderRight: '1px solid rgba(139, 92, 246, 0.15)',
-          background: 'rgba(17, 24, 39, 0.95)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
+          borderRight: '1px solid #1a1f2b',
+          background: '#0b0d13',
         }}
       >
         <div
@@ -249,26 +250,16 @@ export function Sidebar() {
               className={css({
                 display: 'flex',
                 alignItems: 'center',
-                gap: { base: '2', md: '3' },
-                fontSize: { base: 'xl', md: '2xl' },
-                fontWeight: 'bold',
+                gap: '3',
+                fontFamily: 'display',
+                fontSize: 'lg',
+                fontWeight: 'extrabold',
+                letterSpacing: '-0.03em',
+                color: 'brand.ink',
               })}
             >
-              <span
-                className={css({
-                  fontSize: { base: '2xl', md: '3xl' },
-                })}
-              >
-                ⚡
-              </span>
-              <span
-                className={css({
-                  color: 'white',
-                  fontWeight: 'extrabold',
-                })}
-              >
-                SuperTool
-              </span>
+              <BrandMark />
+              SuperTool
             </h1>
           </Link>
 
@@ -460,8 +451,65 @@ export function Sidebar() {
               pt: '4',
             })}
           >
-            <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
-              Built by{' '}
+            <div
+              className={css({
+                p: '3.5',
+                backgroundImage: 'linear-gradient(145deg, #171425, #11141c)',
+                border: '1px solid #292341',
+                rounded: '13px',
+              })}
+            >
+              <div
+                className={css({
+                  display: 'grid',
+                  placeItems: 'center',
+                  w: '8',
+                  h: '8',
+                  color: 'brand.rose',
+                  bg: 'rgba(250, 113, 152, 0.1)',
+                  rounded: '8px',
+                })}
+              >
+                <Heart className={css({ h: '4', w: '4' })} aria-hidden />
+              </div>
+              <p
+                className={css({
+                  mt: '2',
+                  fontSize: 'xs',
+                  fontWeight: 'semibold',
+                  color: 'brand.ink',
+                })}
+              >
+                Enjoying SuperTool?
+              </p>
+              <p
+                className={css({
+                  mt: '1',
+                  color: 'brand.muted',
+                  fontSize: 'xs',
+                  lineHeight: 'relaxed',
+                })}
+              >
+                Help keep every tool free.
+              </p>
+              <Link
+                href="/support"
+                onClick={closeMobileMenu}
+                className={css({
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  minH: '11',
+                  mt: '1',
+                  color: 'brand.violetBright',
+                  fontSize: 'xs',
+                  fontWeight: 'bold',
+                })}
+              >
+                Support the project
+              </Link>
+            </div>
+            <p className={css({ fontSize: 'xs', color: 'brand.dim' })}>
+              Built with care by{' '}
               <a
                 href="https://github.com/ferryhinardi"
                 target="_blank"
@@ -469,19 +517,16 @@ export function Sidebar() {
                 className={css({
                   display: 'inline-flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
                   minH: '11',
-                  minW: '11',
-                  px: '2',
-                  color: 'gray.400',
-                  fontWeight: 'medium',
+                  color: 'brand.muted',
+                  fontWeight: 'semibold',
                   textDecoration: 'none !important',
                   _hover: {
                     color: 'white',
                   },
                 })}
               >
-                Ferry
+                Ferry Hinardi
               </a>
             </p>
           </div>
@@ -649,9 +694,10 @@ function AuthSection() {
           color: 'white',
           cursor: 'pointer',
           transition: 'all 0.2s',
-          bg: 'purple.600',
+          bg: 'brand.violet',
+          boxShadow: '0 8px 25px rgba(139, 108, 255, 0.2)',
           _hover: {
-            bg: 'purple.500',
+            opacity: 0.92,
           },
         })}
       >

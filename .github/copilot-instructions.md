@@ -1,6 +1,6 @@
 # SuperTool - AI Coding Agent Instructions
 
-Modern Next.js 16 developer toolkit with React 19, Panda CSS, and Vitest browser testing. Focus on glassmorphic dark theme aesthetics and type-safe development.
+Modern Next.js 16 developer toolkit with React 19, Panda CSS, and Vitest browser testing. Follow the Website Revamp design system (`docs/design-system.md`): dark canvas, violet primary, solid surfaces.
 
 ## Architecture Overview
 
@@ -10,9 +10,9 @@ Modern Next.js 16 developer toolkit with React 19, Panda CSS, and Vitest browser
 
 - **Panda CSS + Ark UI** - Type-safe UI components in `components/ui/` using recipes from `panda.recipes.ts`. Import with `import { button } from '@/styled-system/recipes'`
 - **`css()` for pages** - Tool pages and layouts use `css()` from `@/styled-system/css`; never utility-class strings.
-- **Integration** - Both `globals.css` (CSS variables, global resets) and `panda.css` are imported in `app/layout.tsx`. Use `.glass` class for glassmorphism effects.
+- **Integration** - Both `globals.css` (CSS variables, global resets) and `panda.css` are imported in `app/layout.tsx`.
 
-The design system is dark-themed with purple/pink/blue gradients (see `app/globals.css` CSS variables) and glassmorphism effects (backdrop-blur, transparent borders).
+The design system is a near-black canvas with a violet primary. Tokens live in `lib/design-system/tokens.ts` and Panda `brand.*`. New UI uses solid `brand.surface` cards and `brand.line` borders. Do not add glass blur or purple-to-pink gradient headings. See `docs/design-system.md` and `/design-system`.
 
 **State Management**: Use React 19 hooks directly. No external state management. **React Compiler is enabled** - avoid manual `useMemo`/`useCallback` unless profiling shows benefit. Mark interactive components with `'use client'` directive.
 
@@ -481,8 +481,8 @@ import { trackToolEvent } from "@/lib/analytics";
 
 - **UI Components**: Use Panda CSS recipes from `@/styled-system/recipes` (see `panda.recipes.ts`)
 - **Tool Pages**: Use Panda CSS `css()` function from `@/styled-system/css` for all layouts and styling
-- **Glassmorphism**: Use `.glass` class from `globals.css` or `backdrop-blur-*` utilities
-- **Gradients**: Use `bgGradient: 'to-r', gradientFrom: 'purple.500', gradientVia: 'pink.500', gradientTo: 'blue.500'` pattern for brand consistency
+- **Surfaces**: Use `brand.surface`, `brand.line`, `brand.ink`, and `brand.muted`. Titles use `fontFamily: 'display'`. Primary actions use `<Button>`. Tool icons use `IconTile` and `accentForCategory()`
+- **No glass or clipped gradients**: Do not use `.glass`, `backdropFilter` blur, or `bgClip: 'text'` gradient headings on new UI
 - **Class merging**: Use `cx()` utility from `@/lib/utils` for conditional classes
 - **No inline styles**: All styling must use Panda CSS - never use inline `style` objects or Tailwind utilities in tool pages
 
@@ -530,7 +530,7 @@ import { trackToolEvent } from "@/lib/analytics";
 </div>
 ```
 
-**Reference**: Always look at `app/tools/unit-converter/page.tsx` as the canonical example of correct Panda CSS usage in tool pages. **DO NOT reference `app/tools/password-generator/page.tsx`, `app/tools/hash-generator/page.tsx`, or any other tool page** - many other pages have inconsistent or outdated styling patterns that don't follow the established conventions.
+**Reference**: Use `scripts/templates/TOOL_PAGE_TEMPLATE.tsx` and `docs/design-system.md` for new tool pages. Existing tool pages still mix older glass styles; do not copy those visuals.
 
 **Common Mistakes to Avoid:**
 
@@ -1178,7 +1178,7 @@ export default function ExampleToolLayout({
 
 ```tsx
 // app/tools/example-tool/page.tsx
-// Reference: unit-converter/page.tsx for mobile-first patterns
+// Reference: scripts/templates/TOOL_PAGE_TEMPLATE.tsx for mobile-first patterns
 export default function ExampleTool() {
   return (
     <main
@@ -1694,7 +1694,7 @@ export async function GET(request: NextRequest) {
 
 **CodeMirror**: JSON tool uses `@uiw/react-codemirror` with `@codemirror/lang-json` extension. Dark theme with purple accent colors.
 
-**Toast Notifications**: Use `toast` from `sonner`. Configured in `app/layout.tsx` with glassmorphic styling.
+**Toast Notifications**: Use `toast` from `sonner`. Configured in `app/layout.tsx`.
 
 ## Common Pitfalls
 
@@ -1711,22 +1711,24 @@ export async function GET(request: NextRequest) {
 ✅ **Do** test in browser mode for component tests  
 ✅ **Do** use `cx()` for conditional class merging  
 ✅ **Do** follow import order convention  
-✅ **Do** maintain glassmorphic dark theme aesthetic  
+✅ **Do** follow the revamp design system (`docs/design-system.md`, `brand.*` tokens)  
 ✅ **Do** use Panda CSS `css()` for all tool page layouts and styling  
-✅ **Do** reference `app/tools/unit-converter/page.tsx` as the canonical styling example  
+✅ **Do** reference `scripts/templates/TOOL_PAGE_TEMPLATE.tsx` and `/design-system` for visual style  
 ✅ **Do** add `w: 'full'` to all grid containers and use valid CSS grid values
 
 ## Key Files Reference
 
-- `app/layout.tsx` - Root layout with Sidebar, gradient background orbs, Toaster config
+- `app/layout.tsx` - Root layout with Sidebar, canvas background, Toaster config
+- `docs/design-system.md` - Revamp palette, type, and components
+- `lib/design-system/tokens.ts` - Token source of truth
 - `components/layout/Sidebar.tsx` - Navigation array for all tools
 - `app/page.tsx` - Homepage with searchable/filterable tool cards
 - `lib/analytics.ts` - Type-safe GA4 event tracking
 - `vitest.config.ts` - Browser mode test configuration
 - `eslint.config.mjs` - React Compiler rules enabled
-- `panda.config.ts` - Panda CSS design tokens (purple/pink/blue theme)
+- `panda.config.ts` - Panda CSS design tokens (`brand.*` scale)
 - `panda.recipes.ts` - Component recipes (button, card, badge, etc.)
-- `app/globals.css` - CSS variables and `.glass` utility class
+- `app/globals.css` - CSS variables aligned to the revamp palette
 
 ## Environment Variables
 

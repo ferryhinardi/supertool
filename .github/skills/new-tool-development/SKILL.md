@@ -20,42 +20,48 @@ Before starting, ensure you understand:
 
 ### 1. Define Tool Metadata
 
-First, add your tool to `lib/tools.ts`:
+First, add your tool to `lib/data/tools.ts`. Paint icons with `accentForCategory(category)` from `@/lib/design-system`. The registry `gradient` string is legacy data; do not paint it on the page.
+
+Visual source of truth: `docs/design-system.md` and `scripts/templates/TOOL_PAGE_TEMPLATE.tsx`.
+
+### 1b. Registry shape
+
+Add your tool to the `tools` array in `lib/data/tools.ts`. Categories are `data`, `development`, `media`, `productivity`, `security`, `finance`, and `design`.
 
 ```typescript
 {
-  id: 'your-tool-id',
-  name: 'Your Tool Name',
-  category: 'appropriate-category', // Utilities, Converters, Generators, Productivity, etc.
-  description: 'Brief description (50-80 chars)',
-  icon: AppropriateIcon, // From lucide-react
-  path: '/tools/your-tool-id',
-  featured: false,
-  new: true, // Remove after a few weeks
-  keywords: ['keyword1', 'keyword2', 'keyword3']
+  title: 'Your Tool Name',
+  description: 'Brief description',
+  icon: AppropriateIcon, // lucide-react
+  href: '/tools/data/your-tool-id',
+  gradient: 'from-purple-500 to-pink-500', // legacy field; do not paint this on the page
+  features: ['Feature one', 'Feature two', 'Feature three', 'Feature four'],
+  category: 'data',
+  new: true,
 }
 ```
 
 ### 2. Create Tool Directory Structure
 
 ```bash
-mkdir -p app/tools/your-tool-id
-mkdir -p app/tools/your-tool-id/__tests__
+mkdir -p app/tools/<category>/your-tool-id/__tests__
 ```
 
 ### 3. Create the Tool Page Component
 
-File: `app/tools/your-tool-id/page.tsx`
+File: `app/tools/<category>/your-tool-id/page.tsx`
 
 **CRITICAL**: Must use Panda CSS, NOT Tailwind utilities.
 
 ```typescript
 'use client'
 
+import { Sparkles } from 'lucide-react'
 import { useState } from 'react'
-import { css } from '@/styled-system/css'
+import { Eyebrow } from '@/components/design-system'
 import { Button } from '@/components/ui/button'
-import { trackToolEvent } from '@/lib/analytics'
+import { trackToolEvent } from '@/lib/services/analytics'
+import { css } from '@/styled-system/css'
 
 export default function YourToolPage() {
   const [state, setState] = useState<YourStateType>({})
@@ -66,8 +72,8 @@ export default function YourToolPage() {
       // Your logic here
       
       // REQUIRED: Track analytics (anonymize PII)
-      trackToolEvent('your-tool-id', 'action_name', {
-        // metadata (NO PII!)
+      trackToolEvent('json_beautify', {
+        // metadata (NO PII!). Event names must be in the ToolEvent union.
       })
     } catch (error) {
       console.error('Error:', error)
@@ -84,35 +90,34 @@ export default function YourToolPage() {
       py: { base: '6', sm: '8', md: '10' },
       spaceY: { base: '6', sm: '8', md: '10' }
     })}>
-      {/* Tool Header */}
       <div className={css({ textAlign: 'center', spaceY: '4' })}>
+        <div className={css({ display: 'flex', justifyContent: 'center' })}>
+          <Eyebrow icon={Sparkles}>Category</Eyebrow>
+        </div>
         <h1 className={css({
+          fontFamily: 'display',
           fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
           fontWeight: 'bold',
-          bgGradient: 'to-r',
-          gradientFrom: 'purple.400',
-          gradientTo: 'pink.600',
-          bgClip: 'text'
+          color: 'brand.ink',
+          letterSpacing: '-0.03em',
         })}>
           Your Tool Name
         </h1>
         <p className={css({
-          fontSize: { base: 'md', sm: 'lg' },
-          color: 'gray.400'
+          fontSize: { base: 'base', sm: 'lg' },
+          color: 'brand.muted',
         })}>
           Your tool description
         </p>
       </div>
 
-      {/* Tool Content - Use glassmorphism card */}
       <div className={css({
-        bg: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
+        bg: 'brand.surface',
         borderRadius: 'xl',
         border: '1px solid',
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderColor: 'brand.line',
         p: { base: '6', sm: '8' },
-        spaceY: '6'
+        spaceY: '6',
       })}>
         {/* Your tool UI here */}
       </div>
@@ -153,7 +158,7 @@ import { userEvent } from '@testing-library/user-event'
 import YourToolPage from '../page'
 
 // Mock analytics
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/services/analytics', () => ({
   trackToolEvent: vi.fn(),
 }))
 
@@ -196,14 +201,14 @@ describe('YourToolPage', () => {
   })
 
   it('tracks analytics events', async () => {
-    const { trackToolEvent } = await import('@/lib/analytics')
+    const { trackToolEvent } = await import('@/lib/services/analytics')
     const user = userEvent.setup()
     render(<YourToolPage />)
     
     const button = screen.getByRole('button')
     await user.click(button)
     
-    expect(trackToolEvent).toHaveBeenCalledWith('your-tool-id', 'action_name', expect.any(Object))
+    expect(trackToolEvent).toHaveBeenCalledWith('json_beautify', expect.any(Object))
   })
 })
 ```
@@ -240,17 +245,17 @@ pnpm build
 
 ### Styling Requirements
 
-1. **MUST use Panda CSS** - Use `css()` from `@/styled-system/css`
-2. **Glassmorphism** - Use backdrop-blur and transparent backgrounds
+1. **MUST use Panda CSS** - Use `css()` from `@/styled-system/css` and `brand.*` tokens
+2. **Revamp surfaces** - `brand.surface` cards, `brand.line` borders, `fontFamily: 'display'` titles, `<Button>` for actions. No glass blur and no gradient-clipped headings
 3. **Responsive** - Always use responsive values: `{ base: 'sm', md: 'lg' }`
 4. **Mobile-first** - Touch targets >= 44px, stack vertically on mobile
 5. **Grid layouts** - Use valid values: `gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' }`
 
 ### Analytics Requirements
 
-1. Track ALL user interactions with `trackToolEvent()`
+1. Track user interactions with `trackToolEvent(eventName, params)` from `@/lib/services/analytics`
 2. NEVER track PII - anonymize file names, URLs, user data
-3. Use consistent event naming: `tool-id`, `action_name`, `{metadata}`
+3. `eventName` must be a member of the `ToolEvent` union. Add a new member before using a new name
 
 ### Testing Requirements
 
@@ -326,13 +331,14 @@ describe('POST /api/your-endpoint', () => {
 
 ## Reference Examples
 
-- **Canonical styling**: `app/tools/unit-converter/page.tsx`
+- **Design system**: `docs/design-system.md` and `/design-system`
+- **Page template**: `scripts/templates/TOOL_PAGE_TEMPLATE.tsx`
 - **API with tests**: `app/api/shorten/route.ts` and tests
 - **Full guidelines**: `.github/copilot-instructions.md`
 
 ## Checklist Before Submitting
 
-- [ ] Tool added to `lib/tools.ts`
+- [ ] Tool added to `lib/data/tools.ts`
 - [ ] Page component uses Panda CSS (NOT Tailwind)
 - [ ] Analytics tracking implemented (no PII)
 - [ ] Comprehensive tests written
@@ -342,6 +348,6 @@ describe('POST /api/your-endpoint', () => {
 - [ ] Build succeeds (`pnpm build`)
 - [ ] Documentation created
 - [ ] Mobile responsive design verified
-- [ ] Glassmorphism styling applied
+- [ ] Brand tokens applied (`brand.surface`, `brand.ink`, display titles, no glass blur)
 - [ ] Error handling implemented
 - [ ] Accessibility considered (ARIA labels, keyboard nav)

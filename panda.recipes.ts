@@ -46,10 +46,11 @@ export const buttonRecipe = defineRecipe({
   variants: {
     variant: {
       default: {
-        bg: 'primary',
-        color: 'primary-foreground',
+        bg: 'brand.violet',
+        color: 'white',
         shadow: 'sm',
-        _hover: { bg: 'primary', opacity: '0.9' },
+        boxShadow: '0 8px 25px rgba(139, 108, 255, 0.2)',
+        _hover: { bg: 'brand.violet', opacity: '0.92' },
       },
       destructive: {
         bg: 'destructive',
@@ -115,13 +116,15 @@ export const cardRecipe = defineRecipe({
     maxW: 'full',
     rounded: { base: 'xl', sm: '2xl' },
     border: '1px solid',
-    borderColor: 'border',
-    bg: 'card',
+    borderColor: 'brand.line',
+    bg: 'brand.surface',
     color: 'card-foreground',
     shadow: 'sm',
-    transition: 'all 0.3s ease',
+    transition: 'all 0.22s ease',
     _hover: {
       shadow: 'lg',
+      borderColor: '#6654a7',
+      bg: 'brand.surfaceRaised',
       transform: 'translateY(-2px)',
     },
   },

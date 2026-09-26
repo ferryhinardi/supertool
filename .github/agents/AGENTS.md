@@ -280,7 +280,7 @@ Use the `@agent-name` syntax in GitHub Copilot chat:
 **Use for**:
 - Fixing invalid Panda CSS syntax
 - Responsive grid layouts
-- Dark glassmorphic theme
+- Website Revamp design system (`docs/design-system.md`)
 - Component composition
 
 **Critical**: SuperTool uses **Panda CSS**, NOT Tailwind! Always use `css()` from `@/styled-system/css`.

@@ -8,6 +8,8 @@ license: MIT
 
 This skill guides you through creating reusable UI components in the SuperTool application following React 19, TypeScript, and Panda CSS best practices.
 
+Visual defaults come from the Website Revamp design system (`docs/design-system.md`, `/design-system`). New shared pieces go in `components/design-system/` when they are brand chrome (`Eyebrow`, `IconTile`, `BrandMark`) and in `components/ui/` when they are generic controls. Use `brand.violet`, `brand.surface`, `brand.line`, `brand.ink`, and `brand.muted`. Do not introduce glass blur, purple-to-pink gradient text, or a second palette. Primary actions should use `<Button>`, which is already violet.
+
 ## When to Create a Reusable Component
 
 ### ✅ Create a Component When:
@@ -100,15 +102,15 @@ export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
             
             // Variant styles
             ...(variant === 'default' && {
-              bg: 'purple.600',
+              bg: 'brand.violet',
               color: 'white',
-              _hover: { bg: 'purple.700' },
+              _hover: { opacity: 0.92 },
             }),
             ...(variant === 'outlined' && {
               border: '1px solid',
-              borderColor: 'purple.500',
-              color: 'purple.400',
-              _hover: { bg: 'purple.950' },
+              borderColor: 'brand.line',
+              color: 'brand.violetBright',
+              _hover: { bg: 'brand.violetSoft' },
             }),
             
             // Size styles
@@ -277,14 +279,15 @@ export function TabsTrigger({ value, children, className, ...props }: TabsTrigge
           py: 2,
           fontSize: 'sm',
           fontWeight: 'medium',
-          color: isActive ? 'purple.400' : 'gray.400',
+          color: isActive ? 'brand.violetBright' : 'brand.muted',
           borderBottom: '2px solid',
-          borderColor: isActive ? 'purple.400' : 'transparent',
+          borderColor: isActive ? 'brand.violet' : 'transparent',
           transition: 'all 0.2s',
           cursor: 'pointer',
           bg: 'transparent',
+          minH: '11',
           _hover: {
-            color: isActive ? 'purple.300' : 'gray.300',
+            color: isActive ? 'brand.violetBright' : 'brand.ink',
           },
         }),
         className
@@ -407,26 +410,15 @@ css({
   px: { base: '4', sm: '6', md: '8' },
   py: { base: '6', sm: '8', md: '10' },
   
-  // Colors
-  bg: 'gray.900',
-  color: 'gray.100',
-  borderColor: 'gray.700',
-  
-  // Glassmorphism
-  bg: 'rgba(255, 255, 255, 0.05)',
-  backdropFilter: 'blur(10px)',
-  border: '1px solid',
-  borderColor: 'rgba(255, 255, 255, 0.1)',
-  
-  // Gradients
-  bgGradient: 'to-r',
-  gradientFrom: 'purple.400',
-  gradientTo: 'pink.600',
-  bgClip: 'text',
+  // Colors — brand tokens from lib/design-system (see docs/design-system.md)
+  bg: 'brand.surface',
+  color: 'brand.ink',
+  borderColor: 'brand.line',
+  fontFamily: 'display', // titles only; UI copy stays on Inter
   
   // States
-  _hover: { bg: 'purple.700' },
-  _focus: { outline: '2px solid', outlineColor: 'purple.500' },
+  _hover: { bg: 'brand.surfaceRaised' },
+  _focus: { outline: '2px solid', outlineColor: 'brand.violet' },
   _disabled: { opacity: 0.5, cursor: 'not-allowed' },
   
   // Responsive
@@ -697,16 +689,12 @@ const result = doSomething()
   Click Me
 </button>
 
-// CORRECT
-<button className={css({
-  bg: 'purple.600',
-  _hover: { bg: 'purple.700' },
-  px: 4,
-  py: 2,
-  rounded: 'md'
-})}>
+// CORRECT — default Button is already brand.violet
+import { Button } from '@/components/ui/button'
+
+<Button className={css({ minH: '11', px: '4' })}>
   Click Me
-</button>
+</Button>
 ```
 
 ### ❌ Don't Use Div for Interactive Elements
@@ -791,6 +779,7 @@ Study these existing components:
 
 ```
 components/
+├── design-system/                # Revamp pieces (Eyebrow, IconTile, BrandMark)
 ├── ui/                           # Reusable UI components
 │   ├── button.tsx
 │   ├── input.tsx
@@ -825,7 +814,8 @@ components/
    - Provide usage examples
 
 3. **Update design system docs**:
-   - Add component to design system
+   - Add shared visual pieces under `components/design-system/`
+   - Use `brand.*` tokens from `lib/design-system` (see `docs/design-system.md`)
    - Include do's and don'ts
    - Show accessibility guidelines
 
@@ -847,7 +837,7 @@ Creating reusable components:
 1. ✅ Determine if extraction is necessary (2+ uses, common pattern)
 2. ✅ Create in `components/ui/` with proper naming
 3. ✅ Use TypeScript interfaces extending HTML element types
-4. ✅ Style with Panda CSS (never Tailwind in components)
+4. ✅ Style with Panda CSS `brand.*` tokens (never Tailwind, glass blur, or a second palette)
 5. ✅ Meet accessibility requirements (ARIA, keyboard, semantics)
 6. ✅ Write comprehensive tests (>= 95% coverage)
 7. ✅ Document with JSDoc comments and examples
