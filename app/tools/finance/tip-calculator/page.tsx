@@ -4,6 +4,7 @@ import { Copy, DollarSign, Info, RotateCcw, Sparkles, TrendingUp, Users } from '
 import { parseAsFloat, parseAsInteger, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { ToolPageHeader } from '@/components/design-system/ToolPageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -130,86 +131,21 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'green.500/30',
-            bg: 'green.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <DollarSign className={css({ h: '5', w: '5', color: 'green.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'green.300',
-            })}
-          >
-            Quick Presets • Split Bill • Round Total
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'green.400',
-            gradientVia: 'teal.400',
-            gradientTo: 'cyan.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Tip Calculator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Calculate tips quickly with preset percentages or custom amounts. Split bills among
-          multiple people and round totals for convenience.
-        </p>
-      </div>
+      <ToolPageHeader
+        icon={DollarSign}
+        accent="lime"
+        eyebrow="Quick presets, split bill, round total"
+        title="Tip Calculator"
+        description="Calculate tips with preset percentages or a custom amount. Split the bill and round the total."
+      />
 
       {/* Bill Amount Input */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'green.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -247,9 +183,9 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   pr: '4',
                   fontSize: '3xl',
                   fontWeight: 'bold',
-                  bg: 'gray.800/50',
+                  bg: 'brand.surfaceRaised',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                   _focus: {
                     borderColor: 'green.500',
                     ring: '2px',
@@ -264,19 +200,12 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
       </div>
 
       {/* Tip Percentage Selection */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'green.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -309,7 +238,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                       bg: isActive ? 'green.500/20' : 'gray.800/50',
                       border: '1px solid',
                       borderColor: isActive ? 'green.500/50' : 'gray.700/50',
-                      color: isActive ? 'green.300' : 'gray.400',
+                      color: isActive ? 'green.300' : 'brand.muted',
                       transition: 'all 0.2s',
                       _hover: {
                         bg: isActive ? 'green.500/30' : 'gray.800',
@@ -349,9 +278,9 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                     h: '12',
                     pr: '10',
                     fontSize: 'lg',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     border: '1px solid',
-                    borderColor: 'gray.700',
+                    borderColor: 'brand.line',
                     _focus: {
                       borderColor: 'green.500',
                       ring: '2px',
@@ -380,19 +309,12 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
       </div>
 
       {/* Split Bill & Rounding Options */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'teal.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -443,7 +365,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                     textAlign: 'center',
                     fontSize: 'xl',
                     fontWeight: 'bold',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     maxW: '32',
                   })}
                   aria-label="Number of people"
@@ -506,7 +428,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                         bg: isActive ? 'teal.500/20' : 'gray.800/50',
                         border: '1px solid',
                         borderColor: isActive ? 'teal.500/50' : 'gray.700/50',
-                        color: isActive ? 'teal.300' : 'gray.400',
+                        color: isActive ? 'teal.300' : 'brand.muted',
                         transition: 'all 0.2s',
                         _hover: {
                           bg: isActive ? 'teal.500/30' : 'gray.800',
@@ -531,9 +453,8 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'green.500/30',
+              borderColor: 'brand.line',
               bg: 'green.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
@@ -632,7 +553,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   className={css({
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'green.500/20',
+                    borderColor: 'brand.line',
                     bg: 'green.500/5',
                     p: '4',
                   })}
@@ -662,7 +583,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   className={css({
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'green.500/20',
+                    borderColor: 'brand.line',
                     bg: 'green.500/5',
                     p: '4',
                   })}
@@ -694,7 +615,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                   className={css({
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'teal.500/30',
+                    borderColor: 'brand.line',
                     bg: 'teal.500/10',
                     p: '5',
                   })}
@@ -794,7 +715,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
                 className={css({
                   rounded: 'lg',
                   border: '1px solid',
-                  borderColor: 'green.500/20',
+                  borderColor: 'brand.line',
                   bg: 'green.500/5',
                   p: '4',
                 })}
@@ -837,13 +758,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
       )}
 
       {/* Quick Tips */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <div
           className={css({
             display: 'grid',
@@ -857,7 +772,6 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
               border: '1px solid',
               borderColor: 'cyan.500/20',
               bg: 'cyan.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -894,9 +808,8 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'emerald.500/20',
+              borderColor: 'brand.line',
               bg: 'emerald.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>

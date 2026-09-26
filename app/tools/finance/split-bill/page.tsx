@@ -28,6 +28,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { ToolPageHeader } from '@/components/design-system/ToolPageHeader'
 import { CurrencyConverter } from '@/components/features/currency/CurrencyConverter'
 import { ShortcutsHelp } from '@/components/features/shared/ShortcutsHelp'
 import { TemplatesSelector } from '@/components/features/shared/TemplatesSelector'
@@ -951,63 +952,13 @@ export default function SplitBillPage() {
             gap: '3',
           })}
         >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: { base: '3', sm: '4' },
-            })}
-          >
-            <div
-              className={css({
-                animation: 'pulse 2s infinite',
-                rounded: { base: 'xl', sm: '2xl' },
-                bgGradient: 'to-br',
-                gradientFrom: 'green.600',
-                gradientVia: 'emerald.600',
-                gradientTo: 'teal.700',
-                p: { base: '2.5', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px rgba(34, 197, 94, 0.6)',
-              })}
-            >
-              <Users
-                className={css({
-                  h: { base: '6', sm: '8' },
-                  w: { base: '6', sm: '8' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'green.300',
-                  gradientVia: 'emerald.400',
-                  gradientTo: 'teal.300',
-                  bgClip: 'text',
-                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                  fontWeight: 'extrabold',
-                  textShadow: '0 10px 15px rgba(0, 0, 0, 0.1)',
-                })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Split Bill Calculator
-              </h1>
-              <p
-                className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.200',
-                })}
-              >
-                Split bills fairly with tip and tax calculations
-              </p>
-            </div>
-          </div>
+          <ToolPageHeader
+            icon={Users}
+            accent="lime"
+            eyebrow="Finance"
+            title="Split Bill Calculator"
+            description="Split a bill with tip and tax, then share what each person owes."
+          />
 
           {/* Mode Toggle */}
           <div
@@ -1075,12 +1026,10 @@ export default function SplitBillPage() {
           className={css({
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
-            borderColor: 'green.500/30',
-            bg: 'rgba(34, 197, 94, 0.05)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
             p: { base: '4', sm: '5', md: '6' },
             shadow: 'xl',
-            boxShadow: '0 20px 25px rgba(34, 197, 94, 0.2)',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <div
@@ -1148,10 +1097,9 @@ export default function SplitBillPage() {
             className={css({
               rounded: { base: 'xl', sm: '2xl' },
               border: '2px solid',
-              borderColor: 'green.500/20',
+              borderColor: 'brand.line',
               bg: 'rgba(17, 24, 39, 0.5)',
               p: { base: '4', sm: '5', md: '6' },
-              backdropFilter: 'blur(16px)',
               display: 'flex',
               flexDirection: 'column',
               gap: '4',
@@ -1319,10 +1267,9 @@ export default function SplitBillPage() {
           className={css({
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
-            borderColor: 'green.500/20',
+            borderColor: 'brand.line',
             bg: 'rgba(17, 24, 39, 0.5)',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
             display: 'flex',
             flexDirection: 'column',
             gap: '4',
@@ -1581,7 +1528,7 @@ export default function SplitBillPage() {
             className={css({
               rounded: 'lg',
               border: '1px solid',
-              borderColor: 'green.500/30',
+              borderColor: 'brand.line',
               bg: 'rgba(34, 197, 94, 0.1)',
               p: '4',
             })}
@@ -1631,7 +1578,7 @@ export default function SplitBillPage() {
                 mb: '2',
                 pb: '2',
                 borderBottom: '1px solid',
-                borderColor: 'green.500/20',
+                borderColor: 'brand.line',
               })}
             >
               <span className={css({ fontSize: 'sm', color: 'white' })}>Tax ({taxPercent}%):</span>
@@ -1683,7 +1630,6 @@ export default function SplitBillPage() {
             borderColor: 'emerald.500/20',
             bg: 'rgba(17, 24, 39, 0.5)',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
             display: 'flex',
             flexDirection: 'column',
             gap: '4',
@@ -1748,7 +1694,7 @@ export default function SplitBillPage() {
                 fontWeight: 'medium',
                 transition: 'all 0.2s',
                 bg: splitType === 'equal' ? 'emerald.600' : 'transparent',
-                color: splitType === 'equal' ? 'white' : 'gray.400',
+                color: splitType === 'equal' ? 'white' : 'brand.muted',
                 _hover: {
                   bg: splitType === 'equal' ? 'emerald.500' : 'rgba(16, 185, 129, 0.1)',
                 },
@@ -1770,7 +1716,7 @@ export default function SplitBillPage() {
                 fontWeight: 'medium',
                 transition: 'all 0.2s',
                 bg: splitType === 'percentage' ? 'emerald.600' : 'transparent',
-                color: splitType === 'percentage' ? 'white' : 'gray.400',
+                color: splitType === 'percentage' ? 'white' : 'brand.muted',
                 _hover: {
                   bg: splitType === 'percentage' ? 'emerald.500' : 'rgba(16, 185, 129, 0.1)',
                 },
@@ -1792,7 +1738,7 @@ export default function SplitBillPage() {
                 fontWeight: 'medium',
                 transition: 'all 0.2s',
                 bg: splitType === 'items' ? 'emerald.600' : 'transparent',
-                color: splitType === 'items' ? 'white' : 'gray.400',
+                color: splitType === 'items' ? 'white' : 'brand.muted',
                 _hover: {
                   bg: splitType === 'items' ? 'emerald.500' : 'rgba(16, 185, 129, 0.1)',
                 },
@@ -2125,7 +2071,7 @@ export default function SplitBillPage() {
                                     fontWeight: 'medium',
                                     transition: 'all 0.2s',
                                     bg: isAssigned ? 'purple.600' : 'gray.700',
-                                    color: isAssigned ? 'white' : 'gray.400',
+                                    color: isAssigned ? 'white' : 'brand.muted',
                                     border: '1px solid',
                                     borderColor: isAssigned ? 'purple.500' : 'gray.600',
                                     _hover: {
@@ -2197,7 +2143,7 @@ export default function SplitBillPage() {
               className={css({
                 rounded: 'lg',
                 border: '1px solid',
-                borderColor: 'green.500/30',
+                borderColor: 'brand.line',
                 bg: 'rgba(34, 197, 94, 0.1)',
                 p: '3',
               })}
@@ -2520,7 +2466,7 @@ export default function SplitBillPage() {
               className={css({
                 rounded: 'lg',
                 border: '1px solid',
-                borderColor: 'green.500/30',
+                borderColor: 'brand.line',
                 bg: 'rgba(34, 197, 94, 0.1)',
                 p: '3',
               })}
@@ -2720,7 +2666,6 @@ export default function SplitBillPage() {
             borderColor: 'cyan.500/20',
             bg: 'cyan.500/5',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
             animation: 'fadeInUp 0.4s ease-out 0.1s both',
           })}
         >

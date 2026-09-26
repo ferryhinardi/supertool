@@ -4,6 +4,7 @@ import { Calculator, Copy, Info, Percent, RotateCcw, Sparkles, TrendingUp } from
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
+import { ToolPageHeader } from '@/components/design-system/ToolPageHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -227,80 +228,21 @@ function PercentageCalculatorContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/30',
-            bg: 'purple.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Percent className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
-            7 Calculation Modes • Instant Results
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'rose.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Percentage Calculator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Calculate percentages, discounts, tips, tax, and more with instant results. Seven powerful
-          calculation modes for all your percentage needs.
-        </p>
-      </div>
+      <ToolPageHeader
+        icon={Percent}
+        accent="lime"
+        eyebrow="7 calculation modes"
+        title="Percentage Calculator"
+        description="Calculate a percentage, a discount, a tip, or a tax and see the result immediately."
+      />
 
       {/* Mode Selection */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -336,7 +278,7 @@ function PercentageCalculatorContent() {
                       bg: isActive ? 'purple.500/20' : 'gray.800/50',
                       border: '1px solid',
                       borderColor: isActive ? 'purple.500/50' : 'gray.700/50',
-                      color: isActive ? 'purple.300' : 'gray.400',
+                      color: isActive ? 'purple.300' : 'brand.muted',
                       transition: 'all 0.2s',
                       textAlign: 'left',
                       alignItems: 'flex-start',
@@ -383,19 +325,12 @@ function PercentageCalculatorContent() {
       </div>
 
       {/* Calculator */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -440,9 +375,9 @@ function PercentageCalculatorContent() {
                       className={css({
                         h: '14',
                         fontSize: 'xl',
-                        bg: 'gray.800/50',
+                        bg: 'brand.surfaceRaised',
                         border: '1px solid',
-                        borderColor: 'gray.700',
+                        borderColor: 'brand.line',
                         pr: inputConfig.suffix ? '12' : '4',
                         _focus: {
                           borderColor: 'purple.500',
@@ -477,7 +412,6 @@ function PercentageCalculatorContent() {
                 className={css({
                   spaceY: '4',
                   animation: 'scaleIn 0.5s ease-out forwards',
-                  opacity: 0,
                 })}
               >
                 <div className={css({ spaceY: '3' })}>
@@ -491,7 +425,7 @@ function PercentageCalculatorContent() {
                         h: 'auto',
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'purple.500/30',
+                        borderColor: 'brand.line',
                         bg: 'purple.500/10',
                         px: '6',
                         display: 'flex',
@@ -533,7 +467,7 @@ function PercentageCalculatorContent() {
                   className={css({
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'purple.500/20',
+                    borderColor: 'brand.line',
                     bg: 'purple.500/5',
                     p: '4',
                   })}
@@ -582,13 +516,7 @@ function PercentageCalculatorContent() {
       </div>
 
       {/* Quick Tips */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <div
           className={css({
             display: 'grid',
@@ -602,7 +530,6 @@ function PercentageCalculatorContent() {
               border: '1px solid',
               borderColor: 'pink.500/20',
               bg: 'pink.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -630,7 +557,6 @@ function PercentageCalculatorContent() {
               border: '1px solid',
               borderColor: 'rose.500/20',
               bg: 'rose.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>

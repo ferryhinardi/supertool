@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { parseAsFloat, parseAsInteger, parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { ToolPageHeader } from '@/components/design-system/ToolPageHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -199,80 +200,21 @@ function LoanCalculatorContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'emerald.500/30',
-            bg: 'emerald.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Calculator className={css({ h: '5', w: '5', color: 'emerald.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'emerald.300' })}>
-            Mortgage & Loan Calculator
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'emerald.400',
-            gradientVia: 'green.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Loan Calculator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Calculate monthly payments, view amortization schedules, and compare different loan
-          scenarios. Perfect for mortgages, auto loans, and personal loans.
-        </p>
-      </div>
+      <ToolPageHeader
+        icon={Calculator}
+        accent="lime"
+        eyebrow="Mortgage and loan calculator"
+        title="Loan Calculator"
+        description="Calculate monthly payments, view amortization schedules, and compare different loan scenarios."
+      />
 
       {/* Calculator Inputs */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'emerald.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -315,8 +257,8 @@ function LoanCalculatorContent() {
                     w: 'full',
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
                     px: '4',
                     fontSize: 'lg',
                     color: 'gray.200',
@@ -367,9 +309,9 @@ function LoanCalculatorContent() {
                   className={css({
                     h: '12',
                     fontSize: 'lg',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     border: '1px solid',
-                    borderColor: 'gray.700',
+                    borderColor: 'brand.line',
                     _focus: {
                       borderColor: 'emerald.500',
                       ring: '2px',
@@ -408,9 +350,9 @@ function LoanCalculatorContent() {
                   className={css({
                     h: '12',
                     fontSize: 'lg',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     border: '1px solid',
-                    borderColor: 'gray.700',
+                    borderColor: 'brand.line',
                     _focus: {
                       borderColor: 'emerald.500',
                       ring: '2px',
@@ -448,9 +390,9 @@ function LoanCalculatorContent() {
                   className={css({
                     h: '12',
                     fontSize: 'lg',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     border: '1px solid',
-                    borderColor: 'gray.700',
+                    borderColor: 'brand.line',
                     _focus: {
                       borderColor: 'emerald.500',
                       ring: '2px',
@@ -490,9 +432,9 @@ function LoanCalculatorContent() {
                   className={css({
                     h: '12',
                     fontSize: 'lg',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     border: '1px solid',
-                    borderColor: 'gray.700',
+                    borderColor: 'brand.line',
                     _focus: {
                       borderColor: 'emerald.500',
                       ring: '2px',
@@ -507,13 +449,7 @@ function LoanCalculatorContent() {
       </div>
 
       {/* Results */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <div
           className={css({
             display: 'grid',
@@ -525,9 +461,8 @@ function LoanCalculatorContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'emerald.500/30',
+              borderColor: 'brand.line',
               bg: 'emerald.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -549,7 +484,6 @@ function LoanCalculatorContent() {
               border: '1px solid',
               borderColor: 'orange.500/30',
               bg: 'orange.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -571,7 +505,6 @@ function LoanCalculatorContent() {
               border: '1px solid',
               borderColor: 'blue.500/30',
               bg: 'blue.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -591,9 +524,8 @@ function LoanCalculatorContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/30',
+              borderColor: 'brand.line',
               bg: 'purple.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -615,19 +547,12 @@ function LoanCalculatorContent() {
 
       {/* Extra Payment Benefits */}
       {loanData.withExtra && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'green.500/20',
+              borderColor: 'brand.line',
               bg: 'green.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
@@ -677,19 +602,12 @@ function LoanCalculatorContent() {
       )}
 
       {/* Amortization Schedule */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'emerald.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -737,8 +655,8 @@ function LoanCalculatorContent() {
                       className={css({
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
-                        bg: 'gray.800/50',
+                        borderColor: 'brand.line',
+                        bg: 'brand.surfaceRaised',
                         p: '4',
                       })}
                     >
@@ -763,7 +681,7 @@ function LoanCalculatorContent() {
                             bg: 'emerald.500/20',
                             color: 'emerald.300',
                             border: '1px solid',
-                            borderColor: 'emerald.500/30',
+                            borderColor: 'brand.line',
                           })}
                         >
                           {items.length} payments
@@ -815,19 +733,12 @@ function LoanCalculatorContent() {
       </div>
 
       {/* Loan Comparison */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.5s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'blue.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -876,8 +787,8 @@ function LoanCalculatorContent() {
                       className={css({
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
-                        bg: 'gray.800/50',
+                        borderColor: 'brand.line',
+                        bg: 'brand.surfaceRaised',
                         p: '4',
                         spaceY: '3',
                       })}

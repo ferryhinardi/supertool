@@ -4,6 +4,7 @@ import { Clock, Eye, Link2, Plus, TrendingUp, Users } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { ToolPageHeader } from '@/components/design-system/ToolPageHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -149,53 +150,13 @@ export default function BillHistoryPage() {
           gap: '4',
         })}
       >
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            gap: { base: '3', sm: '4' },
-          })}
-        >
-          <div
-            className={css({
-              rounded: { base: 'xl', sm: '2xl' },
-              p: { base: '2.5', sm: '4' },
-              bgGradient: 'to-br',
-              gradientFrom: 'green.600',
-              gradientVia: 'emerald.600',
-              gradientTo: 'teal.700',
-              boxShadow: '0 25px 50px rgba(34, 197, 94, 0.35)',
-              animation: 'pulse 2s ease-in-out infinite',
-            })}
-          >
-            <Clock
-              className={css({
-                h: { base: '6', sm: '8' },
-                w: { base: '6', sm: '8' },
-                color: 'white',
-              })}
-            />
-          </div>
-          <div>
-            <h1
-              className={css({
-                fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-                fontWeight: 'extrabold',
-                bgGradient: 'to-r',
-                gradientFrom: 'green.300',
-                gradientVia: 'emerald.400',
-                gradientTo: 'teal.300',
-                backgroundClip: 'text',
-                color: 'transparent',
-              })}
-            >
-              Bill History
-            </h1>
-            <p className={css({ fontSize: { base: 'sm', sm: 'base' }, color: 'gray.200' })}>
-              View and manage all your split bills
-            </p>
-          </div>
-        </div>
+        <ToolPageHeader
+          icon={Clock}
+          accent="lime"
+          eyebrow="Finance"
+          title="Bill History"
+          description="View and manage all your split bills"
+        />
 
         <Link href="/tools/finance/split-bill">
           <Button
@@ -217,12 +178,10 @@ export default function BillHistoryPage() {
         className={css({
           rounded: { base: 'xl', sm: '2xl' },
           border: '2px solid',
-          borderColor: 'green.500/30',
-          bg: 'rgba(34, 197, 94, 0.05)',
+          borderColor: 'brand.line',
+          bg: 'brand.surface',
           p: { base: '4', sm: '5', md: '6' },
           shadow: 'xl',
-          boxShadow: '0 20px 25px rgba(34, 197, 94, 0.2)',
-          backdropFilter: 'blur(16px)',
         })}
       >
         <div
@@ -239,25 +198,25 @@ export default function BillHistoryPage() {
             <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'green.400' })}>
               {totalStats.totalBills}
             </div>
-            <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Bills</div>
+            <div className={css({ fontSize: 'sm', color: 'brand.muted' })}>Total Bills</div>
           </div>
           <div className={css({ textAlign: 'center' })}>
             <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'emerald.400' })}>
               {totalStats.activeBills}
             </div>
-            <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Active</div>
+            <div className={css({ fontSize: 'sm', color: 'brand.muted' })}>Active</div>
           </div>
           <div className={css({ textAlign: 'center' })}>
             <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'teal.400' })}>
               {totalStats.completedBills}
             </div>
-            <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Completed</div>
+            <div className={css({ fontSize: 'sm', color: 'brand.muted' })}>Completed</div>
           </div>
           <div className={css({ textAlign: 'center' })}>
             <div className={css({ fontSize: '3xl', fontWeight: 'bold', color: 'green.400' })}>
               {totalStats.totalAmount.toLocaleString()}
             </div>
-            <div className={css({ fontSize: 'sm', color: 'gray.400' })}>Total Value</div>
+            <div className={css({ fontSize: 'sm', color: 'brand.muted' })}>Total Value</div>
           </div>
         </div>
       </div>
@@ -267,10 +226,9 @@ export default function BillHistoryPage() {
         className={css({
           rounded: { base: 'xl', sm: '2xl' },
           border: '2px solid',
-          borderColor: 'green.500/20',
+          borderColor: 'brand.line',
           bg: 'rgba(17, 24, 39, 0.5)',
           p: { base: '4', sm: '5' },
-          backdropFilter: 'blur(16px)',
           display: 'flex',
           flexDirection: { base: 'column', md: 'row' },
           gap: '4',
@@ -324,7 +282,7 @@ export default function BillHistoryPage() {
             alignItems: 'center',
           })}
         >
-          <span className={css({ fontSize: 'sm', color: 'gray.400' })}>Sort by:</span>
+          <span className={css({ fontSize: 'sm', color: 'brand.muted' })}>Sort by:</span>
           <select
             value={sortField}
             onChange={(e) => setSortField(e.target.value as SortField)}
@@ -392,14 +350,13 @@ export default function BillHistoryPage() {
               bg: 'rgba(17, 24, 39, 0.5)',
               p: { base: '8', sm: '12' },
               textAlign: 'center',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <Users className={css({ mx: 'auto', h: '16', w: '16', color: 'gray.600', mb: '4' })} />
             <h3 className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'gray.300', mb: '2' })}>
               No bills found
             </h3>
-            <p className={css({ color: 'gray.400', mb: '6' })}>
+            <p className={css({ color: 'brand.muted', mb: '6' })}>
               {filterStatus === 'all'
                 ? "You haven't created any bills yet"
                 : `No ${filterStatus} bills found`}
@@ -420,10 +377,9 @@ export default function BillHistoryPage() {
                 className={css({
                   rounded: { base: 'xl', sm: '2xl' },
                   border: '2px solid',
-                  borderColor: 'green.500/20',
+                  borderColor: 'brand.line',
                   bg: 'rgba(17, 24, 39, 0.5)',
                   p: { base: '4', sm: '5' },
-                  backdropFilter: 'blur(16px)',
                   transition: 'all 0.2s',
                   _hover: {
                     borderColor: 'green.500/40',
@@ -477,7 +433,7 @@ export default function BillHistoryPage() {
                       <p
                         className={css({
                           fontSize: 'sm',
-                          color: 'gray.400',
+                          color: 'brand.muted',
                           mb: '3',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -529,10 +485,10 @@ export default function BillHistoryPage() {
                           mb: '1',
                         })}
                       >
-                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                        <span className={css({ fontSize: 'xs', color: 'brand.muted' })}>
                           Payment Progress
                         </span>
-                        <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                        <span className={css({ fontSize: 'xs', color: 'brand.muted' })}>
                           {bill.paid_count}/{bill.total_participants} paid
                         </span>
                       </div>
@@ -618,7 +574,7 @@ export default function BillHistoryPage() {
                   })}
                 >
                   Organized by{' '}
-                  <span className={css({ fontWeight: 'medium', color: 'gray.400' })}>
+                  <span className={css({ fontWeight: 'medium', color: 'brand.muted' })}>
                     {bill.organizer_name}
                   </span>
                 </div>

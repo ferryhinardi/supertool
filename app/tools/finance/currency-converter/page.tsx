@@ -13,6 +13,7 @@ import {
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { ToolPageHeader } from '@/components/design-system/ToolPageHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -197,80 +198,21 @@ function CurrencyConverterContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'emerald.500/30',
-            bg: 'emerald.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Coins className={css({ h: '5', w: '5', color: 'emerald.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'emerald.300' })}>
-            {Object.keys(exchangeRates).length || 150}+ Currencies • Real-time Rates
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'emerald.400',
-            gradientVia: 'green.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Currency Converter
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Convert between 150+ world currencies with real-time exchange rates. Fast, accurate, and
-          free to use.
-        </p>
-      </div>
+      <ToolPageHeader
+        icon={Coins}
+        accent="lime"
+        eyebrow={`${Object.keys(exchangeRates).length || 150}+ currencies, real-time rates`}
+        title="Currency Converter"
+        description="Convert between 150+ world currencies with real-time exchange rates."
+      />
 
       {/* Converter */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'emerald.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -380,9 +322,9 @@ function CurrencyConverterContent() {
                   className={css({
                     h: '14',
                     fontSize: 'xl',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     border: '1px solid',
-                    borderColor: 'gray.700',
+                    borderColor: 'brand.line',
                     _focus: {
                       borderColor: 'emerald.500',
                       ring: '2px',
@@ -400,8 +342,8 @@ function CurrencyConverterContent() {
                     w: { base: 'full', sm: '40' },
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
                     px: '4',
                     fontSize: 'base',
                     color: 'gray.200',
@@ -494,7 +436,7 @@ function CurrencyConverterContent() {
                     fontWeight: 'bold',
                     bg: 'emerald.500/10',
                     border: '1px solid',
-                    borderColor: 'emerald.500/30',
+                    borderColor: 'brand.line',
                     color: 'emerald.300',
                     cursor: 'default',
                   })}
@@ -509,8 +451,8 @@ function CurrencyConverterContent() {
                     minW: { base: '0', sm: '40' },
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
                     px: '4',
                     fontSize: 'base',
                     color: 'gray.200',
@@ -549,11 +491,10 @@ function CurrencyConverterContent() {
                 className={css({
                   rounded: 'lg',
                   border: '1px solid',
-                  borderColor: 'emerald.500/20',
+                  borderColor: 'brand.line',
                   bg: 'emerald.500/5',
                   p: '4',
                   animation: 'scaleIn 0.5s ease-out forwards',
-                  opacity: 0,
                 })}
               >
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
@@ -575,19 +516,12 @@ function CurrencyConverterContent() {
 
       {/* Favorites */}
       {favorites.length > 0 && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'yellow.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -625,8 +559,8 @@ function CurrencyConverterContent() {
                         justifyContent: 'space-between',
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
-                        bg: 'gray.800/50',
+                        borderColor: 'brand.line',
+                        bg: 'brand.surfaceRaised',
                         p: '4',
                         transition: 'all 0.2s',
                         w: 'full',
@@ -698,13 +632,7 @@ function CurrencyConverterContent() {
       )}
 
       {/* Info Card */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <div
           className={css({
             rounded: { base: 'xl', sm: '2xl' },
@@ -712,7 +640,6 @@ function CurrencyConverterContent() {
             borderColor: 'cyan.500/20',
             bg: 'rgba(6, 182, 212, 0.05)',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
           })}
         >
           <h3
@@ -725,7 +652,7 @@ function CurrencyConverterContent() {
           >
             Pro Tips
           </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'brand.muted', listStyle: 'disc' })}>
             <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Exchange rates are updated in real-time for accuracy
             </li>

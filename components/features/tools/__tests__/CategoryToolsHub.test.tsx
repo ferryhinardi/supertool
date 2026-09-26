@@ -27,6 +27,17 @@ describe('CategoryToolsHub', () => {
     expect(screen.getByRole('link', { name: /Case Converter/i })).toBeTruthy()
   })
 
+  it('renders finance hub with solid title and calculator links', () => {
+    render(<CategoryToolsHub category="finance" />)
+
+    const heading = screen.getByRole('heading', { level: 1, name: /Finance Tools/i })
+    expect(heading).toBeTruthy()
+    expect(heading.getAttribute('style') || '').not.toMatch(/background-clip|transparent/i)
+    expect(screen.getByRole('link', { name: /Currency Converter/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /Tip Calculator/i })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /Loan & Mortgage Calculator/i })).toBeTruthy()
+  })
+
   it('renders security hub with password tools', () => {
     render(<CategoryToolsHub category="security" />)
 
