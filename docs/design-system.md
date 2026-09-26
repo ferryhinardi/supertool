@@ -62,3 +62,13 @@ Tool categories use `accentForCategory()`:
 - Tool pages keep Panda `css()` from `@/styled-system/css`.
 - Interactive controls stay at least 44px (`minH: '11'`).
 - Do not introduce a second palette. Extend `palette` and the Panda `brand` scale together.
+
+## Agent guidance
+
+New tool and UI work follows this document, not the older glass theme:
+
+- `.github/skills/panda-css-styling/SKILL.md`
+- `.github/skills/ui-components-creation/SKILL.md`
+- `.github/skills/new-tool-development/SKILL.md`
+- `.agents/skills/new-tool-scaffolder/SKILL.md`
+- `scripts/templates/TOOL_PAGE_TEMPLATE.tsx`

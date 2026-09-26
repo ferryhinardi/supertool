@@ -1,6 +1,6 @@
 # SuperTool - Agent Quick Reference
 
-Next.js 15 App Router with React 19, Panda CSS, Vitest browser testing. Dark glassmorphic theme.
+Next.js 15 App Router with React 19, Panda CSS, Vitest browser testing. Dark canvas with a violet primary (`docs/design-system.md`).
 
 ## Commands
 ```bash
@@ -30,7 +30,10 @@ pnpm mcp:validate                 # Validate MCP tool definitions
 ## Critical Patterns
 
 ### Styling (Panda CSS)
-- Tool pages MUST use Panda CSS `css()` from `@/styled-system/css` - NOT Tailwind utilities
+- Tool pages and the app shell use Panda CSS `css()` from `@/styled-system/css`
+- Tokens: `lib/design-system/tokens.ts`, Panda `brand.*` (`bg: 'brand.surface'`, `color: 'brand.ink'`, `borderColor: 'brand.line'`, `fontFamily: 'display'`)
+- Shared pieces: `components/design-system` (`Eyebrow`, `IconTile`, `BrandMark`). Catalog: `/design-system`. Guide: `docs/design-system.md`
+- Primary actions use `<Button>` (violet). Tool icons use `IconTile` plus `accentForCategory()`. Do not add glass blur, purple-to-pink gradient headings, or a second palette
 - Grid Layouts: Always use valid values + `w: 'full'`:
   ```tsx
   gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }

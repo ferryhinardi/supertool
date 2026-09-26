@@ -375,7 +375,7 @@ if (command.length > 2000) {
 - [ ] Example prompts or load example button
 - [ ] Track events with analytics (metadata only)
 - [ ] Responsive design with proper spacing
-- [ ] Dark glassmorphic theme with proper borders
+- [ ] Revamp surfaces (`brand.surface`, `brand.line`, display titles)
 - [ ] Motion animations with framer-motion
 
 ### Vision API Specific
@@ -483,7 +483,7 @@ When working on AI-powered tools, ensure:
 7. **Analytics**: Track metadata only (lengths, types, errors) - never content
 8. **Accessibility**: Alt text for icons, proper ARIA labels
 9. **Performance**: Efficient API calls, no unnecessary re-renders
-10. **Consistency**: Follow SuperTool's glassmorphic dark theme patterns
+10. **Consistency**: Follow SuperTool's revamp design system (`docs/design-system.md`)
 
 ---
 

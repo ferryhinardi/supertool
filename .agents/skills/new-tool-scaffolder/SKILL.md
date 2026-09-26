@@ -20,6 +20,7 @@ Each tool lives under `app/tools/<category>/<tool-slug>/` where category is one 
    - Mobile-first responsive layout with `maxW: '7xl'`
    - Loading states, error handling with `toast` from `sonner`
    - UI components from `@/components/ui/` (Button, Card, Input, etc.)
+   - Design system: `docs/design-system.md` and `components/design-system`. Titles use `fontFamily: 'display'` and `color: 'brand.ink'`. Cards use `brand.surface` / `brand.line` (the default `Card`). Labels use `Eyebrow`. Tool icons use `IconTile` with `accentForCategory(category)`. Do not add glass blur, purple-to-pink gradient headings, or a second palette. Primary actions use `<Button>` (already violet). Success copy uses `brand.mint`; errors use `brand.rose`.
 
 2. **`layout.tsx`** — SEO metadata using `generateToolMetadata()` from `@/lib/data/metadata` and structured data schemas from `@/lib/data/structured-data` (`generateBreadcrumbSchema`, `generateFAQSchema`, `generateHowToSchema`).
 
@@ -33,7 +34,7 @@ Each tool lives under `app/tools/<category>/<tool-slug>/` where category is one 
 Tool Registration
 Add the tool entry to lib/data/tools.ts in the tools array with:
 •  title, description, icon (from lucide-react), href (/tools/<category>/<slug>)
-•  gradient (Tailwind gradient string like 'from-purple-500 to-pink-500')
+•  gradient (legacy registry string such as 'from-purple-500 to-pink-500'; keep the field, do not paint it on the page — use accentForCategory)
 •  features (array of 4 short feature strings)
 •  category (matching the directory category)
 •  new: true flag for newly added tools
@@ -52,7 +53,9 @@ Validation Steps (run after scaffolding)
 
 Reference Files
 •  Template: scripts/templates/TOOL_PAGE_TEMPLATE.tsx
-•  Canonical example: app/tools/data/json-beautify/page.tsx
+•  Design system: docs/design-system.md and /design-system
+•  Tokens: lib/design-system/tokens.ts
+•  Structure example: app/tools/data/json-beautify/page.tsx (follow its file layout; follow the template for visual style)
 •  Layout example: app/tools/data/json-beautify/layout.tsx
 •  Tools registry: lib/data/tools.ts
 •  Agent reference: AGENTS.md

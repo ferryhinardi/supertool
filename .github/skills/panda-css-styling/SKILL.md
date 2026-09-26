@@ -1,66 +1,71 @@
 ---
 name: panda-css-styling
-description: Guide for styling components with Panda CSS in the SuperTool project. Use this when styling tool pages, creating layouts, or implementing the glassmorphic design system.
+description: Guide for styling SuperTool with Panda CSS and the Website Revamp design system. Use when styling tool pages, layouts, or shared UI.
 license: MIT
 ---
 
 # Panda CSS Styling Guide
 
-This skill teaches you how to style components using Panda CSS following the SuperTool design system.
+Style with Panda CSS and the revamp tokens. Source of truth: `docs/design-system.md`, `lib/design-system/tokens.ts`, and the living catalog at `/design-system`.
 
-## CRITICAL: Tool Pages Use Panda CSS, NOT Tailwind
+## Panda CSS everywhere
 
-**IMPORTANT**: Tool pages (`app/tools/**/page.tsx`) MUST use Panda CSS `css()` function.
-- Tailwind CSS v4 is used for app layouts and general pages
-- Tool pages require Panda CSS for type-safe, recipe-based styling
-
-## Import Pattern
+Tool pages, the app shell, and shared components use `css()` from `@/styled-system/css`. Do not use Tailwind utility strings.
 
 ```typescript
 import { css } from '@/styled-system/css'
-// For UI components
 import { Button } from '@/components/ui/button'
+import { Eyebrow, IconTile } from '@/components/design-system'
+import { accentForCategory } from '@/lib/design-system'
 ```
 
-## Design System
+## Design system
 
-### Color Palette
+Tokens live in `lib/design-system/tokens.ts` and are exposed as Panda `brand.*` colors plus `fontFamily: 'display' | 'mono'`. Prefer those tokens over raw hex.
 
-The project uses a dark theme with purple/pink/blue gradients:
+| Token | Use |
+| --- | --- |
+| `brand.canvas` | Page background (`#07090e`) |
+| `brand.surface` | Cards and inputs |
+| `brand.surfaceRaised` | Hovered cards |
+| `brand.line` | Borders |
+| `brand.ink` | Primary text |
+| `brand.muted` | Secondary text |
+| `brand.dim` | Meta text |
+| `brand.violet` | Primary actions |
+| `brand.violetBright` | Accent text |
+| `brand.violetSoft` | Active nav / soft fills |
+| `brand.mint` | Success and privacy |
+| `brand.rose` | Errors |
 
-```typescript
-// CSS variables from globals.css
---color-bg-primary: rgb(10, 10, 15)
---color-bg-secondary: rgb(20, 20, 30)
---color-accent-purple: rgb(168, 85, 247)
---color-accent-pink: rgb(236, 72, 153)
---color-accent-blue: rgb(59, 130, 246)
-```
+`primary` maps to violet, so the default `<Button>` is already the brand action. Do not override it with a purple-to-pink gradient.
 
-### Glassmorphism Effect
+Category accents come from `accentForCategory(category)` and render through `IconTile`. The `gradient` string on a tool registry entry is legacy data. Do not paint it on new cards.
 
-Use this pattern consistently:
+Type:
 
-```typescript
-className={css({
-  bg: 'rgba(255, 255, 255, 0.05)',
-  backdropFilter: 'blur(10px)',
-  borderRadius: 'xl',
-  border: '1px solid',
-  borderColor: 'rgba(255, 255, 255, 0.1)',
-  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
-})}
-```
+- `fontFamily: 'display'` (Manrope) for page titles and section headings
+- Inter for UI copy (set on `html`)
+- `fontFamily: 'mono'` (DM Mono) for code
 
-Or use the `.glass` utility class from Tailwind for quick application.
+Shared pieces in `components/design-system/`:
 
-## Standard Page Layout
+- `Eyebrow` — uppercase violet pill above a title
+- `IconTile` — tinted tool icon (`accent` from `accentForCategory`)
+- `BrandMark` — sidebar mark
+- `HomeHero`, `HeroPreview`, `ProofStrip`, `PrivacySection` — homepage only. Reuse the pieces; do not copy their markup into tools
 
-Every tool page should follow this structure:
+Surfaces are solid. The default `Card` recipe is `brand.surface` with a `brand.line` border. Do not add `backdropFilter` blur or the `.glass` class on new UI. The `glass` card variant is legacy.
+
+Do not clip heading text with `bgGradient` / `gradientVia` / `bgClip: 'text'`. Inherited gradient stops make that text invisible.
+
+## Standard page layout
 
 ```typescript
 'use client'
 
+import { Sparkles } from 'lucide-react'
+import { Eyebrow } from '@/components/design-system'
 import { css } from '@/styled-system/css'
 
 export default function ToolPage() {
@@ -71,472 +76,172 @@ export default function ToolPage() {
       w: 'full',
       px: { base: '4', sm: '6', md: '8' },
       py: { base: '6', sm: '8', md: '10' },
-      spaceY: { base: '6', sm: '8', md: '10' }
+      spaceY: { base: '6', sm: '8', md: '10' },
     })}>
-      {/* Tool Header */}
       <div className={css({ textAlign: 'center', spaceY: '4' })}>
+        <div className={css({ display: 'flex', justifyContent: 'center' })}>
+          <Eyebrow icon={Sparkles}>Category</Eyebrow>
+        </div>
         <h1 className={css({
+          fontFamily: 'display',
           fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
           fontWeight: 'bold',
-          bgGradient: 'to-r',
-          gradientFrom: 'purple.400',
-          gradientTo: 'pink.600',
-          bgClip: 'text'
+          color: 'brand.ink',
+          letterSpacing: '-0.03em',
         })}>
           Tool Title
         </h1>
         <p className={css({
-          fontSize: { base: 'md', sm: 'lg' },
-          color: 'gray.400'
+          fontSize: { base: 'base', sm: 'lg' },
+          color: 'brand.muted',
         })}>
           Tool description
         </p>
       </div>
 
-      {/* Tool Content */}
       <div className={css({
-        bg: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
+        bg: 'brand.surface',
         borderRadius: 'xl',
         border: '1px solid',
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderColor: 'brand.line',
         p: { base: '6', sm: '8' },
-        spaceY: '6'
+        spaceY: '6',
       })}>
-        {/* Your content here */}
+        {/* content */}
       </div>
     </main>
   )
 }
 ```
 
-## Responsive Design Pattern
+Copy `scripts/templates/TOOL_PAGE_TEMPLATE.tsx` for a full page. Prefer `<Card>` from `@/components/ui/card` over a hand-rolled surface.
 
-**ALWAYS use responsive values** with base, sm, md, lg, xl breakpoints:
+## Responsive values
 
 ```typescript
-// ✅ CORRECT
 className={css({
-  fontSize: { base: 'sm', sm: 'md', md: 'lg' },
+  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
   padding: { base: '4', sm: '6', md: '8' },
-  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }
-})}
-
-// ❌ WRONG - No responsive values
-className={css({
-  fontSize: 'lg',
-  padding: '8'
-})}
-```
-
-## Grid Layouts
-
-**CRITICAL**: Use valid grid template column values:
-
-```typescript
-// ✅ CORRECT
-className={css({
-  display: 'grid',
   gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
-  gap: { base: '4', sm: '6' },
-  w: 'full' // IMPORTANT: Always add w: 'full'
-})}
-
-// ❌ WRONG - Invalid grid values
-className={css({
-  display: 'grid',
-  gridTemplateColumns: { base: 1, sm: 2, lg: 3 } // Numbers not valid!
+  w: 'full',
 })}
 ```
 
-## Common Patterns
+`fontSize: 'md'` is not a reliable token. Use `base`.
 
-### 1. Card Component
+Grid columns must be CSS values, and the grid needs `w: 'full'`:
 
 ```typescript
-<div className={css({
-  bg: 'rgba(255, 255, 255, 0.05)',
-  backdropFilter: 'blur(10px)',
+gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }
+```
+
+## Common patterns
+
+### Card
+
+Use `<Card>` or:
+
+```typescript
+css({
+  bg: 'brand.surface',
   borderRadius: 'xl',
   border: '1px solid',
-  borderColor: 'rgba(255, 255, 255, 0.1)',
+  borderColor: 'brand.line',
   p: { base: '4', sm: '6' },
-  transition: 'all 0.3s',
-  cursor: 'pointer',
+  transition: 'all 0.22s ease',
   _hover: {
-    bg: 'rgba(255, 255, 255, 0.08)',
-    borderColor: 'rgba(168, 85, 247, 0.5)',
+    bg: 'brand.surfaceRaised',
+    borderColor: '#6654a7',
     transform: 'translateY(-2px)',
-  }
-})}>
-  Card content
-</div>
+  },
+})
 ```
 
-### 2. Button (Using UI Component)
+### Button
 
 ```typescript
 import { Button } from '@/components/ui/button'
 
-<Button 
-  onClick={handleClick}
-  className={css({
-    w: 'full',
-    bg: 'linear-gradient(to right, rgb(168, 85, 247), rgb(236, 72, 153))',
-    _hover: {
-      opacity: 0.9
-    }
-  })}
->
-  Click Me
-</Button>
+<Button className={css({ w: 'full', minH: '11' })}>Click Me</Button>
 ```
 
-### 3. Input Field
+### Input
 
 ```typescript
-<input
-  type="text"
-  className={css({
-    w: 'full',
-    px: '4',
-    py: '3',
-    bg: 'rgba(255, 255, 255, 0.05)',
-    border: '1px solid',
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 'lg',
-    color: 'white',
-    fontSize: { base: 'sm', sm: 'md' },
-    outline: 'none',
-    transition: 'all 0.2s',
-    _focus: {
-      borderColor: 'purple.400',
-      bg: 'rgba(255, 255, 255, 0.08)'
-    },
-    _placeholder: {
-      color: 'gray.500'
-    }
-  })}
-  placeholder="Enter text..."
-/>
-```
-
-### 4. Flex Layouts
-
-```typescript
-// Row layout
-<div className={css({
-  display: 'flex',
-  flexDirection: { base: 'column', sm: 'row' }, // Stack on mobile
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: { base: '4', sm: '6' }
-})}>
-  <div>Item 1</div>
-  <div>Item 2</div>
-</div>
-
-// Column layout
-<div className={css({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4',
-  alignItems: 'stretch'
-})}>
-  <div>Item 1</div>
-  <div>Item 2</div>
-</div>
-```
-
-### 5. Section Divider
-
-```typescript
-<div className={css({
-  h: '1px',
+css({
   w: 'full',
-  bg: 'linear-gradient(to right, transparent, rgba(168, 85, 247, 0.5), transparent)',
-  my: { base: '6', sm: '8' }
-})} />
-```
-
-### 6. Gradient Text
-
-```typescript
-<h2 className={css({
-  fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-  fontWeight: 'bold',
-  bgGradient: 'to-r',
-  gradientFrom: 'purple.400',
-  gradientVia: 'pink.500',
-  gradientTo: 'blue.500',
-  bgClip: 'text',
-  lineHeight: '1.2'
-})}>
-  Gradient Heading
-</h2>
-```
-
-### 7. Loading Spinner
-
-```typescript
-<div className={css({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '3',
-  py: '8'
-})}>
-  <div className={css({
-    w: '8',
-    h: '8',
-    border: '3px solid',
-    borderColor: 'rgba(168, 85, 247, 0.2)',
-    borderTopColor: 'purple.400',
-    borderRadius: 'full',
-    animation: 'spin 1s linear infinite'
-  })} />
-  <span className={css({ color: 'gray.400' })}>Loading...</span>
-</div>
-```
-
-### 8. Result Display
-
-```typescript
-<div className={css({
-  mt: '6',
-  p: { base: '4', sm: '6' },
-  bg: 'rgba(34, 197, 94, 0.1)',
+  minH: '11',
+  px: '4',
+  bg: 'brand.surface',
   border: '1px solid',
-  borderColor: 'rgba(34, 197, 94, 0.3)',
-  borderRadius: 'lg'
-})}>
-  <h3 className={css({
-    fontSize: { base: 'lg', sm: 'xl' },
-    fontWeight: 'semibold',
-    color: 'green.400',
-    mb: '3'
-  })}>
-    Result
-  </h3>
-  <p className={css({ color: 'gray.300' })}>
-    Result content here
-  </p>
-</div>
+  borderColor: 'brand.line',
+  borderRadius: 'lg',
+  color: 'brand.ink',
+  fontSize: { base: 'base', sm: 'sm' },
+  _focus: { borderColor: 'brand.violet', outline: 'none' },
+  _placeholder: { color: 'brand.dim' },
+})
 ```
 
-### 9. Error State
+### Tool icon
 
 ```typescript
-<div className={css({
-  p: { base: '4', sm: '6' },
-  bg: 'rgba(239, 68, 68, 0.1)',
-  border: '1px solid',
-  borderColor: 'rgba(239, 68, 68, 0.3)',
-  borderRadius: 'lg'
-})}>
-  <p className={css({ color: 'red.400' })}>
-    Error message here
-  </p>
-</div>
+import { IconTile } from '@/components/design-system'
+import { accentForCategory } from '@/lib/design-system'
+
+<IconTile icon={Braces} accent={accentForCategory('data')} />
 ```
 
-### 10. Badge/Tag
+`IconTile` is decorative (`aria-hidden`). Put the tool name in visible text.
+
+### Success and error
 
 ```typescript
-<span className={css({
-  display: 'inline-flex',
-  alignItems: 'center',
-  px: '3',
-  py: '1',
-  bg: 'rgba(168, 85, 247, 0.2)',
-  border: '1px solid',
-  borderColor: 'rgba(168, 85, 247, 0.4)',
-  borderRadius: 'full',
-  fontSize: 'xs',
-  fontWeight: 'medium',
-  color: 'purple.300'
-})}>
-  New
-</span>
+// success
+css({ bg: 'rgba(78, 224, 174, 0.1)', borderColor: 'brand.mint', color: 'brand.mint' })
+
+// error
+css({ bg: 'rgba(250, 113, 152, 0.1)', borderColor: 'brand.rose', color: 'brand.rose' })
 ```
 
-## Mobile-First Requirements
-
-### Touch Targets
-
-**MINIMUM 44px for all interactive elements:**
+### Divider
 
 ```typescript
-// ✅ CORRECT
-<button className={css({
-  minH: '44px',
-  minW: '44px',
-  px: '6',
-  py: '3'
-})}>
-  Button
-</button>
-
-// ❌ WRONG - Too small
-<button className={css({ p: '1' })}>Small</button>
+css({ h: '1px', w: 'full', bg: 'brand.line', my: { base: '6', sm: '8' } })
 ```
 
-### Typography Scale
+## Touch targets and type
+
+Interactive controls are at least 44px: `minH: '11'` (and `minW: '11'` for icon buttons).
 
 ```typescript
-// Heading sizes
-h1: { base: '3xl', sm: '4xl', md: '5xl' }
+h1: { base: '3xl', sm: '4xl', md: '5xl' } // fontFamily: 'display'
 h2: { base: '2xl', sm: '3xl', md: '4xl' }
-h3: { base: 'xl', sm: '2xl', md: '3xl' }
-
-// Body text
-body: { base: 'sm', sm: 'md' }
-caption: { base: 'xs', sm: 'sm' }
+body: { base: 'sm', sm: 'base' }
 ```
 
-### Spacing Scale
+Stack on small screens: `flexDirection: { base: 'column', sm: 'row' }`.
+
+## States
 
 ```typescript
-// Section spacing
-spaceY: { base: '6', sm: '8', md: '10' }
-
-// Component spacing
-gap: { base: '4', sm: '6', md: '8' }
-
-// Padding
-p: { base: '4', sm: '6', md: '8' }
-```
-
-## State Modifiers
-
-Panda CSS supports pseudo-classes with `_` prefix:
-
-```typescript
-className={css({
-  bg: 'purple.500',
-  _hover: { bg: 'purple.600' },
-  _focus: { outline: '2px solid', outlineColor: 'purple.400' },
-  _active: { transform: 'scale(0.98)' },
+css({
+  bg: 'brand.violet',
+  color: 'white',
+  _hover: { opacity: 0.92 },
+  _focus: { outline: '2px solid', outlineColor: 'brand.violet' },
   _disabled: { opacity: 0.5, cursor: 'not-allowed' },
-  _placeholder: { color: 'gray.500' }
-})}
+})
 ```
-
-## Animations
-
-Use Tailwind animation utilities:
-
-```typescript
-className={css({
-  animation: 'spin 1s linear infinite' // Spinner
-})}
-
-className={css({
-  animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' // Pulse
-})}
-
-className={css({
-  animation: 'bounce 1s infinite' // Bounce
-})}
-```
-
-## Common Mistakes to Avoid
-
-### ❌ WRONG: Using Tailwind classes on tool pages
-
-```typescript
-// Don't do this on tool pages
-<div className="bg-gray-800 p-4 rounded-lg">
-```
-
-### ✅ CORRECT: Using Panda CSS
-
-```typescript
-<div className={css({
-  bg: 'gray.800',
-  p: '4',
-  borderRadius: 'lg'
-})}>
-```
-
-### ❌ WRONG: No responsive values
-
-```typescript
-<div className={css({ fontSize: 'lg' })}>
-```
-
-### ✅ CORRECT: Responsive values
-
-```typescript
-<div className={css({ fontSize: { base: 'md', sm: 'lg' } })}>
-```
-
-### ❌ WRONG: Invalid grid template
-
-```typescript
-gridTemplateColumns: { base: 1, sm: 2 }
-```
-
-### ✅ CORRECT: Valid grid template
-
-```typescript
-gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' }
-```
-
-### ❌ WRONG: Missing width on grid
-
-```typescript
-<div className={css({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 1fr)'
-})}>
-```
-
-### ✅ CORRECT: Width specified
-
-```typescript
-<div className={css({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 1fr)',
-  w: 'full'
-})}>
-```
-
-## Reference Example
-
-**Canonical implementation**: `app/tools/unit-converter/page.tsx`
-
-This file demonstrates:
-- Correct Panda CSS usage
-- Responsive design patterns
-- Glassmorphism styling
-- Mobile-first approach
-- Proper grid layouts
-
-## UI Component Library
-
-Use pre-built components from `components/ui/`:
-
-```typescript
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select } from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-```
-
-These components already follow the design system and are accessible.
 
 ## Checklist
 
-- [ ] Using Panda CSS `css()` function (not Tailwind utilities)
-- [ ] Glassmorphism effect applied to cards
-- [ ] Responsive values for all sizing properties
-- [ ] Mobile-first breakpoints (base → sm → md → lg)
-- [ ] Touch targets >= 44px
-- [ ] Grid layouts use valid template values + `w: 'full'`
-- [ ] Gradient text for headings
-- [ ] Proper spacing (spaceY, gap, padding)
-- [ ] State modifiers for interactivity (_hover, _focus)
-- [ ] Dark theme colors used throughout
-- [ ] Tested on mobile viewport
+- [ ] `css()` from `@/styled-system/css` (no Tailwind utilities)
+- [ ] Surfaces use `brand.surface` / `brand.line` (no glass blur)
+- [ ] Text uses `brand.ink` / `brand.muted`; titles use `fontFamily: 'display'`
+- [ ] Primary actions use `<Button>`
+- [ ] Tool icons use `IconTile` + `accentForCategory`
+- [ ] Responsive values, mobile-first
+- [ ] Touch targets `minH: '11'`
+- [ ] Grids use valid templates and `w: 'full'`
+- [ ] No second palette and no gradient-clipped headings
