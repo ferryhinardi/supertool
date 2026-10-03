@@ -381,9 +381,7 @@ describe('JWTDebuggerPage', () => {
   })
 
   describe('Copy Functionality', () => {
-    // Skipped: Copy button inside CardTitle h3 is found but clipboard mock doesn't trigger reliably in CI.
-    // Copy functionality is covered by the "copies generated token to clipboard" test below.
-    it.skip('copies header to clipboard', async () => {
+    it('copies header to clipboard', async () => {
       const user = userEvent.setup()
       render(<JWTDebuggerPage />)
 
@@ -394,20 +392,17 @@ describe('JWTDebuggerPage', () => {
         expect(screen.getByText('Header')).toBeInTheDocument()
       })
 
-      // CardTitle renders as <h3> containing both "Header" text and a <button>.
-      // Use within(h3) to find the copy button inside it.
-      const headerHeading = screen.getByText('Header')
+      const headerHeading = screen.getByRole('heading', { name: /^Header$/ })
       const copyButton = within(headerHeading).getByRole('button')
       await user.click(copyButton)
 
       await waitFor(() => {
-        expect(mockWriteText).toHaveBeenCalled()
+        expect(navigator.clipboard.writeText).toHaveBeenCalled()
         expect(toast.success).toHaveBeenCalledWith('Header copied to clipboard!')
       })
     })
 
-    // Skipped: Same clipboard mock issue as copies header test above.
-    it.skip('copies payload to clipboard', async () => {
+    it('copies payload to clipboard', async () => {
       const user = userEvent.setup()
       render(<JWTDebuggerPage />)
 
@@ -418,14 +413,13 @@ describe('JWTDebuggerPage', () => {
         expect(screen.getByText('Payload')).toBeInTheDocument()
       })
 
-      // CardTitle renders as <h3> containing both "Payload" text and a <button>.
-      // Use within(h3) to find the copy button inside it.
-      const payloadHeading = screen.getByText('Payload')
+      const payloadHeading = screen.getByRole('heading', { name: /^Payload$/ })
       const copyButton = within(payloadHeading).getByRole('button')
       await user.click(copyButton)
 
       await waitFor(() => {
-        expect(mockWriteText).toHaveBeenCalled()
+        expect(navigator.clipboard.writeText).toHaveBeenCalled()
+        expect(toast.success).toHaveBeenCalledWith('Payload copied to clipboard!')
       })
     })
 

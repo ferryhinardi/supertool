@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { toast } from 'sonner'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -930,12 +930,7 @@ describe('WebhookTesterPage', () => {
       expect(screen.getByRole('button', { name: 'Export JSON' })).toBeInTheDocument()
     })
 
-    // Skip: This test has a timing issue where the copyCurl function's endpoint lookup
-    // fails because React state updates haven't fully propagated. The copyCurl function
-    // does `endpoints.find((e) => e.id === request.endpoint_id)` and returns early if
-    // not found. The clipboard copy functionality is tested indirectly through
-    // the templates.test.ts generateCurlCommand tests.
-    it.skip('should copy cURL when clicking Copy cURL button', async () => {
+    it('should copy cURL when clicking Copy cURL button', async () => {
       render(<WebhookTesterPage />)
 
       await waitFor(() => {
@@ -962,14 +957,13 @@ describe('WebhookTesterPage', () => {
         expect(screen.getByText('Request Details')).toBeInTheDocument()
       })
 
-      // Click Copy cURL
-      const copyCurlButton = screen.getAllByRole('button', { name: /Copy cURL/i })[0]
+      const copyCurlButton = within(screen.getByRole('dialog')).getByRole('button', {
+        name: /^Copy cURL$/,
+      })
       fireEvent.click(copyCurlButton)
 
-      await waitFor(() => {
-        expect(mockClipboard.writeText).toHaveBeenCalled()
-      })
       expect(toast.success).toHaveBeenCalledWith('cURL command copied!')
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
     })
 
     it('should export JSON when clicking Export JSON button', async () => {
