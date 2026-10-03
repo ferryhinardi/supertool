@@ -3,6 +3,8 @@
 import { Calendar, Clock, Copy, Info } from 'lucide-react'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass } from '@/components/features/tools/data-workspace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -124,90 +126,23 @@ function DateFormatterContent() {
   const relativeTime = parsedDate && isValidDate(parsedDate) ? getRelativeTime(parsedDate) : ''
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <main className={dataPageMainClass}>
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'orange.500/30',
-            bg: 'orange.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Calendar className={css({ h: '5', w: '5', color: 'orange.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'orange.300' })}>
-            Powered by Day.js
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'orange.400',
-            gradientVia: 'red.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Date Formatter & Parser
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Convert timestamps between formats and timezones. Parse dates, calculate differences, and
-          format with precision.
-        </p>
-      </div>
+      <DataToolHeader
+        icon={Calendar}
+        eyebrow="Powered by Day.js"
+        title="Date Formatter & Parser"
+        description="Convert timestamps between formats and timezones. Parse dates, calculate differences, and format with precision."
+        highlights={['Multiple formats', 'Timezone convert', 'Date difference']}
+      />
 
       {/* Date Input */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'orange.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -257,7 +192,6 @@ function DateFormatterContent() {
                 className={css({
                   spaceY: '3',
                   animation: 'scaleIn 0.5s ease-out forwards',
-                  opacity: 0,
                 })}
               >
                 <div
@@ -348,19 +282,12 @@ function DateFormatterContent() {
 
       {/* Format Converter */}
       {parsedDate && isValidDate(parsedDate) && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'blue.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -436,19 +363,12 @@ function DateFormatterContent() {
 
       {/* Timezone Converter */}
       {parsedDate && isValidDate(parsedDate) && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'purple.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -548,19 +468,12 @@ function DateFormatterContent() {
       )}
 
       {/* Date Difference Calculator */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'green.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -625,7 +538,6 @@ function DateFormatterContent() {
                 className={css({
                   spaceY: '4',
                   animation: 'scaleIn 0.5s ease-out forwards',
-                  opacity: 0,
                 })}
               >
                 <div
@@ -739,19 +651,12 @@ function DateFormatterContent() {
       </div>
 
       {/* Info Card */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.5s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'cyan.500/20',
             bg: 'cyan.500/5',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>

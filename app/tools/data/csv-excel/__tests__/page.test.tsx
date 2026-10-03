@@ -173,7 +173,7 @@ describe('CSVExcelConverterPage', () => {
     it('does not show result or error sections initially', () => {
       render(<CSVExcelConverterPage />)
 
-      expect(screen.queryByText('✅ Converted')).not.toBeInTheDocument()
+      expect(screen.queryByText('Converted')).not.toBeInTheDocument()
       // Check there's no download button (which would appear after conversion)
       expect(screen.queryByRole('button', { name: /download/i })).not.toBeInTheDocument()
     })
@@ -231,7 +231,7 @@ describe('CSVExcelConverterPage', () => {
       await user.upload(fileInput, csvFile)
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
 
       // Now switch mode
@@ -239,7 +239,7 @@ describe('CSVExcelConverterPage', () => {
       await user.click(swapButton)
 
       // Result should be cleared
-      expect(screen.queryByText('✅ Converted')).not.toBeInTheDocument()
+      expect(screen.queryByText('Converted')).not.toBeInTheDocument()
     })
   })
 
@@ -341,7 +341,7 @@ describe('CSVExcelConverterPage', () => {
       await user.upload(fileInput, csvFile)
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
 
       // Check that status badges are displayed
@@ -372,7 +372,7 @@ describe('CSVExcelConverterPage', () => {
       await user.upload(fileInput, csvFile)
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
     })
 
@@ -387,7 +387,7 @@ describe('CSVExcelConverterPage', () => {
       await user.upload(fileInput, csvFile)
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
     })
 
@@ -462,7 +462,7 @@ describe('CSVExcelConverterPage', () => {
       await user.upload(fileInput, excelFile)
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
 
       expect(mockXLSX.read).toHaveBeenCalled()
@@ -502,7 +502,7 @@ describe('CSVExcelConverterPage', () => {
       await user.upload(fileInput, excelFile)
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
 
       expect(screen.getByText(/3 sheets/)).toBeInTheDocument()
@@ -575,7 +575,7 @@ describe('CSVExcelConverterPage', () => {
       await user.upload(fileInput, xlsFile)
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
     })
   })
@@ -824,7 +824,7 @@ describe('CSVExcelConverterPage', () => {
       await user.upload(fileInput, csvFile)
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
 
       const resetButton = getRequiredButton(
@@ -833,7 +833,7 @@ describe('CSVExcelConverterPage', () => {
       )
       await user.click(resetButton)
 
-      expect(screen.queryByText('✅ Converted')).not.toBeInTheDocument()
+      expect(screen.queryByText('Converted')).not.toBeInTheDocument()
       // Check that download button is gone (not the instructional text in How to Use section)
       expect(screen.queryByRole('button', { name: /Download/ })).not.toBeInTheDocument()
       expect(mockToast.success).toHaveBeenCalledWith('Reset to initial state')
@@ -943,7 +943,7 @@ describe('CSVExcelConverterPage', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
     })
 
@@ -1000,7 +1000,7 @@ describe('CSVExcelConverterPage', () => {
 
       await waitFor(() => {
         expect(screen.queryByText('CSV file is empty')).not.toBeInTheDocument()
-        expect(screen.getByText('✅ Converted')).toBeInTheDocument()
+        expect(screen.getByText('Converted')).toBeInTheDocument()
       })
     })
   })

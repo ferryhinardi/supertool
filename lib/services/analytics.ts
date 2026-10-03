@@ -761,6 +761,9 @@ export type ToolEvent =
   | 'web_vitals'
   | 'support_cta_view'
   | 'support_cta_click'
+  | 'tool_used'
+  | 'feature_interaction'
+  | 'error_occurred'
 
 // Type-safe gtag wrapper
 declare global {

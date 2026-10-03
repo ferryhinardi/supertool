@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic'
 import { useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass } from '@/components/features/tools/data-workspace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -194,90 +196,22 @@ function JSONSchemaContent() {
 
   return (
     <TooltipProvider>
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '7xl',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '6', sm: '8', md: '10' },
-        })}
-      >
-        {/* Header */}
-        <div
-          className={css({
-            textAlign: 'center',
-            spaceY: '4',
-            animation: 'slideUp 0.5s ease-out forwards',
-            opacity: 0,
-          })}
-        >
-          <div
-            className={css({
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '3',
-              rounded: 'full',
-              border: '1px solid',
-              borderColor: 'purple.500/30',
-              bg: 'purple.500/10',
-              px: '5',
-              py: '2',
-              backdropFilter: 'blur(8px)',
-            })}
-          >
-            <Code className={css({ h: '5', w: '5', color: 'purple.400' })} />
-            <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
-              Auto Generate • Type Inference • Validation
-            </span>
-          </div>
-
-          <h1
-            className={css({
-              fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-              fontWeight: 'extrabold',
-              bgGradient: 'to-r',
-              gradientFrom: 'purple.400',
-              gradientVia: 'pink.400',
-              gradientTo: 'indigo.400',
-              bgClip: 'text',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            JSON Schema Generator
-          </h1>
-
-          <p
-            className={css({
-              mx: 'auto',
-              maxW: '3xl',
-              fontSize: { base: 'lg', sm: 'xl' },
-              color: 'white',
-            })}
-          >
-            Automatically generate JSON Schema from sample JSON data with type inference, format
-            detection, and validation
-          </p>
-        </div>
+      <main className={dataPageMainClass}>
+        <DataToolHeader
+          icon={Code}
+          eyebrow="Auto Generate • Type Inference • Validation"
+          title="JSON Schema Generator"
+          description="Automatically generate JSON Schema from sample JSON data with type inference, format detection, and validation"
+          highlights={['Type inference', 'Schema validation', 'Copy and export']}
+        />
 
         {/* Stats Bar */}
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.1s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'purple.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '4', pb: '4' })}>
@@ -352,19 +286,12 @@ function JSONSchemaContent() {
         </div>
 
         {/* Options */}
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'purple.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -508,9 +435,6 @@ function JSONSchemaContent() {
             gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
             gap: { base: '6', sm: '8' },
             w: 'full',
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
           })}
         >
           {/* Input JSON */}
@@ -518,8 +442,7 @@ function JSONSchemaContent() {
             className={css({
               border: '1px solid',
               borderColor: 'purple.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -552,8 +475,7 @@ function JSONSchemaContent() {
             className={css({
               border: '1px solid',
               borderColor: 'indigo.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -583,19 +505,12 @@ function JSONSchemaContent() {
         </div>
 
         {/* Action Buttons */}
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.4s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'purple.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '4', pb: '4' })}>
@@ -675,13 +590,7 @@ function JSONSchemaContent() {
         </div>
 
         {/* Pro Tips Section */}
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.5s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <div
             className={css({
               rounded: { base: 'xl', sm: '2xl' },
@@ -689,7 +598,6 @@ function JSONSchemaContent() {
               borderColor: 'cyan.500/20',
               bg: 'rgba(6, 182, 212, 0.05)',
               p: { base: '4', sm: '5', md: '6' },
-              backdropFilter: 'blur(16px)',
             })}
           >
             <h3

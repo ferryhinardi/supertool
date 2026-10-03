@@ -10,6 +10,8 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass } from '@/components/features/tools/data-workspace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -331,83 +333,21 @@ export default function CSVExcelConverterPage() {
 
   return (
     <TooltipProvider>
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '1400px',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '4', sm: '6', md: '8' },
-        })}
-      >
-        {/* Header */}
-        <div className={css({ spaceY: '3' })}>
-          <div
-            className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
-          >
-            <div
-              className={css({
-                animation: 'pulse',
-                animationDuration: '2s',
-                rounded: { base: 'xl', sm: '2xl' },
-                bgGradient: 'to-br',
-                gradientFrom: 'green.600',
-                gradientVia: 'teal.600',
-                gradientTo: 'emerald.700',
-                p: { base: '2.5', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px -12px rgba(16, 185, 129, 0.6)',
-              })}
-            >
-              <FileSpreadsheet
-                className={css({
-                  h: { base: '6', sm: '8' },
-                  w: { base: '6', sm: '8' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'green.300',
-                  gradientVia: 'teal.400',
-                  gradientTo: 'emerald.300',
-                  bgClip: 'text',
-                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                  fontWeight: 'extrabold',
-                  color: 'transparent',
-                  filter:
-                    'drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06))',
-                })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                CSV ↔ Excel Converter
-              </h1>
-              <p
-                className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.200',
-                })}
-              >
-                Convert between CSV and Excel formats instantly in your browser
-              </p>
-            </div>
-          </div>
-        </div>
+      <main className={dataPageMainClass}>
+        <DataToolHeader
+          icon={FileSpreadsheet}
+          eyebrow="Data Processing"
+          title="CSV ↔ Excel Converter"
+          description="Convert between CSV and Excel formats instantly in your browser"
+          highlights={['CSV to XLSX', 'Excel to CSV', 'Files stay local']}
+        />
 
         {/* Mode Selection */}
         <Card
           className={css({
             border: '2px solid',
             borderColor: 'green.500/30',
-            bg: 'rgba(17, 24, 39, 0.5)',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -516,7 +456,6 @@ export default function CSVExcelConverterPage() {
               bg: error ? 'rgba(239, 68, 68, 0.05)' : 'rgba(16, 185, 129, 0.05)',
               p: { base: '4', sm: '5', md: '6' },
               shadow: 'xl',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <div
@@ -569,7 +508,7 @@ export default function CSVExcelConverterPage() {
                         color: 'teal.200',
                       })}
                     >
-                      📊 {result.sheets.reduce((sum, s) => sum + s.rowCount, 0)} total rows
+                      {result.sheets.reduce((sum, s) => sum + s.rowCount, 0)} total rows
                     </Badge>
                     <Badge
                       variant="outline"
@@ -583,7 +522,7 @@ export default function CSVExcelConverterPage() {
                         color: 'emerald.200',
                       })}
                     >
-                      💾 {Math.round(result.fileInfo.size / 1024)} KB
+                      {Math.round(result.fileInfo.size / 1024)} KB
                     </Badge>
                   </div>
 
@@ -591,7 +530,6 @@ export default function CSVExcelConverterPage() {
                     variant="success"
                     size="sm"
                     className={css({
-                      animation: 'pulse',
                       bgGradient: 'to-r',
                       gradientFrom: 'green.500',
                       gradientTo: 'emerald.600',
@@ -604,7 +542,7 @@ export default function CSVExcelConverterPage() {
                       boxShadow: '0 10px 15px -3px rgba(16, 185, 129, 0.5)',
                     })}
                   >
-                    ✅ Converted
+                    Converted
                   </Badge>
                 </>
               ) : null}
@@ -635,7 +573,6 @@ export default function CSVExcelConverterPage() {
             borderColor: isDragOver ? 'green.500' : 'green.500/30',
             bg: isDragOver ? 'rgba(16, 185, 129, 0.1)' : 'rgba(17, 24, 39, 0.5)',
             transition: 'all 0.3s',
-            backdropFilter: 'blur(16px)',
             transform: isDragOver ? 'scale(1.02)' : 'scale(1)',
             shadow: isDragOver ? 'xl' : 'none',
             opacity: isProcessing ? 0.5 : 1,
@@ -650,13 +587,19 @@ export default function CSVExcelConverterPage() {
             accept={acceptedFileTypes}
             onChange={handleFileInputChange}
             disabled={isProcessing}
+            aria-label={mode === 'csv-to-excel' ? 'Upload CSV file' : 'Upload Excel file'}
             className={css({
               position: 'absolute',
               inset: '0',
               w: 'full',
               h: 'full',
               cursor: isProcessing ? 'not-allowed' : 'pointer',
-              opacity: 0,
+              opacity: '0',
+              _focusVisible: {
+                outline: '2px solid',
+                outlineColor: 'brand.violetBright',
+                outlineOffset: '2px',
+              },
             })}
             id="file-upload"
           />
@@ -776,8 +719,7 @@ export default function CSVExcelConverterPage() {
                 className={css({
                   border: '2px solid',
                   borderColor: 'green.500/20',
-                  bg: 'rgba(17, 24, 39, 0.5)',
-                  backdropFilter: 'blur(16px)',
+                  bg: 'brand.surface',
                 })}
               >
                 <CardHeader>
@@ -797,7 +739,7 @@ export default function CSVExcelConverterPage() {
                       rounded: 'lg',
                       border: '1px solid',
                       borderColor: 'gray.700',
-                      bg: 'gray.900/50',
+                      bg: 'brand.surface',
                     })}
                   >
                     <table

@@ -1,10 +1,19 @@
 'use client'
 
-import { AlertCircle, Copy, Download, FileSpreadsheet, RefreshCw } from 'lucide-react'
+import { AlertCircle, Check, Copy, Download, FileSpreadsheet, RefreshCw } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import {
+  dataActionBarClass,
+  dataConfigClass,
+  dataPageMainClass,
+  dataPanelClass,
+  dataPanelHeaderClass,
+  dataPanelTitleClass,
+  dataSplitClass,
+} from '@/components/features/tools/data-workspace'
 import { Button } from '@/components/ui/button'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -178,211 +187,160 @@ export default function JSONToCSVPage() {
     toast.success('Reset to default example')
   }
 
+  const actionButtonClass = css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '2',
+    minH: '11',
+    fontSize: { base: 'sm', sm: 'md' },
+    _disabled: {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    },
+  })
+
   return (
     <TooltipProvider>
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '1400px',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '4', sm: '6', md: '8' },
-        })}
-      >
-        {/* Header */}
-        <div className={css({ spaceY: '3' })}>
-          <div
-            className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
-          >
-            <div
-              className={css({
-                animation: 'pulse',
-                rounded: { base: 'xl', sm: '2xl' },
-                bgGradient: 'to-br',
-                gradientFrom: 'teal.600',
-                gradientVia: 'green.600',
-                gradientTo: 'emerald.700',
-                p: { base: '2.5', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px -12px rgba(20, 184, 166, 0.6)',
-              })}
-              style={{ animationDuration: '2s' }}
-            >
-              <FileSpreadsheet
+      <main className={dataPageMainClass}>
+        <DataToolHeader
+          icon={FileSpreadsheet}
+          eyebrow="Data Processing"
+          title="JSON to CSV Converter"
+          description="Convert JSON data to CSV with nested object support"
+          highlights={['Flatten nested', 'Custom delimiter', 'Browser preview']}
+        />
+
+        <output
+          aria-live="polite"
+          className={css({
+            display: 'flex',
+            flexDirection: { base: 'column', sm: 'row' },
+            alignItems: { base: 'flex-start', sm: 'center' },
+            justifyContent: 'space-between',
+            gap: '3',
+            rounded: 'xl',
+            border: '1px solid',
+            borderColor: isValid ? 'brand.mint' : 'brand.rose',
+            bg: 'brand.surface',
+            p: { base: '4', sm: '5' },
+            w: 'full',
+          })}
+        >
+          {isValid && stats ? (
+            <>
+              <ul
                 className={css({
-                  h: { base: '6', sm: '8' },
-                  w: { base: '6', sm: '8' },
-                  color: 'white',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  gap: '2',
+                  listStyle: 'none',
+                  p: '0',
+                  m: '0',
                 })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'teal.300',
-                  gradientVia: 'green.400',
-                  gradientTo: 'emerald.300',
-                  bgClip: 'text',
-                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                  fontWeight: 'extrabold',
-                  color: 'transparent',
-                  filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
-                })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
               >
-                JSON to CSV Converter
-              </h1>
+                <li
+                  className={css({
+                    minH: '11',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    px: '3',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
+                    color: 'brand.ink',
+                    fontSize: 'sm',
+                  })}
+                >
+                  {stats.rows} rows
+                </li>
+                <li
+                  className={css({
+                    minH: '11',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    px: '3',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
+                    color: 'brand.ink',
+                    fontSize: 'sm',
+                  })}
+                >
+                  {stats.columns} columns
+                </li>
+                <li
+                  className={css({
+                    minH: '11',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    px: '3',
+                    rounded: 'full',
+                    border: '1px solid',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
+                    color: 'brand.ink',
+                    fontSize: 'sm',
+                  })}
+                >
+                  {stats.chars.toLocaleString()} chars
+                </li>
+              </ul>
               <p
                 className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.200',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '2',
+                  minH: '11',
+                  px: '3',
+                  rounded: 'full',
+                  bg: 'rgba(78, 224, 174, 0.12)',
+                  color: 'brand.mint',
+                  fontSize: 'sm',
+                  fontWeight: 'semibold',
                 })}
               >
-                Convert JSON data to CSV with nested object support
+                <Check className={css({ h: '4', w: '4' })} aria-hidden />
+                Valid
               </p>
-            </div>
-          </div>
-        </div>
+            </>
+          ) : (
+            <p
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+                minH: '11',
+                color: 'brand.rose',
+                fontSize: 'sm',
+              })}
+            >
+              <AlertCircle className={css({ h: '5', w: '5' })} aria-hidden />
+              <span>{error}</span>
+            </p>
+          )}
+        </output>
 
-        {/* Stats Bar */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: isValid ? 'teal.500/30' : 'red.500/30',
-            bg: isValid ? 'rgba(20, 184, 166, 0.05)' : 'rgba(239, 68, 68, 0.05)',
-            p: { base: '4', sm: '5', md: '6' },
-            shadow: 'xl',
-            boxShadow: isValid
-              ? '0 20px 25px rgba(20, 184, 166, 0.2)'
-              : '0 20px 25px rgba(239, 68, 68, 0.2)',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              flexDirection: { base: 'column', sm: 'row' },
-              alignItems: { base: 'start', sm: 'center' },
-              justifyContent: 'space-between',
-              gap: { base: '3', sm: '4' },
-            })}
-          >
-            {isValid && stats ? (
-              <>
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    gap: '2',
-                  })}
-                >
-                  <Badge
-                    variant="outline"
-                    size="sm"
-                    className={css({
-                      borderColor: 'teal.500/50',
-                      bg: 'teal.500/10',
-                      px: { base: '2.5', sm: '3', md: '4' },
-                      py: { base: '1.5', sm: '1.5', md: '2' },
-                      fontSize: { base: 'xs', sm: 'sm' },
-                      color: 'teal.200',
-                    })}
-                  >
-                    📊 {stats.rows} rows
-                  </Badge>
-                  <Badge
-                    variant="outline"
-                    size="sm"
-                    className={css({
-                      borderColor: 'green.500/50',
-                      bg: 'green.500/10',
-                      px: { base: '2.5', sm: '3', md: '4' },
-                      py: { base: '1.5', sm: '1.5', md: '2' },
-                      fontSize: { base: 'xs', sm: 'sm' },
-                      color: 'green.200',
-                    })}
-                  >
-                    📋 {stats.columns} columns
-                  </Badge>
-                  <Badge
-                    variant="outline"
-                    size="sm"
-                    className={css({
-                      borderColor: 'emerald.500/50',
-                      bg: 'emerald.500/10',
-                      px: { base: '2.5', sm: '3', md: '4' },
-                      py: { base: '1.5', sm: '1.5', md: '2' },
-                      fontSize: { base: 'xs', sm: 'sm' },
-                      color: 'emerald.200',
-                    })}
-                  >
-                    📝 {stats.chars.toLocaleString()} chars
-                  </Badge>
-                </div>
-
-                <Badge
-                  variant="success"
-                  size="sm"
-                  className={css({
-                    animation: 'pulse',
-                    bgGradient: 'to-r',
-                    gradientFrom: 'green.500',
-                    gradientTo: 'emerald.600',
-                    px: { base: '2.5', sm: '3', md: '4' },
-                    py: { base: '1.5', sm: '1.5', md: '2' },
-                    fontSize: { base: 'xs', sm: 'sm' },
-                    fontWeight: 'semibold',
-                    color: 'white',
-                    shadow: 'lg',
-                    boxShadow: '0 10px 15px -3px rgba(34, 197, 94, 0.5)',
-                  })}
-                >
-                  ✅ Valid
-                </Badge>
-              </>
-            ) : (
-              <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <AlertCircle className={css({ h: '5', w: '5', color: 'red.400' })} />
-                <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Configuration */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'teal.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
-            p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
-          })}
-        >
+        <section className={dataConfigClass} aria-labelledby="json-csv-config">
           <h2
+            id="json-csv-config"
             className={css({
               mb: '4',
               fontSize: { base: 'lg', sm: 'xl' },
               fontWeight: 'bold',
-              color: 'teal.300',
+              color: 'brand.ink',
             })}
           >
             Configuration
           </h2>
-
           <div
             className={css({
               display: 'grid',
-              gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
+              gridTemplateColumns: { base: '1fr', md: 'repeat(2, minmax(0, 1fr))' },
               gap: '4',
+              w: 'full',
             })}
           >
             <Field>
@@ -390,7 +348,7 @@ export default function JSONToCSVPage() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'white',
+                  color: 'brand.ink',
                 })}
               >
                 Delimiter
@@ -400,30 +358,33 @@ export default function JSONToCSVPage() {
                 value={delimiter}
                 onChange={(e) => setDelimiter(e.target.value || ',')}
                 maxLength={1}
+                aria-label="Delimiter"
                 className={css({
                   rounded: 'lg',
-                  border: '2px solid',
-                  borderColor: 'gray.700',
-                  bg: 'rgba(17, 24, 39, 0.7)',
+                  border: '1px solid',
+                  borderColor: 'brand.line',
+                  bg: 'brand.canvas',
+                  minH: '11',
                   px: '4',
                   py: '2',
-                  color: 'white',
-                  _focus: {
-                    borderColor: 'teal.500',
-                    outline: 'none',
-                    ring: '2px',
-                    ringColor: 'rgba(20, 184, 166, 0.3)',
+                  color: 'brand.ink',
+                  _focusVisible: {
+                    borderColor: 'brand.violet',
+                    outline: '2px solid',
+                    outlineColor: 'brand.violetBright',
+                    outlineOffset: '2px',
                   },
                 })}
               />
             </Field>
 
-            <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+            <div className={css({ display: 'flex', alignItems: 'center' })}>
               <label
                 className={css({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '2',
+                  minH: '11',
                   cursor: 'pointer',
                 })}
               >
@@ -438,22 +399,101 @@ export default function JSONToCSVPage() {
                     cursor: 'pointer',
                   })}
                 />
-                <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
+                <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}>
                   Flatten nested objects
                 </span>
               </label>
             </div>
           </div>
+        </section>
+
+        <div className={dataSplitClass}>
+          <section className={dataPanelClass} aria-labelledby="json-csv-input">
+            <div className={dataPanelHeaderClass}>
+              <h2 id="json-csv-input" className={dataPanelTitleClass}>
+                JSON Input
+              </h2>
+            </div>
+            {jsonExtension && (
+              <CodeMirror
+                value={jsonInput}
+                height="320px"
+                extensions={[jsonExtension]}
+                onChange={setJsonInput}
+                theme="dark"
+                basicSetup={{
+                  lineNumbers: true,
+                  highlightActiveLineGutter: true,
+                  highlightSpecialChars: true,
+                  foldGutter: true,
+                  drawSelection: true,
+                  dropCursor: true,
+                  allowMultipleSelections: true,
+                  indentOnInput: true,
+                  bracketMatching: true,
+                  closeBrackets: true,
+                  autocompletion: true,
+                  rectangularSelection: true,
+                  crosshairCursor: true,
+                  highlightActiveLine: true,
+                  highlightSelectionMatches: true,
+                  closeBracketsKeymap: true,
+                  searchKeymap: true,
+                  foldKeymap: true,
+                  completionKeymap: true,
+                  lintKeymap: true,
+                }}
+                className={css({ fontSize: { base: 'sm', sm: 'md' } })}
+              />
+            )}
+          </section>
+
+          <section className={dataPanelClass} aria-labelledby="json-csv-output">
+            <div className={dataPanelHeaderClass}>
+              <h2 id="json-csv-output" className={dataPanelTitleClass}>
+                CSV Output Preview
+              </h2>
+            </div>
+            <div
+              className={css({
+                minH: { base: '240px', lg: '320px' },
+                maxH: { base: '360px', lg: '480px' },
+                overflow: 'auto',
+                p: { base: '4', sm: '5' },
+              })}
+            >
+              {isValid && csvOutput ? (
+                <pre
+                  className={css({
+                    fontFamily: 'mono',
+                    fontSize: { base: 'xs', sm: 'sm' },
+                    color: 'brand.ink',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-all',
+                  })}
+                >
+                  {csvOutput}
+                </pre>
+              ) : (
+                <p
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minH: '200px',
+                    textAlign: 'center',
+                    color: 'brand.muted',
+                    fontSize: 'sm',
+                  })}
+                >
+                  Enter valid JSON array to see CSV output
+                </p>
+              )}
+            </div>
+          </section>
         </div>
 
-        {/* Action Buttons */}
-        <div
-          className={css({
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: { base: '2', sm: '3' },
-          })}
-        >
+        <div className={dataActionBarClass}>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -461,23 +501,9 @@ export default function JSONToCSVPage() {
                 disabled={!isValid}
                 size="lg"
                 variant="outline"
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2',
-                  fontSize: { base: 'sm', sm: 'base' },
-                  _disabled: {
-                    opacity: 0.5,
-                    cursor: 'not-allowed',
-                  },
-                })}
+                className={actionButtonClass}
               >
-                <Copy
-                  className={css({
-                    h: { base: '4', sm: '5' },
-                    w: { base: '4', sm: '5' },
-                  })}
-                />
+                <Copy className={css({ h: '4', w: '4' })} aria-hidden />
                 Copy CSV
               </Button>
             </TooltipTrigger>
@@ -491,23 +517,9 @@ export default function JSONToCSVPage() {
                 disabled={!isValid}
                 size="lg"
                 variant="default"
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2',
-                  fontSize: { base: 'sm', sm: 'base' },
-                  _disabled: {
-                    opacity: 0.5,
-                    cursor: 'not-allowed',
-                  },
-                })}
+                className={actionButtonClass}
               >
-                <Download
-                  className={css({
-                    h: { base: '4', sm: '5' },
-                    w: { base: '4', sm: '5' },
-                  })}
-                />
+                <Download className={css({ h: '4', w: '4' })} aria-hidden />
                 Download CSV
               </Button>
             </TooltipTrigger>
@@ -520,162 +532,15 @@ export default function JSONToCSVPage() {
                 onClick={handleReset}
                 size="lg"
                 variant="outline"
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2',
-                  fontSize: { base: 'sm', sm: 'base' },
-                })}
+                className={actionButtonClass}
               >
-                <RefreshCw
-                  className={css({
-                    h: { base: '4', sm: '5' },
-                    w: { base: '4', sm: '5' },
-                  })}
-                />
+                <RefreshCw className={css({ h: '4', w: '4' })} aria-hidden />
                 Reset
               </Button>
             </TooltipTrigger>
             <TooltipContent>Reset to default example</TooltipContent>
           </Tooltip>
         </div>
-
-        {/* JSON Input Editor */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'teal.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
-            overflow: 'hidden',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderBottom: '1px solid',
-              borderColor: 'teal.500/20',
-              bg: 'rgba(20, 184, 166, 0.05)',
-              px: { base: '4', sm: '6' },
-              py: '3',
-            })}
-          >
-            <h3
-              className={css({
-                fontSize: { base: 'sm', sm: 'base' },
-                fontWeight: 'semibold',
-                color: 'teal.300',
-              })}
-            >
-              JSON Input
-            </h3>
-          </div>
-          {jsonExtension && (
-            <CodeMirror
-              value={jsonInput}
-              height="300px"
-              extensions={[jsonExtension]}
-              onChange={setJsonInput}
-              theme="dark"
-              basicSetup={{
-                lineNumbers: true,
-                highlightActiveLineGutter: true,
-                highlightSpecialChars: true,
-                foldGutter: true,
-                drawSelection: true,
-                dropCursor: true,
-                allowMultipleSelections: true,
-                indentOnInput: true,
-                bracketMatching: true,
-                closeBrackets: true,
-                autocompletion: true,
-                rectangularSelection: true,
-                crosshairCursor: true,
-                highlightActiveLine: true,
-                highlightSelectionMatches: true,
-                closeBracketsKeymap: true,
-                searchKeymap: true,
-                foldKeymap: true,
-                completionKeymap: true,
-                lintKeymap: true,
-              }}
-              className={css({ fontSize: { base: 'sm', sm: 'base' } })}
-            />
-          )}
-        </div>
-
-        {/* CSV Output Preview */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'green.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
-            overflow: 'hidden',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderBottom: '1px solid',
-              borderColor: 'green.500/20',
-              bg: 'rgba(34, 197, 94, 0.05)',
-              px: { base: '4', sm: '6' },
-              py: '3',
-            })}
-          >
-            <h3
-              className={css({
-                fontSize: { base: 'sm', sm: 'base' },
-                fontWeight: 'semibold',
-                color: 'green.300',
-              })}
-            >
-              CSV Output Preview
-            </h3>
-          </div>
-          <div
-            className={css({
-              maxH: '300px',
-              overflow: 'auto',
-              p: { base: '4', sm: '6' },
-            })}
-          >
-            {isValid && csvOutput ? (
-              <pre
-                className={css({
-                  fontFamily: 'mono',
-                  fontSize: { base: 'xs', sm: 'sm' },
-                  color: 'white',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-all',
-                })}
-              >
-                {csvOutput}
-              </pre>
-            ) : (
-              <div
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  py: '8',
-                  color: 'white',
-                })}
-              >
-                Enter valid JSON array to see CSV output
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
         <ToolSearch />
       </main>

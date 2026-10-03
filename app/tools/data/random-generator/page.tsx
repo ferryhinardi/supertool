@@ -4,7 +4,8 @@ import { Check, Copy, Dices, RefreshCw, RotateCcw } from 'lucide-react'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass } from '@/components/features/tools/data-workspace'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -244,84 +245,26 @@ function RandomGeneratorContent() {
   }, [])
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <Badge
-          className={css({
-            bg: 'green.500/10',
-            color: 'green.400',
-            border: '1px solid',
-            borderColor: 'green.500/20',
-          })}
-        >
-          <Dices className={css({ w: '3', h: '3', mr: '1' })} />
-          Data Tool
-        </Badge>
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            letterSpacing: 'tight',
-            lineHeight: 'tight',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'green.400',
-              gradientTo: 'emerald.500',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            Random
-          </span>{' '}
-          <span className={css({ color: 'gray.100' })}>Generator</span>
-        </h1>
-        <p
-          className={css({
-            fontSize: { base: 'md', sm: 'lg' },
-            color: 'gray.400',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Generate cryptographically secure random numbers, strings, UUIDs, and passwords. Perfect
-          for testing, development, and security applications.
-        </p>
-      </div>
+    <main className={dataPageMainClass}>
+      <DataToolHeader
+        icon={Dices}
+        eyebrow="Data Tool"
+        title={
+          <>
+            <span>Random</span> <span>Generator</span>
+          </>
+        }
+        description="Generate cryptographically secure random numbers, strings, UUIDs, and passwords. Perfect for testing, development, and security applications."
+        highlights={['Numbers', 'Strings', 'Identifiers', 'Passwords']}
+      />
 
       {/* Generator Type Selection */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'green.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -383,19 +326,12 @@ function RandomGeneratorContent() {
       </div>
 
       {/* Options */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'green.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -692,19 +628,12 @@ function RandomGeneratorContent() {
 
       {/* Results */}
       {results.length > 0 && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'green.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>

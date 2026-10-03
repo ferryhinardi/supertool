@@ -32,6 +32,8 @@ import {
   type ToolOperation,
   ToolOperationGrid,
 } from '@/components/features/tool-components'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass } from '@/components/features/tools/data-workspace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -804,87 +806,17 @@ function JSONBeautifyContent() {
           __html: '.cm-editor .cm-content .ͼ19 { color: #f08a9a !important; }',
         }}
       />
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '1400px',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '4', sm: '6', md: '8' },
-        })}
-      >
-        {/* Header */}
-        <div
-          className={css({ spaceY: '3', animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: { base: '3', sm: '4' },
-            })}
-          >
-            <div
-              className={css({
-                animation: 'pulse 2s infinite',
-                rounded: { base: 'xl', sm: '2xl' },
-                bgGradient: 'to-br',
-                gradientFrom: 'purple.600',
-                gradientVia: 'pink.600',
-                gradientTo: 'purple.700',
-                p: { base: '2.5', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.6)',
-              })}
-            >
-              <FileJson
-                className={css({
-                  h: { base: '6', sm: '8' },
-                  w: { base: '6', sm: '8' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'purple.300',
-                  gradientVia: 'pink.400',
-                  gradientTo: 'blue.300',
-                  bgClip: 'text',
-                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                  fontWeight: 'extrabold',
-                  color: 'transparent',
-                })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                JSON Beautifier Pro
-              </h1>
-              <p
-                className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.200',
-                })}
-              >
-                Advanced JSON tools: Format, validate, compare, and generate TypeScript
-              </p>
-            </div>
-          </div>
-        </div>
+      <main className={dataPageMainClass}>
+        <DataToolHeader
+          icon={FileJson}
+          eyebrow="Data Processing"
+          title="JSON Beautifier & Formatter"
+          description="Advanced JSON tools: Format, validate, compare, and generate TypeScript"
+          highlights={['Syntax highlighting', 'Validation', 'Minify', 'TypeScript']}
+        />
 
         {/* Pro Tips Section */}
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.1s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <div
             className={css({
               rounded: { base: 'xl', sm: '2xl' },
@@ -892,7 +824,6 @@ function JSONBeautifyContent() {
               borderColor: 'cyan.500/20',
               bg: 'rgba(6, 182, 212, 0.05)',
               p: { base: '4', sm: '5', md: '6' },
-              backdropFilter: 'blur(16px)',
             })}
           >
             <h3
@@ -929,9 +860,6 @@ function JSONBeautifyContent() {
         <div
           className={css({
             display: { base: 'none', md: 'block' },
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
           })}
         >
           <ToolOperationGrid
@@ -947,9 +875,6 @@ function JSONBeautifyContent() {
         <div
           className={css({
             display: { base: 'block', md: 'none' },
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
           })}
         >
           <ToolMobilePicker
@@ -978,7 +903,6 @@ function JSONBeautifyContent() {
             p: { base: '4', sm: '5', md: '6' },
             shadow: 'xl',
             boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <div
@@ -1024,7 +948,7 @@ function JSONBeautifyContent() {
                   color: 'blue.200',
                 })}
               >
-                📝 {stats.chars.toLocaleString()} chars
+                {stats.chars.toLocaleString()} chars
               </Badge>
               {stats.isValid && (
                 <Badge
@@ -1048,7 +972,6 @@ function JSONBeautifyContent() {
               variant={stats.isValid ? 'success' : 'destructive'}
               size="sm"
               className={css({
-                animation: 'pulse 2s infinite',
                 px: { base: '2.5', sm: '3', md: '4' },
                 py: { base: '1.5', sm: '1.5', md: '2' },
                 fontSize: { base: 'xs', sm: 'sm' },
@@ -1063,7 +986,7 @@ function JSONBeautifyContent() {
                   : '0 10px 15px rgba(239, 68, 68, 0.5)',
               })}
             >
-              {stats.isValid ? '✅ Valid JSON' : '❌ Invalid JSON'}
+              {stats.isValid ? 'Valid JSON' : 'Invalid JSON'}
             </Badge>
           </div>
         </div>
@@ -1077,7 +1000,6 @@ function JSONBeautifyContent() {
                 border: '2px solid',
                 borderColor: 'cyan.500/30',
                 bg: 'rgba(6, 182, 212, 0.05)',
-                backdropFilter: 'blur(16px)',
               })}
             >
               <CardHeader>
@@ -1238,7 +1160,6 @@ function JSONBeautifyContent() {
                 overflow: 'hidden',
                 shadow: '2xl',
                 boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.3)',
-                backdropFilter: 'blur(16px)',
               })}
             >
               <div className={css({ overflowX: 'auto' })}>
@@ -1269,7 +1190,6 @@ function JSONBeautifyContent() {
               border: '2px solid',
               borderColor: 'purple.500/30',
               bg: 'rgba(139, 92, 246, 0.05)',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
@@ -1292,7 +1212,7 @@ function JSONBeautifyContent() {
                 className={css({
                   p: '4',
                   rounded: 'lg',
-                  bg: 'gray.900/50',
+                  bg: 'brand.surface',
                   maxH: '600px',
                   overflowY: 'auto',
                   fontFamily: 'mono',
@@ -1324,7 +1244,6 @@ function JSONBeautifyContent() {
                 border: '2px solid',
                 borderColor: 'purple.500/30',
                 bg: 'rgba(139, 92, 246, 0.05)',
-                backdropFilter: 'blur(16px)',
               })}
             >
               <CardHeader>
@@ -1350,7 +1269,6 @@ function JSONBeautifyContent() {
                 border: '2px solid',
                 borderColor: 'blue.500/30',
                 bg: 'rgba(59, 130, 246, 0.05)',
-                backdropFilter: 'blur(16px)',
               })}
             >
               <CardHeader>
@@ -1480,7 +1398,6 @@ function JSONBeautifyContent() {
                   border: '2px solid',
                   borderColor: 'purple.500/30',
                   bg: 'rgba(139, 92, 246, 0.05)',
-                  backdropFilter: 'blur(16px)',
                 })}
               >
                 <CardHeader>
@@ -1505,7 +1422,6 @@ function JSONBeautifyContent() {
                   border: '2px solid',
                   borderColor: 'blue.500/30',
                   bg: 'rgba(59, 130, 246, 0.05)',
-                  backdropFilter: 'blur(16px)',
                 })}
               >
                 <CardHeader>
@@ -1545,7 +1461,6 @@ function JSONBeautifyContent() {
                   border: '2px solid',
                   borderColor: 'cyan.500/30',
                   bg: 'rgba(6, 182, 212, 0.05)',
-                  backdropFilter: 'blur(16px)',
                 })}
               >
                 <CardHeader>
@@ -1597,7 +1512,7 @@ function JSONBeautifyContent() {
                     </div>
                   )}
                   {diffResult.removed.length === 0 && diffResult.added.length === 0 && (
-                    <p className={css({ color: 'green.400' })}>✅ JSONs are identical</p>
+                    <p className={css({ color: 'green.400' })}>JSONs are identical</p>
                   )}
                 </CardContent>
               </Card>
@@ -1612,7 +1527,6 @@ function JSONBeautifyContent() {
                 border: '2px solid',
                 borderColor: 'purple.500/30',
                 bg: 'rgba(139, 92, 246, 0.05)',
-                backdropFilter: 'blur(16px)',
               })}
             >
               <CardHeader>
@@ -1651,7 +1565,6 @@ function JSONBeautifyContent() {
                   border: '2px solid',
                   borderColor: 'blue.500/30',
                   bg: 'rgba(59, 130, 246, 0.05)',
-                  backdropFilter: 'blur(16px)',
                 })}
               >
                 <CardHeader>
@@ -1682,7 +1595,7 @@ function JSONBeautifyContent() {
                     className={css({
                       p: '4',
                       rounded: 'lg',
-                      bg: 'gray.900/50',
+                      bg: 'brand.surface',
                       fontSize: 'sm',
                       color: 'white',
                       overflowX: 'auto',
@@ -1707,7 +1620,6 @@ function JSONBeautifyContent() {
             p: { base: '4', sm: '5', md: '6' },
             shadow: 'xl',
             boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <div
@@ -1895,7 +1807,6 @@ function JSONBeautifyContent() {
             border: '1px solid',
             borderColor: 'gray.700/50',
             bg: 'gray.800/30',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardContent withTopPadding className={css({ pt: '4', pb: '4' })}>
@@ -2021,7 +1932,6 @@ function JSONBeautifyContent() {
               border: '2px solid',
               borderColor: 'purple.500/30',
               bg: 'rgba(139, 92, 246, 0.05)',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
