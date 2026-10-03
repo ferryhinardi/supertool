@@ -47,19 +47,9 @@ describe('CronExpressionPage', () => {
       expect(screen.getByText('Cron Expression Builder')).toBeTruthy()
     })
 
-    it.skip('should render description text', () => {
-      // Skipped: Text not in component
+    it('should render description text', () => {
       renderPage()
-      expect(screen.getByText(/Create and validate cron expressions/i)).toBeTruthy()
-    })
-
-    it.skip('should track page open event', () => {
-      // Skipped: Analytics hook timing issue
-      renderPage()
-      expect(vi.mocked(trackToolEvent)).toHaveBeenCalledWith(
-        'cron_expression_builder_open',
-        expect.any(Object)
-      )
+      expect(screen.getByText(/Build and validate cron schedules visually/i)).toBeTruthy()
     })
   })
 
@@ -94,8 +84,7 @@ describe('CronExpressionPage', () => {
       expect(screen.getByText(/Runs at 09:00 Monday through Friday/i)).toBeTruthy()
     })
 
-    it.skip('should update description when expression changes', async () => {
-      // Skipped: Async timing issue
+    it('should update description when expression changes', async () => {
       const user = userEvent.setup()
       renderPage()
 
@@ -104,7 +93,7 @@ describe('CronExpressionPage', () => {
       fireEvent.change(input, { target: { value: '0 0 * * *' } })
 
       await waitFor(() => {
-        expect(screen.queryByText(/midnight|00:00/i)).toBeTruthy()
+        expect(screen.getByText('Runs at 00:00 every day')).toBeTruthy()
       })
     })
   })
@@ -115,34 +104,29 @@ describe('CronExpressionPage', () => {
       expect(screen.getByText('Visual Builder')).toBeTruthy()
     })
 
-    it.skip('should render minute selector', () => {
-      // Skipped: Selector not found
+    it('should render minute selector', () => {
       renderPage()
-      expect(screen.getByText(/Minute/i)).toBeTruthy()
+      expect(screen.getByLabelText('Minute')).toBeTruthy()
     })
 
-    it.skip('should render hour selector', () => {
-      // Skipped: Selector not found
+    it('should render hour selector', () => {
       renderPage()
-      expect(screen.getByText(/Hour/i)).toBeTruthy()
+      expect(screen.getByLabelText('Hour')).toBeTruthy()
     })
 
-    it.skip('should render day selector', () => {
-      // Skipped: Selector not found
+    it('should render day selector', () => {
       renderPage()
-      expect(screen.getByText(/Day|Date/i)).toBeTruthy()
+      expect(screen.getByLabelText('Day')).toBeTruthy()
     })
 
-    it.skip('should render month selector', () => {
-      // Skipped: Selector not found
+    it('should render month selector', () => {
       renderPage()
-      expect(screen.getByText(/Month/i)).toBeTruthy()
+      expect(screen.getByLabelText('Month')).toBeTruthy()
     })
 
-    it.skip('should render weekday selector', () => {
-      // Skipped: Selector not found
+    it('should render weekday selector', () => {
       renderPage()
-      expect(screen.getByText(/Weekday|Day of Week/i)).toBeTruthy()
+      expect(screen.getByLabelText('Weekday')).toBeTruthy()
     })
 
     it('should allow selecting specific minute', async () => {
@@ -164,16 +148,16 @@ describe('CronExpressionPage', () => {
       expect(patterns.length).toBeGreaterThan(0)
     })
 
-    it.skip('should display Every Minute pattern', () => {
-      // Skipped: Pattern text not found
+    it('should display Every Minute pattern', () => {
       renderPage()
-      expect(screen.queryByText(/Every Minute/i)).toBeTruthy()
+      expect(screen.getByRole('button', { name: /Every Minute/i })).toBeTruthy()
     })
 
-    it.skip('should display Every Hour pattern', () => {
-      // Skipped: Pattern text not found
+    it('should display Every Hour pattern', async () => {
+      const user = userEvent.setup()
       renderPage()
-      expect(screen.queryByText(/Every Hour/i)).toBeTruthy()
+      await user.click(screen.getByRole('button', { name: /^hourly$/i }))
+      expect(screen.getByRole('button', { name: /Every Hour/i })).toBeTruthy()
     })
 
     it('should display Daily pattern', () => {
@@ -215,11 +199,10 @@ describe('CronExpressionPage', () => {
       expect(times.length).toBeGreaterThan(0)
     })
 
-    it.skip('should show at least 5 execution times', () => {
-      // Skipped: Count assertion issue
+    it('should show at least 5 execution times', () => {
       renderPage()
-      const executionItems = document.querySelectorAll('[class*="execution"]')
-      expect(executionItems.length).toBeGreaterThan(0)
+      const executionItems = screen.getAllByText(/\d{1,2}:\d{2}:\d{2}/)
+      expect(executionItems.length).toBeGreaterThanOrEqual(5)
     })
   })
 
@@ -249,34 +232,35 @@ describe('CronExpressionPage', () => {
       expect(screen.getByText('Export Configuration')).toBeTruthy()
     })
 
-    it.skip('should display export format options', () => {
-      // Skipped: Export options not found
+    it('should display export format options', () => {
       renderPage()
-      expect(screen.queryByText(/JSON|YAML|XML/i)).toBeTruthy()
+      expect(screen.getByRole('option', { name: 'Crontab' })).toBeTruthy()
+      expect(screen.getByRole('option', { name: 'Kubernetes CronJob' })).toBeTruthy()
+      expect(screen.getByRole('option', { name: 'GitHub Actions' })).toBeTruthy()
     })
 
-    it.skip('should render export button', () => {
-      // Skipped: Export button not found
+    it('should render export button', () => {
       renderPage()
-      expect(screen.queryByText(/Export|Download/i)).toBeTruthy()
+      expect(screen.getByRole('button', { name: /Copy Config/i })).toBeTruthy()
     })
 
-    it.skip('should export configuration', async () => {
-      // Skipped: Export functionality not tested
+    it('should export configuration', async () => {
       const user = userEvent.setup()
       renderPage()
 
-      const exportButton = screen.queryByText(/Export|Download/i)
-      if (exportButton) {
-        await user.click(exportButton)
-        expect(exportButton).toBeTruthy()
-      }
+      await user.click(screen.getByRole('button', { name: /Copy Config/i }))
+
+      await waitFor(() => {
+        expect(navigator.clipboard.writeText).toHaveBeenCalled()
+        expect(vi.mocked(trackToolEvent)).toHaveBeenCalledWith('cron_expression_export', {
+          platform: 'crontab',
+        })
+      })
     })
   })
 
   describe('Validation', () => {
-    it.skip('should validate cron expression', async () => {
-      // Skipped: Validation timing issue
+    it('should validate cron expression', async () => {
       const user = userEvent.setup()
       renderPage()
 
@@ -285,18 +269,16 @@ describe('CronExpressionPage', () => {
       fireEvent.change(input, { target: { value: 'invalid cron' } })
 
       await waitFor(() => {
-        expect(screen.queryByText(/invalid|error/i)).toBeTruthy()
+        expect(screen.getByText(/exactly five or six space separated parts/i)).toBeTruthy()
       })
     })
 
-    it.skip('should show valid indicator for correct expression', () => {
-      // Skipped: Indicator not found
+    it('should show valid indicator for correct expression', () => {
       renderPage()
-      expect(screen.queryByText(/valid/i)).toBeTruthy()
+      expect(screen.getByText(/Runs at 09:00 Monday through Friday/i)).toBeTruthy()
     })
 
-    it.skip('should show error for invalid expression', async () => {
-      // Skipped: Error display timing issue
+    it('should show error for invalid expression', async () => {
       const user = userEvent.setup()
       renderPage()
 
@@ -305,7 +287,7 @@ describe('CronExpressionPage', () => {
       fireEvent.change(input, { target: { value: '999 999 * * *' } })
 
       await waitFor(() => {
-        expect(screen.queryByText(/invalid|error/i)).toBeTruthy()
+        expect(screen.getByText(/Invalid value for minute: 999/i)).toBeTruthy()
       })
     })
   })
@@ -317,10 +299,9 @@ describe('CronExpressionPage', () => {
       expect(buttons.length).toBeGreaterThan(5)
     })
 
-    it.skip('should have * wildcard button', () => {
-      // Skipped: Wildcard button not found
+    it('should document the * wildcard in the syntax guide', () => {
       renderPage()
-      expect(screen.queryByText('*')).toBeTruthy()
+      expect(screen.getByText(/Use \* for any value/i)).toBeTruthy()
     })
   })
 
@@ -351,11 +332,13 @@ describe('CronExpressionPage', () => {
       expect(buttons.length).toBeGreaterThan(0)
     })
 
-    it.skip('should have ARIA labels', () => {
-      // Skipped: ARIA labels check issue
+    it('should have accessible field labels', () => {
       renderPage()
-      const ariaElements = document.querySelectorAll('[aria-label]')
-      expect(ariaElements.length).toBeGreaterThan(0)
+      expect(screen.getByLabelText('Minute')).toBeTruthy()
+      expect(screen.getByLabelText('Hour')).toBeTruthy()
+      expect(screen.getByLabelText('Day')).toBeTruthy()
+      expect(screen.getByLabelText('Month')).toBeTruthy()
+      expect(screen.getByLabelText('Weekday')).toBeTruthy()
     })
 
     it('should have semantic heading structure', () => {
@@ -365,78 +348,24 @@ describe('CronExpressionPage', () => {
     })
   })
 
-  describe.skip('Related Tools', () => {
-    // Skipped: Section not in component
-    it('should render Related Tools section', () => {
-      renderPage()
-      expect(screen.getByText(/Related Tools/i)).toBeTruthy()
-    })
-
-    it('should display related tool links', () => {
-      renderPage()
-      const relatedTools = document.querySelectorAll('[href*="/tools/"]')
-      expect(relatedTools.length).toBeGreaterThan(0)
-    })
-  })
-
-  describe.skip('Social Share', () => {
-    // Skipped: Section not in component
-    it('should render social share section', () => {
-      renderPage()
-      const shareElements = screen.queryAllByText(/share/i)
-      expect(shareElements.length).toBeGreaterThan(0)
-    })
-  })
-
   describe('Cron Format Info', () => {
-    it.skip('should display cron format information', () => {
-      // Skipped: Multiple elements with text pattern
+    it('should display cron format information', () => {
       renderPage()
-      expect(screen.queryByText(/minute|hour|day|month|weekday/i)).toBeTruthy()
+      expect(screen.getByText('Cron Syntax Guide')).toBeTruthy()
+      expect(screen.getByText(/Use \* for any value/i)).toBeTruthy()
     })
 
-    it.skip('should show field descriptions', () => {
-      // Skipped: Multiple elements with text pattern
+    it('should show field descriptions', () => {
       renderPage()
-      expect(screen.queryByText(/0-59|0-23|1-31|1-12|0-6/i)).toBeTruthy()
-    })
-  })
-
-  describe('Examples Section', () => {
-    it.skip('should display example expressions', () => {
-      // Skipped: Examples section not in component
-      renderPage()
-      expect(screen.queryByText(/Example|Sample/i)).toBeTruthy()
-    })
-
-    it.skip('should show common use cases', () => {
-      // Skipped: Examples section not in component
-      renderPage()
-      expect(screen.queryByText(/backup|report|cleanup|sync/i)).toBeTruthy()
-    })
-  })
-
-  describe('Timezone Support', () => {
-    it.skip('should display timezone selector', () => {
-      // Skipped: Timezone section not in component
-      renderPage()
-      expect(screen.queryByText(/Timezone|Time Zone/i)).toBeTruthy()
-    })
-
-    it.skip('should show current timezone', () => {
-      // Skipped: Multiple elements with timezone text
-      renderPage()
-      expect(screen.queryByText(/UTC|GMT|PST|EST/i)).toBeTruthy()
+      expect(screen.getByText('0-59')).toBeTruthy()
+      expect(screen.getByText('0-23')).toBeTruthy()
+      expect(screen.getByText('1-31')).toBeTruthy()
+      expect(screen.getByText('1-12')).toBeTruthy()
+      expect(screen.getByText('0-6')).toBeTruthy()
     })
   })
 
   describe('Clear Functionality', () => {
-    it.skip('should render Clear button', () => {
-      // Skipped: Clear functionality not visible in component
-      renderPage()
-      expect(screen.queryByText(/Clear|Reset/i)).toBeTruthy()
-    })
-
     it('should clear expression when clicked', async () => {
       const user = userEvent.setup()
       renderPage()
@@ -449,20 +378,6 @@ describe('CronExpressionPage', () => {
     })
   })
 
-  describe('Save/Load Feature', () => {
-    it.skip('should render Save button', () => {
-      // Skipped: Save button not visible in component
-      renderPage()
-      expect(screen.queryByText(/Save/i)).toBeTruthy()
-    })
-
-    it.skip('should render Load button', () => {
-      // Skipped: Multiple Load elements
-      renderPage()
-      expect(screen.queryByText(/Load/i)).toBeTruthy()
-    })
-  })
-
   describe('Responsive Design', () => {
     it('should render mobile-friendly layout', () => {
       renderPage()
@@ -472,12 +387,6 @@ describe('CronExpressionPage', () => {
   })
 
   describe('Expression History', () => {
-    // TODO: Fix flaky test - history section not rendered consistently
-    it.skip('should display history section', () => {
-      renderPage()
-      expect(screen.queryByText(/History|Recent/i)).toBeTruthy()
-    })
-
     it('should store recent expressions', () => {
       renderPage()
       const historyItems = document.querySelectorAll('[class*="history"]')
@@ -509,14 +418,6 @@ describe('CronExpressionPage', () => {
       fireEvent.change(input, { target: { value: '*/15 * * * *' } })
 
       expect(input.value).toContain('*/15')
-    })
-  })
-
-  describe('Execution Frequency', () => {
-    it.skip('should calculate execution frequency', () => {
-      // Skipped: Execution Frequency section not in component
-      renderPage()
-      expect(screen.queryByText(/times per day|times per week|times per month/i)).toBeTruthy()
     })
   })
 })
