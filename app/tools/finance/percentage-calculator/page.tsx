@@ -4,6 +4,7 @@ import { Calculator, Copy, Info, Percent, RotateCcw, Sparkles, TrendingUp } from
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
+import { FinanceToolHeader } from '@/components/features/tools/FinanceToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -227,78 +228,20 @@ function PercentageCalculatorContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/30',
-            bg: 'purple.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Percent className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
-            7 Calculation Modes • Instant Results
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'rose.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Percentage Calculator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Calculate percentages, discounts, tips, tax, and more with instant results. Seven powerful
-          calculation modes for all your percentage needs.
-        </p>
-      </div>
+      <FinanceToolHeader
+        title="Percentage Calculator"
+        description="Calculate percentages, discounts, tips, tax, and more with instant results. Seven powerful calculation modes for all your percentage needs."
+        eyebrow="Percentage calculator"
+        icon={Percent}
+        highlights={['7 Calculation Modes', 'Instant Results']}
+      />
 
       {/* Mode Selection */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
+            borderColor: 'emerald.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
@@ -333,10 +276,10 @@ function PercentageCalculatorContent() {
                       gap: '2',
                       py: '4',
                       px: '4',
-                      bg: isActive ? 'purple.500/20' : 'gray.800/50',
+                      bg: isActive ? 'emerald.500/20' : 'gray.800/50',
                       border: '1px solid',
-                      borderColor: isActive ? 'purple.500/50' : 'gray.700/50',
-                      color: isActive ? 'purple.300' : 'gray.400',
+                      borderColor: isActive ? 'emerald.500/50' : 'gray.700/50',
+                      color: isActive ? 'emerald.400' : 'gray.400',
                       transition: 'all 0.2s',
                       textAlign: 'left',
                       alignItems: 'flex-start',
@@ -346,8 +289,8 @@ function PercentageCalculatorContent() {
                       whiteSpace: 'normal',
                       overflowWrap: 'anywhere',
                       _hover: {
-                        bg: isActive ? 'purple.500/30' : 'gray.800',
-                        borderColor: isActive ? 'purple.500/70' : 'gray.600',
+                        bg: isActive ? 'emerald.500/30' : 'gray.800',
+                        borderColor: isActive ? 'emerald.500/70' : 'gray.600',
                         transform: 'translateY(-2px)',
                       },
                     })}
@@ -383,24 +326,18 @@ function PercentageCalculatorContent() {
       </div>
 
       {/* Calculator */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
+            borderColor: 'emerald.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
             <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-              <Calculator className={css({ h: '5', w: '5', color: 'purple.400' })} />
+              <Calculator className={css({ h: '5', w: '5', color: 'emerald.400' })} />
               <CardTitle>{currentMode.name}</CardTitle>
             </div>
             <CardDescription>{currentMode.description}</CardDescription>
@@ -445,9 +382,9 @@ function PercentageCalculatorContent() {
                         borderColor: 'gray.700',
                         pr: inputConfig.suffix ? '12' : '4',
                         _focus: {
-                          borderColor: 'purple.500',
+                          borderColor: 'emerald.500',
                           ring: '2px',
-                          ringColor: 'purple.500/20',
+                          ringColor: 'emerald.500/20',
                         },
                       })}
                     />
@@ -491,8 +428,8 @@ function PercentageCalculatorContent() {
                         h: 'auto',
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'purple.500/30',
-                        bg: 'purple.500/10',
+                        borderColor: 'emerald.500/30',
+                        bg: 'emerald.500/10',
                         px: '6',
                         display: 'flex',
                         flexDirection: { base: 'column', sm: 'row' },
@@ -505,7 +442,7 @@ function PercentageCalculatorContent() {
                         className={css({
                           fontSize: '3xl',
                           fontWeight: 'bold',
-                          color: 'purple.300',
+                          color: 'emerald.400',
                           overflowWrap: 'anywhere',
                         })}
                       >
@@ -516,9 +453,9 @@ function PercentageCalculatorContent() {
                         size="sm"
                         className={css({
                           gap: '2',
-                          bg: 'purple.500/20',
-                          color: 'purple.300',
-                          _hover: { bg: 'purple.500/30' },
+                          bg: 'emerald.500/20',
+                          color: 'emerald.400',
+                          _hover: { bg: 'emerald.500/30' },
                         })}
                       >
                         <Copy className={css({ h: '4', w: '4' })} />
@@ -533,17 +470,21 @@ function PercentageCalculatorContent() {
                   className={css({
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'purple.500/20',
-                    bg: 'purple.500/5',
+                    borderColor: 'emerald.500/20',
+                    bg: 'emerald.500/5',
                     p: '4',
                   })}
                 >
                   <div
                     className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}
                   >
-                    <TrendingUp className={css({ h: '4', w: '4', color: 'purple.400' })} />
+                    <TrendingUp className={css({ h: '4', w: '4', color: 'emerald.400' })} />
                     <span
-                      className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'purple.300' })}
+                      className={css({
+                        fontSize: 'sm',
+                        fontWeight: 'medium',
+                        color: 'emerald.400',
+                      })}
                     >
                       Calculation
                     </span>
@@ -582,13 +523,7 @@ function PercentageCalculatorContent() {
       </div>
 
       {/* Quick Tips */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <div
           className={css({
             display: 'grid',
@@ -600,17 +535,17 @@ function PercentageCalculatorContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'pink.500/20',
-              bg: 'pink.500/5',
+              borderColor: 'cyan.500/20',
+              bg: 'cyan.500/5',
               backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-                <Sparkles className={css({ h: '6', w: '6', color: 'pink.400', flexShrink: '0' })} />
+                <Sparkles className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
                 <div className={css({ spaceY: '2' })}>
                   <h3
-                    className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'pink.300' })}
+                    className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}
                   >
                     Pro Tips
                   </h3>

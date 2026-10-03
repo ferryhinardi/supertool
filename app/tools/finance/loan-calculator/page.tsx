@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { parseAsFloat, parseAsInteger, parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { FinanceToolHeader } from '@/components/features/tools/FinanceToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -199,74 +200,16 @@ function LoanCalculatorContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'emerald.500/30',
-            bg: 'emerald.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Calculator className={css({ h: '5', w: '5', color: 'emerald.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'emerald.300' })}>
-            Mortgage & Loan Calculator
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'emerald.400',
-            gradientVia: 'green.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Loan Calculator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Calculate monthly payments, view amortization schedules, and compare different loan
-          scenarios. Perfect for mortgages, auto loans, and personal loans.
-        </p>
-      </div>
+      <FinanceToolHeader
+        title="Loan Calculator"
+        description="Calculate monthly payments, view amortization schedules, and compare different loan scenarios. Perfect for mortgages, auto loans, and personal loans."
+        eyebrow="Loan workspace"
+        icon={Calculator}
+        highlights={['Mortgage & Loan Calculator']}
+      />
 
       {/* Calculator Inputs */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -507,13 +450,7 @@ function LoanCalculatorContent() {
       </div>
 
       {/* Results */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <div
           className={css({
             display: 'grid',
@@ -591,20 +528,20 @@ function LoanCalculatorContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/30',
-              bg: 'purple.500/10',
+              borderColor: 'emerald.500/30',
+              bg: 'emerald.500/10',
               backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
               <div className={css({ spaceY: '2' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <PiggyBank className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                  <PiggyBank className={css({ h: '5', w: '5', color: 'emerald.400' })} />
                   <span className={css({ fontSize: 'sm', color: 'white' })}>
                     Principal / Interest
                   </span>
                 </div>
-                <p className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'purple.300' })}>
+                <p className={css({ fontSize: 'xl', fontWeight: 'bold', color: 'emerald.400' })}>
                   {loanData.principalPercent.toFixed(1)}% / {loanData.interestPercent.toFixed(1)}%
                 </p>
               </div>
@@ -615,13 +552,7 @@ function LoanCalculatorContent() {
 
       {/* Extra Payment Benefits */}
       {loanData.withExtra && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
@@ -677,13 +608,7 @@ function LoanCalculatorContent() {
       )}
 
       {/* Amortization Schedule */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -815,13 +740,7 @@ function LoanCalculatorContent() {
       </div>
 
       {/* Loan Comparison */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.5s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',

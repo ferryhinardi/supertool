@@ -31,6 +31,7 @@ import { toast } from 'sonner'
 import { CurrencyConverter } from '@/components/features/currency/CurrencyConverter'
 import { ShortcutsHelp } from '@/components/features/shared/ShortcutsHelp'
 import { TemplatesSelector } from '@/components/features/shared/TemplatesSelector'
+import { FinanceToolHeader } from '@/components/features/tools/FinanceToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
@@ -934,7 +935,7 @@ export default function SplitBillPage() {
         aria-label="Split bill calculator"
         className={css({
           mx: 'auto',
-          maxW: '1400px',
+          maxW: '7xl',
           w: 'full',
           px: { base: '4', sm: '6', md: '8' },
           py: { base: '6', sm: '8', md: '10' },
@@ -951,63 +952,13 @@ export default function SplitBillPage() {
             gap: '3',
           })}
         >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: { base: '3', sm: '4' },
-            })}
-          >
-            <div
-              className={css({
-                animation: 'pulse 2s infinite',
-                rounded: { base: 'xl', sm: '2xl' },
-                bgGradient: 'to-br',
-                gradientFrom: 'green.600',
-                gradientVia: 'emerald.600',
-                gradientTo: 'teal.700',
-                p: { base: '2.5', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px rgba(34, 197, 94, 0.6)',
-              })}
-            >
-              <Users
-                className={css({
-                  h: { base: '6', sm: '8' },
-                  w: { base: '6', sm: '8' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'green.300',
-                  gradientVia: 'emerald.400',
-                  gradientTo: 'teal.300',
-                  bgClip: 'text',
-                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                  fontWeight: 'extrabold',
-                  textShadow: '0 10px 15px rgba(0, 0, 0, 0.1)',
-                })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Split Bill Calculator
-              </h1>
-              <p
-                className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.200',
-                })}
-              >
-                Split bills fairly with tip and tax calculations
-              </p>
-            </div>
-          </div>
+          <FinanceToolHeader
+            title="Split Bill Calculator"
+            description="Split bills fairly with tip and tax calculations"
+            eyebrow="Bill splitting"
+            icon={Users}
+            highlights={['Tip and tax', 'Fair split']}
+          />
 
           {/* Mode Toggle */}
           <div
@@ -1818,8 +1769,8 @@ export default function SplitBillPage() {
               className={css({
                 rounded: 'lg',
                 border: '1px solid',
-                borderColor: 'purple.500/30',
-                bg: 'rgba(147, 51, 234, 0.05)',
+                borderColor: 'cyan.500/30',
+                bg: 'rgba(6, 182, 212, 0.05)',
                 p: '4',
                 display: 'flex',
                 flexDirection: 'column',
@@ -1833,7 +1784,7 @@ export default function SplitBillPage() {
                   gap: '2',
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'purple.300',
+                  color: 'cyan.300',
                 })}
               >
                 <Sparkles className={css({ h: '4', w: '4' })} />
@@ -1874,7 +1825,7 @@ export default function SplitBillPage() {
                       color: 'white',
                       fontSize: 'sm',
                       _focus: {
-                        borderColor: 'purple.500',
+                        borderColor: 'cyan.500',
                         outline: 'none',
                         ring: '1px',
                         ringColor: 'rgba(147, 51, 234, 0.3)',
@@ -1909,7 +1860,7 @@ export default function SplitBillPage() {
                       color: 'white',
                       fontSize: 'sm',
                       _focus: {
-                        borderColor: 'purple.500',
+                        borderColor: 'cyan.500',
                         outline: 'none',
                         ring: '1px',
                         ringColor: 'rgba(147, 51, 234, 0.3)',
@@ -1942,7 +1893,7 @@ export default function SplitBillPage() {
                       color: 'white',
                       fontSize: 'sm',
                       _focus: {
-                        borderColor: 'purple.500',
+                        borderColor: 'cyan.500',
                         outline: 'none',
                         ring: '1px',
                         ringColor: 'rgba(147, 51, 234, 0.3)',
@@ -1955,8 +1906,8 @@ export default function SplitBillPage() {
                   size="sm"
                   aria-label="Add item"
                   className={css({
-                    bg: 'purple.600',
-                    _hover: { bg: 'purple.500' },
+                    bg: 'cyan.600',
+                    _hover: { bg: 'cyan.500' },
                   })}
                 >
                   <Plus className={css({ h: '4', w: '4' })} />
@@ -1995,8 +1946,8 @@ export default function SplitBillPage() {
                                 h: '6',
                                 px: '2',
                                 fontSize: 'xs',
-                                color: 'purple.400',
-                                _hover: { bg: 'purple.500/20' },
+                                color: 'cyan.400',
+                                _hover: { bg: 'cyan.500/20' },
                               })}
                             >
                               {person.name} ✓
@@ -2124,12 +2075,12 @@ export default function SplitBillPage() {
                                     fontSize: 'xs',
                                     fontWeight: 'medium',
                                     transition: 'all 0.2s',
-                                    bg: isAssigned ? 'purple.600' : 'gray.700',
+                                    bg: isAssigned ? 'cyan.600' : 'gray.700',
                                     color: isAssigned ? 'white' : 'gray.400',
                                     border: '1px solid',
-                                    borderColor: isAssigned ? 'purple.500' : 'gray.600',
+                                    borderColor: isAssigned ? 'cyan.500' : 'gray.600',
                                     _hover: {
-                                      bg: isAssigned ? 'purple.500' : 'gray.600',
+                                      bg: isAssigned ? 'cyan.500' : 'gray.600',
                                     },
                                   })}
                                 >
