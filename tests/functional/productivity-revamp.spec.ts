@@ -36,8 +36,9 @@ test.describe('Productivity family revamp', () => {
       const response = await page.goto(tool.path)
       expect(response?.status()).toBeLessThan(400)
       await expect(page.getByRole('navigation', { name: 'Productivity tools' })).toHaveCount(1)
-      await expect(page.locator('main h1')).toHaveCount(1)
-      await expect(page.locator('main h1')).toHaveText(tool.h1)
+      await expect(page.getByRole('heading', { level: 1, name: tool.h1, exact: true })).toHaveCount(
+        1
+      )
       await expect(page.getByRole('link', { name: 'Productivity Tools' })).toHaveAttribute(
         'href',
         '/tools/productivity'
@@ -53,7 +54,9 @@ test.describe('Productivity family revamp', () => {
   test('case converter converts text on a phone-sized viewport', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto('/tools/productivity/case-converter')
-    const navLink = page.getByRole('link', { name: /^Case Converter$/ })
+    const navLink = page
+      .getByRole('navigation', { name: 'Productivity tools' })
+      .getByRole('link', { name: /^Case Converter$/ })
     const box = await navLink.boundingBox()
     expect(box?.height ?? 0).toBeGreaterThanOrEqual(44)
 

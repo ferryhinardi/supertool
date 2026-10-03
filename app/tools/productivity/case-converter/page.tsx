@@ -265,11 +265,7 @@ function CaseConverterContent() {
             <div
               className={css({
                 display: 'grid',
-                gridTemplateColumns: {
-                  base: '1fr',
-                  sm: 'repeat(2, minmax(0, 1fr))',
-                  lg: 'repeat(3, minmax(0, 1fr))',
-                },
+                gridTemplateColumns: { base: '1fr', md: 'repeat(2, minmax(0, 1fr))' },
                 gap: '3',
                 w: 'full',
               })}
@@ -309,6 +305,7 @@ function CaseConverterContent() {
                       fontWeight: 'medium',
                       color: selectedCase === caseType.id ? 'brand.amber' : 'brand.ink',
                       fontFamily: 'mono',
+                      overflowWrap: 'anywhere',
                     })}
                   >
                     {caseType.label}
