@@ -14,6 +14,7 @@ import {
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -171,16 +172,7 @@ function FileVerifierContent() {
   }
 
   return (
-    <main
-      className={css({
-        maxW: '7xl',
-        mx: 'auto',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <SecurityToolHeader
         title="File Integrity Verifier"
         description="Verify file integrity by comparing cryptographic hashes. Detect tampering, corruption, or unauthorized modifications. All processing happens securely in your browser."
@@ -525,7 +517,7 @@ function FileVerifierContent() {
       </div>
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

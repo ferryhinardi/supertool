@@ -6,6 +6,7 @@ import { Clock, Globe, MapPin, Plus, Star, Trash2, X } from 'lucide-react'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -202,16 +203,7 @@ function TimezoneConverterContent() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Timezone Converter"
         description="Convert time across multiple timezones with DST awareness. Perfect for scheduling international meetings and coordinating with remote teams."
@@ -518,7 +510,7 @@ function TimezoneConverterContent() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

@@ -1,11 +1,5 @@
-import { SecurityWorkspaceChrome } from '@/components/features/tools/SecurityWorkspaceChrome'
-import { css } from '@/styled-system/css'
+import { CategoryWorkspaceLayout } from '@/components/features/tools/workspace/CategoryWorkspaceLayout'
 
 export default function SecurityToolsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className={css({ mx: 'auto', w: 'full', maxW: '7xl' })}>
-      <SecurityWorkspaceChrome />
-      {children}
-    </div>
-  )
+  return <CategoryWorkspaceLayout category="security">{children}</CategoryWorkspaceLayout>
 }

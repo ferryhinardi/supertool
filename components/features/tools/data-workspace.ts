@@ -1,14 +1,5 @@
 import { css } from '@/styled-system/css'
 
-export const dataPageMainClass = css({
-  mx: 'auto',
-  maxW: '7xl',
-  w: 'full',
-  px: { base: '4', sm: '6', md: '8' },
-  py: { base: '6', sm: '8', md: '10' },
-  spaceY: { base: '6', sm: '8', md: '10' },
-})
-
 export const dataPanelClass = css({
   rounded: 'xl',
   border: '1px solid',

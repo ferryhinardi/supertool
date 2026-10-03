@@ -5,6 +5,7 @@ import { ArrowLeftRight, Check, Copy, Download, FileJson, Info, Sparkles } from 
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -185,16 +186,7 @@ developers:
     direction === 'yaml-to-json' ? 'Paste your YAML here...' : 'Paste your JSON here...'
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       {/* Header */}
       <DevelopmentToolHeader
         title="YAML ↔ JSON Converter"
@@ -542,7 +534,7 @@ developers:
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

@@ -37,6 +37,7 @@ import {
   ToolOperationGrid,
 } from '@/components/features/tool-components'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -837,16 +838,7 @@ function UnitConverterContent() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Unit Converter"
         description="Convert between metric, imperial, and scientific units instantly. Support for length, weight, temperature, volume, area, speed, time, and more."
@@ -2399,7 +2391,7 @@ function UnitConverterContent() {
 
       {/* Global Tool Search - Cmd+K */}
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

@@ -6,7 +6,8 @@ import { useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
-import { dataPageMainClass } from '@/components/features/tools/data-workspace'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -196,7 +197,7 @@ function JSONSchemaContent() {
 
   return (
     <TooltipProvider>
-      <main className={dataPageMainClass}>
+      <ToolPageFrame>
         <DataToolHeader
           icon={Code}
           eyebrow="Auto Generate • Type Inference • Validation"
@@ -633,7 +634,7 @@ function JSONSchemaContent() {
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
         <ToolSearch />
-      </main>
+      </ToolPageFrame>
     </TooltipProvider>
   )
 }

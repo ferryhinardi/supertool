@@ -5,6 +5,7 @@ import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
 import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -116,16 +117,7 @@ function Base64Content() {
   )
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <SecurityToolHeader
         title="Base64 Encoder & Decoder"
         description="Convert text and files to Base64 encoding or decode Base64 strings back to original format"
@@ -523,7 +515,7 @@ function Base64Content() {
         shortcuts={shortcuts}
         toolName="Base64 Encoder"
       />
-    </main>
+    </ToolPageFrame>
   )
 }
 

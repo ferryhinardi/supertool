@@ -18,6 +18,7 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { supabase } from '@/lib/auth/supabaseClient'
 import { trackToolEvent } from '@/lib/services/analytics'
@@ -282,16 +283,7 @@ export default function WebhookTesterPage() {
   // If not authenticated, show sign-in prompt
   if (!user && !isLoading) {
     return (
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '7xl',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '6', sm: '8', md: '10' },
-        })}
-      >
+      <ToolPageFrame>
         <DevelopmentToolHeader
           title="Webhook Tester"
           description="Test and debug webhooks in real-time"
@@ -341,21 +333,12 @@ export default function WebhookTesterPage() {
             Sign In
           </button>
         </div>
-      </main>
+      </ToolPageFrame>
     )
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       {/* Header */}
       <DevelopmentToolHeader
         title="Webhook Tester"
@@ -1238,6 +1221,6 @@ export default function WebhookTesterPage() {
           <li>• Copy the cURL command to easily recreate requests</li>
         </ul>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }

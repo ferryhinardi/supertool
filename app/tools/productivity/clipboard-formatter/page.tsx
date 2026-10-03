@@ -16,6 +16,7 @@ import {
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
@@ -283,16 +284,7 @@ function ClipboardFormatterPageContent() {
   }, [inputText, outputText])
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Clipboard Formatter"
         description="Paste and format text instantly. Remove extra whitespace, normalize line breaks, and apply transformations."
@@ -927,7 +919,7 @@ function ClipboardFormatterPageContent() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

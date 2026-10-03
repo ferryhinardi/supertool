@@ -16,6 +16,7 @@ import {
 import { useEffect, useRef, useState } from 'react'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -486,16 +487,7 @@ export default function VideoConverterPage() {
     totalOriginalSize > 0 ? calculateSavings(totalOriginalSize, totalConvertedSize) : 0
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       {/* Header */}
       <div className={css({ w: 'full' })}>
         <MediaToolHeader
@@ -1320,6 +1312,6 @@ export default function VideoConverterPage() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }

@@ -14,6 +14,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -277,16 +278,7 @@ export default function BatchRenamePage() {
   const hasChanges = files.some((f) => f.originalName !== f.newName)
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Batch File Renamer"
         description="Rename multiple files at once with powerful pattern rules. Add prefix/suffix, find & replace, sequential numbering, and case transformations. All processing happens in your browser."
@@ -990,6 +982,6 @@ export default function BatchRenamePage() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }

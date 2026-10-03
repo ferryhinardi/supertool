@@ -4,6 +4,7 @@ import { Check, Copy, Download, FileText, Image as ImageIcon, Upload, X } from '
 import { useCallback, useRef, useState } from 'react'
 import { createWorker } from 'tesseract.js'
 import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { trackToolEvent } from '@/lib/services/analytics'
@@ -133,16 +134,7 @@ export default function ImageToTextPage() {
   }, [])
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <MediaToolHeader
         title="Image to Text Converter"
         description="Extract text from images using OCR (Optical Character Recognition). Supports multiple languages and various image formats."
@@ -470,6 +462,6 @@ export default function ImageToTextPage() {
           )}
         </Card>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }

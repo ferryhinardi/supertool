@@ -4,6 +4,7 @@ import { Download, Monitor, RotateCw, Smartphone, Tablet, Upload } from 'lucide-
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -260,16 +261,7 @@ export default function DeviceMockupPage() {
   ]
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <DesignToolHeader
         title="Create Professional Device Mockups"
         description="Upload your screenshot and showcase it in realistic device frames. Perfect for presentations, portfolios, and app store previews."
@@ -758,6 +750,6 @@ export default function DeviceMockupPage() {
           </div>
         </CardContent>
       </Card>
-    </main>
+    </ToolPageFrame>
   )
 }

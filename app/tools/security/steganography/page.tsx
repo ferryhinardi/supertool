@@ -4,6 +4,7 @@ import { Copy, EyeOff, Info, Sparkles, Trash2, Upload } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -204,16 +205,7 @@ function SteganographyContent() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <SecurityToolHeader
         title="Text Steganography Tool"
         description="Hide secret messages within plain text using invisible zero-width characters. Encode and decode hidden text that is completely invisible to the naked eye."
@@ -692,7 +684,7 @@ function SteganographyContent() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

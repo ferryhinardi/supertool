@@ -14,6 +14,7 @@ import {
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -269,16 +270,7 @@ function SVGOptimizerContent() {
   }
 
   return (
-    <main
-      className={css({
-        maxW: '7xl',
-        mx: 'auto',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <DesignToolHeader
         title="SVG Optimizer & Editor"
         description="Minify and optimize SVG files with live preview. Remove unnecessary metadata, compress paths, and reduce file size by up to 70%. Perfect for web performance."
@@ -744,7 +736,7 @@ function SVGOptimizerContent() {
       <Suspense fallback={null}>
         <ToolSearch />
       </Suspense>
-    </main>
+    </ToolPageFrame>
   )
 }
 

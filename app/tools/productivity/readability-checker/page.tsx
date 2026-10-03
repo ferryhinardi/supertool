@@ -3,6 +3,7 @@
 import { BookOpen, Copy, Gauge, GraduationCap, Info, RotateCcw } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -83,16 +84,7 @@ export default function ReadabilityCheckerPage() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Readability Checker"
         description="Analyze your text with multiple readability formulas including Flesch-Kincaid, Gunning Fog, SMOG, and more"
@@ -532,7 +524,7 @@ export default function ReadabilityCheckerPage() {
           />
         </div>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }
 

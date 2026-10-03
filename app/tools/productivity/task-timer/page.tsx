@@ -17,6 +17,7 @@ import {
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -304,16 +305,7 @@ function TaskTimerContent() {
   const totalSessionTime = timers.reduce((sum, t) => sum + t.elapsed, 0)
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Task Timer with Sessions"
         description="Track multiple tasks concurrently with session management. Organize your work into sessions, export reports, and analyze your productivity."
@@ -953,7 +945,7 @@ function TaskTimerContent() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

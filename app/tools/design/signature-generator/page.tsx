@@ -4,6 +4,7 @@ import { Check, Copy, Download, Palette, Sparkles, Trash2, Type, Wand2 } from 'l
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -232,16 +233,7 @@ export default function SignatureGeneratorPage() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <div className={css({ display: 'flex', flexDirection: 'column', gap: '8' })}>
         <DesignToolHeader
           title="Digital Signature Generator"
@@ -628,6 +620,6 @@ export default function SignatureGeneratorPage() {
           </div>
         </div>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }

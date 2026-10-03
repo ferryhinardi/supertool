@@ -1,11 +1,5 @@
-import { ProductivityWorkspaceChrome } from '@/components/features/tools/ProductivityWorkspaceChrome'
-import { css } from '@/styled-system/css'
+import { CategoryWorkspaceLayout } from '@/components/features/tools/workspace/CategoryWorkspaceLayout'
 
 export default function ProductivityToolsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className={css({ mx: 'auto', w: 'full', maxW: '7xl' })}>
-      <ProductivityWorkspaceChrome />
-      {children}
-    </div>
-  )
+  return <CategoryWorkspaceLayout category="productivity">{children}</CategoryWorkspaceLayout>
 }

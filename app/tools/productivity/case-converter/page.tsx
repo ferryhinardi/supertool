@@ -5,6 +5,7 @@ import { Suspense, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { SoftSupportCard } from '@/components/features/monetization/SoftSupportCard'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -164,16 +165,7 @@ function CaseConverterContent() {
   }))
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Case Converter"
         description="Convert text between camelCase, PascalCase, snake_case, kebab-case, and more. Preview every format at once."
@@ -485,7 +477,7 @@ function CaseConverterContent() {
         />
         <ToolRating toolId="case-converter" toolName="Case Converter" />
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }
 

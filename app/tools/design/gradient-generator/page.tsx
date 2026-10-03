@@ -15,6 +15,7 @@ import {
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
@@ -352,16 +353,7 @@ export default function GradientGeneratorPage() {
   const gradientCSS = generateGradientCSS()
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <DesignToolHeader
         title="Gradient Generator"
         description="Create stunning CSS gradients visually. Linear, radial, and conic gradients with unlimited color stops, presets, and export options."
@@ -785,6 +777,6 @@ export default function GradientGeneratorPage() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }

@@ -17,6 +17,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -346,16 +347,7 @@ export default function PhotoEditorPage() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <DesignToolHeader
         title="AI Photo Editor"
         description="Professional photo editing with advanced filters, adjustments, and AI-powered image generation. Edit photos in your browser with powerful tools and effects."
@@ -930,6 +922,6 @@ export default function PhotoEditorPage() {
           </CardContent>
         </Card>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }

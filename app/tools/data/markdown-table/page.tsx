@@ -17,7 +17,8 @@ import {
 import { useCallback, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
-import { dataPageMainClass } from '@/components/features/tools/data-workspace'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -209,7 +210,7 @@ export default function MarkdownTablePage() {
 
   return (
     <TooltipProvider>
-      <main className={dataPageMainClass}>
+      <ToolPageFrame>
         <DataToolHeader
           icon={Table}
           eyebrow="Data Processing"
@@ -865,7 +866,7 @@ export default function MarkdownTablePage() {
         </div>
 
         <ToolSearch />
-      </main>
+      </ToolPageFrame>
     </TooltipProvider>
   )
 }

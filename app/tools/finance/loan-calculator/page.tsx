@@ -12,6 +12,7 @@ import {
 import { parseAsFloat, parseAsInteger, parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { FinanceToolHeader } from '@/components/features/tools/FinanceToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -190,16 +191,7 @@ function LoanCalculatorContent() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <FinanceToolHeader
         title="Loan Calculator"
         description="Calculate monthly payments, view amortization schedules, and compare different loan scenarios. Perfect for mortgages, auto loans, and personal loans."
@@ -906,7 +898,7 @@ function LoanCalculatorContent() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

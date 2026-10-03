@@ -4,7 +4,8 @@ import { Check, Copy, Hash, Info, Loader2, RefreshCw, Sparkles, X } from 'lucide
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
-import { dataPageMainClass } from '@/components/features/tools/data-workspace'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -183,7 +184,7 @@ export default function UUIDGeneratorPage() {
   }
 
   return (
-    <main className={dataPageMainClass}>
+    <ToolPageFrame>
       <DataToolHeader
         icon={Hash}
         eyebrow="UUID v1-v5 • Bulk Generation"
@@ -588,6 +589,6 @@ export default function UUIDGeneratorPage() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }

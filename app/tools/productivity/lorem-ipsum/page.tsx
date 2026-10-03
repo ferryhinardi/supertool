@@ -4,6 +4,7 @@ import { Copy, FileText, RotateCcw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -70,16 +71,7 @@ export default function LoremIpsumPage() {
     : null
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Lorem Ipsum Generator"
         description="Generate placeholder text for your designs and mockups"
@@ -440,6 +432,6 @@ export default function LoremIpsumPage() {
           <li>Disable "Start with Lorem ipsum" for more varied placeholder text</li>
         </ul>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }

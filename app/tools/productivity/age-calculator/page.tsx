@@ -5,6 +5,7 @@ import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -178,16 +179,7 @@ Zodiac Sign: ${calculation.zodiacSign}
   }
 
   return (
-    <main
-      className={css({
-        maxW: '7xl',
-        mx: 'auto',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Age Calculator"
         description="Calculate your exact age from birthdate with precision. See how old you are in years, months, days, hours, and even minutes. Find out when your next birthday is!"
@@ -702,7 +694,7 @@ Zodiac Sign: ${calculation.zodiacSign}
 
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

@@ -14,6 +14,7 @@ import dynamic from 'next/dynamic'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -148,16 +149,7 @@ export default function DiffTool() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       {/* Header */}
       <DevelopmentToolHeader
         title="Diff Viewer"
@@ -664,6 +656,6 @@ export default function DiffTool() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }

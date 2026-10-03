@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -360,16 +361,7 @@ export default function ImageToPdfPage() {
   }, [images])
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <MediaToolHeader
         title="Image to PDF Converter"
         description="Convert JPG, PNG, WebP, and other image formats to PDF instantly. Combine multiple images into a single PDF document with customizable page settings."
@@ -972,6 +964,6 @@ export default function ImageToPdfPage() {
 
       {/* Tool Rating */}
       <ToolRating toolId="image-to-pdf" toolName="Image to PDF Converter" />
-    </main>
+    </ToolPageFrame>
   )
 }

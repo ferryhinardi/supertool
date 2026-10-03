@@ -5,7 +5,8 @@ import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
-import { dataPageMainClass, dataSplitClass } from '@/components/features/tools/data-workspace'
+import { dataSplitClass } from '@/components/features/tools/data-workspace'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
@@ -195,7 +196,7 @@ export default function JSONToMarkdownTablePage() {
 
   return (
     <TooltipProvider>
-      <main className={dataPageMainClass}>
+      <ToolPageFrame>
         <DataToolHeader
           icon={Table}
           eyebrow="Data Processing"
@@ -626,7 +627,7 @@ export default function JSONToMarkdownTablePage() {
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
         <ToolSearch />
-      </main>
+      </ToolPageFrame>
     </TooltipProvider>
   )
 }

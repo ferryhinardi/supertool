@@ -16,6 +16,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -122,16 +123,7 @@ export default function RegexTesterPage() {
   const highlighted = highlightMatches(testString, matches)
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       {/* Header */}
       <DevelopmentToolHeader
         title="Regex Tester"
@@ -854,6 +846,6 @@ export default function RegexTesterPage() {
           </div>
         </div>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }

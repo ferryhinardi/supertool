@@ -4,6 +4,7 @@ import hljs from 'highlight.js'
 import { ArrowRight, Check, Copy, Download, Info, Loader2, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import 'highlight.js/styles/atom-one-dark.css'
 import { toast } from 'sonner'
 import { PaywallModal } from '@/components/features/monetization/PaywallModal'
@@ -211,16 +212,7 @@ export default function AICodeConverterPage() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       {/* Header */}
       <DevelopmentToolHeader
         title="AI Code Converter"
@@ -787,6 +779,6 @@ export default function AICodeConverterPage() {
         remaining={paywallState.remaining}
         toolSlug="ai-code-converter"
       />
-    </main>
+    </ToolPageFrame>
   )
 }

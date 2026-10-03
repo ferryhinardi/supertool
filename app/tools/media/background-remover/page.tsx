@@ -16,6 +16,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -231,16 +232,7 @@ export default function BackgroundRemoverPage() {
   ]
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <MediaToolHeader
         title="Background Remover"
         description="Remove backgrounds from images instantly with AI. 100% free, works entirely in your browser for complete privacy. No upload to servers, no sign-up required."
@@ -681,6 +673,6 @@ export default function BackgroundRemoverPage() {
 
       {/* Global Tool Search */}
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }

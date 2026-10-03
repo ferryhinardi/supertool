@@ -278,16 +278,7 @@ export default function MarkdownEditorPage() {
         }}
       />
 
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '7xl',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '6', sm: '8', md: '10' },
-        })}
-      >
+      <ToolPageFrame>
         <ProductivityToolHeader
           title="Markdown Editor"
           description="Write and preview markdown in real-time with syntax highlighting, tables, task lists, and full GitHub-flavored markdown support."
@@ -866,9 +857,10 @@ export default function MarkdownEditorPage() {
             { key: `${modifierKey}+/`, label: 'Help', description: 'Show this help' },
           ]}
         />
-      </main>
+      </ToolPageFrame>
     </>
   )
 }
 
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'

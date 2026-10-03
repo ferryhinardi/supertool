@@ -5,6 +5,7 @@ import { Check, Copy, Download, FileText, Scale, Shield } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -261,16 +262,7 @@ ${generatedDocument
   const canGenerate = companyInfo.companyName && companyInfo.websiteUrl && companyInfo.contactEmail
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Privacy Policy Generator"
         description="Create GDPR & CCPA compliant privacy policies, cookie policies, and terms of service for your website or app. Free, professional, and legally sound templates."
@@ -816,6 +808,6 @@ ${generatedDocument
           </div>
         </CardContent>
       </Card>
-    </main>
+    </ToolPageFrame>
   )
 }

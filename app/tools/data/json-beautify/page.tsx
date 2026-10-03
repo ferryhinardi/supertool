@@ -33,7 +33,8 @@ import {
   ToolOperationGrid,
 } from '@/components/features/tool-components'
 import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
-import { dataPageMainClass } from '@/components/features/tools/data-workspace'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -806,7 +807,7 @@ function JSONBeautifyContent() {
           __html: '.cm-editor .cm-content .ͼ19 { color: #f08a9a !important; }',
         }}
       />
-      <main className={dataPageMainClass}>
+      <ToolPageFrame>
         <DataToolHeader
           icon={FileJson}
           eyebrow="Data Processing"
@@ -2268,7 +2269,7 @@ function JSONBeautifyContent() {
           shortcuts={shortcuts}
           toolName="JSON Beautifier"
         />
-      </main>
+      </ToolPageFrame>
     </TooltipProvider>
   )
 }

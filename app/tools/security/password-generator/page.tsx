@@ -25,6 +25,7 @@ import {
   ToolOperationGrid,
 } from '@/components/features/tool-components'
 import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
@@ -295,16 +296,7 @@ function PasswordGeneratorContent() {
   })
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <SecurityToolHeader
         title="Password Generator"
         description="Generate cryptographically secure passwords with advanced strength analysis, pattern-based generation, breach checking, and password history management."
@@ -1226,7 +1218,7 @@ function PasswordGeneratorContent() {
           { key: `${modifierKey}+/`, label: 'Help', description: 'Show this help' },
         ]}
       />
-    </main>
+    </ToolPageFrame>
   )
 }
 

@@ -4,6 +4,7 @@ import { AlertCircle, Check, Copy, Database, Maximize2, Minimize2, RotateCcw } f
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import { formatSQL, minifySQL, SQL_DIALECTS, SQL_EXAMPLES, type SQLDialect } from './templates'
@@ -118,16 +119,7 @@ export default function SQLFormatterPage() {
   }, [])
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       {/* Header */}
       <DevelopmentToolHeader
         title="SQL Formatter"
@@ -589,6 +581,6 @@ export default function SQLFormatterPage() {
           <li>Test formatted queries in your database to ensure correctness</li>
         </ul>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }

@@ -8,12 +8,12 @@ import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
 import {
   dataActionBarClass,
   dataConfigClass,
-  dataPageMainClass,
   dataPanelClass,
   dataPanelHeaderClass,
   dataPanelTitleClass,
   dataSplitClass,
 } from '@/components/features/tools/data-workspace'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -201,7 +201,7 @@ export default function JSONToCSVPage() {
 
   return (
     <TooltipProvider>
-      <main className={dataPageMainClass}>
+      <ToolPageFrame>
         <DataToolHeader
           icon={FileSpreadsheet}
           eyebrow="Data Processing"
@@ -543,7 +543,7 @@ export default function JSONToCSVPage() {
         </div>
 
         <ToolSearch />
-      </main>
+      </ToolPageFrame>
     </TooltipProvider>
   )
 }

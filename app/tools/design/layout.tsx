@@ -1,11 +1,5 @@
-import { DesignWorkspaceChrome } from '@/components/features/tools/DesignWorkspaceChrome'
-import { css } from '@/styled-system/css'
+import { CategoryWorkspaceLayout } from '@/components/features/tools/workspace/CategoryWorkspaceLayout'
 
 export default function DesignToolsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className={css({ mx: 'auto', w: 'full', maxW: '7xl' })}>
-      <DesignWorkspaceChrome />
-      {children}
-    </div>
-  )
+  return <CategoryWorkspaceLayout category="design">{children}</CategoryWorkspaceLayout>
 }

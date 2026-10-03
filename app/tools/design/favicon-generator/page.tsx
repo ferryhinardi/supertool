@@ -3,6 +3,7 @@
 import { Check, Copy, Download, Image as ImageIcon, Smile, Upload } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
 import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -183,16 +184,7 @@ export default function FaviconGeneratorPage() {
   }, [])
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <DesignToolHeader
         title="Favicon Generator"
         description="Convert logos, images, or emojis into favicons for websites. Generate all required sizes and formats with preview and instant download."
@@ -604,6 +596,6 @@ export default function FaviconGeneratorPage() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }

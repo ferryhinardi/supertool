@@ -14,6 +14,7 @@ import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { FinanceToolHeader } from '@/components/features/tools/FinanceToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -188,16 +189,7 @@ function CurrencyConverterContent() {
   const toCurrencyInfo = CURRENCIES.find((c) => c.code === toCurrency)
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <FinanceToolHeader
         title="Currency Converter"
         description="Convert between 150+ world currencies with real-time exchange rates. Fast, accurate, and free to use."
@@ -676,7 +668,7 @@ function CurrencyConverterContent() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
 

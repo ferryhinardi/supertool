@@ -5,6 +5,7 @@ import { Hash, Minus, Plus, RotateCcw, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
@@ -148,16 +149,7 @@ export default function TallyCounterPage() {
   const totalCount = counters.reduce((sum, c) => sum + c.count, 0)
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Tally Counter"
         description="Simple and effective tally counter with multiple counters, custom step values, and keyboard shortcuts. Perfect for counting inventory, tracking events, or managing any numeric data."
@@ -740,6 +732,6 @@ export default function TallyCounterPage() {
       {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }

@@ -5,7 +5,8 @@ import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
-import { dataPageMainClass } from '@/components/features/tools/data-workspace'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -245,7 +246,7 @@ function RandomGeneratorContent() {
   }, [])
 
   return (
-    <main className={dataPageMainClass}>
+    <ToolPageFrame>
       <DataToolHeader
         icon={Dices}
         eyebrow="Data Tool"
@@ -712,7 +713,7 @@ function RandomGeneratorContent() {
         />
         <ToolRating toolId="random-generator" toolName="Random Generator" />
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }
 

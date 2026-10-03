@@ -3,6 +3,7 @@
 import { Check, Copy, Hash, MapPin, RefreshCw, Star, Target, TrendingUp, Users } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -156,16 +157,7 @@ export default function HashtagGeneratorPage() {
   }, [selectedHashtags.size, platformConfig.recommended])
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Hashtag Generator"
         description="Generate trending and relevant hashtags for your social media posts. Optimized for Instagram, Twitter, TikTok, LinkedIn, and more."
@@ -774,7 +766,7 @@ export default function HashtagGeneratorPage() {
           />
         </div>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }
 

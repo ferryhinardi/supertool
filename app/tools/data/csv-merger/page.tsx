@@ -4,7 +4,8 @@ import { AlertCircle, FileSpreadsheet, Layers, Scissors, Trash2, Upload } from '
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
-import { dataPageMainClass } from '@/components/features/tools/data-workspace'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -356,7 +357,7 @@ export default function CSVMergerPage() {
 
   return (
     <TooltipProvider>
-      <main className={dataPageMainClass}>
+      <ToolPageFrame>
         <DataToolHeader
           icon={FileSpreadsheet}
           eyebrow="Data Processing"
@@ -967,7 +968,7 @@ export default function CSVMergerPage() {
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}
 
         <ToolSearch />
-      </main>
+      </ToolPageFrame>
     </TooltipProvider>
   )
 }

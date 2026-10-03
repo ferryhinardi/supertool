@@ -3,6 +3,7 @@
 import { Check, Copy, Download, FileImage, Upload, X } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
 import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -206,16 +207,7 @@ export default function SvgToPngConverter() {
   }, [])
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <MediaToolHeader
         title="SVG to PNG Converter"
         description="Convert SVG files to high-quality PNG images with customizable dimensions and background colors"
@@ -738,6 +730,6 @@ export default function SvgToPngConverter() {
 
       {/* Hidden canvas for conversion */}
       <canvas ref={canvasRef} className={css({ display: 'none' })} />
-    </main>
+    </ToolPageFrame>
   )
 }

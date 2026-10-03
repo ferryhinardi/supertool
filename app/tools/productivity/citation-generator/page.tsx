@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -554,16 +555,7 @@ export default function CitationGeneratorPage() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="Citation Generator"
         description="Generate accurate citations in APA, MLA, Chicago, Harvard, IEEE, and Vancouver formats for books, journals, websites, and more."
@@ -1063,7 +1055,7 @@ export default function CitationGeneratorPage() {
           />
         </div>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }
 

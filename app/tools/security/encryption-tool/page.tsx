@@ -16,6 +16,7 @@ import { useCallback, useState } from 'react'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
@@ -298,16 +299,7 @@ export default function EncryptionToolPage() {
   )
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <SecurityToolHeader
         title="Encryption & Decryption Tool"
         description="Secure your data with AES-256-GCM encryption. All encryption happens in your browser - nothing is sent to any server."
@@ -1141,6 +1133,6 @@ export default function EncryptionToolPage() {
         shortcuts={shortcuts}
         toolName="Encryption Tool"
       />
-    </main>
+    </ToolPageFrame>
   )
 }

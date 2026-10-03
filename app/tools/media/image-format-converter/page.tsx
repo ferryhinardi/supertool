@@ -3,6 +3,7 @@
 import { Check, Download, FileImage, Upload, X } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
 import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -213,16 +214,7 @@ export default function ImageFormatConverterPage() {
       : null
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <MediaToolHeader
         title="Image Format Converter"
         description="Convert images between PNG, JPEG, WEBP, and GIF formats"
@@ -686,6 +678,6 @@ export default function ImageFormatConverterPage() {
           </CardContent>
         </Card>
       </div>
-    </main>
+    </ToolPageFrame>
   )
 }

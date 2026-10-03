@@ -1,11 +1,5 @@
-import { MediaWorkspaceChrome } from '@/components/features/tools/MediaWorkspaceChrome'
-import { css } from '@/styled-system/css'
+import { CategoryWorkspaceLayout } from '@/components/features/tools/workspace/CategoryWorkspaceLayout'
 
 export default function MediaToolsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className={css({ mx: 'auto', w: 'full', maxW: '7xl' })}>
-      <MediaWorkspaceChrome />
-      {children}
-    </div>
-  )
+  return <CategoryWorkspaceLayout category="media">{children}</CategoryWorkspaceLayout>
 }

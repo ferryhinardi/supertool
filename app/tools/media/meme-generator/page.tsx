@@ -15,6 +15,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -195,16 +196,7 @@ export default function MemeGeneratorPage() {
         color: 'brand.ink',
       })}
     >
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '7xl',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '6', sm: '8', md: '10' },
-        })}
-      >
+      <ToolPageFrame>
         <MediaToolHeader
           title="Meme Generator"
           description="Create viral memes in seconds. Choose from 25+ popular templates or upload your own image. Add text, customize fonts, and download your masterpiece."
@@ -560,7 +552,7 @@ export default function MemeGeneratorPage() {
             )}
           </div>
         </div>
-      </main>
+      </ToolPageFrame>
     </div>
   )
 }

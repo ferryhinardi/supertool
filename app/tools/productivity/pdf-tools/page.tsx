@@ -51,6 +51,7 @@ import { toast } from 'sonner'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { PDFEditor } from '@/components/features/media/PDFEditor'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
+import { ToolPageFrame } from '@/components/features/tools/workspace/ToolPageFrame'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -2196,16 +2197,7 @@ export default function PDFToolsPage() {
   ]
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
+    <ToolPageFrame>
       <ProductivityToolHeader
         title="PDF Tools Suite"
         description="Merge, split, compress, watermark, and convert PDFs. Convert images to PDF with powerful browser-based tools. 100% secure - all processing happens on your device."
@@ -5607,6 +5599,6 @@ export default function PDFToolsPage() {
         isLoading={isSummarizing}
       />
       <ToolSearch />
-    </main>
+    </ToolPageFrame>
   )
 }
