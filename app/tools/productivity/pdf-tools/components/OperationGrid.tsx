@@ -569,9 +569,10 @@ export function OperationGrid({
                   <div
                     className={css({
                       display: 'grid',
-                      gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
+                      gridTemplateColumns: { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' },
                       gap: '3',
                       w: 'full',
+                      minW: '0',
                     })}
                   >
                     {category.operations.map((op) => {
@@ -592,6 +593,9 @@ export function OperationGrid({
                             display: 'flex',
                             alignItems: 'center',
                             gap: '3',
+                            w: 'full',
+                            minW: '0',
+                            minH: '11',
                             p: '4',
                             rounded: 'lg',
                             border: '2px solid',

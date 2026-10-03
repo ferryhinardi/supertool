@@ -2319,8 +2319,7 @@ export default function PDFToolsPage() {
           gap: '6',
           gridTemplateColumns: {
             base: 'minmax(0, 1fr)',
-            md: 'minmax(0, 1fr) minmax(0, 2fr)',
-            lg: 'repeat(3, minmax(0, 1fr))',
+            xl: 'minmax(0, 2fr) minmax(17.5rem, 1fr)',
           },
           w: 'full',
           minW: '0',
@@ -2330,7 +2329,7 @@ export default function PDFToolsPage() {
         <div
           style={{ width: '100%' }}
           className={css({
-            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 2' },
+            gridColumn: 'span 1',
             minW: '0',
             maxW: 'full',
             w: 'full',
@@ -5280,7 +5279,7 @@ export default function PDFToolsPage() {
         <div
           style={{ width: '100%' }}
           className={css({
-            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 1' },
+            gridColumn: 'span 1',
             minW: '0',
             maxW: 'full',
             w: 'full',

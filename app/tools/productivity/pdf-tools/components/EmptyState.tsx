@@ -358,8 +358,11 @@ export function EmptyState({
         animation: 'fadeIn 0.3s ease-out',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'stretch',
         justifyContent: 'center',
+        w: 'full',
+        minW: '0',
+        maxW: 'full',
         py: { base: '12', sm: '16' },
         px: '4',
         textAlign: 'center',
@@ -370,6 +373,8 @@ export function EmptyState({
         className={css({
           mb: '6',
           position: 'relative',
+          w: 'fit',
+          mx: 'auto',
         })}
       >
         <div
@@ -427,7 +432,9 @@ export function EmptyState({
       <p
         className={css({
           mb: '6',
-          maxW: 'md',
+          w: 'full',
+          minW: '0',
+          maxW: 'full',
           fontSize: { base: 'sm', sm: 'base' },
           color: 'white',
           lineHeight: 'relaxed',
@@ -443,7 +450,9 @@ export function EmptyState({
           display: 'flex',
           flexDirection: 'column',
           gap: '2',
-          maxW: 'md',
+          w: 'full',
+          minW: '0',
+          maxW: 'full',
         })}
       >
         {tip.tips.map((tipText) => (
@@ -477,8 +486,12 @@ export function EmptyState({
         className={css({
           display: 'flex',
           flexDirection: { base: 'column', sm: 'row' },
+          flexWrap: 'wrap',
+          justifyContent: 'center',
           gap: '3',
-          w: { base: 'full', sm: 'auto' },
+          w: 'full',
+          minW: '0',
+          maxW: 'full',
         })}
       >
         <Button
@@ -536,8 +549,9 @@ export function EmptyState({
           bg: 'gray.800/50',
           border: '1px solid',
           borderColor: 'gray.700',
-          maxW: 'md',
           w: 'full',
+          minW: '0',
+          maxW: 'full',
         })}
       >
         <div
@@ -584,7 +598,7 @@ export function EmptyState({
 
       {/* Recently Used & Popular Operations */}
       {onOperationChange && (
-        <div className={css({ mt: '8', w: 'full', maxW: 'lg', spaceY: '6' })}>
+        <div className={css({ mt: '8', w: 'full', minW: '0', maxW: 'full', spaceY: '6' })}>
           {/* Recently Used Operations */}
           {recentOperations && recentOperations.length > 0 && (
             <div className={css({ animation: 'fadeIn 0.3s ease-out' })}>
@@ -620,7 +634,9 @@ export function EmptyState({
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                  w: 'full',
+                  minW: '0',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 16rem), 1fr))',
                   gap: '3',
                 })}
               >
@@ -634,6 +650,9 @@ export function EmptyState({
                       onClick={() => onOperationChange(recent.operation)}
                       className={css({
                         animation: 'fadeIn 0.3s ease-out',
+                        w: 'full',
+                        minW: '0',
+                        minH: '11',
                         p: '4',
                         rounded: 'lg',
                         bg: 'gray.800/50',
@@ -750,7 +769,9 @@ export function EmptyState({
               <div
                 className={css({
                   display: 'grid',
-                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                  w: 'full',
+                  minW: '0',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 16rem), 1fr))',
                   gap: '3',
                 })}
               >
@@ -764,6 +785,9 @@ export function EmptyState({
                       onClick={() => onOperationChange(opType)}
                       className={css({
                         animation: 'fadeIn 0.3s ease-out',
+                        w: 'full',
+                        minW: '0',
+                        minH: '11',
                         p: '4',
                         rounded: 'lg',
                         bg: 'gray.800/50',
