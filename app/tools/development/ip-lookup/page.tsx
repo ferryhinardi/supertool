@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -151,7 +152,7 @@ export default function IPLookupPage() {
     <main
       className={css({
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
@@ -159,69 +160,13 @@ export default function IPLookupPage() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/20',
-            bg: 'blue.500/10',
-            px: '4',
-            py: '2',
-          })}
-        >
-          <Network className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'blue.300',
-            })}
-          >
-            IP Geolocation
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'cyan.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          IP Address Lookup
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: 'lg',
-            color: 'white',
-          })}
-        >
-          Discover detailed information about any IP address including location, ISP, timezone, and
-          more.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="IP Address Lookup"
+        description="Discover detailed information about any IP address including location, ISP, timezone, and more."
+        eyebrow="Network diagnostics"
+        icon={Network}
+        highlights={['Lookup result', 'Location details']}
+      />
 
       {/* Lookup Section */}
       <div
@@ -511,7 +456,7 @@ export default function IPLookupPage() {
                       color: 'gray.200',
                     })}
                   >
-                    <Shield className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                    <Shield className={css({ h: '5', w: '5', color: 'blue.400' })} />
                     Security Indicators
                   </h3>
                   <div

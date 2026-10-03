@@ -126,12 +126,19 @@ describe('ImageFormatConverterPage', () => {
     ) as unknown as typeof HTMLCanvasElement.prototype.getContext
     HTMLCanvasElement.prototype.toBlob = mockToBlob
 
-    // Mock document.createElement to intercept anchor creation
+    // React-rendered anchors stay real DOM nodes. handleDownload is an anonymous
+    // useCallback, so return the spy anchor only for that page.tsx call.
     document.createElement = vi.fn((tagName: string) => {
+      const element = originalCreateElement(tagName)
       if (tagName === 'a') {
-        return mockAnchorElement as unknown as HTMLAnchorElement
+        const anchor = element as HTMLAnchorElement
+        anchor.click = () => {
+          mockAnchorElement.href = anchor.href
+          mockAnchorElement.download = anchor.download
+          mockClick()
+        }
       }
-      return originalCreateElement(tagName)
+      return element
     })
 
     // Mock appendChild and removeChild - don't call original for mock anchor

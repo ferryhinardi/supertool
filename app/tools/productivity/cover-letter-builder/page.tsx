@@ -1,8 +1,9 @@
 'use client'
 
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Check, FileText } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
@@ -249,63 +250,29 @@ export default function CoverLetterBuilderPage() {
 
   return (
     <div className={css({ minH: '100vh', bg: 'gray.950', color: 'gray.50' })}>
-      {/* Header */}
-      <div
-        className={css({
-          borderBottom: '1px solid',
-          borderColor: 'gray.800',
-          py: '6',
-          px: { base: '4', sm: '6' },
-          bg: 'gray.900/50',
-          backdropFilter: 'blur(8px)',
-        })}
-      >
-        <div className={css({ maxW: '7xl', mx: 'auto' })}>
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '4',
-            })}
-          >
-            <div>
-              <h1
-                className={css({
-                  fontSize: { base: '2xl', sm: '3xl' },
-                  fontWeight: 'bold',
-                  mb: '2',
-                  bgGradient: 'to-r',
-                  gradientFrom: 'purple.400',
-                  gradientTo: 'pink.400',
-                  bgClip: 'text',
-                  color: 'transparent',
-                })}
-              >
-                Cover Letter Builder
-              </h1>
-              <p className={css({ color: 'gray.400', fontSize: 'sm' })}>
-                Create professional cover letters with customizable templates
-              </p>
-            </div>
-            {showAutoSaveIndicator && (
-              <div
-                className={css({
-                  fontSize: 'xs',
-                  color: 'green.400',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2',
-                })}
-              >
-                <span>✓</span>
-                <span>Auto-saved</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <ProductivityToolHeader
+        title="Cover Letter Builder"
+        description="Create professional cover letters with customizable templates"
+        eyebrow="Builders"
+        icon={FileText}
+        highlights={['Live preview', 'Saved drafts']}
+      />
+      {showAutoSaveIndicator ? (
+        <p
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            minH: '11',
+            color: 'brand.mint',
+            fontSize: 'sm',
+            fontWeight: 'medium',
+          })}
+        >
+          <Check className={css({ h: '4', w: '4' })} aria-hidden />
+          Auto-saved
+        </p>
+      ) : null}
 
       {/* Main Content */}
       <div

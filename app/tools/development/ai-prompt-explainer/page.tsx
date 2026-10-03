@@ -1,17 +1,9 @@
 'use client'
 
-import {
-  ArrowRight,
-  Check,
-  Copy,
-  Lightbulb,
-  MessageSquare,
-  Sparkles,
-  Target,
-  Zap,
-} from 'lucide-react'
+import { ArrowRight, Check, Copy, Lightbulb, MessageSquare, Target, Zap } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -168,64 +160,13 @@ function AIPromptExplainerContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/30',
-            bg: 'purple.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Sparkles className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
-            Powered by AI • Prompt Engineering Best Practices
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'purple.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          AI Prompt Explainer
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Analyze and optimize your AI prompts for better results. Get expert insights on clarity,
-          structure, and effectiveness with AI-powered analysis.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="AI Prompt Explainer"
+        description="Analyze and optimize your AI prompts for better results. Get expert insights on clarity, structure, and effectiveness with AI-powered analysis."
+        eyebrow="AI developer assistant"
+        icon={Lightbulb}
+        highlights={['Prompt structure', 'Improvement notes']}
+      />
 
       {/* Prompt Input */}
       <div
@@ -238,7 +179,7 @@ function AIPromptExplainerContent() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
+            borderColor: 'blue.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
@@ -261,9 +202,9 @@ function AIPromptExplainerContent() {
                 border: '1px solid',
                 borderColor: 'gray.700',
                 _focus: {
-                  borderColor: 'purple.500',
+                  borderColor: 'blue.500',
                   ring: '2px',
-                  ringColor: 'purple.500/20',
+                  ringColor: 'blue.500/20',
                 },
               })}
             />
@@ -283,8 +224,8 @@ function AIPromptExplainerContent() {
                   flex: { sm: '1' },
                   gap: '2',
                   bgGradient: 'to-r',
-                  gradientFrom: 'purple.500',
-                  gradientTo: 'pink.500',
+                  gradientFrom: 'blue.500',
+                  gradientTo: 'cyan.500',
                   color: 'white',
                   _hover: {
                     opacity: 0.9,
@@ -345,7 +286,7 @@ function AIPromptExplainerContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/20',
+              borderColor: 'blue.500/20',
               bg: 'gray.900/50',
               backdropFilter: 'blur(16px)',
             })}
@@ -380,7 +321,7 @@ function AIPromptExplainerContent() {
                       transition: 'all 0.2s',
                       cursor: 'pointer',
                       _hover: {
-                        borderColor: 'purple.500/50',
+                        borderColor: 'blue.500/50',
                         bg: 'gray.800/50',
                         transform: 'translateY(-2px)',
                       },
@@ -392,8 +333,8 @@ function AIPromptExplainerContent() {
                       <Badge
                         className={css({
                           fontSize: 'xs',
-                          bg: 'purple.500/20',
-                          color: 'purple.300',
+                          bg: 'blue.500/20',
+                          color: 'blue.300',
                           border: 'none',
                         })}
                       >
@@ -431,14 +372,14 @@ function AIPromptExplainerContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/20',
+              borderColor: 'blue.500/20',
               bg: 'gray.900/50',
               backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
               <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <Target className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                <Target className={css({ h: '5', w: '5', color: 'blue.400' })} />
                 Overall Analysis
               </CardTitle>
             </CardHeader>
@@ -453,7 +394,7 @@ function AIPromptExplainerContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/20',
+              borderColor: 'blue.500/20',
               bg: 'gray.900/50',
               backdropFilter: 'blur(16px)',
             })}
@@ -632,7 +573,7 @@ function AIPromptExplainerContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/20',
+              borderColor: 'blue.500/20',
               bg: 'gray.900/50',
               backdropFilter: 'blur(16px)',
             })}
@@ -641,7 +582,7 @@ function AIPromptExplainerContent() {
               <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
                 <div className={css({ flex: '1' })}>
                   <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <ArrowRight className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                    <ArrowRight className={css({ h: '5', w: '5', color: 'blue.400' })} />
                     Optimized Prompt
                   </CardTitle>
                   <CardDescription>AI-improved version for better results</CardDescription>
@@ -676,7 +617,7 @@ function AIPromptExplainerContent() {
                   rounded: 'lg',
                   bg: 'gray.800/50',
                   border: '1px solid',
-                  borderColor: 'purple.500/20',
+                  borderColor: 'blue.500/20',
                   fontSize: 'sm',
                   color: 'gray.200',
                   lineHeight: 'relaxed',
@@ -702,7 +643,7 @@ function AIPromptExplainerContent() {
           className={css({
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
-            borderColor: 'purple.500/20',
+            borderColor: 'blue.500/20',
             bg: 'rgba(168, 85, 247, 0.05)',
             p: { base: '4', sm: '5', md: '6' },
             backdropFilter: 'blur(16px)',
@@ -713,7 +654,7 @@ function AIPromptExplainerContent() {
               mb: '3',
               fontSize: { base: 'base', sm: 'lg' },
               fontWeight: 'bold',
-              color: 'purple.300',
+              color: 'blue.300',
             })}
           >
             Pro Tips for Better Prompts

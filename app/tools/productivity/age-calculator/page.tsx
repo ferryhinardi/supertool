@@ -4,6 +4,7 @@ import { Cake, Calendar, Clock, Copy, Heart, Info, RotateCcw, Sparkles } from 'l
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -187,62 +188,13 @@ Zodiac Sign: ${calculation.zodiacSign}
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            borderRadius: 'full',
-            border: '1px solid',
-            borderColor: 'pink.500/30',
-            bg: 'pink.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Cake className={css({ h: '5', w: '5', color: 'pink.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'pink.300' })}>
-            Exact Age • Next Birthday • Life Events
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'pink.400',
-            gradientVia: 'rose.400',
-            gradientTo: 'red.400',
-            bgClip: 'text',
-          })}
-          style={{ WebkitTextFillColor: 'transparent' }}
-        >
-          Age Calculator
-        </h1>
-
-        <p
-          className={css({
-            maxW: '3xl',
-            mx: 'auto',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Calculate your exact age from birthdate with precision. See how old you are in years,
-          months, days, hours, and even minutes. Find out when your next birthday is!
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Age Calculator"
+        description="Calculate your exact age from birthdate with precision. See how old you are in years, months, days, hours, and even minutes. Find out when your next birthday is!"
+        eyebrow="Calculators"
+        icon={Cake}
+        highlights={['Exact age', 'Next birthday']}
+      />
 
       {/* Input Section */}
       <div

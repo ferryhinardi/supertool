@@ -9,6 +9,12 @@ vi.mock('@/styled-system/css', () => ({
 
 // Mock Lucide icons
 vi.mock('lucide-react', () => ({
+  ArrowLeft: ({ className }: { className?: string }) => (
+    <svg data-testid="icon-arrow-left" className={className} />
+  ),
+  ShieldCheck: ({ className }: { className?: string }) => (
+    <svg data-testid="icon-shield-check" className={className} />
+  ),
   ArrowLeftRight: ({ className }: { className?: string }) => (
     <svg data-testid="icon-arrow-left-right" className={className} />
   ),

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -286,66 +287,13 @@ export default function BatchRenamePage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'orange.500/30',
-            bg: 'orange.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <FolderEdit className={css({ h: '5', w: '5', color: 'orange.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'orange.300' })}>
-            Pattern Rules • Find & Replace • Sequential Numbers
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'orange.400',
-            gradientVia: 'red.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Batch File Renamer
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Rename multiple files at once with powerful pattern rules. Add prefix/suffix, find &
-          replace, sequential numbering, and case transformations. All processing happens in your
-          browser.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Batch File Renamer"
+        description="Rename multiple files at once with powerful pattern rules. Add prefix/suffix, find & replace, sequential numbering, and case transformations. All processing happens in your browser."
+        eyebrow="File workflows"
+        icon={FolderEdit}
+        highlights={['Pattern rules', 'Stays in the browser']}
+      />
 
       {/* File Upload */}
       <div

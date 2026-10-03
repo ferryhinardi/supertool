@@ -2,6 +2,7 @@
 
 import { Check, Download, FileImage, Upload, X } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -222,36 +223,13 @@ export default function ImageFormatConverterPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ spaceY: '3' })}>
-        <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-          <div
-            className={css({
-              p: '3',
-              borderRadius: 'xl',
-              bgGradient: 'to-r',
-              gradientFrom: 'purple.500',
-              gradientTo: 'indigo.500',
-            })}
-          >
-            <FileImage className={css({ w: '6', h: '6', color: 'white' })} />
-          </div>
-          <div>
-            <h1
-              className={css({
-                fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-                fontWeight: 'bold',
-                letterSpacing: 'tight',
-              })}
-            >
-              Image Format Converter
-            </h1>
-            <p className={css({ color: 'gray.400', fontSize: { base: 'sm', sm: 'base' } })}>
-              Convert images between PNG, JPEG, WEBP, and GIF formats
-            </p>
-          </div>
-        </div>
-      </div>
+      <MediaToolHeader
+        title="Image Format Converter"
+        description="Convert images between PNG, JPEG, WEBP, and GIF formats"
+        eyebrow="Image conversion"
+        icon={FileImage}
+        highlights={['Quality control', 'Live preview']}
+      />
 
       {/* Main Content */}
       <div className={css({ spaceY: '6' })}>
@@ -275,28 +253,28 @@ export default function ImageFormatConverterPage() {
                 aria-label="Upload image file"
                 className={css({
                   border: '2px dashed',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                   borderRadius: 'lg',
                   p: { base: '8', sm: '12' },
                   textAlign: 'center',
                   cursor: 'pointer',
                   transition: 'all',
                   _hover: {
-                    borderColor: 'purple.500',
-                    bg: 'gray.800/50',
+                    borderColor: 'orange.500',
+                    bg: 'brand.surfaceRaised',
                   },
                 })}
               >
                 <Upload
-                  className={css({ w: '12', h: '12', mx: 'auto', mb: '4', color: 'gray.400' })}
+                  className={css({ w: '12', h: '12', mx: 'auto', mb: '4', color: 'brand.muted' })}
                 />
                 <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', mb: '2' })}>
                   Upload Image
                 </h3>
-                <p className={css({ color: 'gray.400', fontSize: 'sm', mb: '4' })}>
+                <p className={css({ color: 'brand.muted', fontSize: 'sm', mb: '4' })}>
                   Drag and drop your image here, or click to browse
                 </p>
-                <p className={css({ color: 'gray.500', fontSize: 'xs' })}>
+                <p className={css({ color: 'brand.muted', fontSize: 'xs' })}>
                   Supports: PNG, JPEG, WEBP, GIF (Max 10MB)
                 </p>
                 <input
@@ -354,12 +332,12 @@ export default function ImageFormatConverterPage() {
                   className={css({
                     p: '3',
                     borderRadius: 'lg',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     border: '1px solid',
-                    borderColor: 'gray.700',
+                    borderColor: 'brand.line',
                   })}
                 >
-                  <div className={css({ fontSize: 'sm', color: 'gray.400', mb: '1' })}>
+                  <div className={css({ fontSize: 'sm', color: 'brand.muted', mb: '1' })}>
                     Original Image
                   </div>
                   <div
@@ -372,7 +350,7 @@ export default function ImageFormatConverterPage() {
                     <span className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
                       {originalImage.name}
                     </span>
-                    <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                    <span className={css({ fontSize: 'xs', color: 'brand.muted' })}>
                       {originalImage.format.toUpperCase()} • {formatFileSize(originalImage.size)}
                     </span>
                   </div>
@@ -403,13 +381,13 @@ export default function ImageFormatConverterPage() {
                           p: '3',
                           borderRadius: 'lg',
                           border: '2px solid',
-                          borderColor: outputFormat === format ? 'purple.500' : 'gray.700',
-                          bg: outputFormat === format ? 'purple.900/20' : 'gray.800/50',
+                          borderColor: outputFormat === format ? 'orange.500' : 'gray.700',
+                          bg: outputFormat === format ? 'orange.700/20' : 'brand.surfaceRaised',
                           textAlign: 'center',
                           cursor: 'pointer',
                           transition: 'all',
                           _hover: {
-                            borderColor: 'purple.500',
+                            borderColor: 'orange.500',
                           },
                         })}
                       >
@@ -422,7 +400,7 @@ export default function ImageFormatConverterPage() {
                         >
                           {format}
                         </div>
-                        <div className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                        <div className={css({ fontSize: 'xs', color: 'brand.muted', mt: '1' })}>
                           {format === 'png' && 'Lossless'}
                           {format === 'jpeg' && 'High Quality'}
                           {format === 'webp' && 'Modern'}
@@ -459,20 +437,20 @@ export default function ImageFormatConverterPage() {
                           w: '4',
                           h: '4',
                           borderRadius: 'full',
-                          bg: 'purple.500',
+                          bg: 'orange.500',
                           cursor: 'pointer',
                         },
                         '&::-moz-range-thumb': {
                           w: '4',
                           h: '4',
                           borderRadius: 'full',
-                          bg: 'purple.500',
+                          bg: 'orange.500',
                           cursor: 'pointer',
                           border: 'none',
                         },
                       })}
                     />
-                    <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                    <p className={css({ fontSize: 'xs', color: 'brand.muted' })}>
                       Higher quality = larger file size
                     </p>
                   </div>
@@ -507,9 +485,9 @@ export default function ImageFormatConverterPage() {
                       className={css({
                         borderRadius: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
+                        borderColor: 'brand.line',
                         overflow: 'hidden',
-                        bg: 'gray.900',
+                        bg: 'brand.surface',
                       })}
                     >
                       <img
@@ -518,7 +496,7 @@ export default function ImageFormatConverterPage() {
                         className={css({ w: 'full', h: 'auto', display: 'block' })}
                       />
                     </div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    <div className={css({ fontSize: 'sm', color: 'brand.muted' })}>
                       {originalImage.format.toUpperCase()} • {formatFileSize(originalImage.size)}
                     </div>
                   </CardContent>
@@ -556,9 +534,9 @@ export default function ImageFormatConverterPage() {
                       className={css({
                         borderRadius: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
+                        borderColor: 'brand.line',
                         overflow: 'hidden',
-                        bg: 'gray.900',
+                        bg: 'brand.surface',
                       })}
                     >
                       <img
@@ -567,7 +545,7 @@ export default function ImageFormatConverterPage() {
                         className={css({ w: 'full', h: 'auto', display: 'block' })}
                       />
                     </div>
-                    <div className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                    <div className={css({ fontSize: 'sm', color: 'brand.muted' })}>
                       {outputFormat.toUpperCase()} • {formatFileSize(convertedImage.size)}
                     </div>
                     <Button onClick={handleDownload} className={css({ w: 'full' })}>
@@ -605,9 +583,9 @@ export default function ImageFormatConverterPage() {
                 className={css({
                   p: '3',
                   borderRadius: 'lg',
-                  bg: 'gray.800/50',
+                  bg: 'brand.surfaceRaised',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                 })}
               >
                 <div className={css({ fontSize: 'sm', fontWeight: 'semibold', mb: '2' })}>PNG</div>
@@ -617,7 +595,7 @@ export default function ImageFormatConverterPage() {
                     pl: '4',
                     spaceY: '1',
                     fontSize: 'xs',
-                    color: 'gray.400',
+                    color: 'brand.muted',
                   })}
                 >
                   <li>Lossless compression</li>
@@ -631,9 +609,9 @@ export default function ImageFormatConverterPage() {
                 className={css({
                   p: '3',
                   borderRadius: 'lg',
-                  bg: 'gray.800/50',
+                  bg: 'brand.surfaceRaised',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                 })}
               >
                 <div className={css({ fontSize: 'sm', fontWeight: 'semibold', mb: '2' })}>JPEG</div>
@@ -643,7 +621,7 @@ export default function ImageFormatConverterPage() {
                     pl: '4',
                     spaceY: '1',
                     fontSize: 'xs',
-                    color: 'gray.400',
+                    color: 'brand.muted',
                   })}
                 >
                   <li>Lossy compression</li>
@@ -657,9 +635,9 @@ export default function ImageFormatConverterPage() {
                 className={css({
                   p: '3',
                   borderRadius: 'lg',
-                  bg: 'gray.800/50',
+                  bg: 'brand.surfaceRaised',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                 })}
               >
                 <div className={css({ fontSize: 'sm', fontWeight: 'semibold', mb: '2' })}>WEBP</div>
@@ -669,7 +647,7 @@ export default function ImageFormatConverterPage() {
                     pl: '4',
                     spaceY: '1',
                     fontSize: 'xs',
-                    color: 'gray.400',
+                    color: 'brand.muted',
                   })}
                 >
                   <li>Modern format</li>
@@ -683,9 +661,9 @@ export default function ImageFormatConverterPage() {
                 className={css({
                   p: '3',
                   borderRadius: 'lg',
-                  bg: 'gray.800/50',
+                  bg: 'brand.surfaceRaised',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                 })}
               >
                 <div className={css({ fontSize: 'sm', fontWeight: 'semibold', mb: '2' })}>GIF</div>
@@ -695,7 +673,7 @@ export default function ImageFormatConverterPage() {
                     pl: '4',
                     spaceY: '1',
                     fontSize: 'xs',
-                    color: 'gray.400',
+                    color: 'brand.muted',
                   })}
                 >
                   <li>Supports animation</li>

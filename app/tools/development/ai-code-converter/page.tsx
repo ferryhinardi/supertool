@@ -3,6 +3,7 @@
 import hljs from 'highlight.js'
 import { ArrowRight, Check, Copy, Download, Info, Loader2, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import 'highlight.js/styles/atom-one-dark.css'
 import { toast } from 'sonner'
 import { PaywallModal } from '@/components/features/monetization/PaywallModal'
@@ -221,24 +222,13 @@ export default function AICodeConverterPage() {
       })}
     >
       {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '3' })}>
-        <h1
-          className={css({
-            fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '3',
-          })}
-        >
-          <Sparkles className={css({ color: 'yellow.400', animation: 'pulse 2s infinite' })} />
-          <span>AI Code Converter</span>
-        </h1>
-        <p className={css({ color: 'gray.400', fontSize: { base: 'sm', sm: 'base' } })}>
-          Convert code between 12+ programming languages instantly with AI
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="AI Code Converter"
+        description="Convert code between 12+ programming languages instantly with AI"
+        eyebrow="AI developer assistant"
+        icon={Sparkles}
+        highlights={['Language translation', 'Syntax highlighting']}
+      />
 
       {/* Language Selection */}
       <div
@@ -279,18 +269,18 @@ export default function AICodeConverterPage() {
               py: '3',
               bg: 'rgba(17, 24, 39, 0.8)',
               border: '2px solid',
-              borderColor: 'rgba(139, 92, 246, 0.3)',
+              borderColor: 'rgba(59, 130, 246, 0.3)',
               borderRadius: 'xl',
               color: 'white',
               fontSize: 'base',
               fontWeight: 'medium',
               cursor: 'pointer',
               transition: 'all 0.2s',
-              _hover: { borderColor: 'rgba(139, 92, 246, 0.5)' },
+              _hover: { borderColor: 'rgba(59, 130, 246, 0.5)' },
               _focus: {
                 outline: 'none',
-                borderColor: 'purple.500',
-                boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.1)',
+                borderColor: 'blue.500',
+                boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
               },
             })}
           >
@@ -312,16 +302,16 @@ export default function AICodeConverterPage() {
             justifyContent: 'center',
             w: '12',
             h: '12',
-            bg: 'rgba(139, 92, 246, 0.2)',
+            bg: 'rgba(59, 130, 246, 0.2)',
             border: '2px solid',
-            borderColor: 'rgba(139, 92, 246, 0.3)',
+            borderColor: 'rgba(59, 130, 246, 0.3)',
             borderRadius: 'full',
-            color: 'purple.400',
+            color: 'blue.400',
             cursor: 'pointer',
             transition: 'all 0.2s',
             mt: '8',
             _hover: {
-              bg: 'rgba(139, 92, 246, 0.3)',
+              bg: 'rgba(59, 130, 246, 0.3)',
               transform: 'rotate(180deg)',
             },
           })}
@@ -360,18 +350,18 @@ export default function AICodeConverterPage() {
               py: '3',
               bg: 'rgba(17, 24, 39, 0.8)',
               border: '2px solid',
-              borderColor: 'rgba(139, 92, 246, 0.3)',
+              borderColor: 'rgba(59, 130, 246, 0.3)',
               borderRadius: 'xl',
               color: 'white',
               fontSize: 'base',
               fontWeight: 'medium',
               cursor: 'pointer',
               transition: 'all 0.2s',
-              _hover: { borderColor: 'rgba(139, 92, 246, 0.5)' },
+              _hover: { borderColor: 'rgba(59, 130, 246, 0.5)' },
               _focus: {
                 outline: 'none',
-                borderColor: 'purple.500',
-                boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.1)',
+                borderColor: 'blue.500',
+                boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
               },
             })}
           >
@@ -390,7 +380,7 @@ export default function AICodeConverterPage() {
           p: '4',
           bg: 'rgba(17, 24, 39, 0.6)',
           border: '1px solid',
-          borderColor: 'rgba(139, 92, 246, 0.2)',
+          borderColor: 'rgba(59, 130, 246, 0.2)',
           borderRadius: 'xl',
         })}
       >
@@ -419,7 +409,7 @@ export default function AICodeConverterPage() {
               className={css({
                 w: '4',
                 h: '4',
-                accentColor: 'purple.500',
+                accentColor: 'blue.500',
                 cursor: 'pointer',
               })}
             />
@@ -441,7 +431,7 @@ export default function AICodeConverterPage() {
               className={css({
                 w: '4',
                 h: '4',
-                accentColor: 'purple.500',
+                accentColor: 'blue.500',
                 cursor: 'pointer',
               })}
             />
@@ -463,7 +453,7 @@ export default function AICodeConverterPage() {
               className={css({
                 w: '4',
                 h: '4',
-                accentColor: 'purple.500',
+                accentColor: 'blue.500',
                 cursor: 'pointer',
               })}
             />
@@ -501,7 +491,7 @@ export default function AICodeConverterPage() {
                 p: '4',
                 bg: 'rgba(17, 24, 39, 0.95)',
                 border: '2px solid',
-                borderColor: 'rgba(139, 92, 246, 0.3)',
+                borderColor: 'rgba(59, 130, 246, 0.3)',
                 borderRadius: 'xl',
                 color: 'white',
                 fontFamily: 'mono',
@@ -509,8 +499,8 @@ export default function AICodeConverterPage() {
                 resize: 'vertical',
                 _focus: {
                   outline: 'none',
-                  borderColor: 'purple.500',
-                  boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.1)',
+                  borderColor: 'blue.500',
+                  boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
                 },
                 _placeholder: {
                   color: 'gray.500',
@@ -538,15 +528,15 @@ export default function AICodeConverterPage() {
                     px: '2',
                     py: '1',
                     fontSize: 'xs',
-                    color: 'purple.400',
-                    bg: 'rgba(139, 92, 246, 0.1)',
+                    color: 'blue.400',
+                    bg: 'rgba(59, 130, 246, 0.1)',
                     border: '1px solid',
-                    borderColor: 'rgba(139, 92, 246, 0.3)',
+                    borderColor: 'rgba(59, 130, 246, 0.3)',
                     borderRadius: 'md',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     _hover: {
-                      bg: 'rgba(139, 92, 246, 0.2)',
+                      bg: 'rgba(59, 130, 246, 0.2)',
                     },
                   })}
                 >
@@ -567,15 +557,15 @@ export default function AICodeConverterPage() {
                     px: '2',
                     py: '1',
                     fontSize: 'xs',
-                    color: 'purple.400',
-                    bg: 'rgba(139, 92, 246, 0.1)',
+                    color: 'blue.400',
+                    bg: 'rgba(59, 130, 246, 0.1)',
                     border: '1px solid',
-                    borderColor: 'rgba(139, 92, 246, 0.3)',
+                    borderColor: 'rgba(59, 130, 246, 0.3)',
                     borderRadius: 'md',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     _hover: {
-                      bg: 'rgba(139, 92, 246, 0.2)',
+                      bg: 'rgba(59, 130, 246, 0.2)',
                     },
                   })}
                 >
@@ -592,7 +582,7 @@ export default function AICodeConverterPage() {
               p: '4',
               bg: 'rgba(17, 24, 39, 0.95)',
               border: '2px solid',
-              borderColor: 'rgba(139, 92, 246, 0.3)',
+              borderColor: 'rgba(59, 130, 246, 0.3)',
               borderRadius: 'xl',
               color: 'white',
               fontFamily: 'mono',
@@ -615,7 +605,7 @@ export default function AICodeConverterPage() {
                   className={css({
                     w: '8',
                     h: '8',
-                    color: 'purple.400',
+                    color: 'blue.400',
                     animation: 'spin 1s linear infinite',
                   })}
                 />
@@ -654,15 +644,15 @@ export default function AICodeConverterPage() {
             fontSize: 'lg',
             fontWeight: 'bold',
             color: 'white',
-            bg: 'linear-gradient(to right, #8b5cf6, #ec4899)',
+            bg: 'linear-gradient(to right, #3b82f6, #06b6d4)',
             border: 'none',
             borderRadius: 'xl',
             cursor: 'pointer',
             transition: 'all 0.3s',
-            boxShadow: '0 10px 25px rgba(139, 92, 246, 0.3)',
+            boxShadow: '0 10px 25px rgba(59, 130, 246, 0.3)',
             _hover: {
               transform: 'translateY(-2px)',
-              boxShadow: '0 15px 30px rgba(139, 92, 246, 0.4)',
+              boxShadow: '0 15px 30px rgba(59, 130, 246, 0.4)',
             },
             _active: {
               transform: 'translateY(0)',
@@ -772,15 +762,13 @@ export default function AICodeConverterPage() {
       <div
         className={css({
           p: '4',
-          bg: 'rgba(139, 92, 246, 0.05)',
+          bg: 'rgba(59, 130, 246, 0.05)',
           border: '1px solid',
-          borderColor: 'rgba(139, 92, 246, 0.2)',
+          borderColor: 'rgba(59, 130, 246, 0.2)',
           borderRadius: 'xl',
         })}
       >
-        <h3
-          className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.400', mb: '3' })}
-        >
+        <h3 className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.400', mb: '3' })}>
           💡 Pro Tips
         </h3>
         <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'gray.400' })}>

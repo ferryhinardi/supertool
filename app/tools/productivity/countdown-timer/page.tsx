@@ -4,10 +4,9 @@ import { Calendar, Check, Clock, Link2, RotateCcw, Share2 } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { SocialShare } from '@/components/ui/social-share'
@@ -158,59 +157,13 @@ function CountdownTimerContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <Badge
-          className={css({
-            bg: 'orange.500/10',
-            color: 'orange.400',
-            border: '1px solid',
-            borderColor: 'orange.500/20',
-          })}
-        >
-          <Clock className={css({ w: '3', h: '3', mr: '1' })} />
-          Productivity Tool
-        </Badge>
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            letterSpacing: 'tight',
-            lineHeight: 'tight',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'orange.400',
-              gradientTo: 'red.500',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            Countdown
-          </span>{' '}
-          <span className={css({ color: 'gray.100' })}>Timer</span>
-        </h1>
-        <p
-          className={css({
-            fontSize: { base: 'md', sm: 'lg' },
-            color: 'gray.400',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Set a countdown to any date and time. Share the link with others to count down together.
-          Perfect for events, deadlines, and celebrations.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Countdown Timer"
+        description="Set a countdown to any date and time. Share the link with others to count down together. Perfect for events, deadlines, and celebrations."
+        eyebrow="Time management"
+        icon={Clock}
+        highlights={['Shareable countdown', 'Quick presets']}
+      />
 
       {/* Setup Card */}
       <div

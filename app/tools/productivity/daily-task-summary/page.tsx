@@ -2,6 +2,7 @@
 
 import { Calendar, Clock, Download, Plus, Trash2, TrendingUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -209,9 +210,12 @@ export default function DailyTaskSummary() {
   return (
     <main
       className={css({
-        minHeight: '100vh',
-        background: 'linear-gradient(to bottom right, #10b981, #3b82f6)',
-        padding: { base: '2rem 1rem', md: '2rem' },
+        mx: 'auto',
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
       <div
@@ -220,46 +224,13 @@ export default function DailyTaskSummary() {
           margin: '0 auto',
         })}
       >
-        {/* Header */}
-        <div
-          className={css({
-            textAlign: 'center',
-            marginBottom: '2rem',
-          })}
-        >
-          <div
-            className={css({
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '4rem',
-              height: '4rem',
-              borderRadius: '1rem',
-              background: 'rgba(255, 255, 255, 0.2)',
-              marginBottom: '1rem',
-            })}
-          >
-            <Calendar size={32} color="white" />
-          </div>
-          <h1
-            className={css({
-              fontSize: { base: '2rem', md: '2.5rem' },
-              fontWeight: 'bold',
-              color: 'white',
-              marginBottom: '0.5rem',
-            })}
-          >
-            Daily Task Summary
-          </h1>
-          <p
-            className={css({
-              fontSize: { base: '1rem', md: '1.125rem' },
-              color: 'rgba(255, 255, 255, 0.9)',
-            })}
-          >
-            Track your daily tasks and analyze your productivity
-          </p>
-        </div>
+        <ProductivityToolHeader
+          title="Daily Task Summary"
+          description="Track your daily tasks and analyze your productivity"
+          eyebrow="Notes and history"
+          icon={Calendar}
+          highlights={['Task tracking', 'Daily summary']}
+        />
 
         <div
           className={css({

@@ -15,6 +15,8 @@ vi.mock('@/styled-system/css', () => ({
 }))
 
 vi.mock('lucide-react', () => ({
+  ArrowLeft: () => <svg data-testid="icon-arrow-left" />,
+  ShieldCheck: () => <svg data-testid="icon-shield-check" />,
   Copy: () => <svg data-testid="icon-copy" />,
   FileText: () => <svg data-testid="icon-filetext" />,
   RotateCcw: () => <svg data-testid="icon-rotateccw" />,

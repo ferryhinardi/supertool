@@ -27,10 +27,9 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -262,59 +261,13 @@ export default function EmailSignatureGenerator() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '3',
-          })}
-        >
-          <div
-            className={css({
-              p: '3',
-              rounded: 'xl',
-              bg: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(236, 72, 153, 0.2))',
-              border: '1px solid rgba(147, 51, 234, 0.3)',
-            })}
-          >
-            <Mail className={css({ w: '8', h: '8', color: 'purple.400' })} />
-          </div>
-          <h1
-            className={css({
-              fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-              fontWeight: 'bold',
-              bgGradient: 'to-r',
-              gradientFrom: 'purple.400',
-              gradientTo: 'pink.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            Email Signature Generator
-          </h1>
-        </div>
-        <p
-          className={css({
-            color: 'gray.400',
-            maxW: '2xl',
-            mx: 'auto',
-            fontSize: { base: 'sm', md: 'md' },
-          })}
-        >
-          Create professional HTML email signatures with customizable templates, social icons, and
-          branding options. Works with Gmail, Outlook, Apple Mail, and more.
-        </p>
-        <div
-          className={css({ display: 'flex', gap: '2', justifyContent: 'center', flexWrap: 'wrap' })}
-        >
-          <Badge variant="outline">Free</Badge>
-          <Badge variant="outline">No Sign-up</Badge>
-          <Badge variant="outline">HTML & Plain Text</Badge>
-        </div>
-      </div>
+      <ProductivityToolHeader
+        title="Email Signature Generator"
+        description="Create professional HTML email signatures with customizable templates, social icons, and branding options. Works with Gmail, Outlook, Apple Mail, and more."
+        eyebrow="Builders"
+        icon={Mail}
+        highlights={['HTML signature', 'Live preview']}
+      />
 
       {/* Main Content */}
       <div

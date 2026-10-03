@@ -55,6 +55,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   })
 
   afterEach(() => {
+    vi.restoreAllMocks()
     vi.clearAllMocks()
   })
 
@@ -488,67 +489,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       })
     })
 
-    it.skip('should download YAML file when converting from JSON', async () => {
-      // Skipped: Text matching issue with arrow character
-      // Mock URL methods
-      const createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url')
-      const revokeObjectURLMock = vi.fn()
-      window.URL.createObjectURL = createObjectURLMock
-      window.URL.revokeObjectURL = revokeObjectURLMock
-
-      renderPage()
-
-      // Switch to JSON to YAML
-      const jsonToYamlButton = screen.getByText('JSON → YAML')
-      await userEvent.click(jsonToYamlButton)
-
-      await waitFor(() => {
-        expect(screen.getByPlaceholderText('Paste your JSON here...')).toBeInTheDocument()
-      })
-
-      const inputArea = screen.getByPlaceholderText('Paste your JSON here...')
-      fireEvent.input(inputArea, { target: { value: '{"name": "John"}' } })
-
-      await waitFor(() => {
-        const outputArea = screen.getByPlaceholderText('Converted output will appear here...')
-        const value = (outputArea as HTMLTextAreaElement).value
-        expect(value).toContain('name:')
-      })
-
-      // Now mock appendChild after rendering is complete
-      const clickMock = vi.fn()
-      const _appendChildSpy = vi
-        .spyOn(document.body, 'appendChild')
-        .mockImplementation((node: Node) => {
-          if (node instanceof HTMLAnchorElement) {
-            node.click = clickMock
-            return node
-          }
-          return node
-        })
-
-      const _removeChildSpy = vi
-        .spyOn(document.body, 'removeChild')
-        .mockImplementation(() => null as unknown as Node)
-
-      const downloadButton = screen.getByText('Download')
-      await userEvent.click(downloadButton)
-
-      await waitFor(() => {
-        expect(createObjectURLMock).toHaveBeenCalled()
-        expect(clickMock).toHaveBeenCalled()
-        expect(toast.success).toHaveBeenCalledWith('Downloaded as YAML!')
-        expect(trackToolEvent).toHaveBeenCalledWith('yaml_json_converter_download', {
-          direction: 'json-to-yaml',
-          format: 'yaml',
-        })
-      })
-    })
-  })
-
-  describe('Download Functionality - Additional Tests', () => {
-    it.skip('should download YAML file when converting from JSON', async () => {
-      // Skipped: Text matching issue with arrow character
+    it('should download YAML file when converting from JSON', async () => {
       // Mock URL methods
       const createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url')
       const revokeObjectURLMock = vi.fn()
@@ -606,8 +547,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   })
 
   describe('Clear Functionality', () => {
-    it.skip('should clear input and output', async () => {
-      // Skipped: Placeholder text matching in CodeMirror
+    it('should clear input and output', async () => {
       renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -630,8 +570,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       })
     })
 
-    it.skip('should clear error message when clearing input', async () => {
-      // Skipped: Placeholder text matching in CodeMirror
+    it('should clear error message when clearing input', async () => {
       renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -651,8 +590,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   })
 
   describe('Load Example', () => {
-    it.skip('should load YAML example when in YAML to JSON mode', async () => {
-      // Skipped: Load Example button text matching issue
+    it('should load YAML example when in YAML to JSON mode', async () => {
       renderPage()
 
       const loadExampleButton = screen.getByText('Load Example')
@@ -671,8 +609,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       })
     })
 
-    it.skip('should load JSON example when in JSON to YAML mode', async () => {
-      // Skipped: Text matching issue with arrow character
+    it('should load JSON example when in JSON to YAML mode', async () => {
       renderPage()
 
       // Switch to JSON to YAML
@@ -699,8 +636,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       })
     })
 
-    it.skip('should convert example data immediately after loading', async () => {
-      // Skipped: Load Example button text matching issue
+    it('should convert example data immediately after loading', async () => {
       renderPage()
 
       const loadExampleButton = screen.getByText('Load Example')
@@ -715,24 +651,19 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   })
 
   describe('Button States', () => {
-    it.skip('should disable copy button when no output text', () => {
-      // Skipped: Copy button text matching issue
+    it('should disable copy button when no output text', () => {
       renderPage()
 
-      const copyButton = screen.getByText('Copy')
-      expect(copyButton).toBeDisabled()
+      expect(screen.getByRole('button', { name: /^Copy$/ })).toBeDisabled()
     })
 
-    it.skip('should disable download button when no output text', () => {
-      // Skipped: Button state testing with CodeMirror
+    it('should disable download button when no output text', () => {
       renderPage()
 
-      const downloadButton = screen.getByText('Download')
-      expect(downloadButton).toBeDisabled()
+      expect(screen.getByRole('button', { name: /^Download$/ })).toBeDisabled()
     })
 
-    it.skip('should enable copy button when output is present', async () => {
-      // Skipped: Button state testing with CodeMirror
+    it('should enable copy button when output is present', async () => {
       renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -740,29 +671,25 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
 
       await waitFor(() => {
         const outputArea = screen.getByPlaceholderText('Converted output will appear here...')
-        const value = (outputArea as HTMLTextAreaElement).value
-        expect(value).toContain('"name"')
-        expect(value).toContain('"John"')
+        expect((outputArea as HTMLTextAreaElement).value).toContain('"name"')
+        expect(screen.getByRole('button', { name: /^Copy$/ })).toBeEnabled()
       })
     })
 
-    it.skip('should enable download button when output is present', async () => {
-      // Skipped: Button state testing with CodeMirror
+    it('should enable download button when output is present', async () => {
       renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
       fireEvent.input(inputArea, { target: { value: 'name: John' } })
 
       await waitFor(() => {
-        const downloadButton = screen.getByText('Download')
-        expect(downloadButton).not.toBeDisabled()
+        expect(screen.getByRole('button', { name: /^Download$/ })).toBeEnabled()
       })
     })
   })
 
   describe('Real-time Conversion', () => {
-    it.skip('should convert text as user types', async () => {
-      // Skipped: Real-time conversion with CodeMirror
+    it('should convert text as user types', async () => {
       renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -790,8 +717,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       })
     })
 
-    it.skip('should clear output when input is cleared', async () => {
-      // Skipped: Real-time conversion with CodeMirror
+    it('should clear output when input is cleared', async () => {
       renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -813,8 +739,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
   })
 
   describe('Error Display', () => {
-    it.skip('should show error message for invalid YAML', async () => {
-      // Skipped: Error display with CodeMirror
+    it('should show error message for invalid YAML', async () => {
       renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')
@@ -827,8 +752,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       })
     })
 
-    it.skip('should show error message for invalid JSON', async () => {
-      // Skipped: Error display with CodeMirror
+    it('should show error message for invalid JSON', async () => {
       renderPage()
 
       // Switch to JSON to YAML
@@ -847,8 +771,7 @@ describe('YAML ↔ JSON Converter Page - Component Tests', () => {
       })
     })
 
-    it.skip('should highlight input textarea with error border', async () => {
-      // Skipped: Error highlighting with CodeMirror
+    it('should highlight input textarea with error border', async () => {
       renderPage()
 
       const inputArea = screen.getByPlaceholderText('Paste your YAML here...')

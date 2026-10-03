@@ -3,6 +3,7 @@
 import { Copy, EyeOff, Info, Sparkles, Trash2, Upload } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -213,65 +214,13 @@ function SteganographyContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'gray.500/30',
-            bg: 'gray.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <EyeOff className={css({ h: '5', w: '5', color: 'white' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'white' })}>
-            Zero-Width Character Encoding
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'gray.400',
-            gradientVia: 'slate.400',
-            gradientTo: 'gray.500',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Text Steganography Tool
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Hide secret messages within plain text using invisible zero-width characters. Encode and
-          decode hidden text that is completely invisible to the naked eye.
-        </p>
-      </div>
+      <SecurityToolHeader
+        title="Text Steganography Tool"
+        description="Hide secret messages within plain text using invisible zero-width characters. Encode and decode hidden text that is completely invisible to the naked eye."
+        eyebrow="Hidden message workspace"
+        icon={EyeOff}
+        highlights={['Zero-width text', 'Encode or decode']}
+      />
 
       {/* Mode Selector */}
       <div
@@ -279,9 +228,6 @@ function SteganographyContent() {
           display: 'flex',
           justifyContent: 'center',
           gap: '3',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
         })}
       >
         <Button
@@ -291,13 +237,13 @@ function SteganographyContent() {
           }}
           className={css({
             gap: '2',
-            bg: mode === 'encode' ? 'gray.500/20' : 'gray.800/50',
+            bg: mode === 'encode' ? 'emerald.500/20' : 'brand.surfaceRaised',
             border: '1px solid',
-            borderColor: mode === 'encode' ? 'gray.500/50' : 'gray.700/50',
-            color: mode === 'encode' ? 'gray.300' : 'gray.400',
+            borderColor: mode === 'encode' ? 'emerald.500/50' : 'gray.700/50',
+            color: mode === 'encode' ? 'emerald.300' : 'brand.muted',
             _hover: {
-              bg: mode === 'encode' ? 'gray.500/30' : 'gray.800',
-              borderColor: mode === 'encode' ? 'gray.500/70' : 'gray.600',
+              bg: mode === 'encode' ? 'emerald.500/30' : 'gray.800',
+              borderColor: mode === 'encode' ? 'emerald.500/70' : 'gray.600',
             },
           })}
         >
@@ -311,13 +257,13 @@ function SteganographyContent() {
           }}
           className={css({
             gap: '2',
-            bg: mode === 'decode' ? 'gray.500/20' : 'gray.800/50',
+            bg: mode === 'decode' ? 'emerald.500/20' : 'brand.surfaceRaised',
             border: '1px solid',
-            borderColor: mode === 'decode' ? 'gray.500/50' : 'gray.700/50',
-            color: mode === 'decode' ? 'gray.300' : 'gray.400',
+            borderColor: mode === 'decode' ? 'emerald.500/50' : 'gray.700/50',
+            color: mode === 'decode' ? 'emerald.300' : 'brand.muted',
             _hover: {
-              bg: mode === 'decode' ? 'gray.500/30' : 'gray.800',
-              borderColor: mode === 'decode' ? 'gray.500/70' : 'gray.600',
+              bg: mode === 'decode' ? 'emerald.500/30' : 'gray.800',
+              borderColor: mode === 'decode' ? 'emerald.500/70' : 'gray.600',
             },
           })}
         >
@@ -328,19 +274,12 @@ function SteganographyContent() {
 
       {/* Encode Mode */}
       {mode === 'encode' && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              borderColor: 'emerald.500/20',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -354,7 +293,7 @@ function SteganographyContent() {
               <div className={css({ spaceY: '3' })}>
                 <label
                   htmlFor="cover-text"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
                 >
                   Cover Text (visible)
                 </label>
@@ -368,8 +307,8 @@ function SteganographyContent() {
                     w: 'full',
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
                     px: '4',
                     py: '3',
                     fontSize: 'base',
@@ -377,11 +316,11 @@ function SteganographyContent() {
                     resize: 'vertical',
                     _focus: {
                       outline: 'none',
-                      borderColor: 'gray.500',
+                      borderColor: 'emerald.500',
                       ring: '2px',
-                      ringColor: 'gray.500/20',
+                      ringColor: 'emerald.500/20',
                     },
-                    _placeholder: { color: 'white' },
+                    _placeholder: { color: 'brand.ink' },
                   })}
                 />
               </div>
@@ -390,7 +329,7 @@ function SteganographyContent() {
               <div className={css({ spaceY: '3' })}>
                 <label
                   htmlFor="secret-message"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
                 >
                   Secret Message (will be hidden)
                 </label>
@@ -404,8 +343,8 @@ function SteganographyContent() {
                     w: 'full',
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
                     px: '4',
                     py: '3',
                     fontSize: 'base',
@@ -413,17 +352,17 @@ function SteganographyContent() {
                     resize: 'vertical',
                     _focus: {
                       outline: 'none',
-                      borderColor: 'gray.500',
+                      borderColor: 'emerald.500',
                       ring: '2px',
-                      ringColor: 'gray.500/20',
+                      ringColor: 'emerald.500/20',
                     },
-                    _placeholder: { color: 'white' },
+                    _placeholder: { color: 'brand.ink' },
                   })}
                 />
                 {secretMessage && (
                   <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <Info className={css({ h: '4', w: '4', color: 'white' })} />
-                    <span className={css({ fontSize: 'sm', color: 'white' })}>
+                    <Info className={css({ h: '4', w: '4', color: 'brand.ink' })} />
+                    <span className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                       {secretMessage.length} characters
                     </span>
                   </div>
@@ -436,11 +375,11 @@ function SteganographyContent() {
                   onClick={handleEncode}
                   className={css({
                     gap: '2',
-                    bg: 'gray.500/20',
+                    bg: 'emerald.500/20',
                     border: '1px solid',
-                    borderColor: 'gray.500/50',
-                    color: 'white',
-                    _hover: { bg: 'gray.500/30' },
+                    borderColor: 'emerald.500/50',
+                    color: 'brand.ink',
+                    _hover: { bg: 'emerald.500/30' },
                   })}
                 >
                   <EyeOff className={css({ h: '4', w: '4' })} />
@@ -451,7 +390,7 @@ function SteganographyContent() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'white',
+                    color: 'brand.ink',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -463,7 +402,7 @@ function SteganographyContent() {
                   className={css({
                     gap: '2',
                     bg: 'transparent',
-                    color: 'white',
+                    color: 'brand.ink',
                     _hover: { bg: 'red.500/20', color: 'red.400' },
                   })}
                 >
@@ -477,13 +416,11 @@ function SteganographyContent() {
                 <div
                   className={css({
                     spaceY: '3',
-                    animation: 'scaleIn 0.5s ease-out forwards',
-                    opacity: 0,
                   })}
                 >
                   <label
                     htmlFor="encoded-result"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
                   >
                     Encoded Text (contains hidden message)
                   </label>
@@ -497,13 +434,13 @@ function SteganographyContent() {
                         w: 'full',
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.500/30',
-                        bg: 'gray.500/10',
+                        borderColor: 'emerald.500/30',
+                        bg: 'emerald.500/10',
                         px: '4',
                         py: '3',
                         fontSize: 'base',
                         fontWeight: 'medium',
-                        color: 'white',
+                        color: 'brand.ink',
                         resize: 'vertical',
                         cursor: 'default',
                       })}
@@ -516,7 +453,7 @@ function SteganographyContent() {
                         right: '2',
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'white',
+                        color: 'brand.ink',
                         _hover: { bg: 'gray.700' },
                       })}
                       size="sm"
@@ -548,7 +485,7 @@ function SteganographyContent() {
                         Success!
                       </span>
                     </div>
-                    <p className={css({ fontSize: 'sm', color: 'white' })}>
+                    <p className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                       Your secret message is now hidden in the text above. Share it with anyone -
                       they will only see the cover text, but you can decode it later to reveal the
                       secret.
@@ -563,19 +500,12 @@ function SteganographyContent() {
 
       {/* Decode Mode */}
       {mode === 'decode' && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              borderColor: 'emerald.500/20',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -589,7 +519,7 @@ function SteganographyContent() {
               <div className={css({ spaceY: '3' })}>
                 <label
                   htmlFor="text-to-decode"
-                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                  className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
                 >
                   Text to Decode
                 </label>
@@ -603,8 +533,8 @@ function SteganographyContent() {
                     w: 'full',
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.800/50',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
                     px: '4',
                     py: '3',
                     fontSize: 'base',
@@ -612,17 +542,17 @@ function SteganographyContent() {
                     resize: 'vertical',
                     _focus: {
                       outline: 'none',
-                      borderColor: 'gray.500',
+                      borderColor: 'emerald.500',
                       ring: '2px',
-                      ringColor: 'gray.500/20',
+                      ringColor: 'emerald.500/20',
                     },
-                    _placeholder: { color: 'white' },
+                    _placeholder: { color: 'brand.ink' },
                   })}
                 />
                 {coverText && (
                   <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <Info className={css({ h: '4', w: '4', color: 'white' })} />
-                    <span className={css({ fontSize: 'sm', color: 'white' })}>
+                    <Info className={css({ h: '4', w: '4', color: 'brand.ink' })} />
+                    <span className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                       {hasHiddenMessage(coverText)
                         ? 'Hidden message detected!'
                         : 'No hidden message detected'}
@@ -637,11 +567,11 @@ function SteganographyContent() {
                   onClick={handleDecode}
                   className={css({
                     gap: '2',
-                    bg: 'gray.500/20',
+                    bg: 'emerald.500/20',
                     border: '1px solid',
-                    borderColor: 'gray.500/50',
-                    color: 'white',
-                    _hover: { bg: 'gray.500/30' },
+                    borderColor: 'emerald.500/50',
+                    color: 'brand.ink',
+                    _hover: { bg: 'emerald.500/30' },
                   })}
                 >
                   <EyeOff className={css({ h: '4', w: '4' })} />
@@ -652,7 +582,7 @@ function SteganographyContent() {
                   className={css({
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'white',
+                    color: 'brand.ink',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -664,7 +594,7 @@ function SteganographyContent() {
                   className={css({
                     gap: '2',
                     bg: 'transparent',
-                    color: 'white',
+                    color: 'brand.ink',
                     _hover: { bg: 'red.500/20', color: 'red.400' },
                   })}
                 >
@@ -678,13 +608,11 @@ function SteganographyContent() {
                 <div
                   className={css({
                     spaceY: '3',
-                    animation: 'scaleIn 0.5s ease-out forwards',
-                    opacity: 0,
                   })}
                 >
                   <label
                     htmlFor="decoded-message"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
                   >
                     Decoded Secret Message
                   </label>
@@ -698,13 +626,13 @@ function SteganographyContent() {
                         w: 'full',
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.500/30',
-                        bg: 'gray.500/10',
+                        borderColor: 'emerald.500/30',
+                        bg: 'emerald.500/10',
                         px: '4',
                         py: '3',
                         fontSize: 'base',
                         fontWeight: 'medium',
-                        color: 'white',
+                        color: 'brand.ink',
                         resize: 'vertical',
                         cursor: 'default',
                       })}
@@ -717,7 +645,7 @@ function SteganographyContent() {
                         right: '2',
                         gap: '2',
                         bg: 'gray.800',
-                        color: 'white',
+                        color: 'brand.ink',
                         _hover: { bg: 'gray.700' },
                       })}
                       size="sm"
@@ -749,7 +677,7 @@ function SteganographyContent() {
                         Decoded Successfully!
                       </span>
                     </div>
-                    <p className={css({ fontSize: 'sm', color: 'white' })}>
+                    <p className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                       The hidden message has been revealed. This message was completely invisible in
                       the original text.
                     </p>

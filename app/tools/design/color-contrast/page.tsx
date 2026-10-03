@@ -4,9 +4,9 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
+  Contrast,
   Copy,
   Download,
-  Eye,
   History,
   RefreshCw,
   Sparkles,
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -337,80 +338,16 @@ function ColorContrastContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'pink.500/30',
-            bg: 'pink.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Eye className={css({ h: '5', w: '5', color: 'pink.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'pink.300',
-            })}
-          >
-            WCAG 2.1 Compliant
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'pink.400',
-            gradientVia: 'rose.400',
-            gradientTo: 'red.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Color Contrast Checker
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Check color contrast ratios for WCAG 2.1 accessibility compliance. Ensure your designs are
-          readable for everyone.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="Color Contrast Checker"
+        description="Check color contrast ratios for WCAG 2.1 accessibility compliance. Ensure your designs are readable for everyone."
+        eyebrow="Accessibility check"
+        icon={Contrast}
+        highlights={['WCAG 2.1 Compliant']}
+      />
 
       {/* Color Inputs */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -969,13 +906,7 @@ function ColorContrastContent() {
       </div>
 
       {/* Contrast Results */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -1178,13 +1109,7 @@ function ColorContrastContent() {
       </div>
 
       {/* Live Preview */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -1271,13 +1196,7 @@ function ColorContrastContent() {
       </div>
 
       {/* Info Card */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',

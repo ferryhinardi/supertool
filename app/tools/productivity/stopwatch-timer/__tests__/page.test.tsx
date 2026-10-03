@@ -135,7 +135,8 @@ describe('StopwatchTimerPage', () => {
 
     it('renders the badge with features', () => {
       render(<StopwatchTimerPage />)
-      expect(screen.getByText('Stopwatch • Timer • Presets')).toBeInTheDocument()
+      expect(screen.getByText('Laps and presets')).toBeInTheDocument()
+      expect(screen.getByText('Desktop alerts')).toBeInTheDocument()
     })
 
     it('renders mode toggle buttons', () => {

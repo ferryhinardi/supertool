@@ -3,6 +3,7 @@
 import { Download, Monitor, RotateCw, Smartphone, Tablet, Upload } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -269,52 +270,13 @@ export default function DeviceMockupPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            mb: '3',
-            px: '3',
-            py: '1.5',
-            bg: 'blue.500/10',
-            rounded: 'full',
-          })}
-        >
-          <Monitor className={css({ w: '4', h: '4', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'blue.400' })}>
-            Device Mockup Generator
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientTo: 'purple.400',
-            bgClip: 'text',
-            mb: '3',
-          })}
-        >
-          Create Professional Device Mockups
-        </h1>
-
-        <p
-          className={css({
-            fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Upload your screenshot and showcase it in realistic device frames. Perfect for
-          presentations, portfolios, and app store previews.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="Create Professional Device Mockups"
+        description="Upload your screenshot and showcase it in realistic device frames. Perfect for presentations, portfolios, and app store previews."
+        eyebrow="Device mockups"
+        icon={Smartphone}
+        highlights={['Device Mockup Generator']}
+      />
 
       {/* Upload Section */}
       {!uploadedImage && (

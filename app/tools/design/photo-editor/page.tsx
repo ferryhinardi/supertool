@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -348,92 +349,23 @@ export default function PhotoEditorPage() {
     <main
       className={css({
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/30',
-            bg: 'purple.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Sparkles className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
-            Professional Photo Editor • AI-Powered
-          </span>
-          <Badge
-            className={css({
-              bg: 'gradient-to-r from-yellow-500 to-orange-500',
-              color: 'white',
-              fontSize: 'xs',
-              px: '2',
-              py: '0.5',
-            })}
-          >
-            PREMIUM
-          </Badge>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'orange.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          AI Photo Editor
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Professional photo editing with advanced filters, adjustments, and AI-powered image
-          generation. Edit photos in your browser with powerful tools and effects.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="AI Photo Editor"
+        description="Professional photo editing with advanced filters, adjustments, and AI-powered image generation. Edit photos in your browser with powerful tools and effects."
+        eyebrow="Photo editing"
+        icon={Sparkles}
+        highlights={['PREMIUM', 'Professional Photo Editor']}
+      />
 
       {/* Main Editor */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -969,13 +901,7 @@ export default function PhotoEditorPage() {
       </div>
 
       {/* Features Section */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',

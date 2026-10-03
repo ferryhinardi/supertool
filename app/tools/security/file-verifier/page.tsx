@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -120,9 +121,9 @@ function FileVerifierContent() {
     })
 
     if (isMatch) {
-      toast.success('✅ Hash matches! File integrity verified.')
+      toast.success('Hash matches! File integrity verified.')
     } else {
-      toast.error('❌ Hash mismatch! File may be corrupted or tampered.')
+      toast.error('Hash mismatch! File may be corrupted or tampered.')
     }
   }
 
@@ -180,77 +181,25 @@ function FileVerifierContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            borderRadius: 'full',
-            border: '1px solid',
-            borderColor: 'emerald.500/30',
-            bg: 'emerald.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Shield className={css({ h: '5', w: '5', color: 'emerald.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'emerald.300' })}>
-            Secure • Client-Side • No Server Upload
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'emerald.400',
-            gradientVia: 'green.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{ WebkitTextFillColor: 'transparent' }}
-        >
-          File Integrity Verifier
-        </h1>
-
-        <p
-          className={css({
-            maxW: '3xl',
-            mx: 'auto',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Verify file integrity by comparing cryptographic hashes. Detect tampering, corruption, or
-          unauthorized modifications. All processing happens securely in your browser.
-        </p>
-      </div>
+      <SecurityToolHeader
+        title="File Integrity Verifier"
+        description="Verify file integrity by comparing cryptographic hashes. Detect tampering, corruption, or unauthorized modifications. All processing happens securely in your browser."
+        eyebrow="Integrity verification"
+        icon={FileCheck}
+        highlights={[
+          'Hash comparison',
+          'Tamper detection',
+          'Secure • Client-Side • No Server Upload',
+        ]}
+      />
 
       {/* Algorithm Selection */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'emerald.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -270,7 +219,7 @@ function FileVerifierContent() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '2',
-                    bg: algorithm === algo ? 'emerald.500/20' : 'gray.800/50',
+                    bg: algorithm === algo ? 'emerald.500/20' : 'brand.surfaceRaised',
                     border: '1px solid',
                     borderColor: algorithm === algo ? 'emerald.500/50' : 'gray.700/50',
                     color: algorithm === algo ? 'emerald.300' : 'gray.400',
@@ -299,7 +248,7 @@ function FileVerifierContent() {
               })}
             >
               <Info className={css({ h: '5', w: '5', color: 'blue.400', mt: '0.5' })} />
-              <div className={css({ fontSize: 'sm', color: 'white' })}>
+              <div className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                 <strong>Note:</strong> MD5 and SHA-1 are considered cryptographically weak. Use
                 SHA-256 or SHA-512 for better security.
               </div>
@@ -309,19 +258,12 @@ function FileVerifierContent() {
       </div>
 
       {/* File Upload */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'emerald.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -337,7 +279,7 @@ function FileVerifierContent() {
                 borderRadius: 'lg',
                 p: '8',
                 textAlign: 'center',
-                bg: selectedFile ? 'emerald.500/5' : 'gray.800/50',
+                bg: selectedFile ? 'emerald.500/5' : 'brand.surfaceRaised',
                 transition: 'all 0.2s',
                 _hover: { borderColor: 'emerald.500/70', bg: 'emerald.500/10' },
               })}
@@ -362,7 +304,7 @@ function FileVerifierContent() {
               <p className={css({ fontSize: 'lg', fontWeight: 'medium', color: 'gray.200' })}>
                 {selectedFile ? selectedFile.name : 'Click or drag file to upload'}
               </p>
-              <p className={css({ fontSize: 'sm', color: 'white', mt: '2' })}>
+              <p className={css({ fontSize: 'sm', color: 'brand.ink', mt: '2' })}>
                 Any file type supported • No size limit • Processed locally
               </p>
             </div>
@@ -376,8 +318,8 @@ function FileVerifierContent() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '2',
-                    borderColor: 'gray.700',
-                    color: 'white',
+                    borderColor: 'brand.line',
+                    color: 'brand.ink',
                     _hover: { borderColor: 'gray.600', bg: 'gray.800' },
                   })}
                 >
@@ -392,19 +334,12 @@ function FileVerifierContent() {
 
       {/* File Hash Result */}
       {fileData && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'emerald.500/30',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -428,22 +363,22 @@ function FileVerifierContent() {
                 className={css({
                   p: '4',
                   borderRadius: 'lg',
-                  bg: 'gray.800/50',
+                  bg: 'brand.surfaceRaised',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                 })}
               >
-                <div className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
+                <div className={css({ fontSize: 'sm', color: 'brand.ink', mb: '2' })}>
                   File Information
                 </div>
                 <div className={css({ spaceY: '1' })}>
-                  <div className={css({ fontSize: 'sm', color: 'white' })}>
+                  <div className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                     <strong>Size:</strong> {formatFileSize(fileData.size)}
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'white' })}>
+                  <div className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                     <strong>Type:</strong> {fileData.type || 'Unknown'}
                   </div>
-                  <div className={css({ fontSize: 'sm', color: 'white' })}>
+                  <div className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                     <strong>Modified:</strong> {fileData.lastModified.toLocaleString()}
                   </div>
                 </div>
@@ -458,7 +393,7 @@ function FileVerifierContent() {
                   borderColor: 'emerald.500/30',
                 })}
               >
-                <div className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
+                <div className={css({ fontSize: 'sm', color: 'brand.ink', mb: '2' })}>
                   {algorithm} Hash
                 </div>
                 <div
@@ -495,19 +430,12 @@ function FileVerifierContent() {
       )}
 
       {/* Hash Verification */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'emerald.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -524,9 +452,9 @@ function FileVerifierContent() {
                 className={css({
                   fontFamily: 'mono',
                   fontSize: 'sm',
-                  bg: 'gray.800/50',
+                  bg: 'brand.surfaceRaised',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                   _focus: { borderColor: 'emerald.500', ring: '2px', ringColor: 'emerald.500/20' },
                 })}
               />
@@ -570,9 +498,9 @@ function FileVerifierContent() {
                     <CheckCircle2 className={css({ h: '6', w: '6', color: 'emerald.400' })} />
                     <div>
                       <div className={css({ fontWeight: 'semibold', color: 'emerald.300' })}>
-                        ✅ Hash Match!
+                        Hash Match!
                       </div>
-                      <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
+                      <div className={css({ fontSize: 'sm', color: 'brand.ink', mt: '1' })}>
                         File integrity verified. The file has not been tampered with.
                       </div>
                     </div>
@@ -582,9 +510,9 @@ function FileVerifierContent() {
                     <AlertCircle className={css({ h: '6', w: '6', color: 'red.400' })} />
                     <div>
                       <div className={css({ fontWeight: 'semibold', color: 'red.300' })}>
-                        ❌ Hash Mismatch!
+                        Hash Mismatch!
                       </div>
-                      <div className={css({ fontSize: 'sm', color: 'white', mt: '1' })}>
+                      <div className={css({ fontSize: 'sm', color: 'brand.ink', mt: '1' })}>
                         File may be corrupted or tampered with. Do not trust this file.
                       </div>
                     </div>
@@ -613,7 +541,7 @@ export default function FileVerifierPage() {
             minH: 'screen',
           })}
         >
-          <div className={css({ fontSize: 'xl', color: 'white' })}>Loading...</div>
+          <div className={css({ fontSize: 'xl', color: 'brand.ink' })}>Loading...</div>
         </div>
       }
     >

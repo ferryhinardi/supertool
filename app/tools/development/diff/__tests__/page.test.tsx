@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { toast } from 'sonner'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -106,10 +106,9 @@ describe('DiffTool', () => {
       expect(buttons.length).toBeGreaterThan(5)
     })
 
-    it.skip('renders related tools section', () => {
-      // Skipped: RelatedTools is mocked to prevent JSDOM navigation errors
+    it('renders related tools section', () => {
       render(<DiffTool />)
-      expect(screen.getByText(/Related Tools/)).toBeTruthy()
+      expect(screen.getByRole('heading', { name: 'Related Tools' })).toBeTruthy()
     })
   })
 
@@ -1001,17 +1000,16 @@ describe('DiffTool', () => {
   })
 
   describe('Related Tools', () => {
-    it.skip('displays related tools section', () => {
-      // Skipped: RelatedTools is mocked to prevent JSDOM navigation errors
+    it('displays related tools section', () => {
       render(<DiffTool />)
-      expect(screen.getByText(/Related Tools/)).toBeTruthy()
+      expect(screen.getByRole('heading', { name: 'Related Tools' })).toBeTruthy()
     })
 
-    it.skip('shows multiple related tool suggestions', () => {
-      // Skipped: RelatedTools is mocked to prevent JSDOM navigation errors
+    it('shows multiple related tool suggestions', () => {
       render(<DiffTool />)
-      const relatedSection = screen.getByText(/Related Tools/)
-      expect(relatedSection).toBeTruthy()
+      const relatedSection = screen.getByRole('region', { name: 'Related Tools' })
+      const links = within(relatedSection).getAllByRole('link')
+      expect(links.length).toBeGreaterThan(1)
     })
   })
 

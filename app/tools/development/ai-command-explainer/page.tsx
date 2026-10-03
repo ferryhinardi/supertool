@@ -7,12 +7,12 @@ import {
   Copy,
   Lightbulb,
   Loader2,
-  MessageSquare,
   Sparkles,
   Terminal,
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -132,64 +132,13 @@ function AICommandExplainerContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'green.500/30',
-            bg: 'green.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <MessageSquare className={css({ h: '5', w: '5', color: 'green.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'green.300' })}>
-            AI-Powered • GPT-4o-mini
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'green.400',
-            gradientVia: 'teal.400',
-            gradientTo: 'cyan.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          AI Command Explainer
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Understand complex CLI commands with AI assistance. Get detailed breakdowns, parameter
-          explanations, safety warnings, and alternative suggestions.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="AI Command Explainer"
+        description="Understand complex CLI commands with AI assistance. Get detailed breakdowns, parameter explanations, safety warnings, and alternative suggestions."
+        eyebrow="AI developer assistant"
+        icon={Terminal}
+        highlights={['Plain-language breakdown', 'CLI commands']}
+      />
 
       {/* Command Input */}
       <div

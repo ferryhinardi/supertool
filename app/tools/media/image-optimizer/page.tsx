@@ -17,6 +17,7 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -323,90 +324,20 @@ export default function ImageOptimizerPage() {
     <main
       className={css({
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8' },
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '4',
-          textAlign: 'center',
-          w: 'full',
-          maxW: '1400px',
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'teal.500/20',
-            bg: 'teal.500/10',
-            px: '4',
-            py: '2',
-            backdropFilter: 'blur(4px)',
-          })}
-        >
-          <ImageIcon className={css({ h: '5', w: '5', color: 'teal.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'teal.300',
-            })}
-          >
-            Professional Image Optimization
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'teal.400',
-              gradientVia: 'cyan.400',
-              gradientTo: 'blue.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Image Optimizer & Converter
-          </span>
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: 'lg',
-            color: 'white',
-          })}
-        >
-          Compress and optimize images up to 80% smaller without visible quality loss. Convert
-          between JPG, PNG, and WebP formats with batch processing.
-        </p>
-      </div>
+      <MediaToolHeader
+        title="Image Optimizer & Converter"
+        description="Compress and optimize images up to 80% smaller without visible quality loss. Convert between JPG, PNG, and WebP formats with batch processing."
+        eyebrow="Image optimization workspace"
+        icon={ImageIcon}
+        highlights={['Professional Image Optimization', 'JPG, PNG, WebP, AVIF']}
+      />
 
       {/* Stats Summary */}
       {images.length > 0 && (
@@ -416,15 +347,14 @@ export default function ImageOptimizerPage() {
             gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
             gap: '4',
             w: 'full',
-            maxW: '1400px',
+            maxW: '7xl',
           })}
         >
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(4px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -434,21 +364,20 @@ export default function ImageOptimizerPage() {
                     mb: '2',
                     fontSize: '2xl',
                     fontWeight: 'bold',
-                    color: 'teal.400',
+                    color: 'orange.400',
                   })}
                 >
                   {images.length}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'white' })}>Total Images</div>
+                <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Total Images</div>
               </div>
             </CardContent>
           </Card>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(4px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -463,16 +392,15 @@ export default function ImageOptimizerPage() {
                 >
                   {formatBytes(totalOriginalSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'white' })}>Original Size</div>
+                <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Original Size</div>
               </div>
             </CardContent>
           </Card>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(4px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -487,16 +415,15 @@ export default function ImageOptimizerPage() {
                 >
                   {formatBytes(totalCompressedSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'white' })}>Compressed Size</div>
+                <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Compressed Size</div>
               </div>
             </CardContent>
           </Card>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(4px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -506,12 +433,12 @@ export default function ImageOptimizerPage() {
                     mb: '2',
                     fontSize: '2xl',
                     fontWeight: 'bold',
-                    color: 'purple.400',
+                    color: 'green.400',
                   })}
                 >
                   {totalSavings}%
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'white' })}>Space Saved</div>
+                <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Space Saved</div>
               </div>
             </CardContent>
           </Card>
@@ -522,9 +449,9 @@ export default function ImageOptimizerPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: '1fr 1fr 1fr' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(2, minmax(0, 1fr))' },
           w: 'full',
-          maxW: '1400px',
+          maxW: '7xl',
         })}
       >
         {/* Settings Panel */}
@@ -534,9 +461,8 @@ export default function ImageOptimizerPage() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(4px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -548,7 +474,7 @@ export default function ImageOptimizerPage() {
                     gap: '2',
                   })}
                 >
-                  <Settings className={css({ h: '5', w: '5', color: 'teal.400' })} />
+                  <Settings className={css({ h: '5', w: '5', color: 'orange.400' })} />
                   Optimization Settings
                 </CardTitle>
                 <CardDescription>Configure compression and output options</CardDescription>
@@ -563,7 +489,7 @@ export default function ImageOptimizerPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     Output Format
@@ -572,7 +498,10 @@ export default function ImageOptimizerPage() {
                     id="output-format"
                     className={css({
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(4, 1fr)',
+                      gridTemplateColumns: {
+                        base: 'repeat(2, minmax(0, 1fr))',
+                        sm: 'repeat(4, minmax(0, 1fr))',
+                      },
                       gap: '2',
                     })}
                   >
@@ -584,9 +513,9 @@ export default function ImageOptimizerPage() {
                         onClick={() => setOutputFormat(format)}
                         className={css({
                           border: '1px solid',
-                          borderColor: outputFormat === format ? 'teal.500/50' : 'gray.700',
-                          bg: outputFormat === format ? 'teal.500/20' : 'transparent',
-                          color: outputFormat === format ? 'teal.200' : 'inherit',
+                          borderColor: outputFormat === format ? 'orange.500/50' : 'gray.700',
+                          bg: outputFormat === format ? 'orange.500/20' : 'transparent',
+                          color: outputFormat === format ? 'orange.400' : 'inherit',
                         })}
                       >
                         {format.toUpperCase()}
@@ -609,7 +538,7 @@ export default function ImageOptimizerPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'white',
+                        color: 'brand.ink',
                       })}
                     >
                       Quality
@@ -618,7 +547,7 @@ export default function ImageOptimizerPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'bold',
-                        color: 'teal.400',
+                        color: 'orange.400',
                       })}
                     >
                       {quality}%
@@ -632,14 +561,14 @@ export default function ImageOptimizerPage() {
                     step="5"
                     value={quality}
                     onChange={(e) => setQuality(Number(e.target.value))}
-                    className={css({ w: 'full', accentColor: 'teal.500' })}
+                    className={css({ w: 'full', accentColor: 'orange.500' })}
                   />
                   <div
                     className={css({
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontSize: 'xs',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     <span>Lower size</span>
@@ -672,11 +601,11 @@ export default function ImageOptimizerPage() {
                         }}
                         className={css({
                           border: '1px solid',
-                          borderColor: 'gray.700',
+                          borderColor: 'brand.line',
                           fontSize: 'xs',
                           _hover: {
-                            borderColor: 'teal.500/50',
-                            bg: 'teal.500/10',
+                            borderColor: 'orange.500/50',
+                            bg: 'orange.500/10',
                           },
                         })}
                         title={preset.description}
@@ -694,7 +623,7 @@ export default function ImageOptimizerPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     Max Dimensions
@@ -714,7 +643,7 @@ export default function ImageOptimizerPage() {
                           mb: '1',
                           display: 'block',
                           fontSize: 'xs',
-                          color: 'white',
+                          color: 'brand.ink',
                         })}
                       >
                         Width (px)
@@ -728,14 +657,14 @@ export default function ImageOptimizerPage() {
                           w: 'full',
                           rounded: 'md',
                           border: '1px solid',
-                          borderColor: 'gray.700',
+                          borderColor: 'brand.line',
                           bg: 'gray.800',
                           px: '3',
                           py: '2',
                           fontSize: 'sm',
                           color: 'gray.100',
                           _focus: {
-                            borderColor: 'teal.500',
+                            borderColor: 'orange.500',
                             outline: 'none',
                           },
                         })}
@@ -750,7 +679,7 @@ export default function ImageOptimizerPage() {
                           mb: '1',
                           display: 'block',
                           fontSize: 'xs',
-                          color: 'white',
+                          color: 'brand.ink',
                         })}
                       >
                         Height (px)
@@ -764,14 +693,14 @@ export default function ImageOptimizerPage() {
                           w: 'full',
                           rounded: 'md',
                           border: '1px solid',
-                          borderColor: 'gray.700',
+                          borderColor: 'brand.line',
                           bg: 'gray.800',
                           px: '3',
                           py: '2',
                           fontSize: 'sm',
                           color: 'gray.100',
                           _focus: {
-                            borderColor: 'teal.500',
+                            borderColor: 'orange.500',
                             outline: 'none',
                           },
                         })}
@@ -787,7 +716,7 @@ export default function ImageOptimizerPage() {
                       alignItems: 'center',
                       gap: '2',
                       fontSize: 'sm',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     <input
@@ -799,12 +728,12 @@ export default function ImageOptimizerPage() {
                         w: '4',
                         rounded: 'sm',
                         border: '1px solid',
-                        borderColor: 'gray.700',
+                        borderColor: 'brand.line',
                         bg: 'gray.800',
-                        color: 'teal.500',
+                        color: 'orange.500',
                         _focus: {
                           ring: '2',
-                          ringColor: 'teal.500',
+                          ringColor: 'orange.500',
                           ringOffset: '0',
                         },
                       })}
@@ -818,7 +747,7 @@ export default function ImageOptimizerPage() {
                       alignItems: 'center',
                       gap: '2',
                       fontSize: 'sm',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     <input
@@ -830,12 +759,12 @@ export default function ImageOptimizerPage() {
                         w: '4',
                         rounded: 'sm',
                         border: '1px solid',
-                        borderColor: 'gray.700',
+                        borderColor: 'brand.line',
                         bg: 'gray.800',
-                        color: 'teal.500',
+                        color: 'orange.500',
                         _focus: {
                           ring: '2',
-                          ringColor: 'teal.500',
+                          ringColor: 'orange.500',
                           ringOffset: '0',
                         },
                       })}
@@ -846,7 +775,7 @@ export default function ImageOptimizerPage() {
                         className={css({
                           display: 'block',
                           fontSize: 'xs',
-                          color: 'gray.400',
+                          color: 'brand.muted',
                           mt: '0.5',
                         })}
                       >
@@ -864,9 +793,9 @@ export default function ImageOptimizerPage() {
                     className={css({
                       w: 'full',
                       gap: '2',
-                      bg: 'teal.600',
+                      bg: 'orange.600',
                       _hover: {
-                        bg: 'teal.700',
+                        bg: 'orange.700',
                       },
                     })}
                   >
@@ -907,15 +836,12 @@ export default function ImageOptimizerPage() {
         </div>
 
         {/* Upload & Images Panel */}
-        <div
-          className={css({ w: 'full', gridColumn: { base: '1 / -1', md: '2 / 3', lg: '2 / 4' } })}
-        >
+        <div className={css({ w: 'full', gridColumn: { base: '1 / -1', lg: '2 / 3' } })}>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(4px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -927,7 +853,7 @@ export default function ImageOptimizerPage() {
                     gap: '2',
                   })}
                 >
-                  <FileImage className={css({ h: '5', w: '5', color: 'teal.400' })} />
+                  <FileImage className={css({ h: '5', w: '5', color: 'orange.400' })} />
                   Images ({images.length})
                 </CardTitle>
                 <CardDescription>
@@ -969,8 +895,8 @@ export default function ImageOptimizerPage() {
                           className={css({
                             rounded: 'lg',
                             border: '1px solid',
-                            borderColor: 'gray.800',
-                            bg: 'gray.900/80',
+                            borderColor: 'brand.line',
+                            bg: 'brand.surface',
                             p: '4',
                           })}
                         >
@@ -1011,11 +937,11 @@ export default function ImageOptimizerPage() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    bg: 'teal.500/20',
+                                    bg: 'orange.500/20',
                                   })}
                                 >
                                   <CheckCircle
-                                    className={css({ h: '6', w: '6', color: 'teal.400' })}
+                                    className={css({ h: '6', w: '6', color: 'orange.400' })}
                                   />
                                 </div>
                               )}
@@ -1050,23 +976,23 @@ export default function ImageOptimizerPage() {
                                       alignItems: 'center',
                                       gap: '3',
                                       fontSize: 'xs',
-                                      color: 'white',
+                                      color: 'brand.ink',
                                     })}
                                   >
                                     <span>{formatBytes(image.originalSize)}</span>
                                     {image.compressedSize && (
                                       <>
                                         <span>→</span>
-                                        <span className={css({ color: 'teal.400' })}>
+                                        <span className={css({ color: 'orange.400' })}>
                                           {formatBytes(image.compressedSize)}
                                         </span>
                                         <span
                                           className={css({
                                             rounded: 'md',
-                                            bg: 'teal.500/20',
+                                            bg: 'orange.500/20',
                                             px: '2',
                                             py: '0.5',
-                                            color: 'teal.300',
+                                            color: 'orange.400',
                                           })}
                                         >
                                           {calculateSavings(
@@ -1102,10 +1028,10 @@ export default function ImageOptimizerPage() {
                                         w: '8',
                                         p: '0',
                                         color:
-                                          expandedCompare === image.id ? 'cyan.400' : 'gray.400',
+                                          expandedCompare === image.id ? 'orange.400' : 'gray.400',
                                         _hover: {
-                                          bg: 'cyan.500/20',
-                                          color: 'cyan.400',
+                                          bg: 'orange.500/20',
+                                          color: 'orange.400',
                                         },
                                       })}
                                       title="Compare before/after"
@@ -1122,9 +1048,9 @@ export default function ImageOptimizerPage() {
                                         h: '8',
                                         w: '8',
                                         p: '0',
-                                        color: 'teal.400',
+                                        color: 'orange.400',
                                         _hover: {
-                                          bg: 'teal.500/20',
+                                          bg: 'orange.500/20',
                                         },
                                       })}
                                     >
@@ -1154,7 +1080,7 @@ export default function ImageOptimizerPage() {
                               {image.status === 'processing' && (
                                 <div className={css({ spaceY: '1' })}>
                                   <Progress value={image.progress} className={css({ h: '2' })} />
-                                  <p className={css({ fontSize: 'xs', color: 'white' })}>
+                                  <p className={css({ fontSize: 'xs', color: 'brand.ink' })}>
                                     Optimizing... {image.progress}%
                                   </p>
                                 </div>
@@ -1169,7 +1095,7 @@ export default function ImageOptimizerPage() {
 
                               {/* Status */}
                               {image.status === 'pending' && (
-                                <p className={css({ fontSize: 'xs', color: 'white' })}>
+                                <p className={css({ fontSize: 'xs', color: 'brand.ink' })}>
                                   Ready to optimize
                                 </p>
                               )}
@@ -1189,8 +1115,8 @@ export default function ImageOptimizerPage() {
                                 className={css({
                                   rounded: 'lg',
                                   border: '1px solid',
-                                  borderColor: 'cyan.500/30',
-                                  bg: 'gray.800/50',
+                                  borderColor: 'orange.500/30',
+                                  bg: 'brand.surfaceRaised',
                                   p: '4',
                                 })}
                               >
@@ -1206,7 +1132,7 @@ export default function ImageOptimizerPage() {
                                     className={css({
                                       fontSize: 'sm',
                                       fontWeight: 'medium',
-                                      color: 'cyan.300',
+                                      color: 'orange.400',
                                     })}
                                   >
                                     Before/After Comparison
@@ -1214,7 +1140,7 @@ export default function ImageOptimizerPage() {
                                   <span
                                     className={css({
                                       fontSize: 'xs',
-                                      color: 'gray.400',
+                                      color: 'brand.muted',
                                     })}
                                   >
                                     Drag slider to compare
@@ -1233,13 +1159,13 @@ export default function ImageOptimizerPage() {
                                     position: 'relative',
                                     overflow: 'hidden',
                                     rounded: 'md',
-                                    bg: 'gray.900',
+                                    bg: 'brand.surface',
                                     aspectRatio: '16 / 9',
                                     userSelect: 'none',
                                     cursor: 'ew-resize',
                                     _focus: {
                                       outline: '2px solid',
-                                      outlineColor: 'cyan.500',
+                                      outlineColor: 'orange.500',
                                       outlineOffset: '2px',
                                     },
                                   })}
@@ -1316,7 +1242,7 @@ export default function ImageOptimizerPage() {
                                       top: '0',
                                       bottom: '0',
                                       w: '1',
-                                      bg: 'cyan.400',
+                                      bg: 'orange.400',
                                       cursor: 'ew-resize',
                                       zIndex: '10',
                                       _after: {
@@ -1328,7 +1254,7 @@ export default function ImageOptimizerPage() {
                                         w: '8',
                                         h: '8',
                                         rounded: 'full',
-                                        bg: 'cyan.400',
+                                        bg: 'orange.400',
                                         border: '2px solid',
                                         borderColor: 'white',
                                         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
@@ -1344,13 +1270,12 @@ export default function ImageOptimizerPage() {
                                       top: '2',
                                       left: '2',
                                       rounded: 'md',
-                                      bg: 'gray.900/80',
+                                      bg: 'brand.surface',
                                       px: '2',
                                       py: '1',
                                       fontSize: 'xs',
                                       fontWeight: 'medium',
-                                      color: 'gray.300',
-                                      backdropFilter: 'blur(4px)',
+                                      color: 'brand.muted',
                                     })}
                                   >
                                     Optimized
@@ -1361,13 +1286,12 @@ export default function ImageOptimizerPage() {
                                       top: '2',
                                       right: '2',
                                       rounded: 'md',
-                                      bg: 'gray.900/80',
+                                      bg: 'brand.surface',
                                       px: '2',
                                       py: '1',
                                       fontSize: 'xs',
                                       fontWeight: 'medium',
-                                      color: 'gray.300',
-                                      backdropFilter: 'blur(4px)',
+                                      color: 'brand.muted',
                                     })}
                                   >
                                     Original
@@ -1384,7 +1308,7 @@ export default function ImageOptimizerPage() {
                                     onChange={(e) => setComparePosition(Number(e.target.value))}
                                     className={css({
                                       w: 'full',
-                                      accentColor: 'cyan.500',
+                                      accentColor: 'orange.500',
                                       cursor: 'pointer',
                                     })}
                                     aria-label="Comparison slider"
@@ -1395,7 +1319,7 @@ export default function ImageOptimizerPage() {
                                       justifyContent: 'space-between',
                                       mt: '1',
                                       fontSize: 'xs',
-                                      color: 'gray.400',
+                                      color: 'brand.muted',
                                     })}
                                   >
                                     <span>
@@ -1425,7 +1349,7 @@ export default function ImageOptimizerPage() {
           gap: '4',
           gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
           w: 'full',
-          maxW: '1400px',
+          maxW: '7xl',
         })}
       >
         {[
@@ -1454,11 +1378,10 @@ export default function ImageOptimizerPage() {
             key={feature.title}
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
+              borderColor: 'brand.line',
               bgGradient: 'to-br',
-              gradientFrom: 'gray.900/50',
-              gradientTo: 'gray.900/30',
-              backdropFilter: 'blur(4px)',
+              gradientFrom: 'brand.surface',
+              gradientTo: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -1468,7 +1391,7 @@ export default function ImageOptimizerPage() {
                     mb: '3',
                     h: '8',
                     w: '8',
-                    color: 'teal.400',
+                    color: 'orange.400',
                   })}
                 />
                 <h3
@@ -1480,7 +1403,7 @@ export default function ImageOptimizerPage() {
                 >
                   {feature.title}
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.description}</p>
+                <p className={css({ fontSize: 'sm', color: 'brand.ink' })}>{feature.description}</p>
               </div>
             </CardContent>
           </Card>
@@ -1491,7 +1414,7 @@ export default function ImageOptimizerPage() {
       <div
         className={css({
           w: 'full',
-          maxW: '1400px',
+          maxW: '7xl',
         })}
       >
         <SocialShare
@@ -1506,7 +1429,7 @@ export default function ImageOptimizerPage() {
       <div
         className={css({
           w: 'full',
-          maxW: '1400px',
+          maxW: '7xl',
         })}
       >
         <RelatedTools currentToolPath="/tools/media/image-optimizer" category="media" />
@@ -1516,7 +1439,7 @@ export default function ImageOptimizerPage() {
       <div
         className={css({
           w: 'full',
-          maxW: '1400px',
+          maxW: '7xl',
         })}
       >
         <ToolRating toolId="/tools/media/image-optimizer" toolName="Image Optimizer" />

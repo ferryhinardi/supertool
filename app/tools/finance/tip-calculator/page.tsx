@@ -4,6 +4,7 @@ import { Copy, DollarSign, Info, RotateCcw, Sparkles, TrendingUp, Users } from '
 import { parseAsFloat, parseAsInteger, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { FinanceToolHeader } from '@/components/features/tools/FinanceToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -130,80 +131,16 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'green.500/30',
-            bg: 'green.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <DollarSign className={css({ h: '5', w: '5', color: 'green.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'green.300',
-            })}
-          >
-            Quick Presets • Split Bill • Round Total
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'green.400',
-            gradientVia: 'teal.400',
-            gradientTo: 'cyan.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Tip Calculator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Calculate tips quickly with preset percentages or custom amounts. Split bills among
-          multiple people and round totals for convenience.
-        </p>
-      </div>
+      <FinanceToolHeader
+        title="Tip Calculator"
+        description="Calculate tips quickly with preset percentages or custom amounts. Split bills among multiple people and round totals for convenience."
+        eyebrow="Tip calculator"
+        icon={DollarSign}
+        highlights={['Quick Presets', 'Split Bill', 'Custom amounts']}
+      />
 
       {/* Bill Amount Input */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -264,13 +201,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
       </div>
 
       {/* Tip Percentage Selection */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -380,13 +311,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
       </div>
 
       {/* Split Bill & Rounding Options */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -527,7 +452,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
 
       {/* Results */}
       {calculation && billAmount > 0 && (
-        <div className={css({ animation: 'scaleIn 0.3s ease-out forwards', opacity: 0 })}>
+        <div>
           <Card
             className={css({
               border: '1px solid',
@@ -837,13 +762,7 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
       )}
 
       {/* Quick Tips */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <div
           className={css({
             display: 'grid',

@@ -2,6 +2,7 @@
 
 import { BookOpen, Copy, Gauge, GraduationCap, Info, RotateCcw } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -92,43 +93,13 @@ export default function ReadabilityCheckerPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ spaceY: 4, textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 3,
-          })}
-        >
-          <Gauge className={css({ w: 10, h: 10, color: 'emerald.400' })} />
-          <h1
-            className={css({
-              fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-              fontWeight: 'bold',
-              bgGradient: 'to-r',
-              gradientFrom: 'emerald.400',
-              gradientTo: 'teal.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            Readability Checker
-          </h1>
-        </div>
-        <p
-          className={css({
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Analyze your text with multiple readability formulas including Flesch-Kincaid, Gunning
-          Fog, SMOG, and more
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Readability Checker"
+        description="Analyze your text with multiple readability formulas including Flesch-Kincaid, Gunning Fog, SMOG, and more"
+        eyebrow="Text analysis"
+        icon={BookOpen}
+        highlights={['Multiple formulas', 'Score guidance']}
+      />
 
       {/* Main Content */}
       <div

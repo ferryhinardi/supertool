@@ -1,9 +1,10 @@
 'use client'
 
-import { Check, Copy, ImagePlus, Sparkles, Upload, Wand2, X, Zap } from 'lucide-react'
+import { Check, Copy, Sparkles, Upload, Wand2, X, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { PaywallModal } from '@/components/features/monetization/PaywallModal'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -235,80 +236,21 @@ function AIImageCaptionContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'pink.500/30',
-            bg: 'pink.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <ImagePlus className={css({ h: '5', w: '5', color: 'pink.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'pink.300' })}>
-            AI-Powered • Accessibility • SEO
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'pink.400',
-            gradientVia: 'rose.400',
-            gradientTo: 'red.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          AI Image Caption Generator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Generate descriptive alt text and captions for your images using AI. Improve
-          accessibility, SEO, and social media engagement with intelligent image descriptions.
-        </p>
-      </div>
+      <MediaToolHeader
+        title="AI Image Caption Generator"
+        description="Generate descriptive alt text and captions for your images using AI. Improve accessibility, SEO, and social media engagement with intelligent image descriptions."
+        eyebrow="AI media assistant"
+        icon={Sparkles}
+        highlights={['Alt text', 'SEO captions']}
+      />
 
       {/* Upload Section */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'pink.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'rose.500/20',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -332,10 +274,10 @@ function AIImageCaptionContent() {
                   cursor: 'pointer',
                   rounded: 'xl',
                   border: '2px dashed',
-                  borderColor: isDragOver ? 'pink.500' : 'gray.700',
-                  bg: isDragOver ? 'pink.500/10' : 'gray.900/30',
+                  borderColor: isDragOver ? 'rose.500' : 'gray.700',
+                  bg: isDragOver ? 'rose.500/10' : 'brand.surface',
                   transition: 'all 0.3s',
-                  _hover: { borderColor: 'pink.500/50', bg: 'gray.900/50' },
+                  _hover: { borderColor: 'rose.500/50', bg: 'brand.surface' },
                 })}
               >
                 <input
@@ -371,19 +313,19 @@ function AIImageCaptionContent() {
                       mb: '4',
                       rounded: 'full',
                       p: '4',
-                      bg: isDragOver ? 'pink.500' : 'gray.800',
+                      bg: isDragOver ? 'rose.500' : 'gray.800',
                       transition: 'all 0.3s',
                     })}
                   >
-                    <Upload className={css({ h: '8', w: '8', color: 'white' })} />
+                    <Upload className={css({ h: '8', w: '8', color: 'brand.ink' })} />
                   </div>
 
-                  <p className={css({ mb: '2', fontSize: 'sm', color: 'white' })}>
+                  <p className={css({ mb: '2', fontSize: 'sm', color: 'brand.ink' })}>
                     <span className={css({ fontWeight: 'semibold' })}>Click to upload</span> or drag
                     and drop
                   </p>
 
-                  <p className={css({ fontSize: 'xs', color: 'white' })}>
+                  <p className={css({ fontSize: 'xs', color: 'brand.ink' })}>
                     JPEG, PNG, WebP, or any image format • Max 20MB
                   </p>
 
@@ -393,7 +335,7 @@ function AIImageCaptionContent() {
                         mt: '4',
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'pink.400',
+                        color: 'rose.400',
                       })}
                     >
                       Drop image here
@@ -431,7 +373,7 @@ function AIImageCaptionContent() {
                     w: 'full',
                     gap: '2',
                     bg: 'gray.800',
-                    color: 'white',
+                    color: 'brand.ink',
                     _hover: { bg: 'gray.700' },
                   })}
                 >
@@ -446,19 +388,12 @@ function AIImageCaptionContent() {
 
       {/* Caption Type Selection */}
       {selectedImage && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'pink.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              borderColor: 'rose.500/20',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -491,14 +426,14 @@ function AIImageCaptionContent() {
                         gap: '2',
                         py: '4',
                         px: '3',
-                        bg: isActive ? 'pink.500/20' : 'gray.800/50',
+                        bg: isActive ? 'rose.500/20' : 'brand.surfaceRaised',
                         border: '1px solid',
-                        borderColor: isActive ? 'pink.500/50' : 'gray.700/50',
-                        color: isActive ? 'pink.300' : 'gray.400',
+                        borderColor: isActive ? 'rose.500/50' : 'gray.700/50',
+                        color: isActive ? 'rose.400' : 'gray.400',
                         transition: 'all 0.2s',
                         _hover: {
-                          bg: isActive ? 'pink.500/30' : 'gray.800',
-                          borderColor: isActive ? 'pink.500/70' : 'gray.600',
+                          bg: isActive ? 'rose.500/30' : 'gray.800',
+                          borderColor: isActive ? 'rose.500/70' : 'gray.600',
                           transform: 'translateY(-2px)',
                         },
                       })}
@@ -508,7 +443,7 @@ function AIImageCaptionContent() {
                         {type.label}
                       </span>
                       <span
-                        className={css({ fontSize: 'xs', color: 'white', textAlign: 'center' })}
+                        className={css({ fontSize: 'xs', color: 'brand.ink', textAlign: 'center' })}
                       >
                         {type.description}
                       </span>
@@ -525,10 +460,10 @@ function AIImageCaptionContent() {
                   mt: '6',
                   gap: '2',
                   h: '12',
-                  bg: 'pink.500',
-                  color: 'white',
+                  bg: 'rose.500',
+                  color: 'brand.ink',
                   fontWeight: 'semibold',
-                  _hover: { bg: 'pink.600' },
+                  _hover: { bg: 'rose.600' },
                   _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                 })}
               >
@@ -561,7 +496,7 @@ function AIImageCaptionContent() {
                   className={css({
                     mt: '4',
                     fontSize: 'sm',
-                    color: 'pink.200',
+                    color: 'rose.400',
                     textAlign: 'center',
                   })}
                 >
@@ -583,19 +518,12 @@ function AIImageCaptionContent() {
 
       {/* Captions Results */}
       {captions.length > 0 && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',
               borderColor: 'green.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -626,8 +554,8 @@ function AIImageCaptionContent() {
                       className={css({
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
-                        bg: 'gray.800/50',
+                        borderColor: 'brand.line',
+                        bg: 'brand.surfaceRaised',
                         p: '4',
                         spaceY: '3',
                       })}
@@ -641,10 +569,10 @@ function AIImageCaptionContent() {
                       >
                         <Badge
                           className={css({
-                            bg: 'pink.500/20',
-                            color: 'pink.300',
+                            bg: 'rose.500/20',
+                            color: 'rose.400',
                             border: '1px solid',
-                            borderColor: 'pink.500/30',
+                            borderColor: 'rose.500/30',
                           })}
                         >
                           {typeInfo?.label}
@@ -658,7 +586,7 @@ function AIImageCaptionContent() {
                             color: isCopied ? 'green.400' : 'gray.500',
                             _hover: {
                               bg: isCopied ? 'green.500/30' : 'gray.700',
-                              color: isCopied ? 'green.400' : 'pink.400',
+                              color: isCopied ? 'green.400' : 'rose.400',
                             },
                           })}
                         >
@@ -694,21 +622,14 @@ function AIImageCaptionContent() {
       )}
 
       {/* Pro Tips */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <div
           className={css({
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
-            borderColor: 'cyan.500/20',
+            borderColor: 'orange.500/20',
             bg: 'rgba(6, 182, 212, 0.05)',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
           })}
         >
           <h3
@@ -716,12 +637,12 @@ function AIImageCaptionContent() {
               mb: '3',
               fontSize: { base: 'base', sm: 'lg' },
               fontWeight: 'bold',
-              color: 'cyan.300',
+              color: 'orange.400',
             })}
           >
             Pro Tips
           </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'brand.muted', listStyle: 'disc' })}>
             <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               <strong>Alt Text:</strong> Use this mode for WCAG-compliant accessibility (ideal for
               screen readers)

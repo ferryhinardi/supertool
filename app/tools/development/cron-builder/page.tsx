@@ -3,6 +3,7 @@
 import { AlertCircle, Calendar, Check, Clock, Copy, Download, Settings2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -190,48 +191,13 @@ export default function CronBuilderPage() {
         })}
       >
         {/* Header */}
-        <div
-          className={css({
-            textAlign: 'center',
-            spaceY: '4',
-            animation: 'slideUp 0.5s ease-out forwards',
-            opacity: 0,
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '3',
-            })}
-          >
-            <Clock className={css({ w: '10', h: '10', color: 'blue.500' })} />
-            <h1
-              className={css({
-                fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-                fontWeight: 'bold',
-                bgGradient: 'to-r',
-                gradientFrom: 'blue.400',
-                gradientTo: 'cyan.400',
-                bgClip: 'text',
-              })}
-            >
-              Cron Expression Builder
-            </h1>
-          </div>
-          <p
-            className={css({
-              fontSize: { base: 'lg', md: 'xl' },
-              color: 'gray.400',
-              maxW: '3xl',
-              mx: 'auto',
-            })}
-          >
-            Generate cron expressions visually with human-readable explanations and
-            platform-specific syntax. Preview next execution times and validate expressions.
-          </p>
-        </div>
+        <DevelopmentToolHeader
+          title="Cron Expression Builder"
+          description="Generate cron expressions visually with human-readable explanations and platform-specific syntax. Preview next execution times and validate expressions."
+          eyebrow="Automation builder"
+          icon={Clock}
+          highlights={['Human-readable', 'Next executions']}
+        />
 
         {/* Main Content */}
         <div

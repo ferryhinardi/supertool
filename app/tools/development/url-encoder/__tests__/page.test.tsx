@@ -110,10 +110,13 @@ describe('URLEncoderPage', () => {
       ).toBeInTheDocument()
     })
 
-    it('renders the Development Tool badge', () => {
+    it('renders the Developer Tools back link', () => {
       render(<URLEncoderPage />)
 
-      expect(screen.getByText('Development Tool')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Developer Tools' })).toHaveAttribute(
+        'href',
+        '/tools/development'
+      )
     })
 
     it('renders all encoding method buttons', () => {

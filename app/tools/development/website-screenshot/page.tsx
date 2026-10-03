@@ -15,6 +15,7 @@ import {
 import Image from 'next/image'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -146,63 +147,13 @@ export default function WebsiteScreenshotPage() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'purple.500/10',
-            px: '4',
-            py: '2',
-          })}
-        >
-          <Smartphone className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
-            Website Screenshot Tool
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'blue.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Website Screenshot Capture
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: { base: 'base', sm: 'lg' },
-            color: 'white',
-          })}
-        >
-          Capture high-resolution screenshots of any website. Choose device size, full-page or
-          viewport capture, and download instantly.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="Website Screenshot Capture"
+        description="Capture high-resolution screenshots of any website. Choose device size, full-page or viewport capture, and download instantly."
+        eyebrow="Network diagnostics"
+        icon={Smartphone}
+        highlights={['Capture', 'Download']}
+      />
 
       {/* Input Section */}
       <div
@@ -291,10 +242,10 @@ export default function WebsiteScreenshotPage() {
                         gap: '2',
                         p: '4',
                         border: '1px solid',
-                        borderColor: isSelected ? 'purple.500/50' : 'gray.700',
-                        bg: isSelected ? 'purple.500/20' : 'transparent',
+                        borderColor: isSelected ? 'blue.500/50' : 'gray.700',
+                        bg: isSelected ? 'blue.500/20' : 'transparent',
                         _hover: {
-                          borderColor: isSelected ? 'purple.500/50' : 'purple.500/30',
+                          borderColor: isSelected ? 'blue.500/50' : 'blue.500/30',
                         },
                       })}
                       disabled={isLoading}
@@ -303,7 +254,7 @@ export default function WebsiteScreenshotPage() {
                         className={css({
                           h: '6',
                           w: '6',
-                          color: isSelected ? 'purple.300' : 'gray.400',
+                          color: isSelected ? 'blue.300' : 'gray.400',
                         })}
                       />
                       <div className={css({ textAlign: 'center' })}>
@@ -311,7 +262,7 @@ export default function WebsiteScreenshotPage() {
                           className={css({
                             fontSize: 'sm',
                             fontWeight: 'semibold',
-                            color: isSelected ? 'purple.200' : 'gray.300',
+                            color: isSelected ? 'blue.200' : 'gray.300',
                           })}
                         >
                           {size.charAt(0).toUpperCase() + size.slice(1)}
@@ -319,7 +270,7 @@ export default function WebsiteScreenshotPage() {
                         <div
                           className={css({
                             fontSize: 'xs',
-                            color: isSelected ? 'purple.400' : 'gray.500',
+                            color: isSelected ? 'blue.400' : 'gray.500',
                           })}
                         >
                           {device.width}x{device.height}
@@ -353,10 +304,10 @@ export default function WebsiteScreenshotPage() {
                     gap: '2',
                     p: '4',
                     border: '1px solid',
-                    borderColor: captureMode === 'viewport' ? 'purple.500/50' : 'gray.700',
-                    bg: captureMode === 'viewport' ? 'purple.500/20' : 'transparent',
+                    borderColor: captureMode === 'viewport' ? 'blue.500/50' : 'gray.700',
+                    bg: captureMode === 'viewport' ? 'blue.500/20' : 'transparent',
                     _hover: {
-                      borderColor: captureMode === 'viewport' ? 'purple.500/50' : 'purple.500/30',
+                      borderColor: captureMode === 'viewport' ? 'blue.500/50' : 'blue.500/30',
                     },
                   })}
                   disabled={isLoading}
@@ -365,7 +316,7 @@ export default function WebsiteScreenshotPage() {
                     className={css({
                       h: '6',
                       w: '6',
-                      color: captureMode === 'viewport' ? 'purple.300' : 'gray.400',
+                      color: captureMode === 'viewport' ? 'blue.300' : 'gray.400',
                     })}
                   />
                   <div className={css({ textAlign: 'center' })}>
@@ -373,7 +324,7 @@ export default function WebsiteScreenshotPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'semibold',
-                        color: captureMode === 'viewport' ? 'purple.200' : 'gray.300',
+                        color: captureMode === 'viewport' ? 'blue.200' : 'gray.300',
                       })}
                     >
                       Viewport Only
@@ -381,7 +332,7 @@ export default function WebsiteScreenshotPage() {
                     <div
                       className={css({
                         fontSize: 'xs',
-                        color: captureMode === 'viewport' ? 'purple.400' : 'gray.500',
+                        color: captureMode === 'viewport' ? 'blue.400' : 'gray.500',
                       })}
                     >
                       Capture visible area
@@ -398,10 +349,10 @@ export default function WebsiteScreenshotPage() {
                     gap: '2',
                     p: '4',
                     border: '1px solid',
-                    borderColor: captureMode === 'fullpage' ? 'purple.500/50' : 'gray.700',
-                    bg: captureMode === 'fullpage' ? 'purple.500/20' : 'transparent',
+                    borderColor: captureMode === 'fullpage' ? 'blue.500/50' : 'gray.700',
+                    bg: captureMode === 'fullpage' ? 'blue.500/20' : 'transparent',
                     _hover: {
-                      borderColor: captureMode === 'fullpage' ? 'purple.500/50' : 'purple.500/30',
+                      borderColor: captureMode === 'fullpage' ? 'blue.500/50' : 'blue.500/30',
                     },
                   })}
                   disabled={isLoading}
@@ -410,7 +361,7 @@ export default function WebsiteScreenshotPage() {
                     className={css({
                       h: '6',
                       w: '6',
-                      color: captureMode === 'fullpage' ? 'purple.300' : 'gray.400',
+                      color: captureMode === 'fullpage' ? 'blue.300' : 'gray.400',
                     })}
                   />
                   <div className={css({ textAlign: 'center' })}>
@@ -418,7 +369,7 @@ export default function WebsiteScreenshotPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'semibold',
-                        color: captureMode === 'fullpage' ? 'purple.200' : 'gray.300',
+                        color: captureMode === 'fullpage' ? 'blue.200' : 'gray.300',
                       })}
                     >
                       Full Page
@@ -426,7 +377,7 @@ export default function WebsiteScreenshotPage() {
                     <div
                       className={css({
                         fontSize: 'xs',
-                        color: captureMode === 'fullpage' ? 'purple.400' : 'gray.500',
+                        color: captureMode === 'fullpage' ? 'blue.400' : 'gray.500',
                       })}
                     >
                       Capture entire page
@@ -576,7 +527,7 @@ export default function WebsiteScreenshotPage() {
             })}
           >
             <CardContent withTopPadding className={css({ p: '6' })}>
-              <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'purple.400' })} />
+              <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'blue.400' })} />
               <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'gray.200' })}>
                 {feature.title}
               </h3>

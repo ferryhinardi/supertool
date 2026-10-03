@@ -56,6 +56,7 @@ vi.mock('lucide-react', () => {
     'AlignLeft',
     'AlignRight',
     'ArrowDown',
+    'ArrowLeft',
     'ArrowRight',
     'Download',
     'Palette',

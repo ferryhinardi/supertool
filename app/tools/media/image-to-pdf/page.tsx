@@ -14,6 +14,7 @@ import {
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -369,73 +370,21 @@ export default function ImageToPdfPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/30',
-            bg: 'blue.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <FileText className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'blue.300',
-            })}
-          >
-            Convert Images to PDF • Free Forever
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'cyan.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Image to PDF Converter
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Convert JPG, PNG, WebP, and other image formats to PDF instantly. Combine multiple images
-          into a single PDF document with customizable page settings.
-        </p>
-      </div>
+      <MediaToolHeader
+        title="Image to PDF Converter"
+        description="Convert JPG, PNG, WebP, and other image formats to PDF instantly. Combine multiple images into a single PDF document with customizable page settings."
+        eyebrow="Document export"
+        icon={FileText}
+        highlights={['Multi-image PDF', 'Page settings']}
+      />
 
       {/* Upload Section */}
       <div>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'blue.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'orange.500/20',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -468,12 +417,12 @@ export default function ImageToPdfPage() {
                       gap: '2',
                     })}
                   >
-                    <FileImage className={css({ h: '5', w: '5', color: 'blue.400' })} />
+                    <FileImage className={css({ h: '5', w: '5', color: 'orange.400' })} />
                     <span
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'white',
+                        color: 'brand.ink',
                       })}
                     >
                       {images.length} image{images.length > 1 ? 's' : ''} selected
@@ -516,8 +465,8 @@ export default function ImageToPdfPage() {
                         overflow: 'hidden',
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
-                        bg: 'gray.800/50',
+                        borderColor: 'brand.line',
+                        bg: 'brand.surfaceRaised',
                         p: '3',
                       })}
                     >
@@ -529,7 +478,7 @@ export default function ImageToPdfPage() {
                             aspectRatio: '16/9',
                             overflow: 'hidden',
                             rounded: 'md',
-                            bg: 'gray.900',
+                            bg: 'brand.surface',
                           })}
                         >
                           <img
@@ -558,8 +507,12 @@ export default function ImageToPdfPage() {
                                 py: '1',
                               })}
                             >
-                              <CheckCircle className={css({ h: '3', w: '3', color: 'white' })} />
-                              <span className={css({ fontSize: 'xs', color: 'white' })}>Done</span>
+                              <CheckCircle
+                                className={css({ h: '3', w: '3', color: 'brand.ink' })}
+                              />
+                              <span className={css({ fontSize: 'xs', color: 'brand.ink' })}>
+                                Done
+                              </span>
                             </div>
                           )}
 
@@ -574,7 +527,7 @@ export default function ImageToPdfPage() {
                                 px: '2',
                                 py: '1',
                                 fontSize: 'xs',
-                                color: 'white',
+                                color: 'brand.ink',
                               })}
                             >
                               Error
@@ -595,7 +548,7 @@ export default function ImageToPdfPage() {
                               rounded: 'md',
                               bg: 'red.500/90',
                               p: '1.5',
-                              color: 'white',
+                              color: 'brand.ink',
                               transition: 'all 0.2s',
                               _hover: { bg: 'red.600' },
                             })}
@@ -611,7 +564,7 @@ export default function ImageToPdfPage() {
                             className={css({
                               fontSize: 'xs',
                               fontWeight: 'medium',
-                              color: 'white',
+                              color: 'brand.ink',
                               truncate: true,
                             })}
                           >
@@ -623,7 +576,7 @@ export default function ImageToPdfPage() {
                               alignItems: 'center',
                               gap: '2',
                               fontSize: 'xs',
-                              color: 'white',
+                              color: 'brand.ink',
                             })}
                           >
                             <span>
@@ -649,9 +602,8 @@ export default function ImageToPdfPage() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'blue.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              borderColor: 'orange.500/20',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -662,7 +614,7 @@ export default function ImageToPdfPage() {
                   gap: '2',
                 })}
               >
-                <Settings className={css({ h: '5', w: '5', color: 'blue.400' })} />
+                <Settings className={css({ h: '5', w: '5', color: 'orange.400' })} />
                 <CardTitle>PDF Settings</CardTitle>
               </div>
               <CardDescription>Customize your PDF output</CardDescription>
@@ -686,7 +638,7 @@ export default function ImageToPdfPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     Page Size
@@ -700,8 +652,8 @@ export default function ImageToPdfPage() {
                       w: 'full',
                       rounded: 'lg',
                       border: '1px solid',
-                      borderColor: 'gray.700',
-                      bg: 'gray.800/50',
+                      borderColor: 'brand.line',
+                      bg: 'brand.surfaceRaised',
                       px: '4',
                       fontSize: 'sm',
                       color: 'gray.200',
@@ -709,9 +661,9 @@ export default function ImageToPdfPage() {
                       _hover: { bg: 'gray.800', borderColor: 'gray.600' },
                       _focus: {
                         outline: 'none',
-                        borderColor: 'blue.500',
+                        borderColor: 'orange.500',
                         ring: '2px',
-                        ringColor: 'blue.500/20',
+                        ringColor: 'orange.500/20',
                       },
                     })}
                   >
@@ -730,7 +682,7 @@ export default function ImageToPdfPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     Orientation
@@ -744,8 +696,8 @@ export default function ImageToPdfPage() {
                       w: 'full',
                       rounded: 'lg',
                       border: '1px solid',
-                      borderColor: 'gray.700',
-                      bg: 'gray.800/50',
+                      borderColor: 'brand.line',
+                      bg: 'brand.surfaceRaised',
                       px: '4',
                       fontSize: 'sm',
                       color: 'gray.200',
@@ -753,9 +705,9 @@ export default function ImageToPdfPage() {
                       _hover: { bg: 'gray.800', borderColor: 'gray.600' },
                       _focus: {
                         outline: 'none',
-                        borderColor: 'blue.500',
+                        borderColor: 'orange.500',
                         ring: '2px',
-                        ringColor: 'blue.500/20',
+                        ringColor: 'orange.500/20',
                       },
                     })}
                   >
@@ -771,7 +723,7 @@ export default function ImageToPdfPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     Image Fit
@@ -785,8 +737,8 @@ export default function ImageToPdfPage() {
                       w: 'full',
                       rounded: 'lg',
                       border: '1px solid',
-                      borderColor: 'gray.700',
-                      bg: 'gray.800/50',
+                      borderColor: 'brand.line',
+                      bg: 'brand.surfaceRaised',
                       px: '4',
                       fontSize: 'sm',
                       color: 'gray.200',
@@ -794,9 +746,9 @@ export default function ImageToPdfPage() {
                       _hover: { bg: 'gray.800', borderColor: 'gray.600' },
                       _focus: {
                         outline: 'none',
-                        borderColor: 'blue.500',
+                        borderColor: 'orange.500',
                         ring: '2px',
-                        ringColor: 'blue.500/20',
+                        ringColor: 'orange.500/20',
                       },
                     })}
                   >
@@ -814,7 +766,7 @@ export default function ImageToPdfPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     Margin: {margin}mm
@@ -850,8 +802,8 @@ export default function ImageToPdfPage() {
                     p: '4',
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: enableOCR ? 'blue.500/30' : 'gray.700',
-                    bg: enableOCR ? 'blue.500/10' : 'gray.800/50',
+                    borderColor: enableOCR ? 'orange.500/30' : 'gray.700',
+                    bg: enableOCR ? 'orange.500/10' : 'brand.surfaceRaised',
                     transition: 'all 300ms',
                   })}
                 >
@@ -861,7 +813,7 @@ export default function ImageToPdfPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'white',
+                        color: 'brand.ink',
                         cursor: 'pointer',
                       })}
                     >
@@ -870,7 +822,7 @@ export default function ImageToPdfPage() {
                     <p
                       className={css({
                         fontSize: 'xs',
-                        color: 'white',
+                        color: 'brand.ink',
                       })}
                     >
                       Convert image text to searchable PDF text
@@ -892,11 +844,11 @@ export default function ImageToPdfPage() {
                       rounded: 'full',
                       border: '2px solid transparent',
                       transition: 'all 200ms',
-                      bg: enableOCR ? 'blue.500' : 'gray.700',
+                      bg: enableOCR ? 'orange.500' : 'gray.700',
                       _focus: {
                         outline: 'none',
                         ring: '2px',
-                        ringColor: 'blue.500/20',
+                        ringColor: 'orange.500/20',
                         ringOffset: '2px',
                       },
                     })}
@@ -938,7 +890,7 @@ export default function ImageToPdfPage() {
                 className={css({
                   textAlign: 'center',
                   fontSize: 'sm',
-                  color: 'white',
+                  color: 'brand.ink',
                 })}
               >
                 {ocrProgress || `Generating PDF... ${Math.round(progress)}%`}
@@ -954,12 +906,12 @@ export default function ImageToPdfPage() {
               gap: '2',
               minH: '12',
               px: '8',
-              bg: 'blue.500/20',
+              bg: 'orange.500/20',
               border: '1px solid',
-              borderColor: 'blue.500/50',
-              color: 'blue.300',
+              borderColor: 'orange.500/50',
+              color: 'orange.400',
               _hover: {
-                bg: 'blue.500/30',
+                bg: 'orange.500/30',
                 transform: 'translateY(-1px)',
                 transition: 'all 0.2s',
               },
@@ -980,19 +932,22 @@ export default function ImageToPdfPage() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'cyan.500/20',
-            bg: 'cyan.500/5',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'orange.500/20',
+            bg: 'orange.500/5',
           })}
         >
           <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Lightbulb className={css({ h: '6', w: '6', color: 'cyan.400', flexShrink: '0' })} />
+              <Lightbulb
+                className={css({ h: '6', w: '6', color: 'orange.400', flexShrink: '0' })}
+              />
               <div className={css({ spaceY: '2' })}>
-                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'cyan.300' })}>
+                <h3
+                  className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'orange.400' })}
+                >
                   Pro Tips
                 </h3>
-                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>
+                <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'brand.ink' })}>
                   <li>• Drag and drop multiple images to add them all at once</li>
                   <li>• Images are processed in the order they appear in the grid</li>
                   <li>• Choose "Contain" to fit images without cropping</li>

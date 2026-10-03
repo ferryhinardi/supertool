@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -562,53 +563,14 @@ export default function LogoMakerPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
+      <DesignToolHeader
+        title="Create Your Logo in Minutes"
+        description="Design professional logos with 1000+ icons, custom fonts, and color palettes. Export as PNG or SVG for free. No design skills required."
+        eyebrow="Logo studio"
+        icon={Sparkles}
+        highlights={['Free Logo Maker']}
+      />
       <div className={css({ textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            mb: '3',
-            px: '3',
-            py: '1.5',
-            bg: 'purple.500/10',
-            rounded: 'full',
-          })}
-        >
-          <Sparkles className={css({ w: '4', h: '4', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'purple.400' })}>
-            Free Logo Maker
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-            mb: '3',
-          })}
-        >
-          Create Your Logo in Minutes
-        </h1>
-
-        <p
-          className={css({
-            fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-            mb: '4',
-          })}
-        >
-          Design professional logos with 1000+ icons, custom fonts, and color palettes. Export as
-          PNG or SVG for free. No design skills required.
-        </p>
-
         <Button onClick={generateRandom} variant="outline">
           <RefreshCw className={css({ w: '4', h: '4', mr: '2' })} />
           Generate Random Logo

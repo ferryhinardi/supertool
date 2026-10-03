@@ -4,6 +4,7 @@ import { jsPDF } from 'jspdf'
 import { Check, Copy, Download, FileText, Scale, Shield } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -270,52 +271,13 @@ ${generatedDocument
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            mb: '3',
-            px: '3',
-            py: '1.5',
-            bg: 'green.500/10',
-            rounded: 'full',
-          })}
-        >
-          <Shield className={css({ w: '4', h: '4', color: 'green.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'green.400' })}>
-            Privacy Policy Generator
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'green.400',
-            gradientTo: 'blue.400',
-            bgClip: 'text',
-            mb: '3',
-          })}
-        >
-          Generate Legal Documents Instantly
-        </h1>
-
-        <p
-          className={css({
-            fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Create GDPR & CCPA compliant privacy policies, cookie policies, and terms of service for
-          your website or app. Free, professional, and legally sound templates.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Privacy Policy Generator"
+        description="Create GDPR & CCPA compliant privacy policies, cookie policies, and terms of service for your website or app. Free, professional, and legally sound templates."
+        eyebrow="Builders"
+        icon={Shield}
+        highlights={['Privacy, cookies, terms', 'Copy or download']}
+      />
 
       <div
         className={css({

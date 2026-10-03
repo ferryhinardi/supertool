@@ -4,6 +4,7 @@ import { Clock, Eye, Link2, Plus, TrendingUp, Users } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { FinanceToolHeader } from '@/components/features/tools/FinanceToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -130,7 +131,7 @@ export default function BillHistoryPage() {
     <main
       className={css({
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
@@ -139,64 +140,14 @@ export default function BillHistoryPage() {
         gap: { base: '4', sm: '6', md: '8' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: { base: 'column', sm: 'row' },
-          alignItems: { base: 'start', sm: 'center' },
-          justifyContent: 'space-between',
-          gap: '4',
-        })}
-      >
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            gap: { base: '3', sm: '4' },
-          })}
-        >
-          <div
-            className={css({
-              rounded: { base: 'xl', sm: '2xl' },
-              p: { base: '2.5', sm: '4' },
-              bgGradient: 'to-br',
-              gradientFrom: 'green.600',
-              gradientVia: 'emerald.600',
-              gradientTo: 'teal.700',
-              boxShadow: '0 25px 50px rgba(34, 197, 94, 0.35)',
-              animation: 'pulse 2s ease-in-out infinite',
-            })}
-          >
-            <Clock
-              className={css({
-                h: { base: '6', sm: '8' },
-                w: { base: '6', sm: '8' },
-                color: 'white',
-              })}
-            />
-          </div>
-          <div>
-            <h1
-              className={css({
-                fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-                fontWeight: 'extrabold',
-                bgGradient: 'to-r',
-                gradientFrom: 'green.300',
-                gradientVia: 'emerald.400',
-                gradientTo: 'teal.300',
-                backgroundClip: 'text',
-                color: 'transparent',
-              })}
-            >
-              Bill History
-            </h1>
-            <p className={css({ fontSize: { base: 'sm', sm: 'base' }, color: 'gray.200' })}>
-              View and manage all your split bills
-            </p>
-          </div>
-        </div>
-
+      <FinanceToolHeader
+        title="Bill History"
+        description="View and manage all your split bills"
+        eyebrow="Saved bills"
+        icon={Clock}
+        highlights={['Split bill history']}
+      />
+      <div className={css({ display: 'flex', justifyContent: 'flex-start' })}>
         <Link href="/tools/finance/split-bill">
           <Button
             size="lg"

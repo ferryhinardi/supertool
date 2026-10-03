@@ -4,7 +4,7 @@ import { ArrowLeftRight, Check, Copy, Link2, RotateCcw, Sparkles } from 'lucide-
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -155,58 +155,17 @@ function URLEncoderContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <Badge
-          className={css({
-            bg: 'cyan.500/10',
-            color: 'cyan.400',
-            border: '1px solid',
-            borderColor: 'cyan.500/20',
-          })}
-        >
-          <Link2 className={css({ w: '3', h: '3', mr: '1' })} />
-          Development Tool
-        </Badge>
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            letterSpacing: 'tight',
-            lineHeight: 'tight',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'cyan.400',
-              gradientTo: 'blue.500',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            URL Encoder
-          </span>{' '}
-          <span className={css({ color: 'gray.100' })}>& Decoder</span>
-        </h1>
-        <p
-          className={css({
-            fontSize: { base: 'md', sm: 'lg' },
-            color: 'gray.400',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Encode and decode URLs with encodeURI, encodeURIComponent, and their decode counterparts.
-          Perfect for handling special characters in URLs and query parameters.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title={
+          <>
+            <span>URL Encoder</span> <span>& Decoder</span>
+          </>
+        }
+        description="Encode and decode URLs with encodeURI, encodeURIComponent, and their decode counterparts. Perfect for handling special characters in URLs and query parameters."
+        eyebrow="Code formatter"
+        icon={Link2}
+        highlights={['Encode and decode', 'Component mode']}
+      />
 
       {/* Method Selection */}
       <div

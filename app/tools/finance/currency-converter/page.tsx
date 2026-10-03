@@ -13,6 +13,7 @@ import {
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { FinanceToolHeader } from '@/components/features/tools/FinanceToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -197,74 +198,16 @@ function CurrencyConverterContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'emerald.500/30',
-            bg: 'emerald.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Coins className={css({ h: '5', w: '5', color: 'emerald.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'emerald.300' })}>
-            {Object.keys(exchangeRates).length || 150}+ Currencies • Real-time Rates
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'emerald.400',
-            gradientVia: 'green.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Currency Converter
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Convert between 150+ world currencies with real-time exchange rates. Fast, accurate, and
-          free to use.
-        </p>
-      </div>
+      <FinanceToolHeader
+        title="Currency Converter"
+        description="Convert between 150+ world currencies with real-time exchange rates. Fast, accurate, and free to use."
+        eyebrow="Currency conversion"
+        icon={Coins}
+        highlights={[`${Object.keys(exchangeRates).length || 150}+ currencies`, 'Real-time rates']}
+      />
 
       {/* Converter */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -575,13 +518,7 @@ function CurrencyConverterContent() {
 
       {/* Favorites */}
       {favorites.length > 0 && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div>
           <Card
             className={css({
               border: '1px solid',
@@ -698,13 +635,7 @@ function CurrencyConverterContent() {
       )}
 
       {/* Info Card */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <div
           className={css({
             rounded: { base: 'xl', sm: '2xl' },

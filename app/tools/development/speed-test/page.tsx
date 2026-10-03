@@ -3,6 +3,7 @@
 import {
   Activity,
   Download,
+  Gauge,
   Info,
   Loader2,
   Play,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -481,64 +483,13 @@ function SpeedTestContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/30',
-            bg: 'purple.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Activity className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
-            Accurate & Fast Network Testing
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'red.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Network Speed Test
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Test your internet connection speed in real-time. Measure download speed, upload speed,
-          latency, and jitter with accurate results.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="Network Speed Test"
+        description="Test your internet connection speed in real-time. Measure download speed, upload speed, latency, and jitter with accurate results."
+        eyebrow="Network diagnostics"
+        icon={Gauge}
+        highlights={['Accurate & Fast Network Testing', 'Latency']}
+      />
 
       {/* Main Speed Test Card */}
       <div
@@ -551,14 +502,14 @@ function SpeedTestContent() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
+            borderColor: 'blue.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
             <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-              <Wifi className={css({ h: '6', w: '6', color: 'purple.400' })} />
+              <Wifi className={css({ h: '6', w: '6', color: 'blue.400' })} />
               <div>
                 <CardTitle>Speed Test</CardTitle>
                 <CardDescription>{getPhaseLabel()}</CardDescription>
@@ -577,10 +528,10 @@ function SpeedTestContent() {
                     px: '12',
                     py: '6',
                     fontSize: 'xl',
-                    bg: 'purple.500',
+                    bg: 'blue.500',
                     color: 'white',
                     _hover: {
-                      bg: 'purple.600',
+                      bg: 'blue.600',
                       transform: 'scale(1.05)',
                       transition: 'all 0.2s',
                     },
@@ -597,7 +548,7 @@ function SpeedTestContent() {
               <div className={css({ spaceY: '4' })}>
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
                   <Loader2
-                    className={css({ h: '5', w: '5', color: 'purple.400', animation: 'spin' })}
+                    className={css({ h: '5', w: '5', color: 'blue.400', animation: 'spin' })}
                   />
                   <span className={css({ fontSize: 'lg', fontWeight: 'medium', color: 'white' })}>
                     {getPhaseLabel()}
@@ -767,11 +718,11 @@ function SpeedTestContent() {
                   onClick={runSpeedTest}
                   className={css({
                     gap: '2',
-                    bg: 'purple.500/20',
+                    bg: 'blue.500/20',
                     border: '1px solid',
-                    borderColor: 'purple.500/50',
-                    color: 'purple.300',
-                    _hover: { bg: 'purple.500/30' },
+                    borderColor: 'blue.500/50',
+                    color: 'blue.300',
+                    _hover: { bg: 'blue.500/30' },
                   })}
                 >
                   <Play className={css({ h: '4', w: '4' })} />
@@ -795,7 +746,7 @@ function SpeedTestContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/20',
+              borderColor: 'blue.500/20',
               bg: 'gray.900/50',
               backdropFilter: 'blur(16px)',
             })}
@@ -909,19 +860,19 @@ function SpeedTestContent() {
                 className={css({
                   rounded: 'lg',
                   border: '1px solid',
-                  borderColor: 'purple.500/20',
-                  bg: 'purple.500/5',
+                  borderColor: 'blue.500/20',
+                  bg: 'blue.500/5',
                   p: '4',
                 })}
               >
                 <div className={css({ display: 'flex', alignItems: 'start', gap: '3' })}>
-                  <Info className={css({ h: '5', w: '5', color: 'purple.400', flexShrink: '0' })} />
+                  <Info className={css({ h: '5', w: '5', color: 'blue.400', flexShrink: '0' })} />
                   <div className={css({ spaceY: '2' })}>
                     <h4
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'semibold',
-                        color: 'purple.300',
+                        color: 'blue.300',
                       })}
                     >
                       What do these numbers mean?

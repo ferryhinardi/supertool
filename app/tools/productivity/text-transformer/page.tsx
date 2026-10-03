@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { parseAsBoolean, parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useEffect, useMemo, useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -440,77 +441,13 @@ function TextTransformerContent() {
         spaceY: { base: '6', sm: '8' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          spaceY: '4',
-          textAlign: 'center',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'yellow.500/20',
-            bg: 'yellow.500/10',
-            px: '4',
-            py: '2',
-            backdropFilter: 'blur(4px)',
-          })}
-        >
-          <Type className={css({ h: '5', w: '5', color: 'yellow.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'yellow.300',
-            })}
-          >
-            20+ Text Transformations
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'yellow.400',
-              gradientVia: 'orange.400',
-              gradientTo: 'red.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Text Transformer & Counter
-          </span>
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: 'lg',
-            color: 'white',
-          })}
-        >
-          Powerful text manipulation tool with case conversion, duplicate removal, word/character
-          counting, sorting, trimming, and find-replace with regex support
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Text Transformer & Counter"
+        description="Powerful text manipulation tool with case conversion, duplicate removal, word/character counting, sorting, trimming, and find-replace with regex support"
+        eyebrow="Text productivity"
+        icon={Type}
+        highlights={['20+ transforms', 'Live counts']}
+      />
 
       {/* Stats Cards */}
       <div

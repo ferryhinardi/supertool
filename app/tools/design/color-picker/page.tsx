@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -367,71 +368,13 @@ function ColorPickerContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'pink.500/30',
-            bg: 'pink.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Palette className={css({ h: '5', w: '5', color: 'pink.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'pink.300',
-            })}
-          >
-            Design Tool
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'pink.400',
-            gradientVia: 'rose.400',
-            gradientTo: 'red.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Color Picker & Palette Generator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Pick colors, generate harmonious palettes, and convert between HEX, RGB, HSL, and HSV
-          formats instantly.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="Color Picker & Palette Generator"
+        description="Pick colors, generate harmonious palettes, and convert between HEX, RGB, HSL, and HSV formats instantly."
+        eyebrow="Color workspace"
+        icon={Palette}
+        highlights={['Design Tool']}
+      />
 
       <div
         className={css({
@@ -446,13 +389,7 @@ function ColorPickerContent() {
         {/* Main Section */}
         <div className={css({ spaceY: '6', minW: '0', maxW: 'full', w: 'full' })}>
           {/* Color Picker */}
-          <div
-            className={css({
-              animation: 'slideUp 0.5s ease-out forwards',
-              animationDelay: '0.1s',
-              opacity: 0,
-            })}
-          >
+          <div>
             <Card
               className={css({
                 border: '1px solid',
@@ -576,13 +513,7 @@ function ColorPickerContent() {
           </div>
 
           {/* Color Formats */}
-          <div
-            className={css({
-              animation: 'slideUp 0.5s ease-out forwards',
-              animationDelay: '0.2s',
-              opacity: 0,
-            })}
-          >
+          <div>
             <Card
               className={css({
                 border: '1px solid',
@@ -780,13 +711,7 @@ function ColorPickerContent() {
           </div>
 
           {/* Accessibility */}
-          <div
-            className={css({
-              animation: 'slideUp 0.5s ease-out forwards',
-              animationDelay: '0.3s',
-              opacity: 0,
-            })}
-          >
+          <div>
             <Card
               className={css({
                 border: '1px solid',
@@ -944,13 +869,7 @@ function ColorPickerContent() {
 
         {/* Palette Generator Sidebar */}
         <div className={css({ spaceY: '6', minW: '0', maxW: 'full', w: 'full' })}>
-          <div
-            className={css({
-              animation: 'slideUp 0.5s ease-out forwards',
-              animationDelay: '0.2s',
-              opacity: 0,
-            })}
-          >
+          <div>
             <Card
               className={css({
                 border: '1px solid',
@@ -1078,13 +997,7 @@ function ColorPickerContent() {
           </div>
 
           {/* Info Card */}
-          <div
-            className={css({
-              animation: 'slideUp 0.5s ease-out forwards',
-              animationDelay: '0.4s',
-              opacity: 0,
-            })}
-          >
+          <div>
             <Card
               className={css({
                 border: '1px solid',

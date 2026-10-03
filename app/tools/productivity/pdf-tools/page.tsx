@@ -50,6 +50,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
 import { PDFEditor } from '@/components/features/media/PDFEditor'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -2198,96 +2199,22 @@ export default function PDFToolsPage() {
     <main
       className={css({
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8' },
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '4',
-          textAlign: 'center',
-          w: 'full',
-          maxW: '1400px',
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'red.500/20',
-            bg: 'red.500/10',
-            px: '4',
-            py: '2',
-            backdropFilter: 'blur(4px)',
-          })}
-        >
-          <FileText
-            className={css({
-              h: '5',
-              w: '5',
-              color: 'red.400',
-            })}
-          />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'red.300',
-            })}
-          >
-            Professional PDF Processing
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'red.400',
-              gradientVia: 'orange.400',
-              gradientTo: 'yellow.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            PDF Tools Suite
-          </span>
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: 'lg',
-            color: 'white',
-          })}
-        >
-          Merge, split, compress, watermark, and convert PDFs. Convert images to PDF with powerful
-          browser-based tools. 100% secure - all processing happens on your device.
-        </p>
-
-        {/* Keyboard Shortcuts Help */}
-        <div className={css({ display: 'flex', justifyContent: 'center', mt: '4' })}>
-          <KeyboardShortcutsDialog />
-        </div>
+      <ProductivityToolHeader
+        title="PDF Tools Suite"
+        description="Merge, split, compress, watermark, and convert PDFs. Convert images to PDF with powerful browser-based tools. 100% secure - all processing happens on your device."
+        eyebrow="File workflows"
+        icon={FileText}
+        highlights={['Merge and split', 'On-device processing']}
+      />
+      <div className={css({ display: 'flex', justifyContent: 'center' })}>
+        <KeyboardShortcutsDialog />
       </div>
       {/* Stats Summary */}
       {pdfs.length > 0 && (

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -313,68 +314,13 @@ function TaskTimerContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            maxW: 'full',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/30',
-            bg: 'blue.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Timer className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.300' })}>
-            Multiple Timers • Session Management • Export Reports
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'purple.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Task Timer with Sessions
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Track multiple tasks concurrently with session management. Organize your work into
-          sessions, export reports, and analyze your productivity.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Task Timer with Sessions"
+        description="Track multiple tasks concurrently with session management. Organize your work into sessions, export reports, and analyze your productivity."
+        eyebrow="Time management"
+        icon={Timer}
+        highlights={['Concurrent timers', 'Session export']}
+      />
 
       {/* Session Control */}
       <div

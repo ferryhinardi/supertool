@@ -55,7 +55,7 @@ describe('Timezone Converter Page', () => {
     it('renders DST awareness badge', async () => {
       render(<TimezoneConverterPage />)
       await waitFor(() => {
-        expect(screen.getByText(/DST Aware • Real-time Updates/)).toBeInTheDocument()
+        expect(screen.getByText('DST-aware times')).toBeInTheDocument()
       })
     })
 

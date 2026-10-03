@@ -2,7 +2,7 @@
 
 import { Check, Copy, Download, ImagePlus } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -156,36 +156,12 @@ export default function PlaceholderGeneratorPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ spaceY: '3' })}>
-        <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-          <div
-            className={css({
-              p: '3',
-              borderRadius: 'xl',
-              bgGradient: 'to-r',
-              gradientFrom: 'pink.500',
-              gradientTo: 'rose.500',
-            })}
-          >
-            <ImagePlus className={css({ w: '6', h: '6', color: 'white' })} />
-          </div>
-          <div>
-            <h1
-              className={css({
-                fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-                fontWeight: 'bold',
-                letterSpacing: 'tight',
-              })}
-            >
-              Placeholder Image Generator
-            </h1>
-            <p className={css({ color: 'gray.400', fontSize: { base: 'sm', sm: 'base' } })}>
-              Generate custom placeholder images with custom dimensions, colors, and text
-            </p>
-          </div>
-        </div>
-      </div>
+      <DesignToolHeader
+        title="Placeholder Image Generator"
+        description="Generate custom placeholder images with custom dimensions, colors, and text"
+        eyebrow="Placeholder images"
+        icon={ImagePlus}
+      />
 
       {/* Main Content Grid */}
       <div

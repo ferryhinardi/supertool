@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -488,72 +489,22 @@ export default function VideoConverterPage() {
     <main
       className={css({
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8' },
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
       {/* Header */}
-      <div className={css({ animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'indigo.500/20',
-            bg: 'indigo.500/10',
-            px: '4',
-            py: '2',
-            backdropFilter: 'blur(4px)',
-          })}
-        >
-          <Video className={css({ h: '5', w: '5', color: 'indigo.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'indigo.300' })}>
-            Professional Video Conversion
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'indigo.400',
-              gradientVia: 'purple.400',
-              gradientTo: 'pink.400',
-              bgClip: 'text',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Video Converter & Compressor
-          </span>
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: 'lg',
-            color: 'white',
-          })}
-        >
-          Convert videos between formats (MP4, WebM, AVI, MOV), compress file sizes, and optimize
-          for web. All processing happens in your browser using FFmpeg.
-        </p>
+      <div className={css({ w: 'full' })}>
+        <MediaToolHeader
+          title="Video Converter & Compressor"
+          description="Convert videos between formats (MP4, WebM, AVI, MOV), compress file sizes, and optimize for web. All processing happens in your browser using FFmpeg."
+          eyebrow="Video processing"
+          icon={Video}
+          highlights={['Professional Video Conversion', 'Browser FFmpeg']}
+        />
 
         {!ffmpegLoaded && (
           <div className={css({ mx: 'auto', maxW: 'md' })}>
@@ -565,7 +516,7 @@ export default function VideoConverterPage() {
                   justifyContent: 'center',
                   gap: '2',
                   fontSize: 'sm',
-                  color: 'white',
+                  color: 'brand.ink',
                 })}
               >
                 <div
@@ -575,7 +526,7 @@ export default function VideoConverterPage() {
                     animation: 'spin',
                     rounded: 'full',
                     border: '2px solid',
-                    borderColor: 'indigo.500',
+                    borderColor: 'orange.500',
                     borderTopColor: 'transparent',
                   })}
                 />
@@ -586,8 +537,8 @@ export default function VideoConverterPage() {
                 onClick={loadFFmpeg}
                 className={css({
                   gap: '2',
-                  bg: 'indigo.600',
-                  _hover: { bg: 'indigo.700' },
+                  bg: 'orange.600',
+                  _hover: { bg: 'orange.700' },
                 })}
               >
                 <Zap className={css({ h: '4', w: '4' })} />
@@ -606,17 +557,13 @@ export default function VideoConverterPage() {
             gridTemplateColumns: { base: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
             gap: '4',
             w: 'full',
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.1s',
-            opacity: 0,
           })}
         >
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(8px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -626,21 +573,20 @@ export default function VideoConverterPage() {
                     mb: '2',
                     fontSize: '2xl',
                     fontWeight: 'bold',
-                    color: 'indigo.400',
+                    color: 'orange.400',
                   })}
                 >
                   {videos.length}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'white' })}>Total Videos</div>
+                <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Total Videos</div>
               </div>
             </CardContent>
           </Card>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(8px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -655,16 +601,15 @@ export default function VideoConverterPage() {
                 >
                   {formatBytes(totalOriginalSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'white' })}>Original Size</div>
+                <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Original Size</div>
               </div>
             </CardContent>
           </Card>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(8px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -679,16 +624,15 @@ export default function VideoConverterPage() {
                 >
                   {formatBytes(totalConvertedSize)}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'white' })}>Converted Size</div>
+                <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Converted Size</div>
               </div>
             </CardContent>
           </Card>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(8px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -698,12 +642,12 @@ export default function VideoConverterPage() {
                     mb: '2',
                     fontSize: '2xl',
                     fontWeight: 'bold',
-                    color: 'purple.400',
+                    color: 'green.400',
                   })}
                 >
                   {totalSavings}%
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'white' })}>Space Saved</div>
+                <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Space Saved</div>
               </div>
             </CardContent>
           </Card>
@@ -714,32 +658,28 @@ export default function VideoConverterPage() {
         className={css({
           display: 'grid',
           gap: '6',
-          gridTemplateColumns: { base: '1fr', md: '1fr 2fr', lg: '1fr 1fr 1fr' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(2, minmax(0, 1fr))' },
           w: 'full',
-          maxW: '1400px',
+          maxW: '7xl',
         })}
       >
         {/* Settings Panel */}
         <div
           className={css({
             gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 1' },
-            animation: 'slideInLeft 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
           })}
         >
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(8px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
                 <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <Settings className={css({ h: '5', w: '5', color: 'indigo.400' })} />
+                  <Settings className={css({ h: '5', w: '5', color: 'orange.400' })} />
                   Conversion Settings
                 </CardTitle>
                 <CardDescription>Configure output format and quality</CardDescription>
@@ -749,7 +689,9 @@ export default function VideoConverterPage() {
               <div className={css({ p: { base: '4', sm: '5', md: '6' }, spaceY: '6' })}>
                 {/* Output Format */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
+                  <div
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
+                  >
                     Output Format
                   </div>
                   <div
@@ -769,11 +711,11 @@ export default function VideoConverterPage() {
                           outputFormat === format
                             ? css({
                                 border: '1px solid',
-                                borderColor: 'indigo.500/50',
-                                bg: 'indigo.500/20',
-                                color: 'indigo.200',
+                                borderColor: 'orange.500/50',
+                                bg: 'orange.500/20',
+                                color: 'orange.400',
                               })
-                            : css({ border: '1px solid', borderColor: 'gray.700' })
+                            : css({ border: '1px solid', borderColor: 'brand.line' })
                         }
                       >
                         {format.toUpperCase()}
@@ -784,7 +726,9 @@ export default function VideoConverterPage() {
 
                 {/* Video Codec */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
+                  <div
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
+                  >
                     Video Codec
                   </div>
                   <div
@@ -804,11 +748,11 @@ export default function VideoConverterPage() {
                           videoCodec === codec
                             ? css({
                                 border: '1px solid',
-                                borderColor: 'indigo.500/50',
-                                bg: 'indigo.500/20',
-                                color: 'indigo.200',
+                                borderColor: 'orange.500/50',
+                                bg: 'orange.500/20',
+                                color: 'orange.400',
                               })
-                            : css({ border: '1px solid', borderColor: 'gray.700' })
+                            : css({ border: '1px solid', borderColor: 'brand.line' })
                         }
                       >
                         {codec.toUpperCase()}
@@ -819,7 +763,9 @@ export default function VideoConverterPage() {
 
                 {/* Audio Codec */}
                 <div className={css({ spaceY: '2' })}>
-                  <div className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}>
+                  <div
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
+                  >
                     Audio Codec
                   </div>
                   <div
@@ -839,11 +785,11 @@ export default function VideoConverterPage() {
                           audioCodec === codec
                             ? css({
                                 border: '1px solid',
-                                borderColor: 'indigo.500/50',
-                                bg: 'indigo.500/20',
-                                color: 'indigo.200',
+                                borderColor: 'orange.500/50',
+                                bg: 'orange.500/20',
+                                color: 'orange.400',
                               })
-                            : css({ border: '1px solid', borderColor: 'gray.700' })
+                            : css({ border: '1px solid', borderColor: 'brand.line' })
                         }
                       >
                         {codec.toUpperCase()}
@@ -862,8 +808,8 @@ export default function VideoConverterPage() {
                       justifyContent: 'space-between',
                       rounded: 'lg',
                       border: '1px solid',
-                      borderColor: maxCompression ? 'indigo.500/50' : 'gray.700',
-                      bg: maxCompression ? 'indigo.500/10' : 'gray.800/50',
+                      borderColor: maxCompression ? 'orange.500/50' : 'gray.700',
+                      bg: maxCompression ? 'orange.500/10' : 'brand.surfaceRaised',
                       px: '4',
                       py: '3',
                       w: 'full',
@@ -874,11 +820,15 @@ export default function VideoConverterPage() {
                   >
                     <div>
                       <div
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'brand.ink',
+                        })}
                       >
                         Maximum Compression
                       </div>
-                      <div className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
+                      <div className={css({ fontSize: 'xs', color: 'brand.muted', mt: '1' })}>
                         Optimize for smallest file size
                       </div>
                     </div>
@@ -889,7 +839,7 @@ export default function VideoConverterPage() {
                       className={css({
                         h: '5',
                         w: '5',
-                        accentColor: 'indigo.500',
+                        accentColor: 'orange.500',
                         cursor: 'pointer',
                       })}
                       onClick={(e) => e.stopPropagation()}
@@ -909,12 +859,16 @@ export default function VideoConverterPage() {
                     >
                       <label
                         htmlFor="target-size"
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'brand.ink',
+                        })}
                       >
                         Target Size (MB)
                       </label>
                       <span
-                        className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'indigo.400' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'orange.400' })}
                       >
                         {targetSizeMB} MB
                       </span>
@@ -926,12 +880,12 @@ export default function VideoConverterPage() {
                       max="50"
                       value={targetSizeMB}
                       onChange={(e) => setTargetSizeMB(Number(e.target.value))}
-                      className={css({ w: 'full', accentColor: 'indigo.500' })}
+                      className={css({ w: 'full', accentColor: 'orange.500' })}
                     />
                     <div
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.400',
+                        color: 'brand.muted',
                         textAlign: 'center',
                       })}
                     >
@@ -952,12 +906,16 @@ export default function VideoConverterPage() {
                     >
                       <label
                         htmlFor="quality-range"
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'brand.ink',
+                        })}
                       >
                         Quality (CRF)
                       </label>
                       <span
-                        className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'indigo.400' })}
+                        className={css({ fontSize: 'sm', fontWeight: 'bold', color: 'orange.400' })}
                       >
                         {quality}
                       </span>
@@ -969,14 +927,14 @@ export default function VideoConverterPage() {
                       max="51"
                       value={quality}
                       onChange={(e) => setQuality(Number(e.target.value))}
-                      className={css({ w: 'full', accentColor: 'indigo.500' })}
+                      className={css({ w: 'full', accentColor: 'orange.500' })}
                     />
                     <div
                       className={css({
                         display: 'flex',
                         justifyContent: 'space-between',
                         fontSize: 'xs',
-                        color: 'white',
+                        color: 'brand.ink',
                       })}
                     >
                       <span>Best Quality</span>
@@ -989,7 +947,7 @@ export default function VideoConverterPage() {
                 <div className={css({ spaceY: '2' })}>
                   <label
                     htmlFor="resolution-select"
-                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'white' })}
+                    className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'brand.ink' })}
                   >
                     Resolution
                   </label>
@@ -1001,13 +959,13 @@ export default function VideoConverterPage() {
                       w: 'full',
                       rounded: 'md',
                       border: '1px solid',
-                      borderColor: 'gray.700',
+                      borderColor: 'brand.line',
                       bg: 'gray.800',
                       px: '3',
                       py: '2',
                       fontSize: 'sm',
                       color: 'gray.100',
-                      _focus: { borderColor: 'indigo.500', outline: 'none' },
+                      _focus: { borderColor: 'orange.500', outline: 'none' },
                     })}
                   >
                     <option value="original">Original</option>
@@ -1026,8 +984,8 @@ export default function VideoConverterPage() {
                     className={css({
                       w: 'full',
                       gap: '2',
-                      bg: 'indigo.600',
-                      _hover: { bg: 'indigo.700' },
+                      bg: 'orange.600',
+                      _hover: { bg: 'orange.700' },
                     })}
                   >
                     <Zap className={css({ h: '4', w: '4' })} />
@@ -1067,24 +1025,20 @@ export default function VideoConverterPage() {
         {/* Upload & Videos Panel */}
         <div
           className={css({
-            gridColumn: { base: 'span 1', md: 'span 1', lg: 'span 2' },
-            animation: 'slideInLeft 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
+            gridColumn: { base: 'span 1', lg: 'span 1' },
           })}
         >
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(8px)',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
               <div className={css({ p: { base: '4', sm: '5', md: '6' } })}>
                 <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                  <FileVideo className={css({ h: '5', w: '5', color: 'indigo.400' })} />
+                  <FileVideo className={css({ h: '5', w: '5', color: 'orange.400' })} />
                   Videos ({videos.length})
                 </CardTitle>
                 <CardDescription>
@@ -1128,8 +1082,8 @@ export default function VideoConverterPage() {
                           className={css({
                             rounded: 'lg',
                             border: '1px solid',
-                            borderColor: 'gray.800',
-                            bg: 'gray.900/80',
+                            borderColor: 'brand.line',
+                            bg: 'brand.surface',
                             p: '4',
                           })}
                         >
@@ -1166,10 +1120,10 @@ export default function VideoConverterPage() {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    bg: 'indigo.500/20',
+                                    bg: 'orange.500/20',
                                   })}
                                 >
-                                  <Play className={css({ h: '6', w: '6', color: 'indigo.400' })} />
+                                  <Play className={css({ h: '6', w: '6', color: 'orange.400' })} />
                                 </div>
                               )}
                             </div>
@@ -1205,7 +1159,7 @@ export default function VideoConverterPage() {
                                       alignItems: 'center',
                                       gap: '3',
                                       fontSize: 'xs',
-                                      color: 'white',
+                                      color: 'brand.ink',
                                     })}
                                   >
                                     <span>{formatBytes(video.originalSize)}</span>
@@ -1215,16 +1169,16 @@ export default function VideoConverterPage() {
                                     {video.convertedSize && (
                                       <>
                                         <span>→</span>
-                                        <span className={css({ color: 'indigo.400' })}>
+                                        <span className={css({ color: 'orange.400' })}>
                                           {formatBytes(video.convertedSize)}
                                         </span>
                                         <span
                                           className={css({
                                             rounded: 'md',
-                                            bg: 'indigo.500/20',
+                                            bg: 'orange.500/20',
                                             px: '2',
                                             py: '0.5',
-                                            color: 'indigo.300',
+                                            color: 'orange.400',
                                           })}
                                         >
                                           {calculateSavings(
@@ -1249,8 +1203,8 @@ export default function VideoConverterPage() {
                                         h: '8',
                                         w: '8',
                                         p: '0',
-                                        color: 'indigo.400',
-                                        _hover: { bg: 'indigo.500/20' },
+                                        color: 'orange.400',
+                                        _hover: { bg: 'orange.500/20' },
                                       })}
                                     >
                                       <Download className={css({ h: '4', w: '4' })} />
@@ -1277,7 +1231,7 @@ export default function VideoConverterPage() {
                               {video.status === 'processing' && (
                                 <div className={css({ spaceY: '1' })}>
                                   <Progress value={video.progress} className={css({ h: '2' })} />
-                                  <p className={css({ fontSize: 'xs', color: 'white' })}>
+                                  <p className={css({ fontSize: 'xs', color: 'brand.ink' })}>
                                     Converting... {video.progress}%
                                   </p>
                                 </div>
@@ -1292,7 +1246,7 @@ export default function VideoConverterPage() {
 
                               {/* Status */}
                               {video.status === 'pending' && (
-                                <p className={css({ fontSize: 'xs', color: 'white' })}>
+                                <p className={css({ fontSize: 'xs', color: 'brand.ink' })}>
                                   Ready to convert
                                 </p>
                               )}
@@ -1316,9 +1270,6 @@ export default function VideoConverterPage() {
           gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
           gap: '4',
           w: 'full',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
         })}
       >
         {[
@@ -1347,20 +1298,19 @@ export default function VideoConverterPage() {
             key={feature.title}
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
+              borderColor: 'brand.line',
               bgGradient: 'to-br',
-              gradientFrom: 'gray.900/50',
-              gradientTo: 'gray.900/30',
-              backdropFilter: 'blur(8px)',
+              gradientFrom: 'brand.surface',
+              gradientTo: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
               <div className={css({ p: '6' })}>
-                <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'indigo.400' })} />
+                <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'orange.400' })} />
                 <h3 className={css({ mb: '2', fontWeight: 'semibold', color: 'gray.200' })}>
                   {feature.title}
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.description}</p>
+                <p className={css({ fontSize: 'sm', color: 'brand.ink' })}>{feature.description}</p>
               </div>
             </CardContent>
           </Card>

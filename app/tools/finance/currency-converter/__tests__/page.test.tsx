@@ -36,6 +36,33 @@ const mockExchangeRates = {
   timestamp: Date.now() / 1000,
 }
 
+interface MockRatesResponse {
+  ok: boolean
+  json: () => Promise<typeof mockExchangeRates>
+}
+
+function createPendingFetch() {
+  let resolveFetch: ((value: MockRatesResponse) => void) | null = null
+  const promise = new Promise<MockRatesResponse>((resolve) => {
+    resolveFetch = resolve
+  })
+
+  return {
+    promise,
+    resolve(value: MockRatesResponse) {
+      if (resolveFetch === null) {
+        throw new Error('Pending fetch resolver was not initialized')
+      }
+      resolveFetch(value)
+    },
+  }
+}
+
+const successfulRatesResponse = (): MockRatesResponse => ({
+  ok: true,
+  json: async () => mockExchangeRates,
+})
+
 describe('Currency Converter Page', () => {
   beforeEach(() => {
     // Clear localStorage before each test
@@ -281,19 +308,11 @@ describe('Currency Converter Page', () => {
         expect(result.value).not.toBe('Loading...')
       })
 
-      // Mock a delayed response for the refresh
+      // Hold the refresh response open so the loading state is observable.
+      // A short timer races the assertion under the coverage job's parallel workers.
+      const pendingRefresh = createPendingFetch()
       ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(
-              () =>
-                resolve({
-                  ok: true,
-                  json: async () => mockExchangeRates,
-                }),
-              50
-            )
-          )
+        () => pendingRefresh.promise
       )
 
       // Click refresh
@@ -304,6 +323,8 @@ describe('Currency Converter Page', () => {
       await waitFor(() => {
         expect(refreshButton).toBeDisabled()
       })
+
+      pendingRefresh.resolve(successfulRatesResponse())
 
       // Wait for refresh to complete
       await waitFor(() => {
@@ -321,28 +342,20 @@ describe('Currency Converter Page', () => {
         expect(refreshButton).not.toBeDisabled()
       })
 
-      // Mock a delayed response for the refresh
+      // Hold the refresh response open so the loading state is observable.
+      const pendingRefresh = createPendingFetch()
       ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(
-              () =>
-                resolve({
-                  ok: true,
-                  json: async () => mockExchangeRates,
-                }),
-              50
-            )
-          )
+        () => pendingRefresh.promise
       )
 
       // Click to refresh
       await userEvent.click(refreshButton as HTMLElement)
 
-      // Should be disabled during loading (briefly)
       await waitFor(() => {
         expect(refreshButton).toBeDisabled()
       })
+
+      pendingRefresh.resolve(successfulRatesResponse())
 
       // Should be enabled again after load
       await waitFor(() => {

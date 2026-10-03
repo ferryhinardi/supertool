@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { supabase } from '@/lib/auth/supabaseClient'
 import { trackToolEvent } from '@/lib/services/analytics'
@@ -291,24 +292,13 @@ export default function WebhookTesterPage() {
           spaceY: { base: '6', sm: '8', md: '10' },
         })}
       >
-        <div className={css({ textAlign: 'center', spaceY: '3' })}>
-          <h1
-            className={css({
-              fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '3',
-            })}
-          >
-            <Activity className={css({ color: 'green.400' })} />
-            <span>Webhook Tester</span>
-          </h1>
-          <p className={css({ color: 'gray.400', fontSize: { base: 'sm', sm: 'base' } })}>
-            Test and debug webhooks in real-time
-          </p>
-        </div>
+        <DevelopmentToolHeader
+          title="Webhook Tester"
+          description="Test and debug webhooks in real-time"
+          eyebrow="API debugging"
+          icon={Activity}
+          highlights={['Request inspector', 'Local history']}
+        />
 
         <div
           className={css({
@@ -335,7 +325,7 @@ export default function WebhookTesterPage() {
             className={css({
               px: '6',
               py: '3',
-              bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              bg: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
               color: 'white',
               fontSize: 'lg',
               fontWeight: 'semibold',
@@ -344,7 +334,7 @@ export default function WebhookTesterPage() {
               transition: 'all 0.3s',
               _hover: {
                 transform: 'translateY(-2px)',
-                boxShadow: '0 10px 25px rgba(102, 126, 234, 0.4)',
+                boxShadow: '0 10px 25px rgba(59, 130, 246, 0.4)',
               },
             })}
           >
@@ -367,24 +357,13 @@ export default function WebhookTesterPage() {
       })}
     >
       {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '3' })}>
-        <h1
-          className={css({
-            fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '3',
-          })}
-        >
-          <Activity className={css({ color: 'green.400' })} />
-          <span>Webhook Tester</span>
-        </h1>
-        <p className={css({ color: 'gray.400', fontSize: { base: 'sm', sm: 'base' } })}>
-          Test and debug webhooks in real-time
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="Webhook Tester"
+        description="Test and debug webhooks in real-time"
+        eyebrow="API debugging"
+        icon={Activity}
+        highlights={['Request inspector', 'Local history']}
+      />
 
       {isLoading ? (
         <div className={css({ textAlign: 'center', py: '12' })}>
@@ -406,7 +385,7 @@ export default function WebhookTesterPage() {
                 gap: '2',
                 px: '4',
                 py: '2',
-                bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                bg: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
                 color: 'white',
                 fontSize: 'sm',
                 fontWeight: 'semibold',
@@ -415,7 +394,7 @@ export default function WebhookTesterPage() {
                 transition: 'all 0.3s',
                 _hover: {
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 10px 25px rgba(102, 126, 234, 0.4)',
+                  boxShadow: '0 10px 25px rgba(59, 130, 246, 0.4)',
                 },
               })}
             >
@@ -435,7 +414,7 @@ export default function WebhookTesterPage() {
                 p: { base: '4', sm: '6' },
                 bg: 'rgba(17, 24, 39, 0.6)',
                 border: '2px solid',
-                borderColor: 'rgba(139, 92, 246, 0.3)',
+                borderColor: 'rgba(59, 130, 246, 0.3)',
                 borderRadius: 'xl',
                 spaceY: '4',
               })}
@@ -464,15 +443,15 @@ export default function WebhookTesterPage() {
                     py: '3',
                     bg: 'rgba(0, 0, 0, 0.3)',
                     border: '1px solid',
-                    borderColor: 'rgba(139, 92, 246, 0.3)',
+                    borderColor: 'rgba(59, 130, 246, 0.3)',
                     borderRadius: 'lg',
                     color: 'white',
                     fontSize: 'sm',
                     outline: 'none',
                     transition: 'all 0.2s',
                     _focus: {
-                      borderColor: 'rgba(139, 92, 246, 0.6)',
-                      boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.1)',
+                      borderColor: 'rgba(59, 130, 246, 0.6)',
+                      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
                     },
                   })}
                 />
@@ -497,7 +476,7 @@ export default function WebhookTesterPage() {
                     py: '3',
                     bg: 'rgba(0, 0, 0, 0.3)',
                     border: '1px solid',
-                    borderColor: 'rgba(139, 92, 246, 0.3)',
+                    borderColor: 'rgba(59, 130, 246, 0.3)',
                     borderRadius: 'lg',
                     color: 'white',
                     fontSize: 'sm',
@@ -505,8 +484,8 @@ export default function WebhookTesterPage() {
                     resize: 'none',
                     transition: 'all 0.2s',
                     _focus: {
-                      borderColor: 'rgba(139, 92, 246, 0.6)',
-                      boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.1)',
+                      borderColor: 'rgba(59, 130, 246, 0.6)',
+                      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
                     },
                   })}
                 />
@@ -529,7 +508,7 @@ export default function WebhookTesterPage() {
                     py: '3',
                     bg: 'rgba(0, 0, 0, 0.3)',
                     border: '1px solid',
-                    borderColor: 'rgba(139, 92, 246, 0.3)',
+                    borderColor: 'rgba(59, 130, 246, 0.3)',
                     borderRadius: 'lg',
                     color: 'white',
                     fontSize: 'sm',
@@ -537,8 +516,8 @@ export default function WebhookTesterPage() {
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     _focus: {
-                      borderColor: 'rgba(139, 92, 246, 0.6)',
-                      boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.1)',
+                      borderColor: 'rgba(59, 130, 246, 0.6)',
+                      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
                     },
                   })}
                 >
@@ -558,7 +537,7 @@ export default function WebhookTesterPage() {
                   w: 'full',
                   px: '4',
                   py: '3',
-                  bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  bg: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
                   color: 'white',
                   fontSize: 'sm',
                   fontWeight: 'semibold',
@@ -571,7 +550,7 @@ export default function WebhookTesterPage() {
                   gap: '2',
                   _hover: {
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 10px 25px rgba(102, 126, 234, 0.4)',
+                    boxShadow: '0 10px 25px rgba(59, 130, 246, 0.4)',
                   },
                   _disabled: {
                     opacity: 0.5,
@@ -604,7 +583,7 @@ export default function WebhookTesterPage() {
                 p: { base: '8', sm: '12' },
                 bg: 'rgba(17, 24, 39, 0.6)',
                 border: '2px dashed',
-                borderColor: 'rgba(139, 92, 246, 0.3)',
+                borderColor: 'rgba(59, 130, 246, 0.3)',
                 borderRadius: 'xl',
                 textAlign: 'center',
               })}
@@ -624,7 +603,7 @@ export default function WebhookTesterPage() {
                 className={css({
                   px: '4',
                   py: '2',
-                  bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  bg: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
                   color: 'white',
                   fontSize: 'sm',
                   fontWeight: 'semibold',
@@ -633,7 +612,7 @@ export default function WebhookTesterPage() {
                   transition: 'all 0.3s',
                   _hover: {
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 10px 25px rgba(102, 126, 234, 0.4)',
+                    boxShadow: '0 10px 25px rgba(59, 130, 246, 0.4)',
                   },
                 })}
               >
@@ -664,13 +643,13 @@ export default function WebhookTesterPage() {
                         border: '1px solid',
                         borderColor:
                           selectedEndpointId === endpoint.id
-                            ? 'rgba(139, 92, 246, 0.5)'
-                            : 'rgba(139, 92, 246, 0.2)',
+                            ? 'rgba(59, 130, 246, 0.5)'
+                            : 'rgba(59, 130, 246, 0.2)',
                         borderRadius: 'xl',
                         transition: 'all 0.2s',
                         cursor: 'pointer',
                         _hover: {
-                          borderColor: 'rgba(139, 92, 246, 0.4)',
+                          borderColor: 'rgba(59, 130, 246, 0.4)',
                         },
                       })}
                       onClick={() => setSelectedEndpointId(endpoint.id)}
@@ -769,15 +748,15 @@ export default function WebhookTesterPage() {
                             onClick={() => copyUrl(endpoint.id)}
                             className={css({
                               p: '1.5',
-                              bg: 'rgba(139, 92, 246, 0.1)',
+                              bg: 'rgba(59, 130, 246, 0.1)',
                               border: '1px solid',
-                              borderColor: 'rgba(139, 92, 246, 0.3)',
+                              borderColor: 'rgba(59, 130, 246, 0.3)',
                               borderRadius: 'md',
-                              color: 'purple.400',
+                              color: 'blue.400',
                               cursor: 'pointer',
                               transition: 'all 0.2s',
                               _hover: {
-                                bg: 'rgba(139, 92, 246, 0.2)',
+                                bg: 'rgba(59, 130, 246, 0.2)',
                               },
                             })}
                             title="Copy URL"
@@ -852,7 +831,7 @@ export default function WebhookTesterPage() {
                       p: { base: '8', sm: '12' },
                       bg: 'rgba(17, 24, 39, 0.6)',
                       border: '2px dashed',
-                      borderColor: 'rgba(139, 92, 246, 0.3)',
+                      borderColor: 'rgba(59, 130, 246, 0.3)',
                       borderRadius: 'xl',
                       textAlign: 'center',
                     })}
@@ -870,7 +849,7 @@ export default function WebhookTesterPage() {
                       p: { base: '8', sm: '12' },
                       bg: 'rgba(17, 24, 39, 0.6)',
                       border: '2px dashed',
-                      borderColor: 'rgba(139, 92, 246, 0.3)',
+                      borderColor: 'rgba(59, 130, 246, 0.3)',
                       borderRadius: 'xl',
                       textAlign: 'center',
                     })}
@@ -895,12 +874,12 @@ export default function WebhookTesterPage() {
                           p: '3',
                           bg: 'rgba(17, 24, 39, 0.6)',
                           border: '1px solid',
-                          borderColor: 'rgba(139, 92, 246, 0.2)',
+                          borderColor: 'rgba(59, 130, 246, 0.2)',
                           borderRadius: 'lg',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
                           _hover: {
-                            borderColor: 'rgba(139, 92, 246, 0.4)',
+                            borderColor: 'rgba(59, 130, 246, 0.4)',
                           },
                         })}
                         onClick={() => setSelectedRequest(request)}
@@ -926,8 +905,8 @@ export default function WebhookTesterPage() {
                                 py: '0.5',
                                 fontSize: 'xs',
                                 fontWeight: 'bold',
-                                bg: 'rgba(139, 92, 246, 0.2)',
-                                color: 'purple.300',
+                                bg: 'rgba(59, 130, 246, 0.2)',
+                                color: 'blue.300',
                                 borderRadius: 'md',
                               })}
                             >
@@ -988,7 +967,7 @@ export default function WebhookTesterPage() {
               maxH: '90vh',
               bg: 'rgba(17, 24, 39, 0.95)',
               border: '2px solid',
-              borderColor: 'rgba(139, 92, 246, 0.3)',
+              borderColor: 'rgba(59, 130, 246, 0.3)',
               borderRadius: 'xl',
               overflow: 'hidden',
               display: 'flex',
@@ -1002,7 +981,7 @@ export default function WebhookTesterPage() {
               className={css({
                 p: '4',
                 borderBottom: '1px solid',
-                borderColor: 'rgba(139, 92, 246, 0.2)',
+                borderColor: 'rgba(59, 130, 246, 0.2)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -1172,7 +1151,7 @@ export default function WebhookTesterPage() {
               className={css({
                 p: '4',
                 borderTop: '1px solid',
-                borderColor: 'rgba(139, 92, 246, 0.2)',
+                borderColor: 'rgba(59, 130, 246, 0.2)',
                 display: 'flex',
                 gap: '3',
                 justifyContent: 'flex-end',
@@ -1184,11 +1163,11 @@ export default function WebhookTesterPage() {
                 className={css({
                   px: '4',
                   py: '2',
-                  bg: 'rgba(139, 92, 246, 0.1)',
+                  bg: 'rgba(59, 130, 246, 0.1)',
                   border: '1px solid',
-                  borderColor: 'rgba(139, 92, 246, 0.3)',
+                  borderColor: 'rgba(59, 130, 246, 0.3)',
                   borderRadius: 'lg',
-                  color: 'purple.400',
+                  color: 'blue.400',
                   fontSize: 'sm',
                   fontWeight: 'medium',
                   cursor: 'pointer',
@@ -1197,7 +1176,7 @@ export default function WebhookTesterPage() {
                   alignItems: 'center',
                   gap: '2',
                   _hover: {
-                    bg: 'rgba(139, 92, 246, 0.2)',
+                    bg: 'rgba(59, 130, 246, 0.2)',
                   },
                 })}
               >
@@ -1211,7 +1190,7 @@ export default function WebhookTesterPage() {
                 className={css({
                   px: '4',
                   py: '2',
-                  bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  bg: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
                   color: 'white',
                   fontSize: 'sm',
                   fontWeight: 'semibold',
@@ -1220,7 +1199,7 @@ export default function WebhookTesterPage() {
                   transition: 'all 0.3s',
                   _hover: {
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 10px 25px rgba(102, 126, 234, 0.4)',
+                    boxShadow: '0 10px 25px rgba(59, 130, 246, 0.4)',
                   },
                 })}
               >

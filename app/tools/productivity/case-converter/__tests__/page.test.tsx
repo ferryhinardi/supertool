@@ -42,15 +42,19 @@ describe('CaseConverterPage', () => {
     it('renders the page header correctly', () => {
       render(<CaseConverterPage />)
 
-      expect(screen.getByText('Case')).toBeInTheDocument()
-      expect(screen.getByText('Converter')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1, name: 'Case Converter' })).toBeInTheDocument()
       expect(screen.getByText(/Convert text between camelCase/)).toBeInTheDocument()
+      expect(screen.getByText(/Preview every format at once/)).toBeInTheDocument()
     })
 
     it('renders the productivity tool badge', () => {
       render(<CaseConverterPage />)
 
-      expect(screen.getByText('Productivity Tool')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Productivity Tools' })).toHaveAttribute(
+        'href',
+        '/tools/productivity'
+      )
+      expect(screen.getByText('Text productivity')).toBeInTheDocument()
     })
 
     it('renders the input card with title and description', () => {

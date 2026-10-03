@@ -4,6 +4,7 @@ import { Brain, Check, Copy, Lightbulb, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { PaywallModal } from '@/components/features/monetization/PaywallModal'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
@@ -223,65 +224,13 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/30',
-            bg: 'blue.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Brain className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.300' })}>
-            AI-Powered • Pattern Detection • Debug Insights
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'indigo.400',
-            gradientTo: 'purple.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          AI JSON Analyzer
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Understand complex JSON structures with AI-powered analysis. Get natural language
-          summaries, detect patterns, explain data relationships, and debug JSON with GPT
-          intelligence.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="AI JSON Analyzer"
+        description="Understand complex JSON structures with AI-powered analysis. Get natural language summaries, detect patterns, explain data relationships, and debug JSON with GPT intelligence."
+        eyebrow="AI developer assistant"
+        icon={Brain}
+        highlights={['Structure summary', 'Field insights']}
+      />
 
       {/* JSON Input Section */}
       <div
@@ -497,8 +446,8 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                 className={css({
                   rounded: 'lg',
                   border: '1px solid',
-                  borderColor: 'purple.500/20',
-                  bg: 'purple.500/5',
+                  borderColor: 'blue.500/20',
+                  bg: 'blue.500/5',
                   p: '4',
                 })}
               >
@@ -506,7 +455,7 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
                   className={css({
                     fontSize: 'lg',
                     fontWeight: 'semibold',
-                    color: 'purple.300',
+                    color: 'blue.300',
                     mb: '3',
                   })}
                 >
@@ -663,18 +612,16 @@ ${analysis.relationships.map((r, i) => `${i + 1}. ${r}`).join('\n')}
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'indigo.500/20',
-            bg: 'indigo.500/5',
+            borderColor: 'blue.500/20',
+            bg: 'blue.500/5',
             backdropFilter: 'blur(16px)',
           })}
         >
           <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
             <div className={css({ display: 'flex', alignItems: 'start', gap: '4' })}>
-              <Brain className={css({ h: '6', w: '6', color: 'indigo.400', flexShrink: '0' })} />
+              <Brain className={css({ h: '6', w: '6', color: 'blue.400', flexShrink: '0' })} />
               <div className={css({ spaceY: '2' })}>
-                <h3
-                  className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'indigo.300' })}
-                >
+                <h3 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'blue.300' })}>
                   Pro Tips
                 </h3>
                 <ul className={css({ spaceY: '2', fontSize: 'sm', color: 'white' })}>

@@ -33,6 +33,18 @@ const mockIPData = {
   asn: 'AS15169',
 }
 
+async function renderSettled(data: Record<string, unknown> = mockIPData) {
+  vi.mocked(fetch).mockResolvedValue({
+    ok: true,
+    json: async () => data,
+  } as Response)
+  render(<IPLookupPage />)
+  await waitFor(() => {
+    expect(screen.getByRole('button', { name: /^Lookup$/i })).toBeEnabled()
+  })
+  return screen.getByPlaceholderText(/Enter IP address/i) as HTMLInputElement
+}
+
 describe('IPLookupPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -49,15 +61,14 @@ describe('IPLookupPage', () => {
       expect(screen.getByRole('heading', { level: 1, name: /IP Address Lookup/i })).toBeTruthy()
     })
 
-    it.skip('renders the page description', () => {
-      // Skipped: Text matching issue
+    it('renders the page description', () => {
       vi.mocked(fetch).mockResolvedValue({
         ok: true,
         json: async () => mockIPData,
       } as Response)
 
       render(<IPLookupPage />)
-      expect(screen.getByText(/Find detailed information/i)).toBeTruthy()
+      expect(screen.getByText(/Discover detailed information about any IP address/i)).toBeTruthy()
     })
 
     it('renders the lookup button', () => {
@@ -174,26 +185,16 @@ describe('IPLookupPage', () => {
       })
     })
 
-    it.skip('performs lookup when button is clicked', async () => {
-      // Skipped: API fetch mock timing
+    it('performs lookup when button is clicked', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
+      const input = await renderSettled()
 
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      vi.clearAllMocks()
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
+      vi.mocked(fetch).mockClear()
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
 
       await waitFor(() => {
-        expect(fetch).toHaveBeenCalledWith('https://ipapi.co/8.8.8.8/json/')
+        expect(fetch).toHaveBeenCalledWith('https://ipapi.co/1.1.1.1/json/')
       })
     })
 
@@ -230,21 +231,16 @@ describe('IPLookupPage', () => {
       expect((inputs[0] as HTMLInputElement).value).toBe('1.1.1.1')
     })
 
-    it.skip('handles Enter key press', async () => {
-      // Skipped: Keyboard event mock timing
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
+    it('handles Enter key press', async () => {
+      const input = await renderSettled()
 
-      render(<IPLookupPage />)
+      vi.mocked(fetch).mockClear()
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      fireEvent.keyDown(input, { key: 'Enter' })
 
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8{Enter}' } })
-
-      expect((inputs[0] as HTMLInputElement).value).toBe('8.8.8.8')
+      await waitFor(() => {
+        expect(fetch).toHaveBeenCalledWith('https://ipapi.co/1.1.1.1/json/')
+      })
     })
   })
 
@@ -265,25 +261,15 @@ describe('IPLookupPage', () => {
       expect((inputs[0] as HTMLInputElement).value).toBe('192.168.1.1')
     })
 
-    it.skip('handles invalid IP addresses', async () => {
-      // Skipped: Validation mock timing
+    it('handles invalid IP addresses', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
+      const input = await renderSettled()
 
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '999.999.999.999' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
+      fireEvent.change(input, { target: { value: '999.999.999.999' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
 
       await waitFor(() => {
-        expect(vi.mocked(toast.error)).toHaveBeenCalledWith(expect.stringContaining('valid IP'))
+        expect(vi.mocked(toast.error)).toHaveBeenCalledWith('Please enter a valid IP address')
       })
     })
 
@@ -303,46 +289,27 @@ describe('IPLookupPage', () => {
       expect((inputs[0] as HTMLInputElement).value).toContain('2001')
     })
 
-    it.skip('validates empty input', async () => {
-      // Skipped: Validation mock timing
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
+    it('validates empty input', async () => {
+      const input = await renderSettled()
 
-      render(<IPLookupPage />)
+      fireEvent.change(input, { target: { value: '' } })
+      expect(screen.getByRole('button', { name: /^Lookup$/i })).toBeDisabled()
 
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
+      fireEvent.keyDown(input, { key: 'Enter' })
       await waitFor(() => {
         expect(vi.mocked(toast.error)).toHaveBeenCalledWith('Please enter an IP address')
       })
     })
 
-    it.skip('validates IPv4 format', async () => {
-      // Skipped: Validation mock timing
+    it('validates IPv4 format', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
+      const input = await renderSettled()
 
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: 'not-an-ip' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
+      fireEvent.change(input, { target: { value: 'not-an-ip' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
 
       await waitFor(() => {
-        expect(vi.mocked(toast.error)).toHaveBeenCalled()
+        expect(vi.mocked(toast.error)).toHaveBeenCalledWith('Please enter a valid IP address')
       })
     })
 
@@ -379,441 +346,184 @@ describe('IPLookupPage', () => {
     })
   })
 
-  describe.skip('Results Display', () => {
-    // Skipped: API response display not working in test
+  describe('Results Display', () => {
     it('displays loading state during lookup', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)))
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      // Component should handle loading state
-      expect(lookupButton).toBeTruthy()
+      const input = await renderSettled()
+      let resolveFetch: (value: Response) => void = () => {}
+      vi.mocked(fetch).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveFetch = resolve
+          })
+      )
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
+      expect(screen.getByRole('button', { name: /Looking up/i })).toBeDisabled()
+      resolveFetch({
+        ok: true,
+        json: async () => mockIPData,
+      } as Response)
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /^Lookup$/i })).toBeEnabled()
+      })
     })
 
     it('renders result cards after successful lookup', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText(/Mountain View/i)).toBeTruthy()
-      })
+      await renderSettled()
+      expect(screen.getByText('Mountain View')).toBeTruthy()
     })
 
     it('displays IP address information', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText('8.8.8.8')).toBeTruthy()
-      })
+      await renderSettled()
+      expect(screen.getAllByText('8.8.8.8').length).toBeGreaterThan(0)
     })
 
     it('displays location information', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText(/California/i)).toBeTruthy()
-      })
+      await renderSettled()
+      expect(screen.getByText('California')).toBeTruthy()
     })
 
     it('displays ISP information', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText(/Google LLC/i)).toBeTruthy()
-      })
+      await renderSettled()
+      expect(screen.getAllByText('Google LLC').length).toBeGreaterThan(0)
     })
 
     it('displays timezone information', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText(/America\/Los_Angeles/i)).toBeTruthy()
-      })
+      await renderSettled()
+      expect(screen.getByText('America/Los_Angeles')).toBeTruthy()
     })
 
     it('shows success toast after lookup', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(vi.mocked(toast.success)).toHaveBeenCalledWith(
-          expect.stringContaining('retrieved successfully')
-        )
-      })
+      await renderSettled()
+      expect(vi.mocked(toast.success)).toHaveBeenCalledWith('IP information retrieved successfully')
     })
 
     it('displays country information', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText(/United States/i)).toBeTruthy()
-      })
+      await renderSettled()
+      expect(screen.getByText('United States')).toBeTruthy()
     })
   })
 
-  describe.skip('Copy Functionality', () => {
-    // Skipped: Clipboard functionality tests failing
+  describe('Copy Functionality', () => {
     it('copies IP address to clipboard', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
+      await renderSettled()
+      const copyButtons = screen
+        .getAllByRole('button')
+        .filter((btn) => (btn.textContent || '').trim() === '')
+      expect(copyButtons.length).toBeGreaterThan(0)
+      await user.click(copyButtons[0])
       await waitFor(() => {
-        expect(screen.getByText('8.8.8.8')).toBeTruthy()
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('8.8.8.8')
       })
-
-      const copyButtons = screen.getAllByRole('button').filter((btn) => btn.querySelector('svg'))
-
-      if (copyButtons.length > 0) {
-        await user.click(copyButtons[0])
-
-        await waitFor(() => {
-          expect(navigator.clipboard.writeText).toHaveBeenCalled()
-        })
-      }
     })
 
     it('shows success toast after copying', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
+      await renderSettled()
+      vi.mocked(toast.success).mockClear()
+      const copyButtons = screen
+        .getAllByRole('button')
+        .filter((btn) => (btn.textContent || '').trim() === '')
+      await user.click(copyButtons[0])
       await waitFor(() => {
-        expect(screen.getByText('8.8.8.8')).toBeTruthy()
+        expect(vi.mocked(toast.success)).toHaveBeenCalledWith('IP Address copied to clipboard!')
       })
-
-      const copyButtons = screen.getAllByRole('button').filter((btn) => btn.querySelector('svg'))
-
-      if (copyButtons.length > 0) {
-        vi.clearAllMocks()
-        await user.click(copyButtons[0])
-
-        await waitFor(() => {
-          expect(vi.mocked(toast.success)).toHaveBeenCalledWith(expect.stringContaining('copied'))
-        })
-      }
     })
 
     it('copies various fields to clipboard', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText('8.8.8.8')).toBeTruthy()
-      })
-
-      const copyButtons = screen.getAllByRole('button').filter((btn) => btn.querySelector('svg'))
-
-      expect(copyButtons.length).toBeGreaterThan(0)
+      await renderSettled()
+      const copyButtons = screen
+        .getAllByRole('button')
+        .filter((btn) => (btn.textContent || '').trim() === '')
+      expect(copyButtons.length).toBeGreaterThan(1)
     })
   })
 
-  describe.skip('Map Integration', () => {
-    // Skipped: Map integration tests failing
+  describe('Map Integration', () => {
     it('opens map when view on map is clicked', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText('8.8.8.8')).toBeTruthy()
-      })
-
-      const mapButtons = screen
-        .queryAllByRole('button')
-        .filter((btn) => btn.textContent?.toLowerCase().includes('map'))
-
-      if (mapButtons.length > 0) {
-        await user.click(mapButtons[0])
-
-        await waitFor(() => {
-          expect(window.open).toHaveBeenCalled()
-        })
-      }
+      await renderSettled()
+      await user.click(screen.getByRole('button', { name: /View on Map/i }))
+      expect(window.open).toHaveBeenCalledWith(
+        'https://www.google.com/maps/search/?api=1&query=37.386,-122.0838',
+        '_blank'
+      )
     })
 
     it('opens Google Maps with correct coordinates', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText('8.8.8.8')).toBeTruthy()
-      })
-
-      const mapButtons = screen
-        .queryAllByRole('button')
-        .filter((btn) => btn.textContent?.toLowerCase().includes('map'))
-
-      if (mapButtons.length > 0) {
-        await user.click(mapButtons[0])
-
-        await waitFor(() => {
-          expect(window.open).toHaveBeenCalledWith(expect.stringContaining('37.386'), '_blank')
-        })
-      }
+      await renderSettled()
+      await user.click(screen.getByRole('button', { name: /View on Map/i }))
+      expect(window.open).toHaveBeenCalledWith(expect.stringContaining('37.386'), '_blank')
     })
   })
 
-  describe.skip('Error Handling', () => {
-    // Skipped: Error handling tests failing
+  describe('Error Handling', () => {
     it('handles API errors gracefully', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockRejectedValueOnce(new Error('Network error'))
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
+      const input = await renderSettled()
+      vi.mocked(fetch).mockRejectedValue(new Error('Network error'))
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
       await waitFor(() => {
-        expect(vi.mocked(toast.error)).toHaveBeenCalledWith(
-          expect.stringContaining('Failed to lookup')
-        )
+        expect(vi.mocked(toast.error)).toHaveBeenCalledWith('Failed to lookup IP address')
       })
     })
 
     it('displays error message for failed lookups', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValueOnce({
+      const input = await renderSettled()
+      vi.mocked(fetch).mockResolvedValue({
         ok: true,
         json: async () => ({ error: true, reason: 'Invalid IP' }),
       } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '999.999.999.999' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
       await waitFor(() => {
-        expect(vi.mocked(toast.error)).toHaveBeenCalled()
+        expect(vi.mocked(toast.error)).toHaveBeenCalledWith('Invalid IP')
       })
     })
 
     it('handles network timeouts', async () => {
       const user = userEvent.setup()
+      const input = await renderSettled()
       vi.mocked(fetch).mockImplementation(
-        () => new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 100))
+        () => new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 20))
       )
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(
-        () => {
-          expect(vi.mocked(toast.error)).toHaveBeenCalled()
-        },
-        { timeout: 3000 }
-      )
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
+      await waitFor(() => {
+        expect(vi.mocked(toast.error)).toHaveBeenCalledWith('Failed to lookup IP address')
+      })
     })
 
     it('handles API error responses', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValueOnce({
+      const input = await renderSettled()
+      vi.mocked(fetch).mockResolvedValue({
         ok: true,
         json: async () => ({ error: true }),
       } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
       await waitFor(() => {
-        expect(vi.mocked(toast.error)).toHaveBeenCalled()
+        expect(vi.mocked(toast.error)).toHaveBeenCalledWith('Failed to lookup IP address')
       })
     })
 
     it('handles malformed API responses', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValueOnce({
+      const input = await renderSettled()
+      vi.mocked(fetch).mockResolvedValue({
         ok: true,
         json: async () => ({ unexpected: 'data' }),
       } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      // Should handle gracefully
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
       await waitFor(() => {
-        expect(lookupButton).toBeTruthy()
+        expect(screen.getAllByText('Unknown').length).toBeGreaterThan(0)
       })
     })
   })
@@ -981,160 +691,63 @@ describe('IPLookupPage', () => {
     })
   })
 
-  describe.skip('User Experience', () => {
-    // Skipped: UX tests failing
+  describe('User Experience', () => {
     it('provides clear visual feedback', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      expect((inputs[0] as HTMLInputElement).value).toBe('8.8.8.8')
+      const input = await renderSettled()
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      expect(input.value).toBe('1.1.1.1')
     })
 
     it('handles rapid lookups', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-      await user.click(lookupButton)
-
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '1.1.1.1' } })
-      await user.click(lookupButton)
-
-      expect((inputs[0] as HTMLInputElement).value).toBe('1.1.1.1')
+      const input = await renderSettled()
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /^Lookup$/i })).toBeEnabled()
+      })
+      fireEvent.change(input, { target: { value: '8.8.4.4' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
+      expect(input.value).toBe('8.8.4.4')
     })
 
     it('maintains state across interactions', async () => {
       const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      expect((inputs[0] as HTMLInputElement).value).toBe('8.8.8.8')
+      const input = await renderSettled()
+      fireEvent.change(input, { target: { value: '1.1.1.1' } })
+      await user.click(screen.getByRole('button', { name: /^Lookup$/i }))
+      expect(input.value).toBe('1.1.1.1')
     })
 
     it('shows appropriate success messages', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(vi.mocked(toast.success)).toHaveBeenCalled()
-      })
+      await renderSettled()
+      expect(vi.mocked(toast.success)).toHaveBeenCalledWith('IP information retrieved successfully')
     })
   })
 
-  describe.skip('Edge Cases', () => {
-    // Skipped: Edge case tests failing
+  describe('Edge Cases', () => {
     it('handles localhost IP', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '127.0.0.1' } })
-
-      expect((inputs[0] as HTMLInputElement).value).toBe('127.0.0.1')
+      const input = await renderSettled()
+      fireEvent.change(input, { target: { value: '127.0.0.1' } })
+      expect(input.value).toBe('127.0.0.1')
     })
 
     it('handles leading zeros in IP', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '008.008.008.008' } })
-
-      expect((inputs[0] as HTMLInputElement).value).toBe('008.008.008.008')
+      const input = await renderSettled()
+      fireEvent.change(input, { target: { value: '008.008.008.008' } })
+      expect(input.value).toBe('008.008.008.008')
     })
 
     it('handles whitespace in input', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => mockIPData,
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: ' 8.8.8.8 ' } })
-
-      expect((inputs[0] as HTMLInputElement).value).toContain('8.8.8.8')
+      const input = await renderSettled()
+      fireEvent.change(input, { target: { value: ' 8.8.8.8 ' } })
+      expect(input.value).toContain('8.8.8.8')
     })
 
     it('handles missing data fields', async () => {
-      const user = userEvent.setup()
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          ip: '8.8.8.8',
-          version: 'IPv4',
-        }),
-      } as Response)
-
-      render(<IPLookupPage />)
-
-      const inputs = screen.getAllByRole('textbox')
-      await user.clear(inputs[0])
-      fireEvent.change(inputs[0], { target: { value: '8.8.8.8' } })
-
-      const lookupButton = screen.getByRole('button', { name: /Looking up/i })
-      await user.click(lookupButton)
-
-      await waitFor(() => {
-        expect(screen.getByText('8.8.8.8')).toBeTruthy()
-      })
+      await renderSettled({ ip: '8.8.8.8', version: 'IPv4' })
+      expect(screen.getAllByText('8.8.8.8').length).toBeGreaterThan(0)
+      expect(screen.getAllByText('Unknown').length).toBeGreaterThan(0)
     })
   })
 })
