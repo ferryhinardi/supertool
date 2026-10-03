@@ -3,6 +3,7 @@
 import { Check, Copy, Download, Palette, Sparkles, Trash2, Type, Wand2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -231,66 +232,24 @@ export default function SignatureGeneratorPage() {
   }
 
   return (
-    <div
+    <main
       className={css({
-        maxW: '6xl',
         mx: 'auto',
-        px: { base: '4', md: '6' },
-        py: { base: '8', md: '12' },
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
       <div className={css({ display: 'flex', flexDirection: 'column', gap: '8' })}>
-        {/* Header */}
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4',
-            textAlign: 'center',
-          })}
-        >
-          <div
-            className={css({
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '2',
-              px: '3',
-              py: '1',
-              bg: 'purple.50',
-              color: 'purple.600',
-              borderRadius: 'full',
-              fontSize: 'sm',
-              fontWeight: 'medium',
-              mx: 'auto',
-            })}
-          >
-            <Sparkles className={css({ w: '4', h: '4' })} />
-            New Tool
-          </div>
-          <h1
-            className={css({
-              fontSize: { base: '3xl', md: '4xl' },
-              fontWeight: 'bold',
-              bgGradient: 'to-r',
-              gradientFrom: 'pink.500',
-              gradientTo: 'rose.500',
-              bgClip: 'text',
-            })}
-          >
-            Digital Signature Generator
-          </h1>
-          <p
-            className={css({
-              fontSize: 'lg',
-              color: 'gray.400',
-              maxW: '2xl',
-              mx: 'auto',
-            })}
-          >
-            Create beautiful digital signatures for documents, emails, and professional use. Choose
-            from 6 elegant fonts and customize colors, size, and style.
-          </p>
-        </div>
+        <DesignToolHeader
+          title="Digital Signature Generator"
+          description="Create beautiful digital signatures for documents, emails, and professional use. Choose from 6 elegant fonts and customize colors, size, and style."
+          eyebrow="Signature studio"
+          icon={Sparkles}
+          highlights={['New Tool']}
+        />
 
         <div
           className={css({
@@ -669,6 +628,6 @@ export default function SignatureGeneratorPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

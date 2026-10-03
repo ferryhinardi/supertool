@@ -14,9 +14,9 @@ import {
 } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -362,47 +362,13 @@ export default function GradientGeneratorPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'purple.500/10',
-            px: '4',
-            py: '2',
-          })}
-        >
-          <Wand2 className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'purple.300' })}>
-            Beautiful CSS Gradients
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'orange.400',
-            bgClip: 'text',
-          })}
-          style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-        >
-          Gradient Generator
-        </h1>
-
-        <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'white' })}>
-          Create stunning CSS gradients visually. Linear, radial, and conic gradients with unlimited
-          color stops, presets, and export options.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="Gradient Generator"
+        description="Create stunning CSS gradients visually. Linear, radial, and conic gradients with unlimited color stops, presets, and export options."
+        eyebrow="Gradient studio"
+        icon={Wand2}
+        highlights={['Beautiful CSS Gradients']}
+      />
 
       <div
         className={css({

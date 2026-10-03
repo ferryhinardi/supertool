@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -399,74 +400,16 @@ function ImageMetadataContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/30',
-            bg: 'blue.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Camera className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.300' })}>
-            EXIF • GPS • Camera Settings
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'cyan.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Image Metadata Viewer
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Extract EXIF data, GPS location, camera settings, and technical metadata from your photos.
-          Perfect for photographers and image professionals.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="Image Metadata Viewer"
+        description="Extract EXIF data, GPS location, camera settings, and technical metadata from your photos. Perfect for photographers and image professionals."
+        eyebrow="Image metadata"
+        icon={Info}
+        highlights={['EXIF', 'GPS', 'Technical details']}
+      />
 
       {/* Upload Section */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -689,9 +632,6 @@ function ImageMetadataContent() {
             display: 'grid',
             gap: { base: '6', md: '6' },
             gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
           })}
         >
           {renderMetadataSection(
@@ -728,13 +668,7 @@ function ImageMetadataContent() {
         metadata.gps.length === 0 &&
         metadata.camera.length === 0 &&
         metadata.technical.length === 0 && (
-          <div
-            className={css({
-              animation: 'slideUp 0.5s ease-out forwards',
-              animationDelay: '0.2s',
-              opacity: 0,
-            })}
-          >
+          <div>
             <Card
               className={css({
                 border: '1px solid',
@@ -764,13 +698,7 @@ function ImageMetadataContent() {
         )}
 
       {/* Info Card */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',

@@ -14,6 +14,7 @@ import {
 import { Suspense, useCallback, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -315,69 +316,13 @@ function SocialMediaResizerContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'cyan.500/30',
-            bg: 'cyan.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Smartphone className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'cyan.300',
-            })}
-          >
-            All Platforms • Batch Resize • Download
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'cyan.400',
-            gradientTo: 'blue.400',
-            bgClip: 'text',
-            color: 'transparent',
-            letterSpacing: 'tight',
-          })}
-        >
-          Social Media Image Resizer
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: { base: 'lg', md: 'xl' },
-            color: 'white',
-            lineHeight: 'relaxed',
-          })}
-        >
-          Resize images for Instagram, Facebook, Twitter/X, LinkedIn, YouTube, and more. Select
-          presets, resize in bulk, and download as ZIP.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="Social Media Image Resizer"
+        description="Resize images for Instagram, Facebook, Twitter/X, LinkedIn, YouTube, and more. Select presets, resize in bulk, and download as ZIP."
+        eyebrow="Social resize"
+        icon={ImageIcon}
+        highlights={['All Platforms', 'Batch Resize', 'Download']}
+      />
 
       {/* Upload Section */}
       <Card>

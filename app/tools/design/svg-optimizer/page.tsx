@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -278,69 +279,16 @@ function SVGOptimizerContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            borderRadius: 'full',
-            border: '1px solid',
-            borderColor: 'green.500/30',
-            bg: 'green.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Layers className={css({ h: '5', w: '5', color: 'green.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'green.300' })}>
-            Minify • Compress • Reduce File Size
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            background:
-              'linear-gradient(to right, var(--colors-green-400), var(--colors-emerald-400), var(--colors-teal-400))',
-            backgroundClip: 'text',
-          })}
-          style={{ WebkitTextFillColor: 'transparent' }}
-        >
-          SVG Optimizer & Editor
-        </h1>
-
-        <p
-          className={css({
-            maxW: '3xl',
-            mx: 'auto',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Minify and optimize SVG files with live preview. Remove unnecessary metadata, compress
-          paths, and reduce file size by up to 70%. Perfect for web performance.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="SVG Optimizer & Editor"
+        description="Minify and optimize SVG files with live preview. Remove unnecessary metadata, compress paths, and reduce file size by up to 70%. Perfect for web performance."
+        eyebrow="SVG optimization"
+        icon={FileCode}
+        highlights={['Minify', 'Compress', 'Reduce File Size']}
+      />
 
       {/* Options */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -410,13 +358,7 @@ function SVGOptimizerContent() {
       </div>
 
       {/* Input Section */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
@@ -495,9 +437,6 @@ function SVGOptimizerContent() {
             gap: '4',
             gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
             w: 'full',
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
           })}
         >
           <Card
@@ -564,9 +503,6 @@ function SVGOptimizerContent() {
             gap: '6',
             gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
             w: 'full',
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.4s',
-            opacity: 0,
           })}
         >
           {/* Code Output */}
@@ -662,9 +598,6 @@ function SVGOptimizerContent() {
           gap: '6',
           gridTemplateColumns: { base: '1fr', md: 'repeat(2, 1fr)' },
           w: 'full',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.5s',
-          opacity: 0,
         })}
       >
         <Card className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}>

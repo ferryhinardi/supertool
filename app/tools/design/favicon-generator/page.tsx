@@ -2,6 +2,7 @@
 
 import { Check, Copy, Download, Image as ImageIcon, Smile, Upload } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -184,45 +185,20 @@ export default function FaviconGeneratorPage() {
   return (
     <main
       className={css({
-        minH: '100vh',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '8', sm: '12', md: '16' },
-        maxW: '1200px',
         mx: 'auto',
+        maxW: '7xl',
+        w: 'full',
+        px: { base: '4', sm: '6', md: '8' },
+        py: { base: '6', sm: '8', md: '10' },
+        spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          mb: '12',
-        })}
-      >
-        <h1
-          className={css({
-            fontSize: { base: '3xl', md: '4xl', lg: '5xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'violet.500',
-            gradientTo: 'purple.500',
-            bgClip: 'text',
-            mb: '4',
-          })}
-        >
-          Favicon Generator
-        </h1>
-        <p
-          className={css({
-            fontSize: { base: 'lg', md: 'xl' },
-            color: 'white',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Convert logos, images, or emojis into favicons for websites. Generate all required sizes
-          and formats with preview and instant download.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="Favicon Generator"
+        description="Convert logos, images, or emojis into favicons for websites. Generate all required sizes and formats with preview and instant download."
+        eyebrow="Favicon export"
+        icon={ImageIcon}
+      />
 
       {/* Mode Selection */}
       <Card

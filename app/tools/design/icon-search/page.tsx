@@ -4,6 +4,7 @@ import * as LucideIcons from 'lucide-react'
 import { Copy, Download, Heart, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DesignToolHeader } from '@/components/features/tools/DesignToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -151,52 +152,13 @@ export default function IconSearchPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            mb: '3',
-            px: '3',
-            py: '1.5',
-            bg: 'purple.500/10',
-            rounded: 'full',
-          })}
-        >
-          <Search className={css({ w: '4', h: '4', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'purple.400' })}>
-            Icon Search & Download Hub
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-            mb: '3',
-          })}
-        >
-          Search 1000+ Free Icons
-        </h1>
-
-        <p
-          className={css({
-            fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Find, customize, and download Lucide icons for your projects. Export as SVG or React
-          components with full customization options.
-        </p>
-      </div>
+      <DesignToolHeader
+        title="Search 1000+ Free Icons"
+        description="Find, customize, and download Lucide icons for your projects. Export as SVG or React components with full customization options."
+        eyebrow="Icon library"
+        icon={Search}
+        highlights={['Icon Search & Download Hub']}
+      />
 
       {/* Search Bar */}
       <Card>
