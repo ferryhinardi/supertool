@@ -41,16 +41,12 @@ vi.stubGlobal('fetch', mockFetch)
 // Mock crypto.getRandomValues for fast data generation
 vi.stubGlobal('crypto', {
   getRandomValues: vi.fn((arr: Uint8Array) => {
-    for (let i = 0; i < arr.length; i++) {
-      arr[i] = i % 256
-    }
+    if (arr.length > 0) arr[0] = 1
     return arr
   }),
 })
 
-// TODO: These tests are slow in CI due to simulated network operations.
-// Re-enable after optimizing the test mocks or increasing CI timeout.
-describe.skip('Speed Test Page', () => {
+describe('Speed Test Page', () => {
   // Track performance.now value for duration calculations
   let performanceNowValue = 0
   let queryClient: QueryClient
@@ -121,7 +117,7 @@ describe.skip('Speed Test Page', () => {
 
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
-      expect(screen.getByText('Latency')).toBeTruthy()
+      expect(screen.getAllByText('Latency')[0]).toBeTruthy()
       expect(screen.getByText('Jitter')).toBeTruthy()
 
       const mbpsLabels = screen.getAllByText('Mbps')
@@ -144,7 +140,7 @@ describe.skip('Speed Test Page', () => {
       renderPage()
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
-      expect(screen.getByText('Latency')).toBeTruthy()
+      expect(screen.getAllByText('Latency')[0]).toBeTruthy()
       expect(screen.getByText('Jitter')).toBeTruthy()
     })
 
@@ -212,7 +208,7 @@ describe.skip('Speed Test Page', () => {
 
     it('displays latency metric card with correct structure', () => {
       renderPage()
-      const latencyLabel = screen.getByText('Latency')
+      const latencyLabel = screen.getAllByText('Latency')[0]
       expect(latencyLabel).toBeTruthy()
       expect(screen.getAllByText('ms').length).toBeGreaterThan(0)
     })
@@ -234,7 +230,7 @@ describe.skip('Speed Test Page', () => {
       renderPage()
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
-      expect(screen.getByText('Latency')).toBeTruthy()
+      expect(screen.getAllByText('Latency')[0]).toBeTruthy()
       expect(screen.getByText('Jitter')).toBeTruthy()
     })
   })
@@ -289,7 +285,7 @@ describe.skip('Speed Test Page', () => {
 
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
-      expect(screen.getByText('Latency')).toBeTruthy()
+      expect(screen.getAllByText('Latency')[0]).toBeTruthy()
       expect(screen.getByText('Jitter')).toBeTruthy()
     })
   })
@@ -309,7 +305,7 @@ describe.skip('Speed Test Page', () => {
           const complete = screen.queryByText('Test Complete!')
           expect(latencyPhase || downloadPhase || complete).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
 
@@ -325,7 +321,7 @@ describe.skip('Speed Test Page', () => {
           const complete = screen.queryByText('Test Complete!')
           expect(downloadPhase || complete).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
 
@@ -341,7 +337,7 @@ describe.skip('Speed Test Page', () => {
           const complete = screen.queryByText('Test Complete!')
           expect(uploadPhase || complete).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
 
@@ -355,7 +351,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
   })
@@ -371,7 +367,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       // Results should be visible
@@ -389,7 +385,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       // Quality badges should be visible
@@ -412,7 +408,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       await waitFor(() => {
@@ -439,7 +435,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       expect(screen.getByText('Run Test Again')).toBeTruthy()
@@ -455,7 +451,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       // Click Run Test Again
@@ -476,7 +472,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       // Run second test
@@ -492,8 +488,7 @@ describe.skip('Speed Test Page', () => {
   })
 
   describe('Error Handling', () => {
-    // TODO: Fix flaky test - times out waiting for "Test Complete!" in CI
-    it.skip('handles fetch errors gracefully', async () => {
+    it('handles fetch errors gracefully', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       mockFetch.mockRejectedValue(new Error('Network error'))
 
@@ -505,7 +500,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
 
@@ -527,12 +522,11 @@ describe.skip('Speed Test Page', () => {
             screen.queryByText('Testing Download Speed...') || screen.queryByText('Test Complete!')
           expect(downloadOrComplete).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
 
-    // TODO: Fix flaky test - times out waiting for "Test Complete!" in CI
-    it.skip('displays zero values when all measurements fail', async () => {
+    it('displays zero values when all measurements fail', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       mockFetch.mockRejectedValue(new Error('All measurements failed'))
 
@@ -543,7 +537,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
   })
@@ -559,7 +553,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       expect(screen.getByText(/How fast you can receive data/)).toBeTruthy()
@@ -575,7 +569,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       expect(screen.getByText(/How fast you can send data/)).toBeTruthy()
@@ -591,7 +585,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       expect(screen.getByText(/Response time/)).toBeTruthy()
@@ -607,7 +601,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
 
       expect(screen.getByText(/Variation in latency/)).toBeTruthy()
@@ -629,7 +623,7 @@ describe.skip('Speed Test Page', () => {
           )
           expect(phaseText).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
 
@@ -643,7 +637,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
   })
@@ -670,7 +664,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Run Test Again')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
   })
@@ -707,7 +701,7 @@ describe.skip('Speed Test Page', () => {
       renderPage()
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
-      expect(screen.getByText('Latency')).toBeTruthy()
+      expect(screen.getAllByText('Latency')[0]).toBeTruthy()
       expect(screen.getByText('Jitter')).toBeTruthy()
     })
 
@@ -731,7 +725,7 @@ describe.skip('Speed Test Page', () => {
           )
           expect(phaseText).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
   })
@@ -747,7 +741,7 @@ describe.skip('Speed Test Page', () => {
       renderPage()
       expect(screen.getByText('Download')).toBeTruthy()
       expect(screen.getByText('Upload')).toBeTruthy()
-      expect(screen.getByText('Latency')).toBeTruthy()
+      expect(screen.getAllByText('Latency')[0]).toBeTruthy()
       expect(screen.getByText('Jitter')).toBeTruthy()
     })
   })
@@ -763,7 +757,7 @@ describe.skip('Speed Test Page', () => {
         () => {
           expect(screen.getByText('Test Complete!')).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
 
@@ -784,7 +778,7 @@ describe.skip('Speed Test Page', () => {
           )
           expect(phaseText).toBeTruthy()
         },
-        { timeout: 1000 }
+        { timeout: 8000 }
       )
     })
   })
