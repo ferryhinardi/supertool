@@ -235,7 +235,6 @@ function PercentageCalculatorContent() {
             border: '1px solid',
             borderColor: 'emerald.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
@@ -324,7 +323,6 @@ function PercentageCalculatorContent() {
             border: '1px solid',
             borderColor: 'emerald.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
@@ -529,7 +527,6 @@ function PercentageCalculatorContent() {
               border: '1px solid',
               borderColor: 'cyan.500/20',
               bg: 'cyan.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -557,7 +554,6 @@ function PercentageCalculatorContent() {
               border: '1px solid',
               borderColor: 'rose.500/20',
               bg: 'rose.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>

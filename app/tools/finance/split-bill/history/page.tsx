@@ -173,7 +173,6 @@ export default function BillHistoryPage() {
           p: { base: '4', sm: '5', md: '6' },
           shadow: 'xl',
           boxShadow: '0 20px 25px rgba(34, 197, 94, 0.2)',
-          backdropFilter: 'blur(16px)',
         })}
       >
         <div
@@ -221,7 +220,6 @@ export default function BillHistoryPage() {
           borderColor: 'green.500/20',
           bg: 'rgba(17, 24, 39, 0.5)',
           p: { base: '4', sm: '5' },
-          backdropFilter: 'blur(16px)',
           display: 'flex',
           flexDirection: { base: 'column', md: 'row' },
           gap: '4',
@@ -343,7 +341,6 @@ export default function BillHistoryPage() {
               bg: 'rgba(17, 24, 39, 0.5)',
               p: { base: '8', sm: '12' },
               textAlign: 'center',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <Users className={css({ mx: 'auto', h: '16', w: '16', color: 'gray.600', mb: '4' })} />
@@ -374,7 +371,6 @@ export default function BillHistoryPage() {
                   borderColor: 'green.500/20',
                   bg: 'rgba(17, 24, 39, 0.5)',
                   p: { base: '4', sm: '5' },
-                  backdropFilter: 'blur(16px)',
                   transition: 'all 0.2s',
                   _hover: {
                     borderColor: 'green.500/40',

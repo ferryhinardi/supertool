@@ -27,6 +27,15 @@ describe('CategoryToolsHub', () => {
     expect(screen.getByRole('link', { name: /Case Converter/i })).toBeTruthy()
   })
 
+  it('renders a solid data hub title and keeps popular markers', () => {
+    render(<CategoryToolsHub category="data" />)
+
+    const heading = screen.getByRole('heading', { level: 1, name: /Data Processing/i })
+    expect(heading.getAttribute('style') ?? '').not.toMatch(/background-clip|text-fill/i)
+    expect(screen.getAllByRole('img', { name: 'Popular' }).length).toBeGreaterThan(0)
+    expect(screen.getByRole('link', { name: /JSON Beautifier/i })).toBeTruthy()
+  })
+
   it('renders security hub with password tools', () => {
     render(<CategoryToolsHub category="security" />)
 

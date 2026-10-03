@@ -138,7 +138,6 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
             border: '1px solid',
             borderColor: 'green.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
@@ -199,7 +198,6 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
             border: '1px solid',
             borderColor: 'green.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
@@ -309,7 +307,6 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
             border: '1px solid',
             borderColor: 'teal.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
@@ -450,7 +447,6 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
               border: '1px solid',
               borderColor: 'green.500/30',
               bg: 'green.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
@@ -768,7 +764,6 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
               border: '1px solid',
               borderColor: 'cyan.500/20',
               bg: 'cyan.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -807,7 +802,6 @@ ${numberOfPeople > 1 ? `\nSplit Between ${numberOfPeople} People:\nPer Person: $
               border: '1px solid',
               borderColor: 'emerald.500/20',
               bg: 'emerald.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>

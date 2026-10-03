@@ -192,12 +192,10 @@ export function Sidebar() {
             inset: '0',
             zIndex: 40,
             bg: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(4px)',
             cursor: 'pointer',
             border: 'none',
             padding: 0,
           })}
-          style={{ WebkitBackdropFilter: 'blur(4px)' }}
           aria-label="Close menu"
         />
       )}
@@ -225,6 +223,8 @@ export function Sidebar() {
         style={{
           borderRight: '1px solid #1a1f2b',
           background: '#0b0d13',
+          contentVisibility: 'auto',
+          containIntrinsicSize: '248px 100vh',
         }}
       >
         <div
@@ -246,7 +246,7 @@ export function Sidebar() {
               textDecoration: 'none !important',
             })}
           >
-            <h1
+            <span
               className={css({
                 display: 'flex',
                 alignItems: 'center',
@@ -260,7 +260,7 @@ export function Sidebar() {
             >
               <BrandMark />
               SuperTool
-            </h1>
+            </span>
           </Link>
 
           {/* Navigation */}

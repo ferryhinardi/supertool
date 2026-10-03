@@ -205,7 +205,6 @@ function CurrencyConverterContent() {
             border: '1px solid',
             borderColor: 'emerald.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
@@ -516,7 +515,6 @@ function CurrencyConverterContent() {
               border: '1px solid',
               borderColor: 'yellow.500/20',
               bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
@@ -635,7 +633,6 @@ function CurrencyConverterContent() {
             borderColor: 'cyan.500/20',
             bg: 'rgba(6, 182, 212, 0.05)',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
           })}
         >
           <h3

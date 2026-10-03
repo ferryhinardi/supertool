@@ -26,6 +26,7 @@ const inter = Inter({
 const manrope = Manrope({
   subsets: ['latin'],
   display: 'swap',
+  preload: true,
   variable: '--font-manrope',
 })
 
@@ -33,6 +34,7 @@ const dmMono = DM_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
   display: 'swap',
+  preload: false,
   variable: '--font-dm-mono',
 })
 
@@ -147,19 +149,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id" className={`${inter.className} ${manrope.variable} ${dmMono.variable}`}>
       <head>
-        {/* Preconnect to external origins - saves ~300ms on LCP */}
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://www.google-analytics.com" />
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
-        <link rel="preconnect" href="https://vercel.live" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         {process.env.NODE_ENV === 'production' && (
           <Script
             src="https://cdn.visitors.now/v.js"
             data-token="57002aa7-44fa-459e-b332-ecb6111a00ef"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
         )}
       </head>

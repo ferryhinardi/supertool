@@ -2,154 +2,142 @@
 
 import { ArrowLeft, ArrowRight, Sparkles, Star, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
+import { IconTile } from '@/components/design-system/IconTile'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { CATEGORY_HUBS, type CategoryHubId, getCategoryTools } from '@/lib/data/category-hubs'
 import { type Tool, tools } from '@/lib/data/tools'
+import { accentForCategory } from '@/lib/design-system'
 import { css } from '@/styled-system/css'
-
-function gradientToCss(gradient: string): string {
-  const gradientMap: Record<string, string> = {
-    'from-purple-500 to-pink-500': 'linear-gradient(135deg, #a855f7, #ec4899)',
-    'from-blue-500 to-cyan-500': 'linear-gradient(135deg, #3b82f6, #06b6d4)',
-    'from-green-500 to-emerald-500': 'linear-gradient(135deg, #22c55e, #10b981)',
-    'from-orange-500 to-red-500': 'linear-gradient(135deg, #f97316, #ef4444)',
-    'from-violet-500 to-purple-500': 'linear-gradient(135deg, #8b5cf6, #a855f7)',
-    'from-cyan-500 to-blue-500': 'linear-gradient(135deg, #06b6d4, #3b82f6)',
-    'from-pink-500 to-rose-500': 'linear-gradient(135deg, #ec4899, #f43f5e)',
-    'from-amber-500 to-orange-500': 'linear-gradient(135deg, #f59e0b, #f97316)',
-    'from-teal-500 to-green-500': 'linear-gradient(135deg, #14b8a6, #22c55e)',
-    'from-indigo-500 to-violet-500': 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-    'from-rose-500 to-pink-500': 'linear-gradient(135deg, #f43f5e, #ec4899)',
-    'from-emerald-500 to-teal-500': 'linear-gradient(135deg, #10b981, #14b8a6)',
-    'from-sky-500 to-indigo-500': 'linear-gradient(135deg, #0ea5e9, #6366f1)',
-    'from-fuchsia-500 to-pink-500': 'linear-gradient(135deg, #d946ef, #ec4899)',
-    'from-lime-500 to-green-500': 'linear-gradient(135deg, #84cc16, #22c55e)',
-    'from-yellow-500 to-amber-500': 'linear-gradient(135deg, #eab308, #f59e0b)',
-    'from-red-500 to-orange-500': 'linear-gradient(135deg, #ef4444, #f97316)',
-    'from-slate-500 to-gray-500': 'linear-gradient(135deg, #64748b, #6b7280)',
-  }
-
-  if (gradientMap[gradient]) return gradientMap[gradient]
-
-  const fromMatch = gradient.match(/from-(\w+)-(\d+)/)
-  const toMatch = gradient.match(/to-(\w+)-(\d+)/)
-  if (fromMatch && toMatch) {
-    return `linear-gradient(135deg, var(--colors-${fromMatch[1]}-${fromMatch[2]}), var(--colors-${toMatch[1]}-${toMatch[2]}))`
-  }
-  return 'linear-gradient(135deg, #a855f7, #ec4899)'
-}
 
 function ToolCard({ tool }: { tool: Tool }) {
   const Icon = tool.icon
   const isComingSoon = tool.comingSoon
+  const accent = accentForCategory(tool.category)
 
   return (
     <Link
       href={isComingSoon ? '#' : tool.href}
+      aria-disabled={isComingSoon || undefined}
       className={css({
         display: 'block',
         h: 'full',
+        rounded: 'xl',
         pointerEvents: isComingSoon ? 'none' : 'auto',
+        _focusVisible: {
+          outline: '2px solid',
+          outlineColor: 'brand.violetBright',
+          outlineOffset: '2px',
+        },
       })}
     >
       <Card
         className={css({
-          position: 'relative',
           h: 'full',
-          overflow: 'hidden',
           border: '1px solid',
-          borderColor: 'purple.500/20',
-          bg: 'gray.900/50',
-          backdropFilter: 'blur(16px)',
-          transition: 'all 0.3s',
+          borderColor: 'brand.line',
+          bg: 'brand.surface',
+          transition: 'background-color 0.2s ease, border-color 0.2s ease',
           opacity: isComingSoon ? 0.6 : 1,
           _hover: {
-            borderColor: 'purple.500/50',
-            bg: 'gray.900/80',
-            shadow: 'xl',
-            boxShadow: '0 20px 25px rgba(139, 92, 246, 0.2)',
+            borderColor: 'brand.violet',
+            bg: 'brand.surfaceRaised',
           },
         })}
-        style={{ padding: '24px' }}
+        style={{ padding: '20px' }}
       >
-        <div className={css({ spaceY: '4' })}>
+        <div className={css({ display: 'flex', flexDirection: 'column', gap: '4', h: 'full' })}>
           <div
             className={css({
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'space-between',
+              gap: '3',
             })}
           >
-            <div
-              className={css({ rounded: 'xl', p: '3.5', shadow: 'lg' })}
-              style={{ background: gradientToCss(tool.gradient) }}
-            >
-              <Icon className={css({ h: '7', w: '7', color: 'white' })} />
-            </div>
-
+            <IconTile icon={Icon} accent={accent} />
             <div className={css({ display: 'flex', flexDirection: 'column', gap: '1' })}>
-              {tool.popular && (
-                <Badge
-                  variant="secondary"
-                  size="sm"
-                  className={css({ bg: 'orange.500/20', px: '2', py: '1', color: 'orange.300' })}
-                >
-                  <TrendingUp className={css({ h: '3.5', w: '3.5' })} />
-                </Badge>
-              )}
-              {tool.new && (
-                <Badge
-                  variant="secondary"
-                  size="sm"
-                  className={css({ bg: 'blue.500/20', px: '2', py: '1', color: 'blue.300' })}
-                >
-                  <Sparkles className={css({ h: '3.5', w: '3.5' })} />
-                </Badge>
-              )}
-              {tool.premium && (
-                <Badge
-                  variant="secondary"
-                  size="sm"
+              {tool.popular ? (
+                <span
+                  role="img"
+                  aria-label="Popular"
                   className={css({
-                    bg: 'violet.500/20',
-                    px: '2',
-                    py: '1',
-                    color: 'violet.300',
-                    border: '1px solid',
-                    borderColor: 'violet.500/30',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minW: '7',
+                    minH: '7',
+                    rounded: 'md',
+                    bg: 'brand.surfaceRaised',
+                    color: 'brand.amber',
                   })}
                 >
-                  <Star className={css({ h: '3.5', w: '3.5' })} />
-                </Badge>
-              )}
-              {isComingSoon && (
-                <Badge
-                  variant="warning"
-                  size="sm"
+                  <TrendingUp className={css({ h: '3.5', w: '3.5' })} aria-hidden />
+                </span>
+              ) : null}
+              {tool.new ? (
+                <span
+                  role="img"
+                  aria-label="New"
                   className={css({
-                    bg: 'yellow.500/20',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minW: '7',
+                    minH: '7',
+                    rounded: 'md',
+                    bg: 'brand.surfaceRaised',
+                    color: 'brand.blue',
+                  })}
+                >
+                  <Sparkles className={css({ h: '3.5', w: '3.5' })} aria-hidden />
+                </span>
+              ) : null}
+              {tool.premium ? (
+                <span
+                  role="img"
+                  aria-label="Premium"
+                  className={css({
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minW: '7',
+                    minH: '7',
+                    rounded: 'md',
+                    border: '1px solid',
+                    borderColor: 'brand.line',
+                    bg: 'brand.violetSoft',
+                    color: 'brand.violetBright',
+                  })}
+                >
+                  <Star className={css({ h: '3.5', w: '3.5' })} aria-hidden />
+                </span>
+              ) : null}
+              {isComingSoon ? (
+                <span
+                  className={css({
                     px: '2',
                     py: '1',
+                    rounded: 'full',
+                    bg: 'brand.surfaceRaised',
+                    color: 'brand.muted',
                     fontSize: 'xs',
-                    color: 'yellow.300',
+                    fontWeight: 'semibold',
                   })}
                 >
                   Soon
-                </Badge>
-              )}
+                </span>
+              ) : null}
             </div>
           </div>
 
-          <div>
+          <div className={css({ display: 'flex', flexDirection: 'column', gap: '2', flex: '1' })}>
             <CardTitle
               className={css({
-                mb: '3',
-                fontSize: 'xl',
+                fontSize: 'lg',
                 lineHeight: 'tight',
                 fontWeight: 'bold',
-                color: 'gray.100',
+                color: 'brand.ink',
               })}
             >
               {tool.title}
@@ -159,50 +147,59 @@ function ToolCard({ tool }: { tool: Tool }) {
                 lineClamp: 3,
                 fontSize: 'sm',
                 lineHeight: 'relaxed',
-                color: 'gray.400',
+                color: 'brand.muted',
               })}
             >
               {tool.description}
             </CardDescription>
           </div>
 
-          <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '1.5', pt: '2' })}>
-            {tool.features.slice(0, 3).map((feature) => (
-              <Badge
-                key={feature}
-                variant="outline"
-                size="sm"
-                className={css({
-                  border: '1px solid',
-                  borderColor: 'purple.500/30',
-                  bg: 'purple.500/10',
-                  px: '2.5',
-                  py: '1',
-                  fontSize: 'xs',
-                  color: 'purple.300',
-                })}
-              >
-                {feature}
-              </Badge>
-            ))}
-            {tool.features.length > 3 && (
-              <Badge
-                variant="outline"
-                size="sm"
-                className={css({
-                  border: '1px solid',
-                  borderColor: 'purple.500/30',
-                  bg: 'purple.500/10',
-                  px: '2.5',
-                  py: '1',
-                  fontSize: 'xs',
-                  color: 'purple.300',
-                })}
-              >
-                +{tool.features.length - 3}
-              </Badge>
-            )}
-          </div>
+          {tool.features.length > 0 ? (
+            <ul
+              className={css({
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '1.5',
+                m: '0',
+                p: '0',
+                listStyle: 'none',
+              })}
+            >
+              {tool.features.slice(0, 3).map((feature) => (
+                <li
+                  key={feature}
+                  className={css({
+                    px: '2',
+                    py: '1',
+                    rounded: 'md',
+                    border: '1px solid',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
+                    fontSize: 'xs',
+                    color: 'brand.muted',
+                  })}
+                >
+                  {feature}
+                </li>
+              ))}
+              {tool.features.length > 3 ? (
+                <li
+                  className={css({
+                    px: '2',
+                    py: '1',
+                    rounded: 'md',
+                    border: '1px solid',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surfaceRaised',
+                    fontSize: 'xs',
+                    color: 'brand.muted',
+                  })}
+                >
+                  +{tool.features.length - 3}
+                </li>
+              ) : null}
+            </ul>
+          ) : null}
         </div>
       </Card>
     </Link>
@@ -216,9 +213,8 @@ interface CategoryToolsHubProps {
 export function CategoryToolsHub({ category }: CategoryToolsHubProps) {
   const hub = CATEGORY_HUBS[category]
   const categoryTools = getCategoryTools(hub.id)
-  // Include comingSoon in grid so users see roadmap, matching prior hubs
   const displayTools = tools.filter((tool) => tool.category === hub.id)
-  const Icon = hub.icon
+  const accent = accentForCategory(hub.id)
 
   return (
     <main
@@ -228,7 +224,9 @@ export function CategoryToolsHub({ category }: CategoryToolsHubProps) {
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
+        display: 'flex',
+        flexDirection: 'column',
+        gap: { base: '6', sm: '8', md: '10' },
       })}
     >
       <div>
@@ -237,8 +235,9 @@ export function CategoryToolsHub({ category }: CategoryToolsHubProps) {
             variant="ghost"
             size="sm"
             className={css({
-              color: 'gray.400',
-              _hover: { color: 'gray.100', bg: 'gray.800/50' },
+              minH: '11',
+              color: 'brand.muted',
+              _hover: { color: 'brand.ink', bg: 'brand.surface' },
             })}
           >
             <ArrowLeft className={css({ h: '4', w: '4', mr: '2' })} />
@@ -247,68 +246,37 @@ export function CategoryToolsHub({ category }: CategoryToolsHubProps) {
         </Link>
       </div>
 
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            rounded: '2xl',
-            p: '4',
-            shadow: 'lg',
-          })}
-          style={{ background: hub.iconGradient }}
-        >
-          <Icon className={css({ h: '10', w: '10', color: 'white' })} />
+      <header className={css({ display: 'flex', alignItems: 'flex-start', gap: '4', minW: 0 })}>
+        <IconTile icon={hub.icon} accent={accent} />
+        <div className={css({ minW: 0 })}>
+          <h1
+            className={css({
+              m: '0',
+              fontFamily: 'display',
+              fontSize: { base: '3xl', md: '4xl' },
+              fontWeight: 'bold',
+              lineHeight: '1.1',
+              letterSpacing: '-0.03em',
+              color: 'brand.ink',
+              textWrap: 'balance',
+            })}
+          >
+            {hub.title}
+          </h1>
+          <p
+            className={css({
+              m: '0',
+              mt: '2',
+              maxW: '65ch',
+              fontSize: { base: 'md', md: 'lg' },
+              lineHeight: 'relaxed',
+              color: 'brand.muted',
+            })}
+          >
+            {hub.description} Browse {categoryTools.length} free tools below.
+          </p>
         </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            color: 'transparent',
-          })}
-          style={{
-            backgroundImage: hub.titleGradient,
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-          }}
-        >
-          {hub.title}
-        </h1>
-
-        <p
-          className={css({
-            maxW: '2xl',
-            mx: 'auto',
-            fontSize: { base: 'lg', md: 'xl' },
-            color: 'gray.400',
-          })}
-        >
-          {hub.description} Browse {categoryTools.length} free tools below.
-        </p>
-
-        <div
-          className={css({ display: 'flex', justifyContent: 'center', gap: '4', flexWrap: 'wrap' })}
-        >
-          <Badge
-            variant="secondary"
-            className={css({ bg: 'purple.500/20', px: '3', py: '1.5', color: 'purple.300' })}
-          >
-            {categoryTools.length} Tools
-          </Badge>
-          <Badge
-            variant="secondary"
-            className={css({ bg: 'green.500/20', px: '3', py: '1.5', color: 'green.300' })}
-          >
-            100% Free
-          </Badge>
-          <Badge
-            variant="secondary"
-            className={css({ bg: 'blue.500/20', px: '3', py: '1.5', color: 'blue.300' })}
-          >
-            Browser-Based
-          </Badge>
-        </div>
-      </div>
+      </header>
 
       <div
         className={css({
@@ -323,17 +291,9 @@ export function CategoryToolsHub({ category }: CategoryToolsHubProps) {
         ))}
       </div>
 
-      <div className={css({ textAlign: 'center', py: '8' })}>
+      <div>
         <Link href="/">
-          <Button
-            variant="outline"
-            size="lg"
-            className={css({
-              borderColor: 'purple.500/30',
-              color: 'purple.300',
-              _hover: { bg: 'purple.500/10', borderColor: 'purple.500/50' },
-            })}
-          >
+          <Button variant="outline" size="lg" className={css({ minH: '11' })}>
             Explore All Tools
             <ArrowRight className={css({ h: '4', w: '4', ml: '2' })} />
           </Button>

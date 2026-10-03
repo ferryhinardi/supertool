@@ -1031,7 +1031,6 @@ export default function SplitBillPage() {
             p: { base: '4', sm: '5', md: '6' },
             shadow: 'xl',
             boxShadow: '0 20px 25px rgba(34, 197, 94, 0.2)',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <div
@@ -1102,7 +1101,6 @@ export default function SplitBillPage() {
               borderColor: 'green.500/20',
               bg: 'rgba(17, 24, 39, 0.5)',
               p: { base: '4', sm: '5', md: '6' },
-              backdropFilter: 'blur(16px)',
               display: 'flex',
               flexDirection: 'column',
               gap: '4',
@@ -1273,7 +1271,6 @@ export default function SplitBillPage() {
             borderColor: 'green.500/20',
             bg: 'rgba(17, 24, 39, 0.5)',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
             display: 'flex',
             flexDirection: 'column',
             gap: '4',
@@ -1634,7 +1631,6 @@ export default function SplitBillPage() {
             borderColor: 'emerald.500/20',
             bg: 'rgba(17, 24, 39, 0.5)',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
             display: 'flex',
             flexDirection: 'column',
             gap: '4',
@@ -2671,7 +2667,6 @@ export default function SplitBillPage() {
             borderColor: 'cyan.500/20',
             bg: 'cyan.500/5',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
             animation: 'fadeInUp 0.4s ease-out 0.1s both',
           })}
         >

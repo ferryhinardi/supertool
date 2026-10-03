@@ -207,7 +207,6 @@ function LoanCalculatorContent() {
             border: '1px solid',
             borderColor: 'emerald.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
@@ -456,7 +455,6 @@ function LoanCalculatorContent() {
               border: '1px solid',
               borderColor: 'emerald.500/30',
               bg: 'emerald.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -478,7 +476,6 @@ function LoanCalculatorContent() {
               border: '1px solid',
               borderColor: 'orange.500/30',
               bg: 'orange.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -500,7 +497,6 @@ function LoanCalculatorContent() {
               border: '1px solid',
               borderColor: 'blue.500/30',
               bg: 'blue.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -522,7 +518,6 @@ function LoanCalculatorContent() {
               border: '1px solid',
               borderColor: 'emerald.500/30',
               bg: 'emerald.500/10',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>
@@ -550,7 +545,6 @@ function LoanCalculatorContent() {
               border: '1px solid',
               borderColor: 'green.500/20',
               bg: 'green.500/5',
-              backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
@@ -606,7 +600,6 @@ function LoanCalculatorContent() {
             border: '1px solid',
             borderColor: 'emerald.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
@@ -738,7 +731,6 @@ function LoanCalculatorContent() {
             border: '1px solid',
             borderColor: 'blue.500/20',
             bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardHeader>
