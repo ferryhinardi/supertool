@@ -11,7 +11,7 @@ function toolSlug(href: string): string {
   return parts[parts.length - 1] ?? 'tool'
 }
 
-export type ToolFamilyCategory = 'data' | 'productivity'
+export type ToolFamilyCategory = 'data' | 'productivity' | 'development'
 
 interface ToolFamilyNavProps {
   category?: ToolFamilyCategory
@@ -81,11 +81,55 @@ function productivityLinkClass(active: boolean) {
   })
 }
 
+function developmentLinkClass(active: boolean) {
+  return css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '2',
+    flexShrink: 0,
+    minH: '11',
+    px: '3',
+    rounded: 'lg',
+    border: '1px solid',
+    borderColor: active ? 'brand.blue' : 'brand.line',
+    bg: active ? 'brand.surfaceRaised' : 'brand.surface',
+    color: active ? 'brand.blue' : 'brand.muted',
+    fontSize: 'sm',
+    fontWeight: 'medium',
+    whiteSpace: 'nowrap',
+    transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+    _hover: {
+      color: 'brand.ink',
+      borderColor: 'brand.cyan',
+    },
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'brand.blue',
+      outlineOffset: '2px',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  })
+}
+
+function ariaLabelFor(category: ToolFamilyCategory) {
+  if (category === 'productivity') return 'Productivity tools'
+  if (category === 'development') return 'Development tools'
+  return 'Data processing tools'
+}
+
+function linkClassFor(category: ToolFamilyCategory) {
+  if (category === 'productivity') return productivityLinkClass
+  if (category === 'development') return developmentLinkClass
+  return dataLinkClass
+}
+
 export function ToolFamilyNav({ category = 'data' }: ToolFamilyNavProps) {
   const pathname = usePathname()
   const familyTools = getCategoryTools(category)
-  const ariaLabel = category === 'productivity' ? 'Productivity tools' : 'Data processing tools'
-  const linkClass = category === 'productivity' ? productivityLinkClass : dataLinkClass
+  const ariaLabel = ariaLabelFor(category)
+  const linkClass = linkClassFor(category)
 
   return (
     <nav
@@ -122,6 +166,14 @@ export function ToolFamilyNav({ category = 'data' }: ToolFamilyNavProps) {
                   trackToolEvent('feature_interaction', {
                     feature: 'tool_family_navigation',
                     category: 'productivity',
+                    destination: toolSlug(tool.href),
+                  })
+                  return
+                }
+                if (category === 'development') {
+                  trackToolEvent('feature_interaction', {
+                    feature: 'tool_family_navigation',
+                    category: 'development',
                     destination: toolSlug(tool.href),
                   })
                   return

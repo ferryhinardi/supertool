@@ -3,6 +3,7 @@
 import { AlertCircle, Check, Copy, Eye, Fingerprint, Info, Monitor, Shield, X } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -94,64 +95,13 @@ function BrowserFingerprintContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'indigo.500/30',
-            bg: 'indigo.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Fingerprint className={css({ h: '5', w: '5', color: 'indigo.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'indigo.300' })}>
-            Privacy & Security Tool
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'indigo.400',
-            gradientVia: 'purple.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Browser Fingerprint Viewer
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Discover how unique and trackable your browser is. See what information websites can
-          collect about your device without using cookies.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="Browser Fingerprint Viewer"
+        description="Discover how unique and trackable your browser is. See what information websites can collect about your device without using cookies."
+        eyebrow="Developer workspace"
+        icon={Fingerprint}
+        highlights={['Local collection', 'Uniqueness score']}
+      />
 
       {/* Uniqueness Score Card */}
       {!loading && fingerprint && (
@@ -236,7 +186,7 @@ function BrowserFingerprintContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/20',
+              borderColor: 'blue.500/20',
               bg: 'gray.900/50',
               backdropFilter: 'blur(16px)',
             })}
@@ -255,10 +205,10 @@ function BrowserFingerprintContent() {
                     fontFamily: 'mono',
                     fontSize: 'lg',
                     fontWeight: 'bold',
-                    color: 'purple.300',
-                    bg: 'purple.500/10',
+                    color: 'blue.300',
+                    bg: 'blue.500/10',
                     border: '1px solid',
-                    borderColor: 'purple.500/30',
+                    borderColor: 'blue.500/30',
                     rounded: 'lg',
                     px: '4',
                     py: '3',
@@ -270,11 +220,11 @@ function BrowserFingerprintContent() {
                   onClick={() => copyToClipboard(fingerprintHash, 'Fingerprint ID')}
                   className={css({
                     gap: '2',
-                    bg: 'purple.500/20',
+                    bg: 'blue.500/20',
                     border: '1px solid',
-                    borderColor: 'purple.500/50',
-                    color: 'purple.300',
-                    _hover: { bg: 'purple.500/30' },
+                    borderColor: 'blue.500/50',
+                    color: 'blue.300',
+                    _hover: { bg: 'blue.500/30' },
                   })}
                 >
                   <Copy className={css({ h: '4', w: '4' })} />
@@ -297,7 +247,7 @@ function BrowserFingerprintContent() {
           })}
         >
           <div className={css({ display: 'inline-block', animation: 'spin 1s linear infinite' })}>
-            <Fingerprint className={css({ h: '12', w: '12', color: 'indigo.400' })} />
+            <Fingerprint className={css({ h: '12', w: '12', color: 'blue.400' })} />
           </div>
           <p className={css({ mt: '4', fontSize: 'lg', color: 'white' })}>
             Collecting fingerprint data...
@@ -319,7 +269,7 @@ function BrowserFingerprintContent() {
             <Card
               className={css({
                 border: '1px solid',
-                borderColor: 'indigo.500/20',
+                borderColor: 'blue.500/20',
                 bg: 'gray.900/50',
                 backdropFilter: 'blur(16px)',
               })}
@@ -341,7 +291,7 @@ function BrowserFingerprintContent() {
                   })}
                 >
                   <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-                    <Monitor className={css({ h: '5', w: '5', color: 'indigo.400' })} />
+                    <Monitor className={css({ h: '5', w: '5', color: 'blue.400' })} />
                     <CardTitle>Basic Browser Information</CardTitle>
                   </div>
                   <Eye className={css({ h: '5', w: '5', color: 'white' })} />
@@ -627,7 +577,7 @@ function BrowserFingerprintContent() {
             <Card
               className={css({
                 border: '1px solid',
-                borderColor: 'purple.500/20',
+                borderColor: 'blue.500/20',
                 bg: 'gray.900/50',
                 backdropFilter: 'blur(16px)',
               })}
@@ -649,7 +599,7 @@ function BrowserFingerprintContent() {
                   })}
                 >
                   <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-                    <Shield className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                    <Shield className={css({ h: '5', w: '5', color: 'blue.400' })} />
                     <CardTitle>Privacy & Storage</CardTitle>
                   </div>
                   <Eye className={css({ h: '5', w: '5', color: 'white' })} />
@@ -713,14 +663,14 @@ function BrowserFingerprintContent() {
               size="lg"
               className={css({
                 gap: '2',
-                bg: 'indigo.500/20',
+                bg: 'blue.500/20',
                 border: '1px solid',
-                borderColor: 'indigo.500/50',
-                color: 'indigo.300',
+                borderColor: 'blue.500/50',
+                color: 'blue.300',
                 fontSize: 'lg',
                 px: '8',
                 py: '6',
-                _hover: { bg: 'indigo.500/30' },
+                _hover: { bg: 'blue.500/30' },
               })}
             >
               <Copy className={css({ h: '5', w: '5' })} />

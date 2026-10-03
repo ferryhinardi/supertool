@@ -111,9 +111,12 @@ describe('GraphQLPlaygroundPage', () => {
       expect(screen.getByText('Interactive')).toBeInTheDocument()
     })
 
-    it('renders the Developer Tool badge', () => {
+    it('renders the Developer Tools back link', () => {
       render(<GraphQLPlaygroundPage />)
-      expect(screen.getByText('Developer Tool')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Developer Tools' })).toHaveAttribute(
+        'href',
+        '/tools/development'
+      )
     })
 
     it('renders the Configuration section', () => {

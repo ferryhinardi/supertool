@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -360,59 +361,13 @@ function DockerfileFormatterContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            borderRadius: 'full',
-            border: '1px solid',
-            borderColor: 'cyan.500/30',
-            bg: 'cyan.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Shield className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'cyan.300' })}>
-            Best Practices • Security Checks • Layer Optimization
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            background:
-              'linear-gradient(to right, var(--colors-cyan-400), var(--colors-blue-400), var(--colors-indigo-400))',
-            backgroundClip: 'text',
-          })}
-          style={{ WebkitTextFillColor: 'transparent' }}
-        >
-          Dockerfile Formatter & Linter
-        </h1>
-
-        <p
-          className={css({
-            maxW: '3xl',
-            mx: 'auto',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Beautify and lint Dockerfiles with intelligent formatting, best practice recommendations,
-          and security checks. Optimize your container builds.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="Dockerfile Formatter & Linter"
+        description="Beautify and lint Dockerfiles with intelligent formatting, best practice recommendations, and security checks. Optimize your container builds."
+        eyebrow="Code formatter"
+        icon={FileText}
+        highlights={['Best Practices • Security Checks • Layer Optimization']}
+      />
 
       {/* Input Section */}
       <div
@@ -531,9 +486,7 @@ function DockerfileFormatterContent() {
             className={css({ border: '1px solid', borderColor: 'gray.700', bg: 'gray.800/50' })}
           >
             <CardContent withTopPadding className={css({ p: '4', textAlign: 'center' })}>
-              <Shield
-                className={css({ h: '8', w: '8', mx: 'auto', mb: '2', color: 'indigo.400' })}
-              />
+              <Shield className={css({ h: '8', w: '8', mx: 'auto', mb: '2', color: 'blue.400' })} />
               <div className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'gray.100' })}>
                 {stats.layers}
               </div>

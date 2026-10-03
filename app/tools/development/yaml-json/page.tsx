@@ -4,6 +4,7 @@ import * as yaml from 'js-yaml'
 import { ArrowLeftRight, Check, Copy, Download, FileJson, Info, Sparkles } from 'lucide-react'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -195,64 +196,13 @@ developers:
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'green.500/30',
-            bg: 'green.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <FileJson className={css({ h: '5', w: '5', color: 'green.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'green.300' })}>
-            Bidirectional Conversion • Syntax Validation
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'green.400',
-            gradientVia: 'emerald.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          YAML ↔ JSON Converter
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Convert between YAML and JSON formats instantly with syntax validation and formatting.
-          Perfect for configuration files, API responses, and data transformation.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="YAML ↔ JSON Converter"
+        description="Convert between YAML and JSON formats instantly with syntax validation and formatting. Perfect for configuration files, API responses, and data transformation."
+        eyebrow="Code formatter"
+        icon={FileJson}
+        highlights={['Two-way convert', 'Validation']}
+      />
 
       {/* Conversion Direction Toggle */}
       <div

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -164,7 +165,7 @@ function JWTDecoderContent() {
           : typeof obj === 'number'
             ? 'blue.400'
             : typeof obj === 'boolean'
-              ? 'purple.400'
+              ? 'cyan.400'
               : 'gray.400'
 
       return (
@@ -216,59 +217,13 @@ function JWTDecoderContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            borderRadius: 'full',
-            border: '1px solid',
-            borderColor: 'indigo.500/30',
-            bg: 'indigo.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Shield className={css({ h: '5', w: '5', color: 'indigo.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'indigo.300' })}>
-            Secure • Client-Side • No Server Storage
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            background:
-              'linear-gradient(to right, var(--colors-indigo-400), var(--colors-purple-400), var(--colors-pink-400))',
-            backgroundClip: 'text',
-          })}
-          style={{ WebkitTextFillColor: 'transparent' }}
-        >
-          JWT Decoder & Inspector
-        </h1>
-
-        <p
-          className={css({
-            maxW: '3xl',
-            mx: 'auto',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Decode, verify, and validate JSON Web Tokens securely in your browser. View header,
-          payload, and signature. All processing happens locally.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="JWT Decoder & Inspector"
+        description="Decode, verify, and validate JSON Web Tokens securely in your browser. View header, payload, and signature. All processing happens locally."
+        eyebrow="Token inspector"
+        icon={Shield}
+        highlights={['Secure • Client-Side • No Server Storage', 'Expiry check']}
+      />
 
       {/* Main Content */}
       <div
@@ -281,7 +236,7 @@ function JWTDecoderContent() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'indigo.500/20',
+            borderColor: 'blue.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
@@ -323,9 +278,9 @@ function JWTDecoderContent() {
                   resize: 'vertical',
                   _focus: {
                     outline: 'none',
-                    borderColor: 'indigo.500',
+                    borderColor: 'blue.500',
                     ring: '2px',
-                    ringColor: 'indigo.500/20',
+                    ringColor: 'blue.500/20',
                   },
                 })}
               />
@@ -444,7 +399,7 @@ function JWTDecoderContent() {
             <Card
               className={css({
                 border: '1px solid',
-                borderColor: 'indigo.500/20',
+                borderColor: 'blue.500/20',
                 bg: 'gray.900/50',
                 backdropFilter: 'blur(16px)',
               })}
@@ -458,7 +413,7 @@ function JWTDecoderContent() {
                   })}
                 >
                   <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <Shield className={css({ h: '5', w: '5', color: 'indigo.400' })} />
+                    <Shield className={css({ h: '5', w: '5', color: 'blue.400' })} />
                     <CardTitle className={css({ fontSize: 'lg' })}>Header</CardTitle>
                   </div>
                   <Button
@@ -499,7 +454,7 @@ function JWTDecoderContent() {
             <Card
               className={css({
                 border: '1px solid',
-                borderColor: 'purple.500/20',
+                borderColor: 'blue.500/20',
                 bg: 'gray.900/50',
                 backdropFilter: 'blur(16px)',
               })}
@@ -513,7 +468,7 @@ function JWTDecoderContent() {
                   })}
                 >
                   <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <Info className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                    <Info className={css({ h: '5', w: '5', color: 'blue.400' })} />
                     <CardTitle className={css({ fontSize: 'lg' })}>Payload</CardTitle>
                   </div>
                   <Button
@@ -663,7 +618,7 @@ function JWTDecoderContent() {
             <Card
               className={css({
                 border: '1px solid',
-                borderColor: 'pink.500/20',
+                borderColor: 'cyan.500/20',
                 bg: 'gray.900/50',
                 backdropFilter: 'blur(16px)',
               })}
@@ -677,7 +632,7 @@ function JWTDecoderContent() {
                   })}
                 >
                   <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <Key className={css({ h: '5', w: '5', color: 'pink.400' })} />
+                    <Key className={css({ h: '5', w: '5', color: 'cyan.400' })} />
                     <CardTitle className={css({ fontSize: 'lg' })}>Signature</CardTitle>
                   </div>
                   <div className={css({ display: 'flex', gap: '2' })}>
@@ -718,7 +673,7 @@ function JWTDecoderContent() {
                   })}
                 >
                   {showSignature ? (
-                    <span className={css({ color: 'pink.400' })}>{decodedJWT.signature}</span>
+                    <span className={css({ color: 'cyan.400' })}>{decodedJWT.signature}</span>
                   ) : (
                     <span className={css({ color: 'white' })}>
                       {'•'.repeat(Math.min(decodedJWT.signature.length, 64))}
@@ -755,15 +710,15 @@ function JWTDecoderContent() {
             <p>A JWT consists of three parts separated by dots:</p>
             <ul className={css({ listStyleType: 'disc', pl: '5', spaceY: '1' })}>
               <li>
-                <strong className={css({ color: 'indigo.400' })}>Header:</strong> Token type and
+                <strong className={css({ color: 'blue.400' })}>Header:</strong> Token type and
                 algorithm
               </li>
               <li>
-                <strong className={css({ color: 'purple.400' })}>Payload:</strong> Claims and user
+                <strong className={css({ color: 'blue.400' })}>Payload:</strong> Claims and user
                 data
               </li>
               <li>
-                <strong className={css({ color: 'pink.400' })}>Signature:</strong> Verification
+                <strong className={css({ color: 'cyan.400' })}>Signature:</strong> Verification
                 signature
               </li>
             </ul>

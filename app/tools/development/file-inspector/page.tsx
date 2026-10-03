@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -145,64 +146,13 @@ function FileInspectorContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'orange.500/30',
-            bg: 'orange.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <FileSearch className={css({ h: '5', w: '5', color: 'orange.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'orange.300' })}>
-            Secure • Client-Side Only • No Upload
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'orange.400',
-            gradientVia: 'red.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          File Inspector
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Inspect file metadata without uploading to any server. View MIME type, file hash, size
-          analysis, and creation date. All processing happens in your browser for maximum privacy.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="File Inspector"
+        description="Inspect file metadata without uploading to any server. View MIME type, file hash, size analysis, and creation date. All processing happens in your browser for maximum privacy."
+        eyebrow="Developer workspace"
+        icon={FileSearch}
+        highlights={['Secure • Client-Side Only • No Upload', 'Type and size']}
+      />
 
       {/* Hash Algorithm Selection */}
       <div

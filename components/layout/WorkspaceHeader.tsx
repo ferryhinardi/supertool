@@ -41,7 +41,12 @@ export function WorkspaceHeader({
               fontWeight: 'bold',
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
-              color: accent === 'amber' ? 'brand.amber' : 'brand.violetBright',
+              color:
+                accent === 'amber'
+                  ? 'brand.amber'
+                  : accent === 'blue'
+                    ? 'brand.blue'
+                    : 'brand.violetBright',
             })}
           >
             Workspace

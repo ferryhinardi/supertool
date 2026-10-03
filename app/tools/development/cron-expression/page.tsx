@@ -3,6 +3,7 @@
 import { Calendar, Clock, Copy, Download, Info, Sparkles, Star, Zap } from 'lucide-react'
 import { Suspense, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -117,64 +118,13 @@ function CronExpressionContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'teal.500/30',
-            bg: 'teal.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Calendar className={css({ h: '5', w: '5', color: 'teal.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'teal.300' })}>
-            Visual Builder • 18 Common Patterns
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'teal.400',
-            gradientVia: 'green.400',
-            gradientTo: 'emerald.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Cron Expression Builder
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Build and validate cron schedules visually. Generate expressions, preview execution times,
-          and export for multiple platforms.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="Cron Expression Builder"
+        description="Build and validate cron schedules visually. Generate expressions, preview execution times, and export for multiple platforms."
+        eyebrow="Automation builder"
+        icon={Calendar}
+        highlights={['Validation', 'Next runs']}
+      />
 
       {/* Expression Input & Validation */}
       <div
@@ -651,14 +601,14 @@ function CronExpressionContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/20',
+              borderColor: 'blue.500/20',
               bg: 'gray.900/50',
               backdropFilter: 'blur(16px)',
             })}
           >
             <CardHeader>
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                <Download className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                <Download className={css({ h: '5', w: '5', color: 'blue.400' })} />
                 <CardTitle>Export Configuration</CardTitle>
               </div>
               <CardDescription>Generate platform-specific configuration</CardDescription>
@@ -696,9 +646,9 @@ function CronExpressionContent() {
                     _hover: { bg: 'gray.800' },
                     _focus: {
                       outline: 'none',
-                      borderColor: 'purple.500',
+                      borderColor: 'blue.500',
                       ring: '2px',
-                      ringColor: 'purple.500/20',
+                      ringColor: 'blue.500/20',
                     },
                   })}
                 >
@@ -712,11 +662,11 @@ function CronExpressionContent() {
                   onClick={handleCopyExport}
                   className={css({
                     gap: '2',
-                    bg: 'purple.500/20',
+                    bg: 'blue.500/20',
                     border: '1px solid',
-                    borderColor: 'purple.500/50',
-                    color: 'purple.300',
-                    _hover: { bg: 'purple.500/30' },
+                    borderColor: 'blue.500/50',
+                    color: 'blue.300',
+                    _hover: { bg: 'blue.500/30' },
                   })}
                 >
                   <Copy className={css({ h: '4', w: '4' })} />

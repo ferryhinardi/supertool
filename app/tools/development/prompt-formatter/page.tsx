@@ -3,6 +3,7 @@
 import { Copy, Download, Sparkles, Wand2, Zap } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -305,64 +306,13 @@ function PromptFormatterContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/30',
-            bg: 'purple.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Sparkles className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'purple.300' })}>
-            AI-Powered Prompt Engineering
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'blue.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Prompt Formatter
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Transform your AI prompts with professional templates and formatting. Optimize for
-          ChatGPT, Claude, Gemini, and more. Get better results with structured, clear prompts.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="Prompt Formatter"
+        description="Transform your AI prompts with professional templates and formatting. Optimize for ChatGPT, Claude, Gemini, and more. Get better results with structured, clear prompts."
+        eyebrow="Code formatter"
+        icon={Wand2}
+        highlights={['Preview', 'Formatted output']}
+      />
 
       {/* AI Model Selection */}
       <div
@@ -375,7 +325,7 @@ function PromptFormatterContent() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
+            borderColor: 'blue.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
@@ -408,14 +358,14 @@ function PromptFormatterContent() {
                       gap: '2',
                       py: '4',
                       px: '3',
-                      bg: isActive ? 'purple.500/20' : 'gray.800/50',
+                      bg: isActive ? 'blue.500/20' : 'gray.800/50',
                       border: '1px solid',
-                      borderColor: isActive ? 'purple.500/50' : 'gray.700/50',
-                      color: isActive ? 'purple.300' : 'gray.400',
+                      borderColor: isActive ? 'blue.500/50' : 'gray.700/50',
+                      color: isActive ? 'blue.300' : 'gray.400',
                       transition: 'all 0.2s',
                       _hover: {
-                        bg: isActive ? 'purple.500/30' : 'gray.800',
-                        borderColor: isActive ? 'purple.500/70' : 'gray.600',
+                        bg: isActive ? 'blue.500/30' : 'gray.800',
+                        borderColor: isActive ? 'blue.500/70' : 'gray.600',
                         transform: 'translateY(-2px)',
                       },
                     })}
@@ -445,7 +395,7 @@ function PromptFormatterContent() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'pink.500/20',
+            borderColor: 'cyan.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
@@ -492,9 +442,8 @@ function PromptFormatterContent() {
                       gap: '2',
                       rounded: 'lg',
                       border: '1px solid',
-                      borderColor:
-                        selectedTemplate === template.id ? 'purple.500/50' : 'gray.700/50',
-                      bg: selectedTemplate === template.id ? 'purple.500/10' : 'gray.800/50',
+                      borderColor: selectedTemplate === template.id ? 'blue.500/50' : 'gray.700/50',
+                      bg: selectedTemplate === template.id ? 'blue.500/10' : 'gray.800/50',
                       p: '4',
                       textAlign: 'left',
                       transition: 'all 0.2s',
@@ -552,9 +501,8 @@ function PromptFormatterContent() {
                       gap: '2',
                       rounded: 'lg',
                       border: '1px solid',
-                      borderColor:
-                        selectedTemplate === template.id ? 'purple.500/50' : 'gray.700/50',
-                      bg: selectedTemplate === template.id ? 'purple.500/10' : 'gray.800/50',
+                      borderColor: selectedTemplate === template.id ? 'blue.500/50' : 'gray.700/50',
+                      bg: selectedTemplate === template.id ? 'blue.500/10' : 'gray.800/50',
                       p: '4',
                       textAlign: 'left',
                       transition: 'all 0.2s',
@@ -580,10 +528,10 @@ function PromptFormatterContent() {
               <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                 <Badge
                   className={css({
-                    bg: 'purple.500/20',
-                    color: 'purple.300',
+                    bg: 'blue.500/20',
+                    color: 'blue.300',
                     border: '1px solid',
-                    borderColor: 'purple.500/30',
+                    borderColor: 'blue.500/30',
                   })}
                 >
                   Specialized
@@ -612,9 +560,8 @@ function PromptFormatterContent() {
                       gap: '2',
                       rounded: 'lg',
                       border: '1px solid',
-                      borderColor:
-                        selectedTemplate === template.id ? 'purple.500/50' : 'gray.700/50',
-                      bg: selectedTemplate === template.id ? 'purple.500/10' : 'gray.800/50',
+                      borderColor: selectedTemplate === template.id ? 'blue.500/50' : 'gray.700/50',
+                      bg: selectedTemplate === template.id ? 'blue.500/10' : 'gray.800/50',
                       p: '4',
                       textAlign: 'left',
                       transition: 'all 0.2s',
@@ -703,11 +650,11 @@ function PromptFormatterContent() {
                 onClick={handleOptimize}
                 className={css({
                   gap: '2',
-                  bg: 'purple.500/20',
+                  bg: 'blue.500/20',
                   border: '1px solid',
-                  borderColor: 'purple.500/50',
-                  color: 'purple.300',
-                  _hover: { bg: 'purple.500/30' },
+                  borderColor: 'blue.500/50',
+                  color: 'blue.300',
+                  _hover: { bg: 'blue.500/30' },
                 })}
               >
                 <Zap className={css({ h: '4', w: '4' })} />
@@ -732,7 +679,7 @@ function PromptFormatterContent() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
+            borderColor: 'blue.500/20',
             bg: 'gray.900/50',
             backdropFilter: 'blur(16px)',
           })}
@@ -750,10 +697,10 @@ function PromptFormatterContent() {
                 minH: '96',
                 fontSize: 'sm',
                 fontFamily: 'mono',
-                bg: 'purple.500/10',
+                bg: 'blue.500/10',
                 border: '1px solid',
-                borderColor: 'purple.500/30',
-                color: 'purple.100',
+                borderColor: 'blue.500/30',
+                color: 'blue.100',
                 resize: 'vertical',
                 cursor: 'default',
               })}
@@ -764,11 +711,11 @@ function PromptFormatterContent() {
                 disabled={!output}
                 className={css({
                   gap: '2',
-                  bg: 'purple.500/20',
+                  bg: 'blue.500/20',
                   border: '1px solid',
-                  borderColor: 'purple.500/50',
-                  color: 'purple.300',
-                  _hover: { bg: 'purple.500/30' },
+                  borderColor: 'blue.500/50',
+                  color: 'blue.300',
+                  _hover: { bg: 'blue.500/30' },
                   _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                 })}
               >
@@ -780,11 +727,11 @@ function PromptFormatterContent() {
                 disabled={!output}
                 className={css({
                   gap: '2',
-                  bg: 'pink.500/20',
+                  bg: 'cyan.500/20',
                   border: '1px solid',
-                  borderColor: 'pink.500/50',
-                  color: 'pink.300',
-                  _hover: { bg: 'pink.500/30' },
+                  borderColor: 'cyan.500/50',
+                  color: 'cyan.300',
+                  _hover: { bg: 'cyan.500/30' },
                   _disabled: { opacity: '0.5', cursor: 'not-allowed' },
                 })}
               >

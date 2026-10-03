@@ -3,6 +3,7 @@
 import { AlertCircle, Check, Copy, Database, Maximize2, Minimize2, RotateCcw } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import { formatSQL, minifySQL, SQL_DIALECTS, SQL_EXAMPLES, type SQLDialect } from './templates'
@@ -128,41 +129,13 @@ export default function SQLFormatterPage() {
       })}
     >
       {/* Header */}
-      <div className={css({ spaceY: { base: '3', sm: '4' }, textAlign: 'center' })}>
-        <div className={css({ display: 'inline-flex', alignItems: 'center', gap: 3 })}>
-          <Database
-            className={css({
-              w: { base: '8', sm: '10' },
-              h: { base: '8', sm: '10' },
-              color: 'blue.400',
-            })}
-          />
-          <h1
-            className={css({
-              fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-              fontWeight: 'extrabold',
-              bgGradient: 'to-r',
-              gradientFrom: 'blue.400',
-              gradientTo: 'cyan.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            SQL Formatter
-          </h1>
-        </div>
-        <p
-          className={css({
-            fontSize: { base: 'base', sm: 'lg' },
-            color: 'gray.400',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Format, beautify, and minify SQL queries with syntax highlighting. Supports multiple SQL
-          dialects including MySQL, PostgreSQL, SQLite, and SQL Server.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="SQL Formatter"
+        description="Format, beautify, and minify SQL queries with syntax highlighting. Supports multiple SQL dialects including MySQL, PostgreSQL, SQLite, and SQL Server."
+        eyebrow="Code formatter"
+        icon={Database}
+        highlights={['Format and minify', 'Dialect support']}
+      />
 
       {/* Settings */}
       <div

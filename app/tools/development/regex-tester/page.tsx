@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -132,57 +133,21 @@ export default function RegexTesterPage() {
       })}
     >
       {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            px: '4',
-            py: '2',
-            bg: 'rgba(139, 92, 246, 0.1)',
-            borderRadius: 'full',
-            border: '1px solid',
-            borderColor: 'rgba(139, 92, 246, 0.2)',
-          })}
-        >
-          <Search className={css({ w: '5', h: '5', color: 'purple.400' })} />
-          <span className={css({ fontSize: 'sm', color: 'purple.300' })}>Development Tool</span>
-        </div>
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientTo: 'pink.400',
-            backgroundClip: 'text',
-            color: 'transparent',
-          })}
-        >
-          Regex Tester
-        </h1>
-        <p
-          className={css({
-            fontSize: { base: 'md', sm: 'lg' },
-            color: 'rgba(255, 255, 255, 0.7)',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Test and validate regular expressions with live matching, syntax highlighting, and code
-          generation for multiple languages
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="Regex Tester"
+        description="Test and validate regular expressions with live matching, syntax highlighting, and ready-to-use code."
+        eyebrow="Developer workspace"
+        icon={Search}
+        highlights={['Live matching', 'Multi-language code']}
+      />
 
       {/* Pattern Library */}
       <div
         className={css({
-          bg: 'rgba(17, 24, 39, 0.4)',
-          backdropFilter: 'blur(12px)',
+          bg: 'brand.surface',
           borderRadius: 'xl',
           border: '1px solid',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: 'brand.line',
           p: { base: '4', sm: '6' },
           spaceY: '4',
         })}
@@ -201,7 +166,7 @@ export default function RegexTesterPage() {
           })}
         >
           <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-            <FileText className={css({ w: '5', h: '5', color: 'purple.400' })} />
+            <FileText className={css({ w: '5', h: '5', color: 'brand.blue' })} />
             <h2 className={css({ fontSize: 'lg', fontWeight: '600', color: 'white' })}>
               Common Patterns
             </h2>
@@ -210,7 +175,7 @@ export default function RegexTesterPage() {
             className={css({
               w: '5',
               h: '5',
-              color: 'rgba(255, 255, 255, 0.5)',
+              color: 'brand.muted',
               transform: showPatterns ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 0.2s',
             })}
@@ -235,13 +200,13 @@ export default function RegexTesterPage() {
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    bg: selectedCategory === category ? 'purple.500' : 'rgba(255, 255, 255, 0.05)',
+                    bg: selectedCategory === category ? 'blue.500' : 'rgba(255, 255, 255, 0.05)',
                     color: selectedCategory === category ? 'white' : 'rgba(255, 255, 255, 0.7)',
                     border: '1px solid',
                     borderColor:
-                      selectedCategory === category ? 'purple.400' : 'rgba(255, 255, 255, 0.1)',
+                      selectedCategory === category ? 'brand.blue' : 'rgba(255, 255, 255, 0.1)',
                     _hover: {
-                      bg: selectedCategory === category ? 'purple.600' : 'rgba(255, 255, 255, 0.1)',
+                      bg: selectedCategory === category ? 'blue.600' : 'rgba(255, 255, 255, 0.1)',
                     },
                   })}
                   data-touch-chip
@@ -267,16 +232,16 @@ export default function RegexTesterPage() {
                   onClick={() => loadPattern(regexPattern)}
                   className={css({
                     p: '4',
-                    bg: 'rgba(255, 255, 255, 0.03)',
+                    bg: 'brand.canvas',
                     borderRadius: 'lg',
                     border: '1px solid',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderColor: 'brand.line',
                     textAlign: 'left',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                     _hover: {
-                      bg: 'rgba(255, 255, 255, 0.05)',
-                      borderColor: 'purple.400',
+                      bg: 'brand.surfaceRaised',
+                      borderColor: 'brand.blue',
                     },
                   })}
                 >
@@ -286,7 +251,7 @@ export default function RegexTesterPage() {
                   <div
                     className={css({
                       fontSize: 'sm',
-                      color: 'rgba(255, 255, 255, 0.6)',
+                      color: 'brand.muted',
                       mb: '2',
                     })}
                   >
@@ -296,8 +261,8 @@ export default function RegexTesterPage() {
                     className={css({
                       fontSize: 'xs',
                       fontFamily: 'mono',
-                      color: 'purple.300',
-                      bg: 'rgba(139, 92, 246, 0.1)',
+                      color: 'brand.cyan',
+                      bg: 'blue.500/10',
                       px: '2',
                       py: '1',
                       borderRadius: 'md',
@@ -316,17 +281,16 @@ export default function RegexTesterPage() {
       {/* Regex Pattern Input */}
       <div
         className={css({
-          bg: 'rgba(17, 24, 39, 0.4)',
-          backdropFilter: 'blur(12px)',
+          bg: 'brand.surface',
           borderRadius: 'xl',
           border: '1px solid',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: 'brand.line',
           p: { base: '4', sm: '6' },
           spaceY: '4',
         })}
       >
         <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-          <Code className={css({ w: '5', h: '5', color: 'purple.400' })} />
+          <Code className={css({ w: '5', h: '5', color: 'brand.blue' })} />
           <h2 className={css({ fontSize: 'lg', fontWeight: '600', color: 'white' })}>
             Regular Expression
           </h2>
@@ -340,7 +304,7 @@ export default function RegexTesterPage() {
               display: 'block',
               fontSize: 'sm',
               fontWeight: '500',
-              color: 'rgba(255, 255, 255, 0.9)',
+              color: 'brand.ink',
               mb: '2',
             })}
           >
@@ -354,7 +318,7 @@ export default function RegexTesterPage() {
                 top: '50%',
                 transform: 'translateY(-50%)',
                 fontSize: 'sm',
-                color: 'rgba(255, 255, 255, 0.5)',
+                color: 'brand.muted',
                 fontFamily: 'mono',
               })}
             >
@@ -372,7 +336,7 @@ export default function RegexTesterPage() {
                 py: '3',
                 pl: '6',
                 pr: '16',
-                bg: 'rgba(0, 0, 0, 0.3)',
+                bg: 'brand.canvas',
                 border: '1px solid',
                 borderColor: isValid ? 'rgba(255, 255, 255, 0.2)' : 'red.500',
                 borderRadius: 'lg',
@@ -382,13 +346,13 @@ export default function RegexTesterPage() {
                 outline: 'none',
                 transition: 'all 0.2s',
                 _focus: {
-                  borderColor: isValid ? 'purple.400' : 'red.500',
+                  borderColor: isValid ? 'brand.blue' : 'red.500',
                   boxShadow: isValid
-                    ? '0 0 0 3px rgba(139, 92, 246, 0.1)'
+                    ? '0 0 0 3px rgba(107, 165, 255, 0.28)'
                     : '0 0 0 3px rgba(239, 68, 68, 0.1)',
                 },
                 _placeholder: {
-                  color: 'rgba(255, 255, 255, 0.4)',
+                  color: 'brand.muted',
                 },
               })}
             />
@@ -412,7 +376,7 @@ export default function RegexTesterPage() {
               <div
                 className={css({
                   fontSize: 'sm',
-                  color: 'rgba(255, 255, 255, 0.5)',
+                  color: 'brand.muted',
                   fontFamily: 'mono',
                 })}
               >
@@ -442,7 +406,7 @@ export default function RegexTesterPage() {
           <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '2' })}>
             <div className={css({ fontSize: 'sm', fontWeight: '500', color: 'white' })}>Flags</div>
             <div className={css({ position: 'relative', display: 'inline-block' })}>
-              <Info className={css({ w: '4', h: '4', color: 'rgba(255, 255, 255, 0.5)' })} />
+              <Info className={css({ w: '4', h: '4', color: 'brand.muted' })} />
             </div>
           </div>
           <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
@@ -461,12 +425,12 @@ export default function RegexTesterPage() {
                   fontFamily: 'mono',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  bg: flags.includes(flag) ? 'purple.500' : 'rgba(255, 255, 255, 0.05)',
+                  bg: flags.includes(flag) ? 'blue.500' : 'rgba(255, 255, 255, 0.05)',
                   color: flags.includes(flag) ? 'white' : 'rgba(255, 255, 255, 0.7)',
                   border: '1px solid',
-                  borderColor: flags.includes(flag) ? 'purple.400' : 'rgba(255, 255, 255, 0.1)',
+                  borderColor: flags.includes(flag) ? 'brand.blue' : 'rgba(255, 255, 255, 0.1)',
                   _hover: {
-                    bg: flags.includes(flag) ? 'purple.600' : 'rgba(255, 255, 255, 0.1)',
+                    bg: flags.includes(flag) ? 'blue.600' : 'rgba(255, 255, 255, 0.1)',
                   },
                   display: 'flex',
                   alignItems: 'center',
@@ -478,7 +442,7 @@ export default function RegexTesterPage() {
               </button>
             ))}
           </div>
-          <div className={css({ fontSize: 'xs', color: 'rgba(255, 255, 255, 0.5)', mt: '2' })}>
+          <div className={css({ fontSize: 'xs', color: 'brand.muted', mt: '2' })}>
             Hover over flags to see their descriptions
           </div>
         </div>
@@ -492,9 +456,9 @@ export default function RegexTesterPage() {
             className={css({
               px: '4',
               py: '2',
-              bg: 'rgba(255, 255, 255, 0.05)',
+              bg: 'brand.surfaceRaised',
               border: '1px solid',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'brand.line',
               borderRadius: 'lg',
               fontSize: 'sm',
               fontWeight: '500',
@@ -505,7 +469,7 @@ export default function RegexTesterPage() {
               alignItems: 'center',
               gap: '2',
               _hover: {
-                bg: 'rgba(255, 255, 255, 0.1)',
+                bg: 'brand.surfaceRaised',
               },
               _disabled: {
                 opacity: 0.5,
@@ -522,9 +486,9 @@ export default function RegexTesterPage() {
             className={css({
               px: '4',
               py: '2',
-              bg: 'rgba(255, 255, 255, 0.05)',
+              bg: 'brand.surfaceRaised',
               border: '1px solid',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'brand.line',
               borderRadius: 'lg',
               fontSize: 'sm',
               fontWeight: '500',
@@ -535,7 +499,7 @@ export default function RegexTesterPage() {
               alignItems: 'center',
               gap: '2',
               _hover: {
-                bg: 'rgba(255, 255, 255, 0.1)',
+                bg: 'brand.surfaceRaised',
               },
             })}
           >
@@ -548,17 +512,16 @@ export default function RegexTesterPage() {
       {/* Test String Input */}
       <div
         className={css({
-          bg: 'rgba(17, 24, 39, 0.4)',
-          backdropFilter: 'blur(12px)',
+          bg: 'brand.surface',
           borderRadius: 'xl',
           border: '1px solid',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: 'brand.line',
           p: { base: '4', sm: '6' },
           spaceY: '4',
         })}
       >
         <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-          <FileText className={css({ w: '5', h: '5', color: 'purple.400' })} />
+          <FileText className={css({ w: '5', h: '5', color: 'brand.blue' })} />
           <h2 className={css({ fontSize: 'lg', fontWeight: '600', color: 'white' })}>
             Test String
           </h2>
@@ -571,7 +534,7 @@ export default function RegexTesterPage() {
               display: 'block',
               fontSize: 'sm',
               fontWeight: '500',
-              color: 'rgba(255, 255, 255, 0.9)',
+              color: 'brand.ink',
               mb: '2',
             })}
           >
@@ -587,9 +550,9 @@ export default function RegexTesterPage() {
               w: 'full',
               px: '3',
               py: '3',
-              bg: 'rgba(0, 0, 0, 0.3)',
+              bg: 'brand.canvas',
               border: '1px solid',
-              borderColor: 'rgba(255, 255, 255, 0.2)',
+              borderColor: 'brand.line',
               borderRadius: 'lg',
               color: 'white',
               fontSize: 'sm',
@@ -598,11 +561,11 @@ export default function RegexTesterPage() {
               resize: 'vertical',
               transition: 'all 0.2s',
               _focus: {
-                borderColor: 'purple.400',
-                boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.1)',
+                borderColor: 'brand.blue',
+                boxShadow: '0 0 0 3px rgba(107, 165, 255, 0.28)',
               },
               _placeholder: {
-                color: 'rgba(255, 255, 255, 0.4)',
+                color: 'brand.muted',
               },
             })}
           />
@@ -613,17 +576,17 @@ export default function RegexTesterPage() {
           <div
             className={css({
               p: '4',
-              bg: 'rgba(0, 0, 0, 0.3)',
+              bg: 'brand.canvas',
               borderRadius: 'lg',
               border: '1px solid',
-              borderColor: matches.length > 0 ? 'green.500/20' : 'rgba(255, 255, 255, 0.1)',
+              borderColor: matches.length > 0 ? 'green.500/20' : 'brand.line',
             })}
           >
             <div className={css({ display: 'flex', alignItems: 'center', gap: '2', mb: '3' })}>
               {matches.length > 0 ? (
                 <CheckCircle2 className={css({ w: '5', h: '5', color: 'green.400' })} />
               ) : (
-                <XCircle className={css({ w: '5', h: '5', color: 'rgba(255, 255, 255, 0.5)' })} />
+                <XCircle className={css({ w: '5', h: '5', color: 'brand.muted' })} />
               )}
               <span className={css({ fontSize: 'sm', fontWeight: '600', color: 'white' })}>
                 {matches.length > 0
@@ -661,7 +624,7 @@ export default function RegexTesterPage() {
                   ) : (
                     <span
                       key={`text-${idx}-${segment.text.slice(0, 10)}`}
-                      className={css({ color: 'rgba(255, 255, 255, 0.7)' })}
+                      className={css({ color: 'brand.muted' })}
                     >
                       {segment.text}
                     </span>
@@ -677,7 +640,7 @@ export default function RegexTesterPage() {
                   className={css({
                     fontSize: 'xs',
                     fontWeight: '600',
-                    color: 'rgba(255, 255, 255, 0.7)',
+                    color: 'brand.muted',
                     textTransform: 'uppercase',
                     letterSpacing: 'wide',
                   })}
@@ -689,18 +652,18 @@ export default function RegexTesterPage() {
                     key={`match-${match.index}-${match.match.slice(0, 10)}`}
                     className={css({
                       p: '2',
-                      bg: 'rgba(255, 255, 255, 0.03)',
+                      bg: 'brand.canvas',
                       borderRadius: 'md',
                       fontSize: 'xs',
                       fontFamily: 'mono',
                     })}
                   >
-                    <div className={css({ color: 'rgba(255, 255, 255, 0.5)' })}>
+                    <div className={css({ color: 'brand.muted' })}>
                       Match {idx + 1} at index {match.index}:
                     </div>
                     <div className={css({ color: 'green.300', mt: '1' })}>"{match.match}"</div>
                     {match.groups && Object.keys(match.groups).length > 0 && (
-                      <div className={css({ mt: '1', color: 'rgba(255, 255, 255, 0.6)' })}>
+                      <div className={css({ mt: '1', color: 'brand.muted' })}>
                         Groups: {JSON.stringify(match.groups)}
                       </div>
                     )}
@@ -715,11 +678,10 @@ export default function RegexTesterPage() {
       {/* Code Generation */}
       <div
         className={css({
-          bg: 'rgba(17, 24, 39, 0.4)',
-          backdropFilter: 'blur(12px)',
+          bg: 'brand.surface',
           borderRadius: 'xl',
           border: '1px solid',
-          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: 'brand.line',
           p: { base: '4', sm: '6' },
           spaceY: '4',
         })}
@@ -737,7 +699,7 @@ export default function RegexTesterPage() {
           })}
         >
           <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-            <Code className={css({ w: '5', h: '5', color: 'purple.400' })} />
+            <Code className={css({ w: '5', h: '5', color: 'brand.blue' })} />
             <h2 className={css({ fontSize: 'lg', fontWeight: '600', color: 'white' })}>
               Code Generation
             </h2>
@@ -746,7 +708,7 @@ export default function RegexTesterPage() {
             className={css({
               w: '5',
               h: '5',
-              color: 'rgba(255, 255, 255, 0.5)',
+              color: 'brand.muted',
               transform: showCode ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 0.2s',
             })}
@@ -763,7 +725,7 @@ export default function RegexTesterPage() {
                   display: 'block',
                   fontSize: 'sm',
                   fontWeight: '500',
-                  color: 'rgba(255, 255, 255, 0.9)',
+                  color: 'brand.ink',
                   mb: '2',
                 })}
               >
@@ -777,17 +739,17 @@ export default function RegexTesterPage() {
                   w: 'full',
                   px: '3',
                   py: '2',
-                  bg: 'rgba(0, 0, 0, 0.3)',
+                  bg: 'brand.canvas',
                   border: '1px solid',
-                  borderColor: 'rgba(255, 255, 255, 0.2)',
+                  borderColor: 'brand.line',
                   borderRadius: 'lg',
                   color: 'white',
                   fontSize: 'sm',
                   outline: 'none',
                   cursor: 'pointer',
                   _focus: {
-                    borderColor: 'purple.400',
-                    boxShadow: '0 0 0 3px rgba(139, 92, 246, 0.1)',
+                    borderColor: 'brand.blue',
+                    boxShadow: '0 0 0 3px rgba(107, 165, 255, 0.28)',
                   },
                 })}
               >
@@ -814,7 +776,7 @@ export default function RegexTesterPage() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: '500',
-                      color: 'rgba(255, 255, 255, 0.9)',
+                      color: 'brand.ink',
                     })}
                   >
                     Generated Code
@@ -825,7 +787,7 @@ export default function RegexTesterPage() {
                     className={css({
                       px: '3',
                       py: '1.5',
-                      bg: 'purple.500',
+                      bg: 'blue.500',
                       borderRadius: 'lg',
                       fontSize: 'sm',
                       fontWeight: '500',
@@ -836,7 +798,7 @@ export default function RegexTesterPage() {
                       alignItems: 'center',
                       gap: '2',
                       _hover: {
-                        bg: 'purple.600',
+                        bg: 'blue.600',
                       },
                     })}
                   >
@@ -847,13 +809,13 @@ export default function RegexTesterPage() {
                 <pre
                   className={css({
                     p: '4',
-                    bg: 'rgba(0, 0, 0, 0.3)',
+                    bg: 'brand.canvas',
                     borderRadius: 'lg',
                     border: '1px solid',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderColor: 'brand.line',
                     fontSize: 'sm',
                     fontFamily: 'mono',
-                    color: 'rgba(255, 255, 255, 0.9)',
+                    color: 'brand.ink',
                     overflowX: 'auto',
                     lineHeight: '1.6',
                   })}
@@ -869,9 +831,9 @@ export default function RegexTesterPage() {
       {/* Tips */}
       <div
         className={css({
-          bg: 'rgba(59, 130, 246, 0.1)',
+          bg: 'blue.500/10',
           border: '1px solid',
-          borderColor: 'rgba(59, 130, 246, 0.2)',
+          borderColor: 'blue.500/30',
           borderRadius: 'xl',
           p: { base: '4', sm: '6' },
         })}
@@ -882,7 +844,7 @@ export default function RegexTesterPage() {
             <h3 className={css({ fontSize: 'sm', fontWeight: '600', color: 'white', mb: '2' })}>
               Quick Tips
             </h3>
-            <ul className={css({ fontSize: 'sm', color: 'rgba(255, 255, 255, 0.7)', spaceY: '1' })}>
+            <ul className={css({ fontSize: 'sm', color: 'brand.muted', spaceY: '1' })}>
               <li>• Use the common patterns library to get started quickly</li>
               <li>• Test with multiple strings to ensure your regex works in all cases</li>
               <li>• Enable the 'g' flag to find all matches instead of just the first one</li>

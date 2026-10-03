@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -222,63 +223,13 @@ function JWTDebuggerContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/30',
-            bg: 'blue.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <ShieldCheck className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.300' })}>
-            Decode • Verify • Generate
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'cyan.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-            color: 'transparent',
-            letterSpacing: 'tight',
-          })}
-        >
-          JWT Debugger
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: { base: 'lg', md: 'xl' },
-            color: 'white',
-            lineHeight: 'relaxed',
-          })}
-        >
-          Decode, verify, and generate JSON Web Tokens with full algorithm support and claims
-          validation
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="JWT Debugger"
+        description="Decode, verify, and generate JSON Web Tokens with full algorithm support and claims validation"
+        eyebrow="Token inspector"
+        icon={ShieldCheck}
+        highlights={['Decode and verify', 'Claims']}
+      />
 
       {/* Main Content */}
       <div

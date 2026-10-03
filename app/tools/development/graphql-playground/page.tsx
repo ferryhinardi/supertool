@@ -7,6 +7,7 @@ import {
   Copy,
   Download,
   History,
+  Network,
   Play,
   Settings,
   Sparkles,
@@ -14,7 +15,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -292,42 +293,13 @@ query GetFilm {
       <div
         className={css({ spaceY: '4', animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}
       >
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'start',
-            justifyContent: 'space-between',
-            gap: '4',
-            flexWrap: 'wrap',
-          })}
-        >
-          <div className={css({ spaceY: '2', flex: '1', minW: '0' })}>
-            <h1
-              className={css({
-                fontSize: { base: '3xl', sm: '4xl' },
-                fontWeight: 'bold',
-                background: 'linear-gradient(to right, #7c3aed, #ec4899)',
-                backgroundClip: 'text',
-                color: 'transparent',
-              })}
-            >
-              GraphQL Playground
-            </h1>
-            <p className={css({ color: 'gray.400', fontSize: { base: 'sm', sm: 'base' } })}>
-              Test GraphQL APIs with query builder, schema explorer, and real-time validation
-            </p>
-          </div>
-          <div className={css({ display: 'flex', gap: '2', flexWrap: 'wrap' })}>
-            <Badge variant="secondary">
-              <Sparkles className={css({ w: '3', h: '3' })} />
-              Interactive
-            </Badge>
-            <Badge variant="secondary">
-              <Code className={css({ w: '3', h: '3' })} />
-              Developer Tool
-            </Badge>
-          </div>
-        </div>
+        <DevelopmentToolHeader
+          title="GraphQL Playground"
+          description="Test GraphQL APIs with query builder, schema explorer, and real-time validation"
+          eyebrow="API debugging"
+          icon={Network}
+          highlights={['Interactive', 'Response inspector']}
+        />
 
         {/* Tool Search */}
         <Suspense fallback={<div>Loading...</div>}>
@@ -530,7 +502,7 @@ query GetFilm {
                         transition: 'all 0.2s',
                         w: 'full',
                         textAlign: 'left',
-                        _hover: { borderColor: 'purple.500', bg: 'gray.800' },
+                        _hover: { borderColor: 'blue.500', bg: 'gray.800' },
                       })}
                       onClick={() => loadFromHistory(item)}
                     >
@@ -639,8 +611,8 @@ function Feature({
         className={css({
           p: '2',
           rounded: 'lg',
-          bg: 'purple.500/10',
-          color: 'purple.400',
+          bg: 'blue.500/10',
+          color: 'blue.400',
           flexShrink: '0',
         })}
       >

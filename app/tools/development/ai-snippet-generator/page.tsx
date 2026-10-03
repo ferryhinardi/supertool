@@ -3,6 +3,7 @@
 import { Braces, Check, Code, Copy, Lightbulb, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -143,64 +144,13 @@ function AISnippetGeneratorContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'orange.500/30',
-            bg: 'orange.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Braces className={css({ h: '5', w: '5', color: 'orange.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'orange.300' })}>
-            AI-Powered • Multi-Language • Context-Aware
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'orange.400',
-            gradientVia: 'amber.400',
-            gradientTo: 'yellow.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          AI Snippet Generator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Generate code snippets instantly with AI. Create functions, classes, regex patterns, SQL
-          queries, and more. Describe what you need, and let AI write the code for you.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="AI Snippet Generator"
+        description="Generate code snippets instantly with AI. Create functions, classes, regex patterns, SQL queries, and more. Describe what you need, and let AI write the code for you."
+        eyebrow="AI developer assistant"
+        icon={Braces}
+        highlights={['Generated snippet', 'Language choice']}
+      />
 
       {/* Prompt Input Section */}
       <div

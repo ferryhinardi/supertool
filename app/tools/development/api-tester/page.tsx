@@ -25,6 +25,7 @@ import { nanoid } from 'nanoid'
 import { Suspense, useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
+import { DevelopmentToolHeader } from '@/components/features/tools/DevelopmentToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -635,64 +636,13 @@ function ApiTesterContent() {
       })}
     >
       {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/30',
-            bg: 'blue.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Terminal className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.300' })}>
-            REST API Testing Tool
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'cyan.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          API Request Tester
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Test REST APIs directly in your browser. Send requests with custom headers, body, and
-          authentication. Save presets and track history.
-        </p>
-      </div>
+      <DevelopmentToolHeader
+        title="API Request Tester"
+        description="Test REST APIs directly in your browser. Send requests with custom headers, body, and authentication. Save presets and track history."
+        eyebrow="API debugging"
+        icon={Terminal}
+        highlights={['HTTP methods', 'Saved presets']}
+      />
 
       {/* Actions */}
       <div
@@ -764,7 +714,7 @@ function ApiTesterContent() {
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'purple.500/20',
+              borderColor: 'blue.500/20',
               bg: 'gray.900/50',
               backdropFilter: 'blur(16px)',
             })}
@@ -804,7 +754,7 @@ function ApiTesterContent() {
                         borderColor: 'gray.700',
                         bg: 'gray.800/50',
                         p: '4',
-                        _hover: { bg: 'gray.800', borderColor: 'purple.500/50' },
+                        _hover: { bg: 'gray.800', borderColor: 'blue.500/50' },
                       })}
                     >
                       <button
