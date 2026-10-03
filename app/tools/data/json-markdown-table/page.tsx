@@ -4,6 +4,8 @@ import { AlertCircle, Copy, Download, RefreshCw, Table } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass, dataSplitClass } from '@/components/features/tools/data-workspace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
@@ -193,71 +195,14 @@ export default function JSONToMarkdownTablePage() {
 
   return (
     <TooltipProvider>
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '1400px',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '4', sm: '6', md: '8' },
-        })}
-      >
-        {/* Header */}
-        <div className={css({ spaceY: '3' })}>
-          <div
-            className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
-          >
-            <div
-              className={css({
-                animation: 'pulse',
-                rounded: { base: 'xl', sm: '2xl' },
-                bgGradient: 'to-br',
-                gradientFrom: 'purple.600',
-                gradientVia: 'pink.600',
-                gradientTo: 'purple.700',
-                p: { base: '2.5', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px -12px rgba(168, 85, 247, 0.6)',
-              })}
-              style={{ animationDuration: '2s' }}
-            >
-              <Table
-                className={css({
-                  h: { base: '6', sm: '8' },
-                  w: { base: '6', sm: '8' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'purple.300',
-                  gradientVia: 'pink.400',
-                  gradientTo: 'purple.300',
-                  bgClip: 'text',
-                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                  fontWeight: 'extrabold',
-                  color: 'transparent',
-                  filter:
-                    'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))',
-                })}
-              >
-                JSON to Markdown Table
-              </h1>
-              <p
-                className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.200',
-                })}
-              >
-                Convert JSON arrays to beautifully formatted Markdown tables
-              </p>
-            </div>
-          </div>
-        </div>
+      <main className={dataPageMainClass}>
+        <DataToolHeader
+          icon={Table}
+          eyebrow="Data Processing"
+          title="JSON to Markdown Table"
+          description="Convert JSON arrays to beautifully formatted Markdown tables"
+          highlights={['Custom headers', 'Column alignment', 'Copy and download']}
+        />
 
         {/* Stats Bar */}
         <div
@@ -271,7 +216,6 @@ export default function JSONToMarkdownTablePage() {
             boxShadow: isValid
               ? '0 20px 25px rgba(168, 85, 247, 0.2)'
               : '0 20px 25px rgba(239, 68, 68, 0.2)',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <div
@@ -344,7 +288,6 @@ export default function JSONToMarkdownTablePage() {
                   variant="success"
                   size="sm"
                   className={css({
-                    animation: 'pulse',
                     bgGradient: 'to-r',
                     gradientFrom: 'purple.500',
                     gradientTo: 'pink.600',
@@ -375,9 +318,8 @@ export default function JSONToMarkdownTablePage() {
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
             borderColor: 'purple.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
+            bg: 'brand.surface',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
           })}
         >
           <h2
@@ -462,6 +404,142 @@ export default function JSONToMarkdownTablePage() {
           </div>
         </div>
 
+        <div className={dataSplitClass}>
+          {/* JSON Input Editor */}
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'purple.500/20',
+              bg: 'brand.surface',
+              overflow: 'hidden',
+            })}
+          >
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderBottom: '1px solid',
+                borderColor: 'purple.500/20',
+                bg: 'rgba(168, 85, 247, 0.05)',
+                px: { base: '4', sm: '6' },
+                py: '3',
+              })}
+            >
+              <h3
+                className={css({
+                  fontSize: { base: 'sm', sm: 'base' },
+                  fontWeight: 'semibold',
+                  color: 'purple.300',
+                })}
+              >
+                JSON Input
+              </h3>
+            </div>
+            {jsonExtension && (
+              <CodeMirror
+                value={jsonInput}
+                height="300px"
+                extensions={[jsonExtension]}
+                onChange={setJsonInput}
+                theme="dark"
+                basicSetup={{
+                  lineNumbers: true,
+                  highlightActiveLineGutter: true,
+                  highlightSpecialChars: true,
+                  foldGutter: true,
+                  drawSelection: true,
+                  dropCursor: true,
+                  allowMultipleSelections: true,
+                  indentOnInput: true,
+                  bracketMatching: true,
+                  closeBrackets: true,
+                  autocompletion: true,
+                  rectangularSelection: true,
+                  crosshairCursor: true,
+                  highlightActiveLine: true,
+                  highlightSelectionMatches: true,
+                  closeBracketsKeymap: true,
+                  searchKeymap: true,
+                  foldKeymap: true,
+                  completionKeymap: true,
+                  lintKeymap: true,
+                }}
+                className={css({ fontSize: { base: 'sm', sm: 'base' } })}
+              />
+            )}
+          </div>
+
+          {/* Markdown Output Preview */}
+          <div
+            className={css({
+              rounded: { base: 'xl', sm: '2xl' },
+              border: '2px solid',
+              borderColor: 'pink.500/20',
+              bg: 'brand.surface',
+              overflow: 'hidden',
+            })}
+          >
+            <div
+              className={css({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderBottom: '1px solid',
+                borderColor: 'pink.500/20',
+                bg: 'rgba(236, 72, 153, 0.05)',
+                px: { base: '4', sm: '6' },
+                py: '3',
+              })}
+            >
+              <h3
+                className={css({
+                  fontSize: { base: 'sm', sm: 'base' },
+                  fontWeight: 'semibold',
+                  color: 'pink.300',
+                })}
+              >
+                Markdown Output Preview
+              </h3>
+            </div>
+            <div
+              className={css({
+                minH: '240px',
+                maxH: { base: '360px', lg: '480px' },
+                overflow: 'auto',
+                p: { base: '4', sm: '6' },
+              })}
+            >
+              {isValid && markdownOutput ? (
+                <pre
+                  className={css({
+                    fontFamily: 'mono',
+                    fontSize: { base: 'xs', sm: 'sm' },
+                    color: 'white',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-all',
+                  })}
+                >
+                  {markdownOutput}
+                </pre>
+              ) : (
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    py: '8',
+                    color: 'white',
+                  })}
+                >
+                  Enter valid JSON array to see Markdown table
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div
           className={css({
@@ -543,141 +621,6 @@ export default function JSONToMarkdownTablePage() {
             </TooltipTrigger>
             <TooltipContent>Reset to default example</TooltipContent>
           </Tooltip>
-        </div>
-
-        {/* JSON Input Editor */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'purple.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
-            overflow: 'hidden',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderBottom: '1px solid',
-              borderColor: 'purple.500/20',
-              bg: 'rgba(168, 85, 247, 0.05)',
-              px: { base: '4', sm: '6' },
-              py: '3',
-            })}
-          >
-            <h3
-              className={css({
-                fontSize: { base: 'sm', sm: 'base' },
-                fontWeight: 'semibold',
-                color: 'purple.300',
-              })}
-            >
-              JSON Input
-            </h3>
-          </div>
-          {jsonExtension && (
-            <CodeMirror
-              value={jsonInput}
-              height="300px"
-              extensions={[jsonExtension]}
-              onChange={setJsonInput}
-              theme="dark"
-              basicSetup={{
-                lineNumbers: true,
-                highlightActiveLineGutter: true,
-                highlightSpecialChars: true,
-                foldGutter: true,
-                drawSelection: true,
-                dropCursor: true,
-                allowMultipleSelections: true,
-                indentOnInput: true,
-                bracketMatching: true,
-                closeBrackets: true,
-                autocompletion: true,
-                rectangularSelection: true,
-                crosshairCursor: true,
-                highlightActiveLine: true,
-                highlightSelectionMatches: true,
-                closeBracketsKeymap: true,
-                searchKeymap: true,
-                foldKeymap: true,
-                completionKeymap: true,
-                lintKeymap: true,
-              }}
-              className={css({ fontSize: { base: 'sm', sm: 'base' } })}
-            />
-          )}
-        </div>
-
-        {/* Markdown Output Preview */}
-        <div
-          className={css({
-            rounded: { base: 'xl', sm: '2xl' },
-            border: '2px solid',
-            borderColor: 'pink.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
-            overflow: 'hidden',
-            backdropFilter: 'blur(16px)',
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderBottom: '1px solid',
-              borderColor: 'pink.500/20',
-              bg: 'rgba(236, 72, 153, 0.05)',
-              px: { base: '4', sm: '6' },
-              py: '3',
-            })}
-          >
-            <h3
-              className={css({
-                fontSize: { base: 'sm', sm: 'base' },
-                fontWeight: 'semibold',
-                color: 'pink.300',
-              })}
-            >
-              Markdown Output Preview
-            </h3>
-          </div>
-          <div
-            className={css({
-              maxH: '300px',
-              overflow: 'auto',
-              p: { base: '4', sm: '6' },
-            })}
-          >
-            {isValid && markdownOutput ? (
-              <pre
-                className={css({
-                  fontFamily: 'mono',
-                  fontSize: { base: 'xs', sm: 'sm' },
-                  color: 'white',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-all',
-                })}
-              >
-                {markdownOutput}
-              </pre>
-            ) : (
-              <div
-                className={css({
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  py: '8',
-                  color: 'white',
-                })}
-              >
-                Enter valid JSON array to see Markdown table
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Global Tool Search Dialog (Cmd+K / Ctrl+K) */}

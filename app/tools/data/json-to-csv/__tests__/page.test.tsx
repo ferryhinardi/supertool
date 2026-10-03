@@ -137,7 +137,7 @@ describe('JSON to CSV Converter Page', () => {
 
     it('displays valid status for default JSON', async () => {
       render(<JSONToCSVPage />)
-      expect(screen.getByText('✅ Valid')).toBeTruthy()
+      expect(screen.getByText('Valid')).toBeTruthy()
     })
 
     it('shows correct statistics for default JSON', async () => {
@@ -178,7 +178,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: simpleJSON } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -205,7 +205,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: jsonWithEmpty } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -220,7 +220,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: jsonWithNull } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -235,7 +235,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: jsonWithNumbers } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -250,7 +250,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: jsonWithBooleans } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
   })
@@ -318,7 +318,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(delimiterInput, { target: { value: ';' } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
   })
@@ -340,7 +340,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: nestedJSON } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -368,7 +368,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: jsonWithArrays } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -383,7 +383,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: deeplyNestedJSON } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
   })
@@ -400,7 +400,7 @@ describe('JSON to CSV Converter Page', () => {
       // Wait for the component to render with valid CSV
       await waitFor(
         () => {
-          expect(screen.getByText('✅ Valid')).toBeTruthy()
+          expect(screen.getByText('Valid')).toBeTruthy()
         },
         { timeout: 5000 }
       )
@@ -707,7 +707,7 @@ describe('JSON to CSV Converter Page', () => {
       await waitFor(
         () => {
           // Check that the Valid badge is NOT present (indicating error state)
-          const validBadge = screen.queryByText('✅ Valid')
+          const validBadge = screen.queryByText('Valid')
           expect(validBadge).toBeNull()
 
           // Should show some error text or AlertCircle icon
@@ -777,7 +777,7 @@ describe('JSON to CSV Converter Page', () => {
 
     it('shows valid badge when conversion succeeds', async () => {
       render(<JSONToCSVPage />)
-      const validBadge = screen.getByText('✅ Valid')
+      const validBadge = screen.getByText('Valid')
       expect(validBadge).toBeTruthy()
     })
   })
@@ -805,7 +805,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: newJSON } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -846,7 +846,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: jsonWithCommas } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -861,7 +861,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: jsonWithQuotes } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -876,7 +876,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: jsonWithNewlines } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
   })
@@ -958,7 +958,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: largeArray } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -975,7 +975,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: wideObject } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -990,7 +990,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: inconsistentJSON } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -1005,7 +1005,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: specialCharsJSON } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -1020,7 +1020,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: unicodeJSON } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
 
@@ -1035,7 +1035,7 @@ describe('JSON to CSV Converter Page', () => {
       fireEvent.change(editor, { target: { value: emptyObjectJSON } })
 
       await waitFor(async () => {
-        expect(screen.getByText('✅ Valid')).toBeTruthy()
+        expect(screen.getByText('Valid')).toBeTruthy()
       })
     })
   })

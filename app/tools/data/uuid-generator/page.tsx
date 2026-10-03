@@ -3,6 +3,8 @@
 import { Check, Copy, Hash, Info, Loader2, RefreshCw, Sparkles, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass } from '@/components/features/tools/data-workspace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -181,90 +183,22 @@ export default function UUIDGeneratorPage() {
   }
 
   return (
-    <main
-      className={css({
-        mx: 'auto',
-        maxW: '7xl',
-        w: 'full',
-        px: { base: '4', sm: '6', md: '8' },
-        py: { base: '6', sm: '8', md: '10' },
-        spaceY: { base: '6', sm: '8', md: '10' },
-      })}
-    >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/30',
-            bg: 'blue.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Hash className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.300' })}>
-            UUID v1-v5 • Bulk Generation
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'cyan.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          UUID Generator & Validator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Generate unique identifiers (v1-v5) with bulk generation support. Validate UUID format and
-          version instantly. Perfect for database keys and API identifiers.
-        </p>
-      </div>
+    <main className={dataPageMainClass}>
+      <DataToolHeader
+        icon={Hash}
+        eyebrow="UUID v1-v5 • Bulk Generation"
+        title="UUID Generator & Validator"
+        description="Generate unique identifiers (v1-v5) with bulk generation support. Validate UUID format and version instantly. Perfect for database keys and API identifiers."
+        highlights={['UUID v4', 'Bulk generate', 'Format check']}
+      />
 
       {/* Single UUID Generator */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'blue.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -355,19 +289,12 @@ export default function UUIDGeneratorPage() {
       </div>
 
       {/* Bulk UUID Generator */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'cyan.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -440,7 +367,6 @@ export default function UUIDGeneratorPage() {
                 className={css({
                   spaceY: '3',
                   animation: 'scaleIn 0.5s ease-out forwards',
-                  opacity: 0,
                 })}
               >
                 <div
@@ -505,19 +431,12 @@ export default function UUIDGeneratorPage() {
       </div>
 
       {/* UUID Validator */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -579,7 +498,6 @@ export default function UUIDGeneratorPage() {
                   bg: validationResult.valid ? 'green.500/10' : 'red.500/10',
                   p: '4',
                   animation: 'scaleIn 0.5s ease-out forwards',
-                  opacity: 0,
                 })}
               >
                 <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
@@ -628,19 +546,12 @@ export default function UUIDGeneratorPage() {
       </div>
 
       {/* Info Card */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div>
         <Card
           className={css({
             border: '1px solid',
             borderColor: 'teal.500/20',
             bg: 'teal.500/5',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <CardContent withTopPadding className={css({ pt: '6', pb: '6' })}>

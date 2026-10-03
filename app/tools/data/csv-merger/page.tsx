@@ -3,6 +3,8 @@
 import { AlertCircle, FileSpreadsheet, Layers, Scissors, Trash2, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass } from '@/components/features/tools/data-workspace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -354,77 +356,21 @@ export default function CSVMergerPage() {
 
   return (
     <TooltipProvider>
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '1400px',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '4', sm: '6', md: '8' },
-        })}
-      >
-        {/* Header */}
-        <div className={css({ spaceY: '3' })}>
-          <div
-            className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
-          >
-            <div
-              className={css({
-                animation: 'pulse',
-                animationDuration: '2s',
-                rounded: { base: 'xl', sm: '2xl' },
-                bgGradient: 'to-br',
-                gradientFrom: 'teal.500',
-                gradientTo: 'emerald.500',
-                p: { base: '2.5', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px -12px rgb(20 184 166 / 0.6)',
-              })}
-            >
-              <FileSpreadsheet
-                className={css({
-                  h: { base: '6', sm: '8' },
-                  w: { base: '6', sm: '8' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'teal.300',
-                  gradientVia: 'emerald.400',
-                  gradientTo: 'green.300',
-                  bgClip: 'text',
-                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                  fontWeight: 'extrabold',
-                  color: 'transparent',
-                  dropShadow: 'lg',
-                })}
-              >
-                CSV Merger & Splitter
-              </h1>
-              <p
-                className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.200',
-                })}
-              >
-                Merge multiple CSV files or split large CSVs by rules
-              </p>
-            </div>
-          </div>
-        </div>
+      <main className={dataPageMainClass}>
+        <DataToolHeader
+          icon={FileSpreadsheet}
+          eyebrow="Data Processing"
+          title="CSV Merger & Splitter"
+          description="Merge multiple CSV files or split large CSVs by rules"
+          highlights={['Merge CSVs', 'Split by rules', 'Files stay local']}
+        />
 
         {/* Mode Selection */}
         <Card
           className={css({
             border: '2px solid',
             borderColor: 'teal.500/30',
-            bg: 'rgba(17, 24, 39, 0.5)',
-            backdropFilter: 'blur(16px)',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -514,7 +460,6 @@ export default function CSVMergerPage() {
               bg: error ? 'rgba(239, 68, 68, 0.05)' : 'rgba(20, 184, 166, 0.05)',
               p: { base: '4', sm: '5', md: '6' },
               shadow: 'xl',
-              backdropFilter: 'blur(16px)',
             })}
           >
             {error ? (
@@ -557,13 +502,12 @@ export default function CSVMergerPage() {
                     color: 'emerald.200',
                   })}
                 >
-                  📊 {files.reduce((sum, f) => sum + f.rowCount, 0)} total rows
+                  {files.reduce((sum, f) => sum + f.rowCount, 0)} total rows
                 </Badge>
                 <Badge
                   variant="success"
                   size="sm"
                   className={css({
-                    animation: 'pulse',
                     bgGradient: 'to-r',
                     gradientFrom: 'teal.500',
                     gradientTo: 'emerald.600',
@@ -576,7 +520,7 @@ export default function CSVMergerPage() {
                     boxShadow: '0 10px 15px -3px rgb(20 184 166 / 0.5)',
                   })}
                 >
-                  ✅ Loaded
+                  Loaded
                 </Badge>
               </div>
             )}
@@ -606,7 +550,6 @@ export default function CSVMergerPage() {
             borderColor: isDragOver ? 'teal.500' : 'teal.500/30',
             bg: isDragOver ? 'rgba(20, 184, 166, 0.1)' : 'rgba(17, 24, 39, 0.5)',
             transition: 'all 0.3s',
-            backdropFilter: 'blur(16px)',
             transform: isDragOver ? 'scale(1.02)' : 'scale(1)',
             shadow: isDragOver ? 'xl' : 'none',
             opacity: isProcessing ? 0.5 : 1,
@@ -622,13 +565,19 @@ export default function CSVMergerPage() {
             onChange={handleFileInputChange}
             disabled={isProcessing}
             multiple={mode === 'merge'}
+            aria-label={mode === 'merge' ? 'Upload CSV files to merge' : 'Upload CSV file to split'}
             className={css({
               position: 'absolute',
               inset: '0',
               w: 'full',
               h: 'full',
               cursor: isProcessing ? 'not-allowed' : 'pointer',
-              opacity: 0,
+              opacity: '0',
+              _focusVisible: {
+                outline: '2px solid',
+                outlineColor: 'brand.violetBright',
+                outlineOffset: '2px',
+              },
             })}
             id="file-upload"
           />
@@ -674,8 +623,7 @@ export default function CSVMergerPage() {
             className={css({
               border: '2px solid',
               borderColor: 'teal.500/20',
-              bg: 'rgba(17, 24, 39, 0.5)',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -746,8 +694,7 @@ export default function CSVMergerPage() {
             className={css({
               border: '2px solid',
               borderColor: 'teal.500/20',
-              bg: 'rgba(17, 24, 39, 0.5)',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -805,8 +752,7 @@ export default function CSVMergerPage() {
             className={css({
               border: '2px solid',
               borderColor: 'emerald.500/20',
-              bg: 'rgba(17, 24, 39, 0.5)',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -943,8 +889,7 @@ export default function CSVMergerPage() {
             className={css({
               border: '2px solid',
               borderColor: 'teal.500/20',
-              bg: 'rgba(17, 24, 39, 0.5)',
-              backdropFilter: 'blur(16px)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -959,7 +904,7 @@ export default function CSVMergerPage() {
                   rounded: 'lg',
                   border: '1px solid',
                   borderColor: 'gray.700',
-                  bg: 'gray.900/50',
+                  bg: 'brand.surface',
                 })}
               >
                 <table

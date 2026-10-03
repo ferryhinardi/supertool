@@ -16,6 +16,8 @@ import {
 } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { DataToolHeader } from '@/components/features/tools/DataToolHeader'
+import { dataPageMainClass } from '@/components/features/tools/data-workspace'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ToolSearch } from '@/components/ui/tool-search'
@@ -207,74 +209,14 @@ export default function MarkdownTablePage() {
 
   return (
     <TooltipProvider>
-      <main
-        className={css({
-          mx: 'auto',
-          maxW: '1400px',
-          w: 'full',
-          px: { base: '4', sm: '6', md: '8' },
-          py: { base: '6', sm: '8', md: '10' },
-          spaceY: { base: '4', sm: '6', md: '8' },
-        })}
-      >
-        {/* Header */}
-        <div className={css({ spaceY: '3' })}>
-          <div
-            className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
-          >
-            <div
-              className={css({
-                animation: 'pulse',
-                rounded: { base: 'xl', sm: '2xl' },
-                bgGradient: 'to-br',
-                gradientFrom: 'purple.600',
-                gradientVia: 'pink.600',
-                gradientTo: 'fuchsia.700',
-                p: { base: '2.5', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px -12px rgba(168, 85, 247, 0.6)',
-              })}
-              style={{ animationDuration: '2s' }}
-            >
-              <Table
-                className={css({
-                  h: { base: '6', sm: '8' },
-                  w: { base: '6', sm: '8' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'purple.300',
-                  gradientVia: 'pink.400',
-                  gradientTo: 'fuchsia.300',
-                  bgClip: 'text',
-                  fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                  fontWeight: 'extrabold',
-                  color: 'transparent',
-                  filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
-                })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Markdown Table Generator
-              </h1>
-              <p
-                className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'gray.200',
-                })}
-              >
-                Create and edit tables visually, export to multiple formats
-              </p>
-            </div>
-          </div>
-        </div>
+      <main className={dataPageMainClass}>
+        <DataToolHeader
+          icon={Table}
+          eyebrow="Data Processing"
+          title="Markdown Table Generator"
+          description="Create and edit tables visually, export to multiple formats"
+          highlights={['Visual editor', 'CSV and JSON import', 'Multiple exports']}
+        />
 
         {/* Stats Bar */}
         <div
@@ -286,7 +228,6 @@ export default function MarkdownTablePage() {
             p: { base: '4', sm: '5', md: '6' },
             shadow: 'xl',
             boxShadow: '0 20px 25px rgba(168, 85, 247, 0.2)',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <div
@@ -452,9 +393,8 @@ export default function MarkdownTablePage() {
               rounded: { base: 'xl', sm: '2xl' },
               border: '2px solid',
               borderColor: 'purple.500/20',
-              bg: 'rgba(17, 24, 39, 0.5)',
+              bg: 'brand.surface',
               p: { base: '4', sm: '5', md: '6' },
-              backdropFilter: 'blur(16px)',
             })}
           >
             <div
@@ -550,9 +490,8 @@ export default function MarkdownTablePage() {
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
             borderColor: 'purple.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
+            bg: 'brand.surface',
             overflow: 'hidden',
-            backdropFilter: 'blur(16px)',
             maxW: 'full',
             w: 'full',
             minW: '0',
@@ -767,7 +706,7 @@ export default function MarkdownTablePage() {
                             rounded: 'md',
                             border: '1px solid',
                             borderColor: 'gray.700',
-                            bg: 'rgba(17, 24, 39, 0.5)',
+                            bg: 'brand.surface',
                             px: '3',
                             py: '2',
                             color: 'white',
@@ -794,9 +733,8 @@ export default function MarkdownTablePage() {
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
             borderColor: 'pink.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
+            bg: 'brand.surface',
             overflow: 'hidden',
-            backdropFilter: 'blur(16px)',
           })}
         >
           <div
@@ -850,9 +788,8 @@ export default function MarkdownTablePage() {
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
             borderColor: 'fuchsia.500/20',
-            bg: 'rgba(17, 24, 39, 0.5)',
+            bg: 'brand.surface',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
           })}
         >
           <h3
