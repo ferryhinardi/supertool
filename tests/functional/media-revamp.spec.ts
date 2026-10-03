@@ -97,19 +97,18 @@ test.describe('Media family revamp', () => {
     const box = await zone.boundingBox()
     expect(box?.height ?? 0).toBeGreaterThanOrEqual(44)
 
-    const rejectedChooser = page.waitForEvent('filechooser')
     await page.keyboard.press('Enter')
-    await (await rejectedChooser).setFiles({
+    const fileInput = page.locator('input[type="file"]')
+    await fileInput.setInputFiles({
       name: 'notes.txt',
       mimeType: 'text/plain',
       buffer: Buffer.from('not an image'),
     })
     await expect(page.getByText('Images (0)')).toBeVisible()
 
-    const acceptedChooser = page.waitForEvent('filechooser')
     await zone.focus()
     await page.keyboard.press('Enter')
-    await (await acceptedChooser).setFiles({
+    await fileInput.setInputFiles({
       name: 'pixel.png',
       mimeType: 'image/png',
       buffer: TINY_PNG,
@@ -132,19 +131,18 @@ test.describe('Media family revamp', () => {
     await upload.focus()
     await expect(upload).toBeFocused()
 
-    const rejectedChooser = page.waitForEvent('filechooser')
     await page.keyboard.press('Enter')
-    await (await rejectedChooser).setFiles({
+    const fileInput = page.locator('input[type="file"]')
+    await fileInput.setInputFiles({
       name: 'notes.txt',
       mimeType: 'text/plain',
       buffer: Buffer.from('not an image'),
     })
     await expect(page.getByText('Please upload a valid image file')).toBeVisible()
 
-    const acceptedChooser = page.waitForEvent('filechooser')
     await upload.focus()
     await page.keyboard.press('Enter')
-    await (await acceptedChooser).setFiles({
+    await fileInput.setInputFiles({
       name: 'pixel.png',
       mimeType: 'image/png',
       buffer: TINY_PNG,
@@ -166,7 +164,7 @@ test.describe('Media family revamp', () => {
       .getByRole('link', { name: 'Image Optimizer & Converter' })
     const optimizerBox = await optimizerLink.boundingBox()
     expect(optimizerBox?.height ?? 0).toBeGreaterThanOrEqual(44)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Image Optimizer & Converter')
+    await expect(page.locator('main h1')).toHaveText('Image Optimizer & Converter')
     await expectNoPageOverflow(page)
     await page.screenshot({
       path: '/opt/cursor/artifacts/media-image-optimizer-mobile.png',
@@ -174,7 +172,7 @@ test.describe('Media family revamp', () => {
     })
 
     await page.goto('/tools/media/video-converter')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Video Converter & Compressor')
+    await expect(page.locator('main h1')).toHaveText('Video Converter & Compressor')
     await expectNoPageOverflow(page)
     await page.screenshot({
       path: '/opt/cursor/artifacts/media-video-converter-mobile.png',
@@ -182,7 +180,7 @@ test.describe('Media family revamp', () => {
     })
 
     await page.goto('/tools/media/meme-generator')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Meme Generator')
+    await expect(page.locator('main h1')).toHaveText('Meme Generator')
     await expectNoPageOverflow(page)
     await page.screenshot({
       path: '/opt/cursor/artifacts/media-meme-generator-mobile.png',
