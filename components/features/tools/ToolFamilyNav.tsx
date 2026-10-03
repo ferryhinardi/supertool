@@ -11,7 +11,7 @@ function toolSlug(href: string): string {
   return parts[parts.length - 1] ?? 'tool'
 }
 
-export type ToolFamilyCategory = 'data' | 'productivity' | 'development'
+export type ToolFamilyCategory = 'data' | 'productivity' | 'development' | 'media'
 
 interface ToolFamilyNavProps {
   category?: ToolFamilyCategory
@@ -113,15 +113,49 @@ function developmentLinkClass(active: boolean) {
   })
 }
 
+function mediaLinkClass(active: boolean) {
+  return css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '2',
+    flexShrink: 0,
+    minH: '11',
+    px: '3',
+    rounded: 'lg',
+    border: '1px solid',
+    borderColor: active ? 'orange.400' : 'brand.line',
+    bg: active ? 'brand.surfaceRaised' : 'brand.surface',
+    color: active ? 'orange.400' : 'brand.muted',
+    fontSize: 'sm',
+    fontWeight: 'medium',
+    whiteSpace: 'nowrap',
+    transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+    _hover: {
+      color: 'brand.ink',
+      borderColor: 'rose.400',
+    },
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'orange.400',
+      outlineOffset: '2px',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  })
+}
+
 function ariaLabelFor(category: ToolFamilyCategory) {
   if (category === 'productivity') return 'Productivity tools'
   if (category === 'development') return 'Development tools'
+  if (category === 'media') return 'Media tools'
   return 'Data processing tools'
 }
 
 function linkClassFor(category: ToolFamilyCategory) {
   if (category === 'productivity') return productivityLinkClass
   if (category === 'development') return developmentLinkClass
+  if (category === 'media') return mediaLinkClass
   return dataLinkClass
 }
 
@@ -174,6 +208,14 @@ export function ToolFamilyNav({ category = 'data' }: ToolFamilyNavProps) {
                   trackToolEvent('feature_interaction', {
                     feature: 'tool_family_navigation',
                     category: 'development',
+                    destination: toolSlug(tool.href),
+                  })
+                  return
+                }
+                if (category === 'media') {
+                  trackToolEvent('feature_interaction', {
+                    feature: 'tool_family_navigation',
+                    category: 'media',
                     destination: toolSlug(tool.href),
                   })
                   return

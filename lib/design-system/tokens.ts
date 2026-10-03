@@ -39,6 +39,7 @@ export const accents = {
   cyan: { color: palette.cyan, background: 'rgba(94, 214, 235, 0.1)' },
   pink: { color: palette.pink, background: 'rgba(216, 131, 255, 0.1)' },
   lime: { color: palette.lime, background: 'rgba(165, 220, 105, 0.1)' },
+  orange: { color: '#fb923c', background: 'rgba(251, 146, 60, 0.12)' },
 } as const
 
 export type AccentName = keyof typeof accents

@@ -2,6 +2,7 @@
 
 import { Check, Copy, Download, FileImage, Upload, X } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Button } from '@/components/ui/button'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -215,49 +216,13 @@ export default function SvgToPngConverter() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            w: '16',
-            h: '16',
-            rounded: '2xl',
-            bgGradient: 'to-br',
-            gradientFrom: 'purple.500',
-            gradientTo: 'pink.500',
-            mb: '4',
-          })}
-        >
-          <FileImage className={css({ w: '8', h: '8', color: 'white' })} />
-        </div>
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-            color: 'transparent',
-          })}
-        >
-          SVG to PNG Converter
-        </h1>
-        <p
-          className={css({
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Convert SVG files to high-quality PNG images with customizable dimensions and background
-          colors
-        </p>
-      </div>
+      <MediaToolHeader
+        title="SVG to PNG Converter"
+        description="Convert SVG files to high-quality PNG images with customizable dimensions and background colors"
+        eyebrow="Image conversion"
+        icon={FileImage}
+        highlights={['SVG input', 'PNG export']}
+      />
 
       {/* Main Content */}
       <div
@@ -276,13 +241,13 @@ export default function SvgToPngConverter() {
               bg: 'rgba(255, 255, 255, 0.03)',
               backdropFilter: 'blur(12px)',
               border: '1px solid',
-              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'brand.line',
               rounded: '2xl',
               p: { base: '6', sm: '8' },
               spaceY: '6',
             })}
           >
-            <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'white' })}>
+            <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'brand.ink' })}>
               Upload SVG
             </h2>
 
@@ -292,14 +257,14 @@ export default function SvgToPngConverter() {
               tabIndex={0}
               className={css({
                 border: '2px dashed',
-                borderColor: svgFile ? 'purple.500' : 'rgba(255, 255, 255, 0.1)',
+                borderColor: svgFile ? 'orange.500' : 'rgba(255, 255, 255, 0.1)',
                 rounded: 'xl',
                 p: { base: '8', sm: '12' },
                 textAlign: 'center',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 _hover: {
-                  borderColor: 'purple.400',
+                  borderColor: 'orange.400',
                   bg: 'rgba(139, 92, 246, 0.05)',
                 },
               })}
@@ -319,12 +284,21 @@ export default function SvgToPngConverter() {
                 className={css({ display: 'none' })}
               />
               <Upload
-                className={css({ w: '12', h: '12', mx: 'auto', mb: '4', color: 'gray.400' })}
+                className={css({ w: '12', h: '12', mx: 'auto', mb: '4', color: 'brand.muted' })}
               />
-              <p className={css({ fontSize: 'lg', fontWeight: 'medium', color: 'white', mb: '2' })}>
+              <p
+                className={css({
+                  fontSize: 'lg',
+                  fontWeight: 'medium',
+                  color: 'brand.ink',
+                  mb: '2',
+                })}
+              >
                 {svgFile ? svgFile.name : 'Click to upload SVG file'}
               </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>Maximum file size: 10MB</p>
+              <p className={css({ fontSize: 'sm', color: 'brand.muted' })}>
+                Maximum file size: 10MB
+              </p>
             </div>
 
             {error && (
@@ -351,13 +325,13 @@ export default function SvgToPngConverter() {
                 bg: 'rgba(255, 255, 255, 0.03)',
                 backdropFilter: 'blur(12px)',
                 border: '1px solid',
-                borderColor: 'rgba(255, 255, 255, 0.1)',
+                borderColor: 'brand.line',
                 rounded: '2xl',
                 p: { base: '6', sm: '8' },
                 spaceY: '6',
               })}
             >
-              <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'white' })}>
+              <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'brand.ink' })}>
                 Conversion Settings
               </h2>
 
@@ -376,7 +350,7 @@ export default function SvgToPngConverter() {
                       className={css({
                         display: 'block',
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'brand.muted',
                         mb: '2',
                       })}
                     >
@@ -393,13 +367,13 @@ export default function SvgToPngConverter() {
                         py: '3',
                         bg: 'rgba(0, 0, 0, 0.3)',
                         border: '1px solid',
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderColor: 'brand.line',
                         rounded: 'lg',
-                        color: 'white',
+                        color: 'brand.ink',
                         fontSize: 'sm',
                         _focus: {
                           outline: 'none',
-                          borderColor: 'purple.500',
+                          borderColor: 'orange.500',
                         },
                       })}
                       min="1"
@@ -412,7 +386,7 @@ export default function SvgToPngConverter() {
                       className={css({
                         display: 'block',
                         fontSize: 'sm',
-                        color: 'gray.400',
+                        color: 'brand.muted',
                         mb: '2',
                       })}
                     >
@@ -429,13 +403,13 @@ export default function SvgToPngConverter() {
                         py: '3',
                         bg: 'rgba(0, 0, 0, 0.3)',
                         border: '1px solid',
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderColor: 'brand.line',
                         rounded: 'lg',
-                        color: 'white',
+                        color: 'brand.ink',
                         fontSize: 'sm',
                         _focus: {
                           outline: 'none',
-                          borderColor: 'purple.500',
+                          borderColor: 'orange.500',
                         },
                       })}
                       min="1"
@@ -469,7 +443,7 @@ export default function SvgToPngConverter() {
                       cursor: 'pointer',
                     })}
                   />
-                  <span className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                  <span className={css({ fontSize: 'sm', color: 'brand.muted' })}>
                     Maintain aspect ratio
                   </span>
                 </label>
@@ -479,7 +453,12 @@ export default function SvgToPngConverter() {
               <div>
                 <label
                   htmlFor="svg-bg-color"
-                  className={css({ display: 'block', fontSize: 'sm', color: 'gray.400', mb: '2' })}
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    color: 'brand.muted',
+                    mb: '2',
+                  })}
                 >
                   Background Color
                 </label>
@@ -496,14 +475,14 @@ export default function SvgToPngConverter() {
                         border: '2px solid',
                         borderColor:
                           settings.backgroundColor === color
-                            ? 'purple.500'
+                            ? 'orange.500'
                             : 'rgba(255, 255, 255, 0.1)',
                         bg: color === 'transparent' ? 'transparent' : color,
                         cursor: 'pointer',
                         position: 'relative',
                         transition: 'all 0.2s',
                         _hover: {
-                          borderColor: 'purple.400',
+                          borderColor: 'orange.400',
                         },
                       })}
                       style={{
@@ -545,10 +524,10 @@ export default function SvgToPngConverter() {
                       h: '12',
                       rounded: 'lg',
                       border: '2px solid',
-                      borderColor: 'rgba(255, 255, 255, 0.1)',
+                      borderColor: 'brand.line',
                       cursor: 'pointer',
                       _hover: {
-                        borderColor: 'purple.400',
+                        borderColor: 'orange.400',
                       },
                     })}
                   />
@@ -559,7 +538,12 @@ export default function SvgToPngConverter() {
               <div>
                 <label
                   htmlFor="svg-quality"
-                  className={css({ display: 'block', fontSize: 'sm', color: 'gray.400', mb: '2' })}
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    color: 'brand.muted',
+                    mb: '2',
+                  })}
                 >
                   Quality: {Math.round(settings.quality * 100)}%
                 </label>
@@ -588,8 +572,8 @@ export default function SvgToPngConverter() {
                   w: 'full',
                   h: '12',
                   bgGradient: 'to-r',
-                  gradientFrom: 'purple.500',
-                  gradientTo: 'pink.500',
+                  gradientFrom: 'orange.500',
+                  gradientTo: 'rose.500',
                   _hover: {
                     opacity: 0.9,
                   },
@@ -614,13 +598,13 @@ export default function SvgToPngConverter() {
                 bg: 'rgba(255, 255, 255, 0.03)',
                 backdropFilter: 'blur(12px)',
                 border: '1px solid',
-                borderColor: 'rgba(255, 255, 255, 0.1)',
+                borderColor: 'brand.line',
                 rounded: '2xl',
                 p: { base: '6', sm: '8' },
                 spaceY: '4',
               })}
             >
-              <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'white' })}>
+              <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'brand.ink' })}>
                 SVG Preview
               </h2>
               <div
@@ -648,13 +632,13 @@ export default function SvgToPngConverter() {
                 bg: 'rgba(255, 255, 255, 0.03)',
                 backdropFilter: 'blur(12px)',
                 border: '1px solid',
-                borderColor: 'rgba(255, 255, 255, 0.1)',
+                borderColor: 'brand.line',
                 rounded: '2xl',
                 p: { base: '6', sm: '8' },
                 spaceY: '4',
               })}
             >
-              <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'white' })}>
+              <h2 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'brand.ink' })}>
                 PNG Result
               </h2>
               <div
@@ -704,8 +688,8 @@ export default function SvgToPngConverter() {
                     minW: '32',
                     h: '12',
                     bgGradient: 'to-r',
-                    gradientFrom: 'purple.500',
-                    gradientTo: 'pink.500',
+                    gradientFrom: 'orange.500',
+                    gradientTo: 'rose.500',
                     _hover: {
                       opacity: 0.9,
                     },

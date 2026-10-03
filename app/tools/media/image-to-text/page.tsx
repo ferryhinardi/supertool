@@ -3,6 +3,7 @@
 import { Check, Copy, Download, FileText, Image as ImageIcon, Upload, X } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
 import { createWorker } from 'tesseract.js'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { trackToolEvent } from '@/lib/services/analytics'
@@ -142,56 +143,13 @@ export default function ImageToTextPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            w: '16',
-            h: '16',
-            rounded: 'xl',
-            bgGradient: 'to-br',
-            gradientFrom: 'green.500',
-            gradientTo: 'emerald.500',
-            mb: '4',
-          })}
-        >
-          <FileText className={css({ w: '8', h: '8', color: 'white' })} />
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'green.400',
-            gradientTo: 'emerald.600',
-            bgClip: 'text',
-            color: 'transparent',
-          })}
-        >
-          Image to Text Converter
-        </h1>
-
-        <p
-          className={css({
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Extract text from images using OCR (Optical Character Recognition). Supports multiple
-          languages and various image formats.
-        </p>
-      </div>
+      <MediaToolHeader
+        title="Image to Text Converter"
+        description="Extract text from images using OCR (Optical Character Recognition). Supports multiple languages and various image formats."
+        eyebrow="Text extraction"
+        icon={FileText}
+        highlights={['OCR languages', 'Editable text']}
+      />
 
       {/* Main Content */}
       <div
@@ -227,7 +185,7 @@ export default function ImageToTextPage() {
                 className={css({
                   fontSize: 'sm',
                   fontWeight: 'medium',
-                  color: 'gray.300',
+                  color: 'brand.muted',
                 })}
               >
                 Language
@@ -244,7 +202,7 @@ export default function ImageToTextPage() {
                   bg: 'gray.800',
                   color: 'gray.200',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                   rounded: 'lg',
                   fontSize: 'sm',
                   cursor: 'pointer',
@@ -311,10 +269,10 @@ export default function ImageToTextPage() {
                 className={css({
                   mt: '4',
                   p: '4',
-                  bg: 'gray.800/50',
+                  bg: 'brand.surfaceRaised',
                   rounded: 'lg',
                   border: '1px solid',
-                  borderColor: 'gray.700',
+                  borderColor: 'brand.line',
                 })}
               >
                 <img
@@ -457,9 +415,9 @@ export default function ImageToTextPage() {
             <div
               className={css({
                 p: '4',
-                bg: 'gray.800/50',
+                bg: 'brand.surfaceRaised',
                 border: '1px solid',
-                borderColor: 'gray.700',
+                borderColor: 'brand.line',
                 rounded: 'lg',
                 minH: '96',
                 maxH: '96',
@@ -467,7 +425,7 @@ export default function ImageToTextPage() {
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word',
                 fontSize: 'sm',
-                color: 'gray.300',
+                color: 'brand.muted',
                 fontFamily: 'mono',
               })}
             >
@@ -482,12 +440,12 @@ export default function ImageToTextPage() {
                 justifyContent: 'center',
                 minH: '96',
                 textAlign: 'center',
-                color: 'gray.500',
+                color: 'brand.muted',
               })}
             >
               <ImageIcon className={css({ w: '16', h: '16', mb: '4', opacity: 0.5 })} />
               <p className={css({ fontSize: 'sm' })}>Upload an image to extract text using OCR</p>
-              <p className={css({ fontSize: 'xs', mt: '2', color: 'gray.400' })}>
+              <p className={css({ fontSize: 'xs', mt: '2', color: 'brand.muted' })}>
                 Supported formats: PNG, JPEG, WEBP
               </p>
             </div>
@@ -499,11 +457,11 @@ export default function ImageToTextPage() {
               className={css({
                 pt: '4',
                 borderTop: '1px solid',
-                borderColor: 'gray.700',
+                borderColor: 'brand.line',
                 display: 'flex',
                 justifyContent: 'space-between',
                 fontSize: 'sm',
-                color: 'gray.400',
+                color: 'brand.muted',
               })}
             >
               <span>Characters: {extractedText.length.toLocaleString()}</span>

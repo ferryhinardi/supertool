@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -190,8 +191,8 @@ export default function MemeGeneratorPage() {
     <div
       className={css({
         minH: '100vh',
-        bg: 'gray.950',
-        color: 'gray.50',
+        bg: 'brand.canvas',
+        color: 'brand.ink',
       })}
     >
       <main
@@ -204,54 +205,25 @@ export default function MemeGeneratorPage() {
           spaceY: { base: '6', sm: '8', md: '10' },
         })}
       >
-        {/* Header */}
-        <div
-          className={css({
-            textAlign: 'center',
-            spaceY: '4',
-            animation: 'slideUp 0.5s ease-out forwards',
-            opacity: 0,
-          })}
-        >
-          <div className={css({ display: 'inline-flex', alignItems: 'center', gap: '2' })}>
-            <Sparkles className={css({ w: '8', h: '8', color: 'purple.400' })} />
-            <h1
-              className={css({
-                fontSize: { base: '3xl', md: '4xl', lg: '5xl' },
-                fontWeight: 'bold',
-                bgGradient: 'to-r',
-                gradientFrom: 'purple.400',
-                gradientTo: 'pink.400',
-                bgClip: 'text',
-                color: 'transparent',
-              })}
-            >
-              Meme Generator
-            </h1>
-          </div>
-          <p className={css({ fontSize: 'lg', color: 'gray.400', maxW: '2xl', mx: 'auto' })}>
-            Create viral memes in seconds. Choose from 25+ popular templates or upload your own
-            image. Add text, customize fonts, and download your masterpiece.
-          </p>
-        </div>
+        <MediaToolHeader
+          title="Meme Generator"
+          description="Create viral memes in seconds. Choose from 25+ popular templates or upload your own image. Add text, customize fonts, and download your masterpiece."
+          eyebrow="Creative studio"
+          icon={Sparkles}
+          highlights={['Popular templates', 'Custom text']}
+        />
 
         {/* Main Content */}
         <div
           className={css({
             display: 'grid',
-            gridTemplateColumns: { base: '1fr', lg: 'minmax(300px, 400px) 1fr' },
+            gridTemplateColumns: { base: '1fr', lg: 'repeat(2, minmax(0, 1fr))' },
             gap: { base: '6', lg: '8' },
             alignItems: 'start',
           })}
         >
           {/* Left Panel - Template Selector */}
-          <div
-            className={css({
-              animation: 'slideInLeft 0.5s ease-out forwards',
-              animationDelay: '0.1s',
-              opacity: 0,
-            })}
-          >
+          <div className={css({ w: 'full' })}>
             <Card>
               <CardHeader>
                 <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
@@ -298,7 +270,7 @@ export default function MemeGeneratorPage() {
                       transform: 'translateY(-50%)',
                       w: '4',
                       h: '4',
-                      color: 'gray.500',
+                      color: 'brand.muted',
                     })}
                   />
                   <Input
@@ -330,12 +302,12 @@ export default function MemeGeneratorPage() {
                           fontWeight: 'medium',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
-                          bg: selectedCategory === key ? 'purple.600' : 'gray.800',
+                          bg: selectedCategory === key ? 'orange.600' : 'gray.800',
                           color: selectedCategory === key ? 'white' : 'gray.300',
                           border: '1px solid',
-                          borderColor: selectedCategory === key ? 'purple.500' : 'gray.700',
+                          borderColor: selectedCategory === key ? 'orange.500' : 'gray.700',
                           _hover: {
-                            bg: selectedCategory === key ? 'purple.700' : 'gray.700',
+                            bg: selectedCategory === key ? 'orange.700' : 'gray.700',
                           },
                         })}
                         data-touch-chip
@@ -362,7 +334,7 @@ export default function MemeGeneratorPage() {
                         gridColumn: 'span 2',
                         textAlign: 'center',
                         py: '8',
-                        color: 'gray.500',
+                        color: 'brand.muted',
                       })}
                     >
                       <AlertCircle className={css({ w: '8', h: '8', mx: 'auto', mb: '2' })} />
@@ -382,10 +354,10 @@ export default function MemeGeneratorPage() {
                           transition: 'all 0.2s',
                           border: '2px solid',
                           borderColor:
-                            selectedTemplate?.id === template.id ? 'purple.500' : 'gray.700',
+                            selectedTemplate?.id === template.id ? 'orange.500' : 'gray.700',
                           _hover: {
                             transform: 'scale(1.05)',
-                            borderColor: 'purple.400',
+                            borderColor: 'orange.400',
                           },
                         })}
                       >
@@ -404,7 +376,7 @@ export default function MemeGeneratorPage() {
                             bg: 'rgba(0, 0, 0, 0.8)',
                             fontSize: 'xs',
                             fontWeight: 'medium',
-                            color: 'white',
+                            color: 'brand.ink',
                           })}
                         >
                           {template.name}
@@ -415,12 +387,12 @@ export default function MemeGeneratorPage() {
                               position: 'absolute',
                               top: '2',
                               right: '2',
-                              bg: 'purple.600',
+                              bg: 'orange.600',
                               p: '1',
                               borderRadius: 'full',
                             })}
                           >
-                            <Check className={css({ w: '3', h: '3', color: 'white' })} />
+                            <Check className={css({ w: '3', h: '3', color: 'brand.ink' })} />
                           </div>
                         )}
                       </button>
@@ -435,9 +407,6 @@ export default function MemeGeneratorPage() {
           <div
             className={css({
               spaceY: '6',
-              animation: 'slideInLeft 0.5s ease-out forwards',
-              animationDelay: '0.2s',
-              opacity: 0,
             })}
           >
             {/* Text Boxes */}
@@ -455,7 +424,11 @@ export default function MemeGeneratorPage() {
                     <div key={box.id} className={css({ spaceY: '2' })}>
                       <label
                         htmlFor={`text-${box.id}`}
-                        className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}
+                        className={css({
+                          fontSize: 'sm',
+                          fontWeight: 'medium',
+                          color: 'brand.muted',
+                        })}
                       >
                         Text {index + 1} ({box.position})
                       </label>
@@ -479,7 +452,7 @@ export default function MemeGeneratorPage() {
                           <div>
                             <label
                               htmlFor={`fontSize-${box.id}`}
-                              className={css({ fontSize: 'xs', color: 'gray.500' })}
+                              className={css({ fontSize: 'xs', color: 'brand.muted' })}
                             >
                               Font Size
                             </label>
@@ -497,7 +470,7 @@ export default function MemeGeneratorPage() {
                           <div>
                             <label
                               htmlFor={`color-${box.id}`}
-                              className={css({ fontSize: 'xs', color: 'gray.500' })}
+                              className={css({ fontSize: 'xs', color: 'brand.muted' })}
                             >
                               Color
                             </label>
@@ -575,7 +548,9 @@ export default function MemeGeneratorPage() {
             {/* Placeholder */}
             {!selectedTemplate && !customImage && (
               <Card>
-                <CardContent className={css({ py: '16', textAlign: 'center', color: 'gray.500' })}>
+                <CardContent
+                  className={css({ py: '16', textAlign: 'center', color: 'brand.muted' })}
+                >
                   <ImageIcon className={css({ w: '16', h: '16', mx: 'auto', mb: '4' })} />
                   <p className={css({ fontSize: 'lg', fontWeight: 'medium' })}>
                     Select a template or upload an image to get started

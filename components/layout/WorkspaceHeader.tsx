@@ -42,11 +42,13 @@ export function WorkspaceHeader({
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
               color:
-                accent === 'amber'
-                  ? 'brand.amber'
-                  : accent === 'blue'
-                    ? 'brand.blue'
-                    : 'brand.violetBright',
+                accent === 'orange'
+                  ? 'orange.400'
+                  : accent === 'amber'
+                    ? 'brand.amber'
+                    : accent === 'blue'
+                      ? 'brand.blue'
+                      : 'brand.violetBright',
             })}
           >
             Workspace

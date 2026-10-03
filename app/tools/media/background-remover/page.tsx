@@ -15,6 +15,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -238,103 +239,27 @@ export default function BackgroundRemoverPage() {
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
         spaceY: { base: '6', sm: '8', md: '10' },
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '4',
-          textAlign: 'center',
-          w: 'full',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'purple.500/10',
-            px: '4',
-            py: '2',
-            backdropFilter: 'blur(4px)',
-          })}
-        >
-          <Wand2 className={css({ h: '5', w: '5', color: 'purple.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'purple.300',
-            })}
-          >
-            AI-Powered Background Removal
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            lineHeight: 'tight',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'purple.400',
-              gradientVia: 'pink.400',
-              gradientTo: 'rose.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Background Remover
-          </span>
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: { base: 'md', sm: 'lg' },
-            color: 'gray.300',
-          })}
-        >
-          Remove backgrounds from images instantly with AI. 100% free, works entirely in your
-          browser for complete privacy. No upload to servers, no sign-up required.
-        </p>
-      </div>
+      <MediaToolHeader
+        title="Background Remover"
+        description="Remove backgrounds from images instantly with AI. 100% free, works entirely in your browser for complete privacy. No upload to servers, no sign-up required."
+        eyebrow="Background removal"
+        icon={Wand2}
+        highlights={['AI-Powered Background Removal', 'Browser processing']}
+      />
 
       {/* Main Tool Card */}
       <div
         className={css({
           w: 'full',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
         })}
       >
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(4px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -345,7 +270,7 @@ export default function BackgroundRemoverPage() {
                 gap: '2',
               })}
             >
-              <ImageIcon className={css({ h: '5', w: '5', color: 'purple.400' })} />
+              <ImageIcon className={css({ h: '5', w: '5', color: 'orange.400' })} />
               Remove Background
             </CardTitle>
             <CardDescription>
@@ -377,7 +302,7 @@ export default function BackgroundRemoverPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'brand.muted',
                       })}
                     >
                       Original Image
@@ -389,7 +314,7 @@ export default function BackgroundRemoverPage() {
                         overflow: 'hidden',
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
+                        borderColor: 'brand.line',
                         bg: 'gray.800',
                       })}
                     >
@@ -411,7 +336,7 @@ export default function BackgroundRemoverPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'brand.muted',
                       })}
                     >
                       Background Removed
@@ -423,7 +348,7 @@ export default function BackgroundRemoverPage() {
                         overflow: 'hidden',
                         rounded: 'lg',
                         border: '1px solid',
-                        borderColor: 'gray.700',
+                        borderColor: 'brand.line',
                       })}
                       style={{
                         backgroundColor:
@@ -467,19 +392,19 @@ export default function BackgroundRemoverPage() {
                                 className={css({
                                   h: '8',
                                   w: '8',
-                                  color: 'purple.400',
+                                  color: 'orange.400',
                                   mx: 'auto',
                                   animation: 'spin 1s linear infinite',
                                 })}
                               />
-                              <p className={css({ fontSize: 'sm', color: 'gray.300' })}>
+                              <p className={css({ fontSize: 'sm', color: 'brand.muted' })}>
                                 {getStatusMessage()}
                               </p>
                               <Progress
                                 value={imageState.progress}
                                 className={css({ h: '2', w: '48', mx: 'auto' })}
                               />
-                              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                              <p className={css({ fontSize: 'xs', color: 'brand.muted' })}>
                                 {imageState.progress}%
                               </p>
                             </div>
@@ -493,7 +418,7 @@ export default function BackgroundRemoverPage() {
                               </p>
                             </div>
                           ) : (
-                            <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
+                            <p className={css({ fontSize: 'sm', color: 'brand.muted' })}>
                               Click "Remove Background" to process
                             </p>
                           )}
@@ -510,7 +435,7 @@ export default function BackgroundRemoverPage() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'gray.300',
+                        color: 'brand.muted',
                       })}
                     >
                       Preview Background
@@ -526,11 +451,11 @@ export default function BackgroundRemoverPage() {
                             w: '10',
                             rounded: 'lg',
                             border: '2px solid',
-                            borderColor: backgroundColor === bg.value ? 'purple.500' : 'gray.700',
+                            borderColor: backgroundColor === bg.value ? 'orange.500' : 'gray.700',
                             cursor: 'pointer',
                             transition: 'all 0.2s',
                             _hover: {
-                              borderColor: 'purple.400',
+                              borderColor: 'orange.400',
                             },
                           })}
                           style={{
@@ -590,9 +515,9 @@ export default function BackgroundRemoverPage() {
                         onClick={processImage}
                         className={css({
                           gap: '2',
-                          bg: 'purple.600',
+                          bg: 'orange.600',
                           _hover: {
-                            bg: 'purple.700',
+                            bg: 'orange.700',
                           },
                         })}
                       >
@@ -657,9 +582,6 @@ export default function BackgroundRemoverPage() {
           gap: '4',
           gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
           w: 'full',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
         })}
       >
         {[
@@ -688,11 +610,10 @@ export default function BackgroundRemoverPage() {
             key={feature.title}
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
+              borderColor: 'brand.line',
               bgGradient: 'to-br',
-              gradientFrom: 'gray.900/50',
-              gradientTo: 'gray.900/30',
-              backdropFilter: 'blur(4px)',
+              gradientFrom: 'brand.surface',
+              gradientTo: 'brand.surface',
             })}
           >
             <CardContent withTopPadding>
@@ -702,7 +623,7 @@ export default function BackgroundRemoverPage() {
                     mb: '3',
                     h: '8',
                     w: '8',
-                    color: 'purple.400',
+                    color: 'orange.400',
                   })}
                 />
                 <h3
@@ -714,7 +635,9 @@ export default function BackgroundRemoverPage() {
                 >
                   {feature.title}
                 </h3>
-                <p className={css({ fontSize: 'sm', color: 'gray.400' })}>{feature.description}</p>
+                <p className={css({ fontSize: 'sm', color: 'brand.muted' })}>
+                  {feature.description}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -725,9 +648,6 @@ export default function BackgroundRemoverPage() {
       <div
         className={css({
           w: 'full',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
         })}
       >
         <SocialShare
@@ -742,9 +662,6 @@ export default function BackgroundRemoverPage() {
       <div
         className={css({
           w: 'full',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.6s',
-          opacity: 0,
         })}
       >
         <RelatedTools currentToolPath="/tools/media/background-remover" category="media" />
@@ -754,9 +671,6 @@ export default function BackgroundRemoverPage() {
       <div
         className={css({
           w: 'full',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.7s',
-          opacity: 0,
         })}
       >
         <ToolRating toolId="/tools/media/background-remover" toolName="Background Remover" />

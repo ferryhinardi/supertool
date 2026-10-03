@@ -3,6 +3,7 @@
 import jsQR from 'jsqr'
 import { Check, Copy, ScanLine, Upload, Video, X } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
+import { MediaToolHeader } from '@/components/features/tools/MediaToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { trackToolEvent } from '@/lib/services/analytics'
@@ -247,54 +248,13 @@ export default function QRCodeScannerPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          spaceY: '4',
-        })}
-      >
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            gap: '3',
-          })}
-        >
-          <div
-            className={css({
-              p: '3',
-              bg: 'gradient-to-br',
-              gradientFrom: 'blue.500',
-              gradientTo: 'cyan.500',
-              rounded: 'xl',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            })}
-          >
-            <ScanLine className={css({ w: '6', h: '6', color: 'white' })} />
-          </div>
-          <div>
-            <h1
-              className={css({
-                fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-                fontWeight: 'bold',
-                color: 'white',
-              })}
-            >
-              QR Code Scanner
-            </h1>
-            <p
-              className={css({
-                color: 'gray.400',
-                fontSize: { base: 'sm', sm: 'base' },
-              })}
-            >
-              Scan and read QR codes from images or webcam
-            </p>
-          </div>
-        </div>
-      </div>
+      <MediaToolHeader
+        title="QR Code Scanner"
+        description="Scan and read QR codes from images or webcam"
+        eyebrow="Code scanner"
+        icon={ScanLine}
+        highlights={['Camera or upload', 'Scan history']}
+      />
 
       {/* Main Scanner Section */}
       <Card
@@ -312,7 +272,7 @@ export default function QRCodeScannerPage() {
             className={css({
               fontSize: { base: 'lg', sm: 'xl' },
               fontWeight: 'semibold',
-              color: 'white',
+              color: 'brand.ink',
             })}
           >
             Scan QR Code
@@ -428,7 +388,7 @@ export default function QRCodeScannerPage() {
                   w: '64',
                   h: '64',
                   border: '2px solid',
-                  borderColor: 'blue.500',
+                  borderColor: 'orange.500',
                   rounded: 'lg',
                   pointerEvents: 'none',
                 })}
@@ -493,7 +453,7 @@ export default function QRCodeScannerPage() {
               <p
                 className={css({
                   fontSize: 'sm',
-                  color: 'gray.300',
+                  color: 'brand.muted',
                   wordBreak: 'break-all',
                   fontFamily: 'mono',
                 })}
@@ -524,7 +484,7 @@ export default function QRCodeScannerPage() {
               className={css({
                 fontSize: { base: 'lg', sm: 'xl' },
                 fontWeight: 'semibold',
-                color: 'white',
+                color: 'brand.ink',
               })}
             >
               Scan History
@@ -571,7 +531,7 @@ export default function QRCodeScannerPage() {
                     <span
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.400',
+                        color: 'brand.muted',
                       })}
                     >
                       {code.format}
@@ -579,7 +539,7 @@ export default function QRCodeScannerPage() {
                     <span
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.500',
+                        color: 'brand.muted',
                       })}
                     >
                       •
@@ -587,7 +547,7 @@ export default function QRCodeScannerPage() {
                     <span
                       className={css({
                         fontSize: 'xs',
-                        color: 'gray.400',
+                        color: 'brand.muted',
                       })}
                     >
                       {code.timestamp.toLocaleString()}
@@ -641,7 +601,7 @@ export default function QRCodeScannerPage() {
                 <p
                   className={css({
                     fontSize: 'sm',
-                    color: 'gray.300',
+                    color: 'brand.muted',
                     wordBreak: 'break-all',
                     fontFamily: 'mono',
                   })}
