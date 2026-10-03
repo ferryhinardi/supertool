@@ -2,10 +2,10 @@
 
 import { Activity, Info, Ruler, Scale, Sparkles, TrendingUp } from 'lucide-react'
 import { useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -242,60 +242,13 @@ export default function BMICalculator() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '3',
-            marginBottom: '4',
-          })}
-        >
-          <Activity
-            className={css({
-              width: '2rem',
-              height: '2rem',
-              color: 'green.400',
-            })}
-          />
-          <h1
-            className={css({
-              fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-              fontWeight: 'extrabold',
-              bgGradient: 'to-r',
-              gradientFrom: 'green.400',
-              gradientVia: 'emerald.400',
-              gradientTo: 'teal.400',
-              bgClip: 'text',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            BMI & Health Calculator
-          </h1>
-        </div>
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'base', sm: 'lg' },
-            color: 'white',
-          })}
-        >
-          Calculate your Body Mass Index and get personalized health insights
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="BMI & Health Calculator"
+        description="Calculate your Body Mass Index and get personalized health insights"
+        eyebrow="Calculators"
+        icon={Activity}
+        highlights={['BMI result', 'Health ranges']}
+      />
 
       <div
         className={css({

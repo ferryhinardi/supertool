@@ -4,7 +4,7 @@ import { Check, Copy, RotateCcw, Sparkles, Type } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { SoftSupportCard } from '@/components/features/monetization/SoftSupportCard'
-import { Badge } from '@/components/ui/badge'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -174,74 +174,29 @@ function CaseConverterContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <Badge
-          className={css({
-            bg: 'purple.500/10',
-            color: 'purple.400',
-            border: '1px solid',
-            borderColor: 'purple.500/20',
-          })}
-        >
-          <Type className={css({ w: '3', h: '3', mr: '1' })} />
-          Productivity Tool
-        </Badge>
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            letterSpacing: 'tight',
-            lineHeight: 'tight',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'purple.400',
-              gradientTo: 'pink.500',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            Case
-          </span>{' '}
-          <span className={css({ color: 'gray.100' })}>Converter</span>
-        </h1>
-        <p
-          className={css({
-            fontSize: { base: 'md', sm: 'lg' },
-            color: 'gray.400',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Convert text between camelCase, PascalCase, snake_case, kebab-case, and more. Preview all
-          case formats at once.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Case Converter"
+        description="Convert text between camelCase, PascalCase, snake_case, kebab-case, and more. Preview every format at once."
+        eyebrow="Text productivity"
+        icon={Type}
+        highlights={['11 case formats', 'Instant preview']}
+      />
 
-      {/* Input Card */}
       <div
         className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
+          display: 'grid',
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(2, minmax(0, 1fr))' },
+          gap: { base: '4', lg: '6' },
+          w: 'full',
+          alignItems: 'start',
         })}
       >
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
+            w: 'full',
           })}
         >
           <CardHeader>
@@ -255,7 +210,7 @@ function CaseConverterContent() {
               })}
             >
               <div>
-                <CardTitle className={css({ color: 'gray.100' })}>Input Text</CardTitle>
+                <CardTitle className={css({ color: 'brand.ink' })}>Input Text</CardTitle>
                 <CardDescription>Enter text to convert between different cases</CardDescription>
               </div>
               <Button
@@ -263,10 +218,7 @@ function CaseConverterContent() {
                 size="sm"
                 onClick={handleClear}
                 disabled={!input}
-                className={css({
-                  borderColor: 'gray.700',
-                  _hover: { bg: 'gray.800' },
-                })}
+                className={css({ minH: '11' })}
               >
                 <RotateCcw className={css({ w: '4', h: '4', mr: '2' })} />
                 Clear
@@ -277,50 +229,47 @@ function CaseConverterContent() {
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              aria-label="Input text"
               placeholder="Enter text like 'hello world', 'HelloWorld', 'hello_world', etc."
               className={css({
                 minH: '100px',
                 fontFamily: 'mono',
                 fontSize: 'sm',
-                bg: 'gray.800/50',
+                bg: 'brand.canvas',
                 border: '1px solid',
-                borderColor: 'gray.700',
+                borderColor: 'brand.line',
+                color: 'brand.ink',
                 _focus: {
-                  borderColor: 'purple.500',
+                  borderColor: 'brand.amber',
                   ring: '1px',
-                  ringColor: 'purple.500',
+                  ringColor: 'brand.amber',
                 },
               })}
             />
           </CardContent>
         </Card>
-      </div>
 
-      {/* Case Selection & Output */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'purple.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
+            w: 'full',
           })}
         >
           <CardHeader>
-            <CardTitle className={css({ color: 'gray.100' })}>Select Case Type</CardTitle>
+            <CardTitle className={css({ color: 'brand.ink' })}>Select Case Type</CardTitle>
             <CardDescription>Choose your desired output format</CardDescription>
           </CardHeader>
           <CardContent className={css({ spaceY: '4' })}>
             <div
               className={css({
                 display: 'grid',
-                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                gridTemplateColumns: {
+                  base: '1fr',
+                  sm: 'repeat(2, minmax(0, 1fr))',
+                  lg: 'repeat(3, minmax(0, 1fr))',
+                },
                 gap: '3',
                 w: 'full',
               })}
@@ -329,19 +278,28 @@ function CaseConverterContent() {
                 <button
                   type="button"
                   key={caseType.id}
+                  aria-pressed={selectedCase === caseType.id}
                   onClick={() => handleCaseSelect(caseType.id)}
                   className={css({
+                    minH: '11',
                     p: '3',
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: selectedCase === caseType.id ? 'purple.500' : 'gray.700',
-                    bg: selectedCase === caseType.id ? 'purple.500/10' : 'gray.800/50',
+                    borderColor: selectedCase === caseType.id ? 'brand.amber' : 'brand.line',
+                    bg: selectedCase === caseType.id ? 'brand.surfaceRaised' : 'brand.canvas',
                     cursor: 'pointer',
-                    transition: 'all 0.2s',
+                    transition: 'background-color 0.15s ease, border-color 0.15s ease',
                     textAlign: 'left',
                     _hover: {
-                      borderColor: 'purple.500/50',
-                      bg: 'purple.500/5',
+                      borderColor: 'orange.500',
+                    },
+                    _focusVisible: {
+                      outline: '2px solid',
+                      outlineColor: 'brand.amber',
+                      outlineOffset: '2px',
+                    },
+                    '@media (prefers-reduced-motion: reduce)': {
+                      transition: 'none',
                     },
                   })}
                 >
@@ -349,7 +307,7 @@ function CaseConverterContent() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: selectedCase === caseType.id ? 'purple.400' : 'gray.200',
+                      color: selectedCase === caseType.id ? 'brand.amber' : 'brand.ink',
                       fontFamily: 'mono',
                     })}
                   >
@@ -358,7 +316,7 @@ function CaseConverterContent() {
                   <div
                     className={css({
                       fontSize: 'xs',
-                      color: 'gray.500',
+                      color: 'brand.muted',
                       mt: '1',
                       fontFamily: 'mono',
                     })}
@@ -384,7 +342,7 @@ function CaseConverterContent() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'gray.300',
+                      color: 'brand.ink',
                     })}
                   >
                     Result ({selectedCase})
@@ -393,13 +351,10 @@ function CaseConverterContent() {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleCopy(output, selectedCase)}
-                    className={css({
-                      color: 'gray.400',
-                      _hover: { color: 'purple.400', bg: 'purple.500/10' },
-                    })}
+                    className={css({ minH: '11', color: 'brand.muted' })}
                   >
                     {copied === selectedCase ? (
-                      <Check className={css({ w: '4', h: '4', mr: '1', color: 'green.400' })} />
+                      <Check className={css({ w: '4', h: '4', mr: '1', color: 'brand.mint' })} />
                     ) : (
                       <Copy className={css({ w: '4', h: '4', mr: '1' })} />
                     )}
@@ -410,12 +365,12 @@ function CaseConverterContent() {
                   className={css({
                     p: '4',
                     rounded: 'lg',
-                    bg: 'gray.800/50',
+                    bg: 'brand.surfaceRaised',
                     border: '1px solid',
-                    borderColor: 'purple.500/30',
+                    borderColor: 'brand.amber',
                     fontFamily: 'mono',
                     fontSize: 'sm',
-                    color: 'purple.300',
+                    color: 'brand.amber',
                     wordBreak: 'break-all',
                   })}
                 >
@@ -429,103 +384,94 @@ function CaseConverterContent() {
 
       {/* All Cases Preview */}
       {input.trim() && (
-        <div
+        <Card
           className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.3s',
-            opacity: 0,
+            border: '1px solid',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
+            w: 'full',
           })}
         >
-          <Card
-            className={css({
-              border: '1px solid',
-              borderColor: 'purple.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
-            })}
-          >
-            <CardHeader>
-              <CardTitle
-                className={css({
-                  color: 'gray.100',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '2',
-                })}
-              >
-                <Sparkles className={css({ w: '5', h: '5', color: 'purple.400' })} />
-                All Cases Preview
-              </CardTitle>
-              <CardDescription>See your text in all available formats</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
-                className={css({
-                  display: 'grid',
-                  gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)' },
-                  gap: '3',
-                  w: 'full',
-                })}
-              >
-                {allCasePreviews.map((preview) => (
+          <CardHeader>
+            <CardTitle
+              className={css({
+                color: 'brand.ink',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+              })}
+            >
+              <Sparkles className={css({ w: '5', h: '5', color: 'brand.amber' })} aria-hidden />
+              All Cases Preview
+            </CardTitle>
+            <CardDescription>See your text in all available formats</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: { base: '1fr', sm: 'repeat(2, minmax(0, 1fr))' },
+                gap: '3',
+                w: 'full',
+              })}
+            >
+              {allCasePreviews.map((preview) => (
+                <div
+                  key={preview.id}
+                  className={css({
+                    p: '3',
+                    rounded: 'lg',
+                    border: '1px solid',
+                    borderColor: 'brand.line',
+                    bg: 'brand.canvas',
+                  })}
+                >
                   <div
-                    key={preview.id}
                     className={css({
-                      p: '3',
-                      rounded: 'lg',
-                      border: '1px solid',
-                      borderColor: 'gray.700',
-                      bg: 'gray.800/30',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      mb: '2',
                     })}
                   >
-                    <div
+                    <span className={css({ fontSize: 'xs', color: 'brand.muted' })}>
+                      {preview.label}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleCopy(preview.result, preview.id)}
+                      aria-label={copied === preview.id ? 'Copied' : `Copy ${preview.label}`}
                       className={css({
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        mb: '2',
+                        minH: '11',
+                        minW: '11',
+                        color: 'brand.muted',
                       })}
                     >
-                      <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
-                        {preview.label}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleCopy(preview.result, preview.id)}
-                        aria-label={copied === preview.id ? 'Copied' : `Copy ${preview.label}`}
-                        className={css({
-                          h: '6',
-                          px: '2',
-                          color: 'gray.500',
-                          _hover: { color: 'purple.400', bg: 'purple.500/10' },
-                        })}
-                      >
-                        {copied === preview.id ? (
-                          <Check className={css({ w: '3', h: '3', color: 'green.400' })} />
-                        ) : (
-                          <Copy className={css({ w: '3', h: '3' })} />
-                        )}
-                      </Button>
-                    </div>
-                    <div
-                      className={css({
-                        fontSize: 'sm',
-                        color: 'gray.300',
-                        fontFamily: 'mono',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      })}
-                    >
-                      {preview.result || '-'}
-                    </div>
+                      {copied === preview.id ? (
+                        <Check className={css({ w: '4', h: '4', color: 'brand.mint' })} />
+                      ) : (
+                        <Copy className={css({ w: '4', h: '4' })} />
+                      )}
+                    </Button>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  <div
+                    className={css({
+                      fontSize: 'sm',
+                      color: 'brand.ink',
+                      fontFamily: 'mono',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    })}
+                  >
+                    {preview.result || '-'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       <SoftSupportCard toolId="case-converter" />

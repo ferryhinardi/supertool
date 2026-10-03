@@ -51,7 +51,8 @@ describe('Age Calculator - Page Rendering', () => {
 
   it('displays feature badges', () => {
     render(<AgeCalculatorPage />)
-    expect(screen.getByText(/Exact Age • Next Birthday • Life Events/i)).toBeInTheDocument()
+    expect(screen.getByText('Exact age')).toBeInTheDocument()
+    expect(screen.getByText('Next birthday')).toBeInTheDocument()
   })
 
   it('renders Cake icon in header', () => {

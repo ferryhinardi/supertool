@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
@@ -292,57 +293,13 @@ function ClipboardFormatterPageContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div>
-          <Clipboard
-            className={css({
-              width: '16',
-              height: '16',
-              color: 'green.400',
-              mx: 'auto',
-            })}
-          />
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'green.400',
-            gradientVia: 'emerald.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Clipboard Formatter
-        </h1>
-
-        <p
-          className={css({
-            fontSize: { base: 'lg', md: 'xl' },
-            color: 'white',
-            textAlign: 'center',
-            maxWidth: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Paste and format text instantly. Remove extra whitespace, normalize line breaks, and apply
-          transformations.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Clipboard Formatter"
+        description="Paste and format text instantly. Remove extra whitespace, normalize line breaks, and apply transformations."
+        eyebrow="Text productivity"
+        icon={Clipboard}
+        highlights={['Whitespace cleanup', 'Copy or download']}
+      />
 
       {/* Main Content */}
       <div

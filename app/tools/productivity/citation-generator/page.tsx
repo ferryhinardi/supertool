@@ -16,6 +16,7 @@ import {
   Video,
 } from 'lucide-react'
 import { useCallback, useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -563,43 +564,13 @@ export default function CitationGeneratorPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ spaceY: 4, textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 3,
-          })}
-        >
-          <BookOpen className={css({ w: 10, h: 10, color: 'indigo.400' })} />
-          <h1
-            className={css({
-              fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-              fontWeight: 'bold',
-              bgGradient: 'to-r',
-              gradientFrom: 'indigo.500',
-              gradientTo: 'purple.500',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            Citation Generator
-          </h1>
-        </div>
-        <p
-          className={css({
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Generate accurate citations in APA, MLA, Chicago, Harvard, IEEE, and Vancouver formats for
-          books, journals, websites, and more.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Citation Generator"
+        description="Generate accurate citations in APA, MLA, Chicago, Harvard, IEEE, and Vancouver formats for books, journals, websites, and more."
+        eyebrow="Builders"
+        icon={BookOpen}
+        highlights={['Six citation styles', 'Copy-ready output']}
+      />
 
       {/* Main Content */}
       <div

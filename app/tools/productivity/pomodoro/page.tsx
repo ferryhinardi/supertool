@@ -20,10 +20,10 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { RelatedTools } from '@/components/ui/related-tools'
 import { ToolRating } from '@/components/ui/tool-rating'
@@ -448,54 +448,20 @@ export default function PomodoroTimerPage() {
     <main
       className={css({
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'red.500/20',
-            bg: 'red.500/10',
-            px: '4',
-            py: '2',
-          })}
-        >
-          <Timer className={css({ h: '5', w: '5', color: 'red.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'red.300' })}>
-            Pomodoro Technique - Stay Focused
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'red.400',
-            gradientVia: 'orange.400',
-            gradientTo: 'yellow.400',
-            bgClip: 'text',
-          })}
-          style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-        >
-          Pomodoro Timer
-        </h1>
-
-        <p className={css({ mx: 'auto', maxW: '2xl', fontSize: 'lg', color: 'white' })}>
-          Boost productivity with the Pomodoro Technique. Work in focused 25-minute intervals, track
-          your tasks, and build better habits with statistics and insights.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Pomodoro Timer"
+        description="Boost productivity with the Pomodoro Technique. Work in focused 25-minute intervals, track your tasks, and build better habits with statistics and insights."
+        eyebrow="Time management"
+        icon={Timer}
+        highlights={['Focus intervals', 'Session history']}
+      />
 
       {/* Main Timer and Controls */}
       <div

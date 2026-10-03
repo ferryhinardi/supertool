@@ -9,12 +9,13 @@ import {
   Download,
   FileText,
   LayoutTemplate,
+  NotebookPen,
   Plus,
   Save,
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -488,102 +489,68 @@ export default function DailyNotePage() {
         gap: { base: '6', sm: '6', md: '8' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: { base: 'column', md: 'row' },
-          alignItems: { base: 'start', md: 'start' },
-          justifyContent: { base: 'start', md: 'space-between' },
-          gap: { base: '4', md: '4' },
-        })}
-      >
-        <div className={css({ display: 'flex', alignItems: 'center', gap: '4' })}>
-          <div
+      <ProductivityToolHeader
+        title="Daily Note Generator"
+        description="Create timestamped notes with customizable templates"
+        eyebrow="Notes and history"
+        icon={NotebookPen}
+        highlights={['Custom templates', 'Local notes']}
+      />
+      <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
+        <p
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            minH: '11',
+            px: '3',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
+            color: 'brand.ink',
+            fontSize: 'sm',
+          })}
+        >
+          <FileText className={css({ h: '4', w: '4' })} aria-hidden />
+          {stats.totalNotes} notes
+        </p>
+        <p
+          className={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '2',
+            minH: '11',
+            px: '3',
+            rounded: 'full',
+            border: '1px solid',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
+            color: 'brand.ink',
+            fontSize: 'sm',
+          })}
+        >
+          <Calendar className={css({ h: '4', w: '4' })} aria-hidden />
+          {stats.currentMonthNotes} this month
+        </p>
+        {stats.avgWordCount > 0 ? (
+          <p
             className={css({
-              display: 'flex',
-              h: { base: '12', sm: '14' },
-              w: { base: '12', sm: '14' },
+              display: 'inline-flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              rounded: '2xl',
-              bgGradient: 'to-br',
-              gradientFrom: 'green.500',
-              gradientTo: 'emerald.600',
-              shadow: 'lg',
-              boxShadow: '0 10px 15px rgba(34, 197, 94, 0.3)',
-            })}
-          >
-            <FileText
-              className={css({
-                h: { base: '6', sm: '7' },
-                w: { base: '6', sm: '7' },
-                color: 'white',
-              })}
-            />
-          </div>
-          <div>
-            <h1
-              className={css({
-                fontSize: { base: '2xl', sm: '3xl' },
-                fontWeight: 'bold',
-                color: 'white',
-              })}
-            >
-              Daily Note Generator
-            </h1>
-            <p
-              className={css({
-                mt: '1',
-                fontSize: { base: 'sm', sm: 'base' },
-                color: 'white',
-              })}
-            >
-              Create timestamped notes with customizable templates
-            </p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-          <Badge
-            variant="outline"
-            className={css({
-              gap: '1.5',
+              minH: '11',
+              px: '3',
+              rounded: 'full',
               border: '1px solid',
-              borderColor: 'green.500/30',
-              color: 'green.400',
+              borderColor: 'brand.line',
+              bg: 'brand.surfaceRaised',
+              color: 'brand.muted',
+              fontSize: 'sm',
             })}
           >
-            <FileText className={css({ h: '3', w: '3' })} />
-            {stats.totalNotes} notes
-          </Badge>
-          <Badge
-            variant="outline"
-            className={css({
-              gap: '1.5',
-              border: '1px solid',
-              borderColor: 'blue.500/30',
-              color: 'blue.400',
-            })}
-          >
-            <Calendar className={css({ h: '3', w: '3' })} />
-            {stats.currentMonthNotes} this month
-          </Badge>
-          {stats.avgWordCount > 0 && (
-            <Badge
-              variant="outline"
-              className={css({
-                gap: '1.5',
-                border: '1px solid',
-                borderColor: 'purple.500/30',
-                color: 'purple.400',
-              })}
-            >
-              ~{stats.avgWordCount} words avg
-            </Badge>
-          )}
-        </div>
+            ~{stats.avgWordCount} words avg
+          </p>
+        ) : null}
       </div>
 
       {/* Date Navigation */}

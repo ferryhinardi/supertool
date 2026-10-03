@@ -3,6 +3,7 @@
 import { Bell, Clock, Download, Pause, Play, Plus, RotateCcw, Save, Trash2, X } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -416,65 +417,13 @@ function StopwatchTimerContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'orange.500/30',
-            bg: 'orange.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Clock className={css({ h: '5', w: '5', color: 'orange.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'orange.300' })}>
-            Stopwatch • Timer • Presets
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'orange.400',
-            gradientVia: 'amber.400',
-            gradientTo: 'yellow.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Stopwatch & Timer
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Professional stopwatch with lap tracking and multiple countdown timers. Save presets, set
-          alarms, and get desktop notifications.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Stopwatch & Timer"
+        description="Professional stopwatch with lap tracking and multiple countdown timers. Save presets, set alarms, and get desktop notifications."
+        eyebrow="Time management"
+        icon={Clock}
+        highlights={['Laps and presets', 'Desktop alerts']}
+      />
 
       {/* Mode Toggle */}
       <div

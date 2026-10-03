@@ -1,7 +1,8 @@
 'use client'
 
-import { Check, Copy, Search } from 'lucide-react'
+import { CaseSensitive, Check, Copy, Search } from 'lucide-react'
 import { useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -58,32 +59,13 @@ export default function CharacterMapPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <h1
-          className={css({
-            fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'indigo.400',
-            gradientTo: 'purple.400',
-            bgClip: 'text',
-          })}
-        >
-          Character Map
-        </h1>
-        <p
-          className={css({
-            fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-            color: 'neutral.400',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Browse and copy 300+ special characters, symbols, and Unicode characters with a single
-          click
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Character Map"
+        description="Browse and copy 300+ special characters, symbols, and Unicode characters with a single click"
+        eyebrow="Specialized editors"
+        icon={CaseSensitive}
+        highlights={['300+ characters', 'One-click copy']}
+      />
 
       {/* Search Bar */}
       <div

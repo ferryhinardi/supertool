@@ -14,7 +14,6 @@ import {
   Info,
   Lightbulb,
   Plus,
-  Repeat,
   RotateCcw,
   Ruler,
   Save,
@@ -37,6 +36,7 @@ import {
   type ToolOperation,
   ToolOperationGrid,
 } from '@/components/features/tool-components'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -847,65 +847,13 @@ function UnitConverterContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'blue.500/30',
-            bg: 'blue.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Repeat className={css({ h: '5', w: '5', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'blue.300' })}>
-            11 Categories • 100+ Units
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientVia: 'cyan.400',
-            gradientTo: 'teal.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Unit Converter
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Convert between metric, imperial, and scientific units instantly. Support for length,
-          weight, temperature, volume, area, speed, time, and more.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Unit Converter"
+        description="Convert between metric, imperial, and scientific units instantly. Support for length, weight, temperature, volume, area, speed, time, and more."
+        eyebrow="Calculators"
+        icon={Ruler}
+        highlights={['Metric and imperial', 'Instant conversion']}
+      />
 
       {/* Category Selection */}
       <div

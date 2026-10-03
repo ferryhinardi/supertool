@@ -25,10 +25,10 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'rea
 import { toast } from 'sonner'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -612,66 +612,13 @@ function UploadToolContent() {
           spaceY: { base: '6', sm: '8' },
         })}
       >
-        {/* Header */}
-        <div className={css({ spaceY: { base: '3', sm: '4' } })}>
-          <div
-            className={css({
-              display: 'flex',
-              flexDirection: { base: 'column', sm: 'row' },
-              alignItems: { base: 'start', sm: 'center' },
-              gap: { base: '3', sm: '4' },
-            })}
-          >
-            <div
-              className={css({
-                rounded: '2xl',
-                bg: 'linear-gradient(to bottom right, #2563eb, #0891b2, #1d4ed8)',
-                p: { base: '3', sm: '4' },
-                shadow: '2xl',
-                boxShadow: '0 25px 50px -12px rgba(37, 99, 235, 0.6)',
-              })}
-            >
-              <FileUp
-                className={css({
-                  h: { base: '7', sm: '8' },
-                  w: { base: '7', sm: '8' },
-                  color: 'white',
-                })}
-              />
-            </div>
-            <div className={css({ spaceY: { base: '1', sm: '2' } })}>
-              <h1
-                className={css({
-                  bgGradient: 'to-r',
-                  gradientFrom: 'blue.300',
-                  gradientVia: 'cyan.400',
-                  gradientTo: 'teal.300',
-                  bgClip: 'text',
-                  fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-                  fontWeight: 'extrabold',
-                  lineHeight: 'tight',
-                  color: 'transparent',
-                  textShadow: '0 10px 15px rgba(0, 0, 0, 0.3)',
-                })}
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                File Upload
-              </h1>
-              <p
-                className={css({
-                  fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                  color: 'white',
-                  lineHeight: 'relaxed',
-                })}
-              >
-                Upload files to cloud storage with instant sharing • Multi-file support
-              </p>
-            </div>
-          </div>
-        </div>
+        <ProductivityToolHeader
+          title="File Upload"
+          description="Upload files to cloud storage with instant sharing \u2022 Multi-file support"
+          eyebrow="File workflows"
+          icon={FileUp}
+          highlights={['Multi-file queue', 'Share links']}
+        />
 
         {/* Tab Navigation */}
         <div

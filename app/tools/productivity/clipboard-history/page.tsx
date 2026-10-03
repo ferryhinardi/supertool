@@ -3,6 +3,7 @@
 import { Check, Clipboard, Clock, Copy, Pin, PinOff, Search, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -220,63 +221,13 @@ export default function ClipboardHistoryPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ textAlign: 'center', spaceY: '4' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'cyan.500/20',
-            bg: 'cyan.500/10',
-            px: '4',
-            py: '2',
-          })}
-        >
-          <Clipboard className={css({ h: '5', w: '5', color: 'cyan.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'cyan.300',
-            })}
-          >
-            Clipboard Management Tool
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'cyan.400',
-            gradientVia: 'teal.400',
-            gradientTo: 'blue.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Clipboard History Manager
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: 'lg',
-            color: 'white',
-          })}
-        >
-          Never lose copied text again. Save, search, pin favorites, and restore clipboard items
-          instantly - all stored locally in your browser.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Clipboard History Manager"
+        description="Never lose copied text again. Save, search, pin favorites, and restore clipboard items instantly - all stored locally in your browser."
+        eyebrow="Notes and history"
+        icon={Clipboard}
+        highlights={['Local history', 'Pin favorites']}
+      />
 
       {/* Control Panel */}
       <Card

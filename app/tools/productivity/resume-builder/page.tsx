@@ -6,6 +6,7 @@ import {
   Download,
   Eye,
   FileText,
+  FileUser,
   GraduationCap,
   Maximize2,
   Save,
@@ -20,6 +21,7 @@ import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { SoftSupportCard } from '@/components/features/monetization/SoftSupportCard'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
@@ -403,56 +405,13 @@ export default function ResumeBuilderPage() {
         gap: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            mb: '3',
-            px: '3',
-            py: '1.5',
-            bg: 'blue.500/10',
-            rounded: 'full',
-          })}
-        >
-          <FileText className={css({ w: '4', h: '4', color: 'blue.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'blue.400' })}>
-            Professional Resume Builder
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'bold',
-            mb: '3',
-            bgGradient: 'to-r',
-            gradientFrom: 'blue.400',
-            gradientTo: 'cyan.400',
-            bgClip: 'text',
-            color: 'transparent',
-          })}
-        >
-          Resume Builder
-        </h1>
-
-        <p
-          className={css({
-            fontSize: { base: 'base', sm: 'lg' },
-            color: 'gray.400',
-            maxW: '2xl',
-            mx: 'auto',
-          })}
-        >
-          Create ATS-friendly resumes with professional templates and AI-powered suggestions
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Resume Builder"
+        description="Create ATS-friendly resumes with professional templates and AI-powered suggestions"
+        eyebrow="Builders"
+        icon={FileUser}
+        highlights={['Live preview', 'Saved drafts']}
+      />
 
       {/* Action Bar */}
       <div

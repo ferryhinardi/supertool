@@ -3,6 +3,7 @@
 import { Copy, FileText, RotateCcw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -79,43 +80,13 @@ export default function LoremIpsumPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ spaceY: 3, textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 3,
-          })}
-        >
-          <FileText className={css({ w: 10, h: 10, color: 'purple.400' })} />
-          <h1
-            className={css({
-              fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-              fontWeight: 'bold',
-              bgGradient: 'to-r',
-              gradientFrom: 'purple.400',
-              gradientVia: 'pink.400',
-              gradientTo: 'blue.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            Lorem Ipsum Generator
-          </h1>
-        </div>
-        <p
-          className={css({
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Generate placeholder text for your designs and mockups
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Lorem Ipsum Generator"
+        description="Generate placeholder text for your designs and mockups"
+        eyebrow="Builders"
+        icon={FileText}
+        highlights={['Paragraphs and words', 'One-click copy']}
+      />
 
       {/* Main Content */}
       <div

@@ -3,6 +3,7 @@
 import { AlertCircle, Copy, FileText, GitCompare, Trash2 } from 'lucide-react'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -217,65 +218,13 @@ function TextSimilarityContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'indigo.500/30',
-            bg: 'indigo.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <GitCompare className={css({ h: '5', w: '5', color: 'indigo.400' })} />
-          <span className={css({ fontSize: 'sm', fontWeight: 'semibold', color: 'indigo.300' })}>
-            3 NLP Algorithms • Real-time Analysis
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'indigo.400',
-            gradientVia: 'purple.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Text Similarity Checker
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Compare text blocks and measure similarity using advanced NLP algorithms. Perfect for
-          detecting duplicate content, plagiarism, and text variations.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Text Similarity Checker"
+        description="Compare text blocks and measure similarity using advanced NLP algorithms. Perfect for detecting duplicate content, plagiarism, and text variations."
+        eyebrow="Text analysis"
+        icon={GitCompare}
+        highlights={['Similarity score', 'Side-by-side compare']}
+      />
 
       {/* Algorithm Selection */}
       <div

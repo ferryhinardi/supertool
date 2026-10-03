@@ -11,13 +11,85 @@ function toolSlug(href: string): string {
   return parts[parts.length - 1] ?? 'tool'
 }
 
-export function ToolFamilyNav() {
+export type ToolFamilyCategory = 'data' | 'productivity'
+
+interface ToolFamilyNavProps {
+  category?: ToolFamilyCategory
+}
+
+function dataLinkClass(active: boolean) {
+  return css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '2',
+    flexShrink: 0,
+    minH: '11',
+    px: '3',
+    rounded: 'lg',
+    border: '1px solid',
+    borderColor: active ? 'brand.violet' : 'brand.line',
+    bg: active ? 'brand.violetSoft' : 'brand.surface',
+    color: active ? 'brand.violetBright' : 'brand.muted',
+    fontSize: 'sm',
+    fontWeight: 'medium',
+    whiteSpace: 'nowrap',
+    transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+    _hover: {
+      color: 'brand.ink',
+      borderColor: 'brand.violet',
+    },
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'brand.violetBright',
+      outlineOffset: '2px',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  })
+}
+
+function productivityLinkClass(active: boolean) {
+  return css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '2',
+    flexShrink: 0,
+    minH: '11',
+    px: '3',
+    rounded: 'lg',
+    border: '1px solid',
+    borderColor: active ? 'brand.amber' : 'brand.line',
+    bg: active ? 'brand.surfaceRaised' : 'brand.surface',
+    color: active ? 'brand.amber' : 'brand.muted',
+    fontSize: 'sm',
+    fontWeight: 'medium',
+    whiteSpace: 'nowrap',
+    transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+    _hover: {
+      color: 'brand.ink',
+      borderColor: 'orange.500',
+    },
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'brand.amber',
+      outlineOffset: '2px',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  })
+}
+
+export function ToolFamilyNav({ category = 'data' }: ToolFamilyNavProps) {
   const pathname = usePathname()
-  const familyTools = getCategoryTools('data')
+  const familyTools = getCategoryTools(category)
+  const ariaLabel = category === 'productivity' ? 'Productivity tools' : 'Data processing tools'
+  const linkClass = category === 'productivity' ? productivityLinkClass : dataLinkClass
 
   return (
     <nav
-      aria-label="Data processing tools"
+      aria-label={ariaLabel}
       className={css({
         bg: 'brand.canvas',
         borderBottom: '1px solid',
@@ -46,41 +118,20 @@ export function ToolFamilyNav() {
               href={tool.href}
               aria-current={active ? 'page' : undefined}
               onClick={() => {
+                if (category === 'productivity') {
+                  trackToolEvent('feature_interaction', {
+                    feature: 'tool_family_navigation',
+                    category: 'productivity',
+                    destination: toolSlug(tool.href),
+                  })
+                  return
+                }
                 trackToolEvent('feature_interaction', {
                   feature: 'data_family_nav',
                   target: toolSlug(tool.href),
                 })
               }}
-              className={css({
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '2',
-                flexShrink: 0,
-                minH: '11',
-                px: '3',
-                rounded: 'lg',
-                border: '1px solid',
-                borderColor: active ? 'brand.violet' : 'brand.line',
-                bg: active ? 'brand.violetSoft' : 'brand.surface',
-                color: active ? 'brand.violetBright' : 'brand.muted',
-                fontSize: 'sm',
-                fontWeight: 'medium',
-                whiteSpace: 'nowrap',
-                transition:
-                  'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
-                _hover: {
-                  color: 'brand.ink',
-                  borderColor: 'brand.violet',
-                },
-                _focusVisible: {
-                  outline: '2px solid',
-                  outlineColor: 'brand.violetBright',
-                  outlineOffset: '2px',
-                },
-                '@media (prefers-reduced-motion: reduce)': {
-                  transition: 'none',
-                },
-              })}
+              className={linkClass(active)}
             >
               <Icon className={css({ h: '4', w: '4' })} aria-hidden />
               {tool.title}

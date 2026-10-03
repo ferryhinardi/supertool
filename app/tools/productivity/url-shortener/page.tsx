@@ -8,19 +8,19 @@ import {
   Copy,
   Download,
   ExternalLink,
+  Link2,
   Link as LinkIcon,
   QrCode,
-  Sparkles,
   Trash2,
   TrendingUp,
 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-
 import { Input } from '@/components/ui/input'
 import { KeyboardShortcutsDialog } from '@/components/ui/keyboard-shortcuts-dialog'
 import { RelatedTools } from '@/components/ui/related-tools'
@@ -220,68 +220,13 @@ export default function URLShortenerPage() {
         spaceY: { base: '6', sm: '8' },
       })}
     >
-      {/* Header */}
-      <div className={css({ spaceY: { base: '4', sm: '4' }, textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'cyan.500/20',
-            bg: 'cyan.500/10',
-            px: '4',
-            py: '2',
-            backdropFilter: 'blur(4px)',
-          })}
-        >
-          <Sparkles className={css({ h: '4', w: '4', color: 'cyan.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'cyan.300',
-            })}
-          >
-            Free URL Shortener
-          </span>
-        </div>
-        <h1
-          className={css({
-            fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-            fontWeight: 'extrabold',
-          })}
-        >
-          <span
-            className={css({
-              bgGradient: 'to-r',
-              gradientFrom: 'cyan.400',
-              gradientVia: 'blue.400',
-              gradientTo: 'purple.400',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            URL Shortener & Analytics
-          </span>
-        </h1>
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: { base: 'base', sm: 'lg' },
-            color: 'white',
-          })}
-        >
-          Create short, memorable links with custom aliases. Track clicks and generate QR codes for
-          easy sharing.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="URL Shortener & Analytics"
+        description="Create short, memorable links with custom aliases. Track clicks and generate QR codes for easy sharing."
+        eyebrow="Builders"
+        icon={Link2}
+        highlights={['Custom aliases', 'Click counts']}
+      />
 
       {/* Stats Cards */}
       <div

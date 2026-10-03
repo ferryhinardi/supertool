@@ -288,71 +288,13 @@ export default function MarkdownEditorPage() {
           spaceY: { base: '6', sm: '8', md: '10' },
         })}
       >
-        {/* Header */}
-        <div
-          className={css({
-            textAlign: 'center',
-            spaceY: '4',
-            animation: 'slideUp 0.5s ease-out forwards',
-            opacity: 0,
-          })}
-        >
-          <div
-            className={css({
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '3',
-              rounded: 'full',
-              border: '1px solid',
-              borderColor: 'green.500/30',
-              bg: 'green.500/10',
-              px: '5',
-              py: '2',
-              backdropFilter: 'blur(8px)',
-            })}
-          >
-            <FileText className={css({ h: '5', w: '5', color: 'green.400' })} />
-            <span
-              className={css({
-                fontSize: 'sm',
-                fontWeight: 'semibold',
-                color: 'green.300',
-              })}
-            >
-              GitHub-Flavored Markdown • Live Preview
-            </span>
-          </div>
-
-          <h1
-            className={css({
-              fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-              fontWeight: 'extrabold',
-              bgGradient: 'to-r',
-              gradientFrom: 'green.400',
-              gradientVia: 'emerald.400',
-              gradientTo: 'teal.400',
-              bgClip: 'text',
-            })}
-            style={{
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Markdown Editor
-          </h1>
-
-          <p
-            className={css({
-              mx: 'auto',
-              maxW: '3xl',
-              fontSize: { base: 'lg', sm: 'xl' },
-              color: 'white',
-            })}
-          >
-            Write and preview markdown in real-time with syntax highlighting, tables, task lists,
-            and full GitHub-flavored markdown support.
-          </p>
-        </div>
+        <ProductivityToolHeader
+          title="Markdown Editor"
+          description="Write and preview markdown in real-time with syntax highlighting, tables, task lists, and full GitHub-flavored markdown support."
+          eyebrow="Specialized editors"
+          icon={FileText}
+          highlights={['Live preview', 'GitHub-flavored markdown']}
+        />
 
         {/* View Mode Controls */}
         <div
@@ -928,3 +870,5 @@ export default function MarkdownEditorPage() {
     </>
   )
 }
+
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'

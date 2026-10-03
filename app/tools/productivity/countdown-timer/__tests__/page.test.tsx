@@ -63,8 +63,7 @@ describe('CountdownTimerPage', () => {
     it('renders the page title correctly', () => {
       render(<CountdownTimerPage />)
 
-      expect(screen.getByText('Countdown')).toBeInTheDocument()
-      expect(screen.getByText('Timer')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1, name: 'Countdown Timer' })).toBeInTheDocument()
     })
 
     it('renders the page description', () => {
@@ -76,7 +75,10 @@ describe('CountdownTimerPage', () => {
     it('renders the productivity tool badge', () => {
       render(<CountdownTimerPage />)
 
-      expect(screen.getByText('Productivity Tool')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Productivity Tools' })).toHaveAttribute(
+        'href',
+        '/tools/productivity'
+      )
     })
 
     it('renders the timer settings card', () => {
@@ -372,7 +374,7 @@ describe('CountdownTimerPage Loading State', () => {
 
     // After mounting, the actual content should be visible
     await waitFor(() => {
-      expect(screen.getByText('Countdown')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1, name: 'Countdown Timer' })).toBeInTheDocument()
     })
   })
 })

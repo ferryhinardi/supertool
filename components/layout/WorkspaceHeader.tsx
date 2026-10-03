@@ -1,10 +1,22 @@
 'use client'
 
+import type { LucideIcon } from 'lucide-react'
 import { FileJson, ShieldCheck } from 'lucide-react'
 import { IconTile } from '@/components/design-system/IconTile'
+import type { AccentName } from '@/lib/design-system'
 import { css } from '@/styled-system/css'
 
-export function WorkspaceHeader() {
+export interface WorkspaceHeaderProps {
+  title?: string
+  icon?: LucideIcon
+  accent?: AccentName
+}
+
+export function WorkspaceHeader({
+  title = 'Data Processing',
+  icon = FileJson,
+  accent = 'violet',
+}: WorkspaceHeaderProps) {
   return (
     <header
       className={css({
@@ -21,7 +33,7 @@ export function WorkspaceHeader() {
       })}
     >
       <div className={css({ display: 'flex', alignItems: 'center', gap: '3', minW: '0' })}>
-        <IconTile icon={FileJson} accent="violet" size="sm" />
+        <IconTile icon={icon} accent={accent} size="sm" />
         <div className={css({ minW: '0' })}>
           <p
             className={css({
@@ -29,7 +41,7 @@ export function WorkspaceHeader() {
               fontWeight: 'bold',
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
-              color: 'brand.violetBright',
+              color: accent === 'amber' ? 'brand.amber' : 'brand.violetBright',
             })}
           >
             Workspace
@@ -44,7 +56,7 @@ export function WorkspaceHeader() {
               truncate: true,
             })}
           >
-            Data Processing
+            {title}
           </p>
         </div>
       </div>

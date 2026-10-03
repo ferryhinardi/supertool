@@ -205,7 +205,8 @@ describe('Resume Builder - Page Rendering', () => {
 
   it('displays professional badge', () => {
     render(<ResumeBuilderPage />)
-    expect(screen.getByText('Professional Resume Builder')).toBeInTheDocument()
+    expect(screen.getByText('Live preview')).toBeInTheDocument()
+    expect(screen.getByText('Saved drafts')).toBeInTheDocument()
   })
 
   it('tracks tool open on mount', () => {

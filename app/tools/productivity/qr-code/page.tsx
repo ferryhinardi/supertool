@@ -44,6 +44,7 @@ import {
   type ToolOperation,
   ToolOperationGrid,
 } from '@/components/features/tool-components'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -1555,57 +1556,13 @@ url,https://github.com,GitHub,#000000`
         gap: { base: '6', sm: '8' },
       })}
     >
-      {/* Header */}
-      <div className={css({ display: 'flex', flexDirection: 'column', gap: '3' })}>
-        <div
-          className={css({ display: 'flex', alignItems: 'center', gap: { base: '3', sm: '4' } })}
-        >
-          <div
-            className={css({
-              rounded: { base: 'xl', sm: '2xl' },
-              p: { base: '2.5', sm: '4' },
-              bgGradient: 'to-br',
-              gradientFrom: 'violet.500',
-              gradientVia: 'purple.500',
-              gradientTo: 'fuchsia.600',
-              boxShadow: '0 25px 50px rgba(139, 92, 246, 0.4)',
-              animation: 'pulse 2s ease-in-out infinite',
-            })}
-          >
-            <QrCode
-              className={css({
-                h: { base: '6', sm: '8' },
-                w: { base: '6', sm: '8' },
-                color: 'white',
-              })}
-            />
-          </div>
-          <div>
-            <h1
-              className={css({
-                fontSize: { base: '2xl', sm: '3xl', md: '4xl', lg: '5xl' },
-                fontWeight: 'extrabold',
-                bgGradient: 'to-r',
-                gradientFrom: 'violet.300',
-                gradientVia: 'purple.400',
-                gradientTo: 'fuchsia.300',
-                backgroundClip: 'text',
-                color: 'transparent',
-              })}
-            >
-              QR Code Generator
-            </h1>
-            <p
-              className={css({
-                fontSize: { base: 'sm', sm: 'base', md: 'lg' },
-                color: 'gray.200',
-              })}
-            >
-              Create customizable QR codes for URLs, text, WiFi, and contact cards
-            </p>
-          </div>
-        </div>
-      </div>
+      <ProductivityToolHeader
+        title="QR Code Generator"
+        description="Create customizable QR codes for URLs, text, WiFi, and contact cards"
+        eyebrow="Builders"
+        icon={QrCode}
+        highlights={['URL, WiFi, contact', 'Download QR']}
+      />
 
       <div>
         {/* Input Section */}

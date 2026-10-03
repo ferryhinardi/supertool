@@ -2,6 +2,7 @@
 
 import { Check, Copy, Hash, MapPin, RefreshCw, Star, Target, TrendingUp, Users } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
+import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import {
@@ -165,43 +166,13 @@ export default function HashtagGeneratorPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div className={css({ spaceY: 4, textAlign: 'center' })}>
-        <div
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 3,
-          })}
-        >
-          <Hash className={css({ w: 10, h: 10, color: 'pink.400' })} />
-          <h1
-            className={css({
-              fontSize: { base: '3xl', sm: '4xl', md: '5xl' },
-              fontWeight: 'bold',
-              bgGradient: 'to-r',
-              gradientFrom: 'pink.500',
-              gradientTo: 'rose.500',
-              bgClip: 'text',
-              color: 'transparent',
-            })}
-          >
-            Hashtag Generator
-          </h1>
-        </div>
-        <p
-          className={css({
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'gray.400',
-            maxW: '3xl',
-            mx: 'auto',
-          })}
-        >
-          Generate trending and relevant hashtags for your social media posts. Optimized for
-          Instagram, Twitter, TikTok, LinkedIn, and more.
-        </p>
-      </div>
+      <ProductivityToolHeader
+        title="Hashtag Generator"
+        description="Generate trending and relevant hashtags for your social media posts. Optimized for Instagram, Twitter, TikTok, LinkedIn, and more."
+        eyebrow="Builders"
+        icon={Hash}
+        highlights={['Platform sets', 'Copy hashtags']}
+      />
 
       {/* Main Content */}
       <div
