@@ -24,6 +24,7 @@ import {
   type ToolOperation,
   ToolOperationGrid,
 } from '@/components/features/tool-components'
+import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
@@ -33,6 +34,7 @@ import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
+import { accents } from '@/lib/design-system'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 import type { PasswordHistory } from './utils'
@@ -69,14 +71,14 @@ const PASSWORD_MODE_OPERATIONS: ToolOperation[] = [
     id: 'random',
     label: 'Random',
     icon: Key,
-    color: TOOL_COLORS.primary,
+    color: accents.emerald.color,
     description: 'Traditional random character password',
   },
   {
     id: 'diceware',
     label: 'Diceware',
     icon: Sparkles,
-    color: TOOL_COLORS.secondary,
+    color: TOOL_COLORS.teal,
     description: 'Word-based passphrase (memorable)',
   },
   {
@@ -222,9 +224,9 @@ function PasswordGeneratorContent() {
       trackToolEvent('password_pwned_check', { isPwned: result.isPwned })
 
       if (result.isPwned) {
-        toast.error(`⚠️ Password found in ${result.count.toLocaleString()} breaches!`)
+        toast.error(`Password found in ${result.count.toLocaleString()} breaches!`)
       } else {
-        toast.success('✅ Password not found in known breaches')
+        toast.success('Password not found in known breaches')
       }
     } catch (_error) {
       toast.error('Failed to check password')
@@ -303,80 +305,18 @@ function PasswordGeneratorContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.0s',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'red.500/30',
-            bg: 'red.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Sparkles className={css({ h: '5', w: '5', color: 'red.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'red.300',
-            })}
-          >
-            Password Generator Pro
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'red.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'rose.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Password Generator
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Generate cryptographically secure passwords with advanced strength analysis, pattern-based
-          generation, breach checking, and password history management.
-        </p>
-      </div>
+      <SecurityToolHeader
+        title="Password Generator"
+        description="Generate cryptographically secure passwords with advanced strength analysis, pattern-based generation, breach checking, and password history management."
+        eyebrow="Credential security"
+        icon={Key}
+        highlights={['Password Generator Pro', 'Breach-aware']}
+      />
 
       {/* Generation Mode Selector - Desktop */}
       <div
         className={css({
           display: { base: 'none', md: 'block' },
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
         })}
       >
         <ToolOperationGrid
@@ -392,9 +332,6 @@ function PasswordGeneratorContent() {
       <div
         className={css({
           display: { base: 'block', md: 'none' },
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
         })}
       >
         <ToolMobilePicker
@@ -417,7 +354,7 @@ function PasswordGeneratorContent() {
         className={css({
           display: 'grid',
           gap: { base: '6', lg: '8' },
-          gridTemplateColumns: { base: '1fr', lg: 'repeat(2, 1fr)' },
+          gridTemplateColumns: { base: '1fr', lg: 'repeat(2, minmax(0, 1fr))' },
           w: 'full',
         })}
       >
@@ -425,9 +362,8 @@ function PasswordGeneratorContent() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'red.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'emerald.500/20',
+            bg: 'brand.surface',
             w: 'full',
           })}
         >
@@ -439,7 +375,7 @@ function PasswordGeneratorContent() {
                 gap: '2',
               })}
             >
-              <Shield className={css({ h: '5', w: '5', color: 'red.400' })} />
+              <Shield className={css({ h: '5', w: '5', color: 'emerald.400' })} />
               <CardTitle>Generate Password</CardTitle>
             </div>
           </CardHeader>
@@ -453,8 +389,8 @@ function PasswordGeneratorContent() {
                     overflow: 'hidden',
                     rounded: 'lg',
                     border: '2px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.900/50',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surface',
                     p: '4',
                   })}
                 >
@@ -463,7 +399,7 @@ function PasswordGeneratorContent() {
                       fontFamily: 'mono',
                       fontSize: { base: 'md', sm: 'lg' },
                       fontWeight: 'bold',
-                      color: 'white',
+                      color: 'brand.ink',
                       overflowWrap: 'break-word',
                       pr: '10',
                     })}
@@ -523,7 +459,7 @@ function PasswordGeneratorContent() {
                       className={css({
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'white',
+                        color: 'brand.ink',
                       })}
                     >
                       Password Strength
@@ -567,28 +503,30 @@ function PasswordGeneratorContent() {
                     <div
                       className={css({
                         rounded: 'lg',
-                        bg: 'gray.900/50',
+                        bg: 'brand.surface',
                         p: '3',
                       })}
                     >
-                      <div className={css({ fontSize: 'xs', color: 'white' })}>Entropy</div>
-                      <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'white' })}>
+                      <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Entropy</div>
+                      <div
+                        className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'brand.ink' })}
+                      >
                         {strength.entropy?.toFixed(1) || 'N/A'} bits
                       </div>
                     </div>
                     <div
                       className={css({
                         rounded: 'lg',
-                        bg: 'gray.900/50',
+                        bg: 'brand.surface',
                         p: '3',
                       })}
                     >
-                      <div className={css({ fontSize: 'xs', color: 'white' })}>Crack Time</div>
+                      <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>Crack Time</div>
                       <div
                         className={css({
                           fontSize: 'lg',
                           fontWeight: 'bold',
-                          color: 'white',
+                          color: 'brand.ink',
                         })}
                       >
                         {strength.crackTime || 'N/A'}
@@ -603,7 +541,7 @@ function PasswordGeneratorContent() {
                         spaceY: '1',
                         pl: '4',
                         fontSize: 'sm',
-                        color: 'white',
+                        color: 'brand.ink',
                       })}
                     >
                       {strength.feedback.map((tip) => (
@@ -656,13 +594,23 @@ function PasswordGeneratorContent() {
                       >
                         <div
                           className={css({
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '2',
                             fontSize: 'sm',
                             color: pwnedResult.isPwned ? 'red.300' : 'green.300',
                           })}
                         >
-                          {pwnedResult.isPwned
-                            ? `⚠️ Found in ${pwnedResult.count.toLocaleString()} breaches!`
-                            : '✅ Not found in known breaches'}
+                          {pwnedResult.isPwned ? (
+                            <AlertTriangle className={css({ h: '4', w: '4' })} aria-hidden />
+                          ) : (
+                            <Shield className={css({ h: '4', w: '4' })} aria-hidden />
+                          )}
+                          <span>
+                            {pwnedResult.isPwned
+                              ? `Found in ${pwnedResult.count.toLocaleString()} breaches!`
+                              : 'Not found in known breaches'}
+                          </span>
                         </div>
                       </div>
                     )}
@@ -702,7 +650,7 @@ function PasswordGeneratorContent() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontSize: 'xs',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     <span>8</span>
@@ -752,14 +700,14 @@ function PasswordGeneratorContent() {
                           gap: '3',
                           rounded: 'lg',
                           border: '1px solid',
-                          borderColor: options[key] ? 'red.500/50' : 'gray.700',
-                          bg: options[key] ? 'red.500/10' : 'gray.900/30',
+                          borderColor: options[key] ? 'emerald.500' : 'brand.line',
+                          bg: options[key] ? 'emerald.500/10' : 'brand.surface',
                           p: '3',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
                           _hover: {
-                            borderColor: 'red.500/70',
-                            bg: 'red.500/15',
+                            borderColor: 'emerald.400',
+                            bg: 'emerald.500/15',
                           },
                         })}
                       >
@@ -775,7 +723,7 @@ function PasswordGeneratorContent() {
                             border: '2px solid',
                             borderColor: 'gray.600',
                             cursor: 'pointer',
-                            _checked: { bg: 'red.500', borderColor: 'red.500' },
+                            _checked: { bg: 'emerald.500', borderColor: 'emerald.500' },
                           })}
                         />
                         <div className={css({ flex: '1' })}>
@@ -783,7 +731,7 @@ function PasswordGeneratorContent() {
                             className={css({
                               fontSize: 'sm',
                               fontWeight: 'medium',
-                              color: 'white',
+                              color: 'brand.ink',
                             })}
                           >
                             {label}
@@ -792,7 +740,7 @@ function PasswordGeneratorContent() {
                             className={css({
                               fontFamily: 'mono',
                               fontSize: 'xs',
-                              color: 'white',
+                              color: 'brand.ink',
                             })}
                           >
                             {example}
@@ -802,8 +750,17 @@ function PasswordGeneratorContent() {
                     ))}
                   </div>
                   {!atLeastOneSelected && (
-                    <p className={css({ fontSize: 'sm', color: 'red.400' })}>
-                      ⚠️ Select at least one character type
+                    <p
+                      className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2',
+                        fontSize: 'sm',
+                        color: 'red.400',
+                      })}
+                    >
+                      <AlertTriangle className={css({ h: '4', w: '4' })} aria-hidden />
+                      Select at least one character type
                     </p>
                   )}
                 </div>
@@ -833,13 +790,13 @@ function PasswordGeneratorContent() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     fontSize: 'xs',
-                    color: 'white',
+                    color: 'brand.ink',
                   })}
                 >
                   <span>4 words</span>
                   <span>10 words</span>
                 </div>
-                <p className={css({ fontSize: 'xs', color: 'white', mt: '2' })}>
+                <p className={css({ fontSize: 'xs', color: 'brand.ink', mt: '2' })}>
                   6 words ≈ 77 bits of entropy (recommended)
                 </p>
               </Field>
@@ -877,9 +834,9 @@ function PasswordGeneratorContent() {
                     w: 'full',
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.900',
-                    color: 'white',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surface',
+                    color: 'brand.ink',
                     p: '3',
                     fontSize: 'sm',
                     cursor: 'pointer',
@@ -891,7 +848,7 @@ function PasswordGeneratorContent() {
                     </option>
                   ))}
                 </select>
-                <p className={css({ fontSize: 'xs', color: 'white', mt: '2' })}>
+                <p className={css({ fontSize: 'xs', color: 'brand.ink', mt: '2' })}>
                   Example: {PASSWORD_TEMPLATES.find((t) => t.id === selectedTemplate)?.example}
                 </p>
               </Field>
@@ -906,11 +863,11 @@ function PasswordGeneratorContent() {
                 h: '12',
                 fontSize: 'lg',
                 fontWeight: 'bold',
-                color: 'white',
+                color: 'brand.ink',
+                bg: 'emerald.600!',
+                boxShadow: 'none!',
+                _hover: { bg: 'emerald.500!', opacity: '1' },
               })}
-              style={{
-                background: 'linear-gradient(135deg, #ef4444, #ec4899)',
-              }}
             >
               <RefreshCw className={css({ h: '5', w: '5' })} />
               Generate Password
@@ -922,9 +879,8 @@ function PasswordGeneratorContent() {
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'yellow.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'emerald.500/20',
+            bg: 'brand.surface',
             w: 'full',
           })}
         >
@@ -954,7 +910,7 @@ function PasswordGeneratorContent() {
                 }
                 className={css({ h: '12' })}
               />
-              <p className={css({ fontSize: 'sm', color: 'white' })}>
+              <p className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                 Generate up to 100 unique passwords at once
               </p>
             </Field>
@@ -963,7 +919,14 @@ function PasswordGeneratorContent() {
               <Button
                 onClick={handleBulkGenerate}
                 disabled={mode === 'random' && !atLeastOneSelected}
-                className={css({ flex: '1', h: '12' })}
+                className={css({
+                  flex: '1',
+                  h: '12',
+                  color: 'brand.ink',
+                  bg: 'emerald.600!',
+                  boxShadow: 'none!',
+                  _hover: { bg: 'emerald.500!', opacity: '1' },
+                })}
               >
                 <Zap className={css({ h: '5', w: '5' })} />
                 Generate {bulkCount}
@@ -988,7 +951,7 @@ function PasswordGeneratorContent() {
                     className={css({
                       fontSize: 'sm',
                       fontWeight: 'medium',
-                      color: 'white',
+                      color: 'brand.ink',
                     })}
                   >
                     Generated {bulkPasswords.length} passwords
@@ -1011,8 +974,8 @@ function PasswordGeneratorContent() {
                     overflow: 'auto',
                     rounded: 'lg',
                     border: '1px solid',
-                    borderColor: 'gray.700',
-                    bg: 'gray.900/30',
+                    borderColor: 'brand.line',
+                    bg: 'brand.surface',
                     p: '3',
                   })}
                 >
@@ -1025,7 +988,7 @@ function PasswordGeneratorContent() {
                           alignItems: 'center',
                           gap: '2',
                           rounded: 'md',
-                          bg: 'gray.900/50',
+                          bg: 'brand.surface',
                           p: '2',
                           _hover: { bg: 'gray.900/70' },
                         })}
@@ -1065,9 +1028,8 @@ function PasswordGeneratorContent() {
       <Card
         className={css({
           border: '1px solid',
-          borderColor: 'blue.500/20',
-          bg: 'gray.900/50',
-          backdropFilter: 'blur(16px)',
+          borderColor: 'brand.line',
+          bg: 'brand.surface',
           w: 'full',
         })}
       >
@@ -1082,7 +1044,7 @@ function PasswordGeneratorContent() {
             <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
               <History className={css({ h: '5', w: '5', color: 'blue.400' })} />
               <CardTitle>Password History</CardTitle>
-              <span className={css({ fontSize: 'sm', color: 'white' })}>
+              <span className={css({ fontSize: 'sm', color: 'brand.ink' })}>
                 (Last {passwordHistory.length})
               </span>
             </div>
@@ -1139,7 +1101,7 @@ function PasswordGeneratorContent() {
                     rounded: 'lg',
                     border: '1px solid',
                     borderColor: entry.favorite ? 'yellow.500/30' : 'gray.700',
-                    bg: entry.favorite ? 'yellow.500/5' : 'gray.900/30',
+                    bg: entry.favorite ? 'yellow.500/5' : 'brand.surface',
                     p: '3',
                   })}
                 >
@@ -1169,7 +1131,7 @@ function PasswordGeneratorContent() {
                         fontFamily: 'mono',
                         fontSize: 'sm',
                         fontWeight: 'medium',
-                        color: 'white',
+                        color: 'brand.ink',
                         overflowWrap: 'break-word',
                       })}
                     >
@@ -1180,7 +1142,7 @@ function PasswordGeneratorContent() {
                         display: 'flex',
                         gap: '3',
                         fontSize: 'xs',
-                        color: 'white',
+                        color: 'brand.ink',
                         mt: '1',
                       })}
                     >
@@ -1227,7 +1189,7 @@ function PasswordGeneratorContent() {
               className={css({
                 textAlign: 'center',
                 py: '8',
-                color: 'white',
+                color: 'brand.ink',
               })}
             >
               <History className={css({ h: '12', w: '12', mx: 'auto', mb: '3', opacity: '0.3' })} />

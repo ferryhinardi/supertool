@@ -42,13 +42,15 @@ export function WorkspaceHeader({
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
               color:
-                accent === 'orange'
-                  ? 'orange.400'
-                  : accent === 'amber'
-                    ? 'brand.amber'
-                    : accent === 'blue'
-                      ? 'brand.blue'
-                      : 'brand.violetBright',
+                accent === 'emerald'
+                  ? 'emerald.400'
+                  : accent === 'orange'
+                    ? 'orange.400'
+                    : accent === 'amber'
+                      ? 'brand.amber'
+                      : accent === 'blue'
+                        ? 'brand.blue'
+                        : 'brand.violetBright',
             })}
           >
             Workspace

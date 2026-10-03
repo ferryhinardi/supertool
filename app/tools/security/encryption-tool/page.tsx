@@ -15,6 +15,7 @@ import {
 import { useCallback, useState } from 'react'
 import { AffiliateSuggestion } from '@/components/features/ads/AffiliateSuggestion'
 import { DragDropZone } from '@/components/features/media/DragDropZone'
+import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
@@ -307,86 +308,21 @@ export default function EncryptionToolPage() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '3',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'indigo.500/30',
-            bg: 'indigo.500/10',
-            px: '5',
-            py: '2',
-            backdropFilter: 'blur(8px)',
-          })}
-        >
-          <Shield className={css({ h: '5', w: '5', color: 'indigo.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'indigo.300',
-            })}
-          >
-            AES-256-GCM Encryption
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'extrabold',
-            bgGradient: 'to-r',
-            gradientFrom: 'indigo.400',
-            gradientVia: 'purple.400',
-            gradientTo: 'pink.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Encryption & Decryption Tool
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '3xl',
-            fontSize: { base: 'lg', sm: 'xl' },
-            color: 'white',
-          })}
-        >
-          Secure your data with AES-256-GCM encryption. All encryption happens in your browser -
-          nothing is sent to any server.
-        </p>
-      </div>
+      <SecurityToolHeader
+        title="Encryption & Decryption Tool"
+        description="Secure your data with AES-256-GCM encryption. All encryption happens in your browser - nothing is sent to any server."
+        eyebrow="Encryption workspace"
+        icon={Shield}
+        highlights={['AES-256-GCM', 'Browser encryption']}
+      />
 
       {/* Mode Selection */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'indigo.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'emerald.500/20',
+            bg: 'brand.surface',
           })}
         >
           <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
@@ -435,19 +371,12 @@ export default function EncryptionToolPage() {
 
       {/* Text Mode */}
       {mode === 'text' && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'indigo.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              borderColor: 'emerald.500/20',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
@@ -480,7 +409,7 @@ export default function EncryptionToolPage() {
                 {/* Input Text */}
                 {action === 'encrypt' && (
                   <Field>
-                    <FieldLabel className={css({ color: 'white' })}>Text to Encrypt</FieldLabel>
+                    <FieldLabel className={css({ color: 'brand.ink' })}>Text to Encrypt</FieldLabel>
                     <Textarea
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
@@ -492,7 +421,7 @@ export default function EncryptionToolPage() {
 
                 {/* Password Input */}
                 <Field>
-                  <FieldLabel className={css({ color: 'white' })}>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'brand.ink' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -556,7 +485,7 @@ export default function EncryptionToolPage() {
                             key={suggestion}
                             className={css({
                               fontSize: 'xs',
-                              color: 'white',
+                              color: 'brand.ink',
                             })}
                           >
                             • {suggestion}
@@ -573,9 +502,9 @@ export default function EncryptionToolPage() {
                     className={css({
                       p: 3,
                       borderRadius: 'md',
-                      bg: 'red.50',
+                      bg: 'red.500/10',
                       borderWidth: 1,
-                      borderColor: 'red.200',
+                      borderColor: 'red.500/30',
                     })}
                   >
                     <div
@@ -586,7 +515,7 @@ export default function EncryptionToolPage() {
                       })}
                     >
                       <AlertCircle className={css({ w: 4, h: 4, color: 'red.500' })} />
-                      <span className={css({ fontSize: 'sm', color: 'red.700' })}>{error}</span>
+                      <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
                     </div>
                   </div>
                 )}
@@ -600,12 +529,32 @@ export default function EncryptionToolPage() {
                   })}
                 >
                   {action === 'encrypt' ? (
-                    <Button onClick={handleEncryptText} disabled={loading}>
+                    <Button
+                      onClick={handleEncryptText}
+                      disabled={loading}
+                      className={css({
+                        minH: '11',
+                        color: 'brand.ink',
+                        bg: 'emerald.600!',
+                        boxShadow: 'none!',
+                        _hover: { bg: 'emerald.500!', opacity: '1' },
+                      })}
+                    >
                       <Lock className={css({ w: 4, h: 4, mr: 2 })} />
                       Encrypt Text
                     </Button>
                   ) : (
-                    <Button onClick={handleDecryptText} disabled={loading}>
+                    <Button
+                      onClick={handleDecryptText}
+                      disabled={loading}
+                      className={css({
+                        minH: '11',
+                        color: 'brand.ink',
+                        bg: 'emerald.600!',
+                        boxShadow: 'none!',
+                        _hover: { bg: 'emerald.500!', opacity: '1' },
+                      })}
+                    >
                       <Unlock className={css({ w: 4, h: 4, mr: 2 })} />
                       Decrypt Text
                     </Button>
@@ -676,16 +625,16 @@ export default function EncryptionToolPage() {
                     className={css({
                       p: 4,
                       borderRadius: 'md',
-                      bg: 'blue.50',
+                      bg: 'emerald.500/10',
                       borderWidth: 1,
-                      borderColor: 'blue.200',
+                      borderColor: 'emerald.500/30',
                     })}
                   >
                     <p
                       className={css({
                         fontWeight: 'bold',
                         mb: 2,
-                        color: 'blue.700',
+                        color: 'emerald.300',
                       })}
                     >
                       ✓ Text Decrypted Successfully
@@ -709,19 +658,12 @@ export default function EncryptionToolPage() {
 
       {/* File Mode */}
       {mode === 'file' && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'indigo.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              borderColor: 'emerald.500/20',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
@@ -776,7 +718,7 @@ export default function EncryptionToolPage() {
 
                 {/* Password Input */}
                 <Field>
-                  <FieldLabel className={css({ color: 'white' })}>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'brand.ink' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -842,9 +784,9 @@ export default function EncryptionToolPage() {
                     className={css({
                       p: 3,
                       borderRadius: 'md',
-                      bg: 'red.50',
+                      bg: 'red.500/10',
                       borderWidth: 1,
-                      borderColor: 'red.200',
+                      borderColor: 'red.500/30',
                     })}
                   >
                     <div
@@ -855,7 +797,7 @@ export default function EncryptionToolPage() {
                       })}
                     >
                       <AlertCircle className={css({ w: 4, h: 4, color: 'red.500' })} />
-                      <span className={css({ fontSize: 'sm', color: 'red.700' })}>{error}</span>
+                      <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
                     </div>
                   </div>
                 )}
@@ -869,12 +811,32 @@ export default function EncryptionToolPage() {
                   })}
                 >
                   {action === 'encrypt' ? (
-                    <Button onClick={handleEncryptFile} disabled={loading}>
+                    <Button
+                      onClick={handleEncryptFile}
+                      disabled={loading}
+                      className={css({
+                        minH: '11',
+                        color: 'brand.ink',
+                        bg: 'emerald.600!',
+                        boxShadow: 'none!',
+                        _hover: { bg: 'emerald.500!', opacity: '1' },
+                      })}
+                    >
                       <Lock className={css({ w: 4, h: 4, mr: 2 })} />
                       Encrypt File
                     </Button>
                   ) : (
-                    <Button onClick={handleDecryptFile} disabled={loading}>
+                    <Button
+                      onClick={handleDecryptFile}
+                      disabled={loading}
+                      className={css({
+                        minH: '11',
+                        color: 'brand.ink',
+                        bg: 'emerald.600!',
+                        boxShadow: 'none!',
+                        _hover: { bg: 'emerald.500!', opacity: '1' },
+                      })}
+                    >
                       <Unlock className={css({ w: 4, h: 4, mr: 2 })} />
                       Decrypt File
                     </Button>
@@ -926,16 +888,16 @@ export default function EncryptionToolPage() {
                     className={css({
                       p: 4,
                       borderRadius: 'md',
-                      bg: 'blue.50',
+                      bg: 'emerald.500/10',
                       borderWidth: 1,
-                      borderColor: 'blue.200',
+                      borderColor: 'emerald.500/30',
                     })}
                   >
                     <p
                       className={css({
                         fontWeight: 'bold',
                         mb: 2,
-                        color: 'blue.700',
+                        color: 'emerald.300',
                       })}
                     >
                       ✓ File Decrypted Successfully
@@ -954,25 +916,18 @@ export default function EncryptionToolPage() {
 
       {/* Link Decryption Mode */}
       {mode === 'link' && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.2s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '1px solid',
-              borderColor: 'indigo.500/20',
-              bg: 'gray.900/50',
-              backdropFilter: 'blur(16px)',
+              borderColor: 'emerald.500/20',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding className={css({ pt: 6, pb: 6 })}>
               <div className={css({ display: 'flex', flexDir: 'column', gap: 4 })}>
                 <Field>
-                  <FieldLabel className={css({ color: 'white' })}>Encrypted Link</FieldLabel>
+                  <FieldLabel className={css({ color: 'brand.ink' })}>Encrypted Link</FieldLabel>
                   <Textarea
                     value={encryptedLink}
                     onChange={(e) => setEncryptedLink(e.target.value)}
@@ -982,7 +937,7 @@ export default function EncryptionToolPage() {
                 </Field>
 
                 <Field>
-                  <FieldLabel className={css({ color: 'white' })}>Password</FieldLabel>
+                  <FieldLabel className={css({ color: 'brand.ink' })}>Password</FieldLabel>
                   <div className={css({ position: 'relative' })}>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -1016,9 +971,9 @@ export default function EncryptionToolPage() {
                     className={css({
                       p: 3,
                       borderRadius: 'md',
-                      bg: 'red.50',
+                      bg: 'red.500/10',
                       borderWidth: 1,
-                      borderColor: 'red.200',
+                      borderColor: 'red.500/30',
                     })}
                   >
                     <div
@@ -1029,7 +984,7 @@ export default function EncryptionToolPage() {
                       })}
                     >
                       <AlertCircle className={css({ w: 4, h: 4, color: 'red.500' })} />
-                      <span className={css({ fontSize: 'sm', color: 'red.700' })}>{error}</span>
+                      <span className={css({ fontSize: 'sm', color: 'red.300' })}>{error}</span>
                     </div>
                   </div>
                 )}
@@ -1041,7 +996,17 @@ export default function EncryptionToolPage() {
                     justifyContent: 'center',
                   })}
                 >
-                  <Button onClick={handleDecryptFromLink} disabled={loading}>
+                  <Button
+                    onClick={handleDecryptFromLink}
+                    disabled={loading}
+                    className={css({
+                      minH: '11',
+                      color: 'brand.ink',
+                      bg: 'emerald.600!',
+                      boxShadow: 'none!',
+                      _hover: { bg: 'emerald.500!', opacity: '1' },
+                    })}
+                  >
                     <Unlock className={css({ w: 4, h: 4, mr: 2 })} />
                     Decrypt Link
                   </Button>
@@ -1056,16 +1021,16 @@ export default function EncryptionToolPage() {
                     className={css({
                       p: 4,
                       borderRadius: 'md',
-                      bg: 'blue.50',
+                      bg: 'emerald.500/10',
                       borderWidth: 1,
-                      borderColor: 'blue.200',
+                      borderColor: 'emerald.500/30',
                     })}
                   >
                     <p
                       className={css({
                         fontWeight: 'bold',
                         mb: 2,
-                        color: 'blue.700',
+                        color: 'emerald.300',
                       })}
                     >
                       ✓ Link Decrypted Successfully
@@ -1088,19 +1053,12 @@ export default function EncryptionToolPage() {
       )}
 
       {/* Info Section */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'indigo.500/20',
-            bg: 'gray.900/50',
-            backdropFilter: 'blur(16px)',
+            borderColor: 'emerald.500/20',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -1110,7 +1068,7 @@ export default function EncryptionToolPage() {
             <ul
               className={css({
                 fontSize: 'sm',
-                color: 'white',
+                color: 'brand.ink',
                 pl: 5,
                 display: 'flex',
                 flexDir: 'column',
@@ -1129,21 +1087,14 @@ export default function EncryptionToolPage() {
       </div>
 
       {/* Pro Tips */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.5s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <div
           className={css({
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
-            borderColor: 'amber.500/20',
-            bg: 'rgba(251, 191, 36, 0.05)',
+            borderColor: 'teal.500/20',
+            bg: 'brand.surface',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
           })}
         >
           <h3
@@ -1151,12 +1102,12 @@ export default function EncryptionToolPage() {
               mb: '3',
               fontSize: { base: 'base', sm: 'lg' },
               fontWeight: 'bold',
-              color: 'amber.300',
+              color: 'teal.400',
             })}
           >
             Pro Tips
           </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'brand.muted', listStyle: 'disc' })}>
             <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               Use long, complex passwords with mixed characters for maximum security
             </li>

@@ -3,11 +3,8 @@
 import {
   AlertCircle,
   CheckCircle2,
-  Clock,
   Copy,
   Globe,
-  Lock,
-  Shield,
   ShieldAlert,
   ShieldCheck,
   Sparkles,
@@ -15,6 +12,7 @@ import {
 } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -155,11 +153,11 @@ function SSLCheckerContent() {
       }
 
       if (result.warnings.length > 0) {
-        report += `\nWarnings:\n${result.warnings.map((w) => `⚠️ ${w}`).join('\n')}\n`
+        report += `\nWarnings:\n${result.warnings.map((w) => `- ${w}`).join('\n')}\n`
       }
 
       if (result.recommendations.length > 0) {
-        report += `\nRecommendations:\n${result.recommendations.map((r) => `💡 ${r}`).join('\n')}\n`
+        report += `\nRecommendations:\n${result.recommendations.map((r) => `- ${r}`).join('\n')}\n`
       }
     }
 
@@ -195,61 +193,13 @@ function SSLCheckerContent() {
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({ spaceY: '4', animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}
-      >
-        <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              w: '12',
-              h: '12',
-              borderRadius: 'lg',
-              bgGradient: 'to-br',
-              gradientFrom: 'teal.500',
-              gradientTo: 'cyan.500',
-            })}
-          >
-            <ShieldCheck className={css({ w: '6', h: '6', color: 'white' })} />
-          </div>
-          <div>
-            <h1
-              className={css({
-                fontSize: { base: '2xl', sm: '3xl', md: '4xl' },
-                fontWeight: 'bold',
-                color: 'fg.default',
-              })}
-            >
-              SSL/TLS Certificate Checker
-            </h1>
-            <p className={css({ color: 'fg.muted', fontSize: { base: 'sm', sm: 'md' } })}>
-              Inspect SSL certificates, check expiration dates, and get security recommendations
-            </p>
-          </div>
-        </div>
-
-        <div className={css({ display: 'flex', flexWrap: 'wrap', gap: '2' })}>
-          <Badge variant="secondary">
-            <Shield className={css({ w: '3', h: '3', mr: '1' })} />
-            Certificate Details
-          </Badge>
-          <Badge variant="secondary">
-            <Clock className={css({ w: '3', h: '3', mr: '1' })} />
-            Expiry Tracking
-          </Badge>
-          <Badge variant="secondary">
-            <Lock className={css({ w: '3', h: '3', mr: '1' })} />
-            Security Analysis
-          </Badge>
-          <Badge variant="secondary">
-            <Sparkles className={css({ w: '3', h: '3', mr: '1' })} />
-            Recommendations
-          </Badge>
-        </div>
-      </div>
+      <SecurityToolHeader
+        title="SSL/TLS Certificate Checker"
+        description="Inspect SSL certificates, check expiration dates, and get security recommendations"
+        eyebrow="Certificate inspection"
+        icon={ShieldCheck}
+        highlights={['Certificate details', 'Expiry checks']}
+      />
 
       {/* Main Content */}
       <div
@@ -299,7 +249,17 @@ function SSLCheckerContent() {
                       disabled={loading}
                     />
                   </div>
-                  <Button onClick={checkSSL} disabled={loading || !url.trim()}>
+                  <Button
+                    onClick={checkSSL}
+                    disabled={loading || !url.trim()}
+                    className={css({
+                      minH: '11',
+                      color: 'brand.ink',
+                      bg: 'emerald.600!',
+                      boxShadow: 'none!',
+                      _hover: { bg: 'emerald.500!', opacity: '1' },
+                    })}
+                  >
                     {loading ? 'Checking...' : 'Check SSL'}
                   </Button>
                 </div>
@@ -312,7 +272,7 @@ function SSLCheckerContent() {
 
           {/* Results */}
           {result && (
-            <div className={css({ animation: 'slideUp 0.5s ease-out forwards', opacity: 0 })}>
+            <div className={css({ w: 'full' })}>
               {result.error ? (
                 <Card>
                   <CardContent className={css({ pt: '6' })}>

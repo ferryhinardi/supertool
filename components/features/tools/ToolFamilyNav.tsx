@@ -11,7 +11,14 @@ function toolSlug(href: string): string {
   return parts[parts.length - 1] ?? 'tool'
 }
 
-export type ToolFamilyCategory = 'data' | 'productivity' | 'development' | 'media'
+export type ToolFamilyCategory =
+  | 'data'
+  | 'productivity'
+  | 'development'
+  | 'media'
+  | 'security'
+  | 'finance'
+  | 'design'
 
 interface ToolFamilyNavProps {
   category?: ToolFamilyCategory
@@ -145,10 +152,109 @@ function mediaLinkClass(active: boolean) {
   })
 }
 
+function securityLinkClass(active: boolean) {
+  return css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '2',
+    flexShrink: 0,
+    minH: '11',
+    px: '3',
+    rounded: 'lg',
+    border: '1px solid',
+    borderColor: active ? 'emerald.400' : 'brand.line',
+    bg: active ? 'brand.surfaceRaised' : 'brand.surface',
+    color: active ? 'emerald.400' : 'brand.muted',
+    fontSize: 'sm',
+    fontWeight: 'medium',
+    whiteSpace: 'nowrap',
+    transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+    _hover: {
+      color: 'brand.ink',
+      borderColor: 'teal.400',
+    },
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'emerald.400',
+      outlineOffset: '2px',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  })
+}
+
+function financeLinkClass(active: boolean) {
+  return css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '2',
+    flexShrink: 0,
+    minH: '11',
+    px: '3',
+    rounded: 'lg',
+    border: '1px solid',
+    borderColor: active ? 'emerald.400' : 'brand.line',
+    bg: active ? 'brand.surfaceRaised' : 'brand.surface',
+    color: active ? 'emerald.400' : 'brand.muted',
+    fontSize: 'sm',
+    fontWeight: 'medium',
+    whiteSpace: 'nowrap',
+    transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+    _hover: {
+      color: 'brand.ink',
+      borderColor: 'cyan.400',
+    },
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'emerald.400',
+      outlineOffset: '2px',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  })
+}
+
+function designLinkClass(active: boolean) {
+  return css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '2',
+    flexShrink: 0,
+    minH: '11',
+    px: '3',
+    rounded: 'lg',
+    border: '1px solid',
+    borderColor: active ? 'brand.violet' : 'brand.line',
+    bg: active ? 'brand.violetSoft' : 'brand.surface',
+    color: active ? 'brand.violetBright' : 'brand.muted',
+    fontSize: 'sm',
+    fontWeight: 'medium',
+    whiteSpace: 'nowrap',
+    transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+    _hover: {
+      color: 'brand.ink',
+      borderColor: 'fuchsia.400',
+    },
+    _focusVisible: {
+      outline: '2px solid',
+      outlineColor: 'fuchsia.400',
+      outlineOffset: '2px',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  })
+}
+
 function ariaLabelFor(category: ToolFamilyCategory) {
   if (category === 'productivity') return 'Productivity tools'
   if (category === 'development') return 'Development tools'
   if (category === 'media') return 'Media tools'
+  if (category === 'security') return 'Security tools'
+  if (category === 'finance') return 'Finance tools'
+  if (category === 'design') return 'Design tools'
   return 'Data processing tools'
 }
 
@@ -156,6 +262,9 @@ function linkClassFor(category: ToolFamilyCategory) {
   if (category === 'productivity') return productivityLinkClass
   if (category === 'development') return developmentLinkClass
   if (category === 'media') return mediaLinkClass
+  if (category === 'security') return securityLinkClass
+  if (category === 'finance') return financeLinkClass
+  if (category === 'design') return designLinkClass
   return dataLinkClass
 }
 
@@ -216,6 +325,30 @@ export function ToolFamilyNav({ category = 'data' }: ToolFamilyNavProps) {
                   trackToolEvent('feature_interaction', {
                     feature: 'tool_family_navigation',
                     category: 'media',
+                    destination: toolSlug(tool.href),
+                  })
+                  return
+                }
+                if (category === 'security') {
+                  trackToolEvent('feature_interaction', {
+                    feature: 'tool_family_navigation',
+                    category: 'security',
+                    destination: toolSlug(tool.href),
+                  })
+                  return
+                }
+                if (category === 'finance') {
+                  trackToolEvent('feature_interaction', {
+                    feature: 'tool_family_navigation',
+                    category: 'finance',
+                    destination: toolSlug(tool.href),
+                  })
+                  return
+                }
+                if (category === 'design') {
+                  trackToolEvent('feature_interaction', {
+                    feature: 'tool_family_navigation',
+                    category: 'design',
                     destination: toolSlug(tool.href),
                   })
                   return

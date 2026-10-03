@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { SecurityToolHeader } from '@/components/features/tools/SecurityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -411,94 +412,30 @@ export default function HashGeneratorPage() {
     <main
       className={css({
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },
         spaceY: { base: '6', sm: '8', md: '10' },
       })}
     >
-      {/* Header */}
-      <div
-        className={css({
-          textAlign: 'center',
-          spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          opacity: 0,
-        })}
-      >
-        <div
-          className={css({
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '2',
-            rounded: 'full',
-            border: '1px solid',
-            borderColor: 'red.500/20',
-            bg: 'red.500/10',
-            px: '4',
-            py: '2',
-          })}
-        >
-          <Hash className={css({ h: '5', w: '5', color: 'red.400' })} />
-          <span
-            className={css({
-              fontSize: 'sm',
-              fontWeight: 'semibold',
-              color: 'red.300',
-            })}
-          >
-            Cryptographic Hashing
-          </span>
-        </div>
-
-        <h1
-          className={css({
-            fontSize: { base: '4xl', sm: '5xl', md: '6xl' },
-            fontWeight: 'bold',
-            bgGradient: 'to-r',
-            gradientFrom: 'red.400',
-            gradientVia: 'pink.400',
-            gradientTo: 'purple.400',
-            bgClip: 'text',
-          })}
-          style={{
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Hash Generator & Verifier
-        </h1>
-
-        <p
-          className={css({
-            mx: 'auto',
-            maxW: '2xl',
-            fontSize: 'lg',
-            color: 'white',
-          })}
-        >
-          Generate cryptographic hashes using multiple algorithms. Hash text or files, and verify
-          integrity.
-        </p>
-      </div>
+      <SecurityToolHeader
+        title="Hash Generator & Verifier"
+        description="Generate cryptographic hashes using multiple algorithms. Hash text or files, and verify integrity."
+        eyebrow="Hashing utility"
+        icon={Hash}
+        highlights={['Multiple algorithms', 'Integrity checks']}
+      />
 
       {/* Pro Tips Section */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.1s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <div
           className={css({
             rounded: { base: 'xl', sm: '2xl' },
             border: '2px solid',
-            borderColor: 'cyan.500/20',
-            bg: 'rgba(6, 182, 212, 0.05)',
+            borderColor: 'teal.500/20',
+            bg: 'brand.surface',
             p: { base: '4', sm: '5', md: '6' },
-            backdropFilter: 'blur(16px)',
           })}
         >
           <h3
@@ -506,12 +443,12 @@ export default function HashGeneratorPage() {
               mb: '3',
               fontSize: { base: 'base', sm: 'lg' },
               fontWeight: 'bold',
-              color: 'cyan.300',
+              color: 'teal.400',
             })}
           >
             Pro Tips
           </h3>
-          <ul className={css({ spaceY: '2', pl: '5', color: 'gray.400', listStyle: 'disc' })}>
+          <ul className={css({ spaceY: '2', pl: '5', color: 'brand.muted', listStyle: 'disc' })}>
             <li className={css({ fontSize: { base: 'sm', sm: 'base' } })}>
               <strong>Multiple Algorithms:</strong> Generate MD5, SHA-1, SHA-256, SHA-384, and
               SHA-512 hashes simultaneously. SHA-256 is the industry standard, while SHA-384/512
@@ -542,18 +479,12 @@ export default function HashGeneratorPage() {
       </div>
 
       {/* Input Section */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.2s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/50',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -589,7 +520,18 @@ export default function HashGeneratorPage() {
                   multiple
                 />
               </div>
-              <Button onClick={generateHashes} className={css({ gap: '2' })} disabled={!input}>
+              <Button
+                onClick={generateHashes}
+                className={css({
+                  gap: '2',
+                  minH: '11',
+                  color: 'brand.ink',
+                  bg: 'emerald.600!',
+                  boxShadow: 'none!',
+                  _hover: { bg: 'emerald.500!', opacity: '1' },
+                })}
+                disabled={!input}
+              >
                 <Hash className={css({ h: '4', w: '4' })} />
                 Generate Hashes
               </Button>
@@ -610,9 +552,6 @@ export default function HashGeneratorPage() {
       <div
         className={css({
           spaceY: '4',
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.3s',
-          opacity: 0,
         })}
       >
         {(Object.keys(hashes) as HashAlgorithm[]).map((algorithm) => (
@@ -620,8 +559,8 @@ export default function HashGeneratorPage() {
             key={algorithm}
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/50',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader className={css({ pb: '3' })}>
@@ -654,18 +593,12 @@ export default function HashGeneratorPage() {
       </div>
 
       {/* Compare/Verify Section */}
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.4s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <Card
           className={css({
             border: '1px solid',
-            borderColor: 'gray.800',
-            bg: 'gray.900/50',
+            borderColor: 'brand.line',
+            bg: 'brand.surface',
           })}
         >
           <CardHeader>
@@ -732,18 +665,12 @@ export default function HashGeneratorPage() {
 
       {/* Batch Processing Section */}
       {batchMode && batchFiles.length > 0 && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.45s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '2px solid',
-              borderColor: 'purple.500/30',
-              bg: 'rgba(168, 85, 247, 0.05)',
+              borderColor: 'emerald.500/30',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -756,7 +683,7 @@ export default function HashGeneratorPage() {
               >
                 <div>
                   <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-                    <FileStack className={css({ h: '5', w: '5', color: 'purple.400' })} />
+                    <FileStack className={css({ h: '5', w: '5', color: 'emerald.400' })} />
                     Batch Processing ({batchFiles.length} files)
                   </CardTitle>
                   <CardDescription>Process multiple files simultaneously</CardDescription>
@@ -802,10 +729,10 @@ export default function HashGeneratorPage() {
                     key={file.id}
                     className={css({
                       border: '1px solid',
-                      borderColor: 'gray.800',
+                      borderColor: 'brand.line',
                       rounded: 'lg',
                       p: '4',
-                      bg: 'gray.900/30',
+                      bg: 'brand.surface',
                     })}
                   >
                     <div
@@ -818,17 +745,23 @@ export default function HashGeneratorPage() {
                     >
                       <div className={css({ flex: '1' })}>
                         <div
-                          className={css({ fontWeight: 'medium', color: 'white', fontSize: 'sm' })}
+                          className={css({
+                            fontWeight: 'medium',
+                            color: 'brand.ink',
+                            fontSize: 'sm',
+                          })}
                         >
                           {file.name}
                         </div>
-                        <div className={css({ fontSize: 'xs', color: 'white' })}>
+                        <div className={css({ fontSize: 'xs', color: 'brand.ink' })}>
                           {formatFileSize(file.size)}
                         </div>
                       </div>
                       <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                         {file.status === 'pending' && (
-                          <span className={css({ fontSize: 'xs', color: 'white' })}>Pending</span>
+                          <span className={css({ fontSize: 'xs', color: 'brand.ink' })}>
+                            Pending
+                          </span>
                         )}
                         {file.status === 'processing' && (
                           <Loader2
@@ -864,7 +797,11 @@ export default function HashGeneratorPage() {
                             className={css({ display: 'flex', alignItems: 'center', gap: '2' })}
                           >
                             <span
-                              className={css({ fontSize: 'xs', color: 'white', minW: '[60px]' })}
+                              className={css({
+                                fontSize: 'xs',
+                                color: 'brand.ink',
+                                minW: '[60px]',
+                              })}
                             >
                               {algo}:
                             </span>
@@ -873,7 +810,7 @@ export default function HashGeneratorPage() {
                                 flex: '1',
                                 fontSize: 'xs',
                                 fontFamily: 'mono',
-                                color: 'white',
+                                color: 'brand.ink',
                               })}
                             >
                               {file.hashes?.[algo]?.substring(0, 32)}...
@@ -900,18 +837,12 @@ export default function HashGeneratorPage() {
 
       {/* History Panel */}
       {showHistory && history.length > 0 && (
-        <div
-          className={css({
-            animation: 'slideUp 0.5s ease-out forwards',
-            animationDelay: '0.45s',
-            opacity: 0,
-          })}
-        >
+        <div className={css({ w: 'full' })}>
           <Card
             className={css({
               border: '2px solid',
               borderColor: 'blue.500/30',
-              bg: 'rgba(59, 130, 246, 0.05)',
+              bg: 'brand.surface',
             })}
           >
             <CardHeader>
@@ -948,13 +879,13 @@ export default function HashGeneratorPage() {
                     key={entry.id}
                     className={css({
                       border: '1px solid',
-                      borderColor: 'gray.800',
+                      borderColor: 'brand.line',
                       rounded: 'lg',
                       p: '3',
-                      bg: 'gray.900/30',
+                      bg: 'brand.surface',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
-                      _hover: { borderColor: 'blue.500/50', bg: 'gray.900/50' },
+                      _hover: { borderColor: 'blue.500/50', bg: 'brand.surface' },
                       w: 'full',
                       textAlign: 'left',
                     })}
@@ -968,7 +899,7 @@ export default function HashGeneratorPage() {
                         mb: '2',
                       })}
                     >
-                      <span className={css({ fontSize: 'xs', color: 'white' })}>
+                      <span className={css({ fontSize: 'xs', color: 'brand.ink' })}>
                         {new Date(entry.timestamp).toLocaleString()}
                       </span>
                       <span
@@ -981,10 +912,12 @@ export default function HashGeneratorPage() {
                         {entry.type}
                       </span>
                     </div>
-                    <div className={css({ fontSize: 'sm', color: 'white', mb: '2' })}>
+                    <div className={css({ fontSize: 'sm', color: 'brand.ink', mb: '2' })}>
                       {entry.input}
                     </div>
-                    <div className={css({ fontSize: 'xs', fontFamily: 'mono', color: 'white' })}>
+                    <div
+                      className={css({ fontSize: 'xs', fontFamily: 'mono', color: 'brand.ink' })}
+                    >
                       SHA-256: {entry.hashes['SHA-256'].substring(0, 48)}...
                     </div>
                   </button>
@@ -1002,9 +935,6 @@ export default function HashGeneratorPage() {
           gap: '4',
           w: 'full',
           gridTemplateColumns: { base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.5s',
-          opacity: 0,
         })}
       >
         {[
@@ -1029,34 +959,28 @@ export default function HashGeneratorPage() {
             key={feature.title}
             className={css({
               border: '1px solid',
-              borderColor: 'gray.800',
-              bg: 'gray.900/30',
+              borderColor: 'brand.line',
+              bg: 'brand.surface',
             })}
           >
             <CardContent withTopPadding className={css({ p: '6' })}>
-              <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'red.400' })} />
+              <feature.icon className={css({ mb: '3', h: '8', w: '8', color: 'emerald.400' })} />
               <h3
                 className={css({
                   mb: '2',
                   fontWeight: 'semibold',
-                  color: 'gray.200',
+                  color: 'brand.ink',
                 })}
               >
                 {feature.title}
               </h3>
-              <p className={css({ fontSize: 'sm', color: 'white' })}>{feature.desc}</p>
+              <p className={css({ fontSize: 'sm', color: 'brand.ink' })}>{feature.desc}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.7s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <SocialShare
           toolName="Hash Generator"
           toolUrl="/tools/security/hash-generator"
@@ -1065,31 +989,13 @@ export default function HashGeneratorPage() {
         />
       </div>
 
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.8s',
-          opacity: 0,
-        })}
-      ></div>
+      <div className={css({ w: 'full' })}></div>
 
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '0.9s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <RelatedTools currentToolPath="/tools/security/hash-generator" category="security" />
       </div>
 
-      <div
-        className={css({
-          animation: 'slideUp 0.5s ease-out forwards',
-          animationDelay: '1.0s',
-          opacity: 0,
-        })}
-      >
+      <div className={css({ w: 'full' })}>
         <ToolRating toolId="/tools/security/hash-generator" toolName="Hash Generator" />
       </div>
 
