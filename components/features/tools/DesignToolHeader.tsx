@@ -56,16 +56,16 @@ export function DesignToolHeader({
         Design & Visual Tools
       </Link>
 
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: { base: 'column', sm: 'row' },
-          alignItems: { base: 'flex-start', sm: 'center' },
-          gap: { base: '3', sm: '4' },
-        })}
-      >
-        <IconTile icon={icon} accent="violet" />
-        <div className={css({ spaceY: '2', minW: '0' })}>
+      <div className={css({ spaceY: '3', minW: '0' })}>
+        <div
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            gap: '3',
+            minW: '0',
+          })}
+        >
+          <IconTile icon={icon} accent="violet" />
           {eyebrow ? (
             <p
               className={css({
@@ -79,6 +79,8 @@ export function DesignToolHeader({
               {eyebrow}
             </p>
           ) : null}
+        </div>
+        <div className={css({ spaceY: '2', minW: '0' })}>
           <h1
             className={css({
               fontFamily: 'display',

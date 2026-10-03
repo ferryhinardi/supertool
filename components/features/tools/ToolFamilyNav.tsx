@@ -288,7 +288,7 @@ export function ToolFamilyNav({ category = 'data' }: ToolFamilyNavProps) {
           display: 'flex',
           gap: '2',
           overflowX: 'auto',
-          px: { base: '3', sm: '4', md: '6' },
+          px: { base: '4', sm: '6', md: '8' },
           py: '2',
           scrollBehavior: 'smooth',
           '@media (prefers-reduced-motion: reduce)': {

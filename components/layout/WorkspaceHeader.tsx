@@ -25,7 +25,7 @@ export function WorkspaceHeader({
         justifyContent: 'space-between',
         gap: '3',
         minH: '14',
-        px: { base: '3', sm: '4', md: '6' },
+        px: { base: '4', sm: '6', md: '8' },
         py: '2',
         bg: 'brand.surface',
         borderBottom: '1px solid',

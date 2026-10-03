@@ -12,7 +12,6 @@ export function DevelopmentWorkspaceChrome() {
         position: 'sticky',
         top: { base: '20', md: '0' },
         zIndex: '30',
-        mx: { base: '-2', sm: '-4', md: '-8', lg: '-10', xl: '-12' },
       })}
     >
       <WorkspaceHeader title="Developer Tools" icon={Code2} accent="blue" />

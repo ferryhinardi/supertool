@@ -482,7 +482,7 @@ export default function DailyNotePage() {
         flexDirection: 'column',
         minH: '100vh',
         mx: 'auto',
-        maxW: '1400px',
+        maxW: '7xl',
         w: 'full',
         px: { base: '4', sm: '6', md: '8' },
         py: { base: '6', sm: '8', md: '10' },

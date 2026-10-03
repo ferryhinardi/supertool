@@ -608,7 +608,7 @@ function UploadToolContent() {
       <div
         className={css({
           w: 'full',
-          maxW: '1200px',
+          maxW: '7xl',
           spaceY: { base: '6', sm: '8' },
         })}
       >

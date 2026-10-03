@@ -2227,7 +2227,6 @@ export default function PDFToolsPage() {
               base: 'repeat(2, 1fr)',
               sm: 'repeat(3, 1fr)',
             },
-            maxW: '1400px',
           })}
         >
           <Card
@@ -2332,7 +2331,6 @@ export default function PDFToolsPage() {
             lg: 'repeat(3, minmax(0, 1fr))',
           },
           w: 'full',
-          maxW: '1400px',
           minW: '0',
         })}
       >
@@ -5427,7 +5425,6 @@ export default function PDFToolsPage() {
             sm: 'repeat(2, 1fr)',
             lg: 'repeat(4, 1fr)',
           },
-          maxW: '1400px',
         })}
       >
         {[
