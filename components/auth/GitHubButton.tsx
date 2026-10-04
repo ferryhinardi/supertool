@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { getOAuthRedirectUrl } from '@/lib/auth/auth-redirect'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { supabase } from '@/lib/auth/supabaseClient'
 import { css } from '@/styled-system/css'
@@ -16,7 +17,7 @@ export function GitHubButton() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: getOAuthRedirectUrl(window.location.origin),
         },
       })
 

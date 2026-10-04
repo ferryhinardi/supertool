@@ -2,6 +2,7 @@
 
 import type { Session, User } from '@supabase/supabase-js'
 import { useEffect } from 'react'
+import { recoverSessionFromUrlHash } from '@/lib/auth/auth-redirect'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import type { UserProfile } from '@/lib/auth/auth-types'
 import { supabase } from '@/lib/auth/supabaseClient'
@@ -35,9 +36,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false)
     }
 
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      handleSessionChange(session)
+    // Implicit grants land on /#access_token=... when Supabase falls back to the
+    // Site URL. Store the session, then drop the credentials from the address bar.
+    void recoverSessionFromUrlHash().finally(() => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        handleSessionChange(session)
+      })
     })
 
     // Listen for auth changes

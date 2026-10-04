@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { getOAuthRedirectUrl } from '@/lib/auth/auth-redirect'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { supabase } from '@/lib/auth/supabaseClient'
 import { css } from '@/styled-system/css'
@@ -40,7 +41,7 @@ export function SignupForm() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: getOAuthRedirectUrl(window.location.origin),
         },
       })
 

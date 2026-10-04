@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { getOAuthRedirectUrl } from '@/lib/auth/auth-redirect'
 import { supabase } from '@/lib/auth/supabaseClient'
 import { css } from '@/styled-system/css'
 import { vstack } from '@/styled-system/patterns'
@@ -22,7 +23,7 @@ export function ForgotPasswordForm() {
     try {
       setIsLoading(true)
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?next=/auth/reset-password`,
+        redirectTo: getOAuthRedirectUrl(window.location.origin, '/auth/reset-password'),
       })
 
       if (error) throw error

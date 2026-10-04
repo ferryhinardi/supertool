@@ -12,6 +12,10 @@ vi.mock('@/lib/auth/supabaseClient', () => ({
           error: null,
         })
       ),
+      exchangeCodeForSession: vi.fn(() =>
+        Promise.resolve({ data: { session: null }, error: null })
+      ),
+      setSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
       onAuthStateChange: vi.fn((callback) => {
         // Immediately call callback with null session for tests
         callback('SIGNED_OUT', null)
