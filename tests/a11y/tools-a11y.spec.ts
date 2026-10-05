@@ -215,6 +215,21 @@ test('top tool accessibility sweep', async ({ page }) => {
         await page.goto(tool.href)
         await page.waitForLoadState('domcontentloaded')
         await page.waitForLoadState('networkidle').catch(() => undefined)
+        // Entrance fades would otherwise be measured mid-animation as low contrast.
+        await page
+          .waitForFunction(
+            () =>
+              document
+                .getAnimations()
+                .every(
+                  (animation) =>
+                    animation.playState !== 'running' ||
+                    animation.effect?.getComputedTiming().iterations === Number.POSITIVE_INFINITY
+                ),
+            undefined,
+            { timeout: 10_000 }
+          )
+          .catch(() => undefined)
 
         const analysis = await new AxeBuilder({ page }).analyze()
         const blockingViolations = analysis.violations
