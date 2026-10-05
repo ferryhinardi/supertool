@@ -395,6 +395,11 @@ export default function GradientGeneratorPage() {
                 Preview
               </h2>
               <Button
+                aria-label={
+                  previewBg === 'dark'
+                    ? 'Use light preview background'
+                    : 'Use dark preview background'
+                }
                 variant="outline"
                 size="sm"
                 onClick={() => setPreviewBg(previewBg === 'dark' ? 'light' : 'dark')}
@@ -613,6 +618,7 @@ export default function GradientGeneratorPage() {
                     </div>
                     {colorStops.length > 2 && (
                       <Button
+                        aria-label="Remove color stop"
                         variant="outline"
                         size="icon"
                         onClick={(e) => {

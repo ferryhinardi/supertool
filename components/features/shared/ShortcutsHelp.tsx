@@ -96,6 +96,7 @@ export function ShortcutsHelp() {
             </h2>
           </div>
           <Button
+            aria-label="Close"
             variant="ghost"
             size="sm"
             onClick={() => setIsOpen(false)}

@@ -567,6 +567,7 @@ export default function HashGeneratorPage() {
                   className={css({ fontFamily: 'mono', fontSize: 'sm' })}
                 />
                 <Button
+                  aria-label={`Copy ${algorithm} hash`}
                   onClick={() => handleCopy(hashes[algorithm])}
                   variant="outline"
                   size="icon"
@@ -708,7 +709,12 @@ export default function HashGeneratorPage() {
                       Export CSV
                     </Button>
                   )}
-                  <Button onClick={clearBatchFiles} variant="outline" size="icon">
+                  <Button
+                    aria-label="Clear all files"
+                    onClick={clearBatchFiles}
+                    variant="outline"
+                    size="icon"
+                  >
                     <Trash2 className={css({ h: '4', w: '4' })} />
                   </Button>
                 </div>
@@ -772,6 +778,7 @@ export default function HashGeneratorPage() {
                           <XCircle className={css({ h: '4', w: '4', color: 'red.400' })} />
                         )}
                         <Button
+                          aria-label="Remove file"
                           onClick={() => removeBatchFile(file.id)}
                           variant="ghost"
                           size="icon"
@@ -808,6 +815,7 @@ export default function HashGeneratorPage() {
                               {file.hashes?.[algo]?.substring(0, 32)}...
                             </code>
                             <Button
+                              aria-label={`Copy ${algo} hash`}
                               onClick={() => handleCopy(file.hashes?.[algo] || '')}
                               variant="ghost"
                               size="icon"

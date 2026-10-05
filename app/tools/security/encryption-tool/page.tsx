@@ -425,6 +425,7 @@ export default function EncryptionToolPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
                       className={css({
                         position: 'absolute',
                         right: 2,
@@ -722,6 +723,7 @@ export default function EncryptionToolPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
                       className={css({
                         position: 'absolute',
                         right: 2,
@@ -941,6 +943,7 @@ export default function EncryptionToolPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
                       className={css({
                         position: 'absolute',
                         right: 2,

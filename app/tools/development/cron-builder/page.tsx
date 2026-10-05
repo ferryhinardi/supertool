@@ -716,14 +716,24 @@ export default function CronBuilderPage() {
                     {cronExpression}
                   </code>
                   <div className={css({ display: 'flex', gap: '2' })}>
-                    <Button size="sm" variant="ghost" onClick={handleCopyExpression}>
+                    <Button
+                      aria-label="Copy cron expression"
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleCopyExpression}
+                    >
                       {copied ? (
                         <Check className={css({ w: '4', h: '4' })} />
                       ) : (
                         <Copy className={css({ w: '4', h: '4' })} />
                       )}
                     </Button>
-                    <Button size="sm" variant="ghost" onClick={handleDownload}>
+                    <Button
+                      aria-label="Download cron expression"
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleDownload}
+                    >
                       <Download className={css({ w: '4', h: '4' })} />
                     </Button>
                   </div>

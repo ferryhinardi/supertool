@@ -961,6 +961,7 @@ export default function LogoMakerPage() {
                   </span>
                   <div className={css({ display: 'flex', gap: '2' })}>
                     <button
+                      aria-label="Align text left"
                       type="button"
                       onClick={() => setTextAlign('left')}
                       className={css({
@@ -974,6 +975,7 @@ export default function LogoMakerPage() {
                       <AlignLeft className={css({ w: '4', h: '4', mx: 'auto' })} />
                     </button>
                     <button
+                      aria-label="Align text center"
                       type="button"
                       onClick={() => setTextAlign('center')}
                       className={css({
@@ -987,6 +989,7 @@ export default function LogoMakerPage() {
                       <AlignCenter className={css({ w: '4', h: '4', mx: 'auto' })} />
                     </button>
                     <button
+                      aria-label="Align text right"
                       type="button"
                       onClick={() => setTextAlign('right')}
                       className={css({

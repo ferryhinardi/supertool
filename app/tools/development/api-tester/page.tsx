@@ -715,6 +715,7 @@ function ApiTesterContent() {
               <div className={css({ display: 'flex', justifyContent: 'space-between' })}>
                 <CardTitle>Saved Presets</CardTitle>
                 <Button
+                  aria-label="Close presets"
                   onClick={() => setShowPresets(false)}
                   size="sm"
                   className={css({
@@ -787,6 +788,7 @@ function ApiTesterContent() {
                         </div>
                       </button>
                       <Button
+                        aria-label="Delete preset"
                         onClick={() => handleDeletePreset(preset.id)}
                         size="sm"
                         className={css({
@@ -835,6 +837,7 @@ function ApiTesterContent() {
                     Clear
                   </Button>
                   <Button
+                    aria-label="Close history"
                     onClick={() => setShowHistory(false)}
                     size="sm"
                     className={css({
@@ -941,6 +944,7 @@ function ApiTesterContent() {
                   </CardDescription>
                 </div>
                 <Button
+                  aria-label="Close environments"
                   onClick={() => setShowEnvironments(false)}
                   size="sm"
                   className={css({
@@ -987,6 +991,11 @@ function ApiTesterContent() {
                               className={css({ display: 'flex', alignItems: 'center', gap: '3' })}
                             >
                               <button
+                                aria-label={
+                                  activeEnvironmentId === env.id
+                                    ? `Deactivate ${env.name}`
+                                    : `Activate ${env.name}`
+                                }
                                 type="button"
                                 onClick={() => {
                                   setActiveEnvironmentId(
@@ -1043,6 +1052,7 @@ function ApiTesterContent() {
                                 {editingEnvironment?.id === env.id ? 'Hide' : 'Edit'}
                               </Button>
                               <Button
+                                aria-label="Duplicate environment"
                                 onClick={() => duplicateEnvironment(env.id)}
                                 size="sm"
                                 className={css({
@@ -1054,6 +1064,7 @@ function ApiTesterContent() {
                                 <Copy className={css({ h: '4', w: '4' })} />
                               </Button>
                               <Button
+                                aria-label="Delete environment"
                                 onClick={() => {
                                   if (
                                     confirm(
@@ -1292,6 +1303,7 @@ function ApiTesterContent() {
 
                                       {/* Delete button */}
                                       <button
+                                        aria-label="Delete variable"
                                         type="button"
                                         onClick={() => {
                                           const updated = env.variables.filter(
@@ -1643,6 +1655,7 @@ function ApiTesterContent() {
                           })}
                         />
                         <Button
+                          aria-label="Remove query parameter"
                           onClick={() => removeQueryParam(param.id)}
                           size="sm"
                           className={css({
@@ -1856,6 +1869,7 @@ function ApiTesterContent() {
                           })}
                         />
                         <Button
+                          aria-label="Remove header"
                           onClick={() => removeHeader(header.id)}
                           size="sm"
                           className={css({
@@ -2003,6 +2017,7 @@ function ApiTesterContent() {
                             })}
                           />
                           <Button
+                            aria-label="Remove form field"
                             onClick={() => removeFormDataItem(item.id)}
                             size="sm"
                             className={css({

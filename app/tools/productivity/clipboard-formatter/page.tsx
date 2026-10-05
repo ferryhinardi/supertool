@@ -354,6 +354,7 @@ function ClipboardFormatterPageContent() {
                     Paste from Clipboard
                   </Button>
                   <Button
+                    aria-label="Formatting settings"
                     onClick={() => setShowSettings(!showSettings)}
                     variant="secondary"
                     size="sm"

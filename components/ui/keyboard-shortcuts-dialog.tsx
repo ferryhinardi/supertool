@@ -82,7 +82,7 @@ export function KeyboardShortcutsDialog({
               </CardTitle>
               <CardDescription>Use these shortcuts to navigate faster</CardDescription>
             </div>
-            <Button onClick={onClose} variant="ghost" size="icon">
+            <Button aria-label="Close" onClick={onClose} variant="ghost" size="icon">
               <X className={css({ h: '4', w: '4' })} />
             </Button>
           </div>

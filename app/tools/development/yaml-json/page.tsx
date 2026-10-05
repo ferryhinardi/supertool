@@ -248,6 +248,7 @@ developers:
               </Button>
 
               <Button
+                aria-label="Swap conversion direction"
                 onClick={handleSwapDirection}
                 className={css({
                   gap: '2',

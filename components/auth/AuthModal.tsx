@@ -51,6 +51,7 @@ export function AuthModal() {
           >
             {/* Close Button */}
             <Dialog.CloseTrigger
+              aria-label="Close"
               className={css({
                 position: 'absolute',
                 top: 4,

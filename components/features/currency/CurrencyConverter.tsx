@@ -115,6 +115,7 @@ export function CurrencyConverter({
         </select>
 
         <button
+          aria-label="Swap currencies"
           type="button"
           onClick={handleSwapCurrencies}
           className={css({
@@ -252,6 +253,7 @@ export function CurrencyConverter({
         </div>
 
         <button
+          aria-label="Swap currencies"
           type="button"
           onClick={handleSwapCurrencies}
           className={css({

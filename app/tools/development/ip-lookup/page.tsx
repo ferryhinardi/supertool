@@ -267,6 +267,7 @@ export default function IPLookupPage() {
                     variant="outline"
                     size="icon"
                     onClick={() => handleCopy(ipInfo.ip, 'IP Address')}
+                    aria-label="Copy IP address"
                   >
                     <Copy className={css({ h: '4', w: '4' })} />
                   </Button>
@@ -320,6 +321,7 @@ export default function IPLookupPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleCopy(ipInfo.ip, 'IP Address')}
+                        aria-label="Copy IP address"
                       >
                         <Copy className={css({ h: '4', w: '4' })} />
                       </Button>
