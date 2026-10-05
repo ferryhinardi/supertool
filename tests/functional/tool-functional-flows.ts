@@ -4,9 +4,8 @@ import type { SidebarAuditTarget } from '../mobile/sidebar-audit-targets'
 
 export type ToolFunctionalFlow = (page: Page, target: SidebarAuditTarget) => Promise<void>
 
-/** Page h1 (index 0 is the sidebar logo heading on mobile). */
 export function pageContentHeading(page: Page) {
-  return page.getByRole('heading', { level: 1 }).nth(1)
+  return page.locator('main').getByRole('heading', { level: 1 }).first()
 }
 
 const HEADING_ALIASES: Record<string, string[]> = {
