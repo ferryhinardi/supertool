@@ -41,8 +41,9 @@ export function TwoColumnTemplate({ data }: TwoColumnTemplateProps) {
       >
         {/* Personal Info in Sidebar */}
         <div className={css({ mb: '16px' })}>
-          <h1
+          <p
             className={css({
+              textWrap: 'balance',
               fontSize: '18px',
               fontWeight: 'bold',
               color: 'rgb(17, 24, 39)', // Gray-900
@@ -51,7 +52,7 @@ export function TwoColumnTemplate({ data }: TwoColumnTemplateProps) {
             })}
           >
             {personal.fullName || 'Your Name'}
-          </h1>
+          </p>
           <p
             className={css({
               fontSize: '10px',

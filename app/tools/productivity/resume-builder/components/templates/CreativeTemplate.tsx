@@ -49,8 +49,9 @@ export function CreativeTemplate({ data }: CreativeTemplateProps) {
         >
           {/* Header in Sidebar */}
           <div>
-            <h1
+            <p
               className={css({
+                textWrap: 'balance',
                 fontSize: '22px',
                 fontWeight: 'bold',
                 mb: '4px',
@@ -58,7 +59,7 @@ export function CreativeTemplate({ data }: CreativeTemplateProps) {
               })}
             >
               {personal.fullName || 'Your Name'}
-            </h1>
+            </p>
             <p
               className={css({
                 fontSize: '11px',

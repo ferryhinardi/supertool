@@ -38,8 +38,9 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
           pb: '8px',
         })}
       >
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '20px',
             fontWeight: 'bold',
             color: 'gray.900',
@@ -48,7 +49,7 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
           })}
         >
           {personal.fullName || 'Your Name'}
-        </h1>
+        </p>
         <p
           className={css({
             fontSize: '11px',

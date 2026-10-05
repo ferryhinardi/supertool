@@ -35,8 +35,9 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
           mb: '6',
         })}
       >
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '2xl',
             fontWeight: 'bold',
             color: 'blue.600',
@@ -44,7 +45,7 @@ export function ModernTemplate({ data }: ModernTemplateProps) {
           })}
         >
           {personal.fullName}
-        </h1>
+        </p>
         <div
           className={css({
             display: 'flex',

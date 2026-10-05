@@ -38,8 +38,9 @@ export function ProfessionalTemplate({ data }: ProfessionalTemplateProps) {
           pb: '12px',
         })}
       >
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '28px',
             fontWeight: 'bold',
             color: 'rgb(30, 58, 138)', // Navy blue
@@ -48,7 +49,7 @@ export function ProfessionalTemplate({ data }: ProfessionalTemplateProps) {
           })}
         >
           {personal.fullName || 'Your Name'}
-        </h1>
+        </p>
         <p
           className={css({
             fontSize: '14px',

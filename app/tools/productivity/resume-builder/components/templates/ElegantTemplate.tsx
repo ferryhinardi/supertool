@@ -32,8 +32,9 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
         })}
       >
         {/* Name with Elegant Styling */}
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '32px',
             fontWeight: '300',
             color: 'rgb(79, 70, 229)',
@@ -43,7 +44,7 @@ export function ElegantTemplate({ data }: ElegantTemplateProps) {
           })}
         >
           {personal.fullName}
-        </h1>
+        </p>
 
         {/* Professional Title */}
         {personal.professionalTitle && (

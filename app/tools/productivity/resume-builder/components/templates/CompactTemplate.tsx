@@ -39,8 +39,9 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             mb: '3px',
           })}
         >
-          <h1
+          <p
             className={css({
+              textWrap: 'balance',
               fontSize: '14px',
               fontWeight: '700',
               color: 'rgb(17, 24, 39)',
@@ -48,7 +49,7 @@ export function CompactTemplate({ data }: CompactTemplateProps) {
             })}
           >
             {personal.fullName}
-          </h1>
+          </p>
           {personal.professionalTitle && (
             <span
               className={css({

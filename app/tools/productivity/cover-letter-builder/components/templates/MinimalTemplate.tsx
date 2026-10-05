@@ -31,9 +31,17 @@ export function MinimalTemplate({ data }: MinimalTemplateProps) {
       <div
         className={css({ mb: '10', pb: '6', borderBottom: '1px solid', borderColor: 'gray.200' })}
       >
-        <h1 className={css({ fontSize: 'xl', fontWeight: '400', mb: '3', letterSpacing: 'wide' })}>
+        <p
+          className={css({
+            textWrap: 'balance',
+            fontSize: 'xl',
+            fontWeight: '400',
+            mb: '3',
+            letterSpacing: 'wide',
+          })}
+        >
           {personal.fullName}
-        </h1>
+        </p>
         <div
           className={css({
             display: 'flex',

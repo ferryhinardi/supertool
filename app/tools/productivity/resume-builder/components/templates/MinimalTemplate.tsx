@@ -31,8 +31,9 @@ export function MinimalTemplate({ data }: MinimalTemplateProps) {
     >
       {/* Header - Large Name, Minimal Contact */}
       <header className={css({ mb: '32px' })}>
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '32px',
             fontWeight: '300', // Light weight for elegance
             color: 'rgb(15, 23, 42)',
@@ -41,7 +42,7 @@ export function MinimalTemplate({ data }: MinimalTemplateProps) {
           })}
         >
           {personal.fullName || 'Your Name'}
-        </h1>
+        </p>
         <p
           className={css({
             fontSize: '13px',

@@ -37,11 +37,17 @@ export function CreativeTemplate({ data }: CreativeTemplateProps) {
           textAlign: 'center',
         })}
       >
-        <h1
-          className={css({ fontSize: '3xl', fontWeight: 'bold', mb: '3', letterSpacing: 'tight' })}
+        <p
+          className={css({
+            textWrap: 'balance',
+            fontSize: '3xl',
+            fontWeight: 'bold',
+            mb: '3',
+            letterSpacing: 'tight',
+          })}
         >
           {personal.fullName}
-        </h1>
+        </p>
         <div className={css({ fontSize: 'sm', opacity: '0.95' })}>
           {personal.email} {personal.phone && `• ${personal.phone}`}
         </div>

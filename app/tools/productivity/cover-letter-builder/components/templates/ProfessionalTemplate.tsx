@@ -37,9 +37,9 @@ export function ProfessionalTemplate({ data }: ProfessionalTemplateProps) {
           borderRadius: 'sm',
         })}
       >
-        <h1 className={css({ fontSize: '2xl', fontWeight: 'bold', mb: '2' })}>
+        <p className={css({ textWrap: 'balance', fontSize: '2xl', fontWeight: 'bold', mb: '2' })}>
           {personal.fullName}
-        </h1>
+        </p>
         <div
           className={css({
             display: 'flex',

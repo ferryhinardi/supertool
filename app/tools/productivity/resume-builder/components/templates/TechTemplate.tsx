@@ -39,8 +39,9 @@ export function TechTemplate({ data }: TechTemplateProps) {
           borderColor: 'gray.900',
         })}
       >
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '22px',
             fontWeight: 'bold',
             color: 'gray.900',
@@ -50,7 +51,7 @@ export function TechTemplate({ data }: TechTemplateProps) {
           })}
         >
           {personal.fullName || 'YOUR_NAME'}
-        </h1>
+        </p>
         <p
           className={css({
             fontSize: '11px',

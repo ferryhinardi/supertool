@@ -39,8 +39,9 @@ export function ExecutiveTemplate({ data }: ExecutiveTemplateProps) {
           pb: '16px',
         })}
       >
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '32px',
             fontWeight: 'bold',
             color: 'rgb(17, 24, 39)',
@@ -50,7 +51,7 @@ export function ExecutiveTemplate({ data }: ExecutiveTemplateProps) {
           })}
         >
           {personal.fullName || 'Your Name'}
-        </h1>
+        </p>
         <p
           className={css({
             fontSize: '15px',

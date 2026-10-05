@@ -38,8 +38,9 @@ export function ClassicTemplate({ data }: ClassicTemplateProps) {
           pb: '10px',
         })}
       >
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '24px',
             fontWeight: 'bold',
             color: 'black',
@@ -49,7 +50,7 @@ export function ClassicTemplate({ data }: ClassicTemplateProps) {
           })}
         >
           {personal.fullName || 'YOUR NAME'}
-        </h1>
+        </p>
 
         {personal.professionalTitle && (
           <p

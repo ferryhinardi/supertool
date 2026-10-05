@@ -32,8 +32,9 @@ export function TechTemplate({ data }: TechTemplateProps) {
             mb: '4',
           })}
         />
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '26pt',
             fontWeight: 'bold',
             color: '#1a202c',
@@ -42,7 +43,7 @@ export function TechTemplate({ data }: TechTemplateProps) {
           })}
         >
           {personal.fullName}
-        </h1>
+        </p>
         <div className={css({ fontSize: '10pt', color: '#4a5568', lineHeight: '1.8' })}>
           <div className={css({ display: 'flex', gap: '4', flexWrap: 'wrap', mb: '1' })}>
             {personal.email && <span>{personal.email}</span>}

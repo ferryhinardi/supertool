@@ -31,8 +31,9 @@ export function ExecutiveTemplate({ data }: ExecutiveTemplateProps) {
           borderColor: '#1a365d',
         })}
       >
-        <h1
+        <p
           className={css({
+            textWrap: 'balance',
             fontSize: '28pt',
             fontWeight: 'bold',
             color: '#1a365d',
@@ -41,7 +42,7 @@ export function ExecutiveTemplate({ data }: ExecutiveTemplateProps) {
           })}
         >
           {personal.fullName}
-        </h1>
+        </p>
         <div className={css({ fontSize: '10pt', color: '#2d3748', lineHeight: '1.8' })}>
           {personal.location && <div>{personal.location}</div>}
           <div className={css({ display: 'flex', gap: '4', flexWrap: 'wrap' })}>
