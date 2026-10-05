@@ -228,7 +228,7 @@ function URLEncoderContent() {
                   <div
                     className={css({
                       fontSize: 'xs',
-                      color: 'gray.500',
+                      color: 'gray.400',
                       mt: '1',
                       whiteSpace: 'normal',
                       overflowWrap: 'anywhere',
@@ -416,7 +416,7 @@ function URLEncoderContent() {
                     bg: 'gray.800/30',
                     border: '1px solid',
                     borderColor: 'gray.700',
-                    color: output ? 'cyan.300' : 'gray.500',
+                    color: output ? 'cyan.300' : 'gray.400',
                   })}
                 />
               )}
@@ -505,7 +505,7 @@ function URLEncoderContent() {
                     },
                   })}
                 >
-                  <div className={css({ fontSize: 'xs', color: 'gray.500', mb: '1' })}>
+                  <div className={css({ fontSize: 'xs', color: 'gray.400', mb: '1' })}>
                     {example.label}
                   </div>
                   <div

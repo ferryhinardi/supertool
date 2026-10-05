@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
+import { accessibleOneDark } from '@/lib/codemirror/accessible-one-dark'
 import { tools } from '@/lib/data/tools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -456,7 +457,7 @@ function JSONSchemaContent() {
                   <CodeMirror
                     value={inputJson}
                     height="400px"
-                    theme="dark"
+                    theme={accessibleOneDark}
                     extensions={[jsonExtension]}
                     onChange={(val) => setInputJson(val)}
                     basicSetup={{
@@ -489,7 +490,7 @@ function JSONSchemaContent() {
                   <CodeMirror
                     value={result.schemaString}
                     height="400px"
-                    theme="dark"
+                    theme={accessibleOneDark}
                     extensions={[jsonExtension]}
                     readOnly
                     basicSetup={{

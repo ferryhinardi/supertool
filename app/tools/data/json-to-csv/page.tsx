@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button'
 import { Field, FieldInput, FieldLabel } from '@/components/ui/field'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { accessibleOneDark } from '@/lib/codemirror/accessible-one-dark'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
@@ -420,7 +421,7 @@ export default function JSONToCSVPage() {
                 height="320px"
                 extensions={[jsonExtension]}
                 onChange={setJsonInput}
-                theme="dark"
+                theme={accessibleOneDark}
                 basicSetup={{
                   lineNumbers: true,
                   highlightActiveLineGutter: true,

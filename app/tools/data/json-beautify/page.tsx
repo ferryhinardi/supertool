@@ -48,6 +48,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { useToolHistory } from '@/hooks/tools/useToolHistory'
+import { accessibleOneDark } from '@/lib/codemirror/accessible-one-dark'
 import { tools } from '@/lib/data/tools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -1168,7 +1169,7 @@ function JSONBeautifyContent() {
                   <CodeMirror
                     value={value}
                     height="500px"
-                    theme="dark"
+                    theme={accessibleOneDark}
                     extensions={[jsonExtension]}
                     onChange={(val) => setValue(val)}
                     className={css({ fontSize: { base: 'sm', sm: 'base' } })}
@@ -1256,7 +1257,7 @@ function JSONBeautifyContent() {
                   <CodeMirror
                     value={value}
                     height="400px"
-                    theme="dark"
+                    theme={accessibleOneDark}
                     extensions={[jsonExtension]}
                     onChange={(val) => setValue(val)}
                     className={css({ fontSize: 'sm' })}
@@ -1321,7 +1322,7 @@ function JSONBeautifyContent() {
                   <CodeMirror
                     value={schema}
                     height="300px"
-                    theme="dark"
+                    theme={accessibleOneDark}
                     extensions={[jsonExtension]}
                     onChange={(val) => setSchema(val)}
                     className={css({ fontSize: 'sm' })}
@@ -1409,7 +1410,7 @@ function JSONBeautifyContent() {
                     <CodeMirror
                       value={value}
                       height="300px"
-                      theme="dark"
+                      theme={accessibleOneDark}
                       extensions={[jsonExtension]}
                       onChange={(val) => setValue(val)}
                       className={css({ fontSize: 'sm' })}
@@ -1433,7 +1434,7 @@ function JSONBeautifyContent() {
                     <CodeMirror
                       value={compareJson}
                       height="300px"
-                      theme="dark"
+                      theme={accessibleOneDark}
                       extensions={[jsonExtension]}
                       onChange={(val) => setCompareJson(val)}
                       className={css({ fontSize: 'sm' })}
@@ -1538,7 +1539,7 @@ function JSONBeautifyContent() {
                   <CodeMirror
                     value={value}
                     height="300px"
-                    theme="dark"
+                    theme={accessibleOneDark}
                     extensions={[jsonExtension]}
                     onChange={(val) => setValue(val)}
                     className={css({ fontSize: 'sm' })}
@@ -1638,10 +1639,7 @@ function JSONBeautifyContent() {
                   className={css({
                     position: 'relative',
                     overflow: 'hidden',
-                    bgGradient: 'to-r',
-                    gradientFrom: 'purple.600',
-                    gradientVia: 'pink.600',
-                    gradientTo: 'blue.600',
+                    bg: 'brand.violetDeep',
                     px: { base: '4', sm: '5', md: '6' },
                     py: { base: '3', sm: '3.5', md: '4' },
                     minH: '11',
@@ -1653,10 +1651,8 @@ function JSONBeautifyContent() {
                     transition: 'all 0.3s',
                     _hover: {
                       transform: 'scale(1.05)',
-                      gradientFrom: 'purple.700',
-                      gradientVia: 'pink.700',
-                      gradientTo: 'blue.700',
-                      boxShadow: '0 25px 50px -12px rgba(236, 72, 153, 0.6)',
+                      bg: 'brand.violetDeep',
+                      boxShadow: '0 25px 50px -12px rgba(139, 92, 246, 0.6)',
                     },
                   })}
                 >

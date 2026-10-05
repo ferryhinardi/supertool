@@ -157,9 +157,11 @@ const previewStyles = css({
     overflowWrap: 'anywhere',
   },
 
-  // Code blocks
+  // Code blocks wrap instead of scrolling: a scrollable <pre> needs tabindex to be
+  // keyboard reachable, and the preview HTML is what Copy/Download HTML export.
   '& pre': {
-    overflowX: 'auto',
+    whiteSpace: 'pre-wrap',
+    overflowWrap: 'anywhere',
     rounded: 'lg',
     border: '1px solid',
     borderColor: 'gray.700',

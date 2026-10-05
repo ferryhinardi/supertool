@@ -257,7 +257,7 @@ export default function MarkdownEditorPage() {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: Required for syntax highlighting CSS
         dangerouslySetInnerHTML={{
           __html: `
-        pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+        pre code.hljs { display: block; padding: 1em; white-space: pre-wrap; overflow-wrap: anywhere; }
         code.hljs { padding: 3px 5px; }
         .hljs { color: #c9d1d9; background: #0d1117; }
         .hljs-doctag, .hljs-keyword, .hljs-meta .hljs-keyword, .hljs-template-tag, .hljs-template-variable, .hljs-type, .hljs-variable.language_ { color: #ff7b72; }

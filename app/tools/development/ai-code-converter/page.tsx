@@ -468,7 +468,7 @@ export default function AICodeConverterPage() {
             <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
               Source Code
             </span>
-            <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+            <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
               {sourceCode.length} / 10,000 characters
             </span>
           </div>
@@ -495,7 +495,7 @@ export default function AICodeConverterPage() {
                   boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)',
                 },
                 _placeholder: {
-                  color: 'gray.500',
+                  color: 'gray.400',
                 },
               })}
             />
@@ -613,7 +613,7 @@ export default function AICodeConverterPage() {
                 {convertedCode}
               </pre>
             ) : (
-              <p className={css({ color: 'gray.500', textAlign: 'center', mt: '20' })}>
+              <p className={css({ color: 'gray.400', textAlign: 'center', mt: '20' })}>
                 Converted code will appear here
               </p>
             )}

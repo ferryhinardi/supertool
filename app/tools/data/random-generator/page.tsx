@@ -313,7 +313,7 @@ function RandomGeneratorContent() {
                   <div
                     className={css({
                       fontSize: 'xs',
-                      color: 'gray.500',
+                      color: 'gray.400',
                       mt: '1',
                     })}
                   >
