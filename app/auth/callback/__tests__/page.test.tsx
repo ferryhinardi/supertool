@@ -23,7 +23,7 @@ describe('AuthCallbackPage', () => {
     vi.mocked(supabase.auth.exchangeCodeForSession).mockResolvedValue({
       data: { session: null, user: null },
       error: null,
-    })
+    } as unknown as Awaited<ReturnType<typeof supabase.auth.exchangeCodeForSession>>)
     vi.mocked(supabase.auth.setSession).mockResolvedValue({
       data: { session: null, user: null },
       error: null,
