@@ -107,6 +107,20 @@ describe('URLs API Route', () => {
       })
     })
 
+    it('should hide links that point at private network hosts', async () => {
+      mockData = [
+        { short_code: 'pub001', original_url: 'https://example.com', is_active: true },
+        { short_code: 'loc001', original_url: 'http://localhost:2900/', is_active: true },
+        { short_code: 'lan001', original_url: 'http://192.168.1.10/admin', is_active: true },
+      ]
+
+      const response = await GET(createRequest())
+      const data = await response.json()
+
+      expect(data.urls.map((url: { shortCode: string }) => url.shortCode)).toEqual(['pub001'])
+      expect(data.count).toBe(1)
+    })
+
     it('should return empty array when no URLs exist', async () => {
       mockData = []
 

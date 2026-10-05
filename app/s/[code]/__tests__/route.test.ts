@@ -106,6 +106,21 @@ describe('URL Shortener Redirect Route', () => {
     )
   })
 
+  it('should not redirect to a private-network target', async () => {
+    setupMocks({
+      data: { original_url: 'http://localhost:2900/', is_active: true },
+      error: null,
+    })
+
+    const request = createRequest('private1')
+    const response = await GET(request, { params: createParams('private1') })
+
+    expect(response.status).toBe(302)
+    expect(response.headers.get('location')).toBe(
+      'http://localhost:3000/tools/url-shortener?error=notfound'
+    )
+  })
+
   it('should redirect to error page if data is null', async () => {
     setupMocks({
       data: null,

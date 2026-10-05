@@ -80,6 +80,20 @@ describe('URL Shortener API Route', () => {
       expect(data.error).toBe('Invalid URL protocol')
     })
 
+    it('should return 400 if URL points at a private network host', async () => {
+      const request = new Request('http://localhost:3000/api/shorten', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: 'http://localhost:2900/' }),
+      })
+
+      const response = await POST(request as unknown as NextRequest)
+      const data = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(data.error).toBe('Short links must point to a public website')
+    })
+
     it('should return 400 if custom alias contains invalid characters', async () => {
       const request = new Request('http://localhost:3000/api/shorten', {
         method: 'POST',

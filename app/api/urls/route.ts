@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/auth/supabaseClient'
+import { isPublicHttpUrl } from '@/lib/utils/public-url'
 
 export async function GET(_request: NextRequest) {
   try {
@@ -17,15 +18,17 @@ export async function GET(_request: NextRequest) {
 
     // Format the response
     const urls =
-      data?.map((item) => ({
-        shortCode: item.short_code,
-        originalUrl: item.original_url,
-        createdAt: item.created_at,
-        isActive: item.is_active,
-        totalClicks: item.total_clicks || 0,
-        uniqueVisitors: item.unique_visitors || 0,
-        lastClicked: item.last_clicked,
-      })) || []
+      data
+        ?.filter((item) => isPublicHttpUrl(item.original_url))
+        .map((item) => ({
+          shortCode: item.short_code,
+          originalUrl: item.original_url,
+          createdAt: item.created_at,
+          isActive: item.is_active,
+          totalClicks: item.total_clicks || 0,
+          uniqueVisitors: item.unique_visitors || 0,
+          lastClicked: item.last_clicked,
+        })) || []
 
     return NextResponse.json({ urls, count: urls.length })
   } catch (error) {

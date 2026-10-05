@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid'
 import { type NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/auth/supabaseClient'
+import { isPublicHttpUrl } from '@/lib/utils/public-url'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,6 +17,12 @@ export async function POST(request: NextRequest) {
       const urlObj = new URL(url)
       if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
         return NextResponse.json({ error: 'Invalid URL protocol' }, { status: 400 })
+      }
+      if (!isPublicHttpUrl(url)) {
+        return NextResponse.json(
+          { error: 'Short links must point to a public website' },
+          { status: 400 }
+        )
       }
     } catch {
       return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 })

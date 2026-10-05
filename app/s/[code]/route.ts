@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/auth/supabaseClient'
+import { isPublicHttpUrl } from '@/lib/utils/public-url'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   try {
@@ -12,7 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .eq('short_code', code)
       .single()
 
-    if (error || !data || !data.is_active) {
+    if (error || !data || !data.is_active || !isPublicHttpUrl(data.original_url)) {
       // If not found or inactive, redirect to URL shortener page with error
       const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
       const host = request.headers.get('host') || 'localhost:3000'
