@@ -12,6 +12,18 @@ interface ToolMetadataParams {
   twitterCreator?: string
 }
 
+/**
+ * Next.js replaces a parent's openGraph/twitter objects wholesale, so layouts that
+ * define their own must list images again or the share card has none.
+ */
+export const DEFAULT_OG_IMAGE = {
+  url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://supertool.id'}/og-image.png`,
+  width: 1200,
+  height: 630,
+  alt: 'SuperTool - Modern Developer Toolkit',
+  type: 'image/png',
+}
+
 interface BreadcrumbItem {
   name: string
   url: string

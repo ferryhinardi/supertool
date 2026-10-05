@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'SQL Formatter - Format & Beautify SQL Queries Online | SuperTool',
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
     'sql query beautifier',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/development/sql-formatter',
     title: 'SQL Formatter - Format & Beautify SQL Queries',
     description:

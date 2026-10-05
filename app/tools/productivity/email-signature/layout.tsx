@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Email Signature Generator - Create Professional HTML Signatures | SuperTool',
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     'email branding',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/productivity/email-signature',
     title: 'Email Signature Generator - Professional HTML Signatures',
     description:

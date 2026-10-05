@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 const title = 'SVG to PNG Converter - Free Online SVG to PNG Image Converter'
 const description =
@@ -30,12 +31,14 @@ export const metadata: Metadata = {
   description,
   keywords,
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/media/svg-to-png',
     title,
     description,
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title,
     description,

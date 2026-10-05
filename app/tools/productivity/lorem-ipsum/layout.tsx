@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Lorem Ipsum Generator - Placeholder Text Generator | SuperTool',
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     'content placeholder',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/productivity/lorem-ipsum',
     title: 'Lorem Ipsum Generator - Placeholder Text Generator',
     description:

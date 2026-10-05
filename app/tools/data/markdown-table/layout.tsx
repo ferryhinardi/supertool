@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Markdown Table Generator - Create & Edit Tables Visually | SuperTool',
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     'github markdown table',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/data/markdown-table',
     title: 'Markdown Table Generator - Visual Table Editor',
     description:

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'QR Code Scanner - Read QR Codes Online Free | SuperTool',
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
     'webcam qr reader',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/media/qr-code-scanner',
     title: 'QR Code Scanner - Read QR Codes Online Free',
     description:
@@ -32,6 +34,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title: 'QR Code Scanner - Read QR Codes Online Free',
     description:

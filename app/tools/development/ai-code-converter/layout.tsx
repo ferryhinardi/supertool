@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'AI Code Converter | Convert Between 12+ Programming Languages',
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     'language migration',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/development/ai-code-converter',
     title: 'AI Code Converter | Convert Between 12+ Programming Languages',
     description:
@@ -26,6 +28,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title: 'AI Code Converter | Convert Between 12+ Programming Languages',
     description:

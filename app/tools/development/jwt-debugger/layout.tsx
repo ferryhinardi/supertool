@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'JWT Debugger - Decode & Verify JSON Web Tokens | SuperTool',
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
     'jwt validator',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/development/jwt-debugger',
     title: 'JWT Debugger - Decode & Verify JSON Web Tokens',
     description:
@@ -24,6 +26,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title: 'JWT Debugger - Decode & Verify JSON Web Tokens',
     description:

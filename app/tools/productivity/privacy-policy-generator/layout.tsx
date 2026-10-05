@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy Generator | Free GDPR & CCPA Compliant Templates',
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     'saas privacy policy',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/productivity/privacy-policy-generator',
     title: 'Privacy Policy Generator | GDPR & CCPA Compliant',
     description:
@@ -26,6 +28,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title: 'Privacy Policy Generator',
     description:

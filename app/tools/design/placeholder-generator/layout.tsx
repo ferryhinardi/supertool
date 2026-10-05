@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Placeholder Image Generator - Custom Mockup Images | Supertool',
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
     'ad banner placeholder',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/design/placeholder-generator',
     title: 'Placeholder Image Generator - Custom Mockup Images',
     description:

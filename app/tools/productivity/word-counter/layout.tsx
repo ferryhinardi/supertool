@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Word Counter Pro - Free Online Text Statistics Tool | SuperTool',
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     'writing tool',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/productivity/word-counter',
     title: 'Word Counter Pro - Free Online Text Statistics Tool',
     description:

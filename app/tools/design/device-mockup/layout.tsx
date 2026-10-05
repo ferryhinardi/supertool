@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Device Mockup Generator | Create Realistic Device Screenshots',
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     'online mockup generator',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/design/device-mockup',
     title: 'Device Mockup Generator | Professional Device Frames',
     description:
@@ -26,6 +28,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title: 'Device Mockup Generator',
     description:

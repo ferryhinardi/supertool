@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'SSL/TLS Certificate Checker - SuperTool',
   description:
     'Inspect SSL/TLS certificate details, expiration dates, and security status for any website. Check certificate chain, cipher suites, protocol versions, and get detailed security recommendations to improve your website security.',
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/security/ssl-checker',
     title: 'SSL/TLS Certificate Checker',
     description:

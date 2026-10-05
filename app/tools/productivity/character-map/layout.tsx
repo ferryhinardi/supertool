@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Character Map - Special Characters & Symbols | SuperTool',
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     'unicode characters',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/productivity/character-map',
     title: 'Character Map - Special Characters & Symbols',
     description:

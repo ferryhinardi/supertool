@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Regex Tester - Test Regular Expressions Online | SuperTool',
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
     'regex python',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/development/regex-tester',
     title: 'Regex Tester - Test Regular Expressions Online',
     description:
@@ -28,6 +30,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title: 'Regex Tester - Test Regular Expressions Online',
     description:

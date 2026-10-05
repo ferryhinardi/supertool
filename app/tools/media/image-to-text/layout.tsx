@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 const title = 'Image to Text Converter - OCR Tool | Extract Text from Images Online'
 const description =
@@ -28,12 +29,14 @@ export const metadata: Metadata = {
     'handwriting recognition',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/media/image-to-text',
     title,
     description,
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title,
     description,

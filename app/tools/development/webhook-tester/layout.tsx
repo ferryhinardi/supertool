@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Webhook Tester | Test & Debug Webhooks in Real-Time',
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
     'webhook simulator',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/development/webhook-tester',
     title: 'Webhook Tester | Test & Debug Webhooks in Real-Time',
     description:
@@ -24,6 +26,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE.url],
     card: 'summary_large_image',
     title: 'Webhook Tester | Test & Debug Webhooks in Real-Time',
     description:

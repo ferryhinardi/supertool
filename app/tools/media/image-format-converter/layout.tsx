@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { DEFAULT_OG_IMAGE } from '@/lib/data/metadata'
 
 export const metadata: Metadata = {
   title: 'Image Format Converter - Convert PNG, JPG, WEBP, GIF | Supertool',
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
     'free image converter',
   ],
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     url: 'https://supertool.id/tools/media/image-format-converter',
     title: 'Image Format Converter - Convert PNG, JPG, WEBP, GIF',
     description:
