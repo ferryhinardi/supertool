@@ -852,7 +852,7 @@ export default function EmailSignatureGenerator() {
                 <Button
                   onClick={() => copyToClipboard('html')}
                   className={css({
-                    bg: 'linear-gradient(135deg, #9333ea, #ec4899)',
+                    bg: 'brand.violetDeep',
                     color: 'white',
                     '&:hover': { opacity: 0.9 },
                   })}

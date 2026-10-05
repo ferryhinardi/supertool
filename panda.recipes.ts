@@ -46,11 +46,11 @@ export const buttonRecipe = defineRecipe({
   variants: {
     variant: {
       default: {
-        bg: 'brand.violet',
+        bg: 'brand.violetDeep',
         color: 'white',
         shadow: 'sm',
         boxShadow: '0 8px 25px rgba(139, 108, 255, 0.2)',
-        _hover: { bg: 'brand.violet', opacity: '0.92' },
+        _hover: { bg: 'brand.violetDeep', opacity: '0.92' },
       },
       destructive: {
         bg: 'destructive',
@@ -171,10 +171,10 @@ export const badgeRecipe = defineRecipe({
     variant: {
       default: {
         borderColor: 'transparent',
-        bg: 'primary',
+        bg: 'brand.violetDeep',
         color: 'primary-foreground',
         shadow: 'sm',
-        _hover: { bg: 'primary', opacity: '0.8' },
+        _hover: { bg: 'brand.violetDeep', opacity: '0.8' },
       },
       secondary: {
         borderColor: 'transparent',

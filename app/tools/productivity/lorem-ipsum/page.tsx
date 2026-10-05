@@ -242,9 +242,7 @@ export default function LoremIpsumPage() {
               fontSize: 'sm',
               fontWeight: 'semibold',
               color: 'white',
-              bgGradient: 'to-r',
-              gradientFrom: 'purple.600',
-              gradientTo: 'pink.600',
+              bg: 'brand.violetDeep',
               transition: 'all 0.2s',
               cursor: 'pointer',
               _hover: {

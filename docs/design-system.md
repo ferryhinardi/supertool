@@ -26,11 +26,12 @@ Import tokens from `@/lib/design-system`. Prefer Panda semantic colors (`bg: 'br
 | `brand.ink` | `#f7f8fb` | Primary text |
 | `brand.muted` | `#9ea6b7` | Secondary text |
 | `brand.dim` | `#70798d` | Meta text |
-| `brand.violet` | `#8b6cff` | Primary actions |
+| `brand.violet` | `#8b6cff` | Primary accents, rings, icons |
+| `brand.violetDeep` | `#6652ef` | Filled primary buttons and badges with white text |
 | `brand.violetBright` | `#a894ff` | Accent text |
 | `brand.mint` | `#4ee0ae` | Privacy / success |
 
-`primary` maps to violet so existing `Button` defaults pick up the revamp. `background`, `card`, `border`, and `muted-foreground` map to the canvas scale.
+White text on `brand.violet` is 3.7:1, below WCAG AA for body-size text. Filled surfaces with white labels use `brand.violetDeep` (5.2:1). `primary` maps to violet for rings and fills without text. `background`, `card`, `border`, and `muted-foreground` map to the canvas scale.
 
 Tool categories use `accentForCategory()`:
 

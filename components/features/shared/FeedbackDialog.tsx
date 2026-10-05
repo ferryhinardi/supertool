@@ -72,9 +72,7 @@ export function FeedbackDialog() {
           type="button"
           className={css({
             gap: '2',
-            bgGradient: 'to-r',
-            gradientFrom: 'purple.500',
-            gradientTo: 'pink.500',
+            bg: 'brand.violetDeep',
             color: 'white',
             fontWeight: 'semibold',
             fontSize: 'md',

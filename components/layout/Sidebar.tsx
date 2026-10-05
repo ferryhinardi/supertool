@@ -694,7 +694,7 @@ function AuthSection() {
           color: 'white',
           cursor: 'pointer',
           transition: 'all 0.2s',
-          bg: 'brand.violet',
+          bg: 'brand.violetDeep',
           boxShadow: '0 8px 25px rgba(139, 108, 255, 0.2)',
           _hover: {
             opacity: 0.92,

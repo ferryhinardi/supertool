@@ -64,12 +64,18 @@ a {
   color: inherit;
 }
 
-/* Remove button default styles */
-button {
-  border: none;
-  background: none;
-  font: inherit;
-  cursor: pointer;
+/*
+ * This file is unlayered, so any element rule here beats every Panda layer.
+ * Keep element resets inside @layer base so recipe and utility backgrounds
+ * and borders still apply to buttons.
+ */
+@layer base {
+  button {
+    border: none;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+  }
 }
 
 /* Utility classes for glass morphism */

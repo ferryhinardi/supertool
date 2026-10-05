@@ -147,7 +147,7 @@ export function HeroPreview() {
                 px: '2',
                 py: '1.5',
                 color: 'white',
-                bg: 'brand.violet',
+                bg: 'brand.violetDeep',
                 rounded: '6px',
                 fontWeight: 'semibold',
               })}
