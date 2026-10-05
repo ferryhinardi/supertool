@@ -14,9 +14,9 @@ vi.mock('@/lib/auth/supabaseClient', () => ({
       select: vi.fn(() => ({
         eq: vi.fn(() => ({
           eq: vi.fn(() => ({
-            single: vi.fn(),
+            limit: vi.fn(() => ({ maybeSingle: vi.fn() })),
           })),
-          single: vi.fn(),
+          maybeSingle: vi.fn(),
         })),
       })),
       insert: vi.fn(),
@@ -49,8 +49,8 @@ describe('rating-service', () => {
         rating_5_count: 50,
       }
 
-      const mockSingle = vi.fn().mockResolvedValue({ data: mockData, error: null })
-      const mockEq = vi.fn().mockReturnValue({ single: mockSingle })
+      const mockMaybeSingle = vi.fn().mockResolvedValue({ data: mockData, error: null })
+      const mockEq = vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq })
       vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as never)
 
@@ -65,9 +65,9 @@ describe('rating-service', () => {
       expect(supabase.from).toHaveBeenCalledWith('tool_rating_stats')
     })
 
-    it('should return default stats when no ratings exist (PGRST116 error)', async () => {
-      const mockSingle = vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } })
-      const mockEq = vi.fn().mockReturnValue({ single: mockSingle })
+    it('should return default stats when no ratings exist', async () => {
+      const mockMaybeSingle = vi.fn().mockResolvedValue({ data: null, error: null })
+      const mockEq = vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq })
       vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as never)
 
@@ -83,11 +83,11 @@ describe('rating-service', () => {
 
     it('should return null on other errors', async () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      const mockSingle = vi.fn().mockResolvedValue({
+      const mockMaybeSingle = vi.fn().mockResolvedValue({
         data: null,
         error: { code: 'OTHER_ERROR', message: 'Database error' },
       })
-      const mockEq = vi.fn().mockReturnValue({ single: mockSingle })
+      const mockEq = vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq })
       vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as never)
 
@@ -112,8 +112,10 @@ describe('rating-service', () => {
 
   describe('checkUserHasRated', () => {
     it('should return true when user has rated', async () => {
-      const mockSingle = vi.fn().mockResolvedValue({ data: { id: '123' }, error: null })
-      const mockEq2 = vi.fn().mockReturnValue({ single: mockSingle })
+      const mockMaybeSingle = vi.fn().mockResolvedValue({ data: { id: '123' }, error: null })
+      const mockEq2 = vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle }),
+      })
       const mockEq1 = vi.fn().mockReturnValue({ eq: mockEq2 })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq1 })
       vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as never)
@@ -124,9 +126,11 @@ describe('rating-service', () => {
       expect(supabase.from).toHaveBeenCalledWith('tool_ratings')
     })
 
-    it('should return false when user has not rated (PGRST116 error)', async () => {
-      const mockSingle = vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } })
-      const mockEq2 = vi.fn().mockReturnValue({ single: mockSingle })
+    it('should return false when user has not rated', async () => {
+      const mockMaybeSingle = vi.fn().mockResolvedValue({ data: null, error: null })
+      const mockEq2 = vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle }),
+      })
       const mockEq1 = vi.fn().mockReturnValue({ eq: mockEq2 })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq1 })
       vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as never)
@@ -138,8 +142,12 @@ describe('rating-service', () => {
 
     it('should return false on errors', async () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      const mockSingle = vi.fn().mockResolvedValue({ data: null, error: { code: 'OTHER_ERROR' } })
-      const mockEq2 = vi.fn().mockReturnValue({ single: mockSingle })
+      const mockMaybeSingle = vi
+        .fn()
+        .mockResolvedValue({ data: null, error: { code: 'OTHER_ERROR' } })
+      const mockEq2 = vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle }),
+      })
       const mockEq1 = vi.fn().mockReturnValue({ eq: mockEq2 })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq1 })
       vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as never)
@@ -186,8 +194,10 @@ describe('rating-service', () => {
 
     it('should return error when user has already rated', async () => {
       // Mock checkUserHasRated to return true
-      const mockSingle = vi.fn().mockResolvedValue({ data: { id: '123' }, error: null })
-      const mockEq2 = vi.fn().mockReturnValue({ single: mockSingle })
+      const mockMaybeSingle = vi.fn().mockResolvedValue({ data: { id: '123' }, error: null })
+      const mockEq2 = vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle }),
+      })
       const mockEq1 = vi.fn().mockReturnValue({ eq: mockEq2 })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq1 })
       vi.mocked(supabase.from).mockReturnValue({ select: mockSelect } as never)
@@ -203,8 +213,10 @@ describe('rating-service', () => {
 
     it('should successfully submit rating when user has not rated', async () => {
       // First call for checkUserHasRated (returns no data)
-      const mockSingle = vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } })
-      const mockEq2 = vi.fn().mockReturnValue({ single: mockSingle })
+      const mockMaybeSingle = vi.fn().mockResolvedValue({ data: null, error: null })
+      const mockEq2 = vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle }),
+      })
       const mockEq1 = vi.fn().mockReturnValue({ eq: mockEq2 })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq1 })
 
@@ -243,8 +255,10 @@ describe('rating-service', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
       // Mock checkUserHasRated to return false
-      const mockSingle = vi.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } })
-      const mockEq2 = vi.fn().mockReturnValue({ single: mockSingle })
+      const mockMaybeSingle = vi.fn().mockResolvedValue({ data: null, error: null })
+      const mockEq2 = vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({ maybeSingle: mockMaybeSingle }),
+      })
       const mockEq1 = vi.fn().mockReturnValue({ eq: mockEq2 })
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq1 })
 

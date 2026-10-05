@@ -4,8 +4,8 @@ import type { Session, User } from '@supabase/supabase-js'
 import { useEffect } from 'react'
 import { completeAuthFromUrl } from '@/lib/auth/auth-redirect'
 import { useAuthStore } from '@/lib/auth/auth-store'
-import type { UserProfile } from '@/lib/auth/auth-types'
 import { supabase } from '@/lib/auth/supabaseClient'
+import { ensureUserProfile } from '@/lib/auth/user-profile'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { setUser, setProfile, setLoading } = useAuthStore()
@@ -16,18 +16,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(user)
 
       if (user) {
-        // Fetch user profile with error handling
-        const { data: profile, error } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single()
-
-        if (error) {
-          console.warn('Failed to fetch user profile:', error.message)
+        try {
+          setProfile(await ensureUserProfile(user))
+        } catch (error) {
+          console.warn(
+            'Failed to load user profile:',
+            error instanceof Error ? error.message : error
+          )
           setProfile(null)
-        } else {
-          setProfile(profile as UserProfile | null)
         }
       } else {
         setProfile(null)

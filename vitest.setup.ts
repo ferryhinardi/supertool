@@ -28,35 +28,45 @@ vi.mock('@/lib/auth/supabaseClient', () => ({
         }
       }),
     },
-    from: (table: string) => ({
-      select: () => ({
-        eq: () => ({
-          single: () => {
-            // Return mock rating stats
-            if (table === 'tool_rating_stats') {
-              return Promise.resolve({
-                data: {
-                  tool_id: 'test-tool',
-                  total_ratings: 100,
-                  average_rating: '4.5',
-                  rating_1_count: 5,
-                  rating_2_count: 10,
-                  rating_3_count: 15,
-                  rating_4_count: 30,
-                  rating_5_count: 40,
-                },
-                error: null,
-              })
-            }
-            return Promise.resolve({ data: null, error: null })
-          },
+    from: (table: string) => {
+      const singleRow = () => {
+        // Return mock rating stats
+        if (table === 'tool_rating_stats') {
+          return Promise.resolve({
+            data: {
+              tool_id: 'test-tool',
+              total_ratings: 100,
+              average_rating: '4.5',
+              rating_1_count: 5,
+              rating_2_count: 10,
+              rating_3_count: 15,
+              rating_4_count: 30,
+              rating_5_count: 40,
+            },
+            error: null,
+          })
+        }
+        return Promise.resolve({ data: null, error: null })
+      }
+      return {
+        select: () => ({
+          eq: () => ({
+            single: singleRow,
+            maybeSingle: singleRow,
+          }),
         }),
-      }),
-      insert: () => Promise.resolve({ data: null, error: null }),
-      update: () => ({
-        eq: () => Promise.resolve({ data: null, error: null }),
-      }),
-    }),
+        insert: () =>
+          Object.assign(Promise.resolve({ data: null, error: null }), {
+            select: () => ({
+              maybeSingle: () => Promise.resolve({ data: null, error: null }),
+            }),
+          }),
+        upsert: () => Promise.resolve({ data: null, error: null }),
+        update: () => ({
+          eq: () => Promise.resolve({ data: null, error: null }),
+        }),
+      }
+    },
   },
 }))
 

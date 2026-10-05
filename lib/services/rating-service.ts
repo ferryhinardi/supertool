@@ -30,19 +30,18 @@ export async function getRatingStats(toolId: string): Promise<RatingStats | null
       .from('tool_rating_stats')
       .select('*')
       .eq('tool_id', toolId)
-      .single()
+      .maybeSingle()
 
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // No ratings yet for this tool
-        return {
-          toolId,
-          totalRatings: 0,
-          averageRating: 0,
-          ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-        }
+    if (error) throw error
+
+    if (!data) {
+      // No ratings yet for this tool
+      return {
+        toolId,
+        totalRatings: 0,
+        averageRating: 0,
+        ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
       }
-      throw error
     }
 
     return {
@@ -73,11 +72,10 @@ export async function checkUserHasRated(toolId: string, userFingerprint: string)
       .select('id')
       .eq('tool_id', toolId)
       .eq('user_fingerprint', userFingerprint)
-      .single()
+      .limit(1)
+      .maybeSingle()
 
-    if (error && error.code !== 'PGRST116') {
-      throw error
-    }
+    if (error) throw error
 
     return !!data
   } catch (error) {
