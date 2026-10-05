@@ -20,8 +20,12 @@ const accessibleGutters = Prec.highest(
   EditorView.theme({ '.cm-gutters': { color: COLOR_FIXES['#7d8799'] } }, { dark: true })
 )
 
+// Read-only editors have no focusable content, so keyboard users could not scroll them.
+const focusableContent = EditorView.contentAttributes.of({ tabindex: '0' })
+
 export const accessibleOneDark: Extension = [
   oneDarkTheme,
   accessibleGutters,
+  focusableContent,
   syntaxHighlighting(accessibleHighlightStyle),
 ]

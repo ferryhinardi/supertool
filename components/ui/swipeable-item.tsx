@@ -116,7 +116,8 @@ export function SwipeHint() {
         border: '1px solid',
         borderColor: 'gray.700',
         fontSize: 'xs',
-        color: 'gray.400',
+        // Stays AA even at the pulse's 50% opacity.
+        color: 'gray.100',
         animation: 'pulse 2s infinite',
       })}
     >

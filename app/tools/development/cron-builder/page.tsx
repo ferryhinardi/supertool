@@ -811,7 +811,10 @@ export default function CronBuilderPage() {
                     >
                       Next 10 Executions
                     </h3>
-                    <div
+                    <section
+                      aria-label="Next 10 executions"
+                      // biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable region must be keyboard-accessible (WCAG 2.1 SC 2.1.1)
+                      tabIndex={0}
                       className={css({
                         spaceY: '2',
                         maxH: '64',
@@ -840,7 +843,7 @@ export default function CronBuilderPage() {
                           <Badge variant="secondary">{exec.relative}</Badge>
                         </div>
                       ))}
-                    </div>
+                    </section>
                   </div>
                 )}
               </CardContent>

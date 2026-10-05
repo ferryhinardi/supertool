@@ -641,6 +641,7 @@ function UploadToolContent() {
             <Button
               key={tab.id}
               data-testid={`tab-${tab.id}`}
+              aria-label={tab.label}
               variant={activeTab === tab.id ? 'default' : 'ghost'}
               onClick={() => setActiveTab(tab.id)}
               className={css({
