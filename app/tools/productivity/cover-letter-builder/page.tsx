@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ProductivityToolHeader } from '@/components/features/tools/ProductivityToolHeader'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useHydrated } from '@/hooks/common/useHydrated'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -67,6 +68,7 @@ function sanitizeAnalyticsPayload(data?: Record<string, unknown>) {
 }
 
 export default function CoverLetterBuilderPage() {
+  const hydrated = useHydrated()
   // Track page view
   useTrackToolView({
     toolId: 'cover-letter-builder',
@@ -274,331 +276,335 @@ export default function CoverLetterBuilderPage() {
         </p>
       ) : null}
 
-      {/* Main Content */}
-      <div
-        className={css({
-          display: 'grid',
-          gridTemplateColumns: {
-            base: 'minmax(0, 1fr)',
-            lg: 'minmax(0, 280px) minmax(0, 1fr) minmax(0, 300px)',
-          },
-          gap: { base: '4', md: '6' },
-          maxW: '7xl',
-          mx: 'auto',
-          w: 'full',
-          minW: '0',
-          p: { base: '4', sm: '6' },
-          minH: 'calc(100vh - 140px)',
-        })}
-      >
-        {/* LEFT SIDEBAR - Template Selector */}
+      {/* Builder state comes from localStorage and today's date, so render it client-side only */}
+      {hydrated ? (
         <div
           className={css({
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4',
-            h: 'fit-content',
-            minW: '0',
-            maxW: 'full',
+            display: 'grid',
+            gridTemplateColumns: {
+              base: 'minmax(0, 1fr)',
+              lg: 'minmax(0, 280px) minmax(0, 1fr) minmax(0, 300px)',
+            },
+            gap: { base: '4', md: '6' },
+            maxW: '7xl',
+            mx: 'auto',
             w: 'full',
-            position: { base: 'relative', lg: 'sticky' },
-            top: { lg: '6' },
+            minW: '0',
+            p: { base: '4', sm: '6' },
+            minH: 'calc(100vh - 140px)',
           })}
         >
-          <Card>
-            <CardHeader>
-              <CardTitle>Templates</CardTitle>
-              <CardDescription>Choose a style</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
+          {/* LEFT SIDEBAR - Template Selector */}
+          <div
+            className={css({
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+              h: 'fit-content',
+              minW: '0',
+              maxW: 'full',
+              w: 'full',
+              position: { base: 'relative', lg: 'sticky' },
+              top: { lg: '6' },
+            })}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle>Templates</CardTitle>
+                <CardDescription>Choose a style</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div
+                  className={css({
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2',
+                  })}
+                >
+                  {Object.values(COVER_LETTER_TEMPLATES).map((template) => (
+                    <button
+                      key={template.id}
+                      type="button"
+                      onClick={() => handleTemplateChange(template.id)}
+                      className={css({
+                        p: '3',
+                        textAlign: 'left',
+                        rounded: 'md',
+                        border: '1px solid',
+                        borderColor: selectedTemplate === template.id ? 'purple.500' : 'gray.800',
+                        bg: selectedTemplate === template.id ? 'purple.500/10' : 'gray.900',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        _hover: {
+                          borderColor: 'purple.500',
+                          bg: 'purple.500/5',
+                        },
+                      })}
+                    >
+                      <div
+                        className={css({
+                          fontWeight: 'medium',
+                          mb: '1',
+                          fontSize: 'sm',
+                        })}
+                      >
+                        {template.name}
+                      </div>
+                      <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
+                        {template.description}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Stats Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Statistics</CardTitle>
+              </CardHeader>
+              <CardContent
+                className={css({
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '3',
+                  fontSize: 'sm',
+                })}
+              >
+                <div
+                  className={css({
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  })}
+                >
+                  <span className={css({ color: 'gray.400' })}>Word Count:</span>
+                  <span
+                    className={css({
+                      fontWeight: 'bold',
+                      color:
+                        lengthCheck.status === 'optimal'
+                          ? 'green.400'
+                          : lengthCheck.status === 'short'
+                            ? 'yellow.400'
+                            : 'orange.400',
+                    })}
+                  >
+                    {wordCount}
+                  </span>
+                </div>
+                <div
+                  className={css({
+                    fontSize: 'xs',
+                    color: 'gray.400',
+                    p: '2',
+                    bg: 'gray.900',
+                    rounded: 'md',
+                  })}
+                >
+                  {lengthCheck.message}
+                </div>
+                {!validation.isValid && validation.errors.length > 0 && (
+                  <div
+                    className={css({
+                      fontSize: 'xs',
+                      color: 'red.400',
+                      p: '2',
+                      bg: 'red.900/20',
+                      rounded: 'md',
+                      border: '1px solid',
+                      borderColor: 'red.900',
+                    })}
+                  >
+                    <div className={css({ fontWeight: 'medium', mb: '1' })}>
+                      ⚠️ {validation.errors.length} required field
+                      {validation.errors.length > 1 ? 's' : ''} missing:
+                    </div>
+                    <ul className={css({ pl: '4', listStyle: 'disc' })}>
+                      {validation.errors.slice(0, 3).map((error) => (
+                        <li key={error}>{error}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Actions Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Actions</CardTitle>
+              </CardHeader>
+              <CardContent className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
+                <Link href="/tools/productivity/resume-builder">
+                  <Button variant="default" className={css({ w: 'full', fontSize: 'sm' })}>
+                    Resume Builder
+                    <ArrowRight className={css({ w: '4', h: '4', ml: '2' })} />
+                  </Button>
+                </Link>
+                <Button
+                  onClick={handleImportJSON}
+                  variant="outline"
+                  className={css({ w: 'full', fontSize: 'sm' })}
+                >
+                  Import JSON
+                </Button>
+                <Button
+                  onClick={handleClearAll}
+                  variant="ghost"
+                  className={css({ w: 'full', fontSize: 'sm', color: 'red.400' })}
+                >
+                  Clear All
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Tips & Best Practices */}
+            <CoverLetterTips />
+          </div>
+
+          {/* CENTER - Form */}
+          <div
+            className={css({
+              overflowY: 'auto',
+              maxH: { base: 'none', lg: 'calc(100vh - 180px)' },
+              pr: { lg: '2' },
+              minW: '0',
+              maxW: 'full',
+              w: 'full',
+            })}
+          >
+            <CoverLetterForm data={coverLetter} onChange={handleCoverLetterChange} />
+          </div>
+
+          {/* RIGHT SIDEBAR - Preview & Export */}
+          <div
+            className={css({
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+              h: 'fit-content',
+              minW: '0',
+              maxW: 'full',
+              w: 'full',
+              position: { base: 'relative', lg: 'sticky' },
+              top: { lg: '6' },
+            })}
+          >
+            {/* Export Buttons */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Export</CardTitle>
+                <CardDescription>Download your cover letter</CardDescription>
+              </CardHeader>
+              <CardContent
                 className={css({
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '2',
                 })}
               >
-                {Object.values(COVER_LETTER_TEMPLATES).map((template) => (
-                  <button
-                    key={template.id}
-                    type="button"
-                    onClick={() => handleTemplateChange(template.id)}
+                <Button
+                  onClick={handleExportVisualPDF}
+                  disabled={isExporting || !validation.isValid}
+                  className={css({ w: 'full' })}
+                >
+                  {isExporting ? 'Exporting...' : '📄 Visual PDF'}
+                </Button>
+                <Button
+                  onClick={handleExportTextPDF}
+                  disabled={isExporting || !validation.isValid}
+                  variant="outline"
+                  className={css({ w: 'full' })}
+                >
+                  📝 ATS-Friendly PDF
+                </Button>
+                <Button onClick={handleExportJSON} variant="ghost" className={css({ w: 'full' })}>
+                  💾 Export JSON
+                </Button>
+                {!validation.isValid && (
+                  <p
                     className={css({
-                      p: '3',
-                      textAlign: 'left',
-                      rounded: 'md',
-                      border: '1px solid',
-                      borderColor: selectedTemplate === template.id ? 'purple.500' : 'gray.800',
-                      bg: selectedTemplate === template.id ? 'purple.500/10' : 'gray.900',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      _hover: {
-                        borderColor: 'purple.500',
-                        bg: 'purple.500/5',
-                      },
+                      fontSize: 'xs',
+                      color: 'yellow.400',
+                      textAlign: 'center',
+                      mt: '1',
                     })}
                   >
-                    <div
-                      className={css({
-                        fontWeight: 'medium',
-                        mb: '1',
-                        fontSize: 'sm',
-                      })}
-                    >
-                      {template.name}
-                    </div>
-                    <div className={css({ fontSize: 'xs', color: 'gray.400' })}>
-                      {template.description}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                    Complete required fields to export
+                  </p>
+                )}
+              </CardContent>
+            </Card>
 
-          {/* Stats Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Statistics</CardTitle>
-            </CardHeader>
-            <CardContent
-              className={css({
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '3',
-                fontSize: 'sm',
-              })}
-            >
-              <div
-                className={css({
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                })}
-              >
-                <span className={css({ color: 'gray.400' })}>Word Count:</span>
-                <span
-                  className={css({
-                    fontWeight: 'bold',
-                    color:
-                      lengthCheck.status === 'optimal'
-                        ? 'green.400'
-                        : lengthCheck.status === 'short'
-                          ? 'yellow.400'
-                          : 'orange.400',
-                  })}
-                >
-                  {wordCount}
-                </span>
-              </div>
-              <div
-                className={css({
-                  fontSize: 'xs',
-                  color: 'gray.400',
-                  p: '2',
-                  bg: 'gray.900',
-                  rounded: 'md',
-                })}
-              >
-                {lengthCheck.message}
-              </div>
-              {!validation.isValid && validation.errors.length > 0 && (
+            {/* AI Suggestions */}
+            <AISuggestions
+              coverLetter={coverLetter}
+              onApplySuggestion={handleApplyAISuggestion}
+              onAnalyticsEvent={(event, data) =>
+                trackToolEvent(
+                  event as Parameters<typeof trackToolEvent>[0],
+                  sanitizeAnalyticsPayload(data)
+                )
+              }
+            />
+
+            {/* Preview */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Preview</CardTitle>
+                <CardDescription>Real-time preview</CardDescription>
+              </CardHeader>
+              <CardContent>
                 <div
-                  className={css({
-                    fontSize: 'xs',
-                    color: 'red.400',
-                    p: '2',
-                    bg: 'red.900/20',
-                    rounded: 'md',
-                    border: '1px solid',
-                    borderColor: 'red.900',
-                  })}
-                >
-                  <div className={css({ fontWeight: 'medium', mb: '1' })}>
-                    ⚠️ {validation.errors.length} required field
-                    {validation.errors.length > 1 ? 's' : ''} missing:
-                  </div>
-                  <ul className={css({ pl: '4', listStyle: 'disc' })}>
-                    {validation.errors.slice(0, 3).map((error) => (
-                      <li key={error}>{error}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Actions Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <CardContent className={css({ display: 'flex', flexDirection: 'column', gap: '2' })}>
-              <Link href="/tools/productivity/resume-builder">
-                <Button variant="default" className={css({ w: 'full', fontSize: 'sm' })}>
-                  Resume Builder
-                  <ArrowRight className={css({ w: '4', h: '4', ml: '2' })} />
-                </Button>
-              </Link>
-              <Button
-                onClick={handleImportJSON}
-                variant="outline"
-                className={css({ w: 'full', fontSize: 'sm' })}
-              >
-                Import JSON
-              </Button>
-              <Button
-                onClick={handleClearAll}
-                variant="ghost"
-                className={css({ w: 'full', fontSize: 'sm', color: 'red.400' })}
-              >
-                Clear All
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Tips & Best Practices */}
-          <CoverLetterTips />
-        </div>
-
-        {/* CENTER - Form */}
-        <div
-          className={css({
-            overflowY: 'auto',
-            maxH: { base: 'none', lg: 'calc(100vh - 180px)' },
-            pr: { lg: '2' },
-            minW: '0',
-            maxW: 'full',
-            w: 'full',
-          })}
-        >
-          <CoverLetterForm data={coverLetter} onChange={handleCoverLetterChange} />
-        </div>
-
-        {/* RIGHT SIDEBAR - Preview & Export */}
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4',
-            h: 'fit-content',
-            minW: '0',
-            maxW: 'full',
-            w: 'full',
-            position: { base: 'relative', lg: 'sticky' },
-            top: { lg: '6' },
-          })}
-        >
-          {/* Export Buttons */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Export</CardTitle>
-              <CardDescription>Download your cover letter</CardDescription>
-            </CardHeader>
-            <CardContent
-              className={css({
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '2',
-              })}
-            >
-              <Button
-                onClick={handleExportVisualPDF}
-                disabled={isExporting || !validation.isValid}
-                className={css({ w: 'full' })}
-              >
-                {isExporting ? 'Exporting...' : '📄 Visual PDF'}
-              </Button>
-              <Button
-                onClick={handleExportTextPDF}
-                disabled={isExporting || !validation.isValid}
-                variant="outline"
-                className={css({ w: 'full' })}
-              >
-                📝 ATS-Friendly PDF
-              </Button>
-              <Button onClick={handleExportJSON} variant="ghost" className={css({ w: 'full' })}>
-                💾 Export JSON
-              </Button>
-              {!validation.isValid && (
-                <p
-                  className={css({
-                    fontSize: 'xs',
-                    color: 'yellow.400',
-                    textAlign: 'center',
-                    mt: '1',
-                  })}
-                >
-                  Complete required fields to export
-                </p>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* AI Suggestions */}
-          <AISuggestions
-            coverLetter={coverLetter}
-            onApplySuggestion={handleApplyAISuggestion}
-            onAnalyticsEvent={(event, data) =>
-              trackToolEvent(
-                event as Parameters<typeof trackToolEvent>[0],
-                sanitizeAnalyticsPayload(data)
-              )
-            }
-          />
-
-          {/* Preview */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Preview</CardTitle>
-              <CardDescription>Real-time preview</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
-                className={css({
-                  w: 'full',
-                  maxW: 'full',
-                  minW: '0',
-                  overflow: 'hidden',
-                  rounded: 'md',
-                  border: '1px solid',
-                  borderColor: 'gray.800',
-                  bg: 'white',
-                  position: 'relative',
-                })}
-              >
-                {/* A4 aspect-ratio spacer — absolute preview alone collapses height */}
-                <div
-                  aria-hidden
                   className={css({
                     w: 'full',
-                    paddingBottom: '141.42%', // 297 / 210
-                  })}
-                />
-                <div
-                  id="cover-letter-preview"
-                  className={css({
-                    position: 'absolute',
-                    top: '0',
-                    left: '0',
-                    bg: 'white',
+                    maxW: 'full',
+                    minW: '0',
                     overflow: 'hidden',
+                    rounded: 'md',
+                    border: '1px solid',
+                    borderColor: 'gray.800',
+                    bg: 'white',
+                    position: 'relative',
                   })}
-                  style={{
-                    width: '210mm',
-                    minHeight: '297mm',
-                    // Inline transform: Panda classnames for scale() are not emitted
-                    transform: 'scale(var(--cover-letter-preview-scale, 0.35))',
-                    transformOrigin: 'top left',
-                  }}
                 >
-                  {renderTemplate()}
+                  {/* A4 aspect-ratio spacer — absolute preview alone collapses height */}
+                  <div
+                    aria-hidden
+                    className={css({
+                      w: 'full',
+                      paddingBottom: '141.42%', // 297 / 210
+                    })}
+                  />
+                  <div
+                    id="cover-letter-preview"
+                    className={css({
+                      position: 'absolute',
+                      top: '0',
+                      left: '0',
+                      bg: 'white',
+                      overflow: 'hidden',
+                    })}
+                    style={{
+                      width: '210mm',
+                      minHeight: '297mm',
+                      // Inline transform: Panda classnames for scale() are not emitted
+                      transform: 'scale(var(--cover-letter-preview-scale, 0.35))',
+                      transformOrigin: 'top left',
+                    }}
+                  >
+                    {renderTemplate()}
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div aria-hidden className={css({ minH: 'calc(100vh - 140px)' })} />
+      )}
 
       {/* Footer Help Text */}
       <div

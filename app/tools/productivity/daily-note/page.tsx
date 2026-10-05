@@ -21,6 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useHydrated } from '@/hooks/common/useHydrated'
 import { trackEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
 
@@ -230,6 +231,7 @@ const applyTemplate = (template: string, date: string): string => {
 }
 
 export default function DailyNotePage() {
+  const hydrated = useHydrated()
   const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()))
   const [content, setContent] = useState<string>('')
   const [selectedTemplate, setSelectedTemplate] = useState<string>('daily-log')
@@ -577,11 +579,11 @@ export default function DailyNotePage() {
               <Calendar className={css({ h: '5', w: '5', color: 'green.400', flexShrink: '0' })} />
               <div>
                 <h2 className={css({ fontSize: 'lg', fontWeight: 'semibold', color: 'white' })}>
-                  {formatDisplayDate(selectedDate)}
+                  {hydrated ? formatDisplayDate(selectedDate) : '\u00a0'}
                 </h2>
                 <p className={css({ fontSize: 'sm', color: 'white' })}>
                   <Clock className={css({ display: 'inline', h: '3', w: '3', mr: '1' })} />
-                  {formatTime()}
+                  {hydrated ? formatTime() : '--:--'}
                 </p>
               </div>
             </div>

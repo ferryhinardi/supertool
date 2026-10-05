@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useHydrated } from '@/hooks/common/useHydrated'
 import { useTrackToolView } from '@/hooks/tools/useRecentTools'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { css } from '@/styled-system/css'
@@ -29,6 +30,7 @@ import {
 } from './utils'
 
 function CronExpressionContent() {
+  const hydrated = useHydrated()
   const [expression, setExpression] = useState('0 9 * * 1-5')
   const [fields, setFields] = useState<CronField>(() => parseCronExpression('0 9 * * 1-5'))
   const [selectedCategory, setSelectedCategory] = useState<string>('common')
@@ -519,7 +521,7 @@ function CronExpressionContent() {
       </div>
 
       {/* Next Executions */}
-      {validation.isValid && nextExecutions.length > 0 && (
+      {hydrated && validation.isValid && nextExecutions.length > 0 && (
         <div
           className={css({
             animation: 'slideUp 0.5s ease-out forwards',

@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ToolSearch } from '@/components/ui/tool-search'
+import { useHydrated } from '@/hooks/common/useHydrated'
 import { trackToolEvent } from '@/lib/services/analytics'
 import { createId } from '@/lib/utils/id'
 import { css } from '@/styled-system/css'
@@ -71,6 +72,7 @@ const ALL_TIMEZONES = [
 ]
 
 function TimezoneConverterContent() {
+  const hydrated = useHydrated()
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [timezones, setTimezones] = useState<TimezoneItem[]>(() => [
     { id: '1', timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, label: 'Local Time' },
@@ -180,6 +182,7 @@ function TimezoneConverterContent() {
   }, [searchQuery])
 
   const getTimeForTimezone = (timezone: string) => {
+    if (!hydrated) return { timeString: '--:--', dateString: '\u00a0', offsetString: '\u00a0' }
     try {
       const zonedDate = toZonedTime(selectedDate, timezone)
       const timeString = format(zonedDate, 'HH:mm', { timeZone: timezone })
@@ -193,6 +196,7 @@ function TimezoneConverterContent() {
   }
 
   const isDaytime = (timezone: string) => {
+    if (!hydrated) return true
     try {
       const zonedDate = toZonedTime(selectedDate, timezone)
       const hour = zonedDate.getHours()
@@ -240,7 +244,7 @@ function TimezoneConverterContent() {
               <div className={css({ display: 'flex', gap: '4', alignItems: 'center' })}>
                 <Input
                   type="time"
-                  value={format(selectedDate, 'HH:mm')}
+                  value={hydrated ? format(selectedDate, 'HH:mm') : ''}
                   onChange={(e) => {
                     const [hours, minutes] = e.target.value.split(':').map(Number)
                     handleTimeChange(hours, minutes)
@@ -261,7 +265,7 @@ function TimezoneConverterContent() {
                 </Button>
               </div>
               <div className={css({ fontSize: 'sm', color: 'white' })}>
-                {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                {hydrated ? format(selectedDate, 'EEEE, MMMM d, yyyy') : '\u00a0'}
               </div>
             </div>
           </CardContent>
@@ -350,6 +354,7 @@ function TimezoneConverterContent() {
                         onClick={() => handleRemoveTimezone(tz.id)}
                         variant="ghost"
                         size="icon"
+                        aria-label={`Remove ${tz.label || tz.timezone}`}
                         className={css({ color: 'red.400', _hover: { color: 'red.300' } })}
                       >
                         <Trash2 className={css({ h: '4', w: '4' })} />
@@ -409,7 +414,7 @@ function TimezoneConverterContent() {
                 })}
               >
                 {filteredTimezones.map((tz) => {
-                  const isAdded = timezones.some((t) => t.timezone === tz.value)
+                  const isAdded = hydrated && timezones.some((t) => t.timezone === tz.value)
                   return (
                     <Button
                       key={tz.value}
@@ -434,7 +439,7 @@ function TimezoneConverterContent() {
       </div>
 
       {/* Favorites */}
-      {favorites.length > 0 && (
+      {hydrated && favorites.length > 0 && (
         <div
           className={css({
             animation: 'slideUp 0.5s ease-out forwards',
@@ -494,6 +499,7 @@ function TimezoneConverterContent() {
                         onClick={() => handleRemoveFavorite(fav.id)}
                         variant="ghost"
                         size="icon"
+                        aria-label="Remove saved configuration"
                         className={css({ color: 'red.400', _hover: { color: 'red.300' } })}
                       >
                         <X className={css({ h: '4', w: '4' })} />
