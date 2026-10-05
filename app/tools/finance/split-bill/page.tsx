@@ -918,7 +918,7 @@ export default function SplitBillPage() {
           left: '-9999px',
           zIndex: '999',
           padding: '4',
-          bg: 'emerald.600',
+          bg: 'emerald.700',
           color: 'white',
           fontWeight: 'bold',
           rounded: 'md',
@@ -1368,7 +1368,7 @@ export default function SplitBillPage() {
                 borderColor: 'blue.500',
                 bg: 'transparent',
                 cursor: 'pointer',
-                _checked: { bg: 'blue.500' },
+                _checked: { bg: 'blue.600' },
               })}
             />
             <label
@@ -1454,10 +1454,10 @@ export default function SplitBillPage() {
                       py: '1',
                       fontSize: 'xs',
                       rounded: 'md',
-                      bg: tipPercent === String(percent) ? 'green.600' : 'gray.700',
+                      bg: tipPercent === String(percent) ? 'green.700' : 'gray.700',
                       color: 'white',
                       transition: 'all 0.2s',
-                      _hover: { bg: 'green.500' },
+                      _hover: { bg: 'green.700' },
                     })}
                   >
                     {percent}%
@@ -1694,10 +1694,10 @@ export default function SplitBillPage() {
                 fontSize: 'sm',
                 fontWeight: 'medium',
                 transition: 'all 0.2s',
-                bg: splitType === 'equal' ? 'emerald.600' : 'transparent',
+                bg: splitType === 'equal' ? 'emerald.700' : 'transparent',
                 color: splitType === 'equal' ? 'white' : 'gray.400',
                 _hover: {
-                  bg: splitType === 'equal' ? 'emerald.500' : 'rgba(16, 185, 129, 0.1)',
+                  bg: splitType === 'equal' ? 'emerald.700' : 'rgba(16, 185, 129, 0.1)',
                 },
               })}
             >
@@ -1716,10 +1716,10 @@ export default function SplitBillPage() {
                 fontSize: 'sm',
                 fontWeight: 'medium',
                 transition: 'all 0.2s',
-                bg: splitType === 'percentage' ? 'emerald.600' : 'transparent',
+                bg: splitType === 'percentage' ? 'emerald.700' : 'transparent',
                 color: splitType === 'percentage' ? 'white' : 'gray.400',
                 _hover: {
-                  bg: splitType === 'percentage' ? 'emerald.500' : 'rgba(16, 185, 129, 0.1)',
+                  bg: splitType === 'percentage' ? 'emerald.700' : 'rgba(16, 185, 129, 0.1)',
                 },
               })}
             >
@@ -1738,10 +1738,10 @@ export default function SplitBillPage() {
                 fontSize: 'sm',
                 fontWeight: 'medium',
                 transition: 'all 0.2s',
-                bg: splitType === 'items' ? 'emerald.600' : 'transparent',
+                bg: splitType === 'items' ? 'emerald.700' : 'transparent',
                 color: splitType === 'items' ? 'white' : 'gray.400',
                 _hover: {
-                  bg: splitType === 'items' ? 'emerald.500' : 'rgba(16, 185, 129, 0.1)',
+                  bg: splitType === 'items' ? 'emerald.700' : 'rgba(16, 185, 129, 0.1)',
                 },
               })}
             >
@@ -1902,8 +1902,8 @@ export default function SplitBillPage() {
                   size="sm"
                   aria-label="Add item"
                   className={css({
-                    bg: 'cyan.600',
-                    _hover: { bg: 'cyan.500' },
+                    bg: 'cyan.700',
+                    _hover: { bg: 'cyan.700' },
                   })}
                 >
                   <Plus className={css({ h: '4', w: '4' })} />
@@ -2071,12 +2071,12 @@ export default function SplitBillPage() {
                                     fontSize: 'xs',
                                     fontWeight: 'medium',
                                     transition: 'all 0.2s',
-                                    bg: isAssigned ? 'cyan.600' : 'gray.700',
+                                    bg: isAssigned ? 'cyan.700' : 'gray.700',
                                     color: isAssigned ? 'white' : 'gray.400',
                                     border: '1px solid',
                                     borderColor: isAssigned ? 'cyan.500' : 'gray.600',
                                     _hover: {
-                                      bg: isAssigned ? 'cyan.500' : 'gray.600',
+                                      bg: isAssigned ? 'cyan.700' : 'gray.600',
                                     },
                                   })}
                                 >
@@ -2243,11 +2243,11 @@ export default function SplitBillPage() {
                           minH: '11',
                           minW: '11',
                           rounded: 'md',
-                          bg: person.hasPaid ? 'green.600' : 'gray.700',
+                          bg: person.hasPaid ? 'green.700' : 'gray.700',
                           color: 'white',
                           transition: 'all 0.2s',
                           _hover: {
-                            bg: person.hasPaid ? 'green.500' : 'gray.600',
+                            bg: person.hasPaid ? 'green.700' : 'gray.600',
                           },
                         })}
                       >
@@ -2415,7 +2415,7 @@ export default function SplitBillPage() {
                     size="sm"
                     className={css({
                       mt: '2',
-                      bg: 'green.600',
+                      bg: 'green.700',
                       color: 'white',
                     })}
                   >

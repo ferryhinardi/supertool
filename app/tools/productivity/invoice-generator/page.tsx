@@ -403,9 +403,9 @@ export default function InvoiceGeneratorPage() {
           onClick={handleNewInvoice}
           className={css({
             gap: '2',
-            bg: 'blue.500',
+            bg: 'blue.600',
             color: 'white',
-            _hover: { bg: 'blue.600' },
+            _hover: { bg: 'blue.700' },
           })}
         >
           <Plus className={css({ h: '4', w: '4' })} />
@@ -415,9 +415,9 @@ export default function InvoiceGeneratorPage() {
           onClick={handleSaveInvoice}
           className={css({
             gap: '2',
-            bg: 'green.500',
+            bg: 'green.700',
             color: 'white',
-            _hover: { bg: 'green.600' },
+            _hover: { bg: 'green.700' },
           })}
         >
           <Save className={css({ h: '4', w: '4' })} />
@@ -427,9 +427,9 @@ export default function InvoiceGeneratorPage() {
           onClick={handleDownloadPDF}
           className={css({
             gap: '2',
-            bg: 'purple.500',
+            bg: 'purple.600',
             color: 'white',
-            _hover: { bg: 'purple.600' },
+            _hover: { bg: 'purple.700' },
           })}
         >
           <Download className={css({ h: '4', w: '4' })} />
@@ -908,9 +908,9 @@ export default function InvoiceGeneratorPage() {
                     size="sm"
                     className={css({
                       gap: '2',
-                      bg: 'purple.500',
+                      bg: 'purple.600',
                       color: 'white',
-                      _hover: { bg: 'purple.600' },
+                      _hover: { bg: 'purple.700' },
                     })}
                   >
                     <Plus className={css({ h: '4', w: '4' })} />

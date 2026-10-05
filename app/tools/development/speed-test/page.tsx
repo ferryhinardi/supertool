@@ -520,10 +520,10 @@ function SpeedTestContent() {
                     px: '12',
                     py: '6',
                     fontSize: 'xl',
-                    bg: 'blue.500',
+                    bg: 'blue.600',
                     color: 'white',
                     _hover: {
-                      bg: 'blue.600',
+                      bg: 'blue.700',
                       transform: 'scale(1.05)',
                       transition: 'all 0.2s',
                     },

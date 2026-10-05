@@ -260,7 +260,7 @@ export default function CookingConverterPage() {
                   borderColor: 'gray.700',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  _hover: { bg: 'gray.700', borderColor: 'orange.500', color: 'orange.400' },
+                  _hover: { bg: 'gray.700', borderColor: 'orange.700', color: 'orange.400' },
                   alignSelf: { base: 'center', sm: 'end' },
                   mb: { base: 0, sm: 1 },
                 })}
@@ -430,14 +430,14 @@ export default function CookingConverterPage() {
                     fontSize: 'sm',
                     fontWeight: 'medium',
                     rounded: 'lg',
-                    bg: fromUnit === conv.from && toUnit === conv.to ? 'orange.600' : 'gray.800',
+                    bg: fromUnit === conv.from && toUnit === conv.to ? 'orange.700' : 'gray.800',
                     color: fromUnit === conv.from && toUnit === conv.to ? 'white' : 'gray.300',
                     border: '1px solid',
                     borderColor:
                       fromUnit === conv.from && toUnit === conv.to ? 'orange.500' : 'gray.700',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    _hover: { bg: 'gray.700', borderColor: 'orange.500', color: 'orange.300' },
+                    _hover: { bg: 'gray.700', borderColor: 'orange.700', color: 'orange.300' },
                   })}
                 >
                   {conv.label}

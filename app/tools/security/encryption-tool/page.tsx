@@ -528,9 +528,9 @@ export default function EncryptionToolPage() {
                       className={css({
                         minH: '11',
                         color: 'brand.ink',
-                        bg: 'emerald.600!',
+                        bg: 'emerald.700!',
                         boxShadow: 'none!',
-                        _hover: { bg: 'emerald.500!', opacity: '1' },
+                        _hover: { bg: 'emerald.700!', opacity: '1' },
                       })}
                     >
                       <Lock className={css({ w: 4, h: 4, mr: 2 })} />
@@ -543,9 +543,9 @@ export default function EncryptionToolPage() {
                       className={css({
                         minH: '11',
                         color: 'brand.ink',
-                        bg: 'emerald.600!',
+                        bg: 'emerald.700!',
                         boxShadow: 'none!',
-                        _hover: { bg: 'emerald.500!', opacity: '1' },
+                        _hover: { bg: 'emerald.700!', opacity: '1' },
                       })}
                     >
                       <Unlock className={css({ w: 4, h: 4, mr: 2 })} />
@@ -811,9 +811,9 @@ export default function EncryptionToolPage() {
                       className={css({
                         minH: '11',
                         color: 'brand.ink',
-                        bg: 'emerald.600!',
+                        bg: 'emerald.700!',
                         boxShadow: 'none!',
-                        _hover: { bg: 'emerald.500!', opacity: '1' },
+                        _hover: { bg: 'emerald.700!', opacity: '1' },
                       })}
                     >
                       <Lock className={css({ w: 4, h: 4, mr: 2 })} />
@@ -826,9 +826,9 @@ export default function EncryptionToolPage() {
                       className={css({
                         minH: '11',
                         color: 'brand.ink',
-                        bg: 'emerald.600!',
+                        bg: 'emerald.700!',
                         boxShadow: 'none!',
-                        _hover: { bg: 'emerald.500!', opacity: '1' },
+                        _hover: { bg: 'emerald.700!', opacity: '1' },
                       })}
                     >
                       <Unlock className={css({ w: 4, h: 4, mr: 2 })} />
@@ -997,9 +997,9 @@ export default function EncryptionToolPage() {
                     className={css({
                       minH: '11',
                       color: 'brand.ink',
-                      bg: 'emerald.600!',
+                      bg: 'emerald.700!',
                       boxShadow: 'none!',
-                      _hover: { bg: 'emerald.500!', opacity: '1' },
+                      _hover: { bg: 'emerald.700!', opacity: '1' },
                     })}
                   >
                     <Unlock className={css({ w: 4, h: 4, mr: 2 })} />

@@ -731,9 +731,9 @@ export default function LogoMakerPage() {
                         fontWeight: 'medium',
                         textTransform: 'capitalize',
                         transition: 'all 0.2s',
-                        bg: selectedCategory === category ? 'purple.500' : 'gray.800',
+                        bg: selectedCategory === category ? 'purple.600' : 'gray.800',
                         color: selectedCategory === category ? 'white' : 'gray.400',
-                        _hover: { bg: selectedCategory === category ? 'purple.600' : 'gray.700' },
+                        _hover: { bg: selectedCategory === category ? 'purple.700' : 'gray.700' },
                       })}
                     >
                       {category}
@@ -924,8 +924,8 @@ export default function LogoMakerPage() {
                         py: '2',
                         rounded: 'md',
                         fontSize: 'sm',
-                        bg: fontWeight === 'normal' ? 'purple.500' : 'gray.800',
-                        _hover: { bg: fontWeight === 'normal' ? 'purple.600' : 'gray.700' },
+                        bg: fontWeight === 'normal' ? 'purple.600' : 'gray.800',
+                        _hover: { bg: fontWeight === 'normal' ? 'purple.700' : 'gray.700' },
                       })}
                     >
                       Normal
@@ -940,8 +940,8 @@ export default function LogoMakerPage() {
                         rounded: 'md',
                         fontSize: 'sm',
                         fontWeight: 'bold',
-                        bg: fontWeight === 'bold' ? 'purple.500' : 'gray.800',
-                        _hover: { bg: fontWeight === 'bold' ? 'purple.600' : 'gray.700' },
+                        bg: fontWeight === 'bold' ? 'purple.600' : 'gray.800',
+                        _hover: { bg: fontWeight === 'bold' ? 'purple.700' : 'gray.700' },
                       })}
                     >
                       Bold
@@ -968,8 +968,8 @@ export default function LogoMakerPage() {
                         flex: '1',
                         py: '2',
                         rounded: 'md',
-                        bg: textAlign === 'left' ? 'purple.500' : 'gray.800',
-                        _hover: { bg: textAlign === 'left' ? 'purple.600' : 'gray.700' },
+                        bg: textAlign === 'left' ? 'purple.600' : 'gray.800',
+                        _hover: { bg: textAlign === 'left' ? 'purple.700' : 'gray.700' },
                       })}
                     >
                       <AlignLeft className={css({ w: '4', h: '4', mx: 'auto' })} />
@@ -982,8 +982,8 @@ export default function LogoMakerPage() {
                         flex: '1',
                         py: '2',
                         rounded: 'md',
-                        bg: textAlign === 'center' ? 'purple.500' : 'gray.800',
-                        _hover: { bg: textAlign === 'center' ? 'purple.600' : 'gray.700' },
+                        bg: textAlign === 'center' ? 'purple.600' : 'gray.800',
+                        _hover: { bg: textAlign === 'center' ? 'purple.700' : 'gray.700' },
                       })}
                     >
                       <AlignCenter className={css({ w: '4', h: '4', mx: 'auto' })} />
@@ -996,8 +996,8 @@ export default function LogoMakerPage() {
                         flex: '1',
                         py: '2',
                         rounded: 'md',
-                        bg: textAlign === 'right' ? 'purple.500' : 'gray.800',
-                        _hover: { bg: textAlign === 'right' ? 'purple.600' : 'gray.700' },
+                        bg: textAlign === 'right' ? 'purple.600' : 'gray.800',
+                        _hover: { bg: textAlign === 'right' ? 'purple.700' : 'gray.700' },
                       })}
                     >
                       <AlignRight className={css({ w: '4', h: '4', mx: 'auto' })} />
@@ -1147,8 +1147,8 @@ export default function LogoMakerPage() {
                       py: '2',
                       rounded: 'md',
                       fontSize: 'sm',
-                      bg: backgroundColor === 'transparent' ? 'purple.500' : 'gray.800',
-                      _hover: { bg: backgroundColor === 'transparent' ? 'purple.600' : 'gray.700' },
+                      bg: backgroundColor === 'transparent' ? 'purple.600' : 'gray.800',
+                      _hover: { bg: backgroundColor === 'transparent' ? 'purple.700' : 'gray.700' },
                     })}
                   >
                     Transparent
@@ -1162,8 +1162,8 @@ export default function LogoMakerPage() {
                       py: '2',
                       rounded: 'md',
                       fontSize: 'sm',
-                      bg: backgroundColor === '#ffffff' ? 'purple.500' : 'gray.800',
-                      _hover: { bg: backgroundColor === '#ffffff' ? 'purple.600' : 'gray.700' },
+                      bg: backgroundColor === '#ffffff' ? 'purple.600' : 'gray.800',
+                      _hover: { bg: backgroundColor === '#ffffff' ? 'purple.700' : 'gray.700' },
                     })}
                   >
                     White
@@ -1177,8 +1177,8 @@ export default function LogoMakerPage() {
                       py: '2',
                       rounded: 'md',
                       fontSize: 'sm',
-                      bg: backgroundColor === '#000000' ? 'purple.500' : 'gray.800',
-                      _hover: { bg: backgroundColor === '#000000' ? 'purple.600' : 'gray.700' },
+                      bg: backgroundColor === '#000000' ? 'purple.600' : 'gray.800',
+                      _hover: { bg: backgroundColor === '#000000' ? 'purple.700' : 'gray.700' },
                     })}
                   >
                     Black

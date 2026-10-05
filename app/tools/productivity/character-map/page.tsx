@@ -73,7 +73,7 @@ export default function CharacterMapPage() {
             left: '4',
             top: '50%',
             transform: 'translateY(-50%)',
-            color: 'neutral.500',
+            color: 'neutral.400',
           })}
           size={20}
         />
@@ -96,7 +96,7 @@ export default function CharacterMapPage() {
             backdropFilter: 'blur(10px)',
             transition: 'all 0.2s',
             _placeholder: {
-              color: 'neutral.500',
+              color: 'neutral.400',
             },
             _focus: {
               outline: 'none',
@@ -123,7 +123,7 @@ export default function CharacterMapPage() {
             className={css({
               px: '6',
               py: '2.5',
-              bg: selectedCategory === 'all' ? 'indigo.500' : 'rgba(255, 255, 255, 0.05)',
+              bg: selectedCategory === 'all' ? 'indigo.600' : 'rgba(255, 255, 255, 0.05)',
               border: '1px solid',
               borderColor: selectedCategory === 'all' ? 'indigo.500' : 'rgba(255, 255, 255, 0.1)',
               borderRadius: 'full',
@@ -134,7 +134,7 @@ export default function CharacterMapPage() {
               transition: 'all 0.2s',
               cursor: 'pointer',
               _hover: {
-                bg: selectedCategory === 'all' ? 'indigo.600' : 'rgba(255, 255, 255, 0.1)',
+                bg: selectedCategory === 'all' ? 'indigo.700' : 'rgba(255, 255, 255, 0.1)',
                 transform: 'translateY(-1px)',
               },
               _active: {
@@ -152,7 +152,7 @@ export default function CharacterMapPage() {
               className={css({
                 px: '6',
                 py: '2.5',
-                bg: selectedCategory === category.id ? 'indigo.500' : 'rgba(255, 255, 255, 0.05)',
+                bg: selectedCategory === category.id ? 'indigo.600' : 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid',
                 borderColor:
                   selectedCategory === category.id ? 'indigo.500' : 'rgba(255, 255, 255, 0.1)',
@@ -164,7 +164,7 @@ export default function CharacterMapPage() {
                 transition: 'all 0.2s',
                 cursor: 'pointer',
                 _hover: {
-                  bg: selectedCategory === category.id ? 'indigo.600' : 'rgba(255, 255, 255, 0.1)',
+                  bg: selectedCategory === category.id ? 'indigo.700' : 'rgba(255, 255, 255, 0.1)',
                   transform: 'translateY(-1px)',
                 },
                 _active: {
@@ -255,7 +255,7 @@ export default function CharacterMapPage() {
               <span
                 className={css({
                   fontSize: { base: '2xs', sm: 'xs' },
-                  color: 'neutral.500',
+                  color: 'neutral.400',
                   fontFamily: 'mono',
                 })}
               >
@@ -298,7 +298,7 @@ export default function CharacterMapPage() {
                     top: '1',
                     right: '1',
                     p: '1',
-                    bg: 'green.500',
+                    bg: 'green.700',
                     borderRadius: 'full',
                   })}
                 >
@@ -347,7 +347,7 @@ export default function CharacterMapPage() {
               borderRadius: 'full',
             })}
           >
-            <Search size={40} className={css({ color: 'neutral.600' })} />
+            <Search size={40} className={css({ color: 'neutral.400' })} />
           </div>
           <div>
             <h3 className={css({ fontSize: 'xl', fontWeight: 'semibold', color: 'white' })}>

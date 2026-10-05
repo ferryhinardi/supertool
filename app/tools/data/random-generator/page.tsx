@@ -585,14 +585,7 @@ function RandomGeneratorContent() {
 
             {/* Generate Button */}
             <div className={css({ display: 'flex', gap: '3', pt: '2' })}>
-              <Button
-                onClick={generate}
-                className={css({
-                  bg: 'green.500',
-                  color: 'white',
-                  _hover: { bg: 'green.600' },
-                })}
-              >
+              <Button onClick={generate}>
                 <RefreshCw className={css({ w: '4', h: '4', mr: '2' })} />
                 Generate
               </Button>

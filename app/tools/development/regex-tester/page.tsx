@@ -192,13 +192,13 @@ export default function RegexTesterPage() {
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    bg: selectedCategory === category ? 'blue.500' : 'rgba(255, 255, 255, 0.05)',
+                    bg: selectedCategory === category ? 'blue.600' : 'rgba(255, 255, 255, 0.05)',
                     color: selectedCategory === category ? 'white' : 'rgba(255, 255, 255, 0.7)',
                     border: '1px solid',
                     borderColor:
                       selectedCategory === category ? 'brand.blue' : 'rgba(255, 255, 255, 0.1)',
                     _hover: {
-                      bg: selectedCategory === category ? 'blue.600' : 'rgba(255, 255, 255, 0.1)',
+                      bg: selectedCategory === category ? 'blue.700' : 'rgba(255, 255, 255, 0.1)',
                     },
                   })}
                   data-touch-chip
@@ -417,12 +417,12 @@ export default function RegexTesterPage() {
                   fontFamily: 'mono',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  bg: flags.includes(flag) ? 'blue.500' : 'rgba(255, 255, 255, 0.05)',
+                  bg: flags.includes(flag) ? 'blue.600' : 'rgba(255, 255, 255, 0.05)',
                   color: flags.includes(flag) ? 'white' : 'rgba(255, 255, 255, 0.7)',
                   border: '1px solid',
                   borderColor: flags.includes(flag) ? 'brand.blue' : 'rgba(255, 255, 255, 0.1)',
                   _hover: {
-                    bg: flags.includes(flag) ? 'blue.600' : 'rgba(255, 255, 255, 0.1)',
+                    bg: flags.includes(flag) ? 'blue.700' : 'rgba(255, 255, 255, 0.1)',
                   },
                   display: 'flex',
                   alignItems: 'center',
@@ -779,7 +779,7 @@ export default function RegexTesterPage() {
                     className={css({
                       px: '3',
                       py: '1.5',
-                      bg: 'blue.500',
+                      bg: 'blue.600',
                       borderRadius: 'lg',
                       fontSize: 'sm',
                       fontWeight: '500',
@@ -790,7 +790,7 @@ export default function RegexTesterPage() {
                       alignItems: 'center',
                       gap: '2',
                       _hover: {
-                        bg: 'blue.600',
+                        bg: 'blue.700',
                       },
                     })}
                   >

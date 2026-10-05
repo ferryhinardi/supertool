@@ -215,8 +215,8 @@ export default function FaviconGeneratorPage() {
             onClick={() => setMode('upload')}
             className={css({
               flex: '1',
-              bg: mode === 'upload' ? 'violet.500' : 'whiteAlpha.100',
-              _hover: { bg: mode === 'upload' ? 'violet.600' : 'whiteAlpha.200' },
+              bg: mode === 'upload' ? 'violet.600' : 'whiteAlpha.100',
+              _hover: { bg: mode === 'upload' ? 'violet.700' : 'whiteAlpha.200' },
             })}
           >
             <Upload className={css({ mr: '2', w: '4', h: '4' })} />
@@ -226,8 +226,8 @@ export default function FaviconGeneratorPage() {
             onClick={() => setMode('emoji')}
             className={css({
               flex: '1',
-              bg: mode === 'emoji' ? 'violet.500' : 'whiteAlpha.100',
-              _hover: { bg: mode === 'emoji' ? 'violet.600' : 'whiteAlpha.200' },
+              bg: mode === 'emoji' ? 'violet.600' : 'whiteAlpha.100',
+              _hover: { bg: mode === 'emoji' ? 'violet.700' : 'whiteAlpha.200' },
             })}
           >
             <Smile className={css({ mr: '2', w: '4', h: '4' })} />
@@ -338,10 +338,10 @@ export default function FaviconGeneratorPage() {
                     p: '2',
                     fontSize: '2xl',
                     borderRadius: 'md',
-                    bg: selectedEmoji === emoji && !customEmoji ? 'violet.500' : 'whiteAlpha.100',
+                    bg: selectedEmoji === emoji && !customEmoji ? 'violet.600' : 'whiteAlpha.100',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    _hover: { bg: 'violet.500' },
+                    _hover: { bg: 'violet.600' },
                   })}
                 >
                   {emoji}
@@ -396,8 +396,8 @@ export default function FaviconGeneratorPage() {
           className={css({
             w: 'full',
             mt: '6',
-            bg: 'violet.500',
-            _hover: { bg: 'violet.600' },
+            bg: 'violet.600',
+            _hover: { bg: 'violet.700' },
             _disabled: { opacity: '0.5', cursor: 'not-allowed' },
           })}
         >
@@ -502,8 +502,8 @@ export default function FaviconGeneratorPage() {
               className={css({
                 flex: '1',
                 w: { base: 'full', sm: 'auto' },
-                bg: 'violet.500',
-                _hover: { bg: 'violet.600' },
+                bg: 'violet.600',
+                _hover: { bg: 'violet.700' },
               })}
             >
               <Download className={css({ mr: '2', w: '4', h: '4' })} />
@@ -528,8 +528,8 @@ export default function FaviconGeneratorPage() {
                 onClick={handleCopyHtml}
                 size="sm"
                 className={css({
-                  bg: copiedHtml ? 'green.500' : 'whiteAlpha.200',
-                  _hover: { bg: copiedHtml ? 'green.600' : 'whiteAlpha.300' },
+                  bg: copiedHtml ? 'green.700' : 'whiteAlpha.200',
+                  _hover: { bg: copiedHtml ? 'green.700' : 'whiteAlpha.300' },
                 })}
               >
                 {copiedHtml ? (

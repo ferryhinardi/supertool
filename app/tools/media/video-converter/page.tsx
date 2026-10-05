@@ -529,8 +529,8 @@ export default function VideoConverterPage() {
                 onClick={loadFFmpeg}
                 className={css({
                   gap: '2',
-                  bg: 'orange.600',
-                  _hover: { bg: 'orange.700' },
+                  bg: 'orange.700',
+                  _hover: { bg: 'orange.800' },
                 })}
               >
                 <Zap className={css({ h: '4', w: '4' })} />
@@ -976,8 +976,8 @@ export default function VideoConverterPage() {
                     className={css({
                       w: 'full',
                       gap: '2',
-                      bg: 'orange.600',
-                      _hover: { bg: 'orange.700' },
+                      bg: 'orange.700',
+                      _hover: { bg: 'orange.800' },
                     })}
                   >
                     <Zap className={css({ h: '4', w: '4' })} />

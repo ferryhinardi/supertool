@@ -254,11 +254,11 @@ export function CoverLetterForm({ data, onChange }: CoverLetterFormProps) {
                 px: '3',
                 py: '1',
                 fontSize: 'xs',
-                bg: 'blue.500',
+                bg: 'blue.600',
                 color: 'white',
                 rounded: 'md',
                 cursor: 'pointer',
-                _hover: { bg: 'blue.600' },
+                _hover: { bg: 'blue.700' },
               })}
             >
               Generate Sample

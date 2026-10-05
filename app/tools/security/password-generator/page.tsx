@@ -715,7 +715,7 @@ function PasswordGeneratorContent() {
                             border: '2px solid',
                             borderColor: 'gray.600',
                             cursor: 'pointer',
-                            _checked: { bg: 'emerald.500', borderColor: 'emerald.500' },
+                            _checked: { bg: 'emerald.700', borderColor: 'emerald.700' },
                           })}
                         />
                         <div className={css({ flex: '1' })}>
@@ -856,9 +856,9 @@ function PasswordGeneratorContent() {
                 fontSize: 'lg',
                 fontWeight: 'bold',
                 color: 'brand.ink',
-                bg: 'emerald.600!',
+                bg: 'emerald.700!',
                 boxShadow: 'none!',
-                _hover: { bg: 'emerald.500!', opacity: '1' },
+                _hover: { bg: 'emerald.700!', opacity: '1' },
               })}
             >
               <RefreshCw className={css({ h: '5', w: '5' })} />
@@ -915,9 +915,9 @@ function PasswordGeneratorContent() {
                   flex: '1',
                   h: '12',
                   color: 'brand.ink',
-                  bg: 'emerald.600!',
+                  bg: 'emerald.700!',
                   boxShadow: 'none!',
-                  _hover: { bg: 'emerald.500!', opacity: '1' },
+                  _hover: { bg: 'emerald.700!', opacity: '1' },
                 })}
               >
                 <Zap className={css({ h: '5', w: '5' })} />

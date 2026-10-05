@@ -608,7 +608,7 @@ export default function VideoSubtitleCombinerPage() {
               const element = document.getElementById('upload-section')
               element?.scrollIntoView({ behavior: 'smooth' })
             }}
-            className={css({ gap: '2', bg: 'orange.600', _hover: { bg: 'orange.700' } })}
+            className={css({ gap: '2', bg: 'orange.700', _hover: { bg: 'orange.800' } })}
           >
             <Zap className={css({ h: '4', w: '4' })} />
             Initialize Subtitle Tool
@@ -779,8 +779,8 @@ export default function VideoSubtitleCombinerPage() {
               gap: '2',
               h: '12',
               fontSize: 'lg',
-              bg: 'orange.600',
-              _hover: { bg: 'orange.700' },
+              bg: 'orange.700',
+              _hover: { bg: 'orange.800' },
               _disabled: {
                 opacity: 0.5,
                 cursor: 'not-allowed',

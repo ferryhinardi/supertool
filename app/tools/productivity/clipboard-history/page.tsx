@@ -247,8 +247,8 @@ export default function ClipboardHistoryPage() {
             className={css({
               flex: { base: '1', sm: 'initial' },
               gap: '2',
-              bg: 'cyan.600',
-              _hover: { bg: 'cyan.700' },
+              bg: 'cyan.700',
+              _hover: { bg: 'cyan.800' },
             })}
           >
             <Clipboard className={css({ h: '4', w: '4' })} />
@@ -664,9 +664,9 @@ export default function ClipboardHistoryPage() {
                     onClick={() => copyToClipboard(item)}
                     className={css({
                       gap: '2',
-                      bg: copiedId === item.id ? 'green.600' : 'cyan.600',
+                      bg: copiedId === item.id ? 'green.700' : 'cyan.700',
                       _hover: {
-                        bg: copiedId === item.id ? 'green.700' : 'cyan.700',
+                        bg: copiedId === item.id ? 'green.800' : 'cyan.800',
                       },
                     })}
                   >
