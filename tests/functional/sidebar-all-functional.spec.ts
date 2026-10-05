@@ -53,7 +53,7 @@ test('mobile sidebar navigation smoke', async ({ page }) => {
 
   await page.getByRole('link', { name: sampleTool.title }).first().click()
   await expect(page).toHaveURL(new RegExp(`${escapeForRegExp(sampleTool.href)}$`))
-  await expect(page.getByRole('heading', { level: 1 }).nth(1)).toContainText(
+  await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
     new RegExp(escapeForRegExp(sampleTool.title.split(' ')[0]), 'i')
   )
 })
