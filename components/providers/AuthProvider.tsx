@@ -2,7 +2,7 @@
 
 import type { Session, User } from '@supabase/supabase-js'
 import { useEffect } from 'react'
-import { recoverSessionFromUrlHash } from '@/lib/auth/auth-redirect'
+import { completeAuthFromUrl } from '@/lib/auth/auth-redirect'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import type { UserProfile } from '@/lib/auth/auth-types'
 import { supabase } from '@/lib/auth/supabaseClient'
@@ -36,9 +36,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false)
     }
 
-    // Implicit grants land on /#access_token=... when Supabase falls back to the
-    // Site URL. Store the session, then drop the credentials from the address bar.
-    void recoverSessionFromUrlHash().finally(() => {
+    // OAuth can return on /auth/callback or on the Site URL root. Finish either
+    // shape, then drop the code or hash from the address bar.
+    void completeAuthFromUrl().finally(() => {
       supabase.auth.getSession().then(({ data: { session } }) => {
         handleSessionChange(session)
       })

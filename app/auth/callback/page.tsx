@@ -2,8 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
-import { recoverSessionFromUrlHash, safeNextPath } from '@/lib/auth/auth-redirect'
-import { supabase } from '@/lib/auth/supabaseClient'
+import { completeAuthFromUrl, safeNextPath } from '@/lib/auth/auth-redirect'
 import { css } from '@/styled-system/css'
 
 function AuthCallbackContent() {
@@ -23,23 +22,17 @@ function AuthCallbackContent() {
         return
       }
 
-      const code = searchParams.get('code')
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (cancelled) return
-        if (error) {
-          setMessage('Sign-in could not be completed.')
-          router.replace('/auth/error')
-          return
-        }
+      const hadCode = Boolean(searchParams.get('code'))
+      const hadHash = typeof window !== 'undefined' && window.location.hash.includes('access_token')
+      const signedIn = await completeAuthFromUrl()
+      if (cancelled) return
+      if (signedIn) {
         router.replace(next)
         return
       }
-
-      const recovered = await recoverSessionFromUrlHash()
-      if (cancelled) return
-      if (recovered) {
-        router.replace(next)
+      if (hadCode || hadHash) {
+        setMessage('Sign-in could not be completed.')
+        router.replace('/auth/error')
         return
       }
 

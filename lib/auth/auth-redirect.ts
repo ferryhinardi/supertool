@@ -46,3 +46,42 @@ export async function recoverSessionFromUrlHash(): Promise<boolean> {
   const { error } = await supabase.auth.setSession(tokens)
   return !error
 }
+
+let pendingAuthCompletion: Promise<boolean> | null = null
+
+function stripCodeFromUrl(): void {
+  const params = new URLSearchParams(window.location.search)
+  if (!params.has('code')) return
+  params.delete('code')
+  const query = params.toString()
+  window.history.replaceState(
+    window.history.state,
+    '',
+    `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`
+  )
+}
+
+async function finishAuthRedirect(): Promise<boolean> {
+  const recoveredFromHash = await recoverSessionFromUrlHash()
+  const code = new URLSearchParams(window.location.search).get('code')
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    stripCodeFromUrl()
+    if (!error) return true
+  }
+  if (recoveredFromHash) return true
+  const { data } = await supabase.auth.getSession()
+  return Boolean(data.session)
+}
+
+// Supabase falls back to the Site URL root when /auth/callback is not allow-listed.
+// Exchange ?code= on whatever page received it, once, and remove it from the address bar.
+export function completeAuthFromUrl(): Promise<boolean> {
+  if (typeof window === 'undefined') return Promise.resolve(false)
+  if (!pendingAuthCompletion) {
+    pendingAuthCompletion = finishAuthRedirect().finally(() => {
+      pendingAuthCompletion = null
+    })
+  }
+  return pendingAuthCompletion
+}

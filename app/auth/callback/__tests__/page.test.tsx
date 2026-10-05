@@ -31,6 +31,7 @@ describe('AuthCallbackPage', () => {
   })
 
   it('exchanges the PKCE code and returns to the next path', async () => {
+    window.history.replaceState(null, '', '/auth/callback?code=test-auth-code&next=/dashboard')
     searchParams.set('code', 'test-auth-code')
     searchParams.set('next', '/dashboard')
 
@@ -44,6 +45,11 @@ describe('AuthCallbackPage', () => {
   })
 
   it('ignores an external next path', async () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/auth/callback?code=test-auth-code&next=https://evil.example'
+    )
     searchParams.set('code', 'test-auth-code')
     searchParams.set('next', 'https://evil.example')
 
