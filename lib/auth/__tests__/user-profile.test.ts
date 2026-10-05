@@ -17,29 +17,35 @@ function makeUser(overrides: Partial<User> = {}): User {
 
 function mockProfileTable(options: {
   existing: unknown
+  existingAfterInsert?: unknown
   selectError?: unknown
   created?: unknown
   insertError?: unknown
 }) {
-  const insert = vi.fn(() => ({
-    select: () => ({
-      maybeSingle: () =>
-        Promise.resolve({ data: options.created ?? null, error: options.insertError ?? null }),
-    }),
-  }))
+  let inserted = false
+  const insert = vi.fn(() => {
+    inserted = true
+    return {
+      select: () => ({
+        maybeSingle: () =>
+          Promise.resolve({ data: options.created ?? null, error: options.insertError ?? null }),
+      }),
+    }
+  })
+  const selectProfile = vi.fn(() =>
+    Promise.resolve({
+      data: inserted ? (options.existingAfterInsert ?? null) : options.existing,
+      error: options.selectError ?? null,
+    })
+  )
   const from = vi.spyOn(supabase, 'from').mockImplementation(
     () =>
       ({
-        select: () => ({
-          eq: () => ({
-            maybeSingle: () =>
-              Promise.resolve({ data: options.existing, error: options.selectError ?? null }),
-          }),
-        }),
+        select: () => ({ eq: () => ({ maybeSingle: selectProfile }) }),
         insert,
       }) as unknown as ReturnType<typeof supabase.from>
   )
-  return { from, insert }
+  return { from, insert, selectProfile }
 }
 
 afterEach(() => {
@@ -83,6 +89,43 @@ describe('ensureUserProfile', () => {
 
     await expect(ensureUserProfile(makeUser())).resolves.toEqual(created)
     expect(insert).toHaveBeenCalledWith(expect.objectContaining({ id: 'user-1' }))
+  })
+
+  it('shares one request between concurrent callers', async () => {
+    const created = { id: 'user-1', display_name: 'Dev Person' }
+    const { insert, selectProfile } = mockProfileTable({ existing: null, created })
+
+    const results = await Promise.all([
+      ensureUserProfile(makeUser()),
+      ensureUserProfile(makeUser()),
+    ])
+
+    expect(results).toEqual([created, created])
+    expect(selectProfile).toHaveBeenCalledTimes(1)
+    expect(insert).toHaveBeenCalledTimes(1)
+  })
+
+  it('starts a fresh request once the previous one settles', async () => {
+    const existing = { id: 'user-1', display_name: 'Dev Person' }
+    const { selectProfile } = mockProfileTable({ existing })
+
+    await ensureUserProfile(makeUser())
+    await ensureUserProfile(makeUser())
+
+    expect(selectProfile).toHaveBeenCalledTimes(2)
+  })
+
+  it('reads the row back when another client inserted it first', async () => {
+    const existing = { id: 'user-1', display_name: 'Dev Person' }
+    const { insert, selectProfile } = mockProfileTable({
+      existing: null,
+      existingAfterInsert: existing,
+      insertError: { code: '23505', message: 'duplicate key value' },
+    })
+
+    await expect(ensureUserProfile(makeUser())).resolves.toEqual(existing)
+    expect(insert).toHaveBeenCalledTimes(1)
+    expect(selectProfile).toHaveBeenCalledTimes(2)
   })
 
   it('throws select and insert errors', async () => {
