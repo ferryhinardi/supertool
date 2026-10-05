@@ -378,7 +378,7 @@ function AITextRewriterContent() {
                   bottom: '2',
                   right: '2',
                   fontSize: 'xs',
-                  color: inputText.length > 5000 ? 'red.400' : 'gray.500',
+                  color: inputText.length > 5000 ? 'red.400' : 'gray.400',
                 })}
               >
                 {inputText.length} / 5000

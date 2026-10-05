@@ -405,7 +405,7 @@ export default function DailyTaskSummary() {
                   <p
                     className={css({
                       textAlign: 'center',
-                      color: '#6b7280',
+                      color: '#9ca3af',
                       padding: '2rem',
                     })}
                   >
@@ -452,7 +452,7 @@ export default function DailyTaskSummary() {
                               className={css({
                                 fontWeight: '500',
                                 textDecoration: task.completed ? 'line-through' : 'none',
-                                color: task.completed ? '#6b7280' : 'inherit',
+                                color: task.completed ? '#9ca3af' : 'inherit',
                                 marginBottom: '0.5rem',
                               })}
                             >
@@ -475,7 +475,7 @@ export default function DailyTaskSummary() {
                                   alignItems: 'center',
                                   gap: '0.25rem',
                                   fontSize: '0.875rem',
-                                  color: '#6b7280',
+                                  color: '#9ca3af',
                                 })}
                               >
                                 <Clock size={14} />
@@ -563,7 +563,7 @@ export default function DailyTaskSummary() {
                       <div
                         className={css({
                           fontSize: '0.75rem',
-                          color: '#6b7280',
+                          color: '#4b5563',
                           marginBottom: '0.25rem',
                         })}
                       >
@@ -590,7 +590,7 @@ export default function DailyTaskSummary() {
                       <div
                         className={css({
                           fontSize: '0.75rem',
-                          color: '#6b7280',
+                          color: '#4b5563',
                           marginBottom: '0.25rem',
                         })}
                       >
@@ -617,7 +617,7 @@ export default function DailyTaskSummary() {
                       <div
                         className={css({
                           fontSize: '0.75rem',
-                          color: '#6b7280',
+                          color: '#4b5563',
                           marginBottom: '0.25rem',
                         })}
                       >
@@ -627,7 +627,7 @@ export default function DailyTaskSummary() {
                         className={css({
                           fontSize: '1.5rem',
                           fontWeight: '600',
-                          color: '#f59e0b',
+                          color: '#b45309',
                         })}
                       >
                         {formatTime(totalTime)}
@@ -644,7 +644,7 @@ export default function DailyTaskSummary() {
                       <div
                         className={css({
                           fontSize: '0.75rem',
-                          color: '#6b7280',
+                          color: '#4b5563',
                           marginBottom: '0.25rem',
                         })}
                       >
@@ -704,7 +704,7 @@ export default function DailyTaskSummary() {
                           <span
                             className={css({
                               fontSize: '0.875rem',
-                              color: '#6b7280',
+                              color: '#9ca3af',
                             })}
                           >
                             {stat.count} tasks · {formatTime(stat.time)}

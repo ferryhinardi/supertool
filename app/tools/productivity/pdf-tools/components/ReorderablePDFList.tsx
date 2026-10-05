@@ -93,7 +93,7 @@ function SortablePDFCard({
             justifyContent: 'center',
             flexShrink: 0,
             cursor: canDrag ? 'grab' : 'not-allowed',
-            color: canDrag ? 'gray.400' : 'gray.600',
+            color: canDrag ? 'gray.400' : 'gray.400',
             bg: 'transparent',
             border: 'none',
             p: '0',

@@ -225,7 +225,7 @@ export default function CitationGeneratorPage() {
             </button>
           </div>
           {sourceData.authors.length === 0 ? (
-            <p className={css({ fontSize: 'sm', color: 'gray.500', fontStyle: 'italic' })}>
+            <p className={css({ fontSize: 'sm', color: 'gray.400', fontStyle: 'italic' })}>
               No authors added. Click &quot;Add Author&quot; to add one.
             </p>
           ) : (
@@ -261,7 +261,7 @@ export default function CitationGeneratorPage() {
                       rounded: 'md',
                       outline: 'none',
                       _focus: { borderColor: 'indigo.500' },
-                      _placeholder: { color: 'gray.500' },
+                      _placeholder: { color: 'gray.400' },
                     })}
                   />
                   <input
@@ -280,7 +280,7 @@ export default function CitationGeneratorPage() {
                       rounded: 'md',
                       outline: 'none',
                       _focus: { borderColor: 'indigo.500' },
-                      _placeholder: { color: 'gray.500' },
+                      _placeholder: { color: 'gray.400' },
                     })}
                   />
                   <input
@@ -299,7 +299,7 @@ export default function CitationGeneratorPage() {
                       rounded: 'md',
                       outline: 'none',
                       _focus: { borderColor: 'indigo.500' },
-                      _placeholder: { color: 'gray.500' },
+                      _placeholder: { color: 'gray.400' },
                     })}
                   />
                   <button
@@ -362,7 +362,7 @@ export default function CitationGeneratorPage() {
             </button>
           </div>
           {!sourceData.editors || sourceData.editors.length === 0 ? (
-            <p className={css({ fontSize: 'sm', color: 'gray.500', fontStyle: 'italic' })}>
+            <p className={css({ fontSize: 'sm', color: 'gray.400', fontStyle: 'italic' })}>
               No editors added. Click &quot;Add Editor&quot; to add one.
             </p>
           ) : (
@@ -398,7 +398,7 @@ export default function CitationGeneratorPage() {
                       rounded: 'md',
                       outline: 'none',
                       _focus: { borderColor: 'indigo.500' },
-                      _placeholder: { color: 'gray.500' },
+                      _placeholder: { color: 'gray.400' },
                     })}
                   />
                   <input
@@ -417,7 +417,7 @@ export default function CitationGeneratorPage() {
                       rounded: 'md',
                       outline: 'none',
                       _focus: { borderColor: 'indigo.500' },
-                      _placeholder: { color: 'gray.500' },
+                      _placeholder: { color: 'gray.400' },
                     })}
                   />
                   <button
@@ -547,7 +547,7 @@ export default function CitationGeneratorPage() {
             rounded: 'lg',
             outline: 'none',
             _focus: { borderColor: 'indigo.500' },
-            _placeholder: { color: 'gray.500' },
+            _placeholder: { color: 'gray.400' },
           })}
         />
       </div>
@@ -687,7 +687,7 @@ export default function CitationGeneratorPage() {
                 )
               })}
             </div>
-            <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+            <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
               {CITATION_STYLES[citationStyle].description}
             </p>
           </div>
@@ -878,7 +878,7 @@ export default function CitationGeneratorPage() {
                 </button>
               </>
             ) : (
-              <p className={css({ fontSize: 'sm', color: 'gray.500', textAlign: 'center', py: 8 })}>
+              <p className={css({ fontSize: 'sm', color: 'gray.400', textAlign: 'center', py: 8 })}>
                 Fill in the source details and click &quot;Generate Citation&quot; to create your
                 citation.
               </p>
@@ -955,7 +955,7 @@ export default function CitationGeneratorPage() {
                 )}
               </>
             ) : (
-              <p className={css({ fontSize: 'sm', color: 'gray.500', textAlign: 'center', py: 4 })}>
+              <p className={css({ fontSize: 'sm', color: 'gray.400', textAlign: 'center', py: 4 })}>
                 Generate a citation to see the in-text format.
               </p>
             )}

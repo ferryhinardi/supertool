@@ -424,7 +424,7 @@ export default function SignatureGeneratorPage() {
               {config.name || config.customText ? (
                 <canvas ref={canvasRef} className={css({ maxW: 'full', h: 'auto' })} />
               ) : (
-                <div className={css({ textAlign: 'center', color: 'gray.400' })}>
+                <div className={css({ textAlign: 'center', color: 'gray.600' })}>
                   <Type
                     className={css({ w: '16', h: '16', mx: 'auto', mb: '4', color: 'gray.300' })}
                   />

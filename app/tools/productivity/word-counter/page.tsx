@@ -195,7 +195,7 @@ export default function WordCounterPage() {
                 ring: '2px',
                 ringColor: 'rgba(59, 130, 246, 0.3)',
               },
-              _placeholder: { color: 'gray.500' },
+              _placeholder: { color: 'gray.400' },
             })}
           />
 
@@ -476,7 +476,7 @@ export default function WordCounterPage() {
                         className={css({
                           fontSize: 'xs',
                           fontWeight: 'bold',
-                          color: 'gray.500',
+                          color: 'gray.400',
                           minW: 6,
                         })}
                       >
@@ -513,7 +513,7 @@ export default function WordCounterPage() {
             )}
 
             {showKeywords && keywords.length === 0 && (
-              <p className={css({ fontSize: 'sm', color: 'gray.500', textAlign: 'center', py: 4 })}>
+              <p className={css({ fontSize: 'sm', color: 'gray.400', textAlign: 'center', py: 4 })}>
                 No keywords found. Try entering more text.
               </p>
             )}
@@ -603,7 +603,7 @@ function StatItem({
       <Icon className={css({ w: 5, h: 5, color: `${color}.400`, flexShrink: 0 })} />
       <div className={css({ flex: 1, minW: 0 })}>
         <div className={css({ fontSize: 'xs', color: 'gray.400', truncate: true })}>{label}</div>
-        {subtitle && <div className={css({ fontSize: '2xs', color: 'gray.600' })}>{subtitle}</div>}
+        {subtitle && <div className={css({ fontSize: '2xs', color: 'gray.400' })}>{subtitle}</div>}
       </div>
       <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'white', flexShrink: 0 })}>
         {value}

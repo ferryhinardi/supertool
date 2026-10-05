@@ -575,7 +575,7 @@ export default function PlaceholderGeneratorPage() {
                       {preset.width} × {preset.height}
                     </div>
                     {preset.description && (
-                      <div className={css({ fontSize: 'xs', color: 'gray.500', mt: '1' })}>
+                      <div className={css({ fontSize: 'xs', color: 'gray.400', mt: '1' })}>
                         {preset.description}
                       </div>
                     )}

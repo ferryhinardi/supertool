@@ -262,7 +262,7 @@ export default function WebsiteScreenshotPage() {
                         <div
                           className={css({
                             fontSize: 'xs',
-                            color: isSelected ? 'blue.400' : 'gray.500',
+                            color: isSelected ? 'blue.400' : 'gray.400',
                           })}
                         >
                           {device.width}x{device.height}
@@ -324,7 +324,7 @@ export default function WebsiteScreenshotPage() {
                     <div
                       className={css({
                         fontSize: 'xs',
-                        color: captureMode === 'viewport' ? 'blue.400' : 'gray.500',
+                        color: captureMode === 'viewport' ? 'blue.400' : 'gray.400',
                       })}
                     >
                       Capture visible area
@@ -369,7 +369,7 @@ export default function WebsiteScreenshotPage() {
                     <div
                       className={css({
                         fontSize: 'xs',
-                        color: captureMode === 'fullpage' ? 'blue.400' : 'gray.500',
+                        color: captureMode === 'fullpage' ? 'blue.400' : 'gray.400',
                       })}
                     >
                       Capture entire page

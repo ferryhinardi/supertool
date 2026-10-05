@@ -345,7 +345,7 @@ export default function LoremIpsumPage() {
             })}
           >
             {generatedText || (
-              <span className={css({ color: 'gray.500' })}>
+              <span className={css({ color: 'gray.400' })}>
                 Generated text will appear here. Click "Generate Text" to start.
               </span>
             )}
@@ -369,31 +369,31 @@ export default function LoremIpsumPage() {
                 <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'purple.400' })}>
                   {stats.characters}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Characters</div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Characters</div>
               </div>
               <div className={css({ textAlign: 'center' })}>
                 <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'pink.400' })}>
                   {stats.charactersNoSpaces}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Chars (no spaces)</div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Chars (no spaces)</div>
               </div>
               <div className={css({ textAlign: 'center' })}>
                 <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'blue.400' })}>
                   {stats.words}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Words</div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Words</div>
               </div>
               <div className={css({ textAlign: 'center' })}>
                 <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'cyan.400' })}>
                   {stats.sentences}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Sentences</div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Sentences</div>
               </div>
               <div className={css({ textAlign: 'center' })}>
                 <div className={css({ fontSize: 'lg', fontWeight: 'bold', color: 'green.400' })}>
                   {stats.paragraphs}
                 </div>
-                <div className={css({ fontSize: 'xs', color: 'gray.500' })}>Paragraphs</div>
+                <div className={css({ fontSize: 'xs', color: 'gray.400' })}>Paragraphs</div>
               </div>
             </div>
           )}

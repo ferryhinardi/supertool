@@ -392,7 +392,7 @@ export function OperationGrid({
             transform: 'translateY(-50%)',
             h: '5',
             w: '5',
-            color: 'gray.500',
+            color: 'gray.400',
             pointerEvents: 'none',
           })}
         />
@@ -420,7 +420,7 @@ export function OperationGrid({
               borderColor: 'red.500',
             },
             _placeholder: {
-              color: 'gray.500',
+              color: 'gray.400',
             },
           })}
         />
@@ -435,7 +435,7 @@ export function OperationGrid({
               transform: 'translateY(-50%)',
               p: '1',
               rounded: 'full',
-              color: 'gray.500',
+              color: 'gray.400',
               transition: 'all 0.2s',
               _hover: {
                 color: 'white',
@@ -546,14 +546,14 @@ export function OperationGrid({
                   })}
                 >
                   {category.label}
-                  <span className={css({ ml: '2', color: 'gray.500', fontWeight: 'normal' })}>
+                  <span className={css({ ml: '2', color: 'gray.400', fontWeight: 'normal' })}>
                     ({category.operations.length})
                   </span>
                 </h3>
                 {isCollapsed ? (
-                  <ChevronDown className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                  <ChevronDown className={css({ h: '5', w: '5', color: 'gray.400' })} />
                 ) : (
-                  <ChevronUp className={css({ h: '5', w: '5', color: 'gray.500' })} />
+                  <ChevronUp className={css({ h: '5', w: '5', color: 'gray.400' })} />
                 )}
               </button>
 
@@ -726,7 +726,7 @@ export function OperationGrid({
                             <p
                               className={css({
                                 fontSize: 'xs',
-                                color: isSelected ? 'currentColor/80' : 'gray.500',
+                                color: isSelected ? 'currentColor/80' : 'gray.400',
                                 lineHeight: 'tight',
                               })}
                             >
@@ -747,7 +747,7 @@ export function OperationGrid({
           className={css({
             py: '12',
             textAlign: 'center',
-            color: 'gray.500',
+            color: 'gray.400',
           })}
         >
           <p>No operations found matching &quot;{searchQuery}&quot;</p>

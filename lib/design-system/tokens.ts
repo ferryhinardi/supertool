@@ -15,7 +15,7 @@ export const palette = {
   lineSoft: '#1a1f2b',
   ink: '#f7f8fb',
   muted: '#9ea6b7',
-  dim: '#70798d',
+  dim: '#8a93a6',
   violet: '#8b6cff',
   violetBright: '#a894ff',
   violetSoft: '#211b3d',

@@ -449,7 +449,7 @@ export default function HomePage() {
                       color: 'purple.300',
                       borderColor: 'purple.500',
                     }
-                  : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+                  : { color: 'gray.400', _hover: { color: 'gray.300' } }),
               })}
             >
               <Sparkles className={css({ h: '4', w: '4' })} />
@@ -480,7 +480,7 @@ export default function HomePage() {
                       color: 'purple.300',
                       borderColor: 'purple.500',
                     }
-                  : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+                  : { color: 'gray.400', _hover: { color: 'gray.300' } }),
               })}
             >
               <Grid3x3 className={css({ h: '4', w: '4' })} />
@@ -523,7 +523,7 @@ export default function HomePage() {
                       p: '0',
                       ...(viewMode === 'grid'
                         ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
-                        : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+                        : { color: 'gray.400', _hover: { color: 'gray.300' } }),
                     })}
                   >
                     <LayoutGrid className={css({ h: '5', w: '5' })} />
@@ -546,7 +546,7 @@ export default function HomePage() {
                       p: '0',
                       ...(viewMode === 'list'
                         ? { bg: 'rgba(168, 85, 247, 0.2)', color: 'purple.300' }
-                        : { color: 'gray.500', _hover: { color: 'gray.300' } }),
+                        : { color: 'gray.400', _hover: { color: 'gray.300' } }),
                     })}
                   >
                     <LayoutList className={css({ h: '5', w: '5' })} />
@@ -605,7 +605,7 @@ export default function HomePage() {
               onClick={() => setSearchQuery('')}
               className={css({
                 fontSize: 'sm',
-                color: 'gray.500',
+                color: 'gray.400',
                 transition: 'colors 0.2s',
                 _hover: { color: 'purple.400' },
               })}
@@ -712,7 +712,7 @@ export default function HomePage() {
                         <p
                           className={css({
                             fontSize: 'sm',
-                            color: 'gray.500',
+                            color: 'gray.400',
                           })}
                         >
                           {category.description}
@@ -863,7 +863,7 @@ export default function HomePage() {
                 p: '8',
               })}
             >
-              <Search className={css({ h: '16', w: '16', color: 'gray.600' })} strokeWidth={1.5} />
+              <Search className={css({ h: '16', w: '16', color: 'gray.400' })} strokeWidth={1.5} />
             </div>
             <h3
               className={css({
@@ -881,7 +881,7 @@ export default function HomePage() {
                 maxW: 'md',
                 fontSize: 'base',
                 lineHeight: 'relaxed',
-                color: 'gray.500',
+                color: 'gray.400',
               })}
             >
               {searchQuery ? (
@@ -905,7 +905,7 @@ export default function HomePage() {
                 mb: '8',
                 maxW: 'md',
                 fontSize: 'sm',
-                color: 'gray.600',
+                color: 'gray.400',
               })}
             >
               Try adjusting your search to find what you&apos;re looking for
@@ -1363,7 +1363,7 @@ const ToolCard = memo(function ToolCard({
                   h: '6',
                   w: '6',
                   flexShrink: 0,
-                  color: 'gray.600',
+                  color: 'gray.400',
                   transition: 'all 0.3s',
                   _groupHover: {
                     transform: 'translateX(4px)',

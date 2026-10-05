@@ -87,7 +87,7 @@ export function PDFThumbnail({
         })}
         style={{ width: `${width}px`, height: `${height}px` }}
       >
-        <FileText className={css({ h: '6', w: '6', color: 'gray.600' })} />
+        <FileText className={css({ h: '6', w: '6', color: 'gray.400' })} />
       </div>
     )
   }

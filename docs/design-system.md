@@ -25,7 +25,7 @@ Import tokens from `@/lib/design-system`. Prefer Panda semantic colors (`bg: 'br
 | `brand.line` | `#222735` | Borders |
 | `brand.ink` | `#f7f8fb` | Primary text |
 | `brand.muted` | `#9ea6b7` | Secondary text |
-| `brand.dim` | `#70798d` | Meta text |
+| `brand.dim` | `#8a93a6` | Meta text (5.7:1 on canvas and surfaces) |
 | `brand.violet` | `#8b6cff` | Primary accents, rings, icons |
 | `brand.violetDeep` | `#6652ef` | Filled primary buttons and badges with white text |
 | `brand.violetBright` | `#a894ff` | Accent text |

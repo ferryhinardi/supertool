@@ -643,7 +643,7 @@ function SocialMediaResizerContent() {
                   </div>
                   <span
                     className={css({
-                      color: 'gray.500',
+                      color: 'gray.400',
                       mt: '5',
                       fontSize: 'lg',
                     })}
@@ -954,7 +954,7 @@ function SocialMediaResizerContent() {
           <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
             All processing happens in your browser. Your images are never uploaded to any server.
           </p>
-          <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+          <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
             For best results, use high-resolution source images (at least 2000px on the longest
             side).
           </p>

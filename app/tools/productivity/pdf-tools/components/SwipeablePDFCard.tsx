@@ -256,7 +256,7 @@ export function SwipeablePDFCard({
             bg: 'gray.900/80',
             backdropFilter: 'blur(2px)',
             fontSize: 'xs',
-            color: 'gray.600',
+            color: 'gray.400',
             textAlign: 'center',
             pointerEvents: 'none',
           })}

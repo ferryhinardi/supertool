@@ -218,7 +218,7 @@ export default function HashtagGeneratorPage() {
                   ring: '2px',
                   ringColor: 'rgba(236, 72, 153, 0.3)',
                 },
-                _placeholder: { color: 'gray.500' },
+                _placeholder: { color: 'gray.400' },
               })}
             />
 
@@ -254,7 +254,7 @@ export default function HashtagGeneratorPage() {
                   </option>
                 ))}
               </select>
-              <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
                 {platformConfig.description}
               </p>
             </div>
@@ -402,7 +402,7 @@ export default function HashtagGeneratorPage() {
 
               {generatedHashtags.length === 0 ? (
                 <p
-                  className={css({ fontSize: 'sm', color: 'gray.500', textAlign: 'center', py: 8 })}
+                  className={css({ fontSize: 'sm', color: 'gray.400', textAlign: 'center', py: 8 })}
                 >
                   No hashtags found. Try adjusting your content or removing category filters.
                 </p>
@@ -457,7 +457,7 @@ export default function HashtagGeneratorPage() {
                             {getPopularityLabel(hashtag.popularity)}
                           </span>
                           {hashtag.posts && (
-                            <span className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                            <span className={css({ fontSize: 'xs', color: 'gray.400' })}>
                               {hashtag.posts}
                             </span>
                           )}
@@ -585,7 +585,7 @@ export default function HashtagGeneratorPage() {
             </div>
 
             {selectedHashtagsList.length === 0 ? (
-              <p className={css({ fontSize: 'sm', color: 'gray.500', textAlign: 'center', py: 4 })}>
+              <p className={css({ fontSize: 'sm', color: 'gray.400', textAlign: 'center', py: 4 })}>
                 No hashtags selected. Generate and click on hashtags to select them.
               </p>
             ) : (
@@ -805,7 +805,7 @@ function LegendItem({
       <span className={css({ fontSize: 'sm', fontWeight: 'medium', color: 'gray.300' })}>
         {label}
       </span>
-      <span className={css({ fontSize: 'xs', color: 'gray.500', ml: 'auto' })}>{description}</span>
+      <span className={css({ fontSize: 'xs', color: 'gray.400', ml: 'auto' })}>{description}</span>
     </div>
   )
 }

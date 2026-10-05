@@ -1,18 +1,26 @@
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark'
-import type { Extension } from '@uiw/react-codemirror'
+import { EditorView, type Extension, Prec } from '@uiw/react-codemirror'
 
-const ONE_DARK_CORAL = '#e06c75'
-// One Dark coral is 4.38:1 on its #282c34 background; this tint clears WCAG AA (6.0:1).
-const ACCESSIBLE_CORAL = '#ef8f97'
+// One Dark coral (4.38:1) and stone (3.86:1, comments and gutter) fall short of WCAG AA
+// on the #282c34 background; these tints clear it (6.0:1 and 5.5:1).
+const COLOR_FIXES: Record<string, string> = {
+  '#e06c75': '#ef8f97',
+  '#7d8799': '#9aa3b2',
+}
 
 const accessibleHighlightStyle = HighlightStyle.define(
   oneDarkHighlightStyle.specs.map((spec) =>
-    spec.color === ONE_DARK_CORAL ? { ...spec, color: ACCESSIBLE_CORAL } : spec
+    spec.color && COLOR_FIXES[spec.color] ? { ...spec, color: COLOR_FIXES[spec.color] } : spec
   )
+)
+
+const accessibleGutters = Prec.highest(
+  EditorView.theme({ '.cm-gutters': { color: COLOR_FIXES['#7d8799'] } }, { dark: true })
 )
 
 export const accessibleOneDark: Extension = [
   oneDarkTheme,
+  accessibleGutters,
   syntaxHighlighting(accessibleHighlightStyle),
 ]

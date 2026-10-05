@@ -722,7 +722,7 @@ export function EmptyState({
                       <div
                         className={css({
                           fontSize: '2xs',
-                          color: 'gray.500',
+                          color: 'gray.400',
                         })}
                       >
                         {metadata.useCase}
@@ -837,7 +837,7 @@ export function EmptyState({
                       <div
                         className={css({
                           fontSize: '2xs',
-                          color: 'gray.500',
+                          color: 'gray.400',
                         })}
                       >
                         {metadata.useCase}

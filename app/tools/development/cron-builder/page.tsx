@@ -269,7 +269,7 @@ export default function CronBuilderPage() {
                       </option>
                     ))}
                   </select>
-                  <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                  <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
                     {PLATFORM_INFO[platform].description}
                   </p>
                 </div>
@@ -368,7 +368,7 @@ export default function CronBuilderPage() {
                           <div
                             className={css({
                               fontSize: 'xs',
-                              color: 'gray.500',
+                              color: 'gray.400',
                               whiteSpace: 'normal',
                               overflowWrap: 'anywhere',
                             })}

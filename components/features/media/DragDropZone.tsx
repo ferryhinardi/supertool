@@ -224,7 +224,7 @@ export function DragDropZone({
             <p
               style={{
                 fontSize: '12px',
-                color: '#6b7280',
+                color: '#9ca3af',
                 margin: 0,
               }}
             >
@@ -238,7 +238,7 @@ export function DragDropZone({
               style={{
                 paddingTop: '8px',
                 fontSize: '12px',
-                color: '#4b5563',
+                color: '#9ca3af',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '4px',

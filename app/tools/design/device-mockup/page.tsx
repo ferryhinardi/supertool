@@ -300,11 +300,11 @@ export default function DeviceMockupPage() {
               })}
               onClick={() => fileInputRef.current?.click()}
             >
-              <Upload className={css({ w: '12', h: '12', color: 'gray.500', mb: '4' })} />
+              <Upload className={css({ w: '12', h: '12', color: 'gray.400', mb: '4' })} />
               <p className={css({ fontSize: 'lg', fontWeight: 'medium', mb: '2' })}>
                 Click to upload or drag and drop
               </p>
-              <p className={css({ fontSize: 'sm', color: 'gray.500' })}>
+              <p className={css({ fontSize: 'sm', color: 'gray.400' })}>
                 PNG, JPG, WebP (Max 10MB)
               </p>
             </button>
@@ -387,7 +387,7 @@ export default function DeviceMockupPage() {
                     })}
                   />
                 ) : (
-                  <p className={css({ color: 'gray.500', textAlign: 'center' })}>
+                  <p className={css({ color: 'gray.400', textAlign: 'center' })}>
                     Select a device frame to preview your mockup
                   </p>
                 )}
@@ -477,7 +477,7 @@ export default function DeviceMockupPage() {
                         <p className={css({ fontSize: 'sm', fontWeight: 'medium' })}>
                           {device.name}
                         </p>
-                        <p className={css({ fontSize: 'xs', color: 'gray.500' })}>
+                        <p className={css({ fontSize: 'xs', color: 'gray.400' })}>
                           {device.screenWidth} × {device.screenHeight}
                         </p>
                       </div>
