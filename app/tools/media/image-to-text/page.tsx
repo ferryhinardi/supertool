@@ -351,6 +351,7 @@ export default function ImageToTextPage() {
             {extractedText && (
               <div className={css({ display: 'flex', gap: '2' })}>
                 <Button
+                  aria-label="Copy extracted text"
                   onClick={copyToClipboard}
                   variant="outline"
                   size="sm"
@@ -370,6 +371,7 @@ export default function ImageToTextPage() {
                 </Button>
 
                 <Button
+                  aria-label="Download text"
                   onClick={downloadText}
                   variant="outline"
                   size="sm"
@@ -385,6 +387,7 @@ export default function ImageToTextPage() {
                 </Button>
 
                 <Button
+                  aria-label="Clear"
                   onClick={clearAll}
                   variant="outline"
                   size="sm"

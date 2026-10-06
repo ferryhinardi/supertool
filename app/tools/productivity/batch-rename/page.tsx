@@ -916,6 +916,7 @@ export default function BatchRenamePage() {
                         </td>
                         <td className={css({ px: '4', py: '3', textAlign: 'center' })}>
                           <Button
+                            aria-label="Remove file"
                             onClick={() => handleRemoveFile(fileItem.id)}
                             size="sm"
                             className={css({

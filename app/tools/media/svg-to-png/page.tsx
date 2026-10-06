@@ -457,6 +457,9 @@ export default function SvgToPngConverter() {
                 <div className={css({ display: 'flex', gap: '3', flexWrap: 'wrap' })}>
                   {['transparent', '#FFFFFF', '#000000', '#F3F4F6'].map((color) => (
                     <button
+                      aria-label={
+                        color === 'transparent' ? 'Transparent background' : `Background ${color}`
+                      }
                       key={color}
                       type="button"
                       onClick={() => setSettings({ ...settings, backgroundColor: color })}

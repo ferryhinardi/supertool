@@ -379,6 +379,7 @@ function CopilotPageContent() {
 
             <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
               <Button
+                aria-label="Toggle conversation sidebar"
                 variant="outline"
                 size="sm"
                 onClick={toggleSidebar}

@@ -122,6 +122,7 @@ export function TemplatesSelector({ onSelectTemplate }: TemplatesSelectorProps) 
             </h2>
           </div>
           <Button
+            aria-label="Close templates"
             variant="ghost"
             size="sm"
             onClick={() => setIsOpen(false)}
@@ -223,6 +224,7 @@ export function TemplatesSelector({ onSelectTemplate }: TemplatesSelectorProps) 
                         Load
                       </Button>
                       <Button
+                        aria-label="Delete template"
                         onClick={() => handleDelete(template.id, template.name)}
                         size="sm"
                         variant="ghost"

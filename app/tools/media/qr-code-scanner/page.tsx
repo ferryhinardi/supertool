@@ -578,6 +578,7 @@ export default function QRCodeScannerPage() {
                       )}
                     </Button>
                     <Button
+                      aria-label="Delete scanned code"
                       size="sm"
                       variant="ghost"
                       onClick={() => deleteCode(code.id)}

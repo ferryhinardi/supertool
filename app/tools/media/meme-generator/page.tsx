@@ -500,7 +500,7 @@ export default function MemeGeneratorPage() {
                       <Sparkles className={css({ w: '4', h: '4', mr: '2' })} />
                       {isGenerating ? 'Generating...' : 'Generate Meme'}
                     </Button>
-                    <Button variant="outline" onClick={handleReset}>
+                    <Button aria-label="Reset" variant="outline" onClick={handleReset}>
                       <X className={css({ w: '4', h: '4' })} />
                     </Button>
                   </div>

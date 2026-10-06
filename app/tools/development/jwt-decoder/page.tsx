@@ -409,6 +409,7 @@ function JWTDecoderContent() {
                     <CardTitle className={css({ fontSize: 'lg' })}>Header</CardTitle>
                   </div>
                   <Button
+                    aria-label="Copy header"
                     onClick={() => handleCopy(JSON.stringify(decodedJWT.header, null, 2), 'Header')}
                     variant="ghost"
                     size="sm"
@@ -464,6 +465,7 @@ function JWTDecoderContent() {
                     <CardTitle className={css({ fontSize: 'lg' })}>Payload</CardTitle>
                   </div>
                   <Button
+                    aria-label="Copy payload"
                     onClick={() =>
                       handleCopy(JSON.stringify(decodedJWT.payload, null, 2), 'Payload')
                     }
@@ -629,6 +631,7 @@ function JWTDecoderContent() {
                   </div>
                   <div className={css({ display: 'flex', gap: '2' })}>
                     <Button
+                      aria-label={showSignature ? 'Hide signature' : 'Show signature'}
                       onClick={() => setShowSignature(!showSignature)}
                       variant="ghost"
                       size="sm"
@@ -640,6 +643,7 @@ function JWTDecoderContent() {
                       )}
                     </Button>
                     <Button
+                      aria-label="Copy signature"
                       onClick={() => handleCopy(decodedJWT.signature, 'Signature')}
                       variant="ghost"
                       size="sm"

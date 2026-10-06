@@ -667,6 +667,7 @@ function TaskTimerContent() {
                       </div>
                       <div className={css({ display: 'flex', gap: '2' })}>
                         <Button
+                          aria-label={timer.isRunning ? 'Pause timer' : 'Start timer'}
                           onClick={() => handleToggleTimer(timer.id)}
                           size="sm"
                           className={css({
@@ -686,6 +687,7 @@ function TaskTimerContent() {
                           )}
                         </Button>
                         <Button
+                          aria-label="Reset timer"
                           onClick={() => handleResetTimer(timer.id)}
                           size="sm"
                           className={css({
@@ -697,6 +699,7 @@ function TaskTimerContent() {
                           <RotateCcw className={css({ h: '4', w: '4' })} />
                         </Button>
                         <Button
+                          aria-label="Remove timer"
                           onClick={() => handleRemoveTimer(timer.id)}
                           size="sm"
                           className={css({
@@ -830,6 +833,7 @@ function TaskTimerContent() {
                           JSON
                         </Button>
                         <Button
+                          aria-label="Delete session"
                           onClick={() => handleDeleteSession(session.id)}
                           size="sm"
                           className={css({

@@ -298,6 +298,7 @@ export default function BillHistoryPage() {
             <option value="title">Title</option>
           </select>
           <Button
+            aria-label={sortOrder === 'asc' ? 'Sort descending' : 'Sort ascending'}
             size="sm"
             variant="outline"
             onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
@@ -531,6 +532,7 @@ export default function BillHistoryPage() {
                       </Button>
                     </Link>
                     <Button
+                      aria-label="Copy bill link"
                       size="sm"
                       variant="outline"
                       onClick={async () => {

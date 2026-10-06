@@ -936,6 +936,7 @@ function SocialMediaResizerContent() {
                 Download
               </Button>
               <Button
+                aria-label="Close image preview"
                 onClick={() => setActivePreview(null)}
                 variant="outline"
                 size="sm"

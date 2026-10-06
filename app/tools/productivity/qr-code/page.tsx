@@ -2393,7 +2393,13 @@ url,https://github.com,GitHub,#000000`
                     <span className="flex-1 text-sm text-gray-200 truncate">
                       {logoFile?.name || 'Logo uploaded'}
                     </span>
-                    <Button onClick={removeLogo} size="sm" variant="ghost" className="h-8 w-8 p-0">
+                    <Button
+                      aria-label="Remove logo"
+                      onClick={removeLogo}
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
@@ -3841,6 +3847,7 @@ url,https://github.com,GitHub,#000000`
                                 Load
                               </Button>
                               <Button
+                                aria-label="Delete from history"
                                 onClick={() => handleDeleteFromHistory(item.id)}
                                 size="sm"
                                 variant="ghost"

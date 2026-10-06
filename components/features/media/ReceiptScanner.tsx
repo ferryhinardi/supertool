@@ -479,6 +479,7 @@ export function ReceiptScanner({ onDataExtracted }: ReceiptScannerProps) {
             />
             {!isProcessing && (
               <button
+                aria-label="Clear image"
                 type="button"
                 onClick={clearPreview}
                 className={css({

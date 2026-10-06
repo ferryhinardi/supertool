@@ -37,14 +37,15 @@ async function assertInteractiveSurface(page: Page) {
     const controls = surface.locator(
       'button, textarea, input, select, [role="button"], [contenteditable="true"]'
     )
-    expect(await controls.count()).toBeGreaterThan(0)
+    // Auth-gated tools render a loading state before their controls appear.
+    await expect.poll(() => controls.count()).toBeGreaterThan(0)
     return
   }
 
   const homeControls = page.locator(
     'a[href^="/tools/"]:visible, button:visible, input:visible, textarea:visible'
   )
-  expect(await homeControls.count()).toBeGreaterThan(0)
+  await expect.poll(() => homeControls.count()).toBeGreaterThan(0)
 }
 
 export async function defaultToolFunctionalFlow(page: Page, target: SidebarAuditTarget) {

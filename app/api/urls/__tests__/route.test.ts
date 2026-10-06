@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock Supabase client
 const mockSelect = vi.fn()
+const mockIn = vi.fn()
 const mockOrder = vi.fn()
 const mockLimit = vi.fn()
 const mockFrom = vi.fn()
@@ -15,15 +16,20 @@ vi.mock('@/lib/auth/supabaseClient', () => ({
         select: (columns: string) => {
           mockSelect(columns)
           return {
-            order: (column: string, options: { ascending: boolean }) => {
-              mockOrder(column, options)
+            in: (column: string, values: string[]) => {
+              mockIn(column, values)
               return {
-                limit: (count: number) => {
-                  mockLimit(count)
-                  return Promise.resolve({
-                    data: mockData,
-                    error: mockError,
-                  })
+                order: (column: string, options: { ascending: boolean }) => {
+                  mockOrder(column, options)
+                  return {
+                    limit: (count: number) => {
+                      mockLimit(count)
+                      return Promise.resolve({
+                        data: mockData,
+                        error: mockError,
+                      })
+                    },
+                  }
                 },
               }
             },
@@ -47,11 +53,41 @@ describe('URLs API Route', () => {
     mockError = null
   })
 
-  function createRequest(): NextRequest {
-    return new NextRequest('http://localhost:3000/api/urls', {
+  function createRequest(codes = 'abc123,def456'): NextRequest {
+    const query = codes ? `?codes=${encodeURIComponent(codes)}` : ''
+    return new NextRequest(`http://localhost:3000/api/urls${query}`, {
       method: 'GET',
     })
   }
+
+  describe('Scoping', () => {
+    it('returns an empty list without querying when no codes are given', async () => {
+      mockData = [{ short_code: 'other1', original_url: 'https://example.com' }]
+
+      const response = await GET(createRequest(''))
+      const data = await response.json()
+
+      expect(response.status).toBe(200)
+      expect(data).toEqual({ urls: [], count: 0 })
+      expect(mockFrom).not.toHaveBeenCalled()
+    })
+
+    it('only queries valid, unique requested codes', async () => {
+      mockData = []
+
+      await GET(createRequest('abc123,abc123,bad code,x,def-456'))
+
+      expect(mockIn).toHaveBeenCalledWith('short_code', ['abc123', 'def-456'])
+    })
+
+    it('returns an empty list when every code is invalid', async () => {
+      const response = await GET(createRequest('a,b c'))
+      const data = await response.json()
+
+      expect(data.urls).toEqual([])
+      expect(mockFrom).not.toHaveBeenCalled()
+    })
+  })
 
   describe('Successful Fetch', () => {
     it('should return formatted URL list', async () => {
@@ -175,6 +211,7 @@ describe('URLs API Route', () => {
 
       expect(mockFrom).toHaveBeenCalledWith('url_statistics')
       expect(mockSelect).toHaveBeenCalledWith('*')
+      expect(mockIn).toHaveBeenCalledWith('short_code', ['abc123', 'def456'])
       expect(mockOrder).toHaveBeenCalledWith('created_at', { ascending: false })
       expect(mockLimit).toHaveBeenCalledWith(100)
     })

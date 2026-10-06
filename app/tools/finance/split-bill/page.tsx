@@ -2026,6 +2026,7 @@ export default function SplitBillPage() {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <button
+                                  aria-label="Duplicate item"
                                   type="button"
                                   onClick={() => handleDuplicateItem(item.id)}
                                   className={css({
@@ -2039,6 +2040,7 @@ export default function SplitBillPage() {
                               <TooltipContent>Duplicate item</TooltipContent>
                             </Tooltip>
                             <button
+                              aria-label="Remove item"
                               type="button"
                               onClick={() => removeItem(item.id)}
                               className={css({

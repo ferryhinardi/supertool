@@ -81,6 +81,7 @@ export function ComparisonView({
               Before & After Comparison
             </CardTitle>
             <button
+              aria-label="Close comparison"
               type="button"
               onClick={onClose}
               className={css({

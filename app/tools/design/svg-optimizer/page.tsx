@@ -519,10 +519,20 @@ function SVGOptimizerContent() {
                   <CardTitle className={css({ fontSize: 'lg' })}>Optimized SVG</CardTitle>
                 </div>
                 <div className={css({ display: 'flex', gap: '2' })}>
-                  <Button onClick={handleCopy} variant="ghost" size="sm">
+                  <Button
+                    aria-label="Copy optimized SVG"
+                    onClick={handleCopy}
+                    variant="ghost"
+                    size="sm"
+                  >
                     <Copy className={css({ h: '4', w: '4' })} />
                   </Button>
-                  <Button onClick={handleDownload} variant="ghost" size="sm">
+                  <Button
+                    aria-label="Download optimized SVG"
+                    onClick={handleDownload}
+                    variant="ghost"
+                    size="sm"
+                  >
                     <Download className={css({ h: '4', w: '4' })} />
                   </Button>
                 </div>

@@ -241,6 +241,7 @@ export function OperationProgress({
         <div className={css({ display: 'flex', gap: 2, flexShrink: 0 })}>
           {pdf.status === 'completed' && pdf.processedBlob && (
             <Button
+              aria-label="Download PDF"
               onClick={() => onDownload(pdf)}
               size="sm"
               variant="outline"
@@ -262,6 +263,7 @@ export function OperationProgress({
 
           {pdf.status === 'error' && (
             <Button
+              aria-label="Retry"
               onClick={() => onRetry(pdf)}
               size="sm"
               variant="outline"
@@ -283,6 +285,7 @@ export function OperationProgress({
 
           {(pdf.status === 'pending' || pdf.status === 'error') && (
             <Button
+              aria-label="Remove PDF"
               onClick={() => onRemove(pdf)}
               size="sm"
               variant="outline"
@@ -304,6 +307,7 @@ export function OperationProgress({
 
           {pdf.status === 'completed' && (
             <Button
+              aria-label="Remove PDF"
               onClick={() => onRemove(pdf)}
               size="sm"
               variant="outline"

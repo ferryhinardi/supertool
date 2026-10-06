@@ -1618,6 +1618,7 @@ export default function VideoSubtitleCombinerPage() {
                         Download
                       </Button>
                       <Button
+                        aria-label="Remove file"
                         onClick={() => handleRemove(file.id)}
                         variant="outline"
                         className={css({ gap: '2' })}

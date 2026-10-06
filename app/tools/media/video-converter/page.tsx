@@ -1188,6 +1188,7 @@ export default function VideoConverterPage() {
                                 <div className={css({ display: 'flex', gap: '1' })}>
                                   {video.status === 'completed' && (
                                     <Button
+                                      aria-label="Download video"
                                       size="sm"
                                       variant="ghost"
                                       onClick={() => handleDownload(video)}
@@ -1203,6 +1204,7 @@ export default function VideoConverterPage() {
                                     </Button>
                                   )}
                                   <Button
+                                    aria-label="Remove video"
                                     size="sm"
                                     variant="ghost"
                                     onClick={() => handleRemove(video.id)}

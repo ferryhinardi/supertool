@@ -4899,6 +4899,7 @@ export default function PDFToolsPage() {
                               </div>
                             </div>
                             <Button
+                              aria-label="Remove bookmark"
                               onClick={() => {
                                 const newBookmarks = bookmarks.filter((_, i) => i !== index)
                                 setBookmarks(newBookmarks)

@@ -253,6 +253,62 @@ describe('URL Shortener Page', () => {
     })
   })
 
+  describe('Saved links', () => {
+    it('does not request any links when this browser has none saved', () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch')
+      render(<URLShortenerPage />)
+
+      expect(fetchSpy).not.toHaveBeenCalled()
+      fetchSpy.mockRestore()
+    })
+
+    it('loads stats only for codes saved in this browser', async () => {
+      localStorage.setItem('url_shortener_codes', JSON.stringify(['mine01', 'mine02']))
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+        Response.json({
+          urls: [
+            {
+              shortCode: 'mine01',
+              originalUrl: 'https://example.com/one',
+              createdAt: '2026-01-01T00:00:00Z',
+              isActive: true,
+              totalClicks: 3,
+            },
+          ],
+        })
+      )
+
+      render(<URLShortenerPage />)
+
+      await waitFor(() => expect(screen.getByText('https://example.com/one')).toBeInTheDocument())
+      expect(fetchSpy).toHaveBeenCalledWith('/api/urls?codes=mine01%2Cmine02')
+      fetchSpy.mockRestore()
+    })
+
+    it('saves new links and forgets deleted ones', async () => {
+      const user = userEvent.setup()
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValue(
+          Response.json({ id: '1', shortCode: 'new001', shortUrl: 'http://localhost/s/new001' })
+        )
+      render(<URLShortenerPage />)
+
+      fireEvent.change(screen.getByLabelText('Enter URL to shorten'), {
+        target: { value: 'https://example.com/new' },
+      })
+      await user.click(screen.getByRole('button', { name: /Shorten URL/ }))
+
+      await waitFor(() =>
+        expect(JSON.parse(localStorage.getItem('url_shortener_codes') ?? '[]')).toEqual(['new001'])
+      )
+
+      await user.click(screen.getByRole('button', { name: 'Delete shortened URL' }))
+      expect(JSON.parse(localStorage.getItem('url_shortener_codes') ?? '[]')).toEqual([])
+      fetchSpy.mockRestore()
+    })
+  })
+
   describe('History', () => {
     it('displays URL history', () => {
       render(<URLShortenerPage />)

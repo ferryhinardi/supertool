@@ -437,7 +437,7 @@ export function PDFEditor({ pdfFile, onSave, onClose }: PDFEditorProps) {
               <Download className={css({ h: 4, w: 4, mr: 2 })} />
               {isSaving ? 'Saving...' : 'Save'}
             </Button>
-            <Button onClick={onClose} variant="outline">
+            <Button aria-label="Close editor" onClick={onClose} variant="outline">
               <X className={css({ h: 4, w: 4 })} />
             </Button>
           </div>
@@ -495,6 +495,7 @@ export function PDFEditor({ pdfFile, onSave, onClose }: PDFEditorProps) {
           {/* Page Navigation */}
           <div className={css({ display: 'flex', gap: 2, alignItems: 'center' })}>
             <Button
+              aria-label="Previous page"
               onClick={handlePrevPage}
               disabled={currentPage === 1}
               variant="outline"
@@ -506,6 +507,7 @@ export function PDFEditor({ pdfFile, onSave, onClose }: PDFEditorProps) {
               Page {currentPage} of {totalPages}
             </span>
             <Button
+              aria-label="Next page"
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
               variant="outline"
@@ -517,11 +519,23 @@ export function PDFEditor({ pdfFile, onSave, onClose }: PDFEditorProps) {
 
           {/* Zoom Controls */}
           <div className={css({ display: 'flex', gap: 2, alignItems: 'center' })}>
-            <Button onClick={handleZoomOut} disabled={zoom <= 0.5} variant="outline" size="sm">
+            <Button
+              aria-label="Zoom out"
+              onClick={handleZoomOut}
+              disabled={zoom <= 0.5}
+              variant="outline"
+              size="sm"
+            >
               <ZoomOut className={css({ h: 4, w: 4 })} />
             </Button>
             <span className={css({ fontSize: 'sm', minW: '16' })}>{Math.round(zoom * 100)}%</span>
-            <Button onClick={handleZoomIn} disabled={zoom >= 3.0} variant="outline" size="sm">
+            <Button
+              aria-label="Zoom in"
+              onClick={handleZoomIn}
+              disabled={zoom >= 3.0}
+              variant="outline"
+              size="sm"
+            >
               <ZoomIn className={css({ h: 4, w: 4 })} />
             </Button>
           </div>

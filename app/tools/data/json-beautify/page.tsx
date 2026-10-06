@@ -2158,6 +2158,9 @@ function JSONBeautifyContent() {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
+                                aria-label={
+                                  item.isFavorite ? 'Remove from favorites' : 'Add to favorites'
+                                }
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => {
@@ -2213,6 +2216,7 @@ function JSONBeautifyContent() {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
+                                aria-label="Delete history item"
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => {

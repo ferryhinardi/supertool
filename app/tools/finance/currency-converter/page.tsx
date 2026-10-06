@@ -601,6 +601,7 @@ function CurrencyConverterContent() {
                         </span>
                       </button>
                       <Button
+                        aria-label="Remove favorite"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleRemoveFavorite(favorite.id)
