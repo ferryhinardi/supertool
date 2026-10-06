@@ -173,6 +173,8 @@ export function Sidebar() {
           },
         })}
         aria-label="Toggle menu"
+        aria-expanded={mobileMenuOpen}
+        aria-controls="app-sidebar"
       >
         {mobileMenuOpen ? (
           <X className={css({ h: '6', w: '6' })} />
@@ -202,6 +204,7 @@ export function Sidebar() {
 
       {/* Desktop Sidebar */}
       <aside
+        id="app-sidebar"
         className={css({
           position: { base: 'fixed', md: 'sticky' },
           top: { base: '0', md: '0' },

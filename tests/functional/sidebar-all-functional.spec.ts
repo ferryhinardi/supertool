@@ -41,7 +41,12 @@ test('all active routes functional audit', async ({ page }) => {
 
 test('mobile sidebar navigation smoke', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' })
-  await page.getByRole('button', { name: 'Toggle menu' }).click()
+  const menuToggle = page.getByRole('button', { name: 'Toggle menu' })
+  // A tap before hydration is a no-op, so retry until the drawer reports open.
+  await expect(async () => {
+    if ((await menuToggle.getAttribute('aria-expanded')) !== 'true') await menuToggle.click()
+    await expect(menuToggle).toHaveAttribute('aria-expanded', 'true', { timeout: 1_000 })
+  }).toPass()
   await expect(page.getByRole('link', { name: 'Home' }).first()).toBeVisible()
   await expect(page.getByRole('link', { name: 'Support Us' }).first()).toBeVisible()
 
