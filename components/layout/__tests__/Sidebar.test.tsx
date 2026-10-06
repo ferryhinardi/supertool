@@ -52,7 +52,12 @@ describe('Sidebar', () => {
     render(<Sidebar />)
 
     const menuButton = screen.getByLabelText('Toggle menu')
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+    expect(menuButton).toHaveAttribute('aria-controls', 'app-sidebar')
+    expect(document.getElementById('app-sidebar')?.tagName).toBe('ASIDE')
+
     await user.click(menuButton)
+    expect(menuButton).toHaveAttribute('aria-expanded', 'true')
 
     // Check for close menu button/overlay
     const closeButton = screen.getByLabelText('Close menu')
