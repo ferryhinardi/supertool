@@ -28,6 +28,11 @@ import { SocialShare } from '@/components/ui/social-share'
 import { ToolRating } from '@/components/ui/tool-rating'
 import { ToolSearch } from '@/components/ui/tool-search'
 import { useKeyboardShortcuts } from '@/hooks/common/useKeyboardShortcuts'
+import {
+  forgetShortLink,
+  readShortLinkHistory,
+  rememberShortLink,
+} from '@/lib/utils/short-link-history'
 import { css } from '@/styled-system/css'
 
 interface ShortenedUrl {
@@ -50,11 +55,14 @@ export default function URLShortenerPage() {
   const [selectedUrl, setSelectedUrl] = useState<ShortenedUrl | null>(null)
   const [showQR, setShowQR] = useState<string | null>(null)
 
-  // Load shortened URLs from Supabase on mount
+  // Load stats for the links this browser created
   useEffect(() => {
     const fetchUrls = async () => {
+      const codes = readShortLinkHistory()
+      if (codes.length === 0) return
+
       try {
-        const response = await fetch('/api/urls')
+        const response = await fetch(`/api/urls?codes=${encodeURIComponent(codes.join(','))}`)
         if (response.ok) {
           const data = await response.json()
           interface UrlResponse {
@@ -132,6 +140,7 @@ export default function URLShortenerPage() {
         uniqueVisitors: 0,
       }
 
+      rememberShortLink(newUrl.shortCode)
       setShortenedUrls((prev) => [newUrl, ...prev])
       setSelectedUrl(newUrl)
       setUrl('')
@@ -177,7 +186,7 @@ export default function URLShortenerPage() {
   }
 
   const handleDelete = async (shortCode: string) => {
-    // Remove from local state immediately for better UX
+    forgetShortLink(shortCode)
     setShortenedUrls((prev) => prev.filter((u) => u.shortCode !== shortCode))
     if (selectedUrl?.shortCode === shortCode) {
       setSelectedUrl(null)
@@ -907,9 +916,9 @@ export default function URLShortenerPage() {
               Cloud Storage Enabled
             </p>
             <p className={css({ fontSize: 'xs', color: 'white' })}>
-              Your URLs are stored in Supabase with real-time analytics tracking. All shortened
-              links are persistent and accessible across devices. Click tracking is enabled
-              automatically.
+              Your URLs are stored in Supabase with real-time analytics tracking, so short links
+              work on any device. Click tracking is enabled automatically. The list only shows links
+              created in this browser.
             </p>
           </div>
         </div>
