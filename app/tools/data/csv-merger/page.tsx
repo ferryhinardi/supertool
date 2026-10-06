@@ -671,6 +671,7 @@ export default function CSVMergerPage() {
                   </div>
                   {mode === 'merge' && (
                     <Button
+                      aria-label="Remove file"
                       onClick={() => handleRemoveFile(index)}
                       size="sm"
                       className={css({

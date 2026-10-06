@@ -141,6 +141,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
                   <span className={css({ fontWeight: 'medium' })}>Experience #{expIndex + 1}</span>
                 </div>
                 <Button
+                  aria-label="Remove experience"
                   onClick={() => handleRemove(experience.id)}
                   size="sm"
                   variant="ghost"
@@ -386,6 +387,7 @@ export function ExperienceForm({ data, onChange }: ExperienceFormProps) {
                           </div>
                           {experience.achievements.length > 1 && (
                             <Button
+                              aria-label="Remove achievement"
                               onClick={() => handleRemoveAchievement(experience.id, achIndex)}
                               size="sm"
                               variant="ghost"

@@ -170,6 +170,7 @@ ${result.pageAnalysis ? `DOCUMENT ANALYSIS\n-----------------\n${result.pageAnal
             </div>
           </div>
           <Button
+            aria-label="Close"
             onClick={onClose}
             className={css({
               w: 8,

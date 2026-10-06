@@ -614,7 +614,12 @@ function DockerfileFormatterContent() {
                   <CheckCircle2 className={css({ h: '5', w: '5', color: 'green.400' })} />
                   <CardTitle className={css({ fontSize: 'lg' })}>Formatted Dockerfile</CardTitle>
                 </div>
-                <Button onClick={handleCopy} variant="ghost" size="sm">
+                <Button
+                  aria-label="Copy formatted Dockerfile"
+                  onClick={handleCopy}
+                  variant="ghost"
+                  size="sm"
+                >
                   <Copy className={css({ h: '4', w: '4' })} />
                 </Button>
               </div>

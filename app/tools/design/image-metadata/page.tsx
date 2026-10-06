@@ -369,6 +369,7 @@ function ImageMetadataContent() {
                   )}
                 </div>
                 <Button
+                  aria-label="Copy value"
                   onClick={() => handleCopy(entry.value)}
                   size="sm"
                   className={css({

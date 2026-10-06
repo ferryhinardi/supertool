@@ -380,6 +380,7 @@ export default function ClipboardHistoryPage() {
 
                 {searchQuery && (
                   <button
+                    aria-label="Clear search"
                     type="button"
                     onClick={() => setSearchQuery('')}
                     className={css({

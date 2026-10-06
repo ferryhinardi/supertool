@@ -74,6 +74,7 @@ export function PDFMetadataEditor({ metadata, onSave, onClose }: PDFMetadataEdit
               Edit PDF Metadata
             </CardTitle>
             <Button
+              aria-label="Close"
               size="sm"
               variant="ghost"
               onClick={onClose}

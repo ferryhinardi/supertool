@@ -479,6 +479,7 @@ function JWTDebuggerContent() {
                 <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   Header
                   <Button
+                    aria-label="Copy header"
                     onClick={() =>
                       handleCopy(JSON.stringify(decodedToken.header, null, 2), 'Header')
                     }
@@ -514,6 +515,7 @@ function JWTDebuggerContent() {
                 <CardTitle className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
                   Payload
                   <Button
+                    aria-label="Copy payload"
                     onClick={() =>
                       handleCopy(JSON.stringify(decodedToken.payload, null, 2), 'Payload')
                     }
@@ -580,7 +582,12 @@ function JWTDebuggerContent() {
               >
                 <CardTitle>History</CardTitle>
                 {history.items.length > 0 && (
-                  <Button onClick={clearAllHistory} variant="ghost" size="sm">
+                  <Button
+                    aria-label="Clear history"
+                    onClick={clearAllHistory}
+                    variant="ghost"
+                    size="sm"
+                  >
                     <Trash2 className={css({ h: '4', w: '4' })} />
                   </Button>
                 )}
@@ -687,7 +694,14 @@ function JWTDebuggerContent() {
                         </p>
                       </div>
                       <div className={css({ display: 'flex', gap: '1' })}>
-                        <Button onClick={() => toggleFavorite(item.id)} variant="ghost" size="sm">
+                        <Button
+                          aria-label={
+                            item.isFavorite ? 'Remove from favorites' : 'Add to favorites'
+                          }
+                          onClick={() => toggleFavorite(item.id)}
+                          variant="ghost"
+                          size="sm"
+                        >
                           <Heart
                             className={css({
                               h: '3',
@@ -698,6 +712,7 @@ function JWTDebuggerContent() {
                           />
                         </Button>
                         <Button
+                          aria-label="Delete history item"
                           onClick={() => deleteHistoryItem(item.id)}
                           variant="ghost"
                           size="sm"

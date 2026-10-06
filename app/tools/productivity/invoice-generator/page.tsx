@@ -949,6 +949,7 @@ export default function InvoiceGeneratorPage() {
                       </span>
                       {invoice.lineItems.length > 1 && (
                         <Button
+                          aria-label="Remove line item"
                           onClick={() => handleRemoveLineItem(item.id)}
                           size="sm"
                           className={css({
@@ -1369,6 +1370,7 @@ export default function InvoiceGeneratorPage() {
                         </div>
                       </button>
                       <Button
+                        aria-label="Delete saved invoice"
                         onClick={() => handleDeleteInvoice(savedInvoice.id)}
                         size="sm"
                         className={css({

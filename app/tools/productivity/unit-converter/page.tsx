@@ -1591,6 +1591,7 @@ function UnitConverterContent() {
 
                             {!isFirst && (
                               <Button
+                                aria-label="Remove step"
                                 onClick={() => handleRemoveChainStep(step.id)}
                                 size="sm"
                                 className={css({
@@ -1995,6 +1996,7 @@ function UnitConverterContent() {
                             </p>
                           </button>
                           <Button
+                            aria-label="Delete saved chain"
                             onClick={(e) => {
                               e.stopPropagation()
                               handleDeleteSavedChain(chain.id)
@@ -2116,6 +2118,7 @@ function UnitConverterContent() {
                         </span>
                       </button>
                       <Button
+                        aria-label="Remove favorite"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleRemoveFavorite(favorite.id)

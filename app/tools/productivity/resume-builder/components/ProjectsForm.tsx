@@ -187,6 +187,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
                 )}
               </div>
               <Button
+                aria-label="Remove project"
                 onClick={() => handleRemove(project.id)}
                 size="sm"
                 variant="ghost"
@@ -439,6 +440,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
                       })}
                     />
                     <Button
+                      aria-label="Remove technology"
                       onClick={() => handleRemoveTechnology(project.id, techIndex)}
                       size="sm"
                       variant="ghost"
@@ -504,6 +506,7 @@ export function ProjectsForm({ data, onChange }: ProjectsFormProps) {
                       })}
                     />
                     <Button
+                      aria-label="Remove highlight"
                       onClick={() => handleRemoveHighlight(project.id, highlightIndex)}
                       size="sm"
                       variant="ghost"

@@ -924,7 +924,12 @@ function PasswordGeneratorContent() {
                 Generate {bulkCount}
               </Button>
               {bulkPasswords.length > 0 && (
-                <Button onClick={handleDownloadBulk} variant="outline" className={css({ h: '12' })}>
+                <Button
+                  aria-label="Download passwords"
+                  onClick={handleDownloadBulk}
+                  variant="outline"
+                  className={css({ h: '12' })}
+                >
                   <Download className={css({ h: '5', w: '5' })} />
                 </Button>
               )}
@@ -996,6 +1001,7 @@ function PasswordGeneratorContent() {
                           {pwd}
                         </span>
                         <Button
+                          aria-label="Copy password"
                           onClick={() => handleCopy(pwd)}
                           variant="ghost"
                           className={css({
@@ -1098,6 +1104,7 @@ function PasswordGeneratorContent() {
                   })}
                 >
                   <button
+                    aria-label={entry.favorite ? 'Remove from favorites' : 'Add to favorites'}
                     type="button"
                     onClick={() => handleFavorite(entry.password)}
                     className={css({
@@ -1148,6 +1155,7 @@ function PasswordGeneratorContent() {
                     </div>
                   </div>
                   <Button
+                    aria-label="Copy password"
                     onClick={() => handleCopy(entry.password)}
                     variant="ghost"
                     className={css({
@@ -1159,6 +1167,7 @@ function PasswordGeneratorContent() {
                     <Copy className={css({ h: '4', w: '4' })} />
                   </Button>
                   <Button
+                    aria-label="Delete from history"
                     onClick={() => handleDeleteHistory(entry.password)}
                     variant="ghost"
                     className={css({

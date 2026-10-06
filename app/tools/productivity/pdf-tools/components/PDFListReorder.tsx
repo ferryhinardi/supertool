@@ -84,6 +84,7 @@ function SortablePDFItem({ pdf, onRemove }: { pdf: PDFFile; onRemove: (id: strin
       </div>
 
       <Button
+        aria-label="Remove PDF"
         size="sm"
         variant="ghost"
         onClick={() => onRemove(pdf.id)}

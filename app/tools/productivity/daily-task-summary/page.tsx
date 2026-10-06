@@ -484,6 +484,7 @@ export default function DailyTaskSummary() {
                             </div>
                           </div>
                           <Button
+                            aria-label="Delete task"
                             onClick={() => deleteTask(task.id)}
                             className={css({
                               padding: '0.5rem',

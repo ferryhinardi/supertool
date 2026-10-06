@@ -67,6 +67,7 @@ export function PDFMetadataEditor({ initialMetadata, onSave, onClose }: PDFMetad
           >
             <CardTitle className={css({ color: 'red.400' })}>Edit PDF Metadata</CardTitle>
             <button
+              aria-label="Close"
               type="button"
               onClick={onClose}
               className={css({

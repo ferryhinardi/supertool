@@ -515,6 +515,7 @@ query GetFilm {
                           </p>
                         </div>
                         <Button
+                          aria-label={item.favorite ? 'Remove from favorites' : 'Add to favorites'}
                           variant="ghost"
                           size="sm"
                           onClick={(e) => {

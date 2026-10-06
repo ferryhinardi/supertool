@@ -979,6 +979,7 @@ export default function WebhookTesterPage() {
                 </p>
               </div>
               <button
+                aria-label="Close request details"
                 type="button"
                 onClick={() => setSelectedRequest(null)}
                 className={css({

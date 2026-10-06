@@ -303,6 +303,7 @@ export default function CitationGeneratorPage() {
                     })}
                   />
                   <button
+                    aria-label="Remove author"
                     type="button"
                     onClick={() => handleRemoveAuthor(index)}
                     className={css({
@@ -421,6 +422,7 @@ export default function CitationGeneratorPage() {
                     })}
                   />
                   <button
+                    aria-label="Remove editor"
                     type="button"
                     onClick={() => handleRemoveEditor(index)}
                     className={css({

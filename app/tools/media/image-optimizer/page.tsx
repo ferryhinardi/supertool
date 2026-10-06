@@ -1033,6 +1033,7 @@ export default function ImageOptimizerPage() {
                                   )}
                                   {image.status === 'completed' && (
                                     <Button
+                                      aria-label="Download image"
                                       size="sm"
                                       variant="ghost"
                                       onClick={() => handleDownload(image)}
@@ -1050,6 +1051,7 @@ export default function ImageOptimizerPage() {
                                     </Button>
                                   )}
                                   <Button
+                                    aria-label="Remove image"
                                     size="sm"
                                     variant="ghost"
                                     onClick={() => handleRemove(image.id)}

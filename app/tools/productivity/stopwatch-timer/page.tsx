@@ -1029,6 +1029,7 @@ function StopwatchTimerContent() {
                           </div>
                         </button>
                         <Button
+                          aria-label="Delete preset"
                           onClick={(e) => {
                             e.stopPropagation()
                             handleDeletePreset(preset.id)
@@ -1145,6 +1146,7 @@ function StopwatchTimerContent() {
                             </div>
                             <div className={css({ display: 'flex', gap: '2' })}>
                               <Button
+                                aria-label={timer.isRunning ? 'Pause timer' : 'Start timer'}
                                 onClick={() => handleToggleTimer(timer.id)}
                                 disabled={timer.remaining === 0}
                                 size="sm"
@@ -1169,6 +1171,7 @@ function StopwatchTimerContent() {
                                 )}
                               </Button>
                               <Button
+                                aria-label="Reset timer"
                                 onClick={() => handleResetTimer(timer.id)}
                                 size="sm"
                                 className={css({
@@ -1180,6 +1183,7 @@ function StopwatchTimerContent() {
                                 <RotateCcw className={css({ h: '4', w: '4' })} />
                               </Button>
                               <Button
+                                aria-label="Remove timer"
                                 onClick={() => handleRemoveTimer(timer.id)}
                                 size="sm"
                                 className={css({

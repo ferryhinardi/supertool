@@ -886,6 +886,7 @@ function UploadToolContent() {
                                       })}
                                     />
                                     <Button
+                                      aria-label="Copy link"
                                       variant="ghost"
                                       size="sm"
                                       onClick={() =>
@@ -967,6 +968,7 @@ function UploadToolContent() {
                                 )}
                                 {queuedFile.status === 'pending' && (
                                   <Button
+                                    aria-label="Remove from queue"
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => removeFromQueue(queuedFile.id)}
@@ -1600,6 +1602,7 @@ function UploadToolContent() {
                 </h3>
               </div>
               <Button
+                aria-label="Close QR code"
                 variant="ghost"
                 size="sm"
                 onClick={closeQRModal}
@@ -1745,6 +1748,7 @@ function UploadToolContent() {
                 </h3>
               </div>
               <Button
+                aria-label="Close share dialog"
                 variant="ghost"
                 size="sm"
                 onClick={closeShareModal}
