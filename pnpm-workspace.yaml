@@ -1,0 +1,13 @@
+# Supply-chain hygiene (see https://supabase.com/blog/protecting-your-supabase-projects-from-npm-supply-chain-attacks)
+# Delay brand-new publishes so malware can be yanked before we install it.
+minimumReleaseAge: 4320 # 3 days, in minutes
+minimumReleaseAgeExclude:
+  # Allow immediate security patches for the app runtime stack (and Next's platform binaries)
+  - next
+  - '@next/*'
+  - react
+  - react-dom
+  - sharp
+  - dompurify
+packages:
+  - '.'
