@@ -1,5 +1,6 @@
 import * as tls from 'node:tls'
 import { type NextRequest, NextResponse } from 'next/server'
+import { isPublicHostname } from '@/lib/utils/public-url'
 
 interface SSLCertificate {
   subject: string
@@ -199,6 +200,21 @@ export async function POST(request: NextRequest) {
           warnings: [],
           recommendations: [],
           error: 'Invalid domain format',
+        } satisfies SSLCheckResult,
+        { status: 400 }
+      )
+    }
+
+    // Prevent SSRF against loopback, link-local, and private networks
+    if (!isPublicHostname(cleanDomain)) {
+      return NextResponse.json(
+        {
+          valid: false,
+          certificate: null,
+          securityScore: 0,
+          warnings: [],
+          recommendations: [],
+          error: 'SSL checks are only allowed for public hostnames',
         } satisfies SSLCheckResult,
         { status: 400 }
       )

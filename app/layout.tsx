@@ -152,7 +152,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NODE_ENV === 'production' && (
           <Script
             src="https://cdn.visitors.now/v.js"
-            data-token="57002aa7-44fa-459e-b332-ecb6111a00ef"
+            data-token={
+              process.env.NEXT_PUBLIC_VISITORS_NOW_TOKEN || '57002aa7-44fa-459e-b332-ecb6111a00ef'
+            }
             strategy="lazyOnload"
           />
         )}

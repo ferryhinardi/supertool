@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isPublicHttpUrl } from '../public-url'
+import { isPublicHostname, isPublicHttpUrl } from '../public-url'
 
 describe('isPublicHttpUrl', () => {
   it('accepts public http and https URLs', () => {
@@ -34,5 +34,25 @@ describe('isPublicHttpUrl', () => {
     'http://[::ffff:127.0.0.1]/',
   ])('rejects private host %s', (url) => {
     expect(isPublicHttpUrl(url)).toBe(false)
+  })
+})
+
+describe('isPublicHostname', () => {
+  it('accepts public hostnames', () => {
+    expect(isPublicHostname('google.com')).toBe(true)
+    expect(isPublicHostname('8.8.8.8')).toBe(true)
+  })
+
+  it.each([
+    'localhost',
+    '127.0.0.1',
+    '10.0.0.1',
+    '192.168.0.1',
+    '169.254.169.254',
+    'intranet',
+    '::1',
+    '[::1]',
+  ])('rejects private hostname %s', (host) => {
+    expect(isPublicHostname(host)).toBe(false)
   })
 })

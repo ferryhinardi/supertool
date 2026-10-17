@@ -101,6 +101,26 @@ const nextConfig: NextConfig = {
 
   // Enable compression
   compress: true,
+
+  // Baseline browser hardening for all routes
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+          // Allow OAuth popups while isolating browsing context
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+        ],
+      },
+    ]
+  },
 }
 
 export default withBundleAnalyzer(nextConfig)

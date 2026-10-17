@@ -46,6 +46,17 @@ describe('Screenshot API Route', () => {
       expect(response.status).toBe(400)
       expect(data.error).toBe('Invalid URL format')
     })
+
+    it('should return 400 if URL targets a private network host', async () => {
+      const request = createRequest({ url: 'http://127.0.0.1:3000/' })
+
+      const response = await POST(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(data.error).toBe('Screenshots are only allowed for public http(s) websites')
+      expect(global.fetch).not.toHaveBeenCalled()
+    })
   })
 
   describe('Configuration', () => {
