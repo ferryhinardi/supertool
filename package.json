@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "panda codegen && next dev",
     "prebuild": "panda codegen --clean",
-    "build": "next build",
+    "build": "next build --webpack",
     "perf:baseline": "node scripts/lighthouse-baseline.mjs",
     "seo:audit": "node scripts/seo-audit.mjs",
     "postinstall": "panda codegen",
