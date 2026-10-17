@@ -191,10 +191,32 @@ describe('Upload Chunk API Route', () => {
         } else {
           expect(data.status).toBe('complete')
           expect(data.fileId).toBe(fileId)
-          expect(data.filePath).toContain('small-video.mp4')
+          expect(data.fileName).toBe(`${fileId}-small-video.mp4`)
+          expect(data.filePath).toBeUndefined()
           expect(data.size).toBeGreaterThan(0)
+          expect(mockWriteFile).toHaveBeenCalledWith(
+            '/tmp/video-uploads/test-file-complete-small-video.mp4',
+            expect.any(Buffer)
+          )
         }
       }
+    })
+
+    it('should reject path-traversal file names and unsafe fileIds', async () => {
+      const formData = createChunkFormData('chunk-data', {
+        fileId: '../evil',
+        fileName: '../../etc/passwd',
+        totalChunks: 1,
+        chunkIndex: 0,
+        fileSize: 10,
+      })
+
+      const response = await POST(createPostRequest(formData))
+      const data = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(data.error).toBe('Invalid fileId or fileName')
+      expect(mockWriteFile).not.toHaveBeenCalled()
     })
 
     it('should handle chunks received out of order', async () => {

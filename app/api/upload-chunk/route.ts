@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 import { type NextRequest, NextResponse } from 'next/server'
 
 interface ChunkMetadata {
@@ -9,6 +9,15 @@ interface ChunkMetadata {
   totalChunks: number
   chunkIndex: number
   fileSize: number
+}
+
+const SAFE_FILE_ID = /^[a-zA-Z0-9_-]{1,128}$/
+
+function sanitizeUploadName(fileId: string, fileName: string): string | null {
+  if (!SAFE_FILE_ID.test(fileId)) return null
+  const base = basename(fileName || 'upload').replace(/[^\w.\-()+ ]+/g, '_')
+  if (!base || base === '.' || base === '..') return null
+  return `${fileId}-${base}`
 }
 
 // Store for tracking upload progress
@@ -49,6 +58,11 @@ export async function POST(request: NextRequest) {
     const metadata: ChunkMetadata = JSON.parse(metadataJson)
     const { fileId, totalChunks, chunkIndex } = metadata
 
+    const safeName = sanitizeUploadName(fileId, metadata.fileName)
+    if (!safeName) {
+      return NextResponse.json({ error: 'Invalid fileId or fileName' }, { status: 400 })
+    }
+
     // Get or create upload state
     let state = uploadState.get(fileId)
     if (!state) {
@@ -79,10 +93,10 @@ export async function POST(request: NextRequest) {
 
       const completeFile = Buffer.concat(chunks)
 
-      // Save to temp directory
+      // Save to temp directory (basename-sanitized to block path traversal)
       const tempDir = join(tmpdir(), 'video-uploads')
       await mkdir(tempDir, { recursive: true })
-      const filePath = join(tempDir, `${fileId}-${metadata.fileName}`)
+      const filePath = join(tempDir, safeName)
       await writeFile(filePath, completeFile)
 
       // Clean up upload state
@@ -91,7 +105,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         status: 'complete',
         fileId,
-        filePath,
+        // Do not return absolute server paths to clients
+        fileName: safeName,
         size: completeFile.length,
       })
     }

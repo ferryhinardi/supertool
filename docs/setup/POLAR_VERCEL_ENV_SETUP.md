@@ -5,6 +5,8 @@ This guide explains how to add the Polar payment integration environment variabl
 
 **⚠️ Important**: These variables must be added to Vercel **before deploying** the payment integration to production.
 
+**🚨 Secret hygiene**: Never paste live access tokens, webhook secrets, or Supabase service-role keys into git-tracked docs. Copy them only into Vercel/your password manager. If any secret was previously committed, rotate it immediately in Polar and Supabase.
+
 ---
 
 ## Required Environment Variables
@@ -38,13 +40,13 @@ You need to add **6 environment variables** to Vercel:
    
    **Variable 1: POLAR_ACCESS_TOKEN**
    - Name: `POLAR_ACCESS_TOKEN`
-   - Value: `polar_oat_zTyewuRWXwV4DdrbaM70lWgylnva8CHqUSeDS2hJasu`
+   - Value: `<POLAR_ACCESS_TOKEN from Polar dashboard>`
    - Environments: Check all boxes (Production, Preview, Development)
    - Click **Save**
    
    **Variable 2: POLAR_WEBHOOK_SECRET**
    - Name: `POLAR_WEBHOOK_SECRET`
-   - Value: `polar_whs_6AcVoG4cwlJULFPpKWsYSYyIitpV60AfHWsik3kJU5c`
+   - Value: `<POLAR_WEBHOOK_SECRET from Polar webhook settings>`
    - Environments: Check all boxes
    - Click **Save**
    
@@ -68,7 +70,7 @@ You need to add **6 environment variables** to Vercel:
    
    **Variable 6: SUPABASE_SERVICE_ROLE_KEY**
    - Name: `SUPABASE_SERVICE_ROLE_KEY`
-   - Value: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1renl1eXZncnFqcmhuYnRhZ3loIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTMxMzAyNiwiZXhwIjoyMDc2ODg5MDI2fQ.ll7ChaFqjAZdevDlt3Fnw20vrYo8nWx4L5G4K3QsNgE`
+   - Value: `<SUPABASE_SERVICE_ROLE_KEY from Supabase Project Settings → API>`
    - Environments: Check all boxes
    - Click **Save**
 
@@ -94,11 +96,11 @@ vercel link
 
 # Add environment variables
 vercel env add POLAR_ACCESS_TOKEN
-# When prompted, paste: polar_oat_zTyewuRWXwV4DdrbaM70lWgylnva8CHqUSeDS2hJasu
+# When prompted, paste: <POLAR_ACCESS_TOKEN from Polar dashboard>
 # Select: Production, Preview, Development (all)
 
 vercel env add POLAR_WEBHOOK_SECRET
-# Paste: polar_whs_6AcVoG4cwlJULFPpKWsYSYyIitpV60AfHWsik3kJU5c
+# Paste: <POLAR_WEBHOOK_SECRET from Polar webhook settings>
 
 vercel env add POLAR_ORGANIZATION_ID
 # Paste: 44fd13eb-dea6-4666-b2f4-9035e47e1c47
@@ -110,7 +112,7 @@ vercel env add NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID
 # Paste: 154cebe5-58d2-424f-bc76-c2eb114ba55f
 
 vercel env add SUPABASE_SERVICE_ROLE_KEY
-# Paste: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1renl1eXZncnFqcmhuYnRhZ3loIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTMxMzAyNiwiZXhwIjoyMDc2ODg5MDI2fQ.ll7ChaFqjAZdevDlt3Fnw20vrYo8nWx4L5G4K3QsNgE
+# Paste: <SUPABASE_SERVICE_ROLE_KEY from Supabase Project Settings → API>
 
 # List all environment variables to verify
 vercel env ls
@@ -123,12 +125,12 @@ vercel env ls
 1. Create a file called `vercel-env.txt` with this content:
 
 ```
-POLAR_ACCESS_TOKEN=polar_oat_zTyewuRWXwV4DdrbaM70lWgylnva8CHqUSeDS2hJasu
-POLAR_WEBHOOK_SECRET=polar_whs_6AcVoG4cwlJULFPpKWsYSYyIitpV60AfHWsik3kJU5c
+POLAR_ACCESS_TOKEN=<POLAR_ACCESS_TOKEN from Polar dashboard>
+POLAR_WEBHOOK_SECRET=<POLAR_WEBHOOK_SECRET from Polar webhook settings>
 POLAR_ORGANIZATION_ID=44fd13eb-dea6-4666-b2f4-9035e47e1c47
 NEXT_PUBLIC_POLAR_ORGANIZATION_ID=44fd13eb-dea6-4666-b2f4-9035e47e1c47
 NEXT_PUBLIC_POLAR_DONATION_PRODUCT_ID=154cebe5-58d2-424f-bc76-c2eb114ba55f
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1renl1eXZncnFqcmhuYnRhZ3loIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTMxMzAyNiwiZXhwIjoyMDc2ODg5MDI2fQ.ll7ChaFqjAZdevDlt3Fnw20vrYo8nWx4L5G4K3QsNgE
+SUPABASE_SERVICE_ROLE_KEY=<SUPABASE_SERVICE_ROLE_KEY from Supabase Project Settings → API>
 ```
 
 2. **Manual copy-paste**:
