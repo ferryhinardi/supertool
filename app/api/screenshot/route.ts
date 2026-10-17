@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { isPublicHttpUrl } from '@/lib/utils/public-url'
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,6 +15,14 @@ export async function POST(request: NextRequest) {
       new URL(url)
     } catch {
       return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 })
+    }
+
+    // Block private/internal targets so the screenshot provider cannot be used for SSRF
+    if (!isPublicHttpUrl(url)) {
+      return NextResponse.json(
+        { error: 'Screenshots are only allowed for public http(s) websites' },
+        { status: 400 }
+      )
     }
 
     // Get API key from environment variables

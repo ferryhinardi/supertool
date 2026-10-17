@@ -52,7 +52,7 @@
 - ✅ Product ID: 154cebe5-58d2-424f-bc76-c2eb114ba55f
 - ✅ Webhook URL: https://supertool.id/api/webhooks/polar
 - ✅ Webhook Events: checkout.*, order.*, subscription.*
-- ✅ Webhook Secret: polar_whs_6AcVoG4... (configured today)
+- ✅ Webhook Secret: polar_whs_… (configured in Vercel; do not commit)
 
 ### ✅ Phase 4: Deployment (COMPLETE)
 

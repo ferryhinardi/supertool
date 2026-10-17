@@ -1,4 +1,4 @@
-import type { NextRequest } from 'next/server'
+import { NextRequest } from 'next/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock Supabase client
@@ -16,6 +16,7 @@ describe('URL Shortener Redirect Route', () => {
     vi.resetAllMocks()
     // Set to development for most tests
     vi.stubEnv('NODE_ENV', 'development')
+    vi.stubEnv('NEXT_PUBLIC_BASE_URL', '')
   })
 
   afterEach(() => {
@@ -24,13 +25,13 @@ describe('URL Shortener Redirect Route', () => {
   })
 
   const createRequest = (code: string, headers: Record<string, string> = {}) => {
-    return new Request(`http://localhost:3000/s/${code}`, {
+    return new NextRequest(`http://localhost:3000/s/${code}`, {
       method: 'GET',
       headers: {
         host: 'localhost:3000',
         ...headers,
       },
-    }) as unknown as NextRequest
+    })
   }
 
   const createParams = (code: string) => Promise.resolve({ code })
@@ -244,19 +245,33 @@ describe('URL Shortener Redirect Route', () => {
     )
   })
 
-  it('should use https in production environment', async () => {
-    vi.stubEnv('NODE_ENV', 'production')
+  it('should use NEXT_PUBLIC_BASE_URL for error redirects when set', async () => {
+    vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'https://supertool.id')
 
     setupMocks({
       data: null,
       error: { code: 'PGRST116' },
     })
 
-    const request = createRequest('notfound')
+    const request = createRequest('notfound', { host: 'evil.example' })
     const response = await GET(request, { params: createParams('notfound') })
 
     expect(response.headers.get('location')).toBe(
-      'https://localhost:3000/tools/url-shortener?error=notfound'
+      'https://supertool.id/tools/url-shortener?error=notfound'
+    )
+  })
+
+  it('should ignore attacker-controlled Host headers for error redirects', async () => {
+    setupMocks({
+      data: null,
+      error: { code: 'PGRST116' },
+    })
+
+    const request = createRequest('notfound', { host: 'evil.example' })
+    const response = await GET(request, { params: createParams('notfound') })
+
+    expect(response.headers.get('location')).toBe(
+      'http://localhost:3000/tools/url-shortener?error=notfound'
     )
   })
 

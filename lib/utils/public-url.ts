@@ -30,6 +30,24 @@ function isPrivateIPv6(host: string): boolean {
 }
 
 /**
+ * True when a hostname is not loopback, link-local, private, or a bare intranet name.
+ */
+export function isPublicHostname(hostname: string): boolean {
+  const host = hostname.trim().toLowerCase().replace(/\.$/, '')
+  if (!host || host === 'localhost') return false
+  if (host.includes('/') || host.includes('\\') || host.includes(' ')) return false
+  if (BLOCKED_HOST_SUFFIXES.some((suffix) => host.endsWith(suffix))) return false
+  if (isPrivateIPv4(host) || isPrivateIPv6(host.startsWith('[') ? host : `[${host}]`)) {
+    return false
+  }
+  // Bare IPv6 without brackets (ssl-check passes raw hostnames)
+  if (host.includes(':') && !host.startsWith('[')) {
+    return isPublicHostname(`[${host}]`)
+  }
+  return host.includes('.') || host.startsWith('[')
+}
+
+/**
  * True for http(s) URLs whose host is reachable on the public internet. Short links
  * are public, so they must not point at loopback, private-network, or bare intranet hosts.
  */
@@ -42,9 +60,5 @@ export function isPublicHttpUrl(value: string): boolean {
   }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return false
 
-  const host = url.hostname.toLowerCase().replace(/\.$/, '')
-  if (!host || host === 'localhost') return false
-  if (BLOCKED_HOST_SUFFIXES.some((suffix) => host.endsWith(suffix))) return false
-  if (isPrivateIPv4(host) || isPrivateIPv6(host)) return false
-  return host.includes('.') || host.startsWith('[')
+  return isPublicHostname(url.hostname)
 }

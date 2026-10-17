@@ -2,6 +2,14 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/auth/supabaseClient'
 import { isPublicHttpUrl } from '@/lib/utils/public-url'
 
+function shortenerErrorRedirect(request: NextRequest, error: 'notfound' | 'server') {
+  // Prefer configured base URL / request origin over the Host header to avoid open redirects
+  const configured = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '')
+  const fromRequest = request.nextUrl?.origin
+  const origin = configured || fromRequest || 'http://localhost:3000'
+  return NextResponse.redirect(`${origin}/tools/url-shortener?error=${error}`, 302)
+}
+
 export async function GET(request: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   try {
     const { code } = await params
@@ -14,10 +22,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .single()
 
     if (error || !data || !data.is_active || !isPublicHttpUrl(data.original_url)) {
-      // If not found or inactive, redirect to URL shortener page with error
-      const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-      const host = request.headers.get('host') || 'localhost:3000'
-      return NextResponse.redirect(`${protocol}://${host}/tools/url-shortener?error=notfound`, 302)
+      return shortenerErrorRedirect(request, 'notfound')
     }
 
     // Track analytics (fire and forget - don't wait for it to complete)
@@ -45,10 +50,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.redirect(data.original_url, 302)
   } catch (error) {
     console.error('Error redirecting short URL:', error)
-
-    // Redirect to URL shortener page on error
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const host = request.headers.get('host') || 'localhost:3000'
-    return NextResponse.redirect(`${protocol}://${host}/tools/url-shortener?error=server`, 302)
+    return shortenerErrorRedirect(request, 'server')
   }
 }

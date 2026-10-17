@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import type { CreatePRParams, PRFilters } from '@/lib/services/github'
+import type { PRFilters } from '@/lib/services/github'
 import { getGitHubService } from '@/lib/services/github'
+import { githubMutationForbidden } from '@/lib/services/github/mutation-guard'
 
 /**
  * GET /api/github/repos/[owner]/[repo]/pulls
@@ -85,48 +86,11 @@ export async function GET(
 
 /**
  * POST /api/github/repos/[owner]/[repo]/pulls
- * Create a new pull request
- * Body:
- *   - title: PR title (required)
- *   - body: PR description (optional)
- *   - head: Branch containing changes (required)
- *   - base: Branch to merge into (required)
- *   - draft: Create as draft PR (optional, default: false)
- *   - maintainer_can_modify: Allow maintainers to modify (optional)
+ * Disabled: must not proxy writes with the shared server GITHUB_TOKEN.
  */
 export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ owner: string; repo: string }> }
+  _request: NextRequest,
+  _context: { params: Promise<{ owner: string; repo: string }> }
 ) {
-  try {
-    const { owner, repo } = await params
-    const body = (await request.json()) as CreatePRParams
-
-    if (!body.title) {
-      return NextResponse.json({ error: 'PR title is required' }, { status: 400 })
-    }
-
-    if (!body.head) {
-      return NextResponse.json({ error: 'Head branch is required' }, { status: 400 })
-    }
-
-    if (!body.base) {
-      return NextResponse.json({ error: 'Base branch is required' }, { status: 400 })
-    }
-
-    const github = getGitHubService()
-    const result = await github.createPullRequest(owner, repo, body)
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: result.error?.message || 'Failed to create pull request' },
-        { status: result.error?.status || 500 }
-      )
-    }
-
-    return NextResponse.json({ success: true, data: result.data }, { status: 201 })
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
-    return NextResponse.json({ error: message }, { status: 500 })
-  }
+  return githubMutationForbidden()
 }

@@ -60,6 +60,22 @@ describe('SSL Check API Route', () => {
       expect(response.status).not.toBe(400)
     })
 
+    it('should reject private and loopback hostnames', async () => {
+      for (const domain of ['localhost', '127.0.0.1', '10.0.0.5', '169.254.169.254']) {
+        const request = new Request('http://localhost:3000/api/ssl-check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ domain }),
+        })
+
+        const response = await POST(request as unknown as NextRequest)
+        const data = await response.json()
+
+        expect(response.status).toBe(400)
+        expect(data.error).toBe('SSL checks are only allowed for public hostnames')
+      }
+    })
+
     it('should handle invalid JSON body', async () => {
       const request = new Request('http://localhost:3000/api/ssl-check', {
         method: 'POST',
